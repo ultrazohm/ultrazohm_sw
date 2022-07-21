@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="uz_FOC_sample" xd:componentRef="uz_FOC_sample" xd:initiationInterval="185" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
+<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="uz_FOC_sample" xd:componentRef="uz_FOC_sample" xd:initiationInterval="98" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
   <xd:controlReg xd:name="control" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:type="generic_axi_lite" xd:offset="0x0"/>
   <xd:arg xd:name="*(output_volts_d)" xd:originalName="output_volts_d" xd:direction="inout" xd:interfaceRef="m_axi_Dout" xd:busTypeRef="aximm" xd:dataPack="true" xd:bitMapping="31:0" xd:arraySize="50" xd:dataWidth="32" xd:bufferDirection="out"/>
   <xd:arg xd:name="*(output_volts_q)" xd:originalName="output_volts_q" xd:direction="inout" xd:interfaceRef="m_axi_Dout" xd:busTypeRef="aximm" xd:dataPack="true" xd:bitMapping="31:0" xd:arraySize="50" xd:dataWidth="32" xd:bufferDirection="out"/>
-  <xd:arg xd:name="*(self)" xd:originalName="self" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x40" xd:handshakeRef="ap_none" xd:dataWidth="288"/>
-  <xd:arg xd:name="*(self)" xd:originalName="self" xd:direction="out" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x68" xd:handshakeRef="ap_vld" xd:statusOffset="0x8C" xd:dataWidth="288"/>
-  <xd:arg xd:name="*(Controller_id)" xd:originalName="Controller_id" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x10" xd:handshakeRef="ap_none" xd:dataWidth="160"/>
-  <xd:arg xd:name="*(Controller_iq)" xd:originalName="Controller_iq" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x28" xd:handshakeRef="ap_none" xd:dataWidth="160"/>
-  <xd:arg xd:name="i_reference_Ampere" xd:originalName="i_reference_Ampere" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0xB0" xd:handshakeRef="ap_none" xd:dataWidth="96"/>
-  <xd:arg xd:name="i_actual_Ampere" xd:originalName="i_actual_Ampere" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x90" xd:handshakeRef="ap_none" xd:dataWidth="96"/>
-  <xd:arg xd:name="V_dc_volts" xd:originalName="V_dc_volts" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0xA0" xd:handshakeRef="ap_none" xd:dataWidth="32"/>
-  <xd:arg xd:name="omega_el_rad_per_sec" xd:originalName="omega_el_rad_per_sec" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0xA8" xd:handshakeRef="ap_none" xd:dataWidth="32"/>
+  <xd:arg xd:name="*(self)" xd:originalName="self" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x20" xd:handshakeRef="ap_none" xd:dataWidth="256"/>
+  <xd:arg xd:name="*(self)" xd:originalName="self" xd:direction="out" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x44" xd:handshakeRef="ap_vld" xd:statusOffset="0x64" xd:dataWidth="256"/>
+  <xd:arg xd:name="*(Controller_id)" xd:originalName="Controller_id" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x90" xd:handshakeRef="ap_none" xd:dataWidth="160"/>
+  <xd:arg xd:name="*(Controller_iq)" xd:originalName="Controller_iq" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0xA8" xd:handshakeRef="ap_none" xd:dataWidth="160"/>
+  <xd:arg xd:name="i_reference_Ampere" xd:originalName="i_reference_Ampere" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x10" xd:handshakeRef="ap_none" xd:dataWidth="96"/>
+  <xd:arg xd:name="i_actual_Ampere" xd:originalName="i_actual_Ampere" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x70" xd:handshakeRef="ap_none" xd:dataWidth="96"/>
+  <xd:arg xd:name="V_dc_volts" xd:originalName="V_dc_volts" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x80" xd:handshakeRef="ap_none" xd:dataWidth="32"/>
+  <xd:arg xd:name="omega_el_rad_per_sec" xd:originalName="omega_el_rad_per_sec" xd:direction="in" xd:interfaceRef="s_axi_Din" xd:busTypeRef="axilite" xd:offset="0x88" xd:handshakeRef="ap_none" xd:dataWidth="32"/>
   <xd:arg xd:name="output_volts_d" xd:originalName="output_volts_d" xd:direction="in" xd:interfaceRef="s_axi_control" xd:busTypeRef="axilite" xd:aximmInterfaceRef="m_axi_Dout" xd:dataWidth="64" xd:offset="0x10" xd:handshakeRef="ap_none"/>
   <xd:arg xd:name="output_volts_q" xd:originalName="output_volts_q" xd:direction="in" xd:interfaceRef="s_axi_control" xd:busTypeRef="axilite" xd:aximmInterfaceRef="m_axi_Dout" xd:dataWidth="64" xd:offset="0x1C" xd:handshakeRef="ap_none"/>
-  <xd:latencyEstimates xd:best-case="106" xd:worst-case="184" xd:average-case="142"/>
-  <xd:resourceEstimates xd:LUT="19257" xd:FF="14286" xd:BRAM="30" xd:DSP="82"/>
+  <xd:latencyEstimates xd:best-case="58" xd:worst-case="97" xd:average-case="88"/>
+  <xd:resourceEstimates xd:LUT="13099" xd:FF="9561" xd:BRAM="16" xd:DSP="49"/>
 </xd:acceleratorMap>

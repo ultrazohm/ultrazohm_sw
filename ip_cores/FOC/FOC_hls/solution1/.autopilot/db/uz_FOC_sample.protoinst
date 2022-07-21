@@ -13,7 +13,7 @@
 						"AP_START": { "actual": "ap_start"}
 					}
 				},
-				"grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293/grp_pow_generic_float_s_fu_138/grp_pow_generic_float_s_fu_138_activity": {
+				"grp_uz_FOC_SpaceVector_Limitation_1_fu_265/grp_pow_generic_float_s_fu_153/grp_pow_generic_float_s_fu_153_activity": {
 					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
 					"ports": {
 						"AP_CLK": { "actual": "ap_clk"},
@@ -23,7 +23,7 @@
 						"AP_START": { "actual": "ap_start"}
 					}
 				},
-				"grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293/grp_pow_generic_float_s_fu_158/grp_pow_generic_float_s_fu_158_activity": {
+				"grp_uz_FOC_SpaceVector_Limitation_1_fu_265/grp_pow_generic_float_s_fu_173/grp_pow_generic_float_s_fu_173_activity": {
 					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
 					"ports": {
 						"AP_CLK": { "actual": "ap_clk"},
@@ -33,37 +33,7 @@
 						"AP_START": { "actual": "ap_start"}
 					}
 				},
-				"grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293/grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293_activity": {
-					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
-					"ports": {
-						"AP_CLK": { "actual": "ap_clk"},
-						"AP_DONE": { "actual": "ap_done"},
-						"AP_READY": { "actual": "ap_ready"},
-						"AP_RESET": { "actual": "ap_rst"},
-						"AP_START": { "actual": "ap_start"}
-					}
-				},
-				"grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269/grp_pow_generic_float_s_fu_138/grp_pow_generic_float_s_fu_138_activity": {
-					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
-					"ports": {
-						"AP_CLK": { "actual": "ap_clk"},
-						"AP_DONE": { "actual": "ap_done"},
-						"AP_READY": { "actual": "ap_ready"},
-						"AP_RESET": { "actual": "ap_rst"},
-						"AP_START": { "actual": "ap_start"}
-					}
-				},
-				"grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269/grp_pow_generic_float_s_fu_158/grp_pow_generic_float_s_fu_158_activity": {
-					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
-					"ports": {
-						"AP_CLK": { "actual": "ap_clk"},
-						"AP_DONE": { "actual": "ap_done"},
-						"AP_READY": { "actual": "ap_ready"},
-						"AP_RESET": { "actual": "ap_rst"},
-						"AP_START": { "actual": "ap_start"}
-					}
-				},
-				"grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269/grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269_activity": {
+				"grp_uz_FOC_SpaceVector_Limitation_1_fu_265/grp_uz_FOC_SpaceVector_Limitation_1_fu_265_activity": {
 					"interface": "xilinx.com:interface:internal_hls_dataflow:1.0",
 					"ports": {
 						"AP_CLK": { "actual": "ap_clk"},

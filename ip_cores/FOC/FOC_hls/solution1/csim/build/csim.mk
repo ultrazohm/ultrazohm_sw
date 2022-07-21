@@ -16,7 +16,7 @@ __SIM_DDS__ = 1
 
 ObjDir = obj
 
-HLS_SOURCES = ../../../../foc/tb_foc.c ../../../../foc/uz_space_vector_limitation.c ../../../../foc/uz_signals.c ../../../../foc/uz_piController.c ../../../../foc/uz_linear_decoupling.c ../../../../foc/uz_Transformation.c ../../../../foc/uz_FOC.c
+HLS_SOURCES = ../../../../foc/tb_foc.c ../../../../foc/uz_FOC.c ../../../../foc/uz_Transformation.c ../../../../foc/uz_linear_decoupling.c ../../../../foc/uz_piController.c ../../../../foc/uz_signals.c ../../../../foc/uz_space_vector_limitation.c
 
 override TARGET := csim.exe
 
@@ -75,29 +75,11 @@ $(ObjDir)/tb_foc.o: ../../../../foc/tb_foc.c $(ObjDir)/.dir
 
 -include $(ObjDir)/tb_foc.d
 
-$(ObjDir)/uz_space_vector_limitation.o: ../../../../foc/uz_space_vector_limitation.c $(ObjDir)/.dir
-	$(Echo) "   Compiling(apcc) ../../../../foc/uz_space_vector_limitation.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
+$(ObjDir)/uz_FOC.o: ../../../../foc/uz_FOC.c $(ObjDir)/.dir
+	$(Echo) "   Compiling(apcc) ../../../../foc/uz_FOC.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
 	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
 
--include $(ObjDir)/uz_space_vector_limitation.d
-
-$(ObjDir)/uz_signals.o: ../../../../foc/uz_signals.c $(ObjDir)/.dir
-	$(Echo) "   Compiling(apcc) ../../../../foc/uz_signals.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
-	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
-
--include $(ObjDir)/uz_signals.d
-
-$(ObjDir)/uz_piController.o: ../../../../foc/uz_piController.c $(ObjDir)/.dir
-	$(Echo) "   Compiling(apcc) ../../../../foc/uz_piController.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
-	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
-
--include $(ObjDir)/uz_piController.d
-
-$(ObjDir)/uz_linear_decoupling.o: ../../../../foc/uz_linear_decoupling.c $(ObjDir)/.dir
-	$(Echo) "   Compiling(apcc) ../../../../foc/uz_linear_decoupling.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
-	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
-
--include $(ObjDir)/uz_linear_decoupling.d
+-include $(ObjDir)/uz_FOC.d
 
 $(ObjDir)/uz_Transformation.o: ../../../../foc/uz_Transformation.c $(ObjDir)/.dir
 	$(Echo) "   Compiling(apcc) ../../../../foc/uz_Transformation.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
@@ -105,8 +87,26 @@ $(ObjDir)/uz_Transformation.o: ../../../../foc/uz_Transformation.c $(ObjDir)/.di
 
 -include $(ObjDir)/uz_Transformation.d
 
-$(ObjDir)/uz_FOC.o: ../../../../foc/uz_FOC.c $(ObjDir)/.dir
-	$(Echo) "   Compiling(apcc) ../../../../foc/uz_FOC.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
+$(ObjDir)/uz_linear_decoupling.o: ../../../../foc/uz_linear_decoupling.c $(ObjDir)/.dir
+	$(Echo) "   Compiling(apcc) ../../../../foc/uz_linear_decoupling.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
 	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
 
--include $(ObjDir)/uz_FOC.d
+-include $(ObjDir)/uz_linear_decoupling.d
+
+$(ObjDir)/uz_piController.o: ../../../../foc/uz_piController.c $(ObjDir)/.dir
+	$(Echo) "   Compiling(apcc) ../../../../foc/uz_piController.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
+	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
+
+-include $(ObjDir)/uz_piController.d
+
+$(ObjDir)/uz_signals.o: ../../../../foc/uz_signals.c $(ObjDir)/.dir
+	$(Echo) "   Compiling(apcc) ../../../../foc/uz_signals.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
+	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
+
+-include $(ObjDir)/uz_signals.d
+
+$(ObjDir)/uz_space_vector_limitation.o: ../../../../foc/uz_space_vector_limitation.c $(ObjDir)/.dir
+	$(Echo) "   Compiling(apcc) ../../../../foc/uz_space_vector_limitation.c in $(BuildMode) mode" $(AVE_DIR_DLOG)
+	$(Verb)  $(AUTOCC) -c -MMD  $(IFLAG) $(DFLAG) $< -o $@ ; \
+
+-include $(ObjDir)/uz_space_vector_limitation.d

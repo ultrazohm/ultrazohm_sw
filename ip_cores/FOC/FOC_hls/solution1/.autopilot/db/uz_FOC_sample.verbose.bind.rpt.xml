@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vitis HLS Report for 'uz_FOC_sample'" level="0">
-<item name = "Date">Thu May 19 19:39:02 2022
+<item name = "Date">Wed Jun 29 10:55:55 2022
 </item>
 <item name = "Version">2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)</item>
 <item name = "Project">FOC_hls</item>
@@ -15,7 +15,7 @@
 <section name = "" level="1">
 <item name = "Summary"><table name="" hasTotal="0">
 <keys size="4">Clock, Target, Estimated, Uncertainty</keys>
-<column name="ap_clk">10.00 ns, 7.455 ns, 2.70 ns</column>
+<column name="ap_clk">10.00 ns, 7.325 ns, 2.70 ns</column>
 </table>
 </item>
 </section>
@@ -24,15 +24,14 @@
 <section name = "" level="1">
 <item name = "Summary"><table name="" hasTotal="0">
 <keys size="8">, min, max, min, max, min, max, Type</keys>
-<column name="">106, 184, 1.060 us, 1.840 us, 107, 185, none</column>
+<column name="">58, 97, 0.580 us, 0.970 us, 59, 98, none</column>
 </table>
 </item>
 <item name = "Detail">
 <section name = "" level="1">
 <item name = "Instance"><table name="" hasTotal="0">
 <keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
-<column name="grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269">uz_FOC_SpaceVector_Limitation_q_1, 30, 69, 0.300 us, 0.690 us, 30, 69, none</column>
-<column name="grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293">uz_FOC_SpaceVector_Limitation_d_1, 30, 69, 0.300 us, 0.690 us, 30, 69, none</column>
+<column name="grp_uz_FOC_SpaceVector_Limitation_1_fu_265">uz_FOC_SpaceVector_Limitation_1, 30, 69, 0.300 us, 0.690 us, 30, 69, none</column>
 </table>
 </item>
 <item name = "Loop"><table name="" hasTotal="0">

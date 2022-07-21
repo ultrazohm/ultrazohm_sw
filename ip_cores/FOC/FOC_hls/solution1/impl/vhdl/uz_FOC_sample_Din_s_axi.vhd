@@ -32,10 +32,9 @@ port (
     RVALID                :out  STD_LOGIC;
     RREADY                :in   STD_LOGIC;
     interrupt             :out  STD_LOGIC;
-    Controller_id         :out  STD_LOGIC_VECTOR(159 downto 0);
-    Controller_iq         :out  STD_LOGIC_VECTOR(159 downto 0);
-    self_i                :out  STD_LOGIC_VECTOR(287 downto 0);
-    self_o                :in   STD_LOGIC_VECTOR(287 downto 0);
+    i_reference_Ampere    :out  STD_LOGIC_VECTOR(95 downto 0);
+    self_i                :out  STD_LOGIC_VECTOR(255 downto 0);
+    self_o                :in   STD_LOGIC_VECTOR(255 downto 0);
     self_o_ap_vld         :in   STD_LOGIC;
     i_actual_Ampere       :out  STD_LOGIC_VECTOR(95 downto 0);
     V_dc_volts            :out  STD_LOGIC_VECTOR(31 downto 0);
@@ -44,7 +43,8 @@ port (
     ap_done               :in   STD_LOGIC;
     ap_ready              :in   STD_LOGIC;
     ap_idle               :in   STD_LOGIC;
-    i_reference_Ampere    :out  STD_LOGIC_VECTOR(95 downto 0)
+    Controller_id         :out  STD_LOGIC_VECTOR(159 downto 0);
+    Controller_iq         :out  STD_LOGIC_VECTOR(159 downto 0)
 );
 end entity uz_FOC_sample_Din_s_axi;
 
@@ -67,87 +67,83 @@ end entity uz_FOC_sample_Din_s_axi;
 --        bit 0  - ap_done (COR/TOW)
 --        bit 1  - ap_ready (COR/TOW)
 --        others - reserved
--- 0x10 : Data signal of Controller_id
---        bit 31~0 - Controller_id[31:0] (Read/Write)
--- 0x14 : Data signal of Controller_id
---        bit 31~0 - Controller_id[63:32] (Read/Write)
--- 0x18 : Data signal of Controller_id
---        bit 31~0 - Controller_id[95:64] (Read/Write)
--- 0x1c : Data signal of Controller_id
---        bit 31~0 - Controller_id[127:96] (Read/Write)
--- 0x20 : Data signal of Controller_id
---        bit 31~0 - Controller_id[159:128] (Read/Write)
--- 0x24 : reserved
--- 0x28 : Data signal of Controller_iq
---        bit 31~0 - Controller_iq[31:0] (Read/Write)
--- 0x2c : Data signal of Controller_iq
---        bit 31~0 - Controller_iq[63:32] (Read/Write)
--- 0x30 : Data signal of Controller_iq
---        bit 31~0 - Controller_iq[95:64] (Read/Write)
--- 0x34 : Data signal of Controller_iq
---        bit 31~0 - Controller_iq[127:96] (Read/Write)
--- 0x38 : Data signal of Controller_iq
---        bit 31~0 - Controller_iq[159:128] (Read/Write)
--- 0x3c : reserved
--- 0x40 : Data signal of self_i
+-- 0x10 : Data signal of i_reference_Ampere
+--        bit 31~0 - i_reference_Ampere[31:0] (Read/Write)
+-- 0x14 : Data signal of i_reference_Ampere
+--        bit 31~0 - i_reference_Ampere[63:32] (Read/Write)
+-- 0x18 : Data signal of i_reference_Ampere
+--        bit 31~0 - i_reference_Ampere[95:64] (Read/Write)
+-- 0x1c : reserved
+-- 0x20 : Data signal of self_i
 --        bit 31~0 - self_i[31:0] (Read/Write)
--- 0x44 : Data signal of self_i
+-- 0x24 : Data signal of self_i
 --        bit 31~0 - self_i[63:32] (Read/Write)
--- 0x48 : Data signal of self_i
+-- 0x28 : Data signal of self_i
 --        bit 31~0 - self_i[95:64] (Read/Write)
--- 0x4c : Data signal of self_i
+-- 0x2c : Data signal of self_i
 --        bit 31~0 - self_i[127:96] (Read/Write)
--- 0x50 : Data signal of self_i
+-- 0x30 : Data signal of self_i
 --        bit 31~0 - self_i[159:128] (Read/Write)
--- 0x54 : Data signal of self_i
+-- 0x34 : Data signal of self_i
 --        bit 31~0 - self_i[191:160] (Read/Write)
--- 0x58 : Data signal of self_i
+-- 0x38 : Data signal of self_i
 --        bit 31~0 - self_i[223:192] (Read/Write)
--- 0x5c : Data signal of self_i
+-- 0x3c : Data signal of self_i
 --        bit 31~0 - self_i[255:224] (Read/Write)
--- 0x60 : Data signal of self_i
---        bit 31~0 - self_i[287:256] (Read/Write)
--- 0x64 : reserved
--- 0x68 : Data signal of self_o
+-- 0x40 : reserved
+-- 0x44 : Data signal of self_o
 --        bit 31~0 - self_o[31:0] (Read)
--- 0x6c : Data signal of self_o
+-- 0x48 : Data signal of self_o
 --        bit 31~0 - self_o[63:32] (Read)
--- 0x70 : Data signal of self_o
+-- 0x4c : Data signal of self_o
 --        bit 31~0 - self_o[95:64] (Read)
--- 0x74 : Data signal of self_o
+-- 0x50 : Data signal of self_o
 --        bit 31~0 - self_o[127:96] (Read)
--- 0x78 : Data signal of self_o
+-- 0x54 : Data signal of self_o
 --        bit 31~0 - self_o[159:128] (Read)
--- 0x7c : Data signal of self_o
+-- 0x58 : Data signal of self_o
 --        bit 31~0 - self_o[191:160] (Read)
--- 0x80 : Data signal of self_o
+-- 0x5c : Data signal of self_o
 --        bit 31~0 - self_o[223:192] (Read)
--- 0x84 : Data signal of self_o
+-- 0x60 : Data signal of self_o
 --        bit 31~0 - self_o[255:224] (Read)
--- 0x88 : Data signal of self_o
---        bit 31~0 - self_o[287:256] (Read)
--- 0x8c : Control signal of self_o
+-- 0x64 : Control signal of self_o
 --        bit 0  - self_o_ap_vld (Read/COR)
 --        others - reserved
--- 0x90 : Data signal of i_actual_Ampere
+-- 0x70 : Data signal of i_actual_Ampere
 --        bit 31~0 - i_actual_Ampere[31:0] (Read/Write)
--- 0x94 : Data signal of i_actual_Ampere
+-- 0x74 : Data signal of i_actual_Ampere
 --        bit 31~0 - i_actual_Ampere[63:32] (Read/Write)
--- 0x98 : Data signal of i_actual_Ampere
+-- 0x78 : Data signal of i_actual_Ampere
 --        bit 31~0 - i_actual_Ampere[95:64] (Read/Write)
--- 0x9c : reserved
--- 0xa0 : Data signal of V_dc_volts
+-- 0x7c : reserved
+-- 0x80 : Data signal of V_dc_volts
 --        bit 31~0 - V_dc_volts[31:0] (Read/Write)
--- 0xa4 : reserved
--- 0xa8 : Data signal of omega_el_rad_per_sec
+-- 0x84 : reserved
+-- 0x88 : Data signal of omega_el_rad_per_sec
 --        bit 31~0 - omega_el_rad_per_sec[31:0] (Read/Write)
--- 0xac : reserved
--- 0xb0 : Data signal of i_reference_Ampere
---        bit 31~0 - i_reference_Ampere[31:0] (Read/Write)
--- 0xb4 : Data signal of i_reference_Ampere
---        bit 31~0 - i_reference_Ampere[63:32] (Read/Write)
--- 0xb8 : Data signal of i_reference_Ampere
---        bit 31~0 - i_reference_Ampere[95:64] (Read/Write)
+-- 0x8c : reserved
+-- 0x90 : Data signal of Controller_id
+--        bit 31~0 - Controller_id[31:0] (Read/Write)
+-- 0x94 : Data signal of Controller_id
+--        bit 31~0 - Controller_id[63:32] (Read/Write)
+-- 0x98 : Data signal of Controller_id
+--        bit 31~0 - Controller_id[95:64] (Read/Write)
+-- 0x9c : Data signal of Controller_id
+--        bit 31~0 - Controller_id[127:96] (Read/Write)
+-- 0xa0 : Data signal of Controller_id
+--        bit 31~0 - Controller_id[159:128] (Read/Write)
+-- 0xa4 : reserved
+-- 0xa8 : Data signal of Controller_iq
+--        bit 31~0 - Controller_iq[31:0] (Read/Write)
+-- 0xac : Data signal of Controller_iq
+--        bit 31~0 - Controller_iq[63:32] (Read/Write)
+-- 0xb0 : Data signal of Controller_iq
+--        bit 31~0 - Controller_iq[95:64] (Read/Write)
+-- 0xb4 : Data signal of Controller_iq
+--        bit 31~0 - Controller_iq[127:96] (Read/Write)
+-- 0xb8 : Data signal of Controller_iq
+--        bit 31~0 - Controller_iq[159:128] (Read/Write)
 -- 0xbc : reserved
 -- (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
@@ -160,50 +156,48 @@ architecture behave of uz_FOC_sample_Din_s_axi is
     constant ADDR_GIE                         : INTEGER := 16#04#;
     constant ADDR_IER                         : INTEGER := 16#08#;
     constant ADDR_ISR                         : INTEGER := 16#0c#;
-    constant ADDR_CONTROLLER_ID_DATA_0        : INTEGER := 16#10#;
-    constant ADDR_CONTROLLER_ID_DATA_1        : INTEGER := 16#14#;
-    constant ADDR_CONTROLLER_ID_DATA_2        : INTEGER := 16#18#;
-    constant ADDR_CONTROLLER_ID_DATA_3        : INTEGER := 16#1c#;
-    constant ADDR_CONTROLLER_ID_DATA_4        : INTEGER := 16#20#;
-    constant ADDR_CONTROLLER_ID_CTRL          : INTEGER := 16#24#;
-    constant ADDR_CONTROLLER_IQ_DATA_0        : INTEGER := 16#28#;
-    constant ADDR_CONTROLLER_IQ_DATA_1        : INTEGER := 16#2c#;
-    constant ADDR_CONTROLLER_IQ_DATA_2        : INTEGER := 16#30#;
-    constant ADDR_CONTROLLER_IQ_DATA_3        : INTEGER := 16#34#;
-    constant ADDR_CONTROLLER_IQ_DATA_4        : INTEGER := 16#38#;
-    constant ADDR_CONTROLLER_IQ_CTRL          : INTEGER := 16#3c#;
-    constant ADDR_SELF_I_DATA_0               : INTEGER := 16#40#;
-    constant ADDR_SELF_I_DATA_1               : INTEGER := 16#44#;
-    constant ADDR_SELF_I_DATA_2               : INTEGER := 16#48#;
-    constant ADDR_SELF_I_DATA_3               : INTEGER := 16#4c#;
-    constant ADDR_SELF_I_DATA_4               : INTEGER := 16#50#;
-    constant ADDR_SELF_I_DATA_5               : INTEGER := 16#54#;
-    constant ADDR_SELF_I_DATA_6               : INTEGER := 16#58#;
-    constant ADDR_SELF_I_DATA_7               : INTEGER := 16#5c#;
-    constant ADDR_SELF_I_DATA_8               : INTEGER := 16#60#;
-    constant ADDR_SELF_I_CTRL                 : INTEGER := 16#64#;
-    constant ADDR_SELF_O_DATA_0               : INTEGER := 16#68#;
-    constant ADDR_SELF_O_DATA_1               : INTEGER := 16#6c#;
-    constant ADDR_SELF_O_DATA_2               : INTEGER := 16#70#;
-    constant ADDR_SELF_O_DATA_3               : INTEGER := 16#74#;
-    constant ADDR_SELF_O_DATA_4               : INTEGER := 16#78#;
-    constant ADDR_SELF_O_DATA_5               : INTEGER := 16#7c#;
-    constant ADDR_SELF_O_DATA_6               : INTEGER := 16#80#;
-    constant ADDR_SELF_O_DATA_7               : INTEGER := 16#84#;
-    constant ADDR_SELF_O_DATA_8               : INTEGER := 16#88#;
-    constant ADDR_SELF_O_CTRL                 : INTEGER := 16#8c#;
-    constant ADDR_I_ACTUAL_AMPERE_DATA_0      : INTEGER := 16#90#;
-    constant ADDR_I_ACTUAL_AMPERE_DATA_1      : INTEGER := 16#94#;
-    constant ADDR_I_ACTUAL_AMPERE_DATA_2      : INTEGER := 16#98#;
-    constant ADDR_I_ACTUAL_AMPERE_CTRL        : INTEGER := 16#9c#;
-    constant ADDR_V_DC_VOLTS_DATA_0           : INTEGER := 16#a0#;
-    constant ADDR_V_DC_VOLTS_CTRL             : INTEGER := 16#a4#;
-    constant ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0 : INTEGER := 16#a8#;
-    constant ADDR_OMEGA_EL_RAD_PER_SEC_CTRL   : INTEGER := 16#ac#;
-    constant ADDR_I_REFERENCE_AMPERE_DATA_0   : INTEGER := 16#b0#;
-    constant ADDR_I_REFERENCE_AMPERE_DATA_1   : INTEGER := 16#b4#;
-    constant ADDR_I_REFERENCE_AMPERE_DATA_2   : INTEGER := 16#b8#;
-    constant ADDR_I_REFERENCE_AMPERE_CTRL     : INTEGER := 16#bc#;
+    constant ADDR_I_REFERENCE_AMPERE_DATA_0   : INTEGER := 16#10#;
+    constant ADDR_I_REFERENCE_AMPERE_DATA_1   : INTEGER := 16#14#;
+    constant ADDR_I_REFERENCE_AMPERE_DATA_2   : INTEGER := 16#18#;
+    constant ADDR_I_REFERENCE_AMPERE_CTRL     : INTEGER := 16#1c#;
+    constant ADDR_SELF_I_DATA_0               : INTEGER := 16#20#;
+    constant ADDR_SELF_I_DATA_1               : INTEGER := 16#24#;
+    constant ADDR_SELF_I_DATA_2               : INTEGER := 16#28#;
+    constant ADDR_SELF_I_DATA_3               : INTEGER := 16#2c#;
+    constant ADDR_SELF_I_DATA_4               : INTEGER := 16#30#;
+    constant ADDR_SELF_I_DATA_5               : INTEGER := 16#34#;
+    constant ADDR_SELF_I_DATA_6               : INTEGER := 16#38#;
+    constant ADDR_SELF_I_DATA_7               : INTEGER := 16#3c#;
+    constant ADDR_SELF_I_CTRL                 : INTEGER := 16#40#;
+    constant ADDR_SELF_O_DATA_0               : INTEGER := 16#44#;
+    constant ADDR_SELF_O_DATA_1               : INTEGER := 16#48#;
+    constant ADDR_SELF_O_DATA_2               : INTEGER := 16#4c#;
+    constant ADDR_SELF_O_DATA_3               : INTEGER := 16#50#;
+    constant ADDR_SELF_O_DATA_4               : INTEGER := 16#54#;
+    constant ADDR_SELF_O_DATA_5               : INTEGER := 16#58#;
+    constant ADDR_SELF_O_DATA_6               : INTEGER := 16#5c#;
+    constant ADDR_SELF_O_DATA_7               : INTEGER := 16#60#;
+    constant ADDR_SELF_O_CTRL                 : INTEGER := 16#64#;
+    constant ADDR_I_ACTUAL_AMPERE_DATA_0      : INTEGER := 16#70#;
+    constant ADDR_I_ACTUAL_AMPERE_DATA_1      : INTEGER := 16#74#;
+    constant ADDR_I_ACTUAL_AMPERE_DATA_2      : INTEGER := 16#78#;
+    constant ADDR_I_ACTUAL_AMPERE_CTRL        : INTEGER := 16#7c#;
+    constant ADDR_V_DC_VOLTS_DATA_0           : INTEGER := 16#80#;
+    constant ADDR_V_DC_VOLTS_CTRL             : INTEGER := 16#84#;
+    constant ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0 : INTEGER := 16#88#;
+    constant ADDR_OMEGA_EL_RAD_PER_SEC_CTRL   : INTEGER := 16#8c#;
+    constant ADDR_CONTROLLER_ID_DATA_0        : INTEGER := 16#90#;
+    constant ADDR_CONTROLLER_ID_DATA_1        : INTEGER := 16#94#;
+    constant ADDR_CONTROLLER_ID_DATA_2        : INTEGER := 16#98#;
+    constant ADDR_CONTROLLER_ID_DATA_3        : INTEGER := 16#9c#;
+    constant ADDR_CONTROLLER_ID_DATA_4        : INTEGER := 16#a0#;
+    constant ADDR_CONTROLLER_ID_CTRL          : INTEGER := 16#a4#;
+    constant ADDR_CONTROLLER_IQ_DATA_0        : INTEGER := 16#a8#;
+    constant ADDR_CONTROLLER_IQ_DATA_1        : INTEGER := 16#ac#;
+    constant ADDR_CONTROLLER_IQ_DATA_2        : INTEGER := 16#b0#;
+    constant ADDR_CONTROLLER_IQ_DATA_3        : INTEGER := 16#b4#;
+    constant ADDR_CONTROLLER_IQ_DATA_4        : INTEGER := 16#b8#;
+    constant ADDR_CONTROLLER_IQ_CTRL          : INTEGER := 16#bc#;
     constant ADDR_BITS         : INTEGER := 8;
 
     signal waddr               : UNSIGNED(ADDR_BITS-1 downto 0);
@@ -226,15 +220,15 @@ architecture behave of uz_FOC_sample_Din_s_axi is
     signal int_gie             : STD_LOGIC := '0';
     signal int_ier             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_isr             : UNSIGNED(1 downto 0) := (others => '0');
-    signal int_Controller_id   : UNSIGNED(159 downto 0) := (others => '0');
-    signal int_Controller_iq   : UNSIGNED(159 downto 0) := (others => '0');
-    signal int_self_i          : UNSIGNED(287 downto 0) := (others => '0');
-    signal int_self_o          : UNSIGNED(287 downto 0) := (others => '0');
+    signal int_i_reference_Ampere : UNSIGNED(95 downto 0) := (others => '0');
+    signal int_self_i          : UNSIGNED(255 downto 0) := (others => '0');
+    signal int_self_o          : UNSIGNED(255 downto 0) := (others => '0');
     signal int_self_o_ap_vld   : STD_LOGIC;
     signal int_i_actual_Ampere : UNSIGNED(95 downto 0) := (others => '0');
     signal int_V_dc_volts      : UNSIGNED(31 downto 0) := (others => '0');
     signal int_omega_el_rad_per_sec : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_i_reference_Ampere : UNSIGNED(95 downto 0) := (others => '0');
+    signal int_Controller_id   : UNSIGNED(159 downto 0) := (others => '0');
+    signal int_Controller_iq   : UNSIGNED(159 downto 0) := (others => '0');
 
 
 begin
@@ -362,6 +356,56 @@ begin
                         rdata_data(1 downto 0) <= int_ier;
                     when ADDR_ISR =>
                         rdata_data(1 downto 0) <= int_isr;
+                    when ADDR_I_REFERENCE_AMPERE_DATA_0 =>
+                        rdata_data <= RESIZE(int_i_reference_Ampere(31 downto 0), 32);
+                    when ADDR_I_REFERENCE_AMPERE_DATA_1 =>
+                        rdata_data <= RESIZE(int_i_reference_Ampere(63 downto 32), 32);
+                    when ADDR_I_REFERENCE_AMPERE_DATA_2 =>
+                        rdata_data <= RESIZE(int_i_reference_Ampere(95 downto 64), 32);
+                    when ADDR_SELF_I_DATA_0 =>
+                        rdata_data <= RESIZE(int_self_i(31 downto 0), 32);
+                    when ADDR_SELF_I_DATA_1 =>
+                        rdata_data <= RESIZE(int_self_i(63 downto 32), 32);
+                    when ADDR_SELF_I_DATA_2 =>
+                        rdata_data <= RESIZE(int_self_i(95 downto 64), 32);
+                    when ADDR_SELF_I_DATA_3 =>
+                        rdata_data <= RESIZE(int_self_i(127 downto 96), 32);
+                    when ADDR_SELF_I_DATA_4 =>
+                        rdata_data <= RESIZE(int_self_i(159 downto 128), 32);
+                    when ADDR_SELF_I_DATA_5 =>
+                        rdata_data <= RESIZE(int_self_i(191 downto 160), 32);
+                    when ADDR_SELF_I_DATA_6 =>
+                        rdata_data <= RESIZE(int_self_i(223 downto 192), 32);
+                    when ADDR_SELF_I_DATA_7 =>
+                        rdata_data <= RESIZE(int_self_i(255 downto 224), 32);
+                    when ADDR_SELF_O_DATA_0 =>
+                        rdata_data <= RESIZE(int_self_o(31 downto 0), 32);
+                    when ADDR_SELF_O_DATA_1 =>
+                        rdata_data <= RESIZE(int_self_o(63 downto 32), 32);
+                    when ADDR_SELF_O_DATA_2 =>
+                        rdata_data <= RESIZE(int_self_o(95 downto 64), 32);
+                    when ADDR_SELF_O_DATA_3 =>
+                        rdata_data <= RESIZE(int_self_o(127 downto 96), 32);
+                    when ADDR_SELF_O_DATA_4 =>
+                        rdata_data <= RESIZE(int_self_o(159 downto 128), 32);
+                    when ADDR_SELF_O_DATA_5 =>
+                        rdata_data <= RESIZE(int_self_o(191 downto 160), 32);
+                    when ADDR_SELF_O_DATA_6 =>
+                        rdata_data <= RESIZE(int_self_o(223 downto 192), 32);
+                    when ADDR_SELF_O_DATA_7 =>
+                        rdata_data <= RESIZE(int_self_o(255 downto 224), 32);
+                    when ADDR_SELF_O_CTRL =>
+                        rdata_data(0) <= int_self_o_ap_vld;
+                    when ADDR_I_ACTUAL_AMPERE_DATA_0 =>
+                        rdata_data <= RESIZE(int_i_actual_Ampere(31 downto 0), 32);
+                    when ADDR_I_ACTUAL_AMPERE_DATA_1 =>
+                        rdata_data <= RESIZE(int_i_actual_Ampere(63 downto 32), 32);
+                    when ADDR_I_ACTUAL_AMPERE_DATA_2 =>
+                        rdata_data <= RESIZE(int_i_actual_Ampere(95 downto 64), 32);
+                    when ADDR_V_DC_VOLTS_DATA_0 =>
+                        rdata_data <= RESIZE(int_V_dc_volts(31 downto 0), 32);
+                    when ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0 =>
+                        rdata_data <= RESIZE(int_omega_el_rad_per_sec(31 downto 0), 32);
                     when ADDR_CONTROLLER_ID_DATA_0 =>
                         rdata_data <= RESIZE(int_Controller_id(31 downto 0), 32);
                     when ADDR_CONTROLLER_ID_DATA_1 =>
@@ -382,60 +426,6 @@ begin
                         rdata_data <= RESIZE(int_Controller_iq(127 downto 96), 32);
                     when ADDR_CONTROLLER_IQ_DATA_4 =>
                         rdata_data <= RESIZE(int_Controller_iq(159 downto 128), 32);
-                    when ADDR_SELF_I_DATA_0 =>
-                        rdata_data <= RESIZE(int_self_i(31 downto 0), 32);
-                    when ADDR_SELF_I_DATA_1 =>
-                        rdata_data <= RESIZE(int_self_i(63 downto 32), 32);
-                    when ADDR_SELF_I_DATA_2 =>
-                        rdata_data <= RESIZE(int_self_i(95 downto 64), 32);
-                    when ADDR_SELF_I_DATA_3 =>
-                        rdata_data <= RESIZE(int_self_i(127 downto 96), 32);
-                    when ADDR_SELF_I_DATA_4 =>
-                        rdata_data <= RESIZE(int_self_i(159 downto 128), 32);
-                    when ADDR_SELF_I_DATA_5 =>
-                        rdata_data <= RESIZE(int_self_i(191 downto 160), 32);
-                    when ADDR_SELF_I_DATA_6 =>
-                        rdata_data <= RESIZE(int_self_i(223 downto 192), 32);
-                    when ADDR_SELF_I_DATA_7 =>
-                        rdata_data <= RESIZE(int_self_i(255 downto 224), 32);
-                    when ADDR_SELF_I_DATA_8 =>
-                        rdata_data <= RESIZE(int_self_i(287 downto 256), 32);
-                    when ADDR_SELF_O_DATA_0 =>
-                        rdata_data <= RESIZE(int_self_o(31 downto 0), 32);
-                    when ADDR_SELF_O_DATA_1 =>
-                        rdata_data <= RESIZE(int_self_o(63 downto 32), 32);
-                    when ADDR_SELF_O_DATA_2 =>
-                        rdata_data <= RESIZE(int_self_o(95 downto 64), 32);
-                    when ADDR_SELF_O_DATA_3 =>
-                        rdata_data <= RESIZE(int_self_o(127 downto 96), 32);
-                    when ADDR_SELF_O_DATA_4 =>
-                        rdata_data <= RESIZE(int_self_o(159 downto 128), 32);
-                    when ADDR_SELF_O_DATA_5 =>
-                        rdata_data <= RESIZE(int_self_o(191 downto 160), 32);
-                    when ADDR_SELF_O_DATA_6 =>
-                        rdata_data <= RESIZE(int_self_o(223 downto 192), 32);
-                    when ADDR_SELF_O_DATA_7 =>
-                        rdata_data <= RESIZE(int_self_o(255 downto 224), 32);
-                    when ADDR_SELF_O_DATA_8 =>
-                        rdata_data <= RESIZE(int_self_o(287 downto 256), 32);
-                    when ADDR_SELF_O_CTRL =>
-                        rdata_data(0) <= int_self_o_ap_vld;
-                    when ADDR_I_ACTUAL_AMPERE_DATA_0 =>
-                        rdata_data <= RESIZE(int_i_actual_Ampere(31 downto 0), 32);
-                    when ADDR_I_ACTUAL_AMPERE_DATA_1 =>
-                        rdata_data <= RESIZE(int_i_actual_Ampere(63 downto 32), 32);
-                    when ADDR_I_ACTUAL_AMPERE_DATA_2 =>
-                        rdata_data <= RESIZE(int_i_actual_Ampere(95 downto 64), 32);
-                    when ADDR_V_DC_VOLTS_DATA_0 =>
-                        rdata_data <= RESIZE(int_V_dc_volts(31 downto 0), 32);
-                    when ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0 =>
-                        rdata_data <= RESIZE(int_omega_el_rad_per_sec(31 downto 0), 32);
-                    when ADDR_I_REFERENCE_AMPERE_DATA_0 =>
-                        rdata_data <= RESIZE(int_i_reference_Ampere(31 downto 0), 32);
-                    when ADDR_I_REFERENCE_AMPERE_DATA_1 =>
-                        rdata_data <= RESIZE(int_i_reference_Ampere(63 downto 32), 32);
-                    when ADDR_I_REFERENCE_AMPERE_DATA_2 =>
-                        rdata_data <= RESIZE(int_i_reference_Ampere(95 downto 64), 32);
                     when others =>
                         NULL;
                     end case;
@@ -447,13 +437,13 @@ begin
 -- ----------------------- Register logic ----------------
     interrupt            <= int_gie and (int_isr(0) or int_isr(1));
     ap_start             <= int_ap_start;
-    Controller_id        <= STD_LOGIC_VECTOR(int_Controller_id);
-    Controller_iq        <= STD_LOGIC_VECTOR(int_Controller_iq);
+    i_reference_Ampere   <= STD_LOGIC_VECTOR(int_i_reference_Ampere);
     self_i               <= STD_LOGIC_VECTOR(int_self_i);
     i_actual_Ampere      <= STD_LOGIC_VECTOR(int_i_actual_Ampere);
     V_dc_volts           <= STD_LOGIC_VECTOR(int_V_dc_volts);
     omega_el_rad_per_sec <= STD_LOGIC_VECTOR(int_omega_el_rad_per_sec);
-    i_reference_Ampere   <= STD_LOGIC_VECTOR(int_i_reference_Ampere);
+    Controller_id        <= STD_LOGIC_VECTOR(int_Controller_id);
+    Controller_iq        <= STD_LOGIC_VECTOR(int_Controller_iq);
 
     process (ACLK)
     begin
@@ -584,6 +574,210 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_0) then
+                    int_i_reference_Ampere(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_1) then
+                    int_i_reference_Ampere(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_2) then
+                    int_i_reference_Ampere(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(95 downto 64));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_0) then
+                    int_self_i(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_1) then
+                    int_self_i(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_2) then
+                    int_self_i(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(95 downto 64));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_3) then
+                    int_self_i(127 downto 96) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(127 downto 96));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_4) then
+                    int_self_i(159 downto 128) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(159 downto 128));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_5) then
+                    int_self_i(191 downto 160) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(191 downto 160));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_6) then
+                    int_self_i(223 downto 192) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(223 downto 192));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_7) then
+                    int_self_i(255 downto 224) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(255 downto 224));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ARESET = '1') then
+                int_self_o <= (others => '0');
+            elsif (ACLK_EN = '1') then
+                if (self_o_ap_vld = '1') then
+                    int_self_o <= UNSIGNED(self_o); -- clear on read
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ARESET = '1') then
+                int_self_o_ap_vld <= '0';
+            elsif (ACLK_EN = '1') then
+                if (self_o_ap_vld = '1') then
+                    int_self_o_ap_vld <= '1';
+                elsif (ar_hs = '1' and raddr = ADDR_SELF_O_CTRL) then
+                    int_self_o_ap_vld <= '0'; -- clear on read
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_0) then
+                    int_i_actual_Ampere(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_1) then
+                    int_i_actual_Ampere(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_2) then
+                    int_i_actual_Ampere(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(95 downto 64));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_V_DC_VOLTS_DATA_0) then
+                    int_V_dc_volts(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_V_dc_volts(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0) then
+                    int_omega_el_rad_per_sec(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_omega_el_rad_per_sec(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_CONTROLLER_ID_DATA_0) then
                     int_Controller_id(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_Controller_id(31 downto 0));
                 end if;
@@ -685,221 +879,6 @@ begin
             if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_CONTROLLER_IQ_DATA_4) then
                     int_Controller_iq(159 downto 128) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_Controller_iq(159 downto 128));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_0) then
-                    int_self_i(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_1) then
-                    int_self_i(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(63 downto 32));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_2) then
-                    int_self_i(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(95 downto 64));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_3) then
-                    int_self_i(127 downto 96) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(127 downto 96));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_4) then
-                    int_self_i(159 downto 128) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(159 downto 128));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_5) then
-                    int_self_i(191 downto 160) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(191 downto 160));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_6) then
-                    int_self_i(223 downto 192) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(223 downto 192));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_7) then
-                    int_self_i(255 downto 224) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(255 downto 224));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SELF_I_DATA_8) then
-                    int_self_i(287 downto 256) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_self_i(287 downto 256));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_self_o <= (others => '0');
-            elsif (ACLK_EN = '1') then
-                if (self_o_ap_vld = '1') then
-                    int_self_o <= UNSIGNED(self_o); -- clear on read
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_self_o_ap_vld <= '0';
-            elsif (ACLK_EN = '1') then
-                if (self_o_ap_vld = '1') then
-                    int_self_o_ap_vld <= '1';
-                elsif (ar_hs = '1' and raddr = ADDR_SELF_O_CTRL) then
-                    int_self_o_ap_vld <= '0'; -- clear on read
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_0) then
-                    int_i_actual_Ampere(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_1) then
-                    int_i_actual_Ampere(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(63 downto 32));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_ACTUAL_AMPERE_DATA_2) then
-                    int_i_actual_Ampere(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_actual_Ampere(95 downto 64));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_V_DC_VOLTS_DATA_0) then
-                    int_V_dc_volts(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_V_dc_volts(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_OMEGA_EL_RAD_PER_SEC_DATA_0) then
-                    int_omega_el_rad_per_sec(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_omega_el_rad_per_sec(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_0) then
-                    int_i_reference_Ampere(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_1) then
-                    int_i_reference_Ampere(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(63 downto 32));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_I_REFERENCE_AMPERE_DATA_2) then
-                    int_i_reference_Ampere(95 downto 64) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_i_reference_Ampere(95 downto 64));
                 end if;
             end if;
         end if;

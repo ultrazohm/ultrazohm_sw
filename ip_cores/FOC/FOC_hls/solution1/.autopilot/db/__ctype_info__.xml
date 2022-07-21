@@ -14,7 +14,7 @@
 <CType>
 <TypeName>void</TypeName>
 <TypeWidth>8</TypeWidth>
-<PhysicalWidth>288</PhysicalWidth>
+<PhysicalWidth>256</PhysicalWidth>
 </CType>
 <CFractionWidth>0</CFractionWidth>
 <InvalidType>0</InvalidType>

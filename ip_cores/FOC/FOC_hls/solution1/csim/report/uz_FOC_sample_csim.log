@@ -3,7 +3,14 @@ INFO: [SIM 4] CSIM will launch GCC as the compiler.
    Compiling(apcc) ../../../../foc/tb_foc.c in debug mode
 INFO: Applying HLS Y2K22 patch v1.2 for IP revision
 INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
-INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Wed Jun 15 14:18:49 +0200 2022
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jul 08 14:40:58 +0200 2022
+INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
+INFO: [APCC 202-3] Tmp directory is apcc_db
+INFO: [APCC 202-1] APCC is done.
+   Compiling(apcc) ../../../../foc/uz_FOC.c in debug mode
+INFO: Applying HLS Y2K22 patch v1.2 for IP revision
+INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jul 08 14:41:05 +0200 2022
 INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
 INFO: [APCC 202-3] Tmp directory is apcc_db
 INFO: [APCC 202-1] APCC is done.
@@ -11,42 +18,42 @@ INFO: [APCC 202-1] APCC is done.
 
  HW output
  D-Parameter Q-Parameter
- 6.770000	 6.750000
- 5.124270	 5.109250
- 3.888318	 3.877188
- 2.956296	 2.948582
- 2.262331	 2.258234
- 1.740162	 1.747468
- 1.350161	 1.364181
- 1.052496	 1.083103
- 0.827400	 0.885735
- 0.661711	 0.746723
- 0.535440	 0.654181
+ 6.750000	 6.750000
+ 5.089250	 5.089250
+ 3.842018	 3.842168
+ 2.901536	 2.902282
+ 2.201211	 2.203474
+ 1.674242	 1.686348
+ 1.280621	 1.298281
+ 0.980216	 1.013603
+ 0.753020	 0.813535
+ 0.585711	 0.672503
+ 0.458180	 0.578441
 
  Comparison for D parameter 
-Test failed D -0.020000
-Test failed D -0.035020
-Test failed D -0.046300
-Test failed D -0.054760
-Test failed D -0.061121
-Test failed D -0.065920
-Test failed D -0.069540
-Test failed D -0.072280
-Test failed D -0.074380
-Test failed D -0.076000
-Test failed D -0.077260
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
+Test passed D
 
  Comparison for Q parameter 
 Test passed Q
-Test failed Q -0.020000
-Test failed Q -0.035020
-Test failed Q -0.046300
-Test failed Q -0.054760
-Test failed Q -0.061120
-Test failed Q -0.065900
-Test failed Q -0.069500
-Test failed Q -0.072200
-Test failed Q -0.074220
-Test failed Q -0.075740
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
+Test passed Q
 INFO: [SIM 1] CSim done with 0 errors.
 INFO: [SIM 3] *************** CSIM finish ***************

@@ -212,8 +212,6 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit);
 # 7 "foc/uz_space_vector_limitation.h" 2
 # 18 "foc/uz_space_vector_limitation.h"
 struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_d(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_q(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
 # 18 "foc/uz_space_vector_limitation.c" 2
 # 1 "C:/Xilinx/Vitis/2020.1/tps/mingw/6.2.0/win64.o/nt\\x86_64-w64-mingw32\\include\\math.h" 1 3
 # 11 "C:/Xilinx/Vitis/2020.1/tps/mingw/6.2.0/win64.o/nt\\x86_64-w64-mingw32\\include\\math.h" 3
@@ -855,52 +853,6 @@ struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_input_Volts, float
   *ext_clamping = 0;
  }
  return (u_output_Volts);
-}
-float uz_FOC_SpaceVector_Limitation_d(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping){
-
-
- struct uz_dq_t u_output_Volts = {0};
-   float U_SV_max =V_dc_volts / sqrtf(3.0f);
- float U_SV_abs = sqrtf(powf(u_input_Volts.d, 2.0f) + powf(u_input_Volts.q, 2.0f) );
- _Bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_actual_Ampere.q));
-
- if ( U_SV_abs > U_SV_max ){
-
-  *ext_clamping = 1;
-  if (if_omega_equal_q_current == 1) {
-   u_output_Volts = uz_limit_dq_prio_d_axis(u_input_Volts, U_SV_max);
-  } else {
-   u_output_Volts = uz_limit_dq_prio_q_axis(u_input_Volts, U_SV_max);
-  }
- } else {
-  u_output_Volts.d = u_input_Volts.d;
-  u_output_Volts.q = u_input_Volts.q;
-  *ext_clamping = 0;
- }
- return (u_output_Volts.d);
-}
-float uz_FOC_SpaceVector_Limitation_q(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping){
-
-
- struct uz_dq_t u_output_Volts = {0};
-   float U_SV_max =V_dc_volts / sqrtf(3.0f);
- float U_SV_abs = sqrtf(powf(u_input_Volts.d, 2.0f) + powf(u_input_Volts.q, 2.0f) );
- _Bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_actual_Ampere.q));
-
- if ( U_SV_abs > U_SV_max ){
-
-  *ext_clamping = 1;
-  if (if_omega_equal_q_current == 1) {
-   u_output_Volts = uz_limit_dq_prio_d_axis(u_input_Volts, U_SV_max);
-  } else {
-   u_output_Volts = uz_limit_dq_prio_q_axis(u_input_Volts, U_SV_max);
-  }
- } else {
-  u_output_Volts.d = u_input_Volts.d;
-  u_output_Volts.q = u_input_Volts.q;
-  *ext_clamping = 0;
- }
- return (u_output_Volts.q);
 }
 
 static struct uz_dq_t uz_limit_dq_prio_d_axis(struct uz_dq_t u_input_Volts, float U_SV_max){

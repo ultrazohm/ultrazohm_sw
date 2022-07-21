@@ -16,7 +16,5 @@
  * @return struct uz_dq_t
  */
 struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_d(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_q(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, bool* ext_clamping);
 
 #endif // UZ_SPACE_VECTOR_LIMITATION_H

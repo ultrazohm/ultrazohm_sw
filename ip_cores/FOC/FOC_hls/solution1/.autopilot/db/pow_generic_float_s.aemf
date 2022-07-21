@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1652969344580">
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1656492957814">
   <ports id="1" name="base_r" type="PortType" originalName="f" bitwidth="32">
     <dataOutputObjs>read</dataOutputObjs>
   </ports>
@@ -277,7 +277,7 @@
         <dataOutputObjs>bitselect</dataOutputObjs>
         <dataOutputObjs>partselect</dataOutputObjs>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="19" name="p_Result_15" lineNumber="803" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_15_fu_355_p3" contextFuncName="operator_assign" bitwidth="1" opcode="bitselect" m_display="0" m_topoIndex="3" m_clusterGroupNumber="1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="19" name="p_Result_14" lineNumber="803" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_14_fu_355_p3" contextFuncName="operator_assign" bitwidth="1" opcode="bitselect" m_display="0" m_topoIndex="3" m_clusterGroupNumber="1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" linenumber="803" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator="/>
         <dataInputObjs>bitcast</dataInputObjs>
         <dataOutputObjs>xor</dataOutputObjs>
@@ -439,7 +439,7 @@
         <dataOutputObjs>select</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="43" name="p_Result_16" lineNumber="294" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_16_fu_497_p4" contextFuncName="operator_assign_23_false" bitwidth="25" opcode="bitconcatenate" nodeLabel="1.0" m_display="0" m_topoIndex="29" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="43" name="p_Result_15" lineNumber="294" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_15_fu_497_p4" contextFuncName="operator_assign_23_false" bitwidth="25" opcode="bitconcatenate" nodeLabel="1.0" m_display="0" m_topoIndex="29" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" linenumber="294" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator=&amp;lt;23, false&amp;gt;"/>
         <dataInputObjs>trunc</dataInputObjs>
         <dataOutputObjs>select</dataOutputObjs>
@@ -555,7 +555,7 @@
         <dataInputObjs>mul</dataInputObjs>
         <dataOutputObjs>bitconcatenate</dataOutputObjs>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="62" name="tmp_39" lineNumber="1287" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_39_fu_547_p3" contextFuncName="operator_rs" bitwidth="1" opcode="bitselect" nodeLabel="4.0" m_display="0" m_topoIndex="38" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="62" name="tmp_37" lineNumber="1287" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_37_fu_547_p3" contextFuncName="operator_rs" bitwidth="1" opcode="bitselect" nodeLabel="4.0" m_display="0" m_topoIndex="38" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" linenumber="1287" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator&amp;gt;&amp;gt;"/>
         <dataInputObjs>mul</dataInputObjs>
         <dataOutputObjs>select</dataOutputObjs>
@@ -980,7 +980,7 @@
         <dataOutputObjs>sext</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="135" name="p_Result_17" lineNumber="53" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_17_reg_1579" contextFuncName="operator_bool" bitwidth="1" opcode="bitselect" nodeLabel="7.0" m_display="0" m_topoIndex="113" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="135" name="p_Result_16" lineNumber="53" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_16_reg_1579" contextFuncName="operator_bool" bitwidth="1" opcode="bitselect" nodeLabel="7.0" m_display="0" m_topoIndex="113" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" linenumber="53" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator bool"/>
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>bitconcatenate</dataOutputObjs>
@@ -1024,7 +1024,7 @@
         <dataOutputObjs>select</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="142" name="p_Result_10" lineNumber="804" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_10_fu_1006_p3" contextFuncName="to_ap_int_base" bitwidth="1" opcode="bitselect" nodeLabel="10.0" m_display="0" m_topoIndex="121" m_clusterGroupNumber="4">
+      <node_objs xsi:type="cdfg:CdfgNode" id="142" name="p_Result_9" lineNumber="804" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_9_fu_1006_p3" contextFuncName="to_ap_int_base" bitwidth="1" opcode="bitselect" nodeLabel="10.0" m_display="0" m_topoIndex="121" m_clusterGroupNumber="4">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" linenumber="804" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="to_ap_int_base"/>
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>select</dataOutputObjs>
@@ -1080,7 +1080,7 @@
         <dataOutputObjs>sub</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="151" name="trunc_ln1" lineNumber="657" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="trunc_ln1_reg_1589" contextFuncName="operator_assign_37_10_true_AP_TRN_AP_WRAP_0" bitwidth="27" opcode="partselect" nodeLabel="7.0" m_display="0" m_topoIndex="116" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="151" name="trunc_ln7" lineNumber="657" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="trunc_ln7_reg_1589" contextFuncName="operator_assign_37_10_true_AP_TRN_AP_WRAP_0" bitwidth="27" opcode="partselect" nodeLabel="7.0" m_display="0" m_topoIndex="116" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" linenumber="657" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator=&amp;lt;37, 10, true, AP_TRN, AP_WRAP, 0&amp;gt;"/>
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>sub</dataOutputObjs>
@@ -1219,7 +1219,7 @@
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>bitconcatenate</dataOutputObjs>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="175" name="trunc_ln2" lineNumber="1146" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="trunc_ln2_fu_1202_p3" contextFuncName="operator_add_36_7_false_AP_TRN_AP_WRAP_0" bitwidth="43" opcode="bitconcatenate" nodeLabel="15.0" m_display="0" m_topoIndex="159" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="175" name="trunc_ln8" lineNumber="1146" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="trunc_ln8_fu_1202_p3" contextFuncName="operator_add_36_7_false_AP_TRN_AP_WRAP_0" bitwidth="43" opcode="bitconcatenate" nodeLabel="15.0" m_display="0" m_topoIndex="159" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_base.h" linenumber="1146" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator+&amp;lt;36, -7, false, AP_TRN, AP_WRAP, 0&amp;gt;"/>
         <dataInputObjs>trunc</dataInputObjs>
         <dataOutputObjs>add</dataOutputObjs>
@@ -1259,7 +1259,7 @@
         <dataInputObjs>zext</dataInputObjs>
         <dataOutputObjs>partselect</dataOutputObjs>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="182" name="tmp_42" lineNumber="685" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_42_fu_1243_p3" contextFuncName="operator_eq_27_1_false_AP_TRN_AP_WRAP_0" bitwidth="1" opcode="bitselect" nodeLabel="15.0" m_display="0" m_topoIndex="166" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="182" name="tmp_40" lineNumber="685" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_40_fu_1243_p3" contextFuncName="operator_eq_27_1_false_AP_TRN_AP_WRAP_0" bitwidth="1" opcode="bitselect" nodeLabel="15.0" m_display="0" m_topoIndex="166" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" linenumber="685" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator==&amp;lt;27, 1, false, AP_TRN, AP_WRAP, 0&amp;gt;"/>
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>select</dataOutputObjs>
@@ -1281,7 +1281,7 @@
         <dataOutputObjs>icmp</dataOutputObjs>
         <dataOutputObjs>trunc</dataOutputObjs>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="185" name="tmp_43" lineNumber="844" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_43_fu_1263_p4" contextFuncName="operator_gt_32_true" bitwidth="3" opcode="partselect" nodeLabel="15.0" m_display="0" m_topoIndex="169" m_clusterGroupNumber="-1">
+      <node_objs xsi:type="cdfg:CdfgNode" id="185" name="tmp_41" lineNumber="844" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_base.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_41_fu_1263_p4" contextFuncName="operator_gt_32_true" bitwidth="3" opcode="partselect" nodeLabel="15.0" m_display="0" m_topoIndex="169" m_clusterGroupNumber="-1">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_base.h" linenumber="844" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator&amp;gt;&amp;lt;32, true&amp;gt;"/>
         <dataInputObjs>select</dataInputObjs>
         <dataOutputObjs>icmp</dataOutputObjs>
@@ -1294,7 +1294,7 @@
         <dataOutputObjs>or</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="187" name="tmp_44" lineNumber="182" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_44_fu_1279_p3" contextFuncName="operator_bnot" bitwidth="1" opcode="bitselect" nodeLabel="15.0" m_display="0" m_topoIndex="171" m_clusterGroupNumber="5">
+      <node_objs xsi:type="cdfg:CdfgNode" id="187" name="tmp_42" lineNumber="182" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="tmp_42_fu_1279_p3" contextFuncName="operator_bnot" bitwidth="1" opcode="bitselect" nodeLabel="15.0" m_display="0" m_topoIndex="171" m_clusterGroupNumber="5">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed_ref.h" linenumber="182" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator~"/>
         <dataInputObjs>add</dataInputObjs>
         <dataOutputObjs>select</dataOutputObjs>
@@ -1342,7 +1342,7 @@
         <dataOutputObjs>bitconcatenate</dataOutputObjs>
         <constName>empty</constName>
       </node_objs>
-      <node_objs xsi:type="cdfg:CdfgNode" id="195" name="p_Result_14" lineNumber="368" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_14_fu_1338_p4" contextFuncName="operator_assign_23_false" bitwidth="32" opcode="bitconcatenate" nodeLabel="15.0" m_display="0" m_topoIndex="179" m_clusterGroupNumber="5">
+      <node_objs xsi:type="cdfg:CdfgNode" id="195" name="p_Result_13" lineNumber="368" originalName="__Result__" fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" fileDirectory="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared" rtlName="p_Result_13_fu_1338_p4" contextFuncName="operator_assign_23_false" bitwidth="32" opcode="bitconcatenate" nodeLabel="15.0" m_display="0" m_topoIndex="179" m_clusterGroupNumber="5">
         <inlineStackInfo fileName="r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_int_ref.h" linenumber="368" fileDirectory="r:\builds\2020.1\continuous\2020_05_27_2902540\src\shared" functionName="operator=&amp;lt;23, false&amp;gt;"/>
         <dataInputObjs>add</dataInputObjs>
         <dataInputObjs>select</dataInputObjs>
@@ -1517,14 +1517,14 @@
   <regnodes realName="pow_reduce_anonymous_namespace_table_exp_Z1_ap_ufixed_27_1_ap_q_mode_5_ap_o_mode_3_0_array_V_addr_reg_1620">
     <nodeIds>156</nodeIds>
   </regnodes>
-  <regnodes realName="trunc_ln1_reg_1589">
-    <nodeIds>151</nodeIds>
-  </regnodes>
   <regnodes realName="select_ln513_reg_1491">
     <nodeIds>48</nodeIds>
   </regnodes>
   <regnodes realName="tmp_14_reg_1523">
     <nodeIds>82</nodeIds>
+  </regnodes>
+  <regnodes realName="trunc_ln7_reg_1589">
+    <nodeIds>151</nodeIds>
   </regnodes>
   <regnodes realName="zext_ln682_reg_1501">
     <nodeIds>57</nodeIds>
@@ -1556,6 +1556,9 @@
   <regnodes realName="p_Repl2_s_reg_1438">
     <nodeIds>21</nodeIds>
   </regnodes>
+  <regnodes realName="p_Result_16_reg_1579">
+    <nodeIds>135</nodeIds>
+  </regnodes>
   <regnodes realName="log_sum_V_1_reg_1559">
     <nodeIds>118</nodeIds>
   </regnodes>
@@ -1570,9 +1573,6 @@
   </regnodes>
   <regnodes realName="a_2_reg_1544">
     <nodeIds>98</nodeIds>
-  </regnodes>
-  <regnodes realName="p_Result_17_reg_1579">
-    <nodeIds>135</nodeIds>
   </regnodes>
   <regnodes realName="or_ln407_1_reg_1460">
     <nodeIds>36</nodeIds>
@@ -1718,9 +1718,6 @@
   <expressionNodes realName="rhs_V_5_fu_886">
     <nodeIds>123</nodeIds>
   </expressionNodes>
-  <expressionNodes realName="trunc_ln2_fu_1202">
-    <nodeIds>175</nodeIds>
-  </expressionNodes>
   <expressionNodes realName="r_V_8_fu_880">
     <nodeIds>122</nodeIds>
   </expressionNodes>
@@ -1732,6 +1729,9 @@
   </expressionNodes>
   <expressionNodes realName="zext_ln1287_1_fu_513">
     <nodeIds>46</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="p_Result_16_fu_964">
+    <nodeIds>135</nodeIds>
   </expressionNodes>
   <expressionNodes realName="icmp_ln369_fu_387">
     <nodeIds>24</nodeIds>
@@ -1802,8 +1802,8 @@
   <expressionNodes realName="ret_V_12_fu_1179">
     <nodeIds>167</nodeIds>
   </expressionNodes>
-  <expressionNodes realName="tmp_42_fu_1243">
-    <nodeIds>182</nodeIds>
+  <expressionNodes realName="tmp_41_fu_1263">
+    <nodeIds>185</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln1072_2_fu_691">
     <nodeIds>88</nodeIds>
@@ -1829,9 +1829,6 @@
   <expressionNodes realName="zext_ln163_1_fu_761">
     <nodeIds>97</nodeIds>
   </expressionNodes>
-  <expressionNodes realName="tmp_44_fu_1279">
-    <nodeIds>187</nodeIds>
-  </expressionNodes>
   <expressionNodes realName="icmp_ln805_fu_1016">
     <nodeIds>144</nodeIds>
   </expressionNodes>
@@ -1855,6 +1852,9 @@
   </expressionNodes>
   <expressionNodes realName="icmp_ln376_fu_417">
     <nodeIds>29</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="tmp_37_fu_547">
+    <nodeIds>62</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln492_1_fu_656">
     <nodeIds>76</nodeIds>
@@ -1907,23 +1907,20 @@
   <expressionNodes realName="zext_ln1146_3_fu_1192">
     <nodeIds>172</nodeIds>
   </expressionNodes>
-  <expressionNodes realName="trunc_ln1_fu_976">
-    <nodeIds>151</nodeIds>
-  </expressionNodes>
   <expressionNodes realName="add_ln649_fu_1022">
     <nodeIds>145</nodeIds>
   </expressionNodes>
   <expressionNodes realName="exp_Z1_hi_V_fu_1125">
     <nodeIds>166</nodeIds>
   </expressionNodes>
+  <expressionNodes realName="trunc_ln7_fu_976">
+    <nodeIds>151</nodeIds>
+  </expressionNodes>
   <expressionNodes realName="p_Val2_s_fu_351">
     <nodeIds>18</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln1072_4_fu_877">
     <nodeIds>121</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="p_Result_16_fu_497">
-    <nodeIds>43</nodeIds>
   </expressionNodes>
   <expressionNodes realName="x_is_0_fu_435">
     <nodeIds>32</nodeIds>
@@ -1933,6 +1930,9 @@
   </expressionNodes>
   <expressionNodes realName="b_frac_fu_506">
     <nodeIds>45</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="p_Result_15_fu_497">
+    <nodeIds>43</nodeIds>
   </expressionNodes>
   <expressionNodes realName="tmp_17_fu_858">
     <nodeIds>120</nodeIds>
@@ -1970,6 +1970,12 @@
   <expressionNodes realName="zext_ln1146_2_fu_782">
     <nodeIds>103</nodeIds>
   </expressionNodes>
+  <expressionNodes realName="p_Result_13_fu_1338">
+    <nodeIds>195</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="trunc_ln8_fu_1202">
+    <nodeIds>175</nodeIds>
+  </expressionNodes>
   <expressionNodes realName="and_ln848_fu_1392">
     <nodeIds>203</nodeIds>
   </expressionNodes>
@@ -1984,9 +1990,6 @@
   </expressionNodes>
   <expressionNodes realName="rhs_V_6_fu_986">
     <nodeIds>138</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="p_Result_10_fu_1006">
-    <nodeIds>142</nodeIds>
   </expressionNodes>
   <expressionNodes realName="tmp_13_fu_563">
     <nodeIds>64</nodeIds>
@@ -2021,6 +2024,12 @@
   <expressionNodes realName="zext_ln492_5_fu_752">
     <nodeIds>111</nodeIds>
   </expressionNodes>
+  <expressionNodes realName="p_Result_14_fu_355">
+    <nodeIds>19</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="p_Result_9_fu_1006">
+    <nodeIds>142</nodeIds>
+  </expressionNodes>
   <expressionNodes realName="zext_ln657_1_fu_786">
     <nodeIds>104</nodeIds>
   </expressionNodes>
@@ -2029,9 +2038,6 @@
   </expressionNodes>
   <expressionNodes realName="add_ln657_1_fu_832">
     <nodeIds>116</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="tmp_43_fu_1263">
-    <nodeIds>185</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln1146_4_fu_1195">
     <nodeIds>173</nodeIds>
@@ -2051,23 +2057,20 @@
   <expressionNodes realName="p_Repl2_3_fu_363">
     <nodeIds>20</nodeIds>
   </expressionNodes>
+  <expressionNodes realName="tmp_40_fu_1243">
+    <nodeIds>182</nodeIds>
+  </expressionNodes>
   <expressionNodes realName="zext_ln1146_fu_592">
     <nodeIds>68</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln1287_fu_572">
     <nodeIds>65</nodeIds>
   </expressionNodes>
-  <expressionNodes realName="p_Result_15_fu_355">
-    <nodeIds>19</nodeIds>
-  </expressionNodes>
   <expressionNodes realName="ret_V_9_fu_948">
     <nodeIds>133</nodeIds>
   </expressionNodes>
   <expressionNodes realName="trunc_ln1146_2_fu_1213">
     <nodeIds>177</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="p_Result_14_fu_1338">
-    <nodeIds>195</nodeIds>
   </expressionNodes>
   <expressionNodes realName="trunc_ln1146_1_fu_1217">
     <nodeIds>178</nodeIds>
@@ -2092,9 +2095,6 @@
   </expressionNodes>
   <expressionNodes realName="icmp_ln828_fu_393">
     <nodeIds>25</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="tmp_39_fu_547">
-    <nodeIds>62</nodeIds>
   </expressionNodes>
   <expressionNodes realName="pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_12_6_64_array_V_addr_gep_fu_312">
     <nodeIds>112</nodeIds>
@@ -2123,6 +2123,9 @@
   <expressionNodes realName="trunc_ln657_fu_544">
     <nodeIds>61</nodeIds>
   </expressionNodes>
+  <expressionNodes realName="tmp_42_fu_1279">
+    <nodeIds>187</nodeIds>
+  </expressionNodes>
   <expressionNodes realName="pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_4_4_16_array_V_addr_gep_fu_286">
     <nodeIds>77</nodeIds>
   </expressionNodes>
@@ -2143,9 +2146,6 @@
   </expressionNodes>
   <expressionNodes realName="zext_ln1070_2_fu_1135">
     <nodeIds>168</nodeIds>
-  </expressionNodes>
-  <expressionNodes realName="p_Result_17_fu_964">
-    <nodeIds>135</nodeIds>
   </expressionNodes>
   <expressionNodes realName="zext_ln1146_5_fu_1210">
     <nodeIds>176</nodeIds>

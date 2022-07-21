@@ -1,0 +1,46 @@
+timestamp=[2022-07-08 00:04:16], mode=WORKBENCH_START, duration=0:00:08.208, duration_ms=8208, data={}
+timestamp=[2022-07-08 00:04:17], mode=WORKBENCH_UI_INIT, duration=0:00:00.767, duration_ms=767, data={editors_count=0, platform_editors_count=0, projects_count=0, platform_projects_count=0, active_platform_editor=false, projects=}
+timestamp=[2022-07-08 00:04:24], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:06.089, duration_ms=6089, data={}
+timestamp=[2022-07-08 00:26:56], mode=APP_CREATION, duration=0:00:35.790, duration_ms=35790, data={name=pi_ila_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_ila_wrapper, application_type=application}
+timestamp=[2022-07-08 00:47:09], mode=APP_CREATION, duration=0:00:32.368, duration_ms=32368, data={name=FOC_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=FOC_wrapper, application_type=application}
+timestamp=[2022-07-08 00:53:37], mode=PLATFORM_GENERATION, duration=0:02:34.832, duration_ms=154832, data={name=FOC_wrapper}
+timestamp=[2022-07-08 00:53:40], mode=BUILD, duration=0:00:02.489, duration_ms=2489, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 01:24:22], mode=APP_CREATION, duration=0:00:30.678, duration_ms=30678, data={name=FOC_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=FOC_wrapper, application_type=application}
+timestamp=[2022-07-08 01:27:30], mode=PLATFORM_GENERATION, duration=0:02:40.797, duration_ms=160797, data={name=FOC_wrapper}
+timestamp=[2022-07-08 01:27:32], mode=BUILD, duration=0:00:01.720, duration_ms=1720, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:34:31], mode=BUILD, duration=0:00:01.684, duration_ms=1684, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:35:05], mode=BUILD, duration=0:00:00.919, duration_ms=919, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:38:09], mode=BUILD, duration=0:00:00.993, duration_ms=993, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:39:49], mode=BUILD, duration=0:00:01.000, duration_ms=1000, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:50:17], mode=BUILD, duration=0:00:00.468, duration_ms=468, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:52:06], mode=BUILD, duration=0:00:00.463, duration_ms=463, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:52:42], mode=BUILD, duration=0:00:00.940, duration_ms=940, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:58:16], mode=BUILD, duration=0:00:00.886, duration_ms=886, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 08:59:17], mode=BUILD, duration=0:00:00.953, duration_ms=953, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 09:00:37], mode=BUILD, duration=0:00:00.977, duration_ms=977, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 09:38:24], mode=BUILD, duration=0:00:01.347, duration_ms=1347, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 09:40:32], mode=BUILD, duration=0:00:00.846, duration_ms=846, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 13:08:44], mode=WORKBENCH_START, duration=0:00:16.015, duration_ms=16015, data={}
+timestamp=[2022-07-08 13:08:45], mode=WORKBENCH_UI_INIT, duration=0:00:00.958, duration_ms=958, data={editors_count=4, platform_editors_count=0, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=FOC_app,FOC_app_system,FOC_wrapper,RemoteSystemsTempFiles}
+timestamp=[2022-07-08 13:08:46], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.320, duration_ms=320, data={}
+timestamp=[2022-07-08 14:29:09], mode=BUILD, duration=0:00:01.999, duration_ms=1999, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 14:37:00], mode=BUILD, duration=0:00:00.988, duration_ms=988, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-08 15:05:48], mode=BUILD, duration=0:00:01.792, duration_ms=1792, data={name=FOC_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 16:28:09], mode=WORKBENCH_START, duration=0:00:13.424, duration_ms=13424, data={}
+timestamp=[2022-07-21 16:28:10], mode=WORKBENCH_UI_INIT, duration=0:00:00.958, duration_ms=958, data={editors_count=6, platform_editors_count=2, projects_count=4, platform_projects_count=1, active_platform_editor=false, projects=FOC_app,FOC_app_system,FOC_wrapper,RemoteSystemsTempFiles}
+timestamp=[2022-07-21 16:28:10], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.164, duration_ms=164, data={}
+timestamp=[2022-07-21 16:34:04], mode=APP_CREATION, duration=0:00:33.343, duration_ms=33343, data={name=pi_ila_app, project_type=sdk, os=standalone, processor=psu_cortexa53, runtime=cpp, platform=pi_ila_wrapper, application_type=application}
+timestamp=[2022-07-21 16:38:05], mode=PLATFORM_GENERATION, duration=0:02:02.759, duration_ms=122759, data={name=pi_ila_wrapper}
+timestamp=[2022-07-21 16:38:07], mode=BUILD, duration=0:00:01.151, duration_ms=1151, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:16:07], mode=BUILD, duration=0:00:00.524, duration_ms=524, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:16:54], mode=BUILD, duration=0:00:00.458, duration_ms=458, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:17:41], mode=BUILD, duration=0:00:00.867, duration_ms=867, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:21:58], mode=BUILD, duration=0:00:00.760, duration_ms=760, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:27:04], mode=BUILD, duration=0:00:00.763, duration_ms=763, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:27:38], mode=BUILD, duration=0:00:00.734, duration_ms=734, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:30:40], mode=BUILD, duration=0:00:00.769, duration_ms=769, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:33:47], mode=BUILD, duration=0:00:00.731, duration_ms=731, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:59:36], mode=BUILD, duration=0:00:00.817, duration_ms=817, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 18:59:47], mode=BUILD, duration=0:00:00.772, duration_ms=772, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 19:01:57], mode=BUILD, duration=0:00:00.776, duration_ms=776, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-21 19:02:13], mode=BUILD, duration=0:00:00.781, duration_ms=781, data={name=pi_ila_app, configuration=Debug, clean_build=false}

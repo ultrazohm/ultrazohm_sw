@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdx:platform sdx:vendor="xilinx.com"
+              sdx:library="sdx"
+              sdx:name="pi_ila_wrapper"
+              sdx:version="1.0"
+              sdx:schemaVersion="1.0"
+              xmlns:sdx="http://www.xilinx.com/sdx">
+    <sdx:description>
+pi_ila_wrapper
+    </sdx:description>
+    <sdx:systemConfigurations sdx:defaultConfiguration="pi_ila_wrapper">
+        <sdx:configuration sdx:name="pi_ila_wrapper"
+                           sdx:displayName="pi_ila_wrapper"
+                           sdx:defaultProcessorGroup="domain_psu_cortexa53_0"
+                           sdx:runtimes="cpp">
+            <sdx:description>pi_ila_wrapper</sdx:description>
+            <sdx:bootImages sdx:default="standard">
+                <sdx:image sdx:name="standard"
+                            sdx:bif="pi_ila_wrapper/boot/pi_ila_wrapper.bif"
+                            sdx:readme="pi_ila_wrapper/boot/generic.readme"
+                            sdx:qemuArguments="pi_ila_wrapper/qemu/pmu_args.txt:pi_ila_wrapper/qemu/qemu_args.txt"
+                            />
+                <sdx:image sdx:name="domain_psu_cortexa53_0"
+                            sdx:bif="pi_ila_wrapper/boot/pi_ila_wrapper.bif"
+                            sdx:readme="pi_ila_wrapper/boot/generic.readme"
+                            sdx:qemuArguments="pi_ila_wrapper/domain_psu_cortexa53_0/qemu/pmu_args.txt:pi_ila_wrapper/domain_psu_cortexa53_0/qemu/qemu_args.txt"
+                            />
+            </sdx:bootImages>
+            <sdx:processorGroup sdx:name="domain_psu_cortexa53_0"
+                                sdx:displayName="domain_psu_cortexa53_0"
+                                sdx:cpuType="cortex-a53"
+                                sdx:cpuInstance="psu_cortexa53_0">
+                <sdx:os sdx:name="standalone"
+                        sdx:displayName="standalone"
+                        sdx:bspLibraryPaths="pi_ila_wrapper/domain_psu_cortexa53_0/bsplib/lib"
+                        sdx:bspIncludePaths="pi_ila_wrapper/domain_psu_cortexa53_0/bspinclude/include"
+                        sdx:bspConfig="pi_ila_wrapper/domain_psu_cortexa53_0/system.mss"
+                />
+            </sdx:processorGroup>
+        </sdx:configuration>
+    </sdx:systemConfigurations>
+</sdx:platform>

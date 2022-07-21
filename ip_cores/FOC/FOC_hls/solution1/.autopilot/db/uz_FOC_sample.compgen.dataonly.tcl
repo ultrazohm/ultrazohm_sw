@@ -2,72 +2,72 @@
 
 set axilite_register_dict [dict create]
 set port_Din {
-Controller_id { 
+i_reference_Ampere { 
 	dir I
-	width 160
+	width 96
 	depth 1
 	mode ap_none
 	offset 16
-	offset_end 39
-}
-Controller_iq { 
-	dir I
-	width 160
-	depth 1
-	mode ap_none
-	offset 40
-	offset_end 63
+	offset_end 31
 }
 self_i { 
 	dir I
-	width 288
+	width 256
 	depth 1
 	mode ap_none
-	offset 64
-	offset_end 103
+	offset 32
+	offset_end 67
 }
 self_o { 
 	dir O
-	width 288
+	width 256
 	depth 1
 	mode ap_vld
-	offset 104
-	offset_end 143
+	offset 68
+	offset_end 103
 }
 i_actual_Ampere { 
 	dir I
 	width 96
 	depth 1
 	mode ap_none
-	offset 144
-	offset_end 159
+	offset 112
+	offset_end 127
 }
 V_dc_volts { 
 	dir I
 	width 32
 	depth 1
 	mode ap_none
-	offset 160
-	offset_end 167
+	offset 128
+	offset_end 135
 }
 omega_el_rad_per_sec { 
 	dir I
 	width 32
 	depth 1
 	mode ap_none
-	offset 168
-	offset_end 175
+	offset 136
+	offset_end 143
 }
 ap_start { }
 ap_done { }
 ap_ready { }
 ap_idle { }
-i_reference_Ampere { 
+Controller_id { 
 	dir I
-	width 96
+	width 160
 	depth 1
 	mode ap_none
-	offset 176
+	offset 144
+	offset_end 167
+}
+Controller_iq { 
+	dir I
+	width 160
+	depth 1
+	mode ap_none
+	offset 168
 	offset_end 191
 }
 }

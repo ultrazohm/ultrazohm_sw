@@ -22,12 +22,11 @@ enum uz_FOC_decoupling_select {
  *
  */
 typedef struct uz_FOC {
-	unsigned int decoupling_select;
+	bool decoupling_select;
 	bool I_rst;
 	bool ext_clamping;
 	struct uz_PMSM_t config_PMSM; //< Configuration struct for PMSM parameters
 }uz_FOC;
-
 
 uz_PI_Controller_config config_id; //< Configuration struct for id-Controller
 uz_PI_Controller_config config_iq; //< Configuration struct for iq-Controller
@@ -42,5 +41,7 @@ uz_PI_Controller_config config_iq; //< Configuration struct for iq-Controller
  * @return struct uz_dq_t Output dq-reference voltage struct
  */
 void uz_FOC_sample(uz_FOC* self,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float* output_volts_d, float* output_volts_q);
+struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq);
+struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm,struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 
 #endif // UZ_FOC_H

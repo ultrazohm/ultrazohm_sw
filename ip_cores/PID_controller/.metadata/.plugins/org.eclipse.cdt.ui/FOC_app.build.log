@@ -1,0 +1,29 @@
+15:05:47 **** Incremental Build of configuration Debug for project FOC_app ****
+make all 
+'Building file: ../src/helloworld.c'
+'Invoking: ARM v8 gcc compiler'
+aarch64-none-elf-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/helloworld.o" -IC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/domain_psu_cortexa53_0/bspinclude/include -MMD -MP -MF"src/helloworld.d" -MT"src/helloworld.o" -o "src/helloworld.o" "../src/helloworld.c"
+In file included from ../src/uz_foc.h:2,
+                 from ../src/helloworld.c:32:
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:98:2: warning: #warning The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert. [-Wcpp]
+   98 | #warning  The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert.
+      |  ^~~~~~~
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:99:2: warning: #warning Please refer the Standalone BSP UG647 for further details [-Wcpp]
+   99 | #warning  Please refer the Standalone BSP UG647 for further details
+      |  ^~~~~~~
+'Finished building: ../src/helloworld.c'
+' '
+'Building target: FOC_app.elf'
+'Invoking: ARM v8 gcc linker'
+aarch64-none-elf-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/domain_psu_cortexa53_0/bsplib/lib -o "FOC_app.elf"  ./src/helloworld.o ./src/platform.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: FOC_app.elf'
+' '
+'Invoking: ARM v8 Print Size'
+aarch64-none-elf-size FOC_app.elf  |tee "FOC_app.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  98495	   4904	  20837	 124236	  1e54c	FOC_app.elf
+'Finished building: FOC_app.elf.size'
+' '
+
+15:05:48 Build Finished (took 1s.769ms)
+

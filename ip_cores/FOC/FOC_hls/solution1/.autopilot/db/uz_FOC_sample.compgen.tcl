@@ -1,96 +1,5 @@
 # This script segment is generated automatically by AutoPilot
 
-set id 65
-set name uz_FOC_sample_fsub_32ns_32ns_32_4_full_dsp_1
-set corename simcore_fsub
-set op fsub
-set stage_num 4
-set max_latency -1
-set registered_input 1
-set impl_style full_dsp
-set Futype4reduceCEFanout 1
-set clk_width 1
-set clk_signed 0
-set reset_width 1
-set reset_signed 0
-set in0_width 32
-set in0_signed 0
-set in1_width 32
-set in1_signed 0
-set ce_width 1
-set ce_signed 0
-set out_width 32
-if {${::AESL::PGuard_simmodel_gen}} {
-if {[info proc ap_gen_simcore_fsub] == "ap_gen_simcore_fsub"} {
-eval "ap_gen_simcore_fsub { \
-    id ${id} \
-    name ${name} \
-    corename ${corename} \
-    op ${op} \
-    reset_level 1 \
-    sync_rst true \
-    stage_num ${stage_num} \
-    max_latency ${max_latency} \
-    registered_input ${registered_input} \
-    style ${impl_style} \
-    Futype4reduceCEFanout ${Futype4reduceCEFanout} \
-    clk_width ${clk_width} \
-    clk_signed ${clk_signed} \
-    reset_width ${reset_width} \
-    reset_signed ${reset_signed} \
-    in0_width ${in0_width} \
-    in0_signed ${in0_signed} \
-    in1_width ${in1_width} \
-    in1_signed ${in1_signed} \
-    ce_width ${ce_width} \
-    ce_signed ${ce_signed} \
-    out_width ${out_width} \
-}"
-} else {
-puts "@W \[IMPL-100\] Cannot find ap_gen_simcore_fsub, check your AutoPilot builtin lib"
-}
-}
-
-
-if {${::AESL::PGuard_rtl_comp_handler}} {
-	::AP::rtl_comp_handler ${name}
-}
-
-
-set op fsub
-set corename FAddSub_fulldsp
-if {${::AESL::PGuard_autocg_gen} && (${::AESL::PGuard_autocg_fpip} || ${::AESL::PGuard_autocg_fpv6en} || ${::AESL::PGuard_autocg_hpen})} {
-if {[info proc ::AESL_LIB_XILINX_FPV6::fpv6_gen] == "::AESL_LIB_XILINX_FPV6::fpv6_gen"} {
-eval "::AESL_LIB_XILINX_FPV6::fpv6_gen { \
-    id ${id} \
-    name ${name} \
-    corename ${corename} \
-    op ${op} \
-    reset_level 1 \
-    sync_rst true \
-    stage_num ${stage_num} \
-    max_latency ${max_latency} \
-    registered_input ${registered_input} \
-    style ${impl_style} \
-    Futype4reduceCEFanout ${Futype4reduceCEFanout} \
-    clk_width ${clk_width} \
-    clk_signed ${clk_signed} \
-    reset_width ${reset_width} \
-    reset_signed ${reset_signed} \
-    in0_width ${in0_width} \
-    in0_signed ${in0_signed} \
-    in1_width ${in1_width} \
-    in1_signed ${in1_signed} \
-    ce_width ${ce_width} \
-    ce_signed ${ce_signed} \
-    out_width ${out_width} \
-}"
-} else {
-puts "@W \[IMPL-101\] Cannot find ::AESL_LIB_XILINX_FPV6::fpv6_gen, check your platform lib"
-}
-}
-
-
 # clear list
 if {${::AESL::PGuard_autoexp_gen}} {
     cg_default_interface_gen_dc_begin
@@ -100,72 +9,72 @@ if {${::AESL::PGuard_autoexp_gen}} {
 
 set axilite_register_dict [dict create]
 set port_Din {
-Controller_id { 
+i_reference_Ampere { 
 	dir I
-	width 160
+	width 96
 	depth 1
 	mode ap_none
 	offset 16
-	offset_end 39
-}
-Controller_iq { 
-	dir I
-	width 160
-	depth 1
-	mode ap_none
-	offset 40
-	offset_end 63
+	offset_end 31
 }
 self_i { 
 	dir I
-	width 288
+	width 256
 	depth 1
 	mode ap_none
-	offset 64
-	offset_end 103
+	offset 32
+	offset_end 67
 }
 self_o { 
 	dir O
-	width 288
+	width 256
 	depth 1
 	mode ap_vld
-	offset 104
-	offset_end 143
+	offset 68
+	offset_end 103
 }
 i_actual_Ampere { 
 	dir I
 	width 96
 	depth 1
 	mode ap_none
-	offset 144
-	offset_end 159
+	offset 112
+	offset_end 127
 }
 V_dc_volts { 
 	dir I
 	width 32
 	depth 1
 	mode ap_none
-	offset 160
-	offset_end 167
+	offset 128
+	offset_end 135
 }
 omega_el_rad_per_sec { 
 	dir I
 	width 32
 	depth 1
 	mode ap_none
-	offset 168
-	offset_end 175
+	offset 136
+	offset_end 143
 }
 ap_start { }
 ap_done { }
 ap_ready { }
 ap_idle { }
-i_reference_Ampere { 
+Controller_id { 
 	dir I
-	width 96
+	width 160
 	depth 1
 	mode ap_none
-	offset 176
+	offset 144
+	offset_end 167
+}
+Controller_iq { 
+	dir I
+	width 160
+	depth 1
+	mode ap_none
+	offset 168
 	offset_end 191
 }
 }
@@ -176,7 +85,7 @@ dict set axilite_register_dict Din $port_Din
 if {${::AESL::PGuard_simmodel_gen}} {
 	if {[info proc ::AESL_LIB_XILADAPTER::s_axilite_gen] == "::AESL_LIB_XILADAPTER::s_axilite_gen"} {
 		eval "::AESL_LIB_XILADAPTER::s_axilite_gen { \
-			id 77 \
+			id 62 \
 			corename uz_FOC_sample_Din_axilite \
 			name uz_FOC_sample_Din_s_axi \
 			ports {$port_Din} \
@@ -218,7 +127,7 @@ dict set axilite_register_dict control $port_control
 if {${::AESL::PGuard_simmodel_gen}} {
 	if {[info proc ::AESL_LIB_XILADAPTER::s_axilite_gen] == "::AESL_LIB_XILADAPTER::s_axilite_gen"} {
 		eval "::AESL_LIB_XILADAPTER::s_axilite_gen { \
-			id 78 \
+			id 63 \
 			corename uz_FOC_sample_control_axilite \
 			name uz_FOC_sample_control_s_axi \
 			ports {$port_control} \
@@ -239,7 +148,7 @@ if {${::AESL::PGuard_rtl_comp_handler}} {
 if {${::AESL::PGuard_simmodel_gen}} {
 if {[info proc ::AESL_LIB_XILADAPTER::m_axi_gen] == "::AESL_LIB_XILADAPTER::m_axi_gen"} {
 eval "::AESL_LIB_XILADAPTER::m_axi_gen { \
-    id 79 \
+    id 64 \
     corename {m_axi} \
     op interface \
     max_latency -1 \ 

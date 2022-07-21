@@ -1,6 +1,6 @@
 INFO: Applying HLS Y2K22 patch v1.2 for IP revision
 INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis/2020.1/bin/unwrapped/win64.o/apcc.exe'
-INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Wed Jun 15 14:18:49 +0200 2022
+INFO: [HLS 200-10] For user 'ponpr' on host 'thinkbook' (Windows NT_amd64 version 6.2) on Fri Jul 08 14:41:05 +0200 2022
 INFO: [HLS 200-10] In directory 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/csim/build'
 INFO: [APCC 202-3] Tmp directory is apcc_db
 INFO: [APCC 202-1] APCC is done.

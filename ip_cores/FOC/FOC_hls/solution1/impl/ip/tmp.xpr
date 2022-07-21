@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/impl/ip/tmp.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="e7bfb65f9ce04485b95e5c0af4543c0a"/>
+    <Option Name="Id" Val="0d50fea96b8c42369997f921075e575d"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-2-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -95,13 +95,6 @@
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/ip/uz_FOC_sample_ap_fsqrt_6_no_dsp_32/uz_FOC_sample_ap_fsqrt_6_no_dsp_32.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/uz_FOC_sample_ap_fsub_2_full_dsp_32/uz_FOC_sample_ap_fsub_2_full_dsp_32.xci">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>

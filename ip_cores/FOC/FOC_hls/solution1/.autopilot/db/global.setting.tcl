@@ -41,7 +41,7 @@ set SCTraceFileName mytrace
 set SCTraceFileFormat vcd
 set SCTraceOption all
 set TargetInfo xczu9eg:-ffvb1156:-2-e
-set SourceFiles {sc {} c {../../foc/uz_space_vector_limitation.c ../../foc/uz_signals.c ../../foc/uz_piController.c ../../foc/uz_linear_decoupling.c ../../foc/uz_Transformation.c ../../foc/uz_FOC.c}}
+set SourceFiles {sc {} c {../../foc/uz_FOC.c ../../foc/uz_Transformation.c ../../foc/uz_linear_decoupling.c ../../foc/uz_piController.c ../../foc/uz_signals.c ../../foc/uz_space_vector_limitation.c}}
 set SourceFlags {sc {} c {{} {} {} {} {} {}}}
 set DirectiveFile C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/FOC/FOC_hls/solution1/solution1.directive
 set TBFiles {verilog ../../foc/tb_foc.c bc ../../foc/tb_foc.c vhdl ../../foc/tb_foc.c sc ../../foc/tb_foc.c cas ../../foc/tb_foc.c c {}}

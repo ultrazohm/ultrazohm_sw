@@ -145,8 +145,6 @@ l_struct_OC_uz_dq_t uz_FOC_SpaceVector_Limitation(l_struct_OC_uz_dq_t llvm_cbe_u
 float uz_signals_get_sign_of_value(float );
 static l_struct_OC_uz_dq_t aesl_internal_uz_limit_dq_prio_d_axis(float llvm_cbe_u_input_Volts_2e_0, float llvm_cbe_u_input_Volts_2e_1, float llvm_cbe_u_input_Volts_2e_2, float llvm_cbe_U_SV_max);
 static l_struct_OC_uz_dq_t aesl_internal_uz_limit_dq_prio_q_axis(float llvm_cbe_u_input_Volts_2e_0, float llvm_cbe_u_input_Volts_2e_1, float llvm_cbe_u_input_Volts_2e_2, float llvm_cbe_U_SV_max);
-float uz_FOC_SpaceVector_Limitation_d(l_struct_OC_uz_dq_t llvm_cbe_u_input_Volts, float llvm_cbe_V_dc_volts, float llvm_cbe_omega_el_rad_per_sec, l_struct_OC_uz_dq_t llvm_cbe_i_actual_Ampere, bool *llvm_cbe_ext_clamping);
-float uz_FOC_SpaceVector_Limitation_q(l_struct_OC_uz_dq_t llvm_cbe_u_input_Volts, float llvm_cbe_V_dc_volts, float llvm_cbe_omega_el_rad_per_sec, l_struct_OC_uz_dq_t llvm_cbe_i_actual_Ampere, bool *llvm_cbe_ext_clamping);
 float fabsf(float );
 
 
@@ -294,7 +292,7 @@ const char* AESL_DEBUG_TRACE = getenv("DEBUG_TRACE");
 if (AESL_DEBUG_TRACE)
 printf("\n\{ BEGIN @uz_FOC_SpaceVector_Limitation\n");
 if (AESL_DEBUG_TRACE)
-printf("\n  %%3 = fdiv float %%V_dc_volts, 0x3FFBB67AE0000000, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_15_count);
+printf("\n  %%3 = fdiv float %%V_dc_volts, 0x3FFBB67AE0000000, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_15_count);
   llvm_cbe_tmp__3 = (float )((float )(llvm_cbe_V_dc_volts / 0x1.bb67aep0));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__3, *(int*)(&llvm_cbe_tmp__3));
@@ -314,51 +312,51 @@ printf("\n  %%pow2 = fmul float %%5, %%5, !dbg !7 for 0x%I64xth hint within @uz_
 if (AESL_DEBUG_TRACE)
 printf("\npow2 = %f,  0x%x\n", llvm_cbe_pow2, *(int*)(&llvm_cbe_pow2));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%6 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_22_count);
+printf("\n  %%6 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_22_count);
   llvm_cbe_tmp__6 = (float *)(&llvm_cbe_u_input_Volts.field1);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%7 = load float* %%6, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_23_count);
+printf("\n  %%7 = load float* %%6, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_23_count);
   llvm_cbe_tmp__7 = (float )*llvm_cbe_tmp__6;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__7, *(int*)(&llvm_cbe_tmp__7));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_pow24_count);
+printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_pow24_count);
   llvm_cbe_pow24 = (float )((float )(llvm_cbe_tmp__7 * llvm_cbe_tmp__7));
 if (AESL_DEBUG_TRACE)
 printf("\npow24 = %f,  0x%x\n", llvm_cbe_pow24, *(int*)(&llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%8 = fadd float %%pow2, %%pow24, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_24_count);
+printf("\n  %%8 = fadd float %%pow2, %%pow24, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_24_count);
   llvm_cbe_tmp__8 = (float )((float )(llvm_cbe_pow2 + llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__8, *(int*)(&llvm_cbe_tmp__8));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%9 = call float @sqrtf(float %%8) nounwind readnone, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_25_count);
+printf("\n  %%9 = call float @sqrtf(float %%8) nounwind readnone, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_25_count);
   llvm_cbe_tmp__9 = (float )sqrtf(llvm_cbe_tmp__8);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__8, *(int*)(&llvm_cbe_tmp__8));
 printf("\nReturn  = %f",llvm_cbe_tmp__9);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%10 = call float @uz_signals_get_sign_of_value(float %%omega_el_rad_per_sec) nounwind, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_28_count);
+printf("\n  %%10 = call float @uz_signals_get_sign_of_value(float %%omega_el_rad_per_sec) nounwind, !dbg !4 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_28_count);
   llvm_cbe_tmp__10 = (float )uz_signals_get_sign_of_value(llvm_cbe_omega_el_rad_per_sec);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument omega_el_rad_per_sec = %f,  0x%x",llvm_cbe_omega_el_rad_per_sec, *(int*)(&llvm_cbe_omega_el_rad_per_sec));
 printf("\nReturn  = %f",llvm_cbe_tmp__10);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%11 = getelementptr inbounds %%struct.uz_dq_t* %%i_actual_Ampere, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_29_count);
+printf("\n  %%11 = getelementptr inbounds %%struct.uz_dq_t* %%i_actual_Ampere, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_29_count);
   llvm_cbe_tmp__11 = (float *)(&llvm_cbe_i_actual_Ampere.field1);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%12 = load float* %%11, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_30_count);
+printf("\n  %%12 = load float* %%11, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_30_count);
   llvm_cbe_tmp__12 = (float )*llvm_cbe_tmp__11;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__12, *(int*)(&llvm_cbe_tmp__12));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%13 = call float @uz_signals_get_sign_of_value(float %%12) nounwind, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_31_count);
+printf("\n  %%13 = call float @uz_signals_get_sign_of_value(float %%12) nounwind, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_31_count);
   llvm_cbe_tmp__13 = (float )uz_signals_get_sign_of_value(llvm_cbe_tmp__12);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__12, *(int*)(&llvm_cbe_tmp__12));
@@ -403,32 +401,32 @@ printf("\nArgument u_input_Volts.2.val = %f,  0x%x",llvm_cbe_u_input_Volts_2e_2_
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__3, *(int*)(&llvm_cbe_tmp__3));
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%18 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_40_count);
+printf("\n  %%18 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 0, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_40_count);
   llvm_cbe_tmp__14 = (float *)(&llvm_cbe_tmp__1.field0);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%19 = load float* %%18, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_41_count);
+printf("\n  %%19 = load float* %%18, align 4, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_41_count);
   llvm_cbe_tmp__15 = (float )*llvm_cbe_tmp__14;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__15, *(int*)(&llvm_cbe_tmp__15));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_43_count);
+printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 1, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_43_count);
   llvm_cbe_tmp__16 = (float *)(&llvm_cbe_tmp__1.field1);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%21 = load float* %%20, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_44_count);
+printf("\n  %%21 = load float* %%20, align 4, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_44_count);
   llvm_cbe_tmp__17 = (float )*llvm_cbe_tmp__16;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__17, *(int*)(&llvm_cbe_tmp__17));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 2, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_46_count);
+printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 2, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_46_count);
   llvm_cbe_tmp__18 = (float *)(&llvm_cbe_tmp__1.field2);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%23 = load float* %%22, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_47_count);
+printf("\n  %%23 = load float* %%22, align 4, !dbg !6 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation  --> \n", ++aesl_llvm_cbe_47_count);
   llvm_cbe_tmp__19 = (float )*llvm_cbe_tmp__18;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__19, *(int*)(&llvm_cbe_tmp__19));
@@ -687,29 +685,29 @@ printf("\nArgument u_input_Volts.1 = %f,  0x%x",llvm_cbe_u_input_Volts_2e_1, *(i
 printf("\nReturn  = %f",llvm_cbe_tmp__42);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow2 = fmul float %%U_SV_max, %%U_SV_max, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow2_count);
+printf("\n  %%pow2 = fmul float %%U_SV_max, %%U_SV_max, !dbg !5 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow2_count);
   llvm_cbe_pow2 = (float )((float )(llvm_cbe_U_SV_max * llvm_cbe_U_SV_max));
 if (AESL_DEBUG_TRACE)
 printf("\npow2 = %f,  0x%x\n", llvm_cbe_pow2, *(int*)(&llvm_cbe_pow2));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow24_count);
+printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow24_count);
   llvm_cbe_pow24 = (float )((float )(llvm_cbe_tmp__41 * llvm_cbe_tmp__41));
 if (AESL_DEBUG_TRACE)
 printf("\npow24 = %f,  0x%x\n", llvm_cbe_pow24, *(int*)(&llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%9 = fsub float %%pow2, %%pow24, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_95_count);
+printf("\n  %%9 = fsub float %%pow2, %%pow24, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_95_count);
   llvm_cbe_tmp__43 = (float )((float )(llvm_cbe_pow2 - llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__43, *(int*)(&llvm_cbe_tmp__43));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%10 = tail call float @sqrtf(float %%9) nounwind readnone, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_96_count);
+printf("\n  %%10 = tail call float @sqrtf(float %%9) nounwind readnone, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_96_count);
   llvm_cbe_tmp__44 = (float ) /*tail*/ sqrtf(llvm_cbe_tmp__43);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__43, *(int*)(&llvm_cbe_tmp__43));
 printf("\nReturn  = %f",llvm_cbe_tmp__44);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%11 = fmul float %%8, %%10, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_97_count);
+printf("\n  %%11 = fmul float %%8, %%10, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_97_count);
   llvm_cbe_tmp__45 = (float )((float )(llvm_cbe_tmp__42 * llvm_cbe_tmp__44));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__45, *(int*)(&llvm_cbe_tmp__45));
@@ -719,36 +717,36 @@ printf("\n = %f,  0x%x\n", llvm_cbe_tmp__45, *(int*)(&llvm_cbe_tmp__45));
 
 llvm_cbe_tmp__56:
 if (AESL_DEBUG_TRACE)
-printf("\n  %%13 = tail call float @uz_signals_get_sign_of_value(float %%u_input_Volts.1) nounwind, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_101_count);
+printf("\n  %%13 = tail call float @uz_signals_get_sign_of_value(float %%u_input_Volts.1) nounwind, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_101_count);
   llvm_cbe_tmp__46 = (float ) /*tail*/ uz_signals_get_sign_of_value(llvm_cbe_u_input_Volts_2e_1);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument u_input_Volts.1 = %f,  0x%x",llvm_cbe_u_input_Volts_2e_1, *(int*)(&llvm_cbe_u_input_Volts_2e_1));
 printf("\nReturn  = %f",llvm_cbe_tmp__46);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow25 = fmul float %%U_SV_max, %%U_SV_max, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow25_count);
+printf("\n  %%pow25 = fmul float %%U_SV_max, %%U_SV_max, !dbg !5 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow25_count);
   llvm_cbe_pow25 = (float )((float )(llvm_cbe_U_SV_max * llvm_cbe_U_SV_max));
 if (AESL_DEBUG_TRACE)
 printf("\npow25 = %f,  0x%x\n", llvm_cbe_pow25, *(int*)(&llvm_cbe_pow25));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow26 = fmul float %%u_input_Volts.0, %%u_input_Volts.0, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow26_count);
+printf("\n  %%pow26 = fmul float %%u_input_Volts.0, %%u_input_Volts.0, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_pow26_count);
   llvm_cbe_pow26 = (float )((float )(llvm_cbe_u_input_Volts_2e_0 * llvm_cbe_u_input_Volts_2e_0));
 if (AESL_DEBUG_TRACE)
 printf("\npow26 = %f,  0x%x\n", llvm_cbe_pow26, *(int*)(&llvm_cbe_pow26));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%14 = fsub float %%pow25, %%pow26, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_102_count);
+printf("\n  %%14 = fsub float %%pow25, %%pow26, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_102_count);
   llvm_cbe_tmp__47 = (float )((float )(llvm_cbe_pow25 - llvm_cbe_pow26));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__47, *(int*)(&llvm_cbe_tmp__47));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%15 = tail call float @sqrtf(float %%14) nounwind readnone, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_103_count);
+printf("\n  %%15 = tail call float @sqrtf(float %%14) nounwind readnone, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_103_count);
   llvm_cbe_tmp__48 = (float ) /*tail*/ sqrtf(llvm_cbe_tmp__47);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__47, *(int*)(&llvm_cbe_tmp__47));
 printf("\nReturn  = %f",llvm_cbe_tmp__48);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%16 = fmul float %%13, %%15, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_104_count);
+printf("\n  %%16 = fmul float %%13, %%15, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_104_count);
   llvm_cbe_tmp__49 = (float )((float )(llvm_cbe_tmp__46 * llvm_cbe_tmp__48));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__49, *(int*)(&llvm_cbe_tmp__49));
@@ -774,32 +772,32 @@ printf("\nu_input_Volts.0 = %f",llvm_cbe_u_input_Volts_2e_0);
 printf("\n = %f",llvm_cbe_tmp__41);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_109_count);
+printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 0, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_109_count);
   llvm_cbe_tmp__52 = (float *)(&llvm_cbe_agg_2e_result->field0);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float %%19, float* %%20, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_110_count);
+printf("\n  store float %%19, float* %%20, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_110_count);
   *llvm_cbe_tmp__52 = llvm_cbe_tmp__51;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", llvm_cbe_tmp__51);
 if (AESL_DEBUG_TRACE)
-printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_111_count);
+printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 1, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_111_count);
   llvm_cbe_tmp__53 = (float *)(&llvm_cbe_agg_2e_result->field1);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float %%18, float* %%21, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_112_count);
+printf("\n  store float %%18, float* %%21, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_112_count);
   *llvm_cbe_tmp__53 = llvm_cbe_tmp__50;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", llvm_cbe_tmp__50);
 if (AESL_DEBUG_TRACE)
-printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 2, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_113_count);
+printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 2, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_113_count);
   llvm_cbe_tmp__54 = (float *)(&llvm_cbe_agg_2e_result->field2);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float 0.000000e+00, float* %%22, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_114_count);
+printf("\n  store float 0.000000e+00, float* %%22, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_d_axis  --> \n", ++aesl_llvm_cbe_114_count);
   *llvm_cbe_tmp__54 = 0x0p0;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", 0x0p0);
@@ -929,29 +927,29 @@ printf("\nArgument u_input_Volts.0 = %f,  0x%x",llvm_cbe_u_input_Volts_2e_0, *(i
 printf("\nReturn  = %f",llvm_cbe_tmp__63);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow2 = fmul float %%U_SV_max, %%U_SV_max, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow2_count);
+printf("\n  %%pow2 = fmul float %%U_SV_max, %%U_SV_max, !dbg !5 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow2_count);
   llvm_cbe_pow2 = (float )((float )(llvm_cbe_U_SV_max * llvm_cbe_U_SV_max));
 if (AESL_DEBUG_TRACE)
 printf("\npow2 = %f,  0x%x\n", llvm_cbe_pow2, *(int*)(&llvm_cbe_pow2));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow24_count);
+printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow24_count);
   llvm_cbe_pow24 = (float )((float )(llvm_cbe_tmp__62 * llvm_cbe_tmp__62));
 if (AESL_DEBUG_TRACE)
 printf("\npow24 = %f,  0x%x\n", llvm_cbe_pow24, *(int*)(&llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%9 = fsub float %%pow2, %%pow24, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_136_count);
+printf("\n  %%9 = fsub float %%pow2, %%pow24, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_136_count);
   llvm_cbe_tmp__64 = (float )((float )(llvm_cbe_pow2 - llvm_cbe_pow24));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__64, *(int*)(&llvm_cbe_tmp__64));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%10 = tail call float @sqrtf(float %%9) nounwind readnone, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_137_count);
+printf("\n  %%10 = tail call float @sqrtf(float %%9) nounwind readnone, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_137_count);
   llvm_cbe_tmp__65 = (float ) /*tail*/ sqrtf(llvm_cbe_tmp__64);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__64, *(int*)(&llvm_cbe_tmp__64));
 printf("\nReturn  = %f",llvm_cbe_tmp__65);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%11 = fmul float %%8, %%10, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_138_count);
+printf("\n  %%11 = fmul float %%8, %%10, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_138_count);
   llvm_cbe_tmp__66 = (float )((float )(llvm_cbe_tmp__63 * llvm_cbe_tmp__65));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__66, *(int*)(&llvm_cbe_tmp__66));
@@ -961,36 +959,36 @@ printf("\n = %f,  0x%x\n", llvm_cbe_tmp__66, *(int*)(&llvm_cbe_tmp__66));
 
 llvm_cbe_tmp__77:
 if (AESL_DEBUG_TRACE)
-printf("\n  %%13 = tail call float @uz_signals_get_sign_of_value(float %%u_input_Volts.0) nounwind, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_142_count);
+printf("\n  %%13 = tail call float @uz_signals_get_sign_of_value(float %%u_input_Volts.0) nounwind, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_142_count);
   llvm_cbe_tmp__67 = (float ) /*tail*/ uz_signals_get_sign_of_value(llvm_cbe_u_input_Volts_2e_0);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument u_input_Volts.0 = %f,  0x%x",llvm_cbe_u_input_Volts_2e_0, *(int*)(&llvm_cbe_u_input_Volts_2e_0));
 printf("\nReturn  = %f",llvm_cbe_tmp__67);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow25 = fmul float %%U_SV_max, %%U_SV_max, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow25_count);
+printf("\n  %%pow25 = fmul float %%U_SV_max, %%U_SV_max, !dbg !5 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow25_count);
   llvm_cbe_pow25 = (float )((float )(llvm_cbe_U_SV_max * llvm_cbe_U_SV_max));
 if (AESL_DEBUG_TRACE)
 printf("\npow25 = %f,  0x%x\n", llvm_cbe_pow25, *(int*)(&llvm_cbe_pow25));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%pow26 = fmul float %%u_input_Volts.1, %%u_input_Volts.1, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow26_count);
+printf("\n  %%pow26 = fmul float %%u_input_Volts.1, %%u_input_Volts.1, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_pow26_count);
   llvm_cbe_pow26 = (float )((float )(llvm_cbe_u_input_Volts_2e_1 * llvm_cbe_u_input_Volts_2e_1));
 if (AESL_DEBUG_TRACE)
 printf("\npow26 = %f,  0x%x\n", llvm_cbe_pow26, *(int*)(&llvm_cbe_pow26));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%14 = fsub float %%pow25, %%pow26, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_143_count);
+printf("\n  %%14 = fsub float %%pow25, %%pow26, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_143_count);
   llvm_cbe_tmp__68 = (float )((float )(llvm_cbe_pow25 - llvm_cbe_pow26));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__68, *(int*)(&llvm_cbe_tmp__68));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%15 = tail call float @sqrtf(float %%14) nounwind readnone, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_144_count);
+printf("\n  %%15 = tail call float @sqrtf(float %%14) nounwind readnone, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_144_count);
   llvm_cbe_tmp__69 = (float ) /*tail*/ sqrtf(llvm_cbe_tmp__68);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__68, *(int*)(&llvm_cbe_tmp__68));
 printf("\nReturn  = %f",llvm_cbe_tmp__69);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%16 = fmul float %%13, %%15, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_145_count);
+printf("\n  %%16 = fmul float %%13, %%15, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_145_count);
   llvm_cbe_tmp__70 = (float )((float )(llvm_cbe_tmp__67 * llvm_cbe_tmp__69));
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__70, *(int*)(&llvm_cbe_tmp__70));
@@ -1016,575 +1014,37 @@ printf("\n = %f",llvm_cbe_tmp__70);
 printf("\n = %f",llvm_cbe_tmp__66);
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_150_count);
+printf("\n  %%20 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 0, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_150_count);
   llvm_cbe_tmp__73 = (float *)(&llvm_cbe_agg_2e_result->field0);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float %%19, float* %%20, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_151_count);
+printf("\n  store float %%19, float* %%20, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_151_count);
   *llvm_cbe_tmp__73 = llvm_cbe_tmp__72;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", llvm_cbe_tmp__72);
 if (AESL_DEBUG_TRACE)
-printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_152_count);
+printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 1, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_152_count);
   llvm_cbe_tmp__74 = (float *)(&llvm_cbe_agg_2e_result->field1);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float %%18, float* %%21, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_153_count);
+printf("\n  store float %%18, float* %%21, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_153_count);
   *llvm_cbe_tmp__74 = llvm_cbe_tmp__71;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", llvm_cbe_tmp__71);
 if (AESL_DEBUG_TRACE)
-printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 2, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_154_count);
+printf("\n  %%22 = getelementptr inbounds %%struct.uz_dq_t* %%agg.result, i64 0, i32 2, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_154_count);
   llvm_cbe_tmp__75 = (float *)(&llvm_cbe_agg_2e_result->field2);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
-printf("\n  store float 0.000000e+00, float* %%22, align 4, !dbg !7 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_155_count);
+printf("\n  store float 0.000000e+00, float* %%22, align 4, !dbg !6 for 0x%I64xth hint within @aesl_internal_uz_limit_dq_prio_q_axis  --> \n", ++aesl_llvm_cbe_155_count);
   *llvm_cbe_tmp__75 = 0x0p0;
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", 0x0p0);
 if (AESL_DEBUG_TRACE)
     printf("\n END @aesl_internal_uz_limit_dq_prio_q_axis }\n"); 
   return StructReturn;
-}
-
-
-float uz_FOC_SpaceVector_Limitation_d(l_struct_OC_uz_dq_t llvm_cbe_u_input_Volts, float llvm_cbe_V_dc_volts, float llvm_cbe_omega_el_rad_per_sec, l_struct_OC_uz_dq_t llvm_cbe_i_actual_Ampere, bool *llvm_cbe_ext_clamping) {
-  static  unsigned long long aesl_llvm_cbe_157_count = 0;
-  l_struct_OC_uz_dq_t llvm_cbe_tmp__79;    /* Address-exposed local */
-  static  unsigned long long aesl_llvm_cbe_158_count = 0;
-  l_struct_OC_uz_dq_t llvm_cbe_tmp__80;    /* Address-exposed local */
-  static  unsigned long long aesl_llvm_cbe_159_count = 0;
-  static  unsigned long long aesl_llvm_cbe_160_count = 0;
-  static  unsigned long long aesl_llvm_cbe_161_count = 0;
-  static  unsigned long long aesl_llvm_cbe_162_count = 0;
-  static  unsigned long long aesl_llvm_cbe_163_count = 0;
-  static  unsigned long long aesl_llvm_cbe_164_count = 0;
-  static  unsigned long long aesl_llvm_cbe_165_count = 0;
-  static  unsigned long long aesl_llvm_cbe_166_count = 0;
-  static  unsigned long long aesl_llvm_cbe_167_count = 0;
-  static  unsigned long long aesl_llvm_cbe_168_count = 0;
-  static  unsigned long long aesl_llvm_cbe_169_count = 0;
-  static  unsigned long long aesl_llvm_cbe_170_count = 0;
-  static  unsigned long long aesl_llvm_cbe_171_count = 0;
-  float llvm_cbe_tmp__81;
-  static  unsigned long long aesl_llvm_cbe_172_count = 0;
-  static  unsigned long long aesl_llvm_cbe_173_count = 0;
-  static  unsigned long long aesl_llvm_cbe_174_count = 0;
-  static  unsigned long long aesl_llvm_cbe_175_count = 0;
-  static  unsigned long long aesl_llvm_cbe_176_count = 0;
-  float *llvm_cbe_tmp__82;
-  static  unsigned long long aesl_llvm_cbe_177_count = 0;
-  float llvm_cbe_tmp__83;
-  static  unsigned long long aesl_llvm_cbe_pow2_count = 0;
-  float llvm_cbe_pow2;
-  static  unsigned long long aesl_llvm_cbe_178_count = 0;
-  float *llvm_cbe_tmp__84;
-  static  unsigned long long aesl_llvm_cbe_179_count = 0;
-  float llvm_cbe_tmp__85;
-  static  unsigned long long aesl_llvm_cbe_pow24_count = 0;
-  float llvm_cbe_pow24;
-  static  unsigned long long aesl_llvm_cbe_180_count = 0;
-  float llvm_cbe_tmp__86;
-  static  unsigned long long aesl_llvm_cbe_181_count = 0;
-  float llvm_cbe_tmp__87;
-  static  unsigned long long aesl_llvm_cbe_182_count = 0;
-  static  unsigned long long aesl_llvm_cbe_183_count = 0;
-  static  unsigned long long aesl_llvm_cbe_184_count = 0;
-  float llvm_cbe_tmp__88;
-  static  unsigned long long aesl_llvm_cbe_185_count = 0;
-  float *llvm_cbe_tmp__89;
-  static  unsigned long long aesl_llvm_cbe_186_count = 0;
-  float llvm_cbe_tmp__90;
-  static  unsigned long long aesl_llvm_cbe_187_count = 0;
-  float llvm_cbe_tmp__91;
-  static  unsigned long long aesl_llvm_cbe_188_count = 0;
-  static  unsigned long long aesl_llvm_cbe_189_count = 0;
-  static  unsigned long long aesl_llvm_cbe_190_count = 0;
-  static  unsigned long long aesl_llvm_cbe_191_count = 0;
-  static  unsigned long long aesl_llvm_cbe_192_count = 0;
-  static  unsigned long long aesl_llvm_cbe_193_count = 0;
-  static  unsigned long long aesl_llvm_cbe_194_count = 0;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_2_count = 0;
-  float *llvm_cbe_u_input_Volts_2e_2;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_2_2e_val_count = 0;
-  float llvm_cbe_u_input_Volts_2e_2_2e_val;
-  static  unsigned long long aesl_llvm_cbe_195_count = 0;
-  static  unsigned long long aesl_llvm_cbe_196_count = 0;
-  float *llvm_cbe_tmp__92;
-  static  unsigned long long aesl_llvm_cbe_197_count = 0;
-  float llvm_cbe_tmp__93;
-  static  unsigned long long aesl_llvm_cbe_198_count = 0;
-  static  unsigned long long aesl_llvm_cbe_199_count = 0;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_23_count = 0;
-  float *llvm_cbe_u_input_Volts_2e_23;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_23_2e_val_count = 0;
-  float llvm_cbe_u_input_Volts_2e_23_2e_val;
-  static  unsigned long long aesl_llvm_cbe_200_count = 0;
-  static  unsigned long long aesl_llvm_cbe_201_count = 0;
-  float *llvm_cbe_tmp__94;
-  static  unsigned long long aesl_llvm_cbe_202_count = 0;
-  float llvm_cbe_tmp__95;
-  static  unsigned long long aesl_llvm_cbe_203_count = 0;
-  static  unsigned long long aesl_llvm_cbe_204_count = 0;
-  static  unsigned long long aesl_llvm_cbe_205_count = 0;
-  static  unsigned long long aesl_llvm_cbe_206_count = 0;
-  static  unsigned long long aesl_llvm_cbe_207_count = 0;
-  static  unsigned long long aesl_llvm_cbe_208_count = 0;
-  float llvm_cbe_tmp__96;
-  float llvm_cbe_tmp__96__PHI_TEMPORARY;
-  static  unsigned long long aesl_llvm_cbe_209_count = 0;
-
-const char* AESL_DEBUG_TRACE = getenv("DEBUG_TRACE");
-if (AESL_DEBUG_TRACE)
-printf("\n\{ BEGIN @uz_FOC_SpaceVector_Limitation_d\n");
-if (AESL_DEBUG_TRACE)
-printf("\n  %%3 = fdiv float %%V_dc_volts, 0x3FFBB67AE0000000, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_171_count);
-  llvm_cbe_tmp__81 = (float )((float )(llvm_cbe_V_dc_volts / 0x1.bb67aep0));
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__81, *(int*)(&llvm_cbe_tmp__81));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%4 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_176_count);
-  llvm_cbe_tmp__82 = (float *)(&llvm_cbe_u_input_Volts.field0);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%5 = load float* %%4, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_177_count);
-  llvm_cbe_tmp__83 = (float )*llvm_cbe_tmp__82;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__83, *(int*)(&llvm_cbe_tmp__83));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%pow2 = fmul float %%5, %%5, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_pow2_count);
-  llvm_cbe_pow2 = (float )((float )(llvm_cbe_tmp__83 * llvm_cbe_tmp__83));
-if (AESL_DEBUG_TRACE)
-printf("\npow2 = %f,  0x%x\n", llvm_cbe_pow2, *(int*)(&llvm_cbe_pow2));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%6 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_178_count);
-  llvm_cbe_tmp__84 = (float *)(&llvm_cbe_u_input_Volts.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%7 = load float* %%6, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_179_count);
-  llvm_cbe_tmp__85 = (float )*llvm_cbe_tmp__84;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__85, *(int*)(&llvm_cbe_tmp__85));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_pow24_count);
-  llvm_cbe_pow24 = (float )((float )(llvm_cbe_tmp__85 * llvm_cbe_tmp__85));
-if (AESL_DEBUG_TRACE)
-printf("\npow24 = %f,  0x%x\n", llvm_cbe_pow24, *(int*)(&llvm_cbe_pow24));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%8 = fadd float %%pow2, %%pow24, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_180_count);
-  llvm_cbe_tmp__86 = (float )((float )(llvm_cbe_pow2 + llvm_cbe_pow24));
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__86, *(int*)(&llvm_cbe_tmp__86));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%9 = call float @sqrtf(float %%8) nounwind readnone, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_181_count);
-  llvm_cbe_tmp__87 = (float )sqrtf(llvm_cbe_tmp__86);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__86, *(int*)(&llvm_cbe_tmp__86));
-printf("\nReturn  = %f",llvm_cbe_tmp__87);
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%10 = call float @uz_signals_get_sign_of_value(float %%omega_el_rad_per_sec) nounwind, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_184_count);
-  llvm_cbe_tmp__88 = (float )uz_signals_get_sign_of_value(llvm_cbe_omega_el_rad_per_sec);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument omega_el_rad_per_sec = %f,  0x%x",llvm_cbe_omega_el_rad_per_sec, *(int*)(&llvm_cbe_omega_el_rad_per_sec));
-printf("\nReturn  = %f",llvm_cbe_tmp__88);
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%11 = getelementptr inbounds %%struct.uz_dq_t* %%i_actual_Ampere, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_185_count);
-  llvm_cbe_tmp__89 = (float *)(&llvm_cbe_i_actual_Ampere.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%12 = load float* %%11, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_186_count);
-  llvm_cbe_tmp__90 = (float )*llvm_cbe_tmp__89;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__90, *(int*)(&llvm_cbe_tmp__90));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%13 = call float @uz_signals_get_sign_of_value(float %%12) nounwind, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_187_count);
-  llvm_cbe_tmp__91 = (float )uz_signals_get_sign_of_value(llvm_cbe_tmp__90);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__90, *(int*)(&llvm_cbe_tmp__90));
-printf("\nReturn  = %f",llvm_cbe_tmp__91);
-}
-  if ((llvm_fcmp_ogt(llvm_cbe_tmp__87, llvm_cbe_tmp__81))) {
-    goto llvm_cbe_tmp__97;
-  } else {
-    goto llvm_cbe_tmp__98;
-  }
-
-llvm_cbe_tmp__97:
-if (AESL_DEBUG_TRACE)
-printf("\n  store i1 true, i1* %%ext_clamping, align 1, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_193_count);
-  *llvm_cbe_ext_clamping = ((1) & 1ull);
-if (AESL_DEBUG_TRACE)
-printf("\n = 0x%X\n", 1);
-  if ((llvm_fcmp_oeq(llvm_cbe_tmp__88, llvm_cbe_tmp__91))) {
-    goto llvm_cbe_tmp__99;
-  } else {
-    goto llvm_cbe_tmp__100;
-  }
-
-llvm_cbe_tmp__99:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.2 = getelementptr %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_2_count);
-  llvm_cbe_u_input_Volts_2e_2 = (float *)(&llvm_cbe_u_input_Volts.field2);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.2.val = load float* %%u_input_Volts.2, align  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_2_2e_val_count);
-  llvm_cbe_u_input_Volts_2e_2_2e_val = (float )*llvm_cbe_u_input_Volts_2e_2;
-if (AESL_DEBUG_TRACE)
-printf("\nu_input_Volts.2.val = %f,  0x%x\n", llvm_cbe_u_input_Volts_2e_2_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_2_2e_val));
-if (AESL_DEBUG_TRACE)
-printf("\n  call fastcc void @aesl_internal_uz_limit_dq_prio_d_axis(%%struct.uz_dq_t* sret %%1, float %%5, float %%7, float %%u_input_Volts.2.val, float %%3 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_195_count);
-  llvm_cbe_tmp__79 = aesl_internal_uz_limit_dq_prio_d_axis(llvm_cbe_tmp__83, llvm_cbe_tmp__85, llvm_cbe_u_input_Volts_2e_2_2e_val, llvm_cbe_tmp__81);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__83, *(int*)(&llvm_cbe_tmp__83));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__85, *(int*)(&llvm_cbe_tmp__85));
-printf("\nArgument u_input_Volts.2.val = %f,  0x%x",llvm_cbe_u_input_Volts_2e_2_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_2_2e_val));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__81, *(int*)(&llvm_cbe_tmp__81));
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%18 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_196_count);
-  llvm_cbe_tmp__92 = (float *)(&llvm_cbe_tmp__79.field0);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%19 = load float* %%18, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_197_count);
-  llvm_cbe_tmp__93 = (float )*llvm_cbe_tmp__92;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__93, *(int*)(&llvm_cbe_tmp__93));
-  llvm_cbe_tmp__96__PHI_TEMPORARY = (float )llvm_cbe_tmp__93;   /* for PHI node */
-  goto llvm_cbe_tmp__101;
-
-llvm_cbe_tmp__100:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.23 = getelementptr %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_23_count);
-  llvm_cbe_u_input_Volts_2e_23 = (float *)(&llvm_cbe_u_input_Volts.field2);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.23.val = load float* %%u_input_Volts.23, align  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_23_2e_val_count);
-  llvm_cbe_u_input_Volts_2e_23_2e_val = (float )*llvm_cbe_u_input_Volts_2e_23;
-if (AESL_DEBUG_TRACE)
-printf("\nu_input_Volts.23.val = %f,  0x%x\n", llvm_cbe_u_input_Volts_2e_23_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_23_2e_val));
-if (AESL_DEBUG_TRACE)
-printf("\n  call fastcc void @aesl_internal_uz_limit_dq_prio_q_axis(%%struct.uz_dq_t* sret %%2, float %%5, float %%7, float %%u_input_Volts.23.val, float %%3 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_200_count);
-  llvm_cbe_tmp__80 = aesl_internal_uz_limit_dq_prio_q_axis(llvm_cbe_tmp__83, llvm_cbe_tmp__85, llvm_cbe_u_input_Volts_2e_23_2e_val, llvm_cbe_tmp__81);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__83, *(int*)(&llvm_cbe_tmp__83));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__85, *(int*)(&llvm_cbe_tmp__85));
-printf("\nArgument u_input_Volts.23.val = %f,  0x%x",llvm_cbe_u_input_Volts_2e_23_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_23_2e_val));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__81, *(int*)(&llvm_cbe_tmp__81));
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%2, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_201_count);
-  llvm_cbe_tmp__94 = (float *)(&llvm_cbe_tmp__80.field0);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%22 = load float* %%21, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_202_count);
-  llvm_cbe_tmp__95 = (float )*llvm_cbe_tmp__94;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__95, *(int*)(&llvm_cbe_tmp__95));
-  llvm_cbe_tmp__96__PHI_TEMPORARY = (float )llvm_cbe_tmp__95;   /* for PHI node */
-  goto llvm_cbe_tmp__101;
-
-llvm_cbe_tmp__98:
-if (AESL_DEBUG_TRACE)
-printf("\n  store i1 false, i1* %%ext_clamping, align 1, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_206_count);
-  *llvm_cbe_ext_clamping = ((0) & 1ull);
-if (AESL_DEBUG_TRACE)
-printf("\n = 0x%X\n", 0);
-  llvm_cbe_tmp__96__PHI_TEMPORARY = (float )llvm_cbe_tmp__83;   /* for PHI node */
-  goto llvm_cbe_tmp__101;
-
-llvm_cbe_tmp__101:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%25 = phi float [ %%5, %%23 ], [ %%22, %%20 ], [ %%19, %%17  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_d  --> \n", ++aesl_llvm_cbe_208_count);
-  llvm_cbe_tmp__96 = (float )llvm_cbe_tmp__96__PHI_TEMPORARY;
-if (AESL_DEBUG_TRACE) {
-printf("\n = %f",llvm_cbe_tmp__96);
-printf("\n = %f",llvm_cbe_tmp__83);
-printf("\n = %f",llvm_cbe_tmp__95);
-printf("\n = %f",llvm_cbe_tmp__93);
-}
-  if (AESL_DEBUG_TRACE)
-      printf("\nEND @uz_FOC_SpaceVector_Limitation_d}\n");
-  return llvm_cbe_tmp__96;
-}
-
-
-float uz_FOC_SpaceVector_Limitation_q(l_struct_OC_uz_dq_t llvm_cbe_u_input_Volts, float llvm_cbe_V_dc_volts, float llvm_cbe_omega_el_rad_per_sec, l_struct_OC_uz_dq_t llvm_cbe_i_actual_Ampere, bool *llvm_cbe_ext_clamping) {
-  static  unsigned long long aesl_llvm_cbe_210_count = 0;
-  l_struct_OC_uz_dq_t llvm_cbe_tmp__102;    /* Address-exposed local */
-  static  unsigned long long aesl_llvm_cbe_211_count = 0;
-  l_struct_OC_uz_dq_t llvm_cbe_tmp__103;    /* Address-exposed local */
-  static  unsigned long long aesl_llvm_cbe_212_count = 0;
-  static  unsigned long long aesl_llvm_cbe_213_count = 0;
-  static  unsigned long long aesl_llvm_cbe_214_count = 0;
-  static  unsigned long long aesl_llvm_cbe_215_count = 0;
-  static  unsigned long long aesl_llvm_cbe_216_count = 0;
-  static  unsigned long long aesl_llvm_cbe_217_count = 0;
-  static  unsigned long long aesl_llvm_cbe_218_count = 0;
-  static  unsigned long long aesl_llvm_cbe_219_count = 0;
-  static  unsigned long long aesl_llvm_cbe_220_count = 0;
-  static  unsigned long long aesl_llvm_cbe_221_count = 0;
-  static  unsigned long long aesl_llvm_cbe_222_count = 0;
-  static  unsigned long long aesl_llvm_cbe_223_count = 0;
-  static  unsigned long long aesl_llvm_cbe_224_count = 0;
-  float llvm_cbe_tmp__104;
-  static  unsigned long long aesl_llvm_cbe_225_count = 0;
-  static  unsigned long long aesl_llvm_cbe_226_count = 0;
-  static  unsigned long long aesl_llvm_cbe_227_count = 0;
-  static  unsigned long long aesl_llvm_cbe_228_count = 0;
-  static  unsigned long long aesl_llvm_cbe_229_count = 0;
-  float *llvm_cbe_tmp__105;
-  static  unsigned long long aesl_llvm_cbe_230_count = 0;
-  float llvm_cbe_tmp__106;
-  static  unsigned long long aesl_llvm_cbe_pow2_count = 0;
-  float llvm_cbe_pow2;
-  static  unsigned long long aesl_llvm_cbe_231_count = 0;
-  float *llvm_cbe_tmp__107;
-  static  unsigned long long aesl_llvm_cbe_232_count = 0;
-  float llvm_cbe_tmp__108;
-  static  unsigned long long aesl_llvm_cbe_pow24_count = 0;
-  float llvm_cbe_pow24;
-  static  unsigned long long aesl_llvm_cbe_233_count = 0;
-  float llvm_cbe_tmp__109;
-  static  unsigned long long aesl_llvm_cbe_234_count = 0;
-  float llvm_cbe_tmp__110;
-  static  unsigned long long aesl_llvm_cbe_235_count = 0;
-  static  unsigned long long aesl_llvm_cbe_236_count = 0;
-  static  unsigned long long aesl_llvm_cbe_237_count = 0;
-  float llvm_cbe_tmp__111;
-  static  unsigned long long aesl_llvm_cbe_238_count = 0;
-  float *llvm_cbe_tmp__112;
-  static  unsigned long long aesl_llvm_cbe_239_count = 0;
-  float llvm_cbe_tmp__113;
-  static  unsigned long long aesl_llvm_cbe_240_count = 0;
-  float llvm_cbe_tmp__114;
-  static  unsigned long long aesl_llvm_cbe_241_count = 0;
-  static  unsigned long long aesl_llvm_cbe_242_count = 0;
-  static  unsigned long long aesl_llvm_cbe_243_count = 0;
-  static  unsigned long long aesl_llvm_cbe_244_count = 0;
-  static  unsigned long long aesl_llvm_cbe_245_count = 0;
-  static  unsigned long long aesl_llvm_cbe_246_count = 0;
-  static  unsigned long long aesl_llvm_cbe_247_count = 0;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_2_count = 0;
-  float *llvm_cbe_u_input_Volts_2e_2;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_2_2e_val_count = 0;
-  float llvm_cbe_u_input_Volts_2e_2_2e_val;
-  static  unsigned long long aesl_llvm_cbe_248_count = 0;
-  static  unsigned long long aesl_llvm_cbe_249_count = 0;
-  float *llvm_cbe_tmp__115;
-  static  unsigned long long aesl_llvm_cbe_250_count = 0;
-  float llvm_cbe_tmp__116;
-  static  unsigned long long aesl_llvm_cbe_251_count = 0;
-  static  unsigned long long aesl_llvm_cbe_252_count = 0;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_23_count = 0;
-  float *llvm_cbe_u_input_Volts_2e_23;
-  static  unsigned long long aesl_llvm_cbe_u_input_Volts_2e_23_2e_val_count = 0;
-  float llvm_cbe_u_input_Volts_2e_23_2e_val;
-  static  unsigned long long aesl_llvm_cbe_253_count = 0;
-  static  unsigned long long aesl_llvm_cbe_254_count = 0;
-  float *llvm_cbe_tmp__117;
-  static  unsigned long long aesl_llvm_cbe_255_count = 0;
-  float llvm_cbe_tmp__118;
-  static  unsigned long long aesl_llvm_cbe_256_count = 0;
-  static  unsigned long long aesl_llvm_cbe_257_count = 0;
-  static  unsigned long long aesl_llvm_cbe_258_count = 0;
-  static  unsigned long long aesl_llvm_cbe_259_count = 0;
-  static  unsigned long long aesl_llvm_cbe_260_count = 0;
-  static  unsigned long long aesl_llvm_cbe_261_count = 0;
-  float llvm_cbe_tmp__119;
-  float llvm_cbe_tmp__119__PHI_TEMPORARY;
-  static  unsigned long long aesl_llvm_cbe_262_count = 0;
-
-const char* AESL_DEBUG_TRACE = getenv("DEBUG_TRACE");
-if (AESL_DEBUG_TRACE)
-printf("\n\{ BEGIN @uz_FOC_SpaceVector_Limitation_q\n");
-if (AESL_DEBUG_TRACE)
-printf("\n  %%3 = fdiv float %%V_dc_volts, 0x3FFBB67AE0000000, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_224_count);
-  llvm_cbe_tmp__104 = (float )((float )(llvm_cbe_V_dc_volts / 0x1.bb67aep0));
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__104, *(int*)(&llvm_cbe_tmp__104));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%4 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_229_count);
-  llvm_cbe_tmp__105 = (float *)(&llvm_cbe_u_input_Volts.field0);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%5 = load float* %%4, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_230_count);
-  llvm_cbe_tmp__106 = (float )*llvm_cbe_tmp__105;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__106, *(int*)(&llvm_cbe_tmp__106));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%pow2 = fmul float %%5, %%5, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_pow2_count);
-  llvm_cbe_pow2 = (float )((float )(llvm_cbe_tmp__106 * llvm_cbe_tmp__106));
-if (AESL_DEBUG_TRACE)
-printf("\npow2 = %f,  0x%x\n", llvm_cbe_pow2, *(int*)(&llvm_cbe_pow2));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%6 = getelementptr inbounds %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_231_count);
-  llvm_cbe_tmp__107 = (float *)(&llvm_cbe_u_input_Volts.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%7 = load float* %%6, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_232_count);
-  llvm_cbe_tmp__108 = (float )*llvm_cbe_tmp__107;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__108, *(int*)(&llvm_cbe_tmp__108));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%pow24 = fmul float %%7, %%7, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_pow24_count);
-  llvm_cbe_pow24 = (float )((float )(llvm_cbe_tmp__108 * llvm_cbe_tmp__108));
-if (AESL_DEBUG_TRACE)
-printf("\npow24 = %f,  0x%x\n", llvm_cbe_pow24, *(int*)(&llvm_cbe_pow24));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%8 = fadd float %%pow2, %%pow24, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_233_count);
-  llvm_cbe_tmp__109 = (float )((float )(llvm_cbe_pow2 + llvm_cbe_pow24));
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__109, *(int*)(&llvm_cbe_tmp__109));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%9 = call float @sqrtf(float %%8) nounwind readnone, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_234_count);
-  llvm_cbe_tmp__110 = (float )sqrtf(llvm_cbe_tmp__109);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__109, *(int*)(&llvm_cbe_tmp__109));
-printf("\nReturn  = %f",llvm_cbe_tmp__110);
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%10 = call float @uz_signals_get_sign_of_value(float %%omega_el_rad_per_sec) nounwind, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_237_count);
-  llvm_cbe_tmp__111 = (float )uz_signals_get_sign_of_value(llvm_cbe_omega_el_rad_per_sec);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument omega_el_rad_per_sec = %f,  0x%x",llvm_cbe_omega_el_rad_per_sec, *(int*)(&llvm_cbe_omega_el_rad_per_sec));
-printf("\nReturn  = %f",llvm_cbe_tmp__111);
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%11 = getelementptr inbounds %%struct.uz_dq_t* %%i_actual_Ampere, i64 0, i32 1, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_238_count);
-  llvm_cbe_tmp__112 = (float *)(&llvm_cbe_i_actual_Ampere.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%12 = load float* %%11, align 4, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_239_count);
-  llvm_cbe_tmp__113 = (float )*llvm_cbe_tmp__112;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__113, *(int*)(&llvm_cbe_tmp__113));
-if (AESL_DEBUG_TRACE)
-printf("\n  %%13 = call float @uz_signals_get_sign_of_value(float %%12) nounwind, !dbg !8 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_240_count);
-  llvm_cbe_tmp__114 = (float )uz_signals_get_sign_of_value(llvm_cbe_tmp__113);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__113, *(int*)(&llvm_cbe_tmp__113));
-printf("\nReturn  = %f",llvm_cbe_tmp__114);
-}
-  if ((llvm_fcmp_ogt(llvm_cbe_tmp__110, llvm_cbe_tmp__104))) {
-    goto llvm_cbe_tmp__120;
-  } else {
-    goto llvm_cbe_tmp__121;
-  }
-
-llvm_cbe_tmp__120:
-if (AESL_DEBUG_TRACE)
-printf("\n  store i1 true, i1* %%ext_clamping, align 1, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_246_count);
-  *llvm_cbe_ext_clamping = ((1) & 1ull);
-if (AESL_DEBUG_TRACE)
-printf("\n = 0x%X\n", 1);
-  if ((llvm_fcmp_oeq(llvm_cbe_tmp__111, llvm_cbe_tmp__114))) {
-    goto llvm_cbe_tmp__122;
-  } else {
-    goto llvm_cbe_tmp__123;
-  }
-
-llvm_cbe_tmp__122:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.2 = getelementptr %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_2_count);
-  llvm_cbe_u_input_Volts_2e_2 = (float *)(&llvm_cbe_u_input_Volts.field2);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.2.val = load float* %%u_input_Volts.2, align  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_2_2e_val_count);
-  llvm_cbe_u_input_Volts_2e_2_2e_val = (float )*llvm_cbe_u_input_Volts_2e_2;
-if (AESL_DEBUG_TRACE)
-printf("\nu_input_Volts.2.val = %f,  0x%x\n", llvm_cbe_u_input_Volts_2e_2_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_2_2e_val));
-if (AESL_DEBUG_TRACE)
-printf("\n  call fastcc void @aesl_internal_uz_limit_dq_prio_d_axis(%%struct.uz_dq_t* sret %%1, float %%5, float %%7, float %%u_input_Volts.2.val, float %%3 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_248_count);
-  llvm_cbe_tmp__102 = aesl_internal_uz_limit_dq_prio_d_axis(llvm_cbe_tmp__106, llvm_cbe_tmp__108, llvm_cbe_u_input_Volts_2e_2_2e_val, llvm_cbe_tmp__104);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__106, *(int*)(&llvm_cbe_tmp__106));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__108, *(int*)(&llvm_cbe_tmp__108));
-printf("\nArgument u_input_Volts.2.val = %f,  0x%x",llvm_cbe_u_input_Volts_2e_2_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_2_2e_val));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__104, *(int*)(&llvm_cbe_tmp__104));
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%18 = getelementptr inbounds %%struct.uz_dq_t* %%1, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_249_count);
-  llvm_cbe_tmp__115 = (float *)(&llvm_cbe_tmp__102.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%19 = load float* %%18, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_250_count);
-  llvm_cbe_tmp__116 = (float )*llvm_cbe_tmp__115;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__116, *(int*)(&llvm_cbe_tmp__116));
-  llvm_cbe_tmp__119__PHI_TEMPORARY = (float )llvm_cbe_tmp__116;   /* for PHI node */
-  goto llvm_cbe_tmp__124;
-
-llvm_cbe_tmp__123:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.23 = getelementptr %%struct.uz_dq_t* %%u_input_Volts, i64 0, i32  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_23_count);
-  llvm_cbe_u_input_Volts_2e_23 = (float *)(&llvm_cbe_u_input_Volts.field2);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%u_input_Volts.23.val = load float* %%u_input_Volts.23, align  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_u_input_Volts_2e_23_2e_val_count);
-  llvm_cbe_u_input_Volts_2e_23_2e_val = (float )*llvm_cbe_u_input_Volts_2e_23;
-if (AESL_DEBUG_TRACE)
-printf("\nu_input_Volts.23.val = %f,  0x%x\n", llvm_cbe_u_input_Volts_2e_23_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_23_2e_val));
-if (AESL_DEBUG_TRACE)
-printf("\n  call fastcc void @aesl_internal_uz_limit_dq_prio_q_axis(%%struct.uz_dq_t* sret %%2, float %%5, float %%7, float %%u_input_Volts.23.val, float %%3 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_253_count);
-  llvm_cbe_tmp__103 = aesl_internal_uz_limit_dq_prio_q_axis(llvm_cbe_tmp__106, llvm_cbe_tmp__108, llvm_cbe_u_input_Volts_2e_23_2e_val, llvm_cbe_tmp__104);
-if (AESL_DEBUG_TRACE) {
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__106, *(int*)(&llvm_cbe_tmp__106));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__108, *(int*)(&llvm_cbe_tmp__108));
-printf("\nArgument u_input_Volts.23.val = %f,  0x%x",llvm_cbe_u_input_Volts_2e_23_2e_val, *(int*)(&llvm_cbe_u_input_Volts_2e_23_2e_val));
-printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__104, *(int*)(&llvm_cbe_tmp__104));
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%21 = getelementptr inbounds %%struct.uz_dq_t* %%2, i64 0, i32 1, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_254_count);
-  llvm_cbe_tmp__117 = (float *)(&llvm_cbe_tmp__103.field1);
-if (AESL_DEBUG_TRACE) {
-}
-if (AESL_DEBUG_TRACE)
-printf("\n  %%22 = load float* %%21, align 4, !dbg !7 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_255_count);
-  llvm_cbe_tmp__118 = (float )*llvm_cbe_tmp__117;
-if (AESL_DEBUG_TRACE)
-printf("\n = %f,  0x%x\n", llvm_cbe_tmp__118, *(int*)(&llvm_cbe_tmp__118));
-  llvm_cbe_tmp__119__PHI_TEMPORARY = (float )llvm_cbe_tmp__118;   /* for PHI node */
-  goto llvm_cbe_tmp__124;
-
-llvm_cbe_tmp__121:
-if (AESL_DEBUG_TRACE)
-printf("\n  store i1 false, i1* %%ext_clamping, align 1, !dbg !5 for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_259_count);
-  *llvm_cbe_ext_clamping = ((0) & 1ull);
-if (AESL_DEBUG_TRACE)
-printf("\n = 0x%X\n", 0);
-  llvm_cbe_tmp__119__PHI_TEMPORARY = (float )llvm_cbe_tmp__108;   /* for PHI node */
-  goto llvm_cbe_tmp__124;
-
-llvm_cbe_tmp__124:
-if (AESL_DEBUG_TRACE)
-printf("\n  %%25 = phi float [ %%7, %%23 ], [ %%22, %%20 ], [ %%19, %%17  for 0x%I64xth hint within @uz_FOC_SpaceVector_Limitation_q  --> \n", ++aesl_llvm_cbe_261_count);
-  llvm_cbe_tmp__119 = (float )llvm_cbe_tmp__119__PHI_TEMPORARY;
-if (AESL_DEBUG_TRACE) {
-printf("\n = %f",llvm_cbe_tmp__119);
-printf("\n = %f",llvm_cbe_tmp__108);
-printf("\n = %f",llvm_cbe_tmp__118);
-printf("\n = %f",llvm_cbe_tmp__116);
-}
-  if (AESL_DEBUG_TRACE)
-      printf("\nEND @uz_FOC_SpaceVector_Limitation_q}\n");
-  return llvm_cbe_tmp__119;
 }
 

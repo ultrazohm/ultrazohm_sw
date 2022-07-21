@@ -55,17 +55,7 @@ typedef struct {
     u32 word_0;
     u32 word_1;
     u32 word_2;
-    u32 word_3;
-    u32 word_4;
-} XUz_foc_sample_Controller_id;
-
-typedef struct {
-    u32 word_0;
-    u32 word_1;
-    u32 word_2;
-    u32 word_3;
-    u32 word_4;
-} XUz_foc_sample_Controller_iq;
+} XUz_foc_sample_I_reference_ampere;
 
 typedef struct {
     u32 word_0;
@@ -76,7 +66,6 @@ typedef struct {
     u32 word_5;
     u32 word_6;
     u32 word_7;
-    u32 word_8;
 } XUz_foc_sample_Self_i;
 
 typedef struct {
@@ -88,7 +77,6 @@ typedef struct {
     u32 word_5;
     u32 word_6;
     u32 word_7;
-    u32 word_8;
 } XUz_foc_sample_Self_o;
 
 typedef struct {
@@ -101,7 +89,17 @@ typedef struct {
     u32 word_0;
     u32 word_1;
     u32 word_2;
-} XUz_foc_sample_I_reference_ampere;
+    u32 word_3;
+    u32 word_4;
+} XUz_foc_sample_Controller_id;
+
+typedef struct {
+    u32 word_0;
+    u32 word_1;
+    u32 word_2;
+    u32 word_3;
+    u32 word_4;
+} XUz_foc_sample_Controller_iq;
 
 /***************** Macros (Inline Functions) Definitions *********************/
 #ifndef __linux__
@@ -145,10 +143,8 @@ void XUz_foc_sample_Set_output_volts_d(XUz_foc_sample *InstancePtr, u64 Data);
 u64 XUz_foc_sample_Get_output_volts_d(XUz_foc_sample *InstancePtr);
 void XUz_foc_sample_Set_output_volts_q(XUz_foc_sample *InstancePtr, u64 Data);
 u64 XUz_foc_sample_Get_output_volts_q(XUz_foc_sample *InstancePtr);
-void XUz_foc_sample_Set_Controller_id(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_id Data);
-XUz_foc_sample_Controller_id XUz_foc_sample_Get_Controller_id(XUz_foc_sample *InstancePtr);
-void XUz_foc_sample_Set_Controller_iq(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_iq Data);
-XUz_foc_sample_Controller_iq XUz_foc_sample_Get_Controller_iq(XUz_foc_sample *InstancePtr);
+void XUz_foc_sample_Set_i_reference_Ampere(XUz_foc_sample *InstancePtr, XUz_foc_sample_I_reference_ampere Data);
+XUz_foc_sample_I_reference_ampere XUz_foc_sample_Get_i_reference_Ampere(XUz_foc_sample *InstancePtr);
 void XUz_foc_sample_Set_self_i(XUz_foc_sample *InstancePtr, XUz_foc_sample_Self_i Data);
 XUz_foc_sample_Self_i XUz_foc_sample_Get_self_i(XUz_foc_sample *InstancePtr);
 XUz_foc_sample_Self_o XUz_foc_sample_Get_self_o(XUz_foc_sample *InstancePtr);
@@ -159,8 +155,10 @@ void XUz_foc_sample_Set_V_dc_volts(XUz_foc_sample *InstancePtr, u32 Data);
 u32 XUz_foc_sample_Get_V_dc_volts(XUz_foc_sample *InstancePtr);
 void XUz_foc_sample_Set_omega_el_rad_per_sec(XUz_foc_sample *InstancePtr, u32 Data);
 u32 XUz_foc_sample_Get_omega_el_rad_per_sec(XUz_foc_sample *InstancePtr);
-void XUz_foc_sample_Set_i_reference_Ampere(XUz_foc_sample *InstancePtr, XUz_foc_sample_I_reference_ampere Data);
-XUz_foc_sample_I_reference_ampere XUz_foc_sample_Get_i_reference_Ampere(XUz_foc_sample *InstancePtr);
+void XUz_foc_sample_Set_Controller_id(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_id Data);
+XUz_foc_sample_Controller_id XUz_foc_sample_Get_Controller_id(XUz_foc_sample *InstancePtr);
+void XUz_foc_sample_Set_Controller_iq(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_iq Data);
+XUz_foc_sample_Controller_iq XUz_foc_sample_Get_Controller_iq(XUz_foc_sample *InstancePtr);
 
 void XUz_foc_sample_InterruptGlobalEnable(XUz_foc_sample *InstancePtr);
 void XUz_foc_sample_InterruptGlobalDisable(XUz_foc_sample *InstancePtr);

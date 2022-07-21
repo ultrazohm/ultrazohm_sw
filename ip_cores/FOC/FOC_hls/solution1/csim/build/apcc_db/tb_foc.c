@@ -152,7 +152,7 @@ struct l_struct_OC_uz_PMSM_t {
 };
 
 struct l_struct_OC_uz_FOC {
-  unsigned int field0;
+  bool field0;
   bool field1;
   bool field2;
   l_struct_OC_uz_PMSM_t field3;
@@ -194,11 +194,11 @@ static  char aesl_internal__OC_str5[9] = " %f\t %f\r";
 static  char aesl_internal__OC_str7[15] = "Test passed D\r";
 static  char aesl_internal__OC_str8[18] = "Test failed D %f\r";
 static  char aesl_internal__OC_str9[31] = "\n Comparison for Q parameter \r";
-static  char aesl_internal__OC_str11[18] = "Test failed Q %f\r";
-static  char aesl_internal_str[36] = "Absolute error limit has been used.";
 l_struct_OC_uz_PI_Controller_config config_iq __ATTRIBUTE_WEAK__;
-static  char aesl_internal__OC_str10[15] = "Test passed Q\r";
 l_struct_OC_uz_PI_Controller_config config_id __ATTRIBUTE_WEAK__;
+static  char aesl_internal_str[36] = "Absolute error limit has been used.";
+static  char aesl_internal__OC_str11[18] = "Test failed Q %f\r";
+static  char aesl_internal__OC_str10[15] = "Test passed Q\r";
 
 
 /* Function Bodies */
@@ -467,7 +467,7 @@ signed int main(void) {
   float llvm_cbe_out_q[11];    /* Address-exposed local */
   static  unsigned long long aesl_llvm_cbe_46_count = 0;
   static  unsigned long long aesl_llvm_cbe_47_count = 0;
-  signed int *llvm_cbe_tmp__23;
+  bool *llvm_cbe_tmp__23;
   static  unsigned long long aesl_llvm_cbe_48_count = 0;
   bool *llvm_cbe_tmp__24;
   static  unsigned long long aesl_llvm_cbe_49_count = 0;
@@ -736,7 +736,7 @@ if (AESL_DEBUG_TRACE)
 printf("\n\{ BEGIN @main\n");
 if (AESL_DEBUG_TRACE)
 printf("\n  %%1 = getelementptr inbounds %%struct.uz_FOC* %%config, i64 0, i32 0, !dbg !7 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_47_count);
-  llvm_cbe_tmp__23 = (signed int *)(&llvm_cbe_config.field0);
+  llvm_cbe_tmp__23 = (bool *)(&llvm_cbe_config.field0);
 if (AESL_DEBUG_TRACE) {
 }
 if (AESL_DEBUG_TRACE)
@@ -948,17 +948,17 @@ printf("\n  store float 0x3F80CB2960000000, float* %%7, align 4, !dbg !10 for 0x
 if (AESL_DEBUG_TRACE)
 printf("\n = %f\n", 0x1.0cb296p-7);
 if (AESL_DEBUG_TRACE)
-printf("\n  store i32 1, i32* %%1, align 4, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_94_count);
-  *llvm_cbe_tmp__23 = 1u;
+printf("\n  store i1 true, i1* %%1, align 4, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_94_count);
+  *llvm_cbe_tmp__23 = ((1) & 1ull);
 if (AESL_DEBUG_TRACE)
-printf("\n = 0x%X\n", 1u);
+printf("\n = 0x%X\n", 1);
 if (AESL_DEBUG_TRACE)
-printf("\n  store i1 false, i1* %%3, align 1, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_95_count);
+printf("\n  store i1 false, i1* %%3, align 2, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_95_count);
   *llvm_cbe_tmp__25 = ((0) & 1ull);
 if (AESL_DEBUG_TRACE)
 printf("\n = 0x%X\n", 0);
 if (AESL_DEBUG_TRACE)
-printf("\n  store i1 false, i1* %%2, align 4, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_96_count);
+printf("\n  store i1 false, i1* %%2, align 1, !dbg !11 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_96_count);
   *llvm_cbe_tmp__24 = ((0) & 1ull);
 if (AESL_DEBUG_TRACE)
 printf("\n = 0x%X\n", 0);
@@ -1252,13 +1252,13 @@ printf("\n  %%55 = load float* %%54, align 4, !dbg !16 for 0x%I64xth hint within
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__74, *(int*)(&llvm_cbe_tmp__74));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%56 = call zeroext i1 @approx_eqf(float %%53, float %%55, i32 10000, float 1.000000e+03), !dbg !16 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_171_count);
-  llvm_cbe_tmp__75 = (bool )((approx_eqf(llvm_cbe_tmp__72, llvm_cbe_tmp__74, 10000u, 0x1.f4p9))&1);
+printf("\n  %%56 = call zeroext i1 @approx_eqf(float %%53, float %%55, i32 10000, float 1.000000e+00), !dbg !16 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_171_count);
+  llvm_cbe_tmp__75 = (bool )((approx_eqf(llvm_cbe_tmp__72, llvm_cbe_tmp__74, 10000u, 0x1p0))&1);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__72, *(int*)(&llvm_cbe_tmp__72));
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__74, *(int*)(&llvm_cbe_tmp__74));
 printf("\nArgument  = 0x%X",10000u);
-printf("\nArgument  = %f",0x1.f4p9);
+printf("\nArgument  = %f",0x1p0);
 printf("\nReturn  = 0x%X",llvm_cbe_tmp__75);
 }
   if (llvm_cbe_tmp__75) {
@@ -1398,13 +1398,13 @@ printf("\n  %%73 = load float* %%72, align 4, !dbg !17 for 0x%I64xth hint within
 if (AESL_DEBUG_TRACE)
 printf("\n = %f,  0x%x\n", llvm_cbe_tmp__87, *(int*)(&llvm_cbe_tmp__87));
 if (AESL_DEBUG_TRACE)
-printf("\n  %%74 = call zeroext i1 @approx_eqf(float %%71, float %%73, i32 10000, float 1.000000e+03), !dbg !17 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_205_count);
-  llvm_cbe_tmp__88 = (bool )((approx_eqf(llvm_cbe_tmp__85, llvm_cbe_tmp__87, 10000u, 0x1.f4p9))&1);
+printf("\n  %%74 = call zeroext i1 @approx_eqf(float %%71, float %%73, i32 10000, float 1.000000e+00), !dbg !17 for 0x%I64xth hint within @main  --> \n", ++aesl_llvm_cbe_205_count);
+  llvm_cbe_tmp__88 = (bool )((approx_eqf(llvm_cbe_tmp__85, llvm_cbe_tmp__87, 10000u, 0x1p0))&1);
 if (AESL_DEBUG_TRACE) {
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__85, *(int*)(&llvm_cbe_tmp__85));
 printf("\nArgument  = %f,  0x%x",llvm_cbe_tmp__87, *(int*)(&llvm_cbe_tmp__87));
 printf("\nArgument  = 0x%X",10000u);
-printf("\nArgument  = %f",0x1.f4p9);
+printf("\nArgument  = %f",0x1p0);
 printf("\nReturn  = 0x%X",llvm_cbe_tmp__88);
 }
   if (llvm_cbe_tmp__88) {

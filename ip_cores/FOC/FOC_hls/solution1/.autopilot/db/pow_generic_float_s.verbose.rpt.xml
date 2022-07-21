@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vitis HLS Report for 'pow_generic_float_s'" level="0">
-<item name = "Date">Thu May 19 19:39:04 2022
+<item name = "Date">Wed Jun 29 10:55:57 2022
 </item>
 <item name = "Version">2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)</item>
 <item name = "Project">FOC_hls</item>
@@ -193,8 +193,8 @@
 <column name="or_ln407_1_reg_1460">1, 0, 1, 0</column>
 <column name="or_ln407_2_reg_1465">1, 0, 1, 0</column>
 <column name="p_Repl2_s_reg_1438">23, 0, 23, 0</column>
-<column name="p_Result_17_reg_1579">1, 0, 1, 0</column>
-<column name="p_Result_17_reg_1579_pp0_iter8_reg">1, 0, 1, 0</column>
+<column name="p_Result_16_reg_1579">1, 0, 1, 0</column>
+<column name="p_Result_16_reg_1579_pp0_iter8_reg">1, 0, 1, 0</column>
 <column name="p_Result_s_reg_1471">1, 0, 1, 0</column>
 <column name="r_exp_V_reg_1599">10, 0, 10, 0</column>
 <column name="ret_V_9_reg_1574">64, 0, 64, 0</column>
@@ -202,7 +202,7 @@
 <column name="tmp_15_reg_1549">38, 0, 38, 0</column>
 <column name="tmp_16_reg_1564">39, 0, 39, 0</column>
 <column name="tmp_17_reg_1569">23, 0, 23, 0</column>
-<column name="trunc_ln1_reg_1589">27, 0, 27, 0</column>
+<column name="trunc_ln7_reg_1589">27, 0, 27, 0</column>
 <column name="x_is_0_reg_1455">1, 0, 1, 0</column>
 <column name="x_is_NaN_reg_1450">1, 0, 1, 0</column>
 <column name="x_is_p1_reg_1444">1, 0, 1, 0</column>
@@ -215,7 +215,7 @@
 <column name="or_ln407_2_reg_1465">64, 32, 1, 0</column>
 <column name="r_exp_V_reg_1599">64, 32, 10, 0</column>
 <column name="ret_V_9_reg_1574">64, 32, 64, 0</column>
-<column name="trunc_ln1_reg_1589">64, 32, 27, 0</column>
+<column name="trunc_ln7_reg_1589">64, 32, 27, 0</column>
 <column name="x_is_0_reg_1455">64, 32, 1, 0</column>
 <column name="x_is_NaN_reg_1450">64, 32, 1, 0</column>
 <column name="x_is_p1_reg_1444">64, 32, 1, 0</column>

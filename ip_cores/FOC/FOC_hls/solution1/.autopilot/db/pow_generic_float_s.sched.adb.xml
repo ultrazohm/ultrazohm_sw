@@ -139,10 +139,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:2 %p_Val2_s = bitcast i32 %base_read
 
 <Node id="19" bw="1" op_0_bw="1" op_1_bw="32" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:3 %p_Result_15 = bitselect i1 @_ssdm_op_BitSelect.i1.i32.i32, i32 %p_Val2_s, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:3 %p_Result_14 = bitselect i1 @_ssdm_op_BitSelect.i1.i32.i32, i32 %p_Val2_s, i32
 
 ]]></Node>
-<StgValue><ssdm name="p_Result_15"/></StgValue>
+<StgValue><ssdm name="p_Result_14"/></StgValue>
 </operation>
 
 <operation id="20" st_id="1" stage="1" lat="1">
@@ -259,7 +259,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:10 %x_is_1 = and i1 %icmp_ln369, i1 %icmp_ln
 
 <Node id="27" bw="1" op_0_bw="1" op_1_bw="1">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:11 %xor_ln964 = xor i1 %p_Result_15, i1
+_Z13generic_isinfIfEiT_.exit_ifconv:11 %xor_ln964 = xor i1 %p_Result_14, i1
 
 ]]></Node>
 <StgValue><ssdm name="xor_ln964"/></StgValue>
@@ -533,10 +533,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:40 %log_sum_V = load i6 %pow_reduce_anonymou
 
 <Node id="43" bw="25" op_0_bw="25" op_1_bw="1" op_2_bw="23" op_3_bw="1">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:27 %p_Result_16 = bitconcatenate i25 @_ssdm_op_BitConcatenate.i25.i1.i23.i1, i1, i23 %p_Repl2_s, i1
+_Z13generic_isinfIfEiT_.exit_ifconv:27 %p_Result_15 = bitconcatenate i25 @_ssdm_op_BitConcatenate.i25.i1.i23.i1, i1, i23 %p_Repl2_s, i1
 
 ]]></Node>
-<StgValue><ssdm name="p_Result_16"/></StgValue>
+<StgValue><ssdm name="p_Result_15"/></StgValue>
 </operation>
 
 <operation id="46" st_id="2" stage="1" lat="1">
@@ -580,7 +580,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:30 %zext_ln1287_1 = zext i24 %b_frac
 
 <Node id="48" bw="25" op_0_bw="1" op_1_bw="25" op_2_bw="25">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:32 %select_ln513 = select i1 %p_Result_s, i25 %zext_ln1287_1, i25 %p_Result_16
+_Z13generic_isinfIfEiT_.exit_ifconv:32 %select_ln513 = select i1 %p_Result_s, i25 %zext_ln1287_1, i25 %p_Result_15
 
 ]]></Node>
 <StgValue><ssdm name="select_ln513"/></StgValue>
@@ -754,10 +754,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:45 %trunc_ln657 = trunc i25 %mul_ln682
 
 <Node id="62" bw="1" op_0_bw="1" op_1_bw="25" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:46 %tmp_39 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %mul_ln682, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:46 %tmp_37 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %mul_ln682, i32
 
 ]]></Node>
-<StgValue><ssdm name="tmp_39"/></StgValue>
+<StgValue><ssdm name="tmp_37"/></StgValue>
 </operation>
 
 <operation id="60" st_id="5" stage="1" lat="1">
@@ -814,7 +814,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:49 %zext_ln1287 = zext i43 %sf
 
 <Node id="66" bw="44" op_0_bw="1" op_1_bw="44" op_2_bw="44">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:50 %select_ln1287 = select i1 %tmp_39, i44 %tmp_13, i44 %zext_ln1287
+_Z13generic_isinfIfEiT_.exit_ifconv:50 %select_ln1287 = select i1 %tmp_37, i44 %tmp_13, i44 %zext_ln1287
 
 ]]></Node>
 <StgValue><ssdm name="select_ln1287"/></StgValue>
@@ -1933,10 +1933,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:118 %m_fix_hi_V = partselect i13 @_ssdm_op_P
 
 <Node id="135" bw="1" op_0_bw="1" op_1_bw="64" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:119 %p_Result_17 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:119 %p_Result_16 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32
 
 ]]></Node>
-<StgValue><ssdm name="p_Result_17"/></StgValue>
+<StgValue><ssdm name="p_Result_16"/></StgValue>
 </operation>
 
 <operation id="138" st_id="8" stage="1" lat="1">
@@ -1978,10 +1978,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:121 %r_V_9 = mul i25 %sext_ln1070, i25
 
 <Node id="151" bw="27" op_0_bw="27" op_1_bw="64" op_2_bw="32" op_3_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:135 %trunc_ln1 = partselect i27 @_ssdm_op_PartSelect.i27.i64.i32.i32, i64 %ret_V_9, i32, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:135 %trunc_ln7 = partselect i27 @_ssdm_op_PartSelect.i27.i64.i32.i32, i64 %ret_V_9, i32, i32
 
 ]]></Node>
-<StgValue><ssdm name="trunc_ln1"/></StgValue>
+<StgValue><ssdm name="trunc_ln7"/></StgValue>
 </operation>
 </state>
 
@@ -2029,7 +2029,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:121 %r_V_9 = mul i25 %sext_ln1070, i25
 
 <Node id="138" bw="16" op_0_bw="16" op_1_bw="1" op_2_bw="15">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:122 %rhs_V_6 = bitconcatenate i16 @_ssdm_op_BitConcatenate.i16.i1.i15, i1 %p_Result_17, i15
+_Z13generic_isinfIfEiT_.exit_ifconv:122 %rhs_V_6 = bitconcatenate i16 @_ssdm_op_BitConcatenate.i16.i1.i15, i1 %p_Result_16, i15
 
 ]]></Node>
 <StgValue><ssdm name="rhs_V_6"/></StgValue>
@@ -2107,10 +2107,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:125 %p_Result_cast = partselect i10 @_ssdm_o
 
 <Node id="142" bw="1" op_0_bw="1" op_1_bw="25" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:126 %p_Result_10 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %ret_V_17, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:126 %p_Result_9 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %ret_V_17, i32
 
 ]]></Node>
-<StgValue><ssdm name="p_Result_10"/></StgValue>
+<StgValue><ssdm name="p_Result_9"/></StgValue>
 </operation>
 
 <operation id="149" st_id="11" stage="1" lat="1">
@@ -2182,7 +2182,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:130 %select_ln804 = select i1 %icmp_ln805, i
 
 <Node id="147" bw="10" op_0_bw="1" op_1_bw="10" op_2_bw="10">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:131 %r_exp_V = select i1 %p_Result_10, i10 %select_ln804, i10 %p_Result_cast
+_Z13generic_isinfIfEiT_.exit_ifconv:131 %r_exp_V = select i1 %p_Result_9, i10 %select_ln804, i10 %p_Result_cast
 
 ]]></Node>
 <StgValue><ssdm name="r_exp_V"/></StgValue>
@@ -2242,7 +2242,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:134 %trunc_ln657_1 = partselect i27 @_ssdm_o
 
 <Node id="152" bw="27" op_0_bw="27" op_1_bw="27">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:136 %m_diff = sub i27 %trunc_ln1, i27 %trunc_ln657_1
+_Z13generic_isinfIfEiT_.exit_ifconv:136 %m_diff = sub i27 %trunc_ln7, i27 %trunc_ln657_1
 
 ]]></Node>
 <StgValue><ssdm name="m_diff"/></StgValue>
@@ -2789,10 +2789,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:158 %trunc_ln1146 = trunc i27 %ret_V_12
 
 <Node id="175" bw="43" op_0_bw="43" op_1_bw="26" op_2_bw="17">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:159 %trunc_ln2 = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i26.i17, i26 %trunc_ln1146, i17
+_Z13generic_isinfIfEiT_.exit_ifconv:159 %trunc_ln8 = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i26.i17, i26 %trunc_ln1146, i17
 
 ]]></Node>
-<StgValue><ssdm name="trunc_ln2"/></StgValue>
+<StgValue><ssdm name="trunc_ln8"/></StgValue>
 </operation>
 
 <operation id="193" st_id="16" stage="1" lat="1">
@@ -2879,7 +2879,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:164 %add_ln1146_1 = add i42 %trunc_ln1146_1,
 
 <Node id="181" bw="43" op_0_bw="43" op_1_bw="43">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:165 %add_ln1146_2 = add i43 %trunc_ln2, i43 %zext_ln1146_4
+_Z13generic_isinfIfEiT_.exit_ifconv:165 %add_ln1146_2 = add i43 %trunc_ln8, i43 %zext_ln1146_4
 
 ]]></Node>
 <StgValue><ssdm name="add_ln1146_2"/></StgValue>
@@ -2894,10 +2894,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:165 %add_ln1146_2 = add i43 %trunc_ln2, i43 
 
 <Node id="182" bw="1" op_0_bw="1" op_1_bw="44" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:166 %tmp_42 = bitselect i1 @_ssdm_op_BitSelect.i1.i44.i32, i44 %ret_V_13, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:166 %tmp_40 = bitselect i1 @_ssdm_op_BitSelect.i1.i44.i32, i44 %ret_V_13, i32
 
 ]]></Node>
-<StgValue><ssdm name="tmp_42"/></StgValue>
+<StgValue><ssdm name="tmp_40"/></StgValue>
 </operation>
 
 <operation id="200" st_id="16" stage="1" lat="1">
@@ -2924,7 +2924,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:167 %r_exp_V_1 = add i10 %r_exp_V, i10
 
 <Node id="184" bw="10" op_0_bw="1" op_1_bw="10" op_2_bw="10">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:168 %r_exp_V_2 = select i1 %tmp_42, i10 %r_exp_V, i10 %r_exp_V_1
+_Z13generic_isinfIfEiT_.exit_ifconv:168 %r_exp_V_2 = select i1 %tmp_40, i10 %r_exp_V, i10 %r_exp_V_1
 
 ]]></Node>
 <StgValue><ssdm name="r_exp_V_2"/></StgValue>
@@ -2939,10 +2939,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:168 %r_exp_V_2 = select i1 %tmp_42, i10 %r_e
 
 <Node id="185" bw="3" op_0_bw="3" op_1_bw="10" op_2_bw="32" op_3_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:169 %tmp_43 = partselect i3 @_ssdm_op_PartSelect.i3.i10.i32.i32, i10 %r_exp_V_2, i32, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:169 %tmp_41 = partselect i3 @_ssdm_op_PartSelect.i3.i10.i32.i32, i10 %r_exp_V_2, i32, i32
 
 ]]></Node>
-<StgValue><ssdm name="tmp_43"/></StgValue>
+<StgValue><ssdm name="tmp_41"/></StgValue>
 </operation>
 
 <operation id="203" st_id="16" stage="1" lat="1">
@@ -2954,7 +2954,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:169 %tmp_43 = partselect i3 @_ssdm_op_PartSe
 
 <Node id="186" bw="1" op_0_bw="3" op_1_bw="3">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:170 %icmp_ln844 = icmp_sgt  i3 %tmp_43, i3
+_Z13generic_isinfIfEiT_.exit_ifconv:170 %icmp_ln844 = icmp_sgt  i3 %tmp_41, i3
 
 ]]></Node>
 <StgValue><ssdm name="icmp_ln844"/></StgValue>
@@ -2969,10 +2969,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:170 %icmp_ln844 = icmp_sgt  i3 %tmp_43, i3
 
 <Node id="187" bw="1" op_0_bw="1" op_1_bw="64" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:171 %tmp_44 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:171 %tmp_42 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32
 
 ]]></Node>
-<StgValue><ssdm name="tmp_44"/></StgValue>
+<StgValue><ssdm name="tmp_42"/></StgValue>
 </operation>
 
 <operation id="205" st_id="16" stage="1" lat="1">
@@ -2984,7 +2984,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:171 %tmp_44 = bitselect i1 @_ssdm_op_BitSele
 
 <Node id="188" bw="32" op_0_bw="1" op_1_bw="32" op_2_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:172 %select_ln658 = select i1 %tmp_44, i32, i32
+_Z13generic_isinfIfEiT_.exit_ifconv:172 %select_ln658 = select i1 %tmp_42, i32, i32
 
 ]]></Node>
 <StgValue><ssdm name="select_ln658"/></StgValue>
@@ -3044,7 +3044,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:175 %tmp_s = partselect i23 @_ssdm_op_PartSe
 
 <Node id="192" bw="23" op_0_bw="1" op_1_bw="23" op_2_bw="23">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:176 %tmp_V = select i1 %tmp_42, i23 %tmp, i23 %tmp_s
+_Z13generic_isinfIfEiT_.exit_ifconv:176 %tmp_V = select i1 %tmp_40, i23 %tmp, i23 %tmp_s
 
 ]]></Node>
 <StgValue><ssdm name="tmp_V"/></StgValue>
@@ -3089,10 +3089,10 @@ _Z13generic_isinfIfEiT_.exit_ifconv:178 %out_exp = add i8 %trunc_ln170, i8
 
 <Node id="195" bw="32" op_0_bw="32" op_1_bw="1" op_2_bw="8" op_3_bw="23">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:179 %p_Result_14 = bitconcatenate i32 @_ssdm_op_BitConcatenate.i32.i1.i8.i23, i1, i8 %out_exp, i23 %tmp_V
+_Z13generic_isinfIfEiT_.exit_ifconv:179 %p_Result_13 = bitconcatenate i32 @_ssdm_op_BitConcatenate.i32.i1.i8.i23, i1, i8 %out_exp, i23 %tmp_V
 
 ]]></Node>
-<StgValue><ssdm name="p_Result_14"/></StgValue>
+<StgValue><ssdm name="p_Result_13"/></StgValue>
 </operation>
 
 <operation id="213" st_id="16" stage="1" lat="1">
@@ -3104,7 +3104,7 @@ _Z13generic_isinfIfEiT_.exit_ifconv:179 %p_Result_14 = bitconcatenate i32 @_ssdm
 
 <Node id="196" bw="32" op_0_bw="32">
 <![CDATA[
-_Z13generic_isinfIfEiT_.exit_ifconv:180 %bitcast_ln350 = bitcast i32 %p_Result_14
+_Z13generic_isinfIfEiT_.exit_ifconv:180 %bitcast_ln350 = bitcast i32 %p_Result_13
 
 ]]></Node>
 <StgValue><ssdm name="bitcast_ln350"/></StgValue>

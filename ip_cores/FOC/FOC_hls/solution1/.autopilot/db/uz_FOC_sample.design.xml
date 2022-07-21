@@ -5,42 +5,22 @@
 <ModuleName>uz_FOC_sample</ModuleName>
 <InstancesList>
 <Instance>
-<InstName>grp_uz_FOC_SpaceVector_Limitation_q_1_fu_269</InstName>
-<ModuleName>uz_FOC_SpaceVector_Limitation_q_1</ModuleName>
+<InstName>grp_uz_FOC_SpaceVector_Limitation_1_fu_265</InstName>
+<ModuleName>uz_FOC_SpaceVector_Limitation_1</ModuleName>
 <IsCompInst>true</IsCompInst>
-<ID>269</ID>
+<ID>265</ID>
 <InstancesList>
 <Instance>
-<InstName>grp_pow_generic_float_s_fu_138</InstName>
+<InstName>grp_pow_generic_float_s_fu_153</InstName>
 <ModuleName>pow_generic_float_s</ModuleName>
 <IsCompInst>true</IsCompInst>
-<ID>138</ID>
+<ID>153</ID>
 </Instance>
 <Instance>
-<InstName>grp_pow_generic_float_s_fu_158</InstName>
+<InstName>grp_pow_generic_float_s_fu_173</InstName>
 <ModuleName>pow_generic_float_s</ModuleName>
 <IsCompInst>true</IsCompInst>
-<ID>158</ID>
-</Instance>
-</InstancesList>
-</Instance>
-<Instance>
-<InstName>grp_uz_FOC_SpaceVector_Limitation_d_1_fu_293</InstName>
-<ModuleName>uz_FOC_SpaceVector_Limitation_d_1</ModuleName>
-<IsCompInst>true</IsCompInst>
-<ID>293</ID>
-<InstancesList>
-<Instance>
-<InstName>grp_pow_generic_float_s_fu_138</InstName>
-<ModuleName>pow_generic_float_s</ModuleName>
-<IsCompInst>true</IsCompInst>
-<ID>138</ID>
-</Instance>
-<Instance>
-<InstName>grp_pow_generic_float_s_fu_158</InstName>
-<ModuleName>pow_generic_float_s</ModuleName>
-<IsCompInst>true</IsCompInst>
-<ID>158</ID>
+<ID>173</ID>
 </Instance>
 </InstancesList>
 </Instance>
@@ -192,19 +172,19 @@
 </InterfaceSummary>
 </Module>
 <Module>
-<Name>uz_FOC_SpaceVector_Limitation_d_1</Name>
+<Name>uz_FOC_SpaceVector_Limitation_1</Name>
 <PerformanceEstimates>
 <SummaryOfTimingAnalysis>
 <TargetClockPeriod>10.00</TargetClockPeriod>
 <ClockUncertainty>2.70</ClockUncertainty>
-<EstimatedClockPeriod>7.455</EstimatedClockPeriod>
+<EstimatedClockPeriod>7.300</EstimatedClockPeriod>
 </SummaryOfTimingAnalysis>
 <SummaryOfOverallLatency>
 <Best-caseLatency>30</Best-caseLatency>
-<Average-caseLatency>48</Average-caseLatency>
+<Average-caseLatency>60</Average-caseLatency>
 <Worst-caseLatency>69</Worst-caseLatency>
 <Best-caseRealTimeLatency>0.300 us</Best-caseRealTimeLatency>
-<Average-caseRealTimeLatency>0.480 us</Average-caseRealTimeLatency>
+<Average-caseRealTimeLatency>0.600 us</Average-caseRealTimeLatency>
 <Worst-caseRealTimeLatency>0.690 us</Worst-caseRealTimeLatency>
 <PipelineInitiationInterval>30 ~ 69</PipelineInitiationInterval>
 <PipelineType>none</PipelineType>
@@ -218,10 +198,10 @@
 <DSP>33</DSP>
 <AVAIL_DSP>2520</AVAIL_DSP>
 <UTIL_DSP>1</UTIL_DSP>
-<FF>4424</FF>
+<FF>4558</FF>
 <AVAIL_FF>548160</AVAIL_FF>
 <UTIL_FF>~0</UTIL_FF>
-<LUT>6514</LUT>
+<LUT>6943</LUT>
 <AVAIL_LUT>274080</AVAIL_LUT>
 <UTIL_LUT>2</UTIL_LUT>
 <URAM>0</URAM>
@@ -232,7 +212,7 @@
 <InterfaceSummary>
 <RtlPorts>
 <name>ap_clk</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -243,7 +223,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_rst</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -254,7 +234,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_start</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -265,7 +245,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_done</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -276,7 +256,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_idle</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -287,7 +267,7 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_ready</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -298,7 +278,18 @@
 </RtlPorts>
 <RtlPorts>
 <name>ap_return_0</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
+<Type>return value</Type>
+<Scope></Scope>
+<IOProtocol>ap_ctrl_hs</IOProtocol>
+<IOConfig></IOConfig>
+<Dir>out</Dir>
+<Bits>256</Bits>
+<Attribute>data</Attribute>
+</RtlPorts>
+<RtlPorts>
+<name>ap_return_1</name>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
@@ -308,14 +299,14 @@
 <Attribute>data</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>ap_return_1</name>
-<Object>uz_FOC_SpaceVector_Limitation_d.1</Object>
+<name>ap_return_2</name>
+<Object>uz_FOC_SpaceVector_Limitation.1</Object>
 <Type>return value</Type>
 <Scope></Scope>
 <IOProtocol>ap_ctrl_hs</IOProtocol>
 <IOConfig></IOConfig>
 <Dir>out</Dir>
-<Bits>288</Bits>
+<Bits>32</Bits>
 <Attribute>data</Attribute>
 </RtlPorts>
 <RtlPorts>
@@ -326,202 +317,7 @@
 <IOProtocol>ap_none</IOProtocol>
 <IOConfig></IOConfig>
 <Dir>in</Dir>
-<Bits>288</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>u_input_Volts_0</name>
-<Object>u_input_Volts_0</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>u_input_Volts_1</name>
-<Object>u_input_Volts_1</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>V_dc_volts</name>
-<Object>V_dc_volts</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>omega_el_rad_per_sec</name>
-<Object>omega_el_rad_per_sec</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>i_actual_Ampere_1</name>
-<Object>i_actual_Ampere_1</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-</InterfaceSummary>
-</Module>
-<Module>
-<Name>uz_FOC_SpaceVector_Limitation_q_1</Name>
-<PerformanceEstimates>
-<SummaryOfTimingAnalysis>
-<TargetClockPeriod>10.00</TargetClockPeriod>
-<ClockUncertainty>2.70</ClockUncertainty>
-<EstimatedClockPeriod>7.455</EstimatedClockPeriod>
-</SummaryOfTimingAnalysis>
-<SummaryOfOverallLatency>
-<Best-caseLatency>30</Best-caseLatency>
-<Average-caseLatency>48</Average-caseLatency>
-<Worst-caseLatency>69</Worst-caseLatency>
-<Best-caseRealTimeLatency>0.300 us</Best-caseRealTimeLatency>
-<Average-caseRealTimeLatency>0.480 us</Average-caseRealTimeLatency>
-<Worst-caseRealTimeLatency>0.690 us</Worst-caseRealTimeLatency>
-<PipelineInitiationInterval>30 ~ 69</PipelineInitiationInterval>
-<PipelineType>none</PipelineType>
-</SummaryOfOverallLatency>
-</PerformanceEstimates>
-<AreaEstimates>
-<Resources>
-<BRAM_18K>14</BRAM_18K>
-<AVAIL_BRAM>1824</AVAIL_BRAM>
-<UTIL_BRAM>~0</UTIL_BRAM>
-<DSP>33</DSP>
-<AVAIL_DSP>2520</AVAIL_DSP>
-<UTIL_DSP>1</UTIL_DSP>
-<FF>4456</FF>
-<AVAIL_FF>548160</AVAIL_FF>
-<UTIL_FF>~0</UTIL_FF>
-<LUT>6538</LUT>
-<AVAIL_LUT>274080</AVAIL_LUT>
-<UTIL_LUT>2</UTIL_LUT>
-<URAM>0</URAM>
-<AVAIL_URAM>0</AVAIL_URAM>
-<UTIL_URAM>0</UTIL_URAM>
-</Resources>
-</AreaEstimates>
-<InterfaceSummary>
-<RtlPorts>
-<name>ap_clk</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_rst</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_start</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_done</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>out</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_idle</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>out</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_ready</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>out</Dir>
-<Bits>1</Bits>
-<Attribute>control</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_return_0</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>out</Dir>
-<Bits>32</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>ap_return_1</name>
-<Object>uz_FOC_SpaceVector_Limitation_q.1</Object>
-<Type>return value</Type>
-<Scope></Scope>
-<IOProtocol>ap_ctrl_hs</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>out</Dir>
-<Bits>288</Bits>
-<Attribute>data</Attribute>
-</RtlPorts>
-<RtlPorts>
-<name>p_read</name>
-<Object>p_read</Object>
-<Type>scalar</Type>
-<Scope></Scope>
-<IOProtocol>ap_none</IOProtocol>
-<IOConfig></IOConfig>
-<Dir>in</Dir>
-<Bits>288</Bits>
+<Bits>256</Bits>
 <Attribute>data</Attribute>
 </RtlPorts>
 <RtlPorts>
@@ -587,33 +383,33 @@
 <SummaryOfTimingAnalysis>
 <TargetClockPeriod>10.00</TargetClockPeriod>
 <ClockUncertainty>2.70</ClockUncertainty>
-<EstimatedClockPeriod>7.455</EstimatedClockPeriod>
+<EstimatedClockPeriod>7.325</EstimatedClockPeriod>
 </SummaryOfTimingAnalysis>
 <SummaryOfOverallLatency>
-<Best-caseLatency>106</Best-caseLatency>
-<Average-caseLatency>142</Average-caseLatency>
-<Worst-caseLatency>184</Worst-caseLatency>
-<Best-caseRealTimeLatency>1.060 us</Best-caseRealTimeLatency>
-<Average-caseRealTimeLatency>1.420 us</Average-caseRealTimeLatency>
-<Worst-caseRealTimeLatency>1.840 us</Worst-caseRealTimeLatency>
-<PipelineInitiationInterval>107 ~ 185</PipelineInitiationInterval>
+<Best-caseLatency>58</Best-caseLatency>
+<Average-caseLatency>88</Average-caseLatency>
+<Worst-caseLatency>97</Worst-caseLatency>
+<Best-caseRealTimeLatency>0.580 us</Best-caseRealTimeLatency>
+<Average-caseRealTimeLatency>0.880 us</Average-caseRealTimeLatency>
+<Worst-caseRealTimeLatency>0.970 us</Worst-caseRealTimeLatency>
+<PipelineInitiationInterval>59 ~ 98</PipelineInitiationInterval>
 <PipelineType>none</PipelineType>
 </SummaryOfOverallLatency>
 </PerformanceEstimates>
 <AreaEstimates>
 <Resources>
-<BRAM_18K>30</BRAM_18K>
+<BRAM_18K>16</BRAM_18K>
 <AVAIL_BRAM>1824</AVAIL_BRAM>
-<UTIL_BRAM>1</UTIL_BRAM>
-<DSP>82</DSP>
+<UTIL_BRAM>~0</UTIL_BRAM>
+<DSP>49</DSP>
 <AVAIL_DSP>2520</AVAIL_DSP>
-<UTIL_DSP>3</UTIL_DSP>
-<FF>14286</FF>
+<UTIL_DSP>1</UTIL_DSP>
+<FF>9561</FF>
 <AVAIL_FF>548160</AVAIL_FF>
-<UTIL_FF>2</UTIL_FF>
-<LUT>19257</LUT>
+<UTIL_FF>1</UTIL_FF>
+<LUT>13099</LUT>
 <AVAIL_LUT>274080</AVAIL_LUT>
-<UTIL_LUT>7</UTIL_LUT>
+<UTIL_LUT>4</UTIL_LUT>
 <URAM>0</URAM>
 <AVAIL_URAM>0</AVAIL_URAM>
 <UTIL_URAM>0</UTIL_URAM>
@@ -623,7 +419,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -636,7 +432,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -649,7 +445,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWADDR</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -662,7 +458,7 @@
 <RtlPorts>
 <name>s_axi_Din_WVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -675,7 +471,7 @@
 <RtlPorts>
 <name>s_axi_Din_WREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -688,7 +484,7 @@
 <RtlPorts>
 <name>s_axi_Din_WDATA</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -701,7 +497,7 @@
 <RtlPorts>
 <name>s_axi_Din_WSTRB</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -714,7 +510,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -727,7 +523,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -740,7 +536,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARADDR</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -753,7 +549,7 @@
 <RtlPorts>
 <name>s_axi_Din_RVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -766,7 +562,7 @@
 <RtlPorts>
 <name>s_axi_Din_RREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -779,7 +575,7 @@
 <RtlPorts>
 <name>s_axi_Din_RDATA</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -792,7 +588,7 @@
 <RtlPorts>
 <name>s_axi_Din_RRESP</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -805,7 +601,7 @@
 <RtlPorts>
 <name>s_axi_Din_BVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -818,7 +614,7 @@
 <RtlPorts>
 <name>s_axi_Din_BREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -831,7 +627,7 @@
 <RtlPorts>
 <name>s_axi_Din_BRESP</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>

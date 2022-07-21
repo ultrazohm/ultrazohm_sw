@@ -250,8 +250,6 @@ struct uz_dq_t uz_FOC_linear_decoupling(struct uz_PMSM_t config, struct uz_dq_t 
 # 1 "foc/uz_space_vector_limitation.h" 1
 # 18 "foc/uz_space_vector_limitation.h"
 struct uz_dq_t uz_FOC_SpaceVector_Limitation(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_d(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
-float uz_FOC_SpaceVector_Limitation_q(struct uz_dq_t u_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, struct uz_dq_t i_actual_Ampere, _Bool* ext_clamping);
 # 10 "foc/uz_FOC.h" 2
 # 1 "C:/Xilinx/Vitis/2020.1/tps/mingw/6.2.0/win64.o/nt\\x86_64-w64-mingw32\\include\\math.h" 1 3
 # 11 "C:/Xilinx/Vitis/2020.1/tps/mingw/6.2.0/win64.o/nt\\x86_64-w64-mingw32\\include\\math.h" 3
@@ -1460,26 +1458,23 @@ enum uz_FOC_decoupling_select {
 
 
 typedef struct uz_FOC {
- unsigned int decoupling_select;
+ _Bool decoupling_select;
  _Bool I_rst;
  _Bool ext_clamping;
  struct uz_PMSM_t config_PMSM;
 }uz_FOC;
 
-struct uz_dq_t u_output_Volts;
 uz_PI_Controller_config config_id;
 uz_PI_Controller_config config_iq;
-# 44 "foc/uz_FOC.h"
+# 43 "foc/uz_FOC.h"
 __attribute__((sdx_kernel("uz_FOC_sample", 0))) void uz_FOC_sample(uz_FOC* self,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float* output_volts_d, float* output_volts_q);
+struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq);
+struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm,struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 # 18 "foc/uz_FOC.c" 2
-
-
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq);
-static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t pmsm,struct uz_dq_t actual_Ampere, float omega_el_rad_per_sec);
 
 __attribute__((sdx_kernel("uz_FOC_sample", 0))) void uz_FOC_sample(uz_FOC* self,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float* output_volts_d, float* output_volts_q) {
 #pragma HLS TOP name=uz_FOC_sample
-# 23 "foc/uz_FOC.c"
+# 19 "foc/uz_FOC.c"
 
 #pragma HLS INTERFACE s_axilite port=self bundle = Din
 #pragma HLS INTERFACE s_axilite port=Controller_id bundle = Din
@@ -1491,25 +1486,62 @@ __attribute__((sdx_kernel("uz_FOC_sample", 0))) void uz_FOC_sample(uz_FOC* self,
 #pragma HLS INTERFACE s_axilite port=return bundle = Din
 #pragma HLS INTERFACE m_axi port=output_volts_q offset=slave bundle=Dout depth=50
 #pragma HLS INTERFACE m_axi port=output_volts_d offset=slave bundle=Dout depth=50
- struct uz_dq_t u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere,Controller_id,Controller_iq);
- struct uz_dq_t u_decoup_Volts = uz_FOC_decoupling(self->decoupling_select, self->config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+ static struct uz_dq_t u_pre_limit_Volts;
+ u_pre_limit_Volts = uz_FOC_CurrentControl(self, i_reference_Ampere, i_actual_Ampere,Controller_id,Controller_iq);
+ static struct uz_dq_t u_decoup_Volts;
+ u_decoup_Volts = uz_FOC_decoupling(self->decoupling_select, self->config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
  u_pre_limit_Volts.d += u_decoup_Volts.d;
  u_pre_limit_Volts.q += u_decoup_Volts.q;
- *output_volts_d = uz_FOC_SpaceVector_Limitation_d(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
- *output_volts_q = uz_FOC_SpaceVector_Limitation_q(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
-
+ struct uz_dq_t u_output_Volts = uz_FOC_SpaceVector_Limitation(u_pre_limit_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+ *output_volts_d = u_output_Volts.d;
+ *output_volts_q = u_output_Volts.q;
 }
-
-static struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq) {
+# 49 "foc/uz_FOC.c"
+struct uz_dq_t uz_FOC_CurrentControl(uz_FOC* self, struct uz_dq_t i_reference_Ampere, struct uz_dq_t i_actual_Ampere,uz_PI_Controller_config* Controller_id,uz_PI_Controller_config* Controller_iq) {
  struct uz_dq_t u_output_Volts = { 0 };
- u_output_Volts.q = uz_PI_Controller_sample(Controller_iq,self->I_rst, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
- u_output_Volts.d = uz_PI_Controller_sample(Controller_id,self->I_rst, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
- return (u_output_Volts);
+ _Bool internal_clamping_d = 0;
+ _Bool internal_clamping_q = 0;
+ static float I_sum_d,I_sum_q;
+ float error_d = i_reference_Ampere.d - i_actual_Ampere.d;
+ float error_q = i_reference_Ampere.q - i_actual_Ampere.q;
+ float old_I_sum_d = I_sum_d;
+ float old_I_sum_q = I_sum_q;
+ float preIntegrator_d = error_d * Controller_id->Ki;
+ float preIntegrator_q = error_q * Controller_iq->Ki;
+ float P_sum_d = error_d * Controller_id->Kp;
+ float P_sum_q = error_q * Controller_iq->Kp;
+ float output_before_saturation_d = old_I_sum_d + P_sum_d;
+ float output_before_saturation_q = old_I_sum_q + P_sum_q;
+ internal_clamping_d = uz_PI_Controller_Clamping_Circuit(preIntegrator_d, output_before_saturation_d, Controller_id->upper_limit, Controller_id->lower_limit);
+ internal_clamping_q = uz_PI_Controller_Clamping_Circuit(preIntegrator_q, output_before_saturation_q, Controller_iq->upper_limit, Controller_iq->lower_limit);
+ _Bool clamping_active_d = (self->ext_clamping == 1) || (internal_clamping_d == 1);
+ _Bool clamping_active_q = (self->ext_clamping == 1) || (internal_clamping_q == 1);
+ if ( clamping_active_d ) {
+  I_sum_d += 0.0f;
+ } else {
+  I_sum_d += preIntegrator_d * Controller_id->samplingTime_sec;
+ }
+ if ( clamping_active_q ) {
+  I_sum_q += 0.0f;
+ } else {
+  I_sum_q += preIntegrator_q * Controller_iq->samplingTime_sec;
+ }
+ float op;
+ u_output_Volts.d = uz_signals_saturation(output_before_saturation_d, Controller_id->upper_limit, Controller_id->lower_limit);
+ u_output_Volts.q = uz_signals_saturation(output_before_saturation_q, Controller_iq->upper_limit, Controller_iq->lower_limit);
 
+ if(self ->I_rst){
+  I_sum_d = 0.0f;
+  I_sum_q = 0.0f;
+  internal_clamping_d = 0;
+  internal_clamping_q = 0;
+ }
+ return (u_output_Volts);
 }
 
-static struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
+struct uz_dq_t uz_FOC_decoupling(enum uz_FOC_decoupling_select decoupling_select, struct uz_PMSM_t config_PMSM, struct uz_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
  struct uz_dq_t decouple_voltage={0};
+
  switch (decoupling_select)
     {
     case no_decoupling:

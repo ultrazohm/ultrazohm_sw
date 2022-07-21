@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="FOC_app" location="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app" platform="C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/FOC_wrapper.xpfm" platformUID="xilinx:zcu102::0.0(custom)" systemProject="FOC_app_system" sysConfig="FOC_wrapper" runtime="cpp" cpu="domain_psu_cortexa53_0" cpuInstance="psu_cortexa53_0" os="standalone" mssSignature="09cb46e6f7feef9d170ebf8d1035896f">
+  <configuration name="Debug" id="xilinx.gnu.arm.a53.exe.debug.1516128600">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.arm.a53.exe.release.713295474" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="hello_world"/>
+</sdkproject:SdkProject>

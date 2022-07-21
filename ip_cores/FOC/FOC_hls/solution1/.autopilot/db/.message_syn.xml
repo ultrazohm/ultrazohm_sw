@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Messages>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_space_vector_limitation.c&apos; ..." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_signals.c&apos; ..." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_piController.c&apos; ..." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_linear_decoupling.c&apos; ..." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_Transformation.c&apos; ..." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_FOC.c&apos; ..." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_Transformation.c&apos; ..." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_linear_decoupling.c&apos; ..." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_piController.c&apos; ..." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_signals.c&apos; ..." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;foc/uz_space_vector_limitation.c&apos; ..." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-777]" key="HLS 200-777" tag="" content="Using interface defaults for &apos;Vivado&apos; target." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-131]" key="HLS 214-131" tag="" content="Inlining function &apos;ap_fixed_base&lt;65, 9, true, (ap_q_mode)5, (ap_o_mode)3, 0&gt;::ap_fixed_base(char const*)&apos; into &apos;ap_fixed&lt;65, 9, (ap_q_mode)5, (ap_o_mode)3, 0&gt;::ap_fixed(char const*)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/include/header_files\ap_fixed.h:148:67)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-131]" key="HLS 214-131" tag="" content="Inlining function &apos;ap_fixed&lt;65, 9, (ap_q_mode)5, (ap_o_mode)3, 0&gt;::ap_fixed(char const*)&apos; into &apos;__cxx_global_var_init.16.74&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_pow_tables.h:69:1)" resolution=""/>
@@ -1481,9 +1481,11 @@
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_dead_zone&apos; into &apos;uz_PI_Controller_Clamping_Circuit&apos; (foc/uz_piController.c:26:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_PI_Controller_Clamping_Circuit&apos; (foc/uz_piController.c:26:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_PI_Controller_Clamping_Circuit&apos; (foc/uz_piController.c:26:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_PI_Controller_Clamping_Circuit&apos; into &apos;uz_PI_Controller_sample&apos; (foc/uz_piController.c:38:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_saturation&apos; into &apos;uz_PI_Controller_sample&apos; (foc/uz_piController.c:38:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_FOC_linear_decoupling&apos; into &apos;uz_FOC_decoupling&apos; (foc/uz_FOC.c:51:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_PI_Controller_Clamping_Circuit&apos; into &apos;uz_FOC_CurrentControl&apos; (foc/uz_FOC.c:49:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_PI_Controller_Clamping_Circuit&apos; into &apos;uz_FOC_CurrentControl&apos; (foc/uz_FOC.c:49:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_saturation&apos; into &apos;uz_FOC_CurrentControl&apos; (foc/uz_FOC.c:49:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_saturation&apos; into &apos;uz_FOC_CurrentControl&apos; (foc/uz_FOC.c:49:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_FOC_linear_decoupling&apos; into &apos;uz_FOC_decoupling&apos; (foc/uz_FOC.c:91:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::fp_struct(float)&apos; into &apos;int generic_isinf&lt;float&gt;(float)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_isinf.h:16:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::fp_struct(float)&apos; into &apos;int generic_isnan&lt;float&gt;(float)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_isnan.h:16:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::data() const (.76.85.95.105)&apos; into &apos;fp_struct&lt;float&gt;::to_float() const (.73.82.92.102)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:345:0)" resolution=""/>
@@ -1505,63 +1507,56 @@
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::to_ieee() const&apos; into &apos;float generic_copysign&lt;float&gt;(float, float)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_copysign.h:10:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;float generic_copysign&lt;float&gt;(float, float)&apos; into &apos;float generic_fabs&lt;float&gt;(float)&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_fabs.h:12:0)" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;float generic_fabs&lt;float&gt;(float)&apos; into &apos;fabsf&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/src/c/fabsfloat.cpp:7:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fabsf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:91:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fabsf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:103:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_d_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_q_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation_d&apos; (foc/uz_space_vector_limitation.c:44:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_d_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_q_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation_q&apos; (foc/uz_space_vector_limitation.c:67:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_FOC_CurrentControl&apos; into &apos;uz_FOC_sample&apos; (foc/uz_FOC.c:23:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_FOC_decoupling&apos; into &apos;uz_FOC_sample&apos; (foc/uz_FOC.c:23:0)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:00:34 ; elapsed = 00:01:12 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:00:34 ; elapsed = 00:01:12 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fabsf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_d_axis&apos; (foc/uz_space_vector_limitation.c:45:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;fabsf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_limit_dq_prio_q_axis&apos; (foc/uz_space_vector_limitation.c:57:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;powf&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_signals_get_sign_of_value&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_d_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_limit_dq_prio_q_axis&apos; into &apos;uz_FOC_SpaceVector_Limitation&apos; (foc/uz_space_vector_limitation.c:21:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 214-178]" key="HLS 214-178" tag="" content="Inlining function &apos;uz_FOC_decoupling&apos; into &apos;uz_FOC_sample&apos; (foc/uz_FOC.c:19:0)" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:00:45 ; elapsed = 00:01:35 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:00:45 ; elapsed = 00:01:35 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1467" tag="" content="Starting code transformations ..." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:00:34 ; elapsed = 00:01:13 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:00:46 ; elapsed = 00:01:36 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1472" tag="" content="Checking synthesizability ..." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::to_ieee&apos; into &apos;pow_reduce::pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:412) automatically." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;pow_reduce::pow_traits&lt;float&gt;::log_range_reduction&lt;39&gt;&apos; into &apos;pow_reduce::pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:548) automatically." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:00:36 ; elapsed = 00:01:15 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:00:47 ; elapsed = 00:01:37 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="WARNING" prefix="[XFORM 203-803]" key="XFORM_IF_TY_INCOMPATIBLE_WARN_279" tag="" content="Dropped interface mode &apos;ap_auto&apos; on &apos;self&apos; as it is incompatible with its interface mode &apos;s_axilite&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[XFORM 203-803]" key="XFORM_IF_TY_INCOMPATIBLE_WARN_279" tag="" content="Dropped interface mode &apos;ap_auto&apos; on &apos;Controller_id&apos; (foc/uz_FOC.c:23) as it is incompatible with its interface mode &apos;s_axilite&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[XFORM 203-803]" key="XFORM_IF_TY_INCOMPATIBLE_WARN_279" tag="" content="Dropped interface mode &apos;ap_auto&apos; on &apos;Controller_iq&apos; (foc/uz_FOC.c:23) as it is incompatible with its interface mode &apos;s_axilite&apos;." resolution=""/>
+	<Message severity="WARNING" prefix="[XFORM 203-803]" key="XFORM_IF_TY_INCOMPATIBLE_WARN_279" tag="" content="Dropped interface mode &apos;ap_auto&apos; on &apos;Controller_id&apos; (foc/uz_FOC.c:19) as it is incompatible with its interface mode &apos;s_axilite&apos;." resolution=""/>
+	<Message severity="WARNING" prefix="[XFORM 203-803]" key="XFORM_IF_TY_INCOMPATIBLE_WARN_279" tag="" content="Dropped interface mode &apos;ap_auto&apos; on &apos;Controller_iq&apos; (foc/uz_FOC.c:19) as it is incompatible with its interface mode &apos;s_axilite&apos;." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;fp_struct&lt;float&gt;::to_ieee&apos; into &apos;pow_reduce::pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:412) automatically." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;pow_reduce::pow_traits&lt;float&gt;::log_range_reduction&lt;39&gt;&apos; into &apos;pow_reduce::pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:548) automatically." resolution=""/>
-	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (foc/uz_piController.c:38:56) to (foc/uz_piController.c:60:2) in function &apos;uz_PI_Controller_sample.1&apos;... converting 5 basic blocks." resolution=""/>
-	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock to (foc/uz_FOC.c:41:1) in function &apos;uz_FOC_sample&apos;... converting 3 basic blocks." resolution=""/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock to (foc/uz_FOC.c:39:1) in function &apos;uz_FOC_sample&apos;... converting 3 basic blocks." resolution=""/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (foc/uz_FOC.c:54:39) in function &apos;uz_FOC_CurrentControl.1&apos;... converting 9 basic blocks." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock to (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:690:3) in function &apos;pow_reduce::pow_generic&lt;float&gt;&apos;... converting 10 basic blocks." resolution=""/>
-	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;uz_PI_Controller_sample.1&apos; into &apos;uz_FOC_sample&apos; (foc/uz_FOC.c:45) automatically." resolution=""/>
+	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;uz_FOC_CurrentControl.1&apos; into &apos;uz_FOC_sample&apos; (foc/uz_FOC.c:31) automatically." resolution=""/>
 	<Message severity="INFO" prefix="[XFORM 203-11]" key="XFORM_EXPR_BALANCE_STATUS_178" tag="" content="Balancing expressions in function &apos;pow_reduce::pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:18:3)...3 expression(s) balanced." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:00:38 ; elapsed = 00:01:17 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:00:49 ; elapsed = 00:01:40 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="WARNING" prefix="[XFORM 203-631]" key="XFORM_FRN_STATUS_336" tag="" content="Renaming function &apos;pow_reduce::pow_generic&lt;float&gt;&apos; to &apos;pow_generic&lt;float&gt;&apos; (r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:18:3)" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:00:39 ; elapsed = 00:01:19 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:00:50 ; elapsed = 00:01:41 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1317" tag="" content="Starting hardware synthesis ..." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1385" tag="" content="Synthesizing &apos;uz_FOC_sample&apos; ..." resolution=""/>
 	<Message severity="WARNING" prefix="[SYN 201-103]" key="SYN_MODULE_NAME_ILLEGAL_445" tag="" content="Legalizing function name &apos;pow_generic&lt;float&gt;&apos; to &apos;pow_generic_float_s&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[SYN 201-103]" key="SYN_MODULE_NAME_ILLEGAL_445" tag="" content="Legalizing function name &apos;uz_FOC_SpaceVector_Limitation_d.1&apos; to &apos;uz_FOC_SpaceVector_Limitation_d_1&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[SYN 201-103]" key="SYN_MODULE_NAME_ILLEGAL_445" tag="" content="Legalizing function name &apos;uz_FOC_SpaceVector_Limitation_q.1&apos; to &apos;uz_FOC_SpaceVector_Limitation_q_1&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[SYN 201-506]" key="SYN_506_884" tag="" content="An incorrect offset &apos;128&apos; is defined with AXILite port &apos;i_reference_Ampere&apos;, and it will be replaced with a new offset &apos;176&apos;." resolution=""/>
+	<Message severity="WARNING" prefix="[SYN 201-103]" key="SYN_MODULE_NAME_ILLEGAL_445" tag="" content="Legalizing function name &apos;uz_FOC_SpaceVector_Limitation.1&apos; to &apos;uz_FOC_SpaceVector_Limitation_1&apos;." resolution=""/>
+	<Message severity="WARNING" prefix="[SYN 201-506]" key="SYN_506_884" tag="" content="An incorrect offset &apos;64&apos; is defined with AXILite port &apos;Controller_id&apos;, and it will be replaced with a new offset &apos;144&apos;." resolution=""/>
+	<Message severity="WARNING" prefix="[SYN 201-506]" key="SYN_506_884" tag="" content="An incorrect offset &apos;88&apos; is defined with AXILite port &apos;Controller_iq&apos;, and it will be replaced with a new offset &apos;168&apos;." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;pow_generic_float_s&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------" resolution=""/>
@@ -1572,49 +1567,37 @@
 	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_46" tag="" content="Pipelining function &apos;pow_generic&lt;float&gt;&apos;." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-1470]" key="HLS 200-1470" tag="SCHEDULE,VITIS_THROUGHPUT" content="Pipelining result : Target II = 1, Final II = 1, Depth = 16." resolution=""/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 80.073 seconds; current allocated memory: 704.724 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 102.154 seconds; current allocated memory: 627.182 MB." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.451 seconds; current allocated memory: 705.446 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.428 seconds; current allocated memory: 627.904 MB." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;uz_FOC_SpaceVector_Limitation_d_1&apos;" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;uz_FOC_SpaceVector_Limitation_1&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..." resolution=""/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.579 seconds; current allocated memory: 706.092 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.639 seconds; current allocated memory: 628.728 MB." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.627 seconds; current allocated memory: 707.005 MB." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;uz_FOC_SpaceVector_Limitation_q_1&apos;" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..." resolution=""/>
-	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.705 seconds; current allocated memory: 707.680 MB." resolution=""/>
-	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..." resolution=""/>
-	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis." resolution=""/>
-	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing." resolution=""/>
-	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..." resolution=""/>
-	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.619 seconds; current allocated memory: 708.626 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.769 seconds; current allocated memory: 629.997 MB." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;uz_FOC_sample&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..." resolution=""/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.755 seconds; current allocated memory: 709.418 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.746 seconds; current allocated memory: 630.791 MB." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..." resolution=""/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.697 seconds; current allocated memory: 710.605 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.585 seconds; current allocated memory: 631.970 MB." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;pow_generic_float_s&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------" resolution=""/>
@@ -1635,27 +1618,17 @@
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mul_mul_18ns_18ns_36_4_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mul_mul_6ns_25s_25_4_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;pow_generic_float_s&apos;." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 1.735 seconds; current allocated memory: 712.294 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 1.692 seconds; current allocated memory: 633.658 MB." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;uz_FOC_SpaceVector_Limitation_d_1&apos;" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;uz_FOC_SpaceVector_Limitation_1&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;faddfsub_32ns_32ns_32_4_full_dsp_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fcmp_32ns_32ns_1_2_no_dsp_1&apos;: 6 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fdiv_32ns_32ns_32_9_no_dsp_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fmul_32ns_32ns_32_3_max_dsp_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fsqrt_32ns_32ns_32_8_no_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;uz_FOC_SpaceVector_Limitation_d_1&apos;." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 1.054 seconds; current allocated memory: 716.730 MB." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;uz_FOC_SpaceVector_Limitation_q_1&apos;" resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------" resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;faddfsub_32ns_32ns_32_4_full_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fcmp_32ns_32ns_1_2_no_dsp_1&apos;: 6 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fdiv_32ns_32ns_32_9_no_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fmul_32ns_32ns_32_3_max_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fsqrt_32ns_32ns_32_8_no_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;uz_FOC_SpaceVector_Limitation_q_1&apos;." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 1.265 seconds; current allocated memory: 721.193 MB." resolution=""/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;uz_FOC_SpaceVector_Limitation_1&apos;." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 1.105 seconds; current allocated memory: 638.631 MB." resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;uz_FOC_sample&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------" resolution=""/>
@@ -1671,15 +1644,15 @@
 	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on port &apos;uz_FOC_sample/output_volts_d&apos; to &apos;s_axilite &amp; ap_none&apos;." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on port &apos;uz_FOC_sample/output_volts_q&apos; to &apos;s_axilite &amp; ap_none&apos;." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on function &apos;uz_FOC_sample&apos; to &apos;s_axilite &amp; ap_ctrl_hs&apos;." resolution=""/>
-	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;I_sum&apos; is power-on initialization." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_851" tag="" content="Bundling port &apos;Controller_id&apos;, &apos;Controller_iq&apos;, &apos;self&apos;, &apos;i_actual_Ampere&apos;, &apos;V_dc_volts&apos;, &apos;omega_el_rad_per_sec&apos; and &apos;i_reference_Ampere&apos; to AXI-Lite port Din." resolution=""/>
+	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;I_sum_d&apos; is power-on initialization." resolution=""/>
+	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;I_sum_q&apos; is power-on initialization." resolution=""/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_851" tag="" content="Bundling port &apos;i_reference_Ampere&apos;, &apos;self&apos;, &apos;i_actual_Ampere&apos;, &apos;V_dc_volts&apos;, &apos;omega_el_rad_per_sec&apos;, &apos;return&apos; and &apos;Controller_iq&apos; to AXI-Lite port Din." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_851" tag="" content="Bundling port &apos;output_volts_d&apos; and &apos;output_volts_q&apos; to AXI-Lite port control." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;faddfsub_32ns_32ns_32_4_full_dsp_1&apos;: 1 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fcmp_32ns_32ns_1_2_no_dsp_1&apos;: 6 instance(s)." resolution=""/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;faddfsub_32ns_32ns_32_4_full_dsp_1&apos;: 2 instance(s)." resolution=""/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fcmp_32ns_32ns_1_2_no_dsp_1&apos;: 8 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fmul_32ns_32ns_32_3_max_dsp_1&apos;: 4 instance(s)." resolution=""/>
-	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;fsub_32ns_32ns_32_4_full_dsp_1&apos;: 1 instance(s)." resolution=""/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;uz_FOC_sample&apos;." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 2.237 seconds; current allocated memory: 726.326 MB." resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 2.357 seconds; current allocated memory: 644.088 MB." resolution=""/>
 	<Message severity="INFO" prefix="[RTMG 210-282]" key="RTMG_282_1796" tag="" content="Generating pipelined core: &apos;uz_FOC_sample_mul_4ns_39ns_43_1_1_Multiplier_0&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[RTMG 210-282]" key="RTMG_282_1796" tag="" content="Generating pipelined core: &apos;uz_FOC_sample_mul_6ns_41ns_47_1_1_Multiplier_1&apos;" resolution=""/>
 	<Message severity="INFO" prefix="[RTMG 210-282]" key="RTMG_282_1796" tag="" content="Generating pipelined core: &apos;uz_FOC_sample_mul_6ns_44ns_50_1_1_Multiplier_2&apos;" resolution=""/>
@@ -1693,8 +1666,8 @@
 	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;uz_FOC_sample_pow_generic_float_s_pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_fYi_rom&apos; using auto ROMs." resolution=""/>
 	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;uz_FOC_sample_pow_generic_float_s_pow_reduce_anonymous_namespace_table_exp_Z1_ap_ufixed_27_g8j_rom&apos; using auto ROMs." resolution=""/>
 	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;uz_FOC_sample_pow_generic_float_s_pow_reduce_anonymous_namespace_table_f_Z2_ap_ufixed_27_0_hbi_rom&apos; using distributed ROMs." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished generating all RTL models Time (s): cpu = 00:00:52 ; elapsed = 00:01:38 . Memory (MB): peak = 998.281 ; gain = 900.539" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished generating all RTL models Time (s): cpu = 00:01:01 ; elapsed = 00:01:58 . Memory (MB): peak = 997.480 ; gain = 912.055" resolution=""/>
 	<Message severity="INFO" prefix="[VHDL 208-304]" key="VHDL_304_1066" tag="" content="Generating VHDL RTL for uz_FOC_sample." resolution=""/>
 	<Message severity="INFO" prefix="[VLOG 209-307]" key="VLOG_307_1067" tag="" content="Generating Verilog RTL for uz_FOC_sample." resolution=""/>
-	<Message severity="INFO" prefix="[HLS 200-789]" key="HLS 200-789" tag="THROUGHPUT,VITIS_KERNEL" content="**** Estimated Fmax: 134.15 MHz" resolution=""/>
+	<Message severity="INFO" prefix="[HLS 200-789]" key="HLS 200-789" tag="THROUGHPUT,VITIS_KERNEL" content="**** Estimated Fmax: 136.53 MHz" resolution=""/>
 </Messages>

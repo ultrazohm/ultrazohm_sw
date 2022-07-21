@@ -112,47 +112,21 @@ u64 XUz_foc_sample_Get_output_volts_q(XUz_foc_sample *InstancePtr) {
     return Data;
 }
 
-void XUz_foc_sample_Set_Controller_id(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_id Data) {
+void XUz_foc_sample_Set_i_reference_Ampere(XUz_foc_sample *InstancePtr, XUz_foc_sample_I_reference_ampere Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 0, Data.word_0);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 4, Data.word_1);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 8, Data.word_2);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 12, Data.word_3);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 16, Data.word_4);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 0, Data.word_0);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 4, Data.word_1);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 8, Data.word_2);
 }
 
-XUz_foc_sample_Controller_id XUz_foc_sample_Get_Controller_id(XUz_foc_sample *InstancePtr) {
-    XUz_foc_sample_Controller_id Data;
+XUz_foc_sample_I_reference_ampere XUz_foc_sample_Get_i_reference_Ampere(XUz_foc_sample *InstancePtr) {
+    XUz_foc_sample_I_reference_ampere Data;
 
-    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 0);
-    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 4);
-    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 8);
-    Data.word_3 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 12);
-    Data.word_4 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 16);
-    return Data;
-}
-
-void XUz_foc_sample_Set_Controller_iq(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_iq Data) {
-    Xil_AssertVoid(InstancePtr != NULL);
-    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 0, Data.word_0);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 4, Data.word_1);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 8, Data.word_2);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 12, Data.word_3);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 16, Data.word_4);
-}
-
-XUz_foc_sample_Controller_iq XUz_foc_sample_Get_Controller_iq(XUz_foc_sample *InstancePtr) {
-    XUz_foc_sample_Controller_iq Data;
-
-    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 0);
-    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 4);
-    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 8);
-    Data.word_3 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 12);
-    Data.word_4 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 16);
+    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 0);
+    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 4);
+    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 8);
     return Data;
 }
 
@@ -168,7 +142,6 @@ void XUz_foc_sample_Set_self_i(XUz_foc_sample *InstancePtr, XUz_foc_sample_Self_
     XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 20, Data.word_5);
     XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 24, Data.word_6);
     XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 28, Data.word_7);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 32, Data.word_8);
 }
 
 XUz_foc_sample_Self_i XUz_foc_sample_Get_self_i(XUz_foc_sample *InstancePtr) {
@@ -182,7 +155,6 @@ XUz_foc_sample_Self_i XUz_foc_sample_Get_self_i(XUz_foc_sample *InstancePtr) {
     Data.word_5 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 20);
     Data.word_6 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 24);
     Data.word_7 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 28);
-    Data.word_8 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_I_DATA + 32);
     return Data;
 }
 
@@ -197,7 +169,6 @@ XUz_foc_sample_Self_o XUz_foc_sample_Get_self_o(XUz_foc_sample *InstancePtr) {
     Data.word_5 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_O_DATA + 20);
     Data.word_6 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_O_DATA + 24);
     Data.word_7 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_O_DATA + 28);
-    Data.word_8 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_SELF_O_DATA + 32);
     return Data;
 }
 
@@ -263,21 +234,47 @@ u32 XUz_foc_sample_Get_omega_el_rad_per_sec(XUz_foc_sample *InstancePtr) {
     return Data;
 }
 
-void XUz_foc_sample_Set_i_reference_Ampere(XUz_foc_sample *InstancePtr, XUz_foc_sample_I_reference_ampere Data) {
+void XUz_foc_sample_Set_Controller_id(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_id Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 0, Data.word_0);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 4, Data.word_1);
-    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 8, Data.word_2);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 0, Data.word_0);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 4, Data.word_1);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 8, Data.word_2);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 12, Data.word_3);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 16, Data.word_4);
 }
 
-XUz_foc_sample_I_reference_ampere XUz_foc_sample_Get_i_reference_Ampere(XUz_foc_sample *InstancePtr) {
-    XUz_foc_sample_I_reference_ampere Data;
+XUz_foc_sample_Controller_id XUz_foc_sample_Get_Controller_id(XUz_foc_sample *InstancePtr) {
+    XUz_foc_sample_Controller_id Data;
 
-    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 0);
-    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 4);
-    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_I_REFERENCE_AMPERE_DATA + 8);
+    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 0);
+    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 4);
+    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 8);
+    Data.word_3 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 12);
+    Data.word_4 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_ID_DATA + 16);
+    return Data;
+}
+
+void XUz_foc_sample_Set_Controller_iq(XUz_foc_sample *InstancePtr, XUz_foc_sample_Controller_iq Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 0, Data.word_0);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 4, Data.word_1);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 8, Data.word_2);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 12, Data.word_3);
+    XUz_foc_sample_WriteReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 16, Data.word_4);
+}
+
+XUz_foc_sample_Controller_iq XUz_foc_sample_Get_Controller_iq(XUz_foc_sample *InstancePtr) {
+    XUz_foc_sample_Controller_iq Data;
+
+    Data.word_0 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 0);
+    Data.word_1 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 4);
+    Data.word_2 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 8);
+    Data.word_3 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 12);
+    Data.word_4 = XUz_foc_sample_ReadReg(InstancePtr->Din_BaseAddress, XUZ_FOC_SAMPLE_DIN_ADDR_CONTROLLER_IQ_DATA + 16);
     return Data;
 }
 

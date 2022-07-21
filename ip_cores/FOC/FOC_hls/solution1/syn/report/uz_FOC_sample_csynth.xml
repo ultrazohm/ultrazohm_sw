@@ -18,27 +18,27 @@
 <PipelineType>none</PipelineType>
 <SummaryOfTimingAnalysis>
 <unit>ns</unit>
-<EstimatedClockPeriod>7.455</EstimatedClockPeriod>
+<EstimatedClockPeriod>7.325</EstimatedClockPeriod>
 </SummaryOfTimingAnalysis>
 <SummaryOfOverallLatency>
 <unit>clock cycles</unit>
-<Best-caseLatency>106</Best-caseLatency>
-<Average-caseLatency>142</Average-caseLatency>
-<Worst-caseLatency>184</Worst-caseLatency>
-<Best-caseRealTimeLatency>1.060 us</Best-caseRealTimeLatency>
-<Average-caseRealTimeLatency>1.420 us</Average-caseRealTimeLatency>
-<Worst-caseRealTimeLatency>1.840 us</Worst-caseRealTimeLatency>
-<Interval-min>107</Interval-min>
-<Interval-max>185</Interval-max>
+<Best-caseLatency>58</Best-caseLatency>
+<Average-caseLatency>88</Average-caseLatency>
+<Worst-caseLatency>97</Worst-caseLatency>
+<Best-caseRealTimeLatency>0.580 us</Best-caseRealTimeLatency>
+<Average-caseRealTimeLatency>0.880 us</Average-caseRealTimeLatency>
+<Worst-caseRealTimeLatency>0.970 us</Worst-caseRealTimeLatency>
+<Interval-min>59</Interval-min>
+<Interval-max>98</Interval-max>
 </SummaryOfOverallLatency>
 </PerformanceEstimates>
 
 <AreaEstimates>
 <Resources>
-<BRAM_18K>30</BRAM_18K>
-<DSP>82</DSP>
-<FF>14286</FF>
-<LUT>19257</LUT>
+<BRAM_18K>16</BRAM_18K>
+<DSP>49</DSP>
+<FF>9561</FF>
+<LUT>13099</LUT>
 <URAM>0</URAM>
 </Resources>
 <AvailableResources>
@@ -54,7 +54,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -67,7 +67,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -80,7 +80,7 @@
 <RtlPorts>
 <name>s_axi_Din_AWADDR</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -93,7 +93,7 @@
 <RtlPorts>
 <name>s_axi_Din_WVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -106,7 +106,7 @@
 <RtlPorts>
 <name>s_axi_Din_WREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -119,7 +119,7 @@
 <RtlPorts>
 <name>s_axi_Din_WDATA</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -132,7 +132,7 @@
 <RtlPorts>
 <name>s_axi_Din_WSTRB</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -145,7 +145,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -158,7 +158,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -171,7 +171,7 @@
 <RtlPorts>
 <name>s_axi_Din_ARADDR</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -184,7 +184,7 @@
 <RtlPorts>
 <name>s_axi_Din_RVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -197,7 +197,7 @@
 <RtlPorts>
 <name>s_axi_Din_RREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -210,7 +210,7 @@
 <RtlPorts>
 <name>s_axi_Din_RDATA</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -223,7 +223,7 @@
 <RtlPorts>
 <name>s_axi_Din_RRESP</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -236,7 +236,7 @@
 <RtlPorts>
 <name>s_axi_Din_BVALID</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -249,7 +249,7 @@
 <RtlPorts>
 <name>s_axi_Din_BREADY</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>
@@ -262,7 +262,7 @@
 <RtlPorts>
 <name>s_axi_Din_BRESP</name>
 <Object>Din</Object>
-<Type>scalar</Type>
+<Type>pointer</Type>
 <Scope></Scope>
 <IOProtocol>s_axi</IOProtocol>
 <IOConfig></IOConfig>

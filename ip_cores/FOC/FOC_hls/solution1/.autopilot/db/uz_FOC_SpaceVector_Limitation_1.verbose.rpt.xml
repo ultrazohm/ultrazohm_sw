@@ -1,0 +1,287 @@
+<profile>
+
+<section name = "Vitis HLS Report for 'uz_FOC_SpaceVector_Limitation_1'" level="0">
+<item name = "Date">Wed Jun 29 10:55:58 2022
+</item>
+<item name = "Version">2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)</item>
+<item name = "Project">FOC_hls</item>
+<item name = "Solution">solution1 (Vivado IP Flow Target)</item>
+<item name = "Product family">zynquplus</item>
+<item name = "Target device">xczu9eg-ffvb1156-2-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">10.00 ns, 7.300 ns, 2.70 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">30, 69, 0.300 us, 0.690 us, 30, 69, none</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+<column name="grp_pow_generic_float_s_fu_153">pow_generic_float_s, 15, 15, 0.150 us, 0.150 us, 1, 1, function</column>
+<column name="grp_pow_generic_float_s_fu_173">pow_generic_float_s, 15, 15, 0.150 us, 0.150 us, 1, 1, function</column>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 1080, -</column>
+<column name="FIFO">-, -, -, -, -</column>
+<column name="Instance">14, 33, 3049, 4617, -</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, 1246, -</column>
+<column name="Register">-, -, 1509, -, -</column>
+<specialColumn name="Available">1824, 2520, 548160, 274080, 0</specialColumn>
+<specialColumn name="Utilization (%)">~0, 1, ~0, 2, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="faddfsub_32ns_32ns_32_4_full_dsp_1_U27">faddfsub_32ns_32ns_32_4_full_dsp_1, 0, 2, 227, 214, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U30">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U31">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U32">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U33">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U34">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fcmp_32ns_32ns_1_2_no_dsp_1_U35">fcmp_32ns_32ns_1_2_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fdiv_32ns_32ns_32_9_no_dsp_1_U29">fdiv_32ns_32ns_32_9_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="fmul_32ns_32ns_32_3_max_dsp_1_U28">fmul_32ns_32ns_32_3_max_dsp_1, 0, 3, 128, 135, 0</column>
+<column name="fsqrt_32ns_32ns_32_8_no_dsp_1_U36">fsqrt_32ns_32ns_32_8_no_dsp_1, 0, 0, 0, 0, 0</column>
+<column name="grp_pow_generic_float_s_fu_153">pow_generic_float_s, 7, 14, 1347, 2134, 0</column>
+<column name="grp_pow_generic_float_s_fu_173">pow_generic_float_s, 7, 14, 1347, 2134, 0</column>
+</table>
+</item>
+<item name = "DSP"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="and_ln27_fu_537_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln29_1_fu_594_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln29_fu_588_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_10_fu_425_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_11_fu_982_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_12_fu_1014_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_13_fu_757_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_14_fu_789_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_8_fu_380_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_9_fu_394_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_fu_1008_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_fu_349_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_fu_374_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_fu_419_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln35_fu_783_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln47_1_fu_941_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln47_fu_935_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln48_fu_1048_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln59_1_fu_716_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln59_fu_710_p2">and, 0, 0, 2, 1, 1</column>
+<column name="and_ln60_fu_823_p2">and, 0, 0, 2, 1, 1</column>
+<column name="if_omega_equal_q_current_fu_543_p2">and, 0, 0, 2, 1, 1</column>
+<column name="icmp_ln27_1_fu_481_p2">icmp, 0, 0, 8, 1, 1</column>
+<column name="icmp_ln27_2_fu_487_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln27_3_fu_493_p2">icmp, 0, 0, 8, 1, 1</column>
+<column name="icmp_ln27_fu_475_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln29_1_fu_523_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln29_2_fu_570_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln29_3_fu_576_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln29_fu_517_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln35_10_fu_337_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln35_11_fu_964_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln35_12_fu_970_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln35_13_fu_739_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln35_14_fu_745_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln35_8_fu_301_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln35_9_fu_331_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln35_fu_295_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln47_1_fu_909_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln47_2_fu_915_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln47_3_fu_921_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln47_fu_903_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln59_1_fu_684_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln59_2_fu_690_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="icmp_ln59_3_fu_696_p2">icmp, 0, 0, 20, 23, 1</column>
+<column name="icmp_ln59_fu_678_p2">icmp, 0, 0, 11, 8, 2</column>
+<column name="or_ln27_1_fu_533_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln27_fu_529_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln29_1_fu_582_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln29_fu_566_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln31_fu_624_p2">or, 0, 0, 256, 17, 256</column>
+<column name="or_ln35_4_fu_343_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln35_5_fu_976_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln35_6_fu_751_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln35_fu_307_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln47_1_fu_931_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln47_fu_927_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln59_1_fu_706_p2">or, 0, 0, 2, 1, 1</column>
+<column name="or_ln59_fu_702_p2">or, 0, 0, 2, 1, 1</column>
+<column name="select_ln35_2_fu_399_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln35_4_fu_988_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln35_6_fu_763_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln35_fu_354_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln48_1_fu_1054_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln48_fu_1028_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln60_1_fu_829_p3">select, 0, 0, 32, 1, 32</column>
+<column name="select_ln60_fu_803_p3">select, 0, 0, 32, 1, 32</column>
+<column name="sign_4_fu_430_p3">select, 0, 0, 32, 1, 32</column>
+<column name="sign_5_fu_1020_p3">select, 0, 0, 32, 1, 32</column>
+<column name="sign_6_fu_795_p3">select, 0, 0, 32, 1, 32</column>
+<column name="sign_fu_385_p3">select, 0, 0, 32, 1, 32</column>
+<column name="xor_ln35_fu_1002_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_362_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_368_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_407_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_413_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_771_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_777_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln35_fu_996_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln48_fu_1036_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln48_fu_1042_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln60_fu_811_p2">xor, 0, 0, 2, 1, 2</column>
+<column name="xor_ln60_fu_817_p2">xor, 0, 0, 2, 1, 2</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+<column name="ap_NS_fsm">761, 174, 1, 174</column>
+<column name="ap_phi_mux_self_0_phi_fu_111_p10">9, 2, 249, 498</column>
+<column name="ap_phi_mux_u_output_Volts_6_phi_fu_141_p10">15, 3, 32, 96</column>
+<column name="ap_phi_mux_u_output_Volts_7_phi_fu_126_p10">15, 3, 32, 96</column>
+<column name="ap_return_0">9, 2, 249, 498</column>
+<column name="ap_return_1">9, 2, 32, 64</column>
+<column name="ap_return_2">9, 2, 32, 64</column>
+<column name="grp_fu_193_opcode">15, 3, 2, 6</column>
+<column name="grp_fu_193_p0">15, 3, 32, 96</column>
+<column name="grp_fu_193_p1">15, 3, 32, 96</column>
+<column name="grp_fu_197_p0">33, 6, 32, 192</column>
+<column name="grp_fu_197_p1">21, 4, 32, 128</column>
+<column name="grp_fu_208_opcode">21, 4, 5, 20</column>
+<column name="grp_fu_208_p0">38, 7, 32, 224</column>
+<column name="grp_fu_208_p1">21, 4, 32, 128</column>
+<column name="grp_fu_214_opcode">21, 4, 5, 20</column>
+<column name="grp_fu_214_p0">27, 5, 32, 160</column>
+<column name="grp_fu_214_p1">15, 3, 32, 96</column>
+<column name="grp_fu_220_opcode">15, 3, 5, 15</column>
+<column name="grp_fu_220_p0">21, 4, 32, 128</column>
+<column name="grp_fu_226_opcode">15, 3, 5, 15</column>
+<column name="grp_fu_226_p0">21, 4, 32, 128</column>
+<column name="grp_pow_generic_float_s_fu_153_ap_start">9, 2, 1, 2</column>
+<column name="grp_pow_generic_float_s_fu_153_base_r">15, 3, 32, 96</column>
+<column name="grp_pow_generic_float_s_fu_173_ap_start">9, 2, 1, 2</column>
+<column name="grp_pow_generic_float_s_fu_173_base_r">21, 4, 32, 128</column>
+<column name="self_0_reg_108">9, 2, 249, 498</column>
+<column name="u_output_Volts_6_reg_138">21, 4, 32, 128</column>
+<column name="u_output_Volts_7_reg_123">21, 4, 32, 128</column>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+<column name="U_SV_max_reg_1107">32, 0, 32, 0</column>
+<column name="and_ln29_1_reg_1172">1, 0, 1, 0</column>
+<column name="and_ln47_1_reg_1264">1, 0, 1, 0</column>
+<column name="and_ln59_1_reg_1214">1, 0, 1, 0</column>
+<column name="ap_CS_fsm">173, 0, 173, 0</column>
+<column name="ap_return_0_preg">249, 0, 256, 7</column>
+<column name="ap_return_1_preg">32, 0, 32, 0</column>
+<column name="ap_return_2_preg">32, 0, 32, 0</column>
+<column name="grp_pow_generic_float_s_fu_153_ap_start_reg">1, 0, 1, 0</column>
+<column name="grp_pow_generic_float_s_fu_173_ap_start_reg">1, 0, 1, 0</column>
+<column name="icmp_ln27_1_reg_1143">1, 0, 1, 0</column>
+<column name="icmp_ln27_2_reg_1148">1, 0, 1, 0</column>
+<column name="icmp_ln27_3_reg_1153">1, 0, 1, 0</column>
+<column name="icmp_ln27_reg_1138">1, 0, 1, 0</column>
+<column name="icmp_ln29_1_reg_1163">1, 0, 1, 0</column>
+<column name="icmp_ln29_reg_1158">1, 0, 1, 0</column>
+<column name="icmp_ln47_1_reg_1249">1, 0, 1, 0</column>
+<column name="icmp_ln47_2_reg_1254">1, 0, 1, 0</column>
+<column name="icmp_ln47_3_reg_1259">1, 0, 1, 0</column>
+<column name="icmp_ln47_reg_1244">1, 0, 1, 0</column>
+<column name="icmp_ln59_1_reg_1199">1, 0, 1, 0</column>
+<column name="icmp_ln59_2_reg_1204">1, 0, 1, 0</column>
+<column name="icmp_ln59_3_reg_1209">1, 0, 1, 0</column>
+<column name="icmp_ln59_reg_1194">1, 0, 1, 0</column>
+<column name="if_omega_equal_q_current_reg_1168">1, 0, 1, 0</column>
+<column name="or_ln31_reg_1181">248, 0, 256, 8</column>
+<column name="or_ln35_4_reg_1122">1, 0, 1, 0</column>
+<column name="or_ln35_reg_1116">1, 0, 1, 0</column>
+<column name="reg_249">32, 0, 32, 0</column>
+<column name="reg_255">32, 0, 32, 0</column>
+<column name="reg_260">32, 0, 32, 0</column>
+<column name="reg_265">32, 0, 32, 0</column>
+<column name="reg_271">32, 0, 32, 0</column>
+<column name="select_ln48_1_reg_1283">20, 0, 32, 12</column>
+<column name="select_ln60_1_reg_1223">20, 0, 32, 12</column>
+<column name="self_0_reg_108">249, 0, 256, 7</column>
+<column name="sign_5_reg_1268">8, 0, 32, 24</column>
+<column name="sign_6_reg_1218">8, 0, 32, 24</column>
+<column name="tmp_4_reg_1273">32, 0, 32, 0</column>
+<column name="u_output_Volts_1_reg_1294">32, 0, 32, 0</column>
+<column name="u_output_Volts_2_reg_1278">32, 0, 32, 0</column>
+<column name="u_output_Volts_3_reg_1228">32, 0, 32, 0</column>
+<column name="u_output_Volts_4_reg_1234">32, 0, 32, 0</column>
+<column name="u_output_Volts_6_reg_138">32, 0, 32, 0</column>
+<column name="u_output_Volts_7_reg_123">32, 0, 32, 0</column>
+<column name="u_output_Volts_reg_1288">32, 0, 32, 0</column>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="ap_clk">in, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_rst">in, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_start">in, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_done">out, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_idle">out, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_ready">out, 1, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_return_0">out, 256, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_return_1">out, 32, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="ap_return_2">out, 32, ap_ctrl_hs, uz_FOC_SpaceVector_Limitation.1, return value</column>
+<column name="p_read">in, 256, ap_none, p_read, scalar</column>
+<column name="u_input_Volts_0">in, 32, ap_none, u_input_Volts_0, scalar</column>
+<column name="u_input_Volts_1">in, 32, ap_none, u_input_Volts_1, scalar</column>
+<column name="V_dc_volts">in, 32, ap_none, V_dc_volts, scalar</column>
+<column name="omega_el_rad_per_sec">in, 32, ap_none, omega_el_rad_per_sec, scalar</column>
+<column name="i_actual_Ampere_1">in, 32, ap_none, i_actual_Ampere_1, scalar</column>
+</table>
+</item>
+</section>
+</profile>

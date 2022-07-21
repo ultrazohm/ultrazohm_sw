@@ -1,0 +1,1261 @@
+00:04:18 INFO  : Registering command handlers for Vitis TCF services
+00:04:18 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\temp_xsdb_launch_script.tcl
+00:04:18 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\temp_xsdb_launch_script.tcl
+00:04:24 INFO  : Platform repository initialization has completed.
+00:04:25 INFO  : XSCT server has started successfully.
+00:04:25 INFO  : XSCT server has started successfully.
+00:04:25 INFO  : Successfully done setting XSCT server connection channel  
+00:04:25 INFO  : Successfully done setting XSCT server connection channel  
+00:04:29 INFO  : plnx-install-location is set to ''
+00:04:29 INFO  : Successfully done setting workspace for the tool. 
+00:04:29 INFO  : Successfully done setting workspace for the tool. 
+00:04:29 INFO  : Successfully done query RDI_DATADIR 
+00:26:44 INFO  : Result from executing command 'getProjects': pi_ila_wrapper
+00:26:44 INFO  : Result from executing command 'getPlatforms': 
+00:26:45 INFO  : Platform 'pi_ila_wrapper' is added to custom repositories.
+00:26:56 INFO  : Platform 'pi_ila_wrapper' is added to custom repositories.
+00:46:57 INFO  : Result from executing command 'getProjects': FOC_wrapper
+00:46:57 INFO  : Result from executing command 'getPlatforms': 
+00:46:58 INFO  : Platform 'FOC_wrapper' is added to custom repositories.
+00:47:10 INFO  : Platform 'FOC_wrapper' is added to custom repositories.
+00:53:36 INFO  : Result from executing command 'getProjects': FOC_wrapper
+00:53:36 INFO  : Result from executing command 'getPlatforms': FOC_wrapper|C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/FOC_wrapper.xpfm
+00:53:37 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+00:54:34 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+00:54:35 WARN  : Part name present in the hardware specification 'xczu9eg-ffvb1156-2-e' doesn't match the one present on the target 'xczu7'.
+00:56:04 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+00:56:04 INFO  : 'jtag frequency' command is executed.
+00:56:04 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+00:56:04 INFO  : Context for 'APU' is selected.
+00:56:05 INFO  : System reset is completed.
+00:56:08 INFO  : 'after 3000' command is executed.
+00:56:08 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+00:56:08 ERROR : bitstream is not compatible with the target
+00:56:08 ERROR : Exception occured while running Program FPGA.
+java.lang.RuntimeException: bitstream is not compatible with the target
+00:56:08 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+----------------End of Script----------------
+
+00:56:08 ERROR : bitstream is not compatible with the target
+01:22:36 ERROR : An unexpected exception occurred in the module 'reading platform'
+01:24:12 INFO  : Result from executing command 'getProjects': FOC_wrapper
+01:24:12 INFO  : Result from executing command 'getPlatforms': 
+01:24:12 INFO  : Platform 'FOC_wrapper' is added to custom repositories.
+01:24:22 INFO  : Platform 'FOC_wrapper' is added to custom repositories.
+01:27:30 INFO  : Result from executing command 'getProjects': FOC_wrapper
+01:27:30 INFO  : Result from executing command 'getPlatforms': FOC_wrapper|C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/FOC_wrapper.xpfm
+01:27:30 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+07:49:10 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+07:49:10 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+07:49:10 INFO  : 'jtag frequency' command is executed.
+07:49:10 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+07:49:11 INFO  : Context for 'APU' is selected.
+07:49:12 INFO  : System reset is completed.
+07:49:15 INFO  : 'after 3000' command is executed.
+07:49:15 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+07:49:26 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+07:49:26 INFO  : Context for 'APU' is selected.
+07:49:27 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+07:49:27 INFO  : 'configparams force-mem-access 1' command is executed.
+07:49:27 INFO  : Context for 'APU' is selected.
+07:49:27 INFO  : Boot mode is read from the target.
+07:49:27 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+07:49:27 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+07:49:28 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+07:49:28 INFO  : 'set bp_49_28_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+07:49:29 INFO  : 'con -block -timeout 60' command is executed.
+07:49:30 INFO  : 'bpremove $bp_49_28_fsbl_bp' command is executed.
+07:49:30 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+07:49:30 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+07:49:30 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+07:49:31 INFO  : 'configparams force-mem-access 0' command is executed.
+07:49:31 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_49_28_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_49_28_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+07:49:31 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+07:49:31 INFO  : 'con' command is executed.
+07:49:31 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+07:49:31 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:34:30 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:35:04 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:35:52 INFO  : Disconnected from the channel tcfchan#2.
+08:35:53 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:35:53 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:35:53 INFO  : 'jtag frequency' command is executed.
+08:35:53 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:35:53 INFO  : Context for 'APU' is selected.
+08:35:54 INFO  : System reset is completed.
+08:35:57 INFO  : 'after 3000' command is executed.
+08:35:58 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:36:09 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:36:09 INFO  : Context for 'APU' is selected.
+08:36:09 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:36:09 INFO  : 'configparams force-mem-access 1' command is executed.
+08:36:09 INFO  : Context for 'APU' is selected.
+08:36:09 INFO  : Boot mode is read from the target.
+08:36:09 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:36:09 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:36:10 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:36:10 INFO  : 'set bp_36_10_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:36:11 INFO  : 'con -block -timeout 60' command is executed.
+08:36:11 INFO  : 'bpremove $bp_36_10_fsbl_bp' command is executed.
+08:36:11 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:36:11 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:36:11 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:36:11 INFO  : 'configparams force-mem-access 0' command is executed.
+08:36:11 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_36_10_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_36_10_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:36:12 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:36:12 INFO  : 'con' command is executed.
+08:36:12 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:36:12 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:37:11 INFO  : Disconnected from the channel tcfchan#4.
+08:37:12 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:37:12 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:37:12 INFO  : 'jtag frequency' command is executed.
+08:37:12 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:37:12 INFO  : Context for 'APU' is selected.
+08:37:13 INFO  : System reset is completed.
+08:37:16 INFO  : 'after 3000' command is executed.
+08:37:16 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:37:27 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:37:27 INFO  : Context for 'APU' is selected.
+08:37:27 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:37:27 INFO  : 'configparams force-mem-access 1' command is executed.
+08:37:27 INFO  : Context for 'APU' is selected.
+08:37:27 INFO  : Boot mode is read from the target.
+08:37:27 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:37:27 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:37:28 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:37:28 INFO  : 'set bp_37_28_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:37:29 INFO  : 'con -block -timeout 60' command is executed.
+08:37:29 INFO  : 'bpremove $bp_37_28_fsbl_bp' command is executed.
+08:37:29 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:37:29 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:37:30 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:37:30 INFO  : 'configparams force-mem-access 0' command is executed.
+08:37:30 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_37_28_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_37_28_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:37:30 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:37:30 INFO  : 'con' command is executed.
+08:37:30 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:37:30 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:38:08 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:38:19 INFO  : Disconnected from the channel tcfchan#5.
+08:38:20 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:38:21 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:38:21 INFO  : 'jtag frequency' command is executed.
+08:38:21 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:38:21 INFO  : Context for 'APU' is selected.
+08:38:22 INFO  : System reset is completed.
+08:38:25 INFO  : 'after 3000' command is executed.
+08:38:25 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:38:36 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:38:36 INFO  : Context for 'APU' is selected.
+08:38:36 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:38:36 INFO  : 'configparams force-mem-access 1' command is executed.
+08:38:36 INFO  : Context for 'APU' is selected.
+08:38:36 INFO  : Boot mode is read from the target.
+08:38:36 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:38:36 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:38:37 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:38:37 INFO  : 'set bp_38_37_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:38:38 INFO  : 'con -block -timeout 60' command is executed.
+08:38:38 INFO  : 'bpremove $bp_38_37_fsbl_bp' command is executed.
+08:38:38 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:38:38 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:38:39 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:38:39 INFO  : 'configparams force-mem-access 0' command is executed.
+08:38:39 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_38_37_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_38_37_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:38:39 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:38:39 INFO  : 'con' command is executed.
+08:38:39 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:38:39 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:39:48 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:39:53 INFO  : Disconnected from the channel tcfchan#6.
+08:39:54 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:39:54 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:39:54 INFO  : 'jtag frequency' command is executed.
+08:39:54 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:39:54 INFO  : Context for 'APU' is selected.
+08:39:55 INFO  : System reset is completed.
+08:39:58 INFO  : 'after 3000' command is executed.
+08:39:58 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:40:09 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:40:09 INFO  : Context for 'APU' is selected.
+08:40:09 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:40:09 INFO  : 'configparams force-mem-access 1' command is executed.
+08:40:09 INFO  : Context for 'APU' is selected.
+08:40:09 INFO  : Boot mode is read from the target.
+08:40:09 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:40:09 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:40:10 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:40:10 INFO  : 'set bp_40_10_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:40:11 INFO  : 'con -block -timeout 60' command is executed.
+08:40:11 INFO  : 'bpremove $bp_40_10_fsbl_bp' command is executed.
+08:40:11 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:40:11 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:40:12 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:40:12 INFO  : 'configparams force-mem-access 0' command is executed.
+08:40:12 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_40_10_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_40_10_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:40:12 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:40:12 INFO  : 'con' command is executed.
+08:40:12 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:40:12 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:50:16 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:52:06 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:52:41 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:52:49 INFO  : Disconnected from the channel tcfchan#7.
+08:52:50 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:52:51 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:52:51 INFO  : 'jtag frequency' command is executed.
+08:52:51 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:52:51 INFO  : Context for 'APU' is selected.
+08:52:52 INFO  : System reset is completed.
+08:52:55 INFO  : 'after 3000' command is executed.
+08:52:55 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:53:06 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:53:06 INFO  : Context for 'APU' is selected.
+08:53:06 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:53:06 INFO  : 'configparams force-mem-access 1' command is executed.
+08:53:06 INFO  : Context for 'APU' is selected.
+08:53:06 INFO  : Boot mode is read from the target.
+08:53:06 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:06 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:53:07 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:53:07 INFO  : 'set bp_53_7_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:53:08 INFO  : 'con -block -timeout 60' command is executed.
+08:53:08 INFO  : 'bpremove $bp_53_7_fsbl_bp' command is executed.
+08:53:08 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:08 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:53:09 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:53:09 INFO  : 'configparams force-mem-access 0' command is executed.
+08:53:09 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_53_7_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_53_7_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:53:09 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:09 INFO  : 'con' command is executed.
+08:53:09 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:53:09 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:53:22 INFO  : Disconnected from the channel tcfchan#8.
+08:53:23 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:53:23 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:53:23 INFO  : 'jtag frequency' command is executed.
+08:53:23 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:53:23 INFO  : Context for 'APU' is selected.
+08:53:24 INFO  : System reset is completed.
+08:53:27 INFO  : 'after 3000' command is executed.
+08:53:27 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:53:38 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:53:38 INFO  : Context for 'APU' is selected.
+08:53:38 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:53:38 INFO  : 'configparams force-mem-access 1' command is executed.
+08:53:39 INFO  : Context for 'APU' is selected.
+08:53:39 INFO  : Boot mode is read from the target.
+08:53:39 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:39 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:53:39 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:53:40 INFO  : 'set bp_53_39_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:53:41 INFO  : 'con -block -timeout 60' command is executed.
+08:53:41 INFO  : 'bpremove $bp_53_39_fsbl_bp' command is executed.
+08:53:41 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:41 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:53:41 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:53:41 INFO  : 'configparams force-mem-access 0' command is executed.
+08:53:41 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_53_39_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_53_39_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:53:41 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:53:42 INFO  : 'con' command is executed.
+08:53:42 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:53:42 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:58:15 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:58:19 INFO  : Disconnected from the channel tcfchan#9.
+08:58:20 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:58:20 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:58:20 INFO  : 'jtag frequency' command is executed.
+08:58:20 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:58:20 INFO  : Context for 'APU' is selected.
+08:58:21 INFO  : System reset is completed.
+08:58:24 INFO  : 'after 3000' command is executed.
+08:58:25 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:58:35 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:58:36 INFO  : Context for 'APU' is selected.
+08:58:36 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:58:36 INFO  : 'configparams force-mem-access 1' command is executed.
+08:58:36 INFO  : Context for 'APU' is selected.
+08:58:36 INFO  : Boot mode is read from the target.
+08:58:36 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:58:36 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:58:36 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:58:37 INFO  : 'set bp_58_36_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:58:38 INFO  : 'con -block -timeout 60' command is executed.
+08:58:38 INFO  : 'bpremove $bp_58_36_fsbl_bp' command is executed.
+08:58:38 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:58:38 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:58:38 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:58:38 INFO  : 'configparams force-mem-access 0' command is executed.
+08:58:38 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_58_36_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_58_36_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:58:39 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:58:39 INFO  : 'con' command is executed.
+08:58:39 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:58:39 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+08:59:16 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+08:59:20 INFO  : Disconnected from the channel tcfchan#10.
+08:59:21 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+08:59:21 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+08:59:21 INFO  : 'jtag frequency' command is executed.
+08:59:21 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+08:59:21 INFO  : Context for 'APU' is selected.
+08:59:22 INFO  : System reset is completed.
+08:59:25 INFO  : 'after 3000' command is executed.
+08:59:25 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+08:59:36 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+08:59:36 INFO  : Context for 'APU' is selected.
+08:59:36 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+08:59:36 INFO  : 'configparams force-mem-access 1' command is executed.
+08:59:37 INFO  : Context for 'APU' is selected.
+08:59:37 INFO  : Boot mode is read from the target.
+08:59:37 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:59:37 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:59:37 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:59:37 INFO  : 'set bp_59_37_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+08:59:38 INFO  : 'con -block -timeout 60' command is executed.
+08:59:38 INFO  : 'bpremove $bp_59_37_fsbl_bp' command is executed.
+08:59:38 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:59:38 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+08:59:39 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+08:59:39 INFO  : 'configparams force-mem-access 0' command is executed.
+08:59:39 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_59_37_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_59_37_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+08:59:39 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+08:59:40 INFO  : 'con' command is executed.
+08:59:40 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+08:59:40 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+09:00:36 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+09:00:40 INFO  : Disconnected from the channel tcfchan#11.
+09:00:41 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+09:00:41 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+09:00:41 INFO  : 'jtag frequency' command is executed.
+09:00:41 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+09:00:41 INFO  : Context for 'APU' is selected.
+09:00:42 INFO  : System reset is completed.
+09:00:45 INFO  : 'after 3000' command is executed.
+09:00:45 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+09:00:56 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+09:00:56 INFO  : Context for 'APU' is selected.
+09:00:56 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+09:00:56 INFO  : 'configparams force-mem-access 1' command is executed.
+09:00:56 INFO  : Context for 'APU' is selected.
+09:00:56 INFO  : Boot mode is read from the target.
+09:00:56 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:00:56 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:00:57 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:00:57 INFO  : 'set bp_0_57_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+09:00:58 INFO  : 'con -block -timeout 60' command is executed.
+09:00:58 INFO  : 'bpremove $bp_0_57_fsbl_bp' command is executed.
+09:00:58 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:00:58 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:00:59 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:00:59 INFO  : 'configparams force-mem-access 0' command is executed.
+09:00:59 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_0_57_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_0_57_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+09:00:59 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:00:59 INFO  : 'con' command is executed.
+09:00:59 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+09:00:59 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+09:38:22 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+09:38:34 INFO  : Disconnected from the channel tcfchan#12.
+09:38:35 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+09:38:35 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+09:38:35 INFO  : 'jtag frequency' command is executed.
+09:38:35 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+09:38:35 INFO  : Context for 'APU' is selected.
+09:38:36 INFO  : System reset is completed.
+09:38:39 INFO  : 'after 3000' command is executed.
+09:38:39 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+09:38:50 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+09:38:50 INFO  : Context for 'APU' is selected.
+09:38:50 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+09:38:50 INFO  : 'configparams force-mem-access 1' command is executed.
+09:38:50 INFO  : Context for 'APU' is selected.
+09:38:50 INFO  : Boot mode is read from the target.
+09:38:50 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:38:50 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:38:51 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:38:51 INFO  : 'set bp_38_51_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+09:38:52 INFO  : 'con -block -timeout 60' command is executed.
+09:38:52 INFO  : 'bpremove $bp_38_51_fsbl_bp' command is executed.
+09:38:52 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:38:52 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:38:53 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:38:53 INFO  : 'configparams force-mem-access 0' command is executed.
+09:38:53 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_38_51_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_38_51_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+09:38:53 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:38:53 INFO  : 'con' command is executed.
+09:38:53 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+09:38:53 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+09:40:31 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+09:40:39 INFO  : Disconnected from the channel tcfchan#13.
+09:40:40 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+09:40:40 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+09:40:40 INFO  : 'jtag frequency' command is executed.
+09:40:40 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+09:40:40 INFO  : Context for 'APU' is selected.
+09:40:42 INFO  : System reset is completed.
+09:40:45 INFO  : 'after 3000' command is executed.
+09:40:45 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+09:40:56 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+09:40:56 INFO  : Context for 'APU' is selected.
+09:40:56 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+09:40:56 INFO  : 'configparams force-mem-access 1' command is executed.
+09:40:56 INFO  : Context for 'APU' is selected.
+09:40:56 INFO  : Boot mode is read from the target.
+09:40:56 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:40:56 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:40:57 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:40:57 INFO  : 'set bp_40_57_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+09:40:58 INFO  : 'con -block -timeout 60' command is executed.
+09:40:58 INFO  : 'bpremove $bp_40_57_fsbl_bp' command is executed.
+09:40:58 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:40:58 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+09:40:59 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+09:40:59 INFO  : 'configparams force-mem-access 0' command is executed.
+09:40:59 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_40_57_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_40_57_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+09:40:59 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+09:40:59 INFO  : 'con' command is executed.
+09:40:59 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+09:40:59 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+10:41:34 INFO  : Disconnected from the channel tcfchan#14.
+13:08:36 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\temp_xsdb_launch_script.tcl
+13:08:40 INFO  : XSCT server has started successfully.
+13:08:40 INFO  : plnx-install-location is set to ''
+13:08:40 INFO  : Successfully done setting XSCT server connection channel  
+13:08:40 INFO  : Successfully done setting workspace for the tool. 
+13:08:46 INFO  : Platform repository initialization has completed.
+13:08:46 INFO  : Registering command handlers for Vitis TCF services
+13:08:50 INFO  : Successfully done query RDI_DATADIR 
+14:28:59 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+14:36:59 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+14:37:06 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+14:37:07 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+14:37:07 INFO  : 'jtag frequency' command is executed.
+14:37:07 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+14:37:07 INFO  : Context for 'APU' is selected.
+14:37:08 INFO  : System reset is completed.
+14:37:11 INFO  : 'after 3000' command is executed.
+14:37:11 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+14:37:23 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+14:37:23 INFO  : Context for 'APU' is selected.
+14:37:23 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+14:37:23 INFO  : 'configparams force-mem-access 1' command is executed.
+14:37:24 INFO  : Context for 'APU' is selected.
+14:37:24 INFO  : Boot mode is read from the target.
+14:37:24 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:37:24 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+14:37:24 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+14:37:25 INFO  : 'set bp_37_24_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+14:37:26 INFO  : 'con -block -timeout 60' command is executed.
+14:37:26 INFO  : 'bpremove $bp_37_24_fsbl_bp' command is executed.
+14:37:26 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:37:26 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+14:37:26 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+14:37:26 INFO  : 'configparams force-mem-access 0' command is executed.
+14:37:26 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_37_24_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_37_24_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+14:37:27 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:37:27 INFO  : 'con' command is executed.
+14:37:27 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+14:37:27 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+14:37:44 INFO  : Disconnected from the channel tcfchan#1.
+14:37:45 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+14:37:45 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+14:37:45 INFO  : 'jtag frequency' command is executed.
+14:37:45 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+14:37:45 INFO  : Context for 'APU' is selected.
+14:37:47 INFO  : System reset is completed.
+14:37:50 INFO  : 'after 3000' command is executed.
+14:37:50 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+14:38:01 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+14:38:01 INFO  : Context for 'APU' is selected.
+14:38:10 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+14:38:10 INFO  : 'configparams force-mem-access 1' command is executed.
+14:38:10 INFO  : Context for 'APU' is selected.
+14:38:10 INFO  : Boot mode is read from the target.
+14:38:10 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:38:10 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+14:38:10 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+14:38:11 INFO  : 'set bp_38_10_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+14:38:12 INFO  : 'con -block -timeout 60' command is executed.
+14:38:12 INFO  : 'bpremove $bp_38_10_fsbl_bp' command is executed.
+14:38:12 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:38:12 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+14:38:12 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+14:38:12 INFO  : 'configparams force-mem-access 0' command is executed.
+14:38:12 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_38_10_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_38_10_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+14:38:12 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+14:38:13 INFO  : 'con' command is executed.
+14:38:13 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+14:38:13 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+15:05:46 INFO  : Checking for BSP changes to sync application flags for project 'FOC_app'...
+15:05:59 INFO  : Disconnected from the channel tcfchan#2.
+15:06:00 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+15:06:01 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+15:06:01 INFO  : 'jtag frequency' command is executed.
+15:06:01 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+15:06:01 INFO  : Context for 'APU' is selected.
+15:06:01 INFO  : System reset is completed.
+15:06:05 INFO  : 'after 3000' command is executed.
+15:06:05 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+15:06:16 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit"
+15:06:16 INFO  : Context for 'APU' is selected.
+15:06:26 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa'.
+15:06:26 INFO  : 'configparams force-mem-access 1' command is executed.
+15:06:26 INFO  : Context for 'APU' is selected.
+15:06:26 INFO  : Boot mode is read from the target.
+15:06:26 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+15:06:26 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+15:06:27 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+15:06:27 INFO  : 'set bp_6_27_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+15:06:28 INFO  : 'con -block -timeout 60' command is executed.
+15:06:28 INFO  : 'bpremove $bp_6_27_fsbl_bp' command is executed.
+15:06:28 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+15:06:28 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+15:06:29 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+15:06:29 INFO  : 'configparams force-mem-access 0' command is executed.
+15:06:29 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/_ide/bitstream/FOC_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/hw/FOC_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/sw/FOC_wrapper/boot/fsbl.elf
+set bp_6_27_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_6_27_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_app/Debug/FOC_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+15:06:29 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+15:06:29 INFO  : 'con' command is executed.
+15:06:29 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+15:06:29 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_foc_app-default.tcl'
+02:04:05 INFO  : Disconnected from the channel tcfchan#3.
+16:28:02 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\temp_xsdb_launch_script.tcl
+16:28:05 INFO  : XSCT server has started successfully.
+16:28:05 INFO  : Successfully done setting XSCT server connection channel  
+16:28:05 INFO  : plnx-install-location is set to ''
+16:28:05 INFO  : Successfully done setting workspace for the tool. 
+16:28:10 INFO  : Platform repository initialization has completed.
+16:28:10 INFO  : Registering command handlers for Vitis TCF services
+16:28:15 INFO  : Successfully done query RDI_DATADIR 
+16:33:53 INFO  : Result from executing command 'getProjects': FOC_wrapper;pi_ila_wrapper
+16:33:53 INFO  : Result from executing command 'getPlatforms': FOC_wrapper|C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/FOC_wrapper.xpfm
+16:33:53 INFO  : Platform 'pi_ila_wrapper' is added to custom repositories.
+16:34:04 INFO  : Platform 'pi_ila_wrapper' is added to custom repositories.
+16:38:05 INFO  : Result from executing command 'getProjects': FOC_wrapper;pi_ila_wrapper
+16:38:05 INFO  : Result from executing command 'getPlatforms': FOC_wrapper|C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/FOC_wrapper/export/FOC_wrapper/FOC_wrapper.xpfm;pi_ila_wrapper|C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/pi_ila_wrapper.xpfm
+16:38:05 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:16:07 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:16:54 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:17:40 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:19:32 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:19:33 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+18:19:33 INFO  : 'jtag frequency' command is executed.
+18:19:33 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+18:19:33 INFO  : Context for 'APU' is selected.
+18:19:35 INFO  : System reset is completed.
+18:19:38 INFO  : 'after 3000' command is executed.
+18:19:38 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+18:19:49 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit"
+18:19:49 INFO  : Context for 'APU' is selected.
+18:19:50 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa'.
+18:19:50 INFO  : 'configparams force-mem-access 1' command is executed.
+18:19:50 INFO  : Context for 'APU' is selected.
+18:19:50 INFO  : Boot mode is read from the target.
+18:19:50 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:19:50 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:19:51 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:19:51 INFO  : 'set bp_19_51_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+18:19:52 INFO  : 'con -block -timeout 60' command is executed.
+18:19:52 INFO  : 'bpremove $bp_19_51_fsbl_bp' command is executed.
+18:19:52 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:19:52 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:19:53 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:19:53 INFO  : 'configparams force-mem-access 0' command is executed.
+18:19:53 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
+set bp_19_51_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_19_51_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:19:53 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:19:53 INFO  : 'con' command is executed.
+18:19:53 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+18:19:53 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'
+18:21:57 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:22:17 INFO  : Disconnected from the channel tcfchan#2.
+18:22:18 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:22:18 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+18:22:18 INFO  : 'jtag frequency' command is executed.
+18:22:18 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+18:22:18 INFO  : Context for 'APU' is selected.
+18:22:19 INFO  : System reset is completed.
+18:22:22 INFO  : 'after 3000' command is executed.
+18:22:22 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+18:22:33 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit"
+18:22:33 INFO  : Context for 'APU' is selected.
+18:22:33 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa'.
+18:22:33 INFO  : 'configparams force-mem-access 1' command is executed.
+18:22:33 INFO  : Context for 'APU' is selected.
+18:22:33 INFO  : Boot mode is read from the target.
+18:22:33 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:22:33 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:22:34 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:22:34 INFO  : 'set bp_22_34_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+18:22:35 INFO  : 'con -block -timeout 60' command is executed.
+18:22:35 INFO  : 'bpremove $bp_22_34_fsbl_bp' command is executed.
+18:22:35 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:22:35 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:22:36 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:22:36 INFO  : 'configparams force-mem-access 0' command is executed.
+18:22:36 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
+set bp_22_34_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_22_34_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:22:36 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:22:36 INFO  : 'con' command is executed.
+18:22:36 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+18:22:36 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'
+18:27:03 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:27:37 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:27:54 INFO  : Disconnected from the channel tcfchan#3.
+18:27:55 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:27:55 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+18:27:55 INFO  : 'jtag frequency' command is executed.
+18:27:55 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+18:27:55 INFO  : Context for 'APU' is selected.
+18:27:56 INFO  : System reset is completed.
+18:27:59 INFO  : 'after 3000' command is executed.
+18:27:59 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+18:28:10 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit"
+18:28:10 INFO  : Context for 'APU' is selected.
+18:28:10 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa'.
+18:28:10 INFO  : 'configparams force-mem-access 1' command is executed.
+18:28:10 INFO  : Context for 'APU' is selected.
+18:28:10 INFO  : Boot mode is read from the target.
+18:28:10 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:28:10 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:28:11 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:28:11 INFO  : 'set bp_28_11_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+18:28:12 INFO  : 'con -block -timeout 60' command is executed.
+18:28:12 INFO  : 'bpremove $bp_28_11_fsbl_bp' command is executed.
+18:28:12 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:28:12 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:28:13 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:28:13 INFO  : 'configparams force-mem-access 0' command is executed.
+18:28:13 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
+set bp_28_11_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_28_11_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:28:13 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:28:13 INFO  : 'con' command is executed.
+18:28:13 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+18:28:13 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'
+18:29:04 INFO  : Disconnected from the channel tcfchan#4.
+18:29:05 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+18:29:05 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+18:29:05 INFO  : 'jtag frequency' command is executed.
+18:29:05 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+18:29:05 INFO  : Context for 'APU' is selected.
+18:29:06 INFO  : System reset is completed.
+18:29:09 INFO  : 'after 3000' command is executed.
+18:29:09 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+18:29:20 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit"
+18:29:20 INFO  : Context for 'APU' is selected.
+18:29:20 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa'.
+18:29:20 INFO  : 'configparams force-mem-access 1' command is executed.
+18:29:20 INFO  : Context for 'APU' is selected.
+18:29:20 INFO  : Boot mode is read from the target.
+18:29:20 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:29:20 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:29:22 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:29:22 INFO  : 'set bp_29_22_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+18:29:23 INFO  : 'con -block -timeout 60' command is executed.
+18:29:23 INFO  : 'bpremove $bp_29_22_fsbl_bp' command is executed.
+18:29:23 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:29:23 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+18:29:24 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+18:29:24 INFO  : 'configparams force-mem-access 0' command is executed.
+18:29:24 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
+set bp_29_22_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_29_22_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+18:29:24 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+18:29:24 INFO  : 'con' command is executed.
+18:29:24 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+18:29:24 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'
+18:30:39 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:33:46 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:59:35 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+18:59:47 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+19:01:57 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+19:02:13 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...
+19:02:23 INFO  : Disconnected from the channel tcfchan#5.
+19:02:24 INFO  : Connected to target on host '127.0.0.1' and port '3121'.
+19:02:25 INFO  : Jtag cable 'Xilinx HW-Z1-ZCU104 FT4232H 88127A' is selected.
+19:02:25 INFO  : 'jtag frequency' command is executed.
+19:02:25 INFO  : Sourcing of 'C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl' is done.
+19:02:25 INFO  : Context for 'APU' is selected.
+19:02:26 INFO  : System reset is completed.
+19:02:29 INFO  : 'after 3000' command is executed.
+19:02:29 INFO  : 'targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}' command is executed.
+19:02:40 INFO  : FPGA configured successfully with bitstream "C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit"
+19:02:40 INFO  : Context for 'APU' is selected.
+19:02:40 INFO  : Hardware design and registers information is loaded from 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa'.
+19:02:40 INFO  : 'configparams force-mem-access 1' command is executed.
+19:02:40 INFO  : Context for 'APU' is selected.
+19:02:40 INFO  : Boot mode is read from the target.
+19:02:40 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+19:02:40 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+19:02:41 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf' is downloaded to processor 'psu_cortexa53_0'.
+19:02:41 INFO  : 'set bp_2_41_fsbl_bp [bpadd -addr &XFsbl_Exit]' command is executed.
+19:02:42 INFO  : 'con -block -timeout 60' command is executed.
+19:02:42 INFO  : 'bpremove $bp_2_41_fsbl_bp' command is executed.
+19:02:42 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+19:02:42 INFO  : Processor reset is completed for 'psu_cortexa53_0'.
+19:02:43 INFO  : The application 'C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf' is downloaded to processor 'psu_cortexa53_0'.
+19:02:43 INFO  : 'configparams force-mem-access 0' command is executed.
+19:02:43 INFO  : ----------------XSDB Script----------------
+connect -url tcp:127.0.0.1:3121
+source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl
+targets -set -nocase -filter {name =~"APU*"}
+rst -system
+after 3000
+targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}
+fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit
+targets -set -nocase -filter {name =~"APU*"}
+loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs
+configparams force-mem-access 1
+targets -set -nocase -filter {name =~"APU*"}
+set mode [expr [mrd -value 0xFF5E0200] & 0xf]
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
+set bp_2_41_fsbl_bp [bpadd -addr &XFsbl_Exit]
+con -block -timeout 60
+bpremove $bp_2_41_fsbl_bp
+targets -set -nocase -filter {name =~ "*A53*#0"}
+rst -processor
+dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf
+configparams force-mem-access 0
+----------------End of Script----------------
+
+19:02:43 INFO  : Context for processor 'psu_cortexa53_0' is selected.
+19:02:43 INFO  : 'con' command is executed.
+19:02:43 INFO  : ----------------XSDB Script (After Launch)----------------
+targets -set -nocase -filter {name =~ "*A53*#0"}
+con
+----------------End of Script----------------
+
+19:02:43 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'

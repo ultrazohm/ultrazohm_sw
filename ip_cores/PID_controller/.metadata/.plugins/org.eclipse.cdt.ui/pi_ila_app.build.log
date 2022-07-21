@@ -1,0 +1,29 @@
+19:02:13 **** Incremental Build of configuration Debug for project pi_ila_app ****
+make all 
+'Building file: ../src/helloworld.c'
+'Invoking: ARM v8 gcc compiler'
+aarch64-none-elf-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/helloworld.o" -IC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/bspinclude/include -MMD -MP -MF"src/helloworld.d" -MT"src/helloworld.o" -o "src/helloworld.o" "../src/helloworld.c"
+In file included from ../src/uz_pi_controller.h:2,
+                 from ../src/helloworld.c:34:
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:98:2: warning: #warning The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert. [-Wcpp]
+   98 | #warning  The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert.
+      |  ^~~~~~~
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:99:2: warning: #warning Please refer the Standalone BSP UG647 for further details [-Wcpp]
+   99 | #warning  Please refer the Standalone BSP UG647 for further details
+      |  ^~~~~~~
+'Finished building: ../src/helloworld.c'
+' '
+'Building target: pi_ila_app.elf'
+'Invoking: ARM v8 gcc linker'
+aarch64-none-elf-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/bsplib/lib -o "pi_ila_app.elf"  ./src/helloworld.o ./src/platform.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: pi_ila_app.elf'
+' '
+'Invoking: ARM v8 Print Size'
+aarch64-none-elf-size pi_ila_app.elf  |tee "pi_ila_app.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  96751	   4760	  20917	 122428	  1de3c	pi_ila_app.elf
+'Finished building: pi_ila_app.elf.size'
+' '
+
+19:02:13 Build Finished (took 755ms)
+

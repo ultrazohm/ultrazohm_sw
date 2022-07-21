@@ -3,7 +3,7 @@
 ================================================================
 == Vitis HLS Report for 'pow_generic_float_s'
 ================================================================
-* Date:           Thu May 19 19:38:58 2022
+* Date:           Wed Jun 29 10:55:52 2022
 
 * Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
 * Project:        FOC_hls
@@ -96,7 +96,7 @@ IsGatedGlobalClock: 0
 State 1 <SV = 0> <Delay = 2.50>
 ST_1 : Operation 17 [1/1] (0.00ns)   --->   "%base_read = read i32 @_ssdm_op_Read.ap_auto.float, i32 %base_r" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:306]   --->   Operation 17 'read' 'base_read' <Predicate = true> <Delay = 0.00>
 ST_1 : Operation 18 [1/1] (0.00ns)   --->   "%p_Val2_s = bitcast i32 %base_read" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:311]   --->   Operation 18 'bitcast' 'p_Val2_s' <Predicate = true> <Delay = 0.00>
-ST_1 : Operation 19 [1/1] (0.00ns) (grouped into LUT with out node x_is_p1)   --->   "%p_Result_15 = bitselect i1 @_ssdm_op_BitSelect.i1.i32.i32, i32 %p_Val2_s, i32"   --->   Operation 19 'bitselect' 'p_Result_15' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 19 [1/1] (0.00ns) (grouped into LUT with out node x_is_p1)   --->   "%p_Result_14 = bitselect i1 @_ssdm_op_BitSelect.i1.i32.i32, i32 %p_Val2_s, i32"   --->   Operation 19 'bitselect' 'p_Result_14' <Predicate = true> <Delay = 0.00>
 ST_1 : Operation 20 [1/1] (0.00ns)   --->   "%p_Repl2_3 = partselect i8 @_ssdm_op_PartSelect.i8.i32.i32.i32, i32 %p_Val2_s, i32, i32"   --->   Operation 20 'partselect' 'p_Repl2_3' <Predicate = true> <Delay = 0.00>
 ST_1 : Operation 21 [1/1] (0.00ns)   --->   "%p_Repl2_s = trunc i32 %p_Val2_s"   --->   Operation 21 'trunc' 'p_Repl2_s' <Predicate = true> <Delay = 0.00>
 ST_1 : Operation 22 [1/1] (0.00ns)   --->   "%zext_ln340 = zext i8 %p_Repl2_3" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:340]   --->   Operation 22 'zext' 'zext_ln340' <Predicate = true> <Delay = 0.00>
@@ -104,7 +104,7 @@ ST_1 : Operation 23 [1/1] (0.76ns)   --->   "%b_exp = add i9 %zext_ln340, i9" [r
 ST_1 : Operation 24 [1/1] (0.88ns)   --->   "%icmp_ln369 = icmp_eq  i9 %b_exp, i9" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:369]   --->   Operation 24 'icmp' 'icmp_ln369' <Predicate = true> <Delay = 0.88> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
 ST_1 : Operation 25 [1/1] (1.05ns)   --->   "%icmp_ln828 = icmp_eq  i23 %p_Repl2_s, i23"   --->   Operation 25 'icmp' 'icmp_ln828' <Predicate = true> <Delay = 1.05> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
 ST_1 : Operation 26 [1/1] (0.28ns)   --->   "%x_is_1 = and i1 %icmp_ln369, i1 %icmp_ln828" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:369]   --->   Operation 26 'and' 'x_is_1' <Predicate = true> <Delay = 0.28> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
-ST_1 : Operation 27 [1/1] (0.00ns) (grouped into LUT with out node x_is_p1)   --->   "%xor_ln964 = xor i1 %p_Result_15, i1"   --->   Operation 27 'xor' 'xor_ln964' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 27 [1/1] (0.00ns) (grouped into LUT with out node x_is_p1)   --->   "%xor_ln964 = xor i1 %p_Result_14, i1"   --->   Operation 27 'xor' 'xor_ln964' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
 ST_1 : Operation 28 [1/1] (0.28ns) (out node of the LUT)   --->   "%x_is_p1 = and i1 %x_is_1, i1 %xor_ln964" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:370]   --->   Operation 28 'and' 'x_is_p1' <Predicate = true> <Delay = 0.28> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
 ST_1 : Operation 29 [1/1] (0.84ns)   --->   "%icmp_ln376 = icmp_eq  i8 %p_Repl2_3, i8" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:376]   --->   Operation 29 'icmp' 'icmp_ln376' <Predicate = true> <Delay = 0.84> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
 ST_1 : Operation 30 [1/1] (1.05ns)   --->   "%icmp_ln18 = icmp_ne  i23 %p_Repl2_s, i23" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint/hls_isnan.h:18]   --->   Operation 30 'icmp' 'icmp_ln18' <Predicate = true> <Delay = 1.05> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
@@ -124,10 +124,10 @@ ST_1 : Operation 43 [1/1] (0.00ns)   --->   "%pow_reduce_anonymous_namespace_log
 ST_1 : Operation 44 [2/2] (1.23ns)   --->   "%log_sum_V = load i6 %pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V_addr"   --->   Operation 44 'load' 'log_sum_V' <Predicate = true> <Delay = 1.23> <CoreInst = "ROM">   --->   Core 41 'ROM' <Latency = 1> <II = 1> <Delay = 1.23> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 56> <Depth = 64> <ROM>
 
 State 2 <SV = 1> <Delay = 1.23>
-ST_2 : Operation 45 [1/1] (0.00ns)   --->   "%p_Result_16 = bitconcatenate i25 @_ssdm_op_BitConcatenate.i25.i1.i23.i1, i1, i23 %p_Repl2_s, i1"   --->   Operation 45 'bitconcatenate' 'p_Result_16' <Predicate = (!p_Result_s)> <Delay = 0.00>
+ST_2 : Operation 45 [1/1] (0.00ns)   --->   "%p_Result_15 = bitconcatenate i25 @_ssdm_op_BitConcatenate.i25.i1.i23.i1, i1, i23 %p_Repl2_s, i1"   --->   Operation 45 'bitconcatenate' 'p_Result_15' <Predicate = (!p_Result_s)> <Delay = 0.00>
 ST_2 : Operation 46 [1/1] (0.00ns)   --->   "%b_frac = bitconcatenate i24 @_ssdm_op_BitConcatenate.i24.i1.i23, i1, i23 %p_Repl2_s"   --->   Operation 46 'bitconcatenate' 'b_frac' <Predicate = (p_Result_s)> <Delay = 0.00>
 ST_2 : Operation 47 [1/1] (0.00ns)   --->   "%zext_ln1287_1 = zext i24 %b_frac"   --->   Operation 47 'zext' 'zext_ln1287_1' <Predicate = (p_Result_s)> <Delay = 0.00>
-ST_2 : Operation 48 [1/1] (0.32ns)   --->   "%select_ln513 = select i1 %p_Result_s, i25 %zext_ln1287_1, i25 %p_Result_16" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:513]   --->   Operation 48 'select' 'select_ln513' <Predicate = true> <Delay = 0.32> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_2 : Operation 48 [1/1] (0.32ns)   --->   "%select_ln513 = select i1 %p_Result_s, i25 %zext_ln1287_1, i25 %p_Result_15" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:513]   --->   Operation 48 'select' 'select_ln513' <Predicate = true> <Delay = 0.32> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
 ST_2 : Operation 49 [1/2] (0.67ns)   --->   "%b_frac_tilde_inverse_V = load i6 %pow_reduce_anonymous_namespace_log_inverse_lut_table_pow_0_5_64_array_V_addr" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:531]   --->   Operation 49 'load' 'b_frac_tilde_inverse_V' <Predicate = true> <Delay = 0.67> <CoreInst = "ROM">   --->   Core 41 'ROM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 6> <Depth = 64> <ROM>
 ST_2 : Operation 50 [1/2] (1.23ns)   --->   "%log_sum_V = load i6 %pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V_addr"   --->   Operation 50 'load' 'log_sum_V' <Predicate = true> <Delay = 1.23> <CoreInst = "ROM">   --->   Core 41 'ROM' <Latency = 1> <II = 1> <Delay = 1.23> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 56> <Depth = 64> <ROM>
 ST_2 : Operation 51 [1/1] (0.00ns)   --->   "%zext_ln682 = zext i6 %b_frac_tilde_inverse_V"   --->   Operation 51 'zext' 'zext_ln682' <Predicate = true> <Delay = 0.00>
@@ -144,11 +144,11 @@ ST_5 : Operation 55 [1/4] (0.00ns) (root node of the DSP)   --->   "%mul_ln682 =
 ST_5 : Operation 56 [1/1] (0.00ns)   --->   "%z1_V = bitconcatenate i39 @_ssdm_op_BitConcatenate.i39.i25.i14, i25 %mul_ln682, i14"   --->   Operation 56 'bitconcatenate' 'z1_V' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 57 [1/1] (0.00ns)   --->   "%a = partselect i4 @_ssdm_op_PartSelect.i4.i25.i32.i32, i25 %mul_ln682, i32, i32"   --->   Operation 57 'partselect' 'a' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 58 [1/1] (0.00ns)   --->   "%trunc_ln657 = trunc i25 %mul_ln682"   --->   Operation 58 'trunc' 'trunc_ln657' <Predicate = true> <Delay = 0.00>
-ST_5 : Operation 59 [1/1] (0.00ns)   --->   "%tmp_39 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %mul_ln682, i32"   --->   Operation 59 'bitselect' 'tmp_39' <Predicate = true> <Delay = 0.00>
+ST_5 : Operation 59 [1/1] (0.00ns)   --->   "%tmp_37 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %mul_ln682, i32"   --->   Operation 59 'bitselect' 'tmp_37' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 60 [1/1] (0.00ns)   --->   "%sf = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i5.i25.i13, i5, i25 %mul_ln682, i13"   --->   Operation 60 'bitconcatenate' 'sf' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 61 [1/1] (0.00ns)   --->   "%tmp_13 = bitconcatenate i44 @_ssdm_op_BitConcatenate.i44.i5.i25.i14, i5, i25 %mul_ln682, i14"   --->   Operation 61 'bitconcatenate' 'tmp_13' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 62 [1/1] (0.00ns)   --->   "%zext_ln1287 = zext i43 %sf"   --->   Operation 62 'zext' 'zext_ln1287' <Predicate = true> <Delay = 0.00>
-ST_5 : Operation 63 [1/1] (0.41ns)   --->   "%select_ln1287 = select i1 %tmp_39, i44 %tmp_13, i44 %zext_ln1287"   --->   Operation 63 'select' 'select_ln1287' <Predicate = true> <Delay = 0.41> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_5 : Operation 63 [1/1] (0.41ns)   --->   "%select_ln1287 = select i1 %tmp_37, i44 %tmp_13, i44 %zext_ln1287"   --->   Operation 63 'select' 'select_ln1287' <Predicate = true> <Delay = 0.41> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
 ST_5 : Operation 64 [1/1] (0.00ns)   --->   "%lhs_V_1 = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i21.i22, i21 %trunc_ln657, i22"   --->   Operation 64 'bitconcatenate' 'lhs_V_1' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 65 [1/1] (0.00ns)   --->   "%zext_ln1146 = zext i43 %lhs_V_1"   --->   Operation 65 'zext' 'zext_ln1146' <Predicate = true> <Delay = 0.00>
 ST_5 : Operation 66 [1/1] (0.00ns) (grouped into TernaryAdder)   --->   "%ret_V_14 = add i44 %select_ln1287, i44 %zext_ln1146"   --->   Operation 66 'add' 'ret_V_14' <Predicate = true> <Delay = 0.00> <CoreInst = "TAddSub">   --->   Core 3 'TAddSub' <Latency = 0> <II = 1> <Delay = 0.40> <IPBlock> <Opcode : 'add' 'sub'> <InPorts = 3> <OutPorts = 1> <Sync>
@@ -228,33 +228,33 @@ ST_8 : Operation 133 [1/1] (0.00ns) (grouped into TernaryAdder)   --->   "%ret_V
 ST_8 : Operation 134 [1/1] (0.00ns)   --->   "%sext_ln1146_1 = sext i40 %trunc_ln"   --->   Operation 134 'sext' 'sext_ln1146_1' <Predicate = true> <Delay = 0.00>
 ST_8 : Operation 135 [1/1] (0.81ns) (root node of TernaryAdder)   --->   "%ret_V_9 = add i64 %sext_ln1146_1, i64 %ret_V_8"   --->   Operation 135 'add' 'ret_V_9' <Predicate = true> <Delay = 0.81> <CoreInst = "TAddSub">   --->   Core 3 'TAddSub' <Latency = 0> <II = 1> <Delay = 0.40> <IPBlock> <Opcode : 'add' 'sub'> <InPorts = 3> <OutPorts = 1> <Sync>
 ST_8 : Operation 136 [1/1] (0.00ns)   --->   "%m_fix_hi_V = partselect i13 @_ssdm_op_PartSelect.i13.i64.i32.i32, i64 %ret_V_9, i32, i32"   --->   Operation 136 'partselect' 'm_fix_hi_V' <Predicate = true> <Delay = 0.00>
-ST_8 : Operation 137 [1/1] (0.00ns)   --->   "%p_Result_17 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32"   --->   Operation 137 'bitselect' 'p_Result_17' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 137 [1/1] (0.00ns)   --->   "%p_Result_16 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32"   --->   Operation 137 'bitselect' 'p_Result_16' <Predicate = true> <Delay = 0.00>
 ST_8 : Operation 138 [1/1] (0.00ns)   --->   "%sext_ln1070 = sext i13 %m_fix_hi_V"   --->   Operation 138 'sext' 'sext_ln1070' <Predicate = true> <Delay = 0.00>
 ST_8 : Operation 139 [3/3] (0.99ns) (grouped into DSP with root node ret_V_17)   --->   "%r_V_9 = mul i25 %sext_ln1070, i25"   --->   Operation 139 'mul' 'r_V_9' <Predicate = true> <Delay = 0.99> <CoreInst = "DSP48">   --->   Core 71 'DSP48' <Latency = 3> <II = 1> <Delay = 0.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
-ST_8 : Operation 140 [1/1] (0.00ns)   --->   "%trunc_ln1 = partselect i27 @_ssdm_op_PartSelect.i27.i64.i32.i32, i64 %ret_V_9, i32, i32"   --->   Operation 140 'partselect' 'trunc_ln1' <Predicate = true> <Delay = 0.00>
+ST_8 : Operation 140 [1/1] (0.00ns)   --->   "%trunc_ln7 = partselect i27 @_ssdm_op_PartSelect.i27.i64.i32.i32, i64 %ret_V_9, i32, i32"   --->   Operation 140 'partselect' 'trunc_ln7' <Predicate = true> <Delay = 0.00>
 
 State 9 <SV = 8> <Delay = 0.99>
 ST_9 : Operation 141 [2/3] (0.99ns) (grouped into DSP with root node ret_V_17)   --->   "%r_V_9 = mul i25 %sext_ln1070, i25"   --->   Operation 141 'mul' 'r_V_9' <Predicate = true> <Delay = 0.99> <CoreInst = "DSP48">   --->   Core 71 'DSP48' <Latency = 3> <II = 1> <Delay = 0.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
 
 State 10 <SV = 9> <Delay = 0.64>
 ST_10 : Operation 142 [1/3] (0.00ns) (grouped into DSP with root node ret_V_17)   --->   "%r_V_9 = mul i25 %sext_ln1070, i25"   --->   Operation 142 'mul' 'r_V_9' <Predicate = true> <Delay = 0.00> <CoreInst = "DSP48">   --->   Core 71 'DSP48' <Latency = 3> <II = 1> <Delay = 0.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
-ST_10 : Operation 143 [1/1] (0.00ns)   --->   "%rhs_V_6 = bitconcatenate i16 @_ssdm_op_BitConcatenate.i16.i1.i15, i1 %p_Result_17, i15"   --->   Operation 143 'bitconcatenate' 'rhs_V_6' <Predicate = true> <Delay = 0.00>
+ST_10 : Operation 143 [1/1] (0.00ns)   --->   "%rhs_V_6 = bitconcatenate i16 @_ssdm_op_BitConcatenate.i16.i1.i15, i1 %p_Result_16, i15"   --->   Operation 143 'bitconcatenate' 'rhs_V_6' <Predicate = true> <Delay = 0.00>
 ST_10 : Operation 144 [1/1] (0.00ns)   --->   "%sext_ln1146_2 = sext i16 %rhs_V_6"   --->   Operation 144 'sext' 'sext_ln1146_2' <Predicate = true> <Delay = 0.00>
 ST_10 : Operation 145 [2/2] (0.64ns) (root node of the DSP)   --->   "%ret_V_17 = add i25 %r_V_9, i25 %sext_ln1146_2"   --->   Operation 145 'add' 'ret_V_17' <Predicate = true> <Delay = 0.64> <CoreInst = "DSP48">   --->   Core 71 'DSP48' <Latency = 3> <II = 1> <Delay = 0.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
 
 State 11 <SV = 10> <Delay = 7.16>
 ST_11 : Operation 146 [1/2] (0.64ns) (root node of the DSP)   --->   "%ret_V_17 = add i25 %r_V_9, i25 %sext_ln1146_2"   --->   Operation 146 'add' 'ret_V_17' <Predicate = true> <Delay = 0.64> <CoreInst = "DSP48">   --->   Core 71 'DSP48' <Latency = 3> <II = 1> <Delay = 0.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
 ST_11 : Operation 147 [1/1] (0.00ns)   --->   "%p_Result_cast = partselect i10 @_ssdm_op_PartSelect.i10.i25.i32.i32, i25 %ret_V_17, i32, i32"   --->   Operation 147 'partselect' 'p_Result_cast' <Predicate = true> <Delay = 0.00>
-ST_11 : Operation 148 [1/1] (0.00ns) (grouped into LUT with out node r_exp_V)   --->   "%p_Result_10 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %ret_V_17, i32"   --->   Operation 148 'bitselect' 'p_Result_10' <Predicate = true> <Delay = 0.00>
+ST_11 : Operation 148 [1/1] (0.00ns) (grouped into LUT with out node r_exp_V)   --->   "%p_Result_9 = bitselect i1 @_ssdm_op_BitSelect.i1.i25.i32, i25 %ret_V_17, i32"   --->   Operation 148 'bitselect' 'p_Result_9' <Predicate = true> <Delay = 0.00>
 ST_11 : Operation 149 [1/1] (0.00ns)   --->   "%trunc_ln805 = trunc i25 %ret_V_17"   --->   Operation 149 'trunc' 'trunc_ln805' <Predicate = true> <Delay = 0.00>
 ST_11 : Operation 150 [1/1] (1.07ns)   --->   "%icmp_ln805 = icmp_eq  i15 %trunc_ln805, i15"   --->   Operation 150 'icmp' 'icmp_ln805' <Predicate = true> <Delay = 1.07> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
 ST_11 : Operation 151 [1/1] (0.78ns)   --->   "%add_ln649 = add i10 %p_Result_cast, i10"   --->   Operation 151 'add' 'add_ln649' <Predicate = true> <Delay = 0.78> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
 ST_11 : Operation 152 [1/1] (0.00ns) (grouped into LUT with out node r_exp_V)   --->   "%select_ln804 = select i1 %icmp_ln805, i10 %p_Result_cast, i10 %add_ln649"   --->   Operation 152 'select' 'select_ln804' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
-ST_11 : Operation 153 [1/1] (0.40ns) (out node of the LUT)   --->   "%r_exp_V = select i1 %p_Result_10, i10 %select_ln804, i10 %p_Result_cast"   --->   Operation 153 'select' 'r_exp_V' <Predicate = true> <Delay = 0.40> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_11 : Operation 153 [1/1] (0.40ns) (out node of the LUT)   --->   "%r_exp_V = select i1 %p_Result_9, i10 %select_ln804, i10 %p_Result_cast"   --->   Operation 153 'select' 'r_exp_V' <Predicate = true> <Delay = 0.40> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
 ST_11 : Operation 154 [1/1] (0.00ns)   --->   "%sext_ln1069 = sext i10 %r_exp_V"   --->   Operation 154 'sext' 'sext_ln1069' <Predicate = true> <Delay = 0.00>
 ST_11 : Operation 155 [1/1] (3.40ns)   --->   "%mul_ln1069 = mul i36 %sext_ln1069, i36"   --->   Operation 155 'mul' 'mul_ln1069' <Predicate = true> <Delay = 3.40> <CoreInst = "Multiplier">   --->   Core 4 'Multiplier' <Latency = 0> <II = 1> <Delay = 3.40> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
 ST_11 : Operation 156 [1/1] (0.00ns)   --->   "%trunc_ln657_1 = partselect i27 @_ssdm_op_PartSelect.i27.i36.i32.i32, i36 %mul_ln1069, i32, i32"   --->   Operation 156 'partselect' 'trunc_ln657_1' <Predicate = true> <Delay = 0.00>
-ST_11 : Operation 157 [1/1] (0.96ns)   --->   "%m_diff = sub i27 %trunc_ln1, i27 %trunc_ln657_1"   --->   Operation 157 'sub' 'm_diff' <Predicate = true> <Delay = 0.96> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_11 : Operation 157 [1/1] (0.96ns)   --->   "%m_diff = sub i27 %trunc_ln7, i27 %trunc_ln657_1"   --->   Operation 157 'sub' 'm_diff' <Predicate = true> <Delay = 0.96> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
 ST_11 : Operation 158 [1/1] (0.00ns)   --->   "%m_diff_hi_V = partselect i9 @_ssdm_op_PartSelect.i9.i27.i32.i32, i27 %m_diff, i32, i32"   --->   Operation 158 'partselect' 'm_diff_hi_V' <Predicate = true> <Delay = 0.00>
 ST_11 : Operation 159 [1/1] (0.00ns)   --->   "%m_diff_lo_V = trunc i27 %m_diff"   --->   Operation 159 'trunc' 'm_diff_lo_V' <Predicate = true> <Delay = 0.00>
 ST_11 : Operation 160 [1/1] (0.00ns)   --->   "%Z2_ind_V = partselect i5 @_ssdm_op_PartSelect.i5.i27.i32.i32, i27 %m_diff, i32, i32"   --->   Operation 160 'partselect' 'Z2_ind_V' <Predicate = true> <Delay = 0.00>
@@ -299,28 +299,28 @@ ST_16 : Operation 188 [1/1] (0.00ns)   --->   "%lhs_V_11 = bitconcatenate i44 @_
 ST_16 : Operation 189 [1/1] (0.00ns)   --->   "%zext_ln1146_3 = zext i36 %r_V_10"   --->   Operation 189 'zext' 'zext_ln1146_3' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 190 [1/1] (0.00ns)   --->   "%zext_ln1146_4 = zext i36 %r_V_10"   --->   Operation 190 'zext' 'zext_ln1146_4' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 191 [1/1] (0.00ns)   --->   "%trunc_ln1146 = trunc i27 %ret_V_12"   --->   Operation 191 'trunc' 'trunc_ln1146' <Predicate = true> <Delay = 0.00>
-ST_16 : Operation 192 [1/1] (0.00ns)   --->   "%trunc_ln2 = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i26.i17, i26 %trunc_ln1146, i17"   --->   Operation 192 'bitconcatenate' 'trunc_ln2' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 192 [1/1] (0.00ns)   --->   "%trunc_ln8 = bitconcatenate i43 @_ssdm_op_BitConcatenate.i43.i26.i17, i26 %trunc_ln1146, i17"   --->   Operation 192 'bitconcatenate' 'trunc_ln8' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 193 [1/1] (0.00ns)   --->   "%zext_ln1146_5 = zext i36 %r_V_10"   --->   Operation 193 'zext' 'zext_ln1146_5' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 194 [1/1] (0.00ns)   --->   "%trunc_ln1146_2 = trunc i27 %ret_V_12"   --->   Operation 194 'trunc' 'trunc_ln1146_2' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 195 [1/1] (0.00ns)   --->   "%trunc_ln1146_1 = bitconcatenate i42 @_ssdm_op_BitConcatenate.i42.i25.i17, i25 %trunc_ln1146_2, i17"   --->   Operation 195 'bitconcatenate' 'trunc_ln1146_1' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 196 [1/1] (1.06ns)   --->   "%ret_V_13 = add i44 %zext_ln1146_3, i44 %lhs_V_11"   --->   Operation 196 'add' 'ret_V_13' <Predicate = true> <Delay = 1.06> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
 ST_16 : Operation 197 [1/1] (1.04ns)   --->   "%add_ln1146_1 = add i42 %trunc_ln1146_1, i42 %zext_ln1146_5"   --->   Operation 197 'add' 'add_ln1146_1' <Predicate = true> <Delay = 1.04> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_16 : Operation 198 [1/1] (1.05ns)   --->   "%add_ln1146_2 = add i43 %trunc_ln2, i43 %zext_ln1146_4"   --->   Operation 198 'add' 'add_ln1146_2' <Predicate = true> <Delay = 1.05> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_16 : Operation 199 [1/1] (0.00ns)   --->   "%tmp_42 = bitselect i1 @_ssdm_op_BitSelect.i1.i44.i32, i44 %ret_V_13, i32"   --->   Operation 199 'bitselect' 'tmp_42' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 198 [1/1] (1.05ns)   --->   "%add_ln1146_2 = add i43 %trunc_ln8, i43 %zext_ln1146_4"   --->   Operation 198 'add' 'add_ln1146_2' <Predicate = true> <Delay = 1.05> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_16 : Operation 199 [1/1] (0.00ns)   --->   "%tmp_40 = bitselect i1 @_ssdm_op_BitSelect.i1.i44.i32, i44 %ret_V_13, i32"   --->   Operation 199 'bitselect' 'tmp_40' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 200 [1/1] (0.78ns)   --->   "%r_exp_V_1 = add i10 %r_exp_V, i10"   --->   Operation 200 'add' 'r_exp_V_1' <Predicate = true> <Delay = 0.78> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_16 : Operation 201 [1/1] (0.40ns)   --->   "%r_exp_V_2 = select i1 %tmp_42, i10 %r_exp_V, i10 %r_exp_V_1"   --->   Operation 201 'select' 'r_exp_V_2' <Predicate = true> <Delay = 0.40> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
-ST_16 : Operation 202 [1/1] (0.00ns)   --->   "%tmp_43 = partselect i3 @_ssdm_op_PartSelect.i3.i10.i32.i32, i10 %r_exp_V_2, i32, i32"   --->   Operation 202 'partselect' 'tmp_43' <Predicate = true> <Delay = 0.00>
-ST_16 : Operation 203 [1/1] (0.58ns)   --->   "%icmp_ln844 = icmp_sgt  i3 %tmp_43, i3"   --->   Operation 203 'icmp' 'icmp_ln844' <Predicate = true> <Delay = 0.58> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
-ST_16 : Operation 204 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp_44 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32"   --->   Operation 204 'bitselect' 'tmp_44' <Predicate = true> <Delay = 0.00>
-ST_16 : Operation 205 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%select_ln658 = select i1 %tmp_44, i32, i32" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:658]   --->   Operation 205 'select' 'select_ln658' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_16 : Operation 201 [1/1] (0.40ns)   --->   "%r_exp_V_2 = select i1 %tmp_40, i10 %r_exp_V, i10 %r_exp_V_1"   --->   Operation 201 'select' 'r_exp_V_2' <Predicate = true> <Delay = 0.40> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_16 : Operation 202 [1/1] (0.00ns)   --->   "%tmp_41 = partselect i3 @_ssdm_op_PartSelect.i3.i10.i32.i32, i10 %r_exp_V_2, i32, i32"   --->   Operation 202 'partselect' 'tmp_41' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 203 [1/1] (0.58ns)   --->   "%icmp_ln844 = icmp_sgt  i3 %tmp_41, i3"   --->   Operation 203 'icmp' 'icmp_ln844' <Predicate = true> <Delay = 0.58> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_16 : Operation 204 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp_42 = bitselect i1 @_ssdm_op_BitSelect.i1.i64.i32, i64 %ret_V_9, i32"   --->   Operation 204 'bitselect' 'tmp_42' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 205 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%select_ln658 = select i1 %tmp_42, i32, i32" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:658]   --->   Operation 205 'select' 'select_ln658' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
 ST_16 : Operation 206 [1/1] (0.91ns)   --->   "%icmp_ln848 = icmp_slt  i10 %r_exp_V_2, i10"   --->   Operation 206 'icmp' 'icmp_ln848' <Predicate = true> <Delay = 0.91> <CoreInst = "Cmp">   --->   Core 10 'Cmp' <Latency = 0> <II = 1> <Delay = 0.91> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
 ST_16 : Operation 207 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp = partselect i23 @_ssdm_op_PartSelect.i23.i43.i32.i32, i43 %add_ln1146_2, i32, i32"   --->   Operation 207 'partselect' 'tmp' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 208 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp_s = partselect i23 @_ssdm_op_PartSelect.i23.i42.i32.i32, i42 %add_ln1146_1, i32, i32"   --->   Operation 208 'partselect' 'tmp_s' <Predicate = true> <Delay = 0.00>
-ST_16 : Operation 209 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp_V = select i1 %tmp_42, i23 %tmp, i23 %tmp_s"   --->   Operation 209 'select' 'tmp_V' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_16 : Operation 209 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%tmp_V = select i1 %tmp_40, i23 %tmp, i23 %tmp_s"   --->   Operation 209 'select' 'tmp_V' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
 ST_16 : Operation 210 [1/1] (0.00ns)   --->   "%trunc_ln170 = trunc i10 %r_exp_V_2"   --->   Operation 210 'trunc' 'trunc_ln170' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 211 [1/1] (0.76ns)   --->   "%out_exp = add i8 %trunc_ln170, i8"   --->   Operation 211 'add' 'out_exp' <Predicate = true> <Delay = 0.76> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_16 : Operation 212 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%p_Result_14 = bitconcatenate i32 @_ssdm_op_BitConcatenate.i32.i1.i8.i23, i1, i8 %out_exp, i23 %tmp_V"   --->   Operation 212 'bitconcatenate' 'p_Result_14' <Predicate = true> <Delay = 0.00>
-ST_16 : Operation 213 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%bitcast_ln350 = bitcast i32 %p_Result_14" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:350]   --->   Operation 213 'bitcast' 'bitcast_ln350' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 212 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%p_Result_13 = bitconcatenate i32 @_ssdm_op_BitConcatenate.i32.i1.i8.i23, i1, i8 %out_exp, i23 %tmp_V"   --->   Operation 212 'bitconcatenate' 'p_Result_13' <Predicate = true> <Delay = 0.00>
+ST_16 : Operation 213 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%bitcast_ln350 = bitcast i32 %p_Result_13" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/src/hls\utils/x_hls_utils.h:350]   --->   Operation 213 'bitcast' 'bitcast_ln350' <Predicate = true> <Delay = 0.00>
 ST_16 : Operation 214 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%xor_ln407 = xor i1 %or_ln407_3, i1" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:407]   --->   Operation 214 'xor' 'xor_ln407' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
 ST_16 : Operation 215 [1/1] (0.00ns) (grouped into LUT with out node select_ln657)   --->   "%and_ln657 = and i1 %icmp_ln844, i1 %xor_ln407" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:657]   --->   Operation 215 'and' 'and_ln657' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 12 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
 ST_16 : Operation 216 [1/1] (0.44ns) (out node of the LUT)   --->   "%select_ln657 = select i1 %and_ln657, i32 %select_ln658, i32 %bitcast_ln350" [r:/builds/2020.1/continuous/2020_05_27_2902540/src/shared/hls/clib/hlsmath/include/FloatingPoint\hls_pow.h:657]   --->   Operation 216 'select' 'select_ln657' <Predicate = true> <Delay = 0.44> <CoreInst = "Sel">   --->   Core 11 'Sel' <Latency = 0> <II = 1> <Delay = 0.44> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
@@ -344,13 +344,13 @@ STG Binding:
 - Is top level: 0
 Port [ Return ] is wired: 1; IO mode=ap_ctrl_hs:ce=0
 Port [ base_r]:  wired=1; compound=0; hidden=0; nouse=0; global=0; static=0; extern=0; dir=0; type=0; pingpong=0; private_global=0; IO mode=ap_none:ce=0
-Port [ pow_reduce_anonymous_namespace_log_inverse_lut_table_pow_0_5_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_4_4_16_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_7_6_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_12_6_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_table_exp_Z1_ap_ufixed_27_1_ap_q_mode_5_ap_o_mode_3_0_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
-Port [ pow_reduce_anonymous_namespace_table_f_Z2_ap_ufixed_27_0_ap_q_mode_5_ap_o_mode_3_0_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=0; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_log_inverse_lut_table_pow_0_5_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_4_4_16_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_7_6_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_log_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_12_6_64_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_table_exp_Z1_ap_ufixed_27_1_ap_q_mode_5_ap_o_mode_3_0_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
+Port [ pow_reduce_anonymous_namespace_table_f_Z2_ap_ufixed_27_0_ap_q_mode_5_ap_o_mode_3_0_array_V]:  wired=0; compound=1; hidden=1; nouse=0; global=1; static=1; extern=0; dir=0; type=1; pingpong=0; private_global=1; MemPort=[1]; IO mode=ap_memory:ce=0
 ---------------- STG Properties END ------------------
 
 ---------------- Datapath Model BEGIN ----------------
@@ -359,7 +359,7 @@ Port [ pow_reduce_anonymous_namespace_table_f_Z2_ap_ufixed_27_0_ap_q_mode_5_ap_o
 <method=bitvector/>
 base_read                                                                                                       (read          ) [ 00000000000000000]
 p_Val2_s                                                                                                        (bitcast       ) [ 00000000000000000]
-p_Result_15                                                                                                     (bitselect     ) [ 00000000000000000]
+p_Result_14                                                                                                     (bitselect     ) [ 00000000000000000]
 p_Repl2_3                                                                                                       (partselect    ) [ 00000000000000000]
 p_Repl2_s                                                                                                       (trunc         ) [ 01100000000000000]
 zext_ln340                                                                                                      (zext          ) [ 00000000000000000]
@@ -383,7 +383,7 @@ b_exp_2                                                                         
 zext_ln492                                                                                                      (zext          ) [ 00000000000000000]
 pow_reduce_anonymous_namespace_log_inverse_lut_table_pow_0_5_64_array_V_addr                                    (getelementptr ) [ 01100000000000000]
 pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V_addr (getelementptr ) [ 01100000000000000]
-p_Result_16                                                                                                     (bitconcatenate) [ 00000000000000000]
+p_Result_15                                                                                                     (bitconcatenate) [ 00000000000000000]
 b_frac                                                                                                          (bitconcatenate) [ 00000000000000000]
 zext_ln1287_1                                                                                                   (zext          ) [ 00000000000000000]
 select_ln513                                                                                                    (select        ) [ 01011100000000000]
@@ -394,7 +394,7 @@ mul_ln682                                                                       
 z1_V                                                                                                            (bitconcatenate) [ 00000000000000000]
 a                                                                                                               (partselect    ) [ 01000010000000000]
 trunc_ln657                                                                                                     (trunc         ) [ 00000000000000000]
-tmp_39                                                                                                          (bitselect     ) [ 00000000000000000]
+tmp_37                                                                                                          (bitselect     ) [ 00000000000000000]
 sf                                                                                                              (bitconcatenate) [ 00000000000000000]
 tmp_13                                                                                                          (bitconcatenate) [ 00000000000000000]
 zext_ln1287                                                                                                     (zext          ) [ 00000000000000000]
@@ -469,15 +469,15 @@ ret_V_8                                                                         
 sext_ln1146_1                                                                                                   (sext          ) [ 00000000000000000]
 ret_V_9                                                                                                         (add           ) [ 01000000011111111]
 m_fix_hi_V                                                                                                      (partselect    ) [ 00000000000000000]
-p_Result_17                                                                                                     (bitselect     ) [ 01000000011000000]
+p_Result_16                                                                                                     (bitselect     ) [ 01000000011000000]
 sext_ln1070                                                                                                     (sext          ) [ 01000000011000000]
-trunc_ln1                                                                                                       (partselect    ) [ 01000000011100000]
+trunc_ln7                                                                                                       (partselect    ) [ 01000000011100000]
 r_V_9                                                                                                           (mul           ) [ 01000000000100000]
 rhs_V_6                                                                                                         (bitconcatenate) [ 00000000000000000]
 sext_ln1146_2                                                                                                   (sext          ) [ 01000000000100000]
 ret_V_17                                                                                                        (add           ) [ 00000000000000000]
 p_Result_cast                                                                                                   (partselect    ) [ 00000000000000000]
-p_Result_10                                                                                                     (bitselect     ) [ 00000000000000000]
+p_Result_9                                                                                                      (bitselect     ) [ 00000000000000000]
 trunc_ln805                                                                                                     (trunc         ) [ 00000000000000000]
 icmp_ln805                                                                                                      (icmp          ) [ 00000000000000000]
 add_ln649                                                                                                       (add           ) [ 00000000000000000]
@@ -516,19 +516,19 @@ lhs_V_11                                                                        
 zext_ln1146_3                                                                                                   (zext          ) [ 00000000000000000]
 zext_ln1146_4                                                                                                   (zext          ) [ 00000000000000000]
 trunc_ln1146                                                                                                    (trunc         ) [ 00000000000000000]
-trunc_ln2                                                                                                       (bitconcatenate) [ 00000000000000000]
+trunc_ln8                                                                                                       (bitconcatenate) [ 00000000000000000]
 zext_ln1146_5                                                                                                   (zext          ) [ 00000000000000000]
 trunc_ln1146_2                                                                                                  (trunc         ) [ 00000000000000000]
 trunc_ln1146_1                                                                                                  (bitconcatenate) [ 00000000000000000]
 ret_V_13                                                                                                        (add           ) [ 00000000000000000]
 add_ln1146_1                                                                                                    (add           ) [ 00000000000000000]
 add_ln1146_2                                                                                                    (add           ) [ 00000000000000000]
-tmp_42                                                                                                          (bitselect     ) [ 00000000000000000]
+tmp_40                                                                                                          (bitselect     ) [ 00000000000000000]
 r_exp_V_1                                                                                                       (add           ) [ 00000000000000000]
 r_exp_V_2                                                                                                       (select        ) [ 00000000000000000]
-tmp_43                                                                                                          (partselect    ) [ 00000000000000000]
+tmp_41                                                                                                          (partselect    ) [ 00000000000000000]
 icmp_ln844                                                                                                      (icmp          ) [ 00000000000000000]
-tmp_44                                                                                                          (bitselect     ) [ 00000000000000000]
+tmp_42                                                                                                          (bitselect     ) [ 00000000000000000]
 select_ln658                                                                                                    (select        ) [ 00000000000000000]
 icmp_ln848                                                                                                      (icmp          ) [ 00000000000000000]
 tmp                                                                                                             (partselect    ) [ 00000000000000000]
@@ -536,7 +536,7 @@ tmp_s                                                                           
 tmp_V                                                                                                           (select        ) [ 00000000000000000]
 trunc_ln170                                                                                                     (trunc         ) [ 00000000000000000]
 out_exp                                                                                                         (add           ) [ 00000000000000000]
-p_Result_14                                                                                                     (bitconcatenate) [ 00000000000000000]
+p_Result_13                                                                                                     (bitconcatenate) [ 00000000000000000]
 bitcast_ln350                                                                                                   (bitcast       ) [ 00000000000000000]
 xor_ln407                                                                                                       (xor           ) [ 00000000000000000]
 and_ln657                                                                                                       (and           ) [ 00000000000000000]
@@ -1907,7 +1907,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="355" class="1004" name="p_Result_15_fu_355">
+<comp id="355" class="1004" name="p_Result_14_fu_355">
 <pin_list>
 <pin id="356" dir="0" index="0" bw="1" slack="0"/>
 <pin id="357" dir="0" index="1" bw="32" slack="0"/>
@@ -1916,7 +1916,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="p_Result_15/1 "/>
+<opset="p_Result_14/1 "/>
 </bind>
 </comp>
 
@@ -2175,7 +2175,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="497" class="1004" name="p_Result_16_fu_497">
+<comp id="497" class="1004" name="p_Result_15_fu_497">
 <pin_list>
 <pin id="498" dir="0" index="0" bw="25" slack="0"/>
 <pin id="499" dir="0" index="1" bw="1" slack="0"/>
@@ -2185,7 +2185,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitconcatenate(1004) " fcode="bitconcatenate"/>
-<opset="p_Result_16/2 "/>
+<opset="p_Result_15/2 "/>
 </bind>
 </comp>
 
@@ -2275,7 +2275,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="547" class="1004" name="tmp_39_fu_547">
+<comp id="547" class="1004" name="tmp_37_fu_547">
 <pin_list>
 <pin id="548" dir="0" index="0" bw="1" slack="0"/>
 <pin id="549" dir="0" index="1" bw="25" slack="0"/>
@@ -2284,7 +2284,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="tmp_39/5 "/>
+<opset="tmp_37/5 "/>
 </bind>
 </comp>
 
@@ -3112,7 +3112,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="964" class="1004" name="p_Result_17_fu_964">
+<comp id="964" class="1004" name="p_Result_16_fu_964">
 <pin_list>
 <pin id="965" dir="0" index="0" bw="1" slack="0"/>
 <pin id="966" dir="0" index="1" bw="64" slack="0"/>
@@ -3121,7 +3121,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="p_Result_17/8 "/>
+<opset="p_Result_16/8 "/>
 </bind>
 </comp>
 
@@ -3136,7 +3136,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="976" class="1004" name="trunc_ln1_fu_976">
+<comp id="976" class="1004" name="trunc_ln7_fu_976">
 <pin_list>
 <pin id="977" dir="0" index="0" bw="27" slack="0"/>
 <pin id="978" dir="0" index="1" bw="64" slack="0"/>
@@ -3146,7 +3146,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="partselect(1002) " fcode="partselect"/>
-<opset="trunc_ln1/8 "/>
+<opset="trunc_ln7/8 "/>
 </bind>
 </comp>
 
@@ -3188,7 +3188,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1006" class="1004" name="p_Result_10_fu_1006">
+<comp id="1006" class="1004" name="p_Result_9_fu_1006">
 <pin_list>
 <pin id="1007" dir="0" index="0" bw="1" slack="0"/>
 <pin id="1008" dir="0" index="1" bw="25" slack="0"/>
@@ -3197,7 +3197,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="p_Result_10/11 "/>
+<opset="p_Result_9/11 "/>
 </bind>
 </comp>
 
@@ -3590,7 +3590,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1202" class="1004" name="trunc_ln2_fu_1202">
+<comp id="1202" class="1004" name="trunc_ln8_fu_1202">
 <pin_list>
 <pin id="1203" dir="0" index="0" bw="43" slack="0"/>
 <pin id="1204" dir="0" index="1" bw="26" slack="0"/>
@@ -3599,7 +3599,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitconcatenate(1004) " fcode="bitconcatenate"/>
-<opset="trunc_ln2/16 "/>
+<opset="trunc_ln8/16 "/>
 </bind>
 </comp>
 
@@ -3674,7 +3674,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1243" class="1004" name="tmp_42_fu_1243">
+<comp id="1243" class="1004" name="tmp_40_fu_1243">
 <pin_list>
 <pin id="1244" dir="0" index="0" bw="1" slack="0"/>
 <pin id="1245" dir="0" index="1" bw="44" slack="0"/>
@@ -3683,7 +3683,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="tmp_42/16 "/>
+<opset="tmp_40/16 "/>
 </bind>
 </comp>
 
@@ -3712,7 +3712,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1263" class="1004" name="tmp_43_fu_1263">
+<comp id="1263" class="1004" name="tmp_41_fu_1263">
 <pin_list>
 <pin id="1264" dir="0" index="0" bw="3" slack="0"/>
 <pin id="1265" dir="0" index="1" bw="10" slack="0"/>
@@ -3722,7 +3722,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="partselect(1002) " fcode="partselect"/>
-<opset="tmp_43/16 "/>
+<opset="tmp_41/16 "/>
 </bind>
 </comp>
 
@@ -3738,7 +3738,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1279" class="1004" name="tmp_44_fu_1279">
+<comp id="1279" class="1004" name="tmp_42_fu_1279">
 <pin_list>
 <pin id="1280" dir="0" index="0" bw="1" slack="0"/>
 <pin id="1281" dir="0" index="1" bw="64" slack="8"/>
@@ -3747,7 +3747,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitselect(1000) " fcode="bitselect"/>
-<opset="tmp_44/16 "/>
+<opset="tmp_42/16 "/>
 </bind>
 </comp>
 
@@ -3840,7 +3840,7 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1338" class="1004" name="p_Result_14_fu_1338">
+<comp id="1338" class="1004" name="p_Result_13_fu_1338">
 <pin_list>
 <pin id="1339" dir="0" index="0" bw="32" slack="0"/>
 <pin id="1340" dir="0" index="1" bw="1" slack="0"/>
@@ -3850,7 +3850,7 @@ ret_ln690                                                                       
 </pin_list>
 <bind>
 <opcode="bitconcatenate(1004) " fcode="bitconcatenate"/>
-<opset="p_Result_14/16 "/>
+<opset="p_Result_13/16 "/>
 </bind>
 </comp>
 
@@ -4271,13 +4271,13 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1579" class="1005" name="p_Result_17_reg_1579">
+<comp id="1579" class="1005" name="p_Result_16_reg_1579">
 <pin_list>
 <pin id="1580" dir="0" index="0" bw="1" slack="2"/>
 <pin id="1581" dir="1" index="1" bw="1" slack="2"/>
 </pin_list>
 <bind>
-<opset="p_Result_17 "/>
+<opset="p_Result_16 "/>
 </bind>
 </comp>
 
@@ -4291,13 +4291,13 @@ ret_ln690                                                                       
 </bind>
 </comp>
 
-<comp id="1589" class="1005" name="trunc_ln1_reg_1589">
+<comp id="1589" class="1005" name="trunc_ln7_reg_1589">
 <pin_list>
 <pin id="1590" dir="0" index="0" bw="27" slack="3"/>
 <pin id="1591" dir="1" index="1" bw="27" slack="3"/>
 </pin_list>
 <bind>
-<opset="trunc_ln1 "/>
+<opset="trunc_ln7 "/>
 </bind>
 </comp>
 
@@ -5358,7 +5358,7 @@ ret_ln690                                                                       
 	Port: pow_generic<float> : pow_reduce_anonymous_namespace_table_f_Z2_ap_ufixed_27_0_ap_q_mode_5_ap_o_mode_3_0_array_V | {11 12 }
   - Chain level:
 	State 1
-		p_Result_15 : 1
+		p_Result_14 : 1
 		p_Repl2_3 : 1
 		p_Repl2_s : 1
 		zext_ln340 : 2
@@ -5395,7 +5395,7 @@ ret_ln690                                                                       
 		z1_V : 1
 		a : 1
 		trunc_ln657 : 1
-		tmp_39 : 1
+		tmp_37 : 1
 		sf : 1
 		tmp_13 : 1
 		zext_ln1287 : 2
@@ -5459,17 +5459,17 @@ ret_ln690                                                                       
 		sext_ln1146_1 : 6
 		ret_V_9 : 7
 		m_fix_hi_V : 8
-		p_Result_17 : 8
+		p_Result_16 : 8
 		sext_ln1070 : 9
 		r_V_9 : 10
-		trunc_ln1 : 8
+		trunc_ln7 : 8
 	State 9
 	State 10
 		sext_ln1146_2 : 1
 		ret_V_17 : 2
 	State 11
 		p_Result_cast : 1
-		p_Result_10 : 1
+		p_Result_9 : 1
 		trunc_ln805 : 1
 		icmp_ln805 : 2
 		add_ln649 : 2
@@ -5505,16 +5505,16 @@ ret_ln690                                                                       
 		zext_ln1146_3 : 1
 		zext_ln1146_4 : 1
 		trunc_ln1146 : 1
-		trunc_ln2 : 2
+		trunc_ln8 : 2
 		zext_ln1146_5 : 1
 		trunc_ln1146_2 : 1
 		trunc_ln1146_1 : 2
 		ret_V_13 : 2
 		add_ln1146_1 : 3
 		add_ln1146_2 : 3
-		tmp_42 : 3
+		tmp_40 : 3
 		r_exp_V_2 : 4
-		tmp_43 : 5
+		tmp_41 : 5
 		icmp_ln844 : 6
 		select_ln658 : 1
 		icmp_ln848 : 5
@@ -5523,7 +5523,7 @@ ret_ln690                                                                       
 		tmp_V : 5
 		trunc_ln170 : 5
 		out_exp : 6
-		p_Result_14 : 7
+		p_Result_13 : 7
 		bitcast_ln350 : 8
 		and_ln657 : 7
 		select_ln657 : 9
@@ -5623,13 +5623,13 @@ ret_ln690                                                                       
 |----------|------------------------|---------|---------|---------|
 |   read   |  base_read_read_fu_254 |    0    |    0    |    0    |
 |----------|------------------------|---------|---------|---------|
-|          |   p_Result_15_fu_355   |    0    |    0    |    0    |
+|          |   p_Result_14_fu_355   |    0    |    0    |    0    |
 |          |    p_Result_s_fu_459   |    0    |    0    |    0    |
-|          |      tmp_39_fu_547     |    0    |    0    |    0    |
-| bitselect|   p_Result_17_fu_964   |    0    |    0    |    0    |
-|          |   p_Result_10_fu_1006  |    0    |    0    |    0    |
-|          |     tmp_42_fu_1243     |    0    |    0    |    0    |
-|          |     tmp_44_fu_1279     |    0    |    0    |    0    |
+|          |      tmp_37_fu_547     |    0    |    0    |    0    |
+| bitselect|   p_Result_16_fu_964   |    0    |    0    |    0    |
+|          |   p_Result_9_fu_1006   |    0    |    0    |    0    |
+|          |     tmp_40_fu_1243     |    0    |    0    |    0    |
+|          |     tmp_42_fu_1279     |    0    |    0    |    0    |
 |----------|------------------------|---------|---------|---------|
 |          |    p_Repl2_3_fu_363    |    0    |    0    |    0    |
 |          |     index0_V_fu_467    |    0    |    0    |    0    |
@@ -5645,14 +5645,14 @@ ret_ln690                                                                       
 |partselect|     rhs_V_5_fu_886     |    0    |    0    |    0    |
 |          |     trunc_ln_fu_917    |    0    |    0    |    0    |
 |          |    m_fix_hi_V_fu_954   |    0    |    0    |    0    |
-|          |    trunc_ln1_fu_976    |    0    |    0    |    0    |
+|          |    trunc_ln7_fu_976    |    0    |    0    |    0    |
 |          |  p_Result_cast_fu_997  |    0    |    0    |    0    |
 |          |  trunc_ln657_1_fu_1054 |    0    |    0    |    0    |
 |          |   m_diff_hi_V_fu_1069  |    0    |    0    |    0    |
 |          |    Z2_ind_V_fu_1083    |    0    |    0    |    0    |
 |          |  exp_Z1P_m_1_V_fu_1115 |    0    |    0    |    0    |
 |          |   exp_Z1_hi_V_fu_1125  |    0    |    0    |    0    |
-|          |     tmp_43_fu_1263     |    0    |    0    |    0    |
+|          |     tmp_41_fu_1263     |    0    |    0    |    0    |
 |          |       tmp_fu_1300      |    0    |    0    |    0    |
 |          |      tmp_s_fu_1310     |    0    |    0    |    0    |
 |----------|------------------------|---------|---------|---------|
@@ -5703,7 +5703,7 @@ ret_ln690                                                                       
 |          |  zext_ln1146_4_fu_1195 |    0    |    0    |    0    |
 |          |  zext_ln1146_5_fu_1210 |    0    |    0    |    0    |
 |----------|------------------------|---------|---------|---------|
-|          |   p_Result_16_fu_497   |    0    |    0    |    0    |
+|          |   p_Result_15_fu_497   |    0    |    0    |    0    |
 |          |      b_frac_fu_506     |    0    |    0    |    0    |
 |          |       z1_V_fu_528      |    0    |    0    |    0    |
 |          |        sf_fu_554       |    0    |    0    |    0    |
@@ -5719,9 +5719,9 @@ ret_ln690                                                                       
 |          |     lhs_V_7_fu_927     |    0    |    0    |    0    |
 |          |     rhs_V_6_fu_986     |    0    |    0    |    0    |
 |          |    lhs_V_11_fu_1184    |    0    |    0    |    0    |
-|          |    trunc_ln2_fu_1202   |    0    |    0    |    0    |
+|          |    trunc_ln8_fu_1202   |    0    |    0    |    0    |
 |          | trunc_ln1146_1_fu_1217 |    0    |    0    |    0    |
-|          |   p_Result_14_fu_1338  |    0    |    0    |    0    |
+|          |   p_Result_13_fu_1338  |    0    |    0    |    0    |
 |----------|------------------------|---------|---------|---------|
 |          |    sext_ln657_fu_868   |    0    |    0    |    0    |
 |          |   sext_ln1146_fu_935   |    0    |    0    |    0    |
@@ -5753,7 +5753,7 @@ N/A
 |                                                   or_ln407_1_reg_1460                                                  |    1   |
 |                                                   or_ln407_2_reg_1465                                                  |    1   |
 |                                                   p_Repl2_s_reg_1438                                                   |   23   |
-|                                                  p_Result_17_reg_1579                                                  |    1   |
+|                                                  p_Result_16_reg_1579                                                  |    1   |
 |                                                   p_Result_s_reg_1471                                                  |    1   |
 |pow_reduce_anonymous_namespace_log0_lut_table_ap_fixed_65_9_ap_q_mode_5_ap_o_mode_3_0_float_0_5_64_array_V_addr_reg_1486|    6   |
 |                  pow_reduce_anonymous_namespace_log_inverse_lut_table_pow_0_5_64_array_V_addr_reg_1481                 |    6   |
@@ -5771,7 +5771,7 @@ N/A
 |                                                     tmp_15_reg_1549                                                    |   38   |
 |                                                     tmp_16_reg_1564                                                    |   39   |
 |                                                     tmp_17_reg_1569                                                    |   23   |
-|                                                   trunc_ln1_reg_1589                                                   |   27   |
+|                                                   trunc_ln7_reg_1589                                                   |   27   |
 |                                                     x_is_0_reg_1455                                                    |    1   |
 |                                                    x_is_NaN_reg_1450                                                   |    1   |
 |                                                    x_is_p1_reg_1444                                                    |    1   |

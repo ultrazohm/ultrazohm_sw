@@ -15,12 +15,14 @@ d_y_min=-d_y_max;           %V
 d_i_max=15;                 %A
 d_i_min=-d_i_max;           %A
 
+
 % motor parameters - Bühler 201
 % Bühler Typ BLDC_1_25_058_201 %
 
 d_I_n =8;                           % [A] rated current
 d_V_n = 24;                         % [V] rated voltage
 d_n_n = 3200;                       % [1/min] rated speed
+d_M_n = 0.29;                       % [Nm] rated torque
 d_R_ph_ph = 0.105*2;                 % [Ohm] Stator phase to pahse resistance
 d_L_ph_ph = 0.0003*2;              % [H] Anschlussinduktivität Phase-Phase
 d_R_ph = d_R_ph_ph/2;               % [Ohm] Stator phase resitance
@@ -31,6 +33,8 @@ d_L_q = d_L_ph_ph/2;                % [H] q-Axes inductivity
 d_p = 4;                            % Number of Polepairs
 d_J_m = 0.00001773;                 % [kgm^2]inertia
 d_psi_pm = 0.0075;                  % [V*s] Permanent-Flux 
+d_upper_limit = 1;                  % [Nm] upper limit for torque output of n-controller
+d_lower_limit = -1;                 % [Nm] lower limit for torque output of n-controller
 
 d_tau_d = d_L_d/d_R_ph;
 d_tau_q = d_L_q/d_R_ph;
@@ -39,7 +43,7 @@ d_Tn_iq=d_tau_q;                   % [s] reset time of of q-current control inte
 d_Tn_n=0.1;                         % [s] reset time of of speed control integrator
 d_Kp_id=d_L_d / (4*20/d_f_c);                     % [V/A] d-current controller P-Gain
 d_Kp_iq=d_L_q / (4*20/d_f_c);                     % [V/A] q-current controller P-Gain
-d_Kp_n=0.00864;                     % [As/rad] speed controller P-Gain
+d_Kp_n=0.00864*0.045;                     % [As/rad] speed controller P-Gain
 d_Ki_id=d_Kp_id/d_Tn_id;
 d_Ki_iq=d_Kp_iq/d_Tn_iq;
 d_Ki_n=d_Kp_n/d_Tn_n;

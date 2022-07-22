@@ -1,10 +1,7 @@
 #ifndef UZ_SPEEDCONTROL_H
 #define UZ_SPEEDCONTROL_H
 
-#pragma once
-#include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_piController/uz_piController.h"
-#include "../uz_PMSM_config/uz_PMSM_config.h"
 /**
  * @brief Object definition for uz_SpeedControl_t
  *

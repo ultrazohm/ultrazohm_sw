@@ -19,9 +19,6 @@
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
-#include "../uz_signals/uz_signals.h"
-#include <math.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 #if UZ_SPEEDCONTROL_MAX_INSTANCES > 0

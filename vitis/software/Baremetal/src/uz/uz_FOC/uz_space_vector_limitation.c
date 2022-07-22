@@ -27,7 +27,7 @@ uz_3ph_dq_t uz_FOC_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_
 	bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_actual_Ampere.q));
 
 	if ( V_SV_abs > V_SV_max ){
-		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_dq_t
+		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_3ph_dq_t
 		*ext_clamping = true;
 		if (if_omega_equal_q_current == true) {
 			v_output_Volts = uz_limit_dq_prio_d_axis(v_input_Volts, V_SV_max);

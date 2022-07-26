@@ -5,7 +5,7 @@
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include <stdbool.h>
 
-/*! enum for selection of control algorithm if all OfflineID states are finished */
+/*! enum for selection of machine type */
 enum uz_Setpoint_motor_type {
 	SMPMSM = 0, IPMSM
 };
@@ -19,7 +19,7 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
 /**
  * @brief Configuration struct for Setpoint module. Accessible by the user
  */
-struct uz_SetPoint_t_config {
+struct uz_SetPoint_config {
 	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
 	bool is_field_weakening_active; /**< flag to enable field_weaking */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
@@ -30,10 +30,10 @@ struct uz_SetPoint_t_config {
 /**
  * @brief Initialization of the Setpoint object
  *
- * @param config uz_SetPoint_t_config configuration struct
+ * @param config uz_SetPoint_config configuration struct
  * @return Pointer to uz_SetPoint_t object
  */
-uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_t_config config);
+uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
 
 /**
  * @brief Calculates reference torque 

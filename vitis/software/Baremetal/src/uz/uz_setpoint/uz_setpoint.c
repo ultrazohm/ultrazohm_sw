@@ -28,7 +28,7 @@
 typedef struct uz_SetPoint_t {
 	bool is_ready;
     bool ext_clamping;
-	struct uz_SetPoint_t_config config;
+	struct uz_SetPoint_config config;
 }uz_SetPoint_t;
 
 static uint32_t instance_counter = 0U;

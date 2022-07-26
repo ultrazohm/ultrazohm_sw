@@ -19,6 +19,7 @@ Software Framework
     signals/signals
     space_vector_limitation/space_vector_limitation
     SpeedControl/SpeedControl
+    SetPoint/SetPoint
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests

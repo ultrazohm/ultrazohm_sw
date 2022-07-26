@@ -5,7 +5,7 @@
 #include "uz_setpoint.h"
 #include "../uz_signals/uz_signals.h"
 
-struct uz_SetPoint_t_config config = {0};
+struct uz_SetPoint_config config = {0};
 float omega_m_rad_per_sec = 0.0f;
 float M_ref_Nm = 0.045f;
 float id_ref_Ampere = 0.0f;

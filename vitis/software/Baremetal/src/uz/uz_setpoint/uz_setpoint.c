@@ -51,7 +51,7 @@ static uz_SetPoint_t* uz_SetPoint_allocation(void){
  return (self);
 }
 
-uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_t_config config){
+uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     uz_SetPoint_t* self = uz_SetPoint_allocation();
     uz_SetPoint_assert_motor_parameters(config.config_PMSM, config.motor_type);
     self->config = config;

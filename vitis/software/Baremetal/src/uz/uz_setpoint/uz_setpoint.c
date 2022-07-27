@@ -95,7 +95,7 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
     }
     if(self->config.is_field_weakening_active) {
         uz_3ph_dq_t fw_currents = uz_SetPoint_field_weakening(self, id_ref_Ampere, omega_m_rad_per_sec, V_DC_Volts);
-        float q_current_before_limit = q_current_before_limit;
+        float q_current_before_limit = output_currents.q;
         output_currents.q = uz_signals_saturation(output_currents.q, fw_currents.q, -fw_currents.q);
         if(output_currents.q != q_current_before_limit) {
             self->ext_clamping = true;
@@ -121,7 +121,7 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
     self->config.config_PMSM = input;
 }
 
-bool uz_SetPoint_get_ext_clamping(uz_SetPoint_t* self){
+bool uz_SetPoint_get_clamping(uz_SetPoint_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return(self->ext_clamping);

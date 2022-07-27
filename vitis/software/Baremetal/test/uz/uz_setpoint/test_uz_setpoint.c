@@ -337,4 +337,9 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_manual_id(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.934f, output.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -10.0f, output.d);  
 }
+
+void test_uz_SetPoint_get_clamping_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_get_clamping(NULL));
+}
+
 #endif // TEST

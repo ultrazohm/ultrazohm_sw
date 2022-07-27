@@ -41,7 +41,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
  * @param self pointer to uz_SetPoint_t object
  * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
  * @param M_ref_Nm reference torque in Nm
- * @param id_ref_Ampere if a manual d-current wants to be set, otherwise controlled by the field-weakening (in Ampere)
+ * @param id_ref_Ampere if a manual d-current wants to be set, otherwise controlled by the field-weakening or MTPA
  * @param V_DC_Volts DC-link voltage 
  * @return uz_3ph_dq_t reference currents for current-control
  */
@@ -56,7 +56,7 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
 void uz_SetPoint_set_field_weakening(uz_SetPoint_t* self, bool is_field_weakening_active);
 
 /**
- * @brief Updates the motor related params in the uz_PMSM_t struct
+ * @brief Updates the motor related parameters in the uz_PMSM_t struct
  * 
  * @param self pointer to uz_SetPoint_t object
  * @param input uz_PMSM_t struct with new values
@@ -69,5 +69,5 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
  * @param self pointer to uz_SetPoint_t instance
  * @return current value as bool 
  */
-bool uz_SetPoint_get_ext_clamping(uz_SetPoint_t* self);
+bool uz_SetPoint_get_clamping(uz_SetPoint_t* self);
 #endif // UZ_SETPOINT_H

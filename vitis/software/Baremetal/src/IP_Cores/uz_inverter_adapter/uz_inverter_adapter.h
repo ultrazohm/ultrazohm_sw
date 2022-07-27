@@ -80,7 +80,8 @@ struct uz_inverter_adapter_outputs_t{
 uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_config_t config, struct uz_inverter_adapter_outputs_t outputs);
 
 /**
- * @brief Calculates chip temperature from duty cycle 
+ * @brief Calculates chip temperature from duty cycle,  
+ *        called by uz_inverter_adapter_get_outputs function
  *
  * @param dutyCycleNormalized is the measured duty cycle of the
  *        PWM temperature signal
@@ -90,7 +91,7 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
 
 
 /**
- * @brief updates the states and signals read from the ip-core
+ * @brief updates the states and signals read from the ip-core, 
  *        called by uz_inverter_adapter_get_outputs function
  * 
  * @param self Pointer to the instance
@@ -113,4 +114,13 @@ uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_confi
   */
 void uz_inverter_adapter_set_PWM_EN(uz_inverter_adapter_t *self, bool pwm_en_onoff);
 
+/**
+  * @brief returns one status bit from concatenated bit patterns, 
+  *        called by uz_inverter_adapter_get_outputs function
+  *
+  * @param bitpattern concatenated bit pattern from which a status bit should be returned
+  * @param position defines the position of the status bit that should be returned
+  *                 bitpattern: (MSB)31 ... 0(LSB)
+  */
+bool extract_state_from_bitpattern(uint32_t bitpattern, uint32_t position);
 #endif // UZ_INVERTER_ADAPTER_H

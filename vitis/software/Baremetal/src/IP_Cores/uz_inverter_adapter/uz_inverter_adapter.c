@@ -26,8 +26,8 @@ static uz_inverter_adapter_t* uz_inverter_adapter_allocation(void){
 }
 
 uz_inverter_adapter_t* uz_inverter_adapter_init(struct uz_inverter_adapter_config_t config, struct uz_inverter_adapter_outputs_t outputs) {
-    uz_assert(0U != config.base_address);
-    uz_assert(0U != config.ip_clk_frequency_Hz); 
+    uz_assert_not_zero_uint32(config.base_address);
+    uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz); 
     uz_inverter_adapter_t* self = uz_inverter_adapter_allocation();
     self->config=config;
     self->outputs=outputs;
@@ -52,28 +52,28 @@ void uz_inverter_adapter_update_states(uz_inverter_adapter_t *self) {
 
     //get OC status bit of each switch via bit mask and bit shift
     self->outputs.OC = uz_inverter_adapter_hw_get_OC(self->config.base_address);
-    self->outputs.OC_H1 = (((self->outputs.OC) & 0x01) >> 0);
-    self->outputs.OC_L1 = (((self->outputs.OC) & 0x02) >> 1);
-    self->outputs.OC_H2 = (((self->outputs.OC) & 0x04) >> 2);
-    self->outputs.OC_L2 = (((self->outputs.OC) & 0x08) >> 3);
-    self->outputs.OC_H3 = (((self->outputs.OC) & 0x10) >> 4);
-    self->outputs.OC_L3 = (((self->outputs.OC) & 0x20) >> 5);
+    self->outputs.OC_H1 = extract_state_from_bitpattern(self->outputs.OC, 0U);
+    self->outputs.OC_L1 = extract_state_from_bitpattern(self->outputs.OC, 1U);
+    self->outputs.OC_H2 = extract_state_from_bitpattern(self->outputs.OC, 2U);
+    self->outputs.OC_L2 = extract_state_from_bitpattern(self->outputs.OC, 3U);
+    self->outputs.OC_H3 = extract_state_from_bitpattern(self->outputs.OC, 4U);
+    self->outputs.OC_L3 = extract_state_from_bitpattern(self->outputs.OC, 5U);
 
     //get FAULT status bit of each switch via bit mask and bit shift
     self->outputs.FAULT = uz_inverter_adapter_hw_get_FAULT(self->config.base_address);
-    self->outputs.FAULT_H1 = (((self->outputs.FAULT) & 0x01) >> 0);
-    self->outputs.FAULT_L1 = (((self->outputs.FAULT) & 0x02) >> 1);
-    self->outputs.FAULT_H2 = (((self->outputs.FAULT) & 0x04) >> 2);
-    self->outputs.FAULT_L2 = (((self->outputs.FAULT) & 0x08) >> 3);
-    self->outputs.FAULT_H3 = (((self->outputs.FAULT) & 0x10) >> 4);
-    self->outputs.FAULT_L3 = (((self->outputs.FAULT) & 0x20) >> 5);
+    self->outputs.FAULT_H1 = extract_state_from_bitpattern(self->outputs.FAULT, 0U);
+    self->outputs.FAULT_L1 = extract_state_from_bitpattern(self->outputs.FAULT, 1U);
+    self->outputs.FAULT_H2 = extract_state_from_bitpattern(self->outputs.FAULT, 2U);
+    self->outputs.FAULT_L2 = extract_state_from_bitpattern(self->outputs.FAULT, 3U);
+    self->outputs.FAULT_H3 = extract_state_from_bitpattern(self->outputs.FAULT, 4U);
+    self->outputs.FAULT_L3 = extract_state_from_bitpattern(self->outputs.FAULT, 5U);
 
     //get I_DIAG status bit of each current amplifier via bit mask and bit shift
     self->outputs.I_DIAG = uz_inverter_adapter_hw_get_I_DIAG(self->config.base_address);
-    self->outputs.I_DC_DIAG = (((self->outputs.I_DIAG) & 0x01) >> 0);
-    self->outputs.I1_DIAG = (((self->outputs.I_DIAG) & 0x02) >> 1);
-    self->outputs.I2_DIAG = (((self->outputs.I_DIAG) & 0x04) >> 2);
-    self->outputs.I3_DIAG = (((self->outputs.I_DIAG) & 0x08) >> 3);    
+    self->outputs.I_DC_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 0U);
+    self->outputs.I1_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 1U);
+    self->outputs.I2_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 2U);
+    self->outputs.I3_DIAG = extract_state_from_bitpattern(self->outputs.I_DIAG, 3U);    
 
     //get duty cycle information of each switch containing the chip temperature information
     self->outputs.PWMdutyCycNormalized_H1 = uz_inverter_adapter_hw_get_PWMdutyCycNormalized_H1(self->config.base_address);
@@ -103,5 +103,13 @@ void uz_inverter_adapter_set_PWM_EN(uz_inverter_adapter_t *self, bool pwm_en_ono
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_inverter_adapter_hw_set_PWM_EN(self->config.base_address, pwm_en_onoff);
+}
+
+bool extract_state_from_bitpattern(uint32_t bitpattern, uint32_t position) {
+    bool state=false;
+    if((bitpattern & (1<<position)) >> position) {
+        state=true;
+    }
+return state;
 }
 #endif

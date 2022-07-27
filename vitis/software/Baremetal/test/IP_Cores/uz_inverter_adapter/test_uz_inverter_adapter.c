@@ -13,7 +13,7 @@
 #define TEST_IP_CORE_FRQ 100000000U
 
 // true = enables printf executions that output every result of the test vectors
-bool debug_output = false;
+bool debug_output = true;
 
    struct uz_inverter_adapter_config_t test_config = {
         .base_address = TEST_BASE_ADDRESS,

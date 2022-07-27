@@ -4,7 +4,7 @@
 Inverter Adapter
 ================
 
-This IP core provides a well defined and highly sophisitcated interface for inverter adapter boards for the UltraZohm (e.g. uz_d_gan_inverter). 
+This IP core provides a well defined and highly sophisticated interface for inverter adapter boards for the UltraZohm (e.g. uz_d_gan_inverter). 
 It provides many useful features:
 
    - 6 gate signal outputs
@@ -41,9 +41,9 @@ Organization of the sources
 Folder structure of the sources in ``ip_cores/uz_d_inverter_adapter/``:
 
 - ``constraint_files`` contains ready to use Vivado constraint files for usage of the adapter board interface in any digital slot D1..D4
-- ``driver_ip_core`` contains the ip-core that the user interfaces with via software driver
+- ``driver_ip_core`` contains the ip-core with which the user communicates via the software driver
 - ``interface_definition`` contains the Vivado interface definition using the pin names from the constraint files
-- ``mapping_ip_core`` contains the ip-core that maps and organizes a whole bunch of signals from the adapter board
+- ``mapping_ip_core`` contains the ip-core that maps and organizes signals from the adapter board
 - ``temperature_calculation`` contains excel sheets for determination of the linear interpolation equation to get temperatures in degrees celsius from a duty cycle value of a PWM signal.
   The parameters of the equation depend on the circuit design and/or the used power electronic switch and have to be determined by the adapter board developer carefully
 
@@ -61,7 +61,7 @@ First, ip cores have to be added to the block design in vivado:
 2. Inside this new hierarchy click on the plus (``+``) button to add new ip and first add the ``uz_d_inverter_adapter`` ip-core
 3. Next, ``right click -> Add IP...`` and add the ``uz_inverter_adapter_mapping_v1_0`` ip-core
 4. Connect all signals between those two ip-cores that have equal names
-5. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` ip-core and connect it to the ``uz_d_inverter_adapter`` ip-core, as well as clocks and resets. Do not forget to assign a base address in the Address Editor.
+5. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` ip-core and connect it to the ``uz_d_inverter_adapter`` ip-core, as well as clocks and resets. The ip-core is designed for a 100 MHz clock rate. Do not forget to assign a base address in the Address Editor.
 6. Provide gate signals to the ``uz_inverter_adapter_mapping_v1_0`` (e.g. by slicing them from the D1_OUT port of the ``uz_digital_adapter`` hierarchy)
 
 After those steps the block design looks like this:
@@ -117,7 +117,7 @@ In the subfolder ``constraint_files`` inside the ip-core sources (see :numref:`f
 
 1. Open the respective constraint file (in our example the one for D1: ``Digital_D1_packed.xdc``)
 2. Copy everything inside the file
-3. Paste and overwrite everything inside the constriant file in your vivado project
+3. Paste and overwrite everything inside the constraint file in your vivado project
 4. Save the changed file in your vivado project
 
 After those steps the file looks like this:
@@ -138,9 +138,9 @@ under ``uz_d_3ph_inverter``
 
 Software driver
 ---------------
-For interacting with the ip-core, the following step-by-step example shows a way of implementing one instace of the software driver.
+For interacting with the ip-core, the following step-by-step example shows a way of implementing one instance of the software driver.
 
-1. In Vitis, in the Baremetal project und er the folder ``hw_init`` create a new file ``uz_inverter_adapter_init.c`` 
+1. In Vitis, in the Baremetal project under the folder ``hw_init`` create a new file ``uz_inverter_adapter_init.c`` 
 2. Include necessary files and create ``config`` and ``output`` structs as well as an init function for one or more instances:
 
 .. code-block:: c
@@ -267,7 +267,7 @@ SI-values from the duty cycle information. The example values above of ``162.35`
 
 
 10. For reading signals and states of the ip-core use the function ``uz_inverter_adapter_get_outputs`` which updates the states and returns them in the form of a ``uz_inverter_adapter_outputs_t`` struct. This 
-way you can get the states out of the driver e.g. for assigning them into the ``Global_Data`` struct. 
+way you can get the states of the status signals of the driver e.g. for assigning them into the ``Global_Data`` struct. 
 
 .. code-block:: c
  :caption: Example usage of uz_inverter_adapter_get_outputs function
@@ -319,3 +319,9 @@ User interfaces
 
 .. doxygenfunction:: uz_inverter_adapter_get_outputs
 
+Helper functions
+----------------
+
+.. doxygenfunction:: extract_state_from_bitpattern
+
+.. doxygenfunction:: uz_inverter_adapter_PWMdutyCycNormalized_to_DegreesCelsius

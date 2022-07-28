@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -39,6 +38,10 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+uz_SpeedControl_t* SpeedControl_instance = NULL;
+uz_SetPoint_t* SetPoint_instance = NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
+uz_pmsmModel_t *pmsm=NULL;
 
 enum init_chain
 {
@@ -71,11 +74,68 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
+            struct uz_SpeedControl_config configSC = {
+                  .config_controller.Kp = 0.00039f,
+                  .config_controller.Ki = 0.0039f,
+                  .config_controller.samplingTime_sec = 0.0001f,
+                  .config_controller.upper_limit = 1.0f,
+                  .config_controller.lower_limit = -1.0f,
+               };
+            uz_PMSM_t config_PMSM = {
+            		.I_max_Ampere = 15.0f,
+					.Ld_Henry = 0.0003f,
+            		.Lq_Henry = 0.0003f,
+            		.R_ph_Ohm = 0.1f,
+            		.polePairs = 4.0f,
+            		.Psi_PM_Vs = 0.0075f,
+                };
+            struct uz_SetPoint_config configSP = {
+                  .config_PMSM = config_PMSM,
+                  .motor_type = SMPMSM,
+                  .is_field_weakening_enabled = false
+               };
+
+                struct uz_PI_Controller_config config_id = {
+                  .Kp = 0.375f,
+                  .Ki = 125.0f,
+                  .samplingTime_sec = 0.0001f,
+                  .upper_limit = 10.0f,
+                  .lower_limit = -10.0f
+               };
+               struct uz_PI_Controller_config config_iq = {
+                  .Kp = 0.375f,
+                  .Ki = 125.0f,
+                  .samplingTime_sec = 0.0001f,
+                  .upper_limit = 10.0f,
+                  .lower_limit = -10.0f
+               };
+               struct uz_CurrentControl_config config_CurrentControl = {
+                  .decoupling_select = linear_decoupling,
+                  .config_PMSM = config_PMSM,
+                  .config_id = config_id,
+                  .config_iq = config_iq
+               };
+            SpeedControl_instance = uz_SpeedControl_init(configSC);
+            SetPoint_instance = uz_SetPoint_init(configSP);
+            CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+            struct uz_pmsmModel_config_t pmsm_config={
+              .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+              .ip_core_frequency_Hz=100000000,
+                .simulate_mechanical_system = true,
+                .r_1 = 0.1f,
+                .L_d = 0.0003f,
+                .L_q = 0.0003f,
+                .psi_pm = 0.0075f,
+                .polepairs = 4.0f,
+                .inertia = 0.00001773f,
+                .coulomb_friction_constant = 0.01f,
+                .friction_coefficient = 0.00019f};
+            pmsm=uz_pmsmModel_init(pmsm_config);
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

@@ -1,19 +1,19 @@
-.. _uz_FOC_sample:
+.. _uz_CurrentControl_sample:
 
 ===============
 Sample function
 ===============
 
-.. doxygenfunction:: uz_FOC_sample
+.. doxygenfunction:: uz_CurrentControl_sample
 
-.. doxygenfunction:: uz_FOC_sample_abc
+.. doxygenfunction:: uz_CurrentControl_sample_abc
 
 Example
 =======
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to calculate the FOC output. FOC-Instance via :ref:`init-function <uz_FOC_init>`
+  :caption: Example function call to calculate the CurrentControl output. CurrentControl-Instance via :ref:`init-function <uz_CurrentControl_init>`
 
   int main(void) {
      float V_dc_volts = 24.0f;
@@ -21,27 +21,27 @@ Example
      float theta_el_rad = 1.2f;
      struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_3ph_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t v_dq_Volts = uz_FOC_sample(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t v_dq_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
      //Alternatively the sample function can output the UVW-values
-     struct uz_3ph_abc_t v_abc_Volts = uz_FOC_sample_abc(FOC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+     struct uz_3ph_abc_t v_abc_Volts = uz_CurrentControl_sample_abc(CurrentControl_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description
 ===========
 
-Calculates one sample of the FOC.
+Calculates one sample of the CurrentControl.
 A space vector output limitation and a linear decoupling function are integrated. 
-The decoupling function can be deactivated in the :ref:`FOC configuration struct <uz_FOC_config>`.
+The decoupling function can be deactivated in the :ref:`CurrentControl configuration struct <uz_CurrentControl_config>`.
 
 .. note::
 
-  Either use the ``uz_FOC_sample`` function to get the output voltages in the dq0-frame or use the ``uz_FOC_sample_UVW`` function to get the output voltages in the UVW-system. 
+  Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_UVW`` function to get the output voltages in the UVW-system. 
 
 .. warning::
 
   The sample function has to be called with the same sample time as specified in the ``samplingTime_sec`` member of the :ref:`PI-Controller configuration struct <uz_piController_config>`.
 
-.. tikz:: FOC (``->`` represent the arrow operator in C)
+.. tikz:: CurrentControl (``->`` represent the arrow operator in C)
   :align: left
 
   \usetikzlibrary{shapes,arrows, patterns,calc};
@@ -61,7 +61,7 @@ The decoupling function can be deactivated in the :ref:`FOC configuration struct
   \node[font=\footnotesize] (CC_dq_ref) at ($(FOC_current.west)+(0.65,0.75)$) {uz\_dq\_t};
   \node[font=\footnotesize] (CC_uz_FOC) at ($(FOC_current.west)+(0.65,2.31)$) {uz\_FOC*};
   \node[font=\footnotesize] (CC_dq_meas) at ($(FOC_current.west)+(0.65,-0.5)$) {uz\_dq\_t};
-  \node[] at ($(FOC_current.south)+(0.0,0.3)$) {uz\_FOC\_CurrentControl};
+  \node[] at ($(FOC_current.south)+(0.0,0.3)$) {uz\_CurrentControl};
   \begin{scope}[shift={(1.5,2)}]
   \node[draw, rectangle, minimum height=2.3cm, minimum width = 4cm, fill=lightgray] (iq_PIController) at (0,0) {};
   \node[font=\footnotesize] at ($(iq_PIController.west)+(1.2,0.9)$) {uz\_PI\_Controller*};
@@ -177,5 +177,5 @@ The decoupling function can be deactivated in the :ref:`FOC configuration struct
   \draw[-latex](input_Uzk2.east) -- ($(FOC_sample.west)+(0,-5)$);
   \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_omega.west)+(-3,0)$) (input_omega2){input-$\omega_{el}$};
   \draw[-latex](input_omega2.east) -- ($(FOC_sample.west)+(0,-4)$);
-  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_FOC.west)+(-2.6,0)$) (input_uz_FOC2){input-uz\_FOC*};
+  \node[draw, rectangle, rounded corners=6pt, minimum width=1cm,minimum height = 0.5cm] at ($(input_FOC.west)+(-3,0)$) (input_uz_FOC2){input-uz\_CurrentControl\_t*};
   \draw[-latex](input_uz_FOC2.east) -- ($(FOC_sample.west)+(0,3.05)$);

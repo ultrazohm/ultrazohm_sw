@@ -12,7 +12,7 @@ Software Framework
     hardwareAbstractionLayer/hardwareAbstractionLayer
     array/array
     uz_Transformation/uz_Transformation
-    FOC/FOC
+    CurrentControl/CurrentControl
     linear_decoupling/linear_decoupling
     piController/piController
     PMSM_config/uz_PMSM_config

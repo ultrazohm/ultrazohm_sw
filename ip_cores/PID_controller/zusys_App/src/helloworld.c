@@ -91,19 +91,19 @@ int main() {
 	XUz_pi_controller_sample_Set_I_rst(&pi, *((u32*)&I_rst) );
 	XUz_pi_controller_sample_Set_ext_clamping(&pi, *((u32*)&ext_clamping));
 
-	for(int i=0;i<13;i++){
+	for(int i=0;i<NO_OF_ELEMENTS;i++){
 		result[i]= 0;
 		}
 	// flushes cache content into the ddr memory
-		Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));
+		Xil_DCacheFlushRange(mem, (sizeof(mem)*NO_OF_ELEMENTS));
 
-	for(int j=0;j<no_elements;j++){
+	for(int j=0;j<NO_OF_ELEMENTS;j++){
 		XUz_pi_controller_sample_Set_output_r(&pi, mem);
 		pi_controller_hls(referenceValue[j],actualValue[j]);
 		mem = mem+sizeof(mem);
 	}
 
-	for(int k=0;k<no_elements;k++){
+	for(int k=0;k<NO_OF_ELEMENTS;k++){
 			printf("result = %f \n", result[k]);
 			if(test[k]-result[k] == 0.0f){
 				print("Equal- pass \n");

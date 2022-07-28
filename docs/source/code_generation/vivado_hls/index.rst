@@ -297,7 +297,7 @@ Procedure:
 Issues Faced
 ------------
    - Drivers created while importing the IP in Vitis HLS fails in Vitis IDE. 
-      This issue is related to the Makefile used in the driver output directory and is addressed in the future releases. The issue is resolved by modifying the makefile as mentioned in (4).
+      This issue might be faced during the execution of the Vitis IDE code with the bitstream file generated from the block design involving an HLS IP. This issue is related to the Makefile used in the driver output directory of HLS IP and is addressed in the future releases of Vivado. The issue is resolved by modifying the makefile as mentioned in (4).
 
       .. code-block:: c
          :linenos:
@@ -306,7 +306,7 @@ Issues Faced
          fatal error: xbasic_types.h: No such file or directory
 
    - Cache lines has to be invalidated before writing the value into the memory.
-      Invalidation of a cache or cache line means to clear it of data. This is done by clearing the valid bit of one or more cache lines. The cache must always be invalidated after reset as its contents will be undefined.
+      The value written in a memory location might not be reflected untill and unless the cache contents are flushed to the main memory. This problem can be faced when one tries to write values in the memory of a processor. Invalidation of a cache or cache line means to clear it of data. This is done by clearing the valid bit of one or more cache lines. The cache must always be invalidated after reset as its contents will be undefined.
       Cleaning a cache or cache line means writing the contents of dirty cache lines out to main memory and clearing the dirty bits in the cache line. This makes the contents of the cache line and main memory coherent with each other. 
       This is done using the command ``Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));`` in our code.
 More Information

@@ -6,9 +6,10 @@
 #include "stdio.h"
 #include "xil_cache.h"
 #include <math.h>
-#define no_elements 13
+#define NO_OF_ELEMENTS 13
 
 XUz_pi_controller_sample_Self self;
+u64 mem = 0x10000000;
 int I_rst = 0;
 float Kp = 1.154f;
 float Ki = 1.0f;
@@ -16,8 +17,8 @@ float samplingTime_sec = 1.0f;
 float upper_limit = 20.0f;
 float lower_limit = -20.0f;
 int ext_clamping = 0;
-float referenceValue[no_elements] = {2.54f, 5.0f, -1.45f, -1.23f, 5.54f, 10.32f, -9.45f, -15.23f, 2.0f, 1.0f, 12.0f, 12.0f, 2.0f};
-float actualValue[no_elements]    = {1.62f, 6.5f, -3.25f, 2.54f, 1.62f, 6.5f, -3.25f, 2.54f, 1.0f, 2.0f, 2.0f, 12.1f, 12.0f};
-float test[13] = { 1.061680f,-0.811000f,1.497200f, -3.130580f, 1.973680f, 5.778280f,-1.964800f,-20.000000f, 0.144000f,-1.164000f,10.530001f,8.874599f,-2.650002f};
-
+float referenceValue[NO_OF_ELEMENTS] = {2.54f, 5.0f, -1.45f, -1.23f, 5.54f, 10.32f, -9.45f, -15.23f, 2.0f, 1.0f, 12.0f, 12.0f, 2.0f};
+float actualValue[NO_OF_ELEMENTS]    = {1.62f, 6.5f, -3.25f, 2.54f, 1.62f, 6.5f, -3.25f, 2.54f, 1.0f, 2.0f, 2.0f, 12.1f, 12.0f};
+float test[NO_OF_ELEMENTS] = { 1.061680f,-0.811000f,1.497200f, -3.130580f, 1.973680f, 5.778280f,-1.964800f,-20.000000f, 0.144000f,-1.164000f,10.530001f,8.874599f,-2.650002f};
+//u64 addr[13] = {mem,mem+4,mem+8,mem+12,mem+16,mem+20,mem+24,mem+28,mem+32,mem+36,mem+40,mem+44,mem+48};
 

@@ -67,6 +67,7 @@ void pi_controller_hls(float referenceValue, float actualValue) {
 
 	// Start HLS IP
 	XUz_pi_controller_sample_Start(&pi);
+	//print("Started HLS pi controller IP \n");
 
 	// Wait until it is finished
 	while (!XUz_pi_controller_sample_IsDone(&pi))
@@ -84,28 +85,25 @@ int main() {
     self.word_3 = *((u32*)&upper_limit);
     self.word_4 = *((u32*)&lower_limit);
 
-	print("The code is executed\n ");
-	float mem;
-	float *result = & mem;
-	printf("Memory address:  %p\n", &mem );
+	print("The code is executed\n\r ");
+	float *result = (float*)mem;
 	XUz_pi_controller_sample_Set_self(&pi, self );
 	XUz_pi_controller_sample_Set_I_rst(&pi, *((u32*)&I_rst) );
 	XUz_pi_controller_sample_Set_ext_clamping(&pi, *((u32*)&ext_clamping));
 
-	for(int i=0;i<no_elements;i++){
+	for(int i=0;i<NO_OF_ELEMENTS;i++){
 		result[i]= 0;
 		}
-
 	// flushes cache content into the ddr memory
-		Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));
+		Xil_DCacheFlushRange(mem, (sizeof(mem)*NO_OF_ELEMENTS));
 
-	for(int j=0;j<no_elements;j++){
+	for(int j=0;j<NO_OF_ELEMENTS;j++){
 		XUz_pi_controller_sample_Set_output_r(&pi, mem);
 		pi_controller_hls(referenceValue[j],actualValue[j]);
-		mem = mem + sizeof(mem);
+		mem = mem+sizeof(mem);
 	}
 
-	for(int k=0;k<no_elements;k++){
+	for(int k=0;k<NO_OF_ELEMENTS;k++){
 			printf("result = %f \n", result[k]);
 			if(test[k]-result[k] == 0.0f){
 				print("Equal- pass \n");

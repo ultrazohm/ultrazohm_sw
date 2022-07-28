@@ -129,3 +129,9 @@ timestamp=[2022-07-26 00:41:47], mode=BUILD, duration=0:00:01.370, duration_ms=1
 timestamp=[2022-07-26 00:44:28], mode=BUILD, duration=0:00:00.662, duration_ms=662, data={name=pi_ila_app, configuration=Debug, clean_build=false}
 timestamp=[2022-07-26 00:44:38], mode=BUILD, duration=0:00:01.386, duration_ms=1386, data={name=pi_ila_app, configuration=Debug, clean_build=false}
 timestamp=[2022-07-26 00:47:05], mode=BUILD, duration=0:00:01.403, duration_ms=1403, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-28 20:41:48], mode=WORKBENCH_START, duration=0:00:25.975, duration_ms=25975, data={}
+timestamp=[2022-07-28 20:41:49], mode=WORKBENCH_UI_INIT, duration=0:00:01.193, duration_ms=1193, data={editors_count=5, platform_editors_count=1, projects_count=10, platform_projects_count=3, active_platform_editor=false, projects=FOC_app,FOC_app_system,FOC_wrapper,RemoteSystemsTempFiles,pi_ila_app,pi_ila_app_system,pi_ila_wrapper,zusys_App,zusys_App_system,zusys_wrapper}
+timestamp=[2022-07-28 20:41:51], mode=PLATFORM_REPOSITORY_INIT, duration=0:00:00.603, duration_ms=603, data={}
+timestamp=[2022-07-28 20:50:39], mode=BUILD, duration=0:00:02.876, duration_ms=2876, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-28 20:51:21], mode=BUILD, duration=0:00:00.814, duration_ms=814, data={name=pi_ila_app, configuration=Debug, clean_build=false}
+timestamp=[2022-07-28 20:53:12], mode=BUILD, duration=0:00:00.787, duration_ms=787, data={name=pi_ila_app, configuration=Debug, clean_build=false}

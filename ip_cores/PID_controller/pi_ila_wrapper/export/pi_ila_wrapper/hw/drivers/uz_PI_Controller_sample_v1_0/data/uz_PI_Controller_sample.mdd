@@ -1,0 +1,16 @@
+# ==============================================================
+# Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2020.1 (64-bit)
+# Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+# ==============================================================
+OPTION psf_version = 2.1;
+
+BEGIN driver uz_PI_Controller_sample
+
+ OPTION supported_peripherals = (uz_PI_Controller_sample_v1_0 );
+ OPTION driver_state = ACTIVE;
+ OPTION copyfiles = all;
+ OPTION name = uz_PI_Controller_sample;
+ OPTION version = 1.0;
+
+END driver
+

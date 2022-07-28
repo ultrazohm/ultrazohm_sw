@@ -21,7 +21,7 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
  */
 struct uz_SetPoint_config {
 	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
-	bool is_field_weakening_active; /**< flag to enable field_weaking */
+	bool is_field_weakening_enabled; /**< flag to enable field_weaking */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
 											0 = SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
 											1 = IPMSM -> interior PMSM (Ld=/=Lq) */

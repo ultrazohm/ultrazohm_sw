@@ -21,7 +21,7 @@ void setUp(void)
     config.config_PMSM.polePairs = 4.0f;
     config.config_PMSM.Psi_PM_Vs = 0.0075f;
     config.motor_type = SMPMSM;
-    config.is_field_weakening_active = false;
+    config.is_field_weakening_enabled = false;
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){
@@ -270,7 +270,7 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_limit_iq_id(void){
 
 void test_uz_SetPoint_sample_field_weakening_SMPMSM_operation(void){
     //Results for comparision from simulation
-    config.is_field_weakening_active = true;
+    config.is_field_weakening_enabled = true;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.09275f;
     omega_m_rad_per_sec = 418.75f;
@@ -287,7 +287,7 @@ void test_uz_SetPoint_sample_field_weakening_SMPMSM_operation(void){
 
 void test_uz_SetPoint_sample_field_weakening_SMPMSM_manual_id(void){
     //Results for comparision from simulation
-    config.is_field_weakening_active = true;
+    config.is_field_weakening_enabled = true;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.09275f;
     omega_m_rad_per_sec = 418.75f;
@@ -303,7 +303,7 @@ void test_uz_SetPoint_sample_field_weakening_SMPMSM_manual_id(void){
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation(void){
     //Results for comparision from simulation
-    config.is_field_weakening_active = true;
+    config.is_field_weakening_enabled = true;
     config.config_PMSM.Ld_Henry = 0.0002f;
     config.motor_type = IPMSM;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
@@ -322,7 +322,7 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation(void){
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_manual_id(void){
     //Results for comparision from simulation
-    config.is_field_weakening_active = true;
+    config.is_field_weakening_enabled = true;
     config.config_PMSM.Ld_Henry = 0.0002f;
     config.motor_type = IPMSM;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);

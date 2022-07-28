@@ -34,14 +34,14 @@ Example
   #include "uz/uz_setpoint/uz_setpoint.h"
   int main(void) {
      struct uz_SetPoint_config config = {
-        .config_PMSM.I_max_Ampere = 15.0f;
-        .config_PMSM.Ld_Henry = 0.0003f;
-        .config_PMSM.Lq_Henry = 0.0003f;
-        .config_PMSM.R_ph_Ohm = 0.1f;
-        .config_PMSM.polePairs = 4.0f;
-        .config_PMSM.Psi_PM_Vs = 0.0075f;
-        .motor_type = SMPMSM;
-        .is_field_weakening_active = false;
+        .config_PMSM.I_max_Ampere = 15.0f,
+        .config_PMSM.Ld_Henry = 0.0003f,
+        .config_PMSM.Lq_Henry = 0.0003f,
+        .config_PMSM.R_ph_Ohm = 0.1f,
+        .config_PMSM.polePairs = 4.0f,
+        .config_PMSM.Psi_PM_Vs = 0.0075f,
+        .motor_type = SMPMSM,
+        .is_field_weakening_enabled = false
      };
   }
 

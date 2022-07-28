@@ -2,6 +2,7 @@
 <?scdStore version="2"?><scannerInfo id="org.eclipse.cdt.make.core.discoveredScannerInfo">
     <instance id="xilinx.gnu.arm.a53.exe.debug.194994656;xilinx.gnu.arm.a53.exe.debug.194994656.">
         <collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
+            <includePath path="#undef __ARM_FEATURE_SM3" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_FP16_SCALAR_ARITHMETIC" removed="true"/>
             <includePath path="#undef __FLT_EVAL_METHOD_C99__" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_ATOMICS" removed="true"/>
@@ -9,11 +10,13 @@
             <includePath path="#undef __ARM_FEATURE_COMPLEX" removed="true"/>
             <includePath path="#undef __AARCH64_CMODEL_TINY__" removed="true"/>
             <includePath path="c:\xilinx\vitis\2020.1\gnu\aarch64\nt\aarch64-none\x86_64-oesdk-mingw32\usr\bin\aarch64-xilinx-elf\../../lib/aarch64-xilinx-elf/gcc/aarch64-xilinx-elf/9.2.0/include"/>
+            <includePath path="#undef __ARM_FEATURE_SM4" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_QRDMX" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_CRC32" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_SHA2" removed="true"/>
             <includePath path="#undef __AARCH64_CMODEL_SMALL__" removed="true"/>
             <includePath path="c:\xilinx\vitis\2020.1\gnu\aarch64\nt\aarch64-none\x86_64-oesdk-mingw32\usr\bin\aarch64-xilinx-elf\../../lib/aarch64-xilinx-elf/gcc/aarch64-xilinx-elf/9.2.0/include-fixed"/>
+            <includePath path="#undef __ARM_FEATURE_FP16_FML" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_FP16_VECTOR_ARITHMETIC" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_SVE" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_DOTPROD" removed="true"/>
@@ -21,6 +24,7 @@
             <includePath path="#undef __ARM_FEATURE_SHA3" removed="true"/>
             <includePath path="#undef __AARCH64_CMODEL_LARGE__" removed="true"/>
             <includePath path="C:\Xilinx\Vitis\2020.1\gnu\aarch64\nt\aarch64-none\bin\\..\aarch64-xilinx-elf/usr/include"/>
+            <includePath path="#undef __FLT_EVAL_METHOD__" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_SVE_BITS" removed="true"/>
             <includePath path="#undef __ILP32__" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_CRYPTO" removed="true"/>
@@ -742,6 +746,7 @@
     </instance>
     <instance id="xilinx.gnu.arm.a53.exe.debug.194994656;xilinx.gnu.arm.a53.exe.debug.194994656.;xilinx.gnu.arm.a53.c.toolchain.compiler.debug.946441213;xilinx.gnu.arm.a53.c.compiler.input.866707674">
         <collector id="org.eclipse.cdt.make.core.PerProjectSICollector">
+            <includePath path="#undef __ARM_FEATURE_SM4" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_AES" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_SHA2" removed="true"/>
             <includePath path="#undef __ARM_FEATURE_FP16_FML" removed="true"/>

@@ -85,28 +85,35 @@ int main() {
     self.word_4 = *((u32*)&lower_limit);
 
 	print("The code is executed\n ");
-	float mem;
-	float *result = & mem;
-	printf("Memory address:  %p\n", &mem );
+	float mem[NO_ELEMENTS];
+	float *result;
+	result = mem;
+	//u64 loc;
 	XUz_pi_controller_sample_Set_self(&pi, self );
 	XUz_pi_controller_sample_Set_I_rst(&pi, *((u32*)&I_rst) );
 	XUz_pi_controller_sample_Set_ext_clamping(&pi, *((u32*)&ext_clamping));
-
-	for(int i=0;i<no_elements;i++){
+	/*for(int i=0;i<NO_ELEMENTS;i++){
+		printf("Result address[%d]:  %p\n",i, result );
 		result[i]= 0;
+		result = result+1;
 		}
-
+	result = mem;*/
+	//loc = (u64)result;
+	printf("Memory address before cache flush:  %lx\n", (u64)result );
 	// flushes cache content into the ddr memory
-		Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));
-
-	for(int j=0;j<no_elements;j++){
-		XUz_pi_controller_sample_Set_output_r(&pi, mem);
+		Xil_DCacheFlushRange((u64)result, (sizeof(mem)*NO_ELEMENTS));
+	for(int j=0;j<NO_ELEMENTS;j++){
+		//loc = (u64)result;
+		printf("Memory address before calling code:  %lx\n", (u64)result );
+		XUz_pi_controller_sample_Set_output_r(&pi,(u64)result);
+		printf("result = %f \n", result[j]);
 		pi_controller_hls(referenceValue[j],actualValue[j]);
-		mem = mem + sizeof(mem);
+		result = result+1;
 	}
-
-	for(int k=0;k<no_elements;k++){
+	//result = mem;
+	/*for(int k=0;k<NO_ELEMENTS;k++){
 			printf("result = %f \n", result[k]);
+			printf("Memory address before calling code:  %lx\n", (u64)result );
 			if(test[k]-result[k] == 0.0f){
 				print("Equal- pass \n");
 			}
@@ -116,7 +123,8 @@ int main() {
 			else{
 				printf("Not acceptable - fail %f \n",test[k]-result[k] );
 			}
-		}
+			//result = result+1;
+		}*/
 
 	print("\n end\n ");
 	cleanup_platform();

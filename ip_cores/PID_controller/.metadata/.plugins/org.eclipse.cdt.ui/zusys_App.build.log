@@ -1,0 +1,34 @@
+03:11:39 **** Build of configuration Debug for project zusys_App ****
+make all 
+'Building file: ../src/helloworld.c'
+'Invoking: ARM v8 gcc compiler'
+aarch64-none-elf-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/helloworld.o" -IC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/zusys_wrapper/export/zusys_wrapper/sw/zusys_wrapper/domain_psu_cortexa53_0/bspinclude/include -MMD -MP -MF"src/helloworld.d" -MT"src/helloworld.o" -o "src/helloworld.o" "../src/helloworld.c"
+In file included from ../src/uz_pi_controller.h:2,
+                 from ../src/helloworld.c:34:
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/zusys_wrapper/export/zusys_wrapper/sw/zusys_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:98:2: warning: #warning The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert. [-Wcpp]
+   98 | #warning  The xbasics_type.h file is deprecated and users should use xil_types.h and xil_assert.
+      |  ^~~~~~~
+C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/zusys_wrapper/export/zusys_wrapper/sw/zusys_wrapper/domain_psu_cortexa53_0/bspinclude/include/xbasic_types.h:99:2: warning: #warning Please refer the Standalone BSP UG647 for further details [-Wcpp]
+   99 | #warning  Please refer the Standalone BSP UG647 for further details
+      |  ^~~~~~~
+'Finished building: ../src/helloworld.c'
+' '
+'Building file: ../src/platform.c'
+'Invoking: ARM v8 gcc compiler'
+aarch64-none-elf-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/platform.o" -IC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/zusys_wrapper/export/zusys_wrapper/sw/zusys_wrapper/domain_psu_cortexa53_0/bspinclude/include -MMD -MP -MF"src/platform.d" -MT"src/platform.o" -o "src/platform.o" "../src/platform.c"
+'Finished building: ../src/platform.c'
+' '
+'Building target: zusys_App.elf'
+'Invoking: ARM v8 gcc linker'
+aarch64-none-elf-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/zusys_wrapper/export/zusys_wrapper/sw/zusys_wrapper/domain_psu_cortexa53_0/bsplib/lib -o "zusys_App.elf"  ./src/helloworld.o ./src/platform.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+'Finished building target: zusys_App.elf'
+' '
+'Invoking: ARM v8 Print Size'
+aarch64-none-elf-size zusys_App.elf  |tee "zusys_App.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  96751	   4768	  20861	 122380	  1de0c	zusys_App.elf
+'Finished building: zusys_App.elf.size'
+' '
+
+03:11:40 Build Finished (took 1s.412ms)
+

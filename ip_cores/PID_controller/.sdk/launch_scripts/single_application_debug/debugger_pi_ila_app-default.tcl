@@ -13,9 +13,9 @@ set mode [expr [mrd -value 0xFF5E0200] & 0xf]
 targets -set -nocase -filter {name =~ "*A53*#0"}
 rst -processor
 dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf
-set bp_2_41_fsbl_bp [bpadd -addr &XFsbl_Exit]
+set bp_47_29_fsbl_bp [bpadd -addr &XFsbl_Exit]
 con -block -timeout 60
-bpremove $bp_2_41_fsbl_bp
+bpremove $bp_47_29_fsbl_bp
 targets -set -nocase -filter {name =~ "*A53*#0"}
 rst -processor
 dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf

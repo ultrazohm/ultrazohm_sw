@@ -1,3 +1,5 @@
+.. _analogAdapters:
+
 ===============
 Analog Adapters
 ===============
@@ -6,3 +8,7 @@ Analog Adapters
    :maxdepth: 3
    
    LTC2311_16 
+   uz_dac8831/uz_dac8831
+
+
+   

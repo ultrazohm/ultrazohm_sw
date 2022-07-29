@@ -64,15 +64,28 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
 
     switch (layer_config.activation_function)
     {
-    case linear:
+    case activation_linear:
         self->activation_function = &uz_nn_activation_function_linear;
         self->activation_function_derivative = &uz_nn_activation_function_linear_derivative;
         break;
-    case ReLU:
+    case activation_ReLU:
         self->activation_function = &uz_nn_activation_function_relu;
         self->activation_function_derivative = &uz_nn_activation_function_relu_derivative;
         break;
+    case activation_sigmoid:
+        self->activation_function = &uz_nn_activation_function_sigmoid_logistic;
+        self->activation_function_derivative = &uz_nn_activation_function_sigmoid_logistic_derivative;
+        break;
+    case activation_sigmoid2:
+        self->activation_function = &uz_nn_activation_function_sigmoid2_logistic;
+        self->activation_function_derivative = &uz_nn_activation_function_sigmoid2_logistic_derivative;
+        break;
+    case activation_tanh:
+        self->activation_function = &uz_nn_activation_function_tanh;
+        self->activation_function_derivative = &uz_nn_activation_function_tanh_derivative;
+        break;
     default:
+        uz_assert(0);
         break;
     }
     return (self);
@@ -96,5 +109,17 @@ uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
     uz_assert(self->is_ready);
     return (self->output);
 }
+
+uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->bias;
+}
+uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->weights;
+}
+
 
 #endif

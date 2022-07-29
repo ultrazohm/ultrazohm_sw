@@ -15,6 +15,6 @@
  * @param ext_clamping flag which states, if the SVL is active
  * @return uz_dq_t
  */
-uz_dq_t uz_FOC_SpaceVector_Limitation(uz_dq_t v_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, uz_dq_t i_actual_Ampere, bool* ext_clamping);
+uz_3ph_dq_t uz_FOC_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, uz_3ph_dq_t i_actual_Ampere, bool* ext_clamping);
 
 #endif // UZ_SPACE_VECTOR_LIMITATION_H

@@ -18,8 +18,11 @@ typedef struct uz_nn_layer_t uz_nn_layer_t;
  * 
  */
 enum activation_function{
-    ReLU,
-    linear
+    activation_ReLU,
+    activation_linear,
+    activation_sigmoid,
+    activation_sigmoid2,
+    activation_tanh
 };
 
 /**
@@ -62,5 +65,8 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @return uz_matrix* 
  */
 uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
+
+uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
+uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
 
 #endif // UZ_NN_LAYER_H

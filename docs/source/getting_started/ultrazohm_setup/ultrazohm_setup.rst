@@ -193,9 +193,9 @@ Generate the Vitis workspace
 
 .. image:: ./img_vitis_import/2_workspace.png
 
-.. image:: ./img_vitis_import/3_show_view.png
-
 .. image:: ./img_vitis_import/4_xstc_console.png
+
+.. note:: If the XSCT console is still not visible, press the *restore* button.
 
 .. image:: ./img_vitis_import/5_build_workspace.png
 

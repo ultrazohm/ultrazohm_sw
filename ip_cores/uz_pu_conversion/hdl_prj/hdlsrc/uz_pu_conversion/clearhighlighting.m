@@ -1,5 +1,8 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_pu_conversion', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_pu_conversion', 'handle'));
+annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Detect Rise Positive', 0, 1, '');
+annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Detect Rise Positive', 1, 1, '');
+annotate_port('uz_pu_conversion/uz_pu_conversion/Detect Rise Positive', 1, 1, '');
 annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Delay', 1, 1, '');
 annotate_port('uz_pu_conversion/uz_pu_conversion/Delay', 1, 1, '');
 annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Delay1', 1, 1, '');
@@ -66,3 +69,5 @@ annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Delay9', 1, 1, '');
 annotate_port('uz_pu_conversion/uz_pu_conversion/Delay9', 1, 1, '');
 annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Product', 0, 1, '');
 annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Switch', 0, 1, '');
+annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Detect Rise Positive/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_uz_pu_conversion/uz_pu_conversion/Detect Rise Positive/Positive', 0, 1, '');

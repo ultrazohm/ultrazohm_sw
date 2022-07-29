@@ -17,17 +17,18 @@ pu_fixdt_type = fixdt(1,18,15); % output data type of pu values
     % voltage
     V_R = 400;      % terminal_eff
     % current
-    I_R = 100;      % A_eff
+    I_R = 10;      % A_eff
+    % pole pairs
+    p = 5;    
     % angular frequency (electrical)
-    ws_R = 104.7;   % rad/s
+    ws_R = p*3000*pi/30;   % rad/s
     % resistance, reactance, impedance
-    Rph = 0.1;      % Ohm
+    Rph = 0.19;      % Ohm
     % inductance
-    L_R = 1e-3;     % Henry
+    L_R = 6.4e-3;     % Henry
     % power factor
     pf = 1;
-    % pole pairs
-    p = 2;
+
 
 
 % pu base values (Tobias Geyer - Model Predictive Control of High Power
@@ -54,6 +55,6 @@ pu_fixdt_type = fixdt(1,18,15); % output data type of pu values
     
     
     
-ampl = 100*sqrt(2); % A
-freq_Hz = 100;      % Hz
+ampl = 10*sqrt(2); % A
+freq_Hz = 300;      % Hz
 v_dc = 565;         % volt

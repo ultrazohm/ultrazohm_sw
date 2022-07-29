@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_pu_conversion/hdl_prj/ipcore/uz_pu_con_ip_v1_0/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_pu_conversion/hdl_prj/ipcore/uz_pu_con_ip_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="a92b9bfc8b4449e98cb7792d9b527506"/>
+    <Option Name="Id" Val="f24465b8c67243b9a658050adcebf69b"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -86,6 +86,12 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/uz_pu_con_ip_axi_lite.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pu_con_ip_src_Detect_Rise_Positive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

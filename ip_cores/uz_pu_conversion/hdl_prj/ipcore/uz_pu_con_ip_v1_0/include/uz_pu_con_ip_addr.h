@@ -1,14 +1,14 @@
 /*
  * File Name:         hdl_prj\ipcore\uz_pu_con_ip_v1_0\include\uz_pu_con_ip_addr.h
  * Description:       C Header File
- * Created:           2022-02-28 14:27:34
+ * Created:           2022-07-29 09:44:24
 */
 
 #ifndef UZ_PU_CON_IP_H_
 #define UZ_PU_CON_IP_H_
 
 #define  IPCore_Reset_uz_pu_con_ip            0x0  //write 0x1 to bit 0 to reset IP core
-#define  IPCore_Timestamp_uz_pu_con_ip        0x8  //contains unique IP timestamp (yymmddHHMM): 2202281427
+#define  IPCore_Timestamp_uz_pu_con_ip        0x8  //contains unique IP timestamp (yymmddHHMM): 2207290944
 #define  AXI_pu_conv_in0_Data_uz_pu_con_ip    0x100  //data register for Inport AXI_pu_conv_in0
 #define  AXI_pu_conv_in1_Data_uz_pu_con_ip    0x104  //data register for Inport AXI_pu_conv_in1
 #define  AXI_pu_conv_in2_Data_uz_pu_con_ip    0x108  //data register for Inport AXI_pu_conv_in2

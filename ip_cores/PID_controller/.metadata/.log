@@ -15737,3 +15737,9 @@ Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.]. Thread: Worker-10: Launc
 
 !ENTRY com.xilinx.sdk.utils 0 0 2022-07-28 20:53:45.551
 !MESSAGE XSCT command with result: [con], Result: [null, ]. Thread: Worker-10: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-28 21:35:36.389
+!MESSAGE XSCT Command: [disconnect tcfchan#3], Thread: Thread-398
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-28 21:35:36.396
+!MESSAGE XSCT command with result: [disconnect tcfchan#3], Result: [null, ]. Thread: Thread-398

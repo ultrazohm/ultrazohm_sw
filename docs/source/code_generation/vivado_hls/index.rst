@@ -131,6 +131,7 @@ Vitis HLS design flow
 
 An alternate way to steps 1-6 is mentioned below
       - open the Vitis HLS Command Prompt
+      - Vitis command promt will be available in the path "..\Programs\Xilinx Design Tools\Vitis 2020.1\Vitis HLS 2020.1 Command Prompt.lnk"
       - cd into project folder
       - run
       - vitis_hls -f script.tcl
@@ -307,7 +308,7 @@ Issues Faced
 
    - Cache lines has to be invalidated before writing the value into the memory.
       The value written in a memory location might not be reflected untill and unless the cache contents are flushed to the main memory. This problem can be faced when one tries to write values in the memory of a processor. Invalidation of a cache or cache line means to clear it of data. This is done by clearing the valid bit of one or more cache lines. The cache must always be invalidated after reset as its contents will be undefined.
-      Cleaning a cache or cache line means writing the contents of dirty cache lines out to main memory and clearing the dirty bits in the cache line. This makes the contents of the cache line and main memory coherent with each other. 
+      Cleaning a cache or cache line means writing the contents of dirty cache lines out to main memory and clearing the dirty bits in the cache line. This makes the contents of the cache line and main memory are coherent with each other. 
       This is done using the command ``Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));`` in our code.
 More Information
 ----------------

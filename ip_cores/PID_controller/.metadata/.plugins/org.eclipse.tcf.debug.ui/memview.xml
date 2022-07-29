@@ -15,4 +15,7 @@
     <Block Addr="0x1e170" Context="JTAG-jsn-HW-Z1-ZCU104 FT4232H-88127A-5ba00477-0A0" Size="-1">
         <Rendering ID="org.eclipse.debug.ui.rendering.hexint" Pane="org.eclipse.debug.ui.MemoryView.RenderingViewPane.1"/>
     </Block>
+    <Block Addr="0x1e16c" Context="JTAG-jsn-HW-Z1-ZCU104 FT4232H-88127A-5ba00477-0A0" Size="-1">
+        <Rendering ID="org.eclipse.debug.ui.rendering.hexint" Pane="org.eclipse.debug.ui.MemoryView.RenderingViewPane.1"/>
+    </Block>
 </Memory>

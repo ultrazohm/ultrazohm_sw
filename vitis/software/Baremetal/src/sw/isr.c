@@ -41,30 +41,6 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-extern uz_pmsmModel_t *pmsm;
-extern uz_SpeedControl_t* SpeedControl_instance;
-extern uz_SetPoint_t* SetPoint_instance;
-extern uz_CurrentControl_t* CurrentControl_instance;
-struct uz_pmsmModel_inputs_t pmsm_inputs={
-    .omega_mech_1_s=0.0f,
-    .v_d_V=0.0f,
-    .v_q_V=0.0f,
-    .load_torque=0.0f
-};
-
-struct uz_pmsmModel_outputs_t pmsm_outputs={
-    .i_d_A=0.0f,
-    .i_q_A=0.0f,
-    .torque_Nm=0.0f,
-    .omega_mech_1_s=0.0f
-};
-float n_ref_rpm = 0.0f;
-float id_ref_Ampere = 0.0f;
-uz_3ph_dq_t SetPoint_output = {0};
-uz_3ph_dq_t v_dq_Volts = {0};
-float torque_out = 0.0f;
-bool field_weakening =false;
-float omega_el_rad_per_sec = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -82,22 +58,7 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	uz_3ph_dq_t i_actual_Ampere = {.q = pmsm_outputs.i_q_A, .d = pmsm_outputs.i_d_A};
-    	bool clamping_voltage = uz_CurrentControl_get_ext_clamping(CurrentControl_instance);
-    	bool clamping_setpoint = uz_SetPoint_get_clamping(SetPoint_instance);
-    	uz_SpeedControl_set_ext_clamping(SpeedControl_instance, (clamping_voltage || clamping_setpoint));
-    	torque_out = uz_SpeedControl_sample(SpeedControl_instance, pmsm_outputs.omega_mech_1_s, n_ref_rpm);
-    	SetPoint_output = uz_SetPoint_sample(SetPoint_instance, pmsm_outputs.omega_mech_1_s, torque_out, id_ref_Ampere, 24.0f);
-    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-    	v_dq_Volts = uz_CurrentControl_sample(CurrentControl_instance, SetPoint_output, i_actual_Ampere, 24.0f, omega_el_rad_per_sec);
-    	uz_SetPoint_set_field_weakening(SetPoint_instance, field_weakening);
-    	uz_pmsmModel_trigger_input_strobe(pmsm);
-    	uz_pmsmModel_trigger_output_strobe(pmsm);
-    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-    	pmsm_inputs.v_q_V=v_dq_Volts.q;
-    	pmsm_inputs.v_d_V=v_dq_Volts.d;
-    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
-    	Global_Data.av.mechanicalRotorSpeed = pmsm_outputs.omega_mech_1_s * 60.0f / (2.0f * M_PI);
+        // Start: Control algorithm - only if ultrazohm is in control state
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

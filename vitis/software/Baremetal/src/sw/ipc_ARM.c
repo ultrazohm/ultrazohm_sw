@@ -24,9 +24,7 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
-extern float n_ref_rpm;
-extern bool field_weakening;
-extern float id_ref_Ampere;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -189,11 +187,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		n_ref_rpm = value;
+
 			break;
 
 		case (Set_Send_Field_2):
-		id_ref_Ampere = value;
+
 			break;
 
 		case (Set_Send_Field_3):
@@ -225,11 +223,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-				if(field_weakening == true) {
-					field_weakening = false;
-				} else {
-					field_weakening = true;
-				}
+
 			break;
 
 		case (My_Button_5):
@@ -262,6 +256,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 	}
 
+	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
@@ -292,11 +287,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (field_weakening == true) {
-		js_status_BareToRTOS |= (1 << 7);
-	 } else {
-		js_status_BareToRTOS &= ~(1 << 7);
-	 }
+	// if (your condition == true) {
+	//	js_status_BareToRTOS |= (1 << 4);
+	// } else {
+	//	js_status_BareToRTOS &= ~(1 << 4);
+	// }
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

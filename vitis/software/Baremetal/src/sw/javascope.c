@@ -33,11 +33,7 @@ static float System_UpTime_ms;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
-extern uz_3ph_dq_t SetPoint_output;
-extern uz_3ph_dq_t v_dq_Volts;
-extern struct uz_pmsmModel_outputs_t pmsm_outputs;
-extern struct uz_pmsmModel_inputs_t pmsm_inputs;
-extern float torque_out;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -69,12 +65,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &pmsm_outputs.i_q_A;
-	js_ch_observable[JSO_id] 			= &pmsm_outputs.i_d_A;
+	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]			= &v_dq_Volts.d;
-	js_ch_observable[JSO_uq]			= &v_dq_Volts.q;
+	js_ch_observable[JSO_ud]			= &data->av.U_d;
+	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -84,15 +80,15 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &v_dq_Volts.d;
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &v_dq_Volts.q;
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &SetPoint_output.d;
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &SetPoint_output.q;
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &pmsm_outputs.torque_Nm;
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &torque_out;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
 	return Status;

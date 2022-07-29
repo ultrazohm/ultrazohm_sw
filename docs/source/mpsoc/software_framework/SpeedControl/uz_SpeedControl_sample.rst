@@ -26,5 +26,5 @@ Description
 
   The sample function has to be called with the same sample time as specified in the ``samplingTime_sec`` member of the :ref:`configuration struct <uz_piController_config>`.
 
-Calculates the reference speed into angular frequency and calculates the latest sample of the n-PI-Controller.
+Calculates the reference speed into angular frequency and calculates the latest sample of the n-PI-Controller. Output is a reference torque.
 Furthermore, an external clamping signal can be set via a dedicated :ref:`set function <uz_SpeedControl_set_ext_clamping>`.

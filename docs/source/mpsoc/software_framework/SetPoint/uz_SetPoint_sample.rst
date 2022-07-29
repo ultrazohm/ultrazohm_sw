@@ -84,6 +84,7 @@ If the machine is inside the field weakening territory, the input ``id_ref_Amper
 The max. current limit will still be respected in this case.
 
 .. tikz:: Schematic overview of the SetPoint module
+  :align: center
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows,  patterns
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -108,11 +109,12 @@ The max. current limit will still be respected in this case.
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=SetPoint,rounded corners,fit=(STP) (MTPA)(FW) ,inner sep=5pt,minimum width=5cm] {};
   \end{scope}
-  \node[block,name=input1, below left = -8cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{el}$\\ \tiny{float}};
+  \node[block,name=input1, below left = -8cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{m}$\\ \tiny{float}};
   \node[block,name=input2, below = 0.5cm of input1,drop shadow,minimum width=2cm, align=center] {$M_{ref}$\\ \tiny{float}};
   \node[block,name=input3, below = 0.5cm of input2,drop shadow,minimum width=2cm, align=center] { $i_{d,ref}$\\ \tiny{float}};
   \node[block,name=input4, below = 0.5cm of input3,drop shadow,minimum width=2cm, align=center] { $V_{DC}$\\ \tiny{float}};
-  \node[block,name=input5, above = 1cm of SetPoint,drop shadow,minimum width=2cm, align=center] {config\\ \tiny{struct  uz\_SetPoint\_config}};
+  \node[block,name=input5, above =1cm of SetPoint,drop shadow,minimum width=2cm, align=center] { instance\\ \tiny{uz\_SetPoint\_t}};
+  \node[block,name=input6, left = 1cm of input5,drop shadow,minimum width=2cm, align=center] {config\\ \tiny{struct  uz\_SetPoint\_config}};
   \node[block,name=output, below right= -5.5cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_3ph\_dq\_t}};
   \node[block,fill=orange!20,name=Controller, right=0.5 cm of output,drop shadow,minimum height=4cm,align=center] {independent\\external\\current\\control};
   \draw[->](input5.south) -- (SetPoint.north);
@@ -122,6 +124,7 @@ The max. current limit will still be respected in this case.
   \draw[->](input2.east) -- (SetPoint.west |- input2.east);
   \draw[->](input3.east) -- (SetPoint.west |- input3.east);
   \draw[->](input4.east) -- (SetPoint.west |- input4.east);
+  \draw[->](input6.east) -- (input5.west);
   \end{tikzpicture}
 
 Sources

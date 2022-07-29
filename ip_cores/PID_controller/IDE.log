@@ -4651,3 +4651,4 @@ con
 
 20:53:45 INFO  : Launch script is exported to file 'C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\.sdk\launch_scripts\single_application_debug\debugger_pi_ila_app-default.tcl'
 21:35:36 INFO  : Disconnected from the channel tcfchan#3.
+10:12:08 INFO  : Checking for BSP changes to sync application flags for project 'pi_ila_app'...

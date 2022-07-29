@@ -307,7 +307,7 @@ Issues Faced
          fatal error: xbasic_types.h: No such file or directory
 
    - Cache lines has to be invalidated before writing the value into the memory.
-      The value written in a memory location might not be reflected untill and unless the cache contents are flushed to the main memory. This problem can be faced when one tries to write values in the memory of a processor. Invalidation of a cache or cache line means to clear it of data. This is done by clearing the valid bit of one or more cache lines. The cache must always be invalidated after reset as its contents will be undefined.
+      The value written in a memory location might not be reflected untill and unless the cache lines are invalidated. This problem can be faced when one tries to write values in the memory of a processor. Invalidation of a cache or cache line means to clear it of data. This is done by clearing the valid bit of one or more cache lines. The cache must always be invalidated after reset as its contents will be undefined.
       Cleaning a cache or cache line means writing the contents of dirty cache lines out to main memory and clearing the dirty bits in the cache line. This makes the contents of the cache line and main memory are coherent with each other. 
       This is done using the command ``Xil_DCacheFlushRange(mem, (sizeof(mem)*no_elements));`` in our code.
 More Information

@@ -92,12 +92,12 @@ int main() {
 	XUz_pi_controller_sample_Set_self(&pi, self );
 	XUz_pi_controller_sample_Set_I_rst(&pi, *((u32*)&I_rst) );
 	XUz_pi_controller_sample_Set_ext_clamping(&pi, *((u32*)&ext_clamping));
-	for(int i=0;i<NO_ELEMENTS;i++){
+	/*for(int i=0;i<NO_ELEMENTS;i++){
 		printf("Result address[%d]:  %p\n",i, result );
 		result[i]= 0;
 		result = result+1;
 		}
-	result = &mem;
+	result = &mem;*/
 	//loc = (u64)result;
 	printf("Memory address before cache flush:  %lx\n", (u64)result );
 	// flushes cache content into the ddr memory

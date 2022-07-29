@@ -15743,3 +15743,307 @@ Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.]. Thread: Worker-10: Launc
 
 !ENTRY com.xilinx.sdk.utils 0 0 2022-07-28 21:35:36.396
 !MESSAGE XSCT command with result: [disconnect tcfchan#3], Result: [null, ]. Thread: Thread-398
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:08.712
+!MESSAGE XSCT Command: [ ::hsi::utils::set_current_hw_sw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss ], Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:18.900
+!MESSAGE XSCT command with result: [ ::hsi::utils::set_current_hw_sw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss ], Result: [null, ]. Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:18.900
+!MESSAGE XSCT Command: [::hsi::utils::get_hw_sw_details -json C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss], Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:18.917
+!MESSAGE XSCT command with result: [::hsi::utils::get_hw_sw_details -json C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss], Result: [null, {"procname": "psu_cortexa53_0",
+"osname": "standalone",
+"osver": "7.2",
+}]. Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 1 0 2022-07-29 10:12:18.917
+!MESSAGE Generating MD5 hash for file: C:\Users\ponpr\Documents\ultrazohm_sw\ip_cores\PID_controller\pi_ila_wrapper\export\pi_ila_wrapper\sw\pi_ila_wrapper\domain_psu_cortexa53_0\system.mss ...
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:18.917
+!MESSAGE XSCT Command: [::hsi::utils::closesw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss], Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:18.917
+!MESSAGE XSCT command with result: [::hsi::utils::closesw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/domain_psu_cortexa53_0/system.mss], Result: [null, ]. Thread: Worker-50: Build Project
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:27.554
+!MESSAGE XSCT Command: [connect -url tcp:127.0.0.1:3121], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.117
+!MESSAGE XSCT command with result: [connect -url tcp:127.0.0.1:3121], Result: [null, tcfchan#4]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.117
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.402
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.402
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.402
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.402
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.435
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.450
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.450
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.450
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.482
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.546
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.546
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.546
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.566
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.566
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.578
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.578
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.595
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.595
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.612
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.612
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.629
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.629
+!MESSAGE XSCT Command: [version -server], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.677
+!MESSAGE XSCT command with result: [version -server], Result: [null, 2020.1]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.677
+!MESSAGE XSCT Command: [version], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.692
+!MESSAGE XSCT command with result: [version], Result: [null, xsct 2020.1
+SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.692
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.708
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.711
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.727
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.727
+!MESSAGE XSCT Command: [jtag targets -set -filter {name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.749
+!MESSAGE XSCT command with result: [jtag targets -set -filter {name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level == 0}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.749
+!MESSAGE XSCT Command: [jtag frequency], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.749
+!MESSAGE XSCT command with result: [jtag frequency], Result: [null, 15000000]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.749
+!MESSAGE XSCT Command: [source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.768
+!MESSAGE XSCT command with result: [source C:/Xilinx/Vitis/2020.1/scripts/vitis/util/zynqmp_utils.tcl], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.769
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~"APU*"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.777
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~"APU*"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:30.777
+!MESSAGE XSCT Command: [rst -system], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:32.051
+!MESSAGE XSCT command with result: [rst -system], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:32.051
+!MESSAGE XSCT Command: [after 3000], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.075
+!MESSAGE XSCT command with result: [after 3000], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.082
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.100
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.100
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.117
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.135
+!MESSAGE XSCT Command: [targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}], Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.316
+!MESSAGE XSCT command with result: [targets -set -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==0 && jtag_device_ctx=="jsn-HW-Z1-ZCU104 FT4232H-88127A-14730093-0"}], Result: [null, ]. Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:35.316
+!MESSAGE XSCT Command: [fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit], Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:46.610
+!MESSAGE XSCT command with result: [fpga -file C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/_ide/bitstream/pi_ila_wrapper.bit], Result: [null, ]. Thread: ModalContext
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:46.640
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~"APU*"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:46.670
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~"APU*"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:46.686
+!MESSAGE XSCT Command: [loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.347
+!MESSAGE XSCT command with result: [loadhw -hw C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/hw/pi_ila_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs], Result: [null, pi_bd_wrapper_2]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.347
+!MESSAGE XSCT Command: [configparams force-mem-access 1], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.347
+!MESSAGE XSCT command with result: [configparams force-mem-access 1], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.365
+!MESSAGE XSCT Command: [jtag targets -filter {level == 0}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.368
+!MESSAGE XSCT command with result: [jtag targets -filter {level == 0}], Result: [null,   1* Xilinx HW-Z1-ZCU104 FT4232H 88127A]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.368
+!MESSAGE XSCT Command: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.400
+!MESSAGE XSCT command with result: [jtag targets -filter {jtag_cable_name =~ "Xilinx HW-Z1-ZCU104 FT4232H 88127A" && level==1}], Result: [null,      2  xczu7 (idcode 14730093 irlen 12 fpga)
+     3  arm_dap (idcode 5ba00477 irlen 4)]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.400
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~"APU*"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.416
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~"APU*"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.416
+!MESSAGE XSCT Command: [set mode [expr [mrd -value 0xFF5E0200] & 0xf]], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.428
+!MESSAGE XSCT command with result: [set mode [expr [mrd -value 0xFF5E0200] & 0xf]], Result: [null, 0]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.428
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~ "*A53*#0"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.450
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~ "*A53*#0"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.453
+!MESSAGE XSCT Command: [rst -processor], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.456
+!MESSAGE XSCT command with result: [rst -processor], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:47.456
+!MESSAGE XSCT Command: [dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:48.439
+!MESSAGE XSCT command with result: [dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_wrapper/export/pi_ila_wrapper/sw/pi_ila_wrapper/boot/fsbl.elf], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:48.439
+!MESSAGE XSCT Command: [set bp_12_48_fsbl_bp [bpadd -addr &XFsbl_Exit]], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:48.488
+!MESSAGE XSCT command with result: [set bp_12_48_fsbl_bp [bpadd -addr &XFsbl_Exit]], Result: [null, 3]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:48.502
+!MESSAGE XSCT Command: [con -block -timeout 60], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.544
+!MESSAGE XSCT command with result: [con -block -timeout 60], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.550
+!MESSAGE XSCT Command: [bpremove $bp_12_48_fsbl_bp], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.551
+!MESSAGE XSCT command with result: [bpremove $bp_12_48_fsbl_bp], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.551
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~ "*A53*#0"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.568
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~ "*A53*#0"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.568
+!MESSAGE XSCT Command: [rst -processor], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.589
+!MESSAGE XSCT command with result: [rst -processor], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:49.589
+!MESSAGE XSCT Command: [dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.326
+!MESSAGE XSCT command with result: [dow C:/Users/ponpr/Documents/ultrazohm_sw/ip_cores/PID_controller/pi_ila_app/Debug/pi_ila_app.elf], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.326
+!MESSAGE XSCT Command: [configparams force-mem-access 0], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.342
+!MESSAGE XSCT command with result: [configparams force-mem-access 0], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.439
+!MESSAGE XSCT Command: [targets -set -nocase -filter {name =~ "*A53*#0"}], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.457
+!MESSAGE XSCT command with result: [targets -set -nocase -filter {name =~ "*A53*#0"}], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.473
+!MESSAGE XSCT Command: [con], Thread: Worker-50: Launching Debugger_pi_ila_app-Default
+
+!ENTRY com.xilinx.sdk.utils 0 0 2022-07-29 10:12:50.533
+!MESSAGE XSCT command with result: [con], Result: [null, ]. Thread: Worker-50: Launching Debugger_pi_ila_app-Default

@@ -1,4 +1,4 @@
-20:53:11 **** Incremental Build of configuration Debug for project pi_ila_app ****
+10:12:18 **** Incremental Build of configuration Debug for project pi_ila_app ****
 make all 
 'Building file: ../src/helloworld.c'
 'Invoking: ARM v8 gcc compiler'
@@ -21,9 +21,9 @@ aarch64-none-elf-gcc -Wl,-T -Wl,../src/lscript.ld -LC:/Users/ponpr/Documents/ult
 'Invoking: ARM v8 Print Size'
 aarch64-none-elf-size pi_ila_app.elf  |tee "pi_ila_app.elf.size"
    text	   data	    bss	    dec	    hex	filename
-  96607	   4760	  20885	 122252	  1dd8c	pi_ila_app.elf
+  96479	   4760	  20917	 122156	  1dd2c	pi_ila_app.elf
 'Finished building: pi_ila_app.elf.size'
 ' '
 
-20:53:12 Build Finished (took 769ms)
+10:12:21 Build Finished (took 2s.425ms)
 

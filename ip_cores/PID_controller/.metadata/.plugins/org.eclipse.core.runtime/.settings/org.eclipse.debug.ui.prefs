@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-org.eclipse.debug.ui.MemoryView.RenderingViewPane.1=
+org.eclipse.debug.ui.MemoryView.RenderingViewPane.1=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<persistedMemoryRenderings>\r\n    <memoryRendering memoryBlock\="1263622657" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="1440463556" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="145664986" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="2019767930" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="958659109" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="824601183" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n    <memoryRendering memoryBlock\="922709754" renderingId\="org.eclipse.debug.ui.rendering.hexint"/>\r\n</persistedMemoryRenderings>\r\n
 org.eclipse.debug.ui.MemoryView.orientation=0
 org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<launchPerspectives/>\r\n
 org.eclipse.debug.ui.build_before_launch=false

@@ -54,8 +54,6 @@
 
 #include "include/pwm_init.h"
 
-#include "Codegen/uz_vsd_opffd_asym6ph.h"
-#include "Codegen/uz_FD.h"
 #include "Codegen/uz_singleindex_faultdetection.h"
 #include "Codegen/uz_vsd_opf_fd_v7.h"
 
@@ -64,7 +62,7 @@
 
 #include "uz/uz_FOC/uz_FOC.h"
 
-
+#include "Codegen/uz_resonant_controller.h"
 
 
 //----------------------------------------------------
@@ -72,5 +70,8 @@
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+
+void uz_park_transform(float* output, float* input, float theta_el_rad);
+void uz_inv_park_transform(float* output, float* input, float theta_el_rad);
 
 #endif /* main_H_ */

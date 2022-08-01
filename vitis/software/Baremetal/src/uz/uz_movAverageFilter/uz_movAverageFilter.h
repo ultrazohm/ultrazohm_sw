@@ -2,7 +2,7 @@
 #define UZ_MOVAVERAGE_H
 
 #define UZ_MOVAVERAGEFILTER_MAX_INSTANCES 7
-#define maxFilterLength 150
+#define MAX_FILTERLENGTH 150
 
 
 

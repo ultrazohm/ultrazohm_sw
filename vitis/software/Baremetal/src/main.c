@@ -55,17 +55,15 @@ DS_Data Global_Data = {
 	.av.U_ZK = 36.0f,
 	.av.theta_offset =  -0.14608003,
 	.av.I_d_ref = 0,
-	.av.I_q_ref = 0
+	.av.I_q_ref = 0,
 };
 
 
 //fault detection:
-
-uz_vsd_opffd_asym6ph vsd_fd_V4;
-uz_FD uz_FD_V6;
 uz_vsd_opf_fd_v7 uz_FD_v7;
 
-
+uz_resonant_controller r_c_2H_x;
+uz_resonant_controller r_c_2H_y;
 
 //single Index FD:
 uz_singleindex_faultdetection singleindex_FD;
@@ -80,6 +78,40 @@ uz_movAverageFilter_t* movAvFilter_R4;
 uz_movAverageFilter_t* movAvFilter_R5;
 uz_movAverageFilter_t* movAvFilter_R6;
 
+
+uz_filter_t* r_c_iir_2H_x;
+uz_filter_t* r_c_iir_2H_y;
+
+float r_c_filterParameterA[3] = {	1,
+									-2*cos(0.0f*0.0001f),
+									1};
+
+float r_c_filterParameterB[3] = {	0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004f*0.0001f*cos(2.0f*0.0f*0.0001f),
+		0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004f*0.0001f* -cos(0.0f*0.0001f),
+									0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004*0.0001f*0.0f};
+
+float ar_circularBufferInput_2H_x[3]={0};
+float ar_circularBufferInput_2H_y[3]={0};
+float ar_circularBufferOutput_2H_x[3]={0};
+float ar_circularBufferOutput_2H_y[3]={0};
+
+struct uz_filter_config filter_config_rc_2H_x = {
+	.filterLength = 3,
+	.filterParameterA = r_c_filterParameterA,
+	.filterParameterB = r_c_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_2H_x,
+	.circularBufferOutput = ar_circularBufferOutput_2H_x
+};
+
+struct uz_filter_config filter_config_rc_2H_y = {
+	.filterLength = 3,
+	.filterParameterA = r_c_filterParameterA,
+	.filterParameterB = r_c_filterParameterB,
+	.circularBufferInput = ar_circularBufferInput_2H_y,
+	.circularBufferOutput = ar_circularBufferOutput_2H_y
+};
+
+
 #define FILTER_LENGTH 11
 
 uz_filter_t* filter_a1;
@@ -89,7 +121,7 @@ uz_filter_t* filter_a2;
 uz_filter_t* filter_b2;
 uz_filter_t* filter_c2;
 
-double ar_filterParameterA[FILTER_LENGTH] = {   1           ,
+float ar_filterParameterA[FILTER_LENGTH] = {   1,
 		  -8.795170347593165516286717320326715707779,
 		  34.87498281940548139345992240123450756073 ,
 		 -82.095896845589493295847205445170402526855,
@@ -100,7 +132,8 @@ double ar_filterParameterA[FILTER_LENGTH] = {   1           ,
 		  16.916722791727497821057113469578325748444,
 		  -3.350305445143596738688529512728564441204,
 		   0.299005477912280381858067812572699040174};
-double ar_filterParameterB[FILTER_LENGTH] = {0.000000000031148454939792163363898700541,
+
+float ar_filterParameterB[FILTER_LENGTH] = {0.000000000031148454939792163363898700541,
 		0.00000000031148454939792164656368407655    ,
 		0.000000001401680472290647254440213490781   ,
 		0.000000003737814592775059345173902642084   ,
@@ -112,24 +145,19 @@ double ar_filterParameterB[FILTER_LENGTH] = {0.000000000031148454939792163363898
 		0.00000000031148454939792164656368407655    ,
 		0.000000000031148454939792163363898700541 };
 
-/*
-double ar_filterParameterA[FILTER_LENGTH] = {   1           ,0,0,0,0,0,0,0,0,0,0};
-double ar_filterParameterB[FILTER_LENGTH] = {1,1,1,1,1,1,1,1,1,1,1};
-*/
 
-
-double ar_circularBufferInput_a1[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_a1[FILTER_LENGTH] = {0};
-double ar_circularBufferInput_b1[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_b1[FILTER_LENGTH] = {0};
-double ar_circularBufferInput_c1[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_c1[FILTER_LENGTH] = {0};
-double ar_circularBufferInput_a2[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_a2[FILTER_LENGTH] = {0};
-double ar_circularBufferInput_b2[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_b2[FILTER_LENGTH] = {0};
-double ar_circularBufferInput_c2[FILTER_LENGTH] = {0};
-double ar_circularBufferOutput_c2[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_a1[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_a1[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_b1[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_b1[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_c1[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_c1[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_a2[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_a2[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_b2[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_b2[FILTER_LENGTH] = {0};
+float ar_circularBufferInput_c2[FILTER_LENGTH] = {0};
+float ar_circularBufferOutput_c2[FILTER_LENGTH] = {0};
 
 struct uz_filter_config filter_config_a1 = {
 	.filterLength = FILTER_LENGTH,
@@ -182,10 +210,15 @@ struct uz_filter_config filter_config_c2 = {
 
 //parameter for FOC
 
-struct uz_FOC* FOC_instance;
+
+
+
+
+
+struct uz_FOC* FOC_dq;
 
 const struct uz_PMSM_t config_PMSM = {
-   .Ld_Henry = 0.0001f,			//Richtige Parameter für den Motor einfügen
+   .Ld_Henry = 0.0001f,			//Richtige Parameter fï¿½r den Motor einfï¿½gen
    .Lq_Henry = 0.0002f,
    .Psi_PM_Vs = 0.008f,
    .R_ph_Ohm = 0.0f,
@@ -196,8 +229,8 @@ const struct uz_PMSM_t config_PMSM = {
 
 
 const struct uz_PI_Controller_config config_id = {
-	.Kp = 1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
-	.Ki = 1/0.0008f,															 // Ki = 1/Tn
+	.Kp = 0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
+	.Ki = 1/0.0008f *0.1,															 // Ki = 1/Tn
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
@@ -205,8 +238,8 @@ const struct uz_PI_Controller_config config_id = {
 
 
 const struct uz_PI_Controller_config config_iq = {
-	.Kp = 1.1f,
-	.Ki = 1/0.0008f,
+	.Kp = 0.2f, //1.1f,
+	.Ki = 1/0.0008f *0.1,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
@@ -218,6 +251,92 @@ struct uz_FOC_config config_FOC = {
    .config_id = config_id,
    .config_iq = config_iq
 };
+
+
+const struct uz_PI_Controller_config config_idn = {
+	.Kp = 0.05f,//1.1f,
+	.Ki = 1/0.0008f * 0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+const struct uz_PI_Controller_config config_iqn = {
+	.Kp = 0.05f,//1.1f,
+	.Ki = 1/0.0008f * 0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+struct uz_PI_Controller* PI_d_n;
+struct uz_PI_Controller* PI_q_n;
+
+
+
+
+
+// alphabeta -> dq & reverse
+void uz_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = ( cos_coefficient * input[0]) + (sin_coefficient * input[1]);
+    output[1] =	(-sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = (cos_coefficient * input[0]) - (sin_coefficient * input[1]);
+    output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+
+const struct uz_PI_Controller_config config_ix = {
+	.Kp = 0.05f , //* 4.0f, //1.1f,
+	.Ki = 1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+const struct uz_PI_Controller_config config_iy = {
+	.Kp = 0.05f , //* 4.0f,//1.1f,
+	.Ki = 1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+struct uz_PI_Controller* PI_x_s;
+struct uz_PI_Controller* PI_x_n;
+struct uz_PI_Controller* PI_y_s;
+struct uz_PI_Controller* PI_y_n;
+
+const struct uz_PI_Controller_config config_iz1 = {
+	.Kp = 0.05f , //* 4.0f, //1.1f,
+	.Ki = 1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+const struct uz_PI_Controller_config config_iz2 = {
+	.Kp = 0.05f , //* 4.0f,//1.1f,
+	.Ki = 1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
+};
+
+struct uz_PI_Controller* PI_z1_s;
+struct uz_PI_Controller* PI_z1_n;
+struct uz_PI_Controller* PI_z2_s;
+struct uz_PI_Controller* PI_z2_n;
+
+
 
 struct uz_d_gan_inverter_t* gan_inverter_D3;
 struct uz_d_gan_inverter_t* gan_inverter_D4;
@@ -275,8 +394,6 @@ int main(void)
             break;
         case init_FD:
 
-            uz_vsd_opffd_asym6ph_init(&vsd_fd_V4);
-            uz_FD_init(&uz_FD_V6);
 
             uz_vsd_opf_fd_v7_init(&uz_FD_v7);
 
@@ -298,17 +415,40 @@ int main(void)
             filter_b2 = uz_filter_init(filter_config_b2);
             filter_c2 = uz_filter_init(filter_config_c2);
 
+            // Resonant-Controller in c (IIR-Filter)
+            r_c_iir_2H_x = uz_filter_init(filter_config_rc_2H_x);
+			r_c_iir_2H_y = uz_filter_init(filter_config_rc_2H_y);
+
+			// Matlab Resonant Controller
+            uz_resonant_controller_init(&r_c_2H_x);
+            uz_resonant_controller_init(&r_c_2H_y);
 
             initialization_chain = init_FOC;
             break;
         case init_FOC:
 
-        	FOC_instance = uz_FOC_init(config_FOC);
+        	FOC_dq = uz_FOC_init(config_FOC);
+
+        	PI_d_n = uz_PI_Controller_init(config_idn);
+			PI_q_n = uz_PI_Controller_init(config_iqn);
 
         	Global_Data.av.kp_d = config_FOC.config_id.Kp;
         	Global_Data.av.ki_d = config_FOC.config_id.Ki;
         	Global_Data.av.kp_q = config_FOC.config_iq.Kp;
         	Global_Data.av.ki_q = config_FOC.config_iq.Ki;
+
+
+        	PI_x_s = uz_PI_Controller_init(config_ix);
+        	PI_x_n = uz_PI_Controller_init(config_ix);
+        	PI_y_s = uz_PI_Controller_init(config_iy);
+        	PI_y_n = uz_PI_Controller_init(config_iy);
+
+
+        	PI_z1_s = uz_PI_Controller_init(config_iz1);
+        	PI_z1_n = uz_PI_Controller_init(config_iz1);
+        	PI_z2_s = uz_PI_Controller_init(config_iz2);
+        	PI_z2_n = uz_PI_Controller_init(config_iz2);
+
 
             initialization_chain = init_ip_cores;
             break;

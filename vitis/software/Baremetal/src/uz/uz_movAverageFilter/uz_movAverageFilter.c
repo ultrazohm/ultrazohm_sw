@@ -8,12 +8,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define BUFFERLENGTH_MOVAVERAGEFILTER 150
-
 typedef struct uz_movAverageFilter_t{
 	bool is_ready;
 	int bufferPointer;
-	float circularBuffer[maxFilterLength];
+	float circularBuffer[MAX_FILTERLENGTH];
 	int filterLength;
 }uz_movAverageFilter_t;
 
@@ -35,7 +33,7 @@ static uz_movAverageFilter_t* uz_movAverageFilter_allocation(void){
 uz_movAverageFilter_t* uz_movAverageFilter_init(struct uz_movAverageFilter_config config){
 	uz_movAverageFilter_t* self = uz_movAverageFilter_allocation();
 	self->bufferPointer = 0;
-	uz_assert(config.filterLength <= maxFilterLength);
+	uz_assert(config.filterLength <= MAX_FILTERLENGTH);
 	self->filterLength = config.filterLength;
     return(self);
 }
@@ -51,7 +49,7 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample){
 
 	//calculate filter output: sum of n samples in circular buffer, n = current length of the filter
 	for(int i = 0; i < self->filterLength; i++){
-		int index = (self->bufferPointer - i + maxFilterLength) % maxFilterLength;
+		int index = (self->bufferPointer - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 		output = output + self->circularBuffer[index];
 	}
 
@@ -59,7 +57,7 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample){
 
 
 	//modulo-increment of buffer-pointer
-	self->bufferPointer = (self->bufferPointer + 1) % maxFilterLength;
+	self->bufferPointer = (self->bufferPointer + 1) % MAX_FILTERLENGTH;
 
 	return output;
 }
@@ -67,7 +65,7 @@ float uz_movAverageFilter_sample(uz_movAverageFilter_t* self, float sample){
 
 void uz_movAverageFilter_reset(uz_movAverageFilter_t* self){
 	uz_assert_not_NULL(self);
-	for(int i = 0; i < maxFilterLength; i++){
+	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
 	self->bufferPointer = 0;
@@ -76,8 +74,8 @@ void uz_movAverageFilter_reset(uz_movAverageFilter_t* self){
 
 void uz_movAverageFilter_set_filterLength(uz_movAverageFilter_t* self, int new_filterLength){
 	uz_assert_not_NULL(self);
-	if(new_filterLength > maxFilterLength){
-		new_filterLength = maxFilterLength;
+	if(new_filterLength > MAX_FILTERLENGTH){
+		new_filterLength = MAX_FILTERLENGTH;
 	}
 	self->filterLength = new_filterLength;
 }

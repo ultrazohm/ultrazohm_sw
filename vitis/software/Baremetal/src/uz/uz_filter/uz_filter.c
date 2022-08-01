@@ -8,18 +8,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define BUFFERLENGTH_FILTER 50
 
 
-typedef struct uz_filter_t{
-	bool is_ready;
-	int bufferPointer;
-	double* circularBufferInput;
-	double* circularBufferOutput;
-	double* filterParameterA;
-	double* filterParameterB;
-	int filterLength;
-}uz_filter_t;
 
 static uint32_t instance_filter_counter = 0U;
 static uz_filter_t instances_filter[UZ_FILTER_MAX_INSTANCES] = { 0 };
@@ -49,14 +39,14 @@ uz_filter_t* uz_filter_init(struct uz_filter_config config){
 }
 
 
-double uz_filter_sample(uz_filter_t* self, double sample){
+float uz_filter_sample(uz_filter_t* self, float sample){
 	uz_assert_not_NULL(self);
 
 	//add new sample to circular input buffer
 	self->circularBufferInput[self->bufferPointer] = sample;
 
-	double b = 0.0;
-	double a = 0.0;
+	float b = 0.0;
+	float a = 0.0;
 
 	for(int i = 0; i < self->filterLength; i++){
 		int index = (self->bufferPointer - i + self->filterLength) % self->filterLength;
@@ -71,7 +61,7 @@ double uz_filter_sample(uz_filter_t* self, double sample){
 	}
 
 
-	double output = 1/(self->filterParameterA[0]) * (b - a);		//a0 normally is 1, but to be certain it is included in this equation
+	float output = 1/(self->filterParameterA[0]) * (b - a);		//a0 normally is 1, but to be certain it is included in this equation
 
 
 	self->circularBufferOutput[self->bufferPointer] = output;

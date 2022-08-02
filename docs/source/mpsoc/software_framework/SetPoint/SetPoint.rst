@@ -20,6 +20,8 @@ Configuration
 -------------
 
 .. doxygenenum:: uz_Setpoint_motor_type
+
+.. doxygenenum:: uz_Setpoint_control_type
   
 .. doxygenstruct:: uz_SetPoint_config
   :members:
@@ -40,6 +42,7 @@ Example
         .config_PMSM.R_ph_Ohm = 0.1f,
         .config_PMSM.polePairs = 4.0f,
         .config_PMSM.Psi_PM_Vs = 0.0075f,
+        .control_type = FOC,
         .motor_type = SMPMSM,
         .is_field_weakening_enabled = false,
         .id_ref_Ampere = 0.0f

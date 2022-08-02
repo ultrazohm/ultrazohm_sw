@@ -10,6 +10,11 @@ enum uz_Setpoint_motor_type {
 	SMPMSM = 0, IPMSM
 };
 
+/*! enum for selection of control type */
+enum uz_Setpoint_control_type {
+	FOC = 0,
+};
+
 /**
  * @brief Object definition for uz_SetPoint_t
  *
@@ -26,6 +31,8 @@ struct uz_SetPoint_config {
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
 											0 = SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
 											1 = IPMSM -> interior PMSM (Ld=/=Lq) */
+	enum uz_Setpoint_control_type control_type; /**< Selection for which control type is used \n
+											0 = field oriented control (FOC) \n */							
 };
 
 /**

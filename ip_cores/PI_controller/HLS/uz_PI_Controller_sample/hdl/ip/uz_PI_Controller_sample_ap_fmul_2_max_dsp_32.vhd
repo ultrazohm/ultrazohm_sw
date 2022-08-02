@@ -56,22 +56,22 @@ USE ieee.numeric_std.ALL;
 LIBRARY floating_point_v7_1_10;
 USE floating_point_v7_1_10.floating_point_v7_1_10;
 
-ENTITY uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32 IS
+ENTITY uz_PI_Controller_sample_ap_fmul_2_max_dsp_32 IS
   PORT (
+    aclk : IN STD_LOGIC;
+    aclken : IN STD_LOGIC;
     s_axis_a_tvalid : IN STD_LOGIC;
     s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     s_axis_b_tvalid : IN STD_LOGIC;
     s_axis_b_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-    s_axis_operation_tvalid : IN STD_LOGIC;
-    s_axis_operation_tdata : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
     m_axis_result_tvalid : OUT STD_LOGIC;
-    m_axis_result_tdata : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+    m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
-END uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32;
+END uz_PI_Controller_sample_ap_fmul_2_max_dsp_32;
 
-ARCHITECTURE uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch OF uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32 IS
+ARCHITECTURE uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch OF uz_PI_Controller_sample_ap_fmul_2_max_dsp_32 IS
   ATTRIBUTE DowngradeIPIdentifiedWarnings : STRING;
-  ATTRIBUTE DowngradeIPIdentifiedWarnings OF uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch: ARCHITECTURE IS "yes";
+  ATTRIBUTE DowngradeIPIdentifiedWarnings OF uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch: ARCHITECTURE IS "yes";
   COMPONENT floating_point_v7_1_10 IS
     GENERIC (
       C_XDEVICEFAMILY : STRING;
@@ -178,45 +178,46 @@ ARCHITECTURE uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch OF uz_PI_Controlle
       s_axis_operation_tlast : IN STD_LOGIC;
       m_axis_result_tvalid : OUT STD_LOGIC;
       m_axis_result_tready : IN STD_LOGIC;
-      m_axis_result_tdata : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+      m_axis_result_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
       m_axis_result_tuser : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
       m_axis_result_tlast : OUT STD_LOGIC
     );
   END COMPONENT floating_point_v7_1_10;
   ATTRIBUTE X_CORE_INFO : STRING;
-  ATTRIBUTE X_CORE_INFO OF uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch: ARCHITECTURE IS "floating_point_v7_1_10,Vivado 2020.1";
+  ATTRIBUTE X_CORE_INFO OF uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch: ARCHITECTURE IS "floating_point_v7_1_10,Vivado 2020.1";
   ATTRIBUTE CHECK_LICENSE_TYPE : STRING;
-  ATTRIBUTE CHECK_LICENSE_TYPE OF uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch : ARCHITECTURE IS "uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32,floating_point_v7_1_10,{}";
+  ATTRIBUTE CHECK_LICENSE_TYPE OF uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch : ARCHITECTURE IS "uz_PI_Controller_sample_ap_fmul_2_max_dsp_32,floating_point_v7_1_10,{}";
   ATTRIBUTE CORE_GENERATION_INFO : STRING;
-  ATTRIBUTE CORE_GENERATION_INFO OF uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch: ARCHITECTURE IS "uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32,floating_point_v7_1_10,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=floating_point,x_ipVersion=7.1,x_ipCoreRevision=10,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_XDEVICEFAMILY=zynquplus,C_PART=xczu7ev-ffvc1156-2-e,C_HAS_ADD=0,C_HAS_SUBTRACT=0,C_HAS_MULTIPLY=0,C_HAS_DIVIDE=0,C_HAS_SQRT=0,C_HAS_COMPARE=1,C_HAS_FIX_TO_FLT=0,C_HAS_FLT_TO_FIX=0,C_HAS_FLT_TO_FLT=0,C_HAS_RECIP=0,C_HAS_RECIP_SQRT=0,C_HAS_ABSOLUTE=0,C_HAS_LOGARITHM" & 
-"=0,C_HAS_EXPONENTIAL=0,C_HAS_FMA=0,C_HAS_FMS=0,C_HAS_UNFUSED_MULTIPLY_ADD=0,C_HAS_UNFUSED_MULTIPLY_SUB=0,C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_A=0,C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_S=0,C_HAS_ACCUMULATOR_A=0,C_HAS_ACCUMULATOR_S=0,C_HAS_ACCUMULATOR_PRIMITIVE_A=0,C_HAS_ACCUMULATOR_PRIMITIVE_S=0,C_A_WIDTH=32,C_A_FRACTION_WIDTH=24,C_B_WIDTH=32,C_B_FRACTION_WIDTH=24,C_C_WIDTH=32,C_C_FRACTION_WIDTH=24,C_RESULT_WIDTH=1,C_RESULT_FRACTION_WIDTH=0,C_COMPARE_OPERATION=8,C_LATENCY=0,C_OPTIMIZATION=1,C_MULT_USA" & 
-"GE=0,C_BRAM_USAGE=0,C_RATE=1,C_ACCUM_INPUT_MSB=32,C_ACCUM_MSB=32,C_ACCUM_LSB=-31,C_HAS_UNDERFLOW=0,C_HAS_OVERFLOW=0,C_HAS_INVALID_OP=0,C_HAS_DIVIDE_BY_ZERO=0,C_HAS_ACCUM_OVERFLOW=0,C_HAS_ACCUM_INPUT_OVERFLOW=0,C_HAS_ACLKEN=0,C_HAS_ARESETN=0,C_THROTTLE_SCHEME=3,C_HAS_A_TUSER=0,C_HAS_A_TLAST=0,C_HAS_B=1,C_HAS_B_TUSER=0,C_HAS_B_TLAST=0,C_HAS_C=0,C_HAS_C_TUSER=0,C_HAS_C_TLAST=0,C_HAS_OPERATION=1,C_HAS_OPERATION_TUSER=0,C_HAS_OPERATION_TLAST=0,C_HAS_RESULT_TUSER=0,C_HAS_RESULT_TLAST=0,C_TLAST_RESOLUT" & 
-"ION=0,C_A_TDATA_WIDTH=32,C_A_TUSER_WIDTH=1,C_B_TDATA_WIDTH=32,C_B_TUSER_WIDTH=1,C_C_TDATA_WIDTH=32,C_C_TUSER_WIDTH=1,C_OPERATION_TDATA_WIDTH=8,C_OPERATION_TUSER_WIDTH=1,C_RESULT_TDATA_WIDTH=8,C_RESULT_TUSER_WIDTH=1,C_FIXED_DATA_UNSIGNED=0}";
+  ATTRIBUTE CORE_GENERATION_INFO OF uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch: ARCHITECTURE IS "uz_PI_Controller_sample_ap_fmul_2_max_dsp_32,floating_point_v7_1_10,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=floating_point,x_ipVersion=7.1,x_ipCoreRevision=10,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_XDEVICEFAMILY=zynquplus,C_PART=xczu9eg-ffvc900-1-e,C_HAS_ADD=0,C_HAS_SUBTRACT=0,C_HAS_MULTIPLY=1,C_HAS_DIVIDE=0,C_HAS_SQRT=0,C_HAS_COMPARE=0,C_HAS_FIX_TO_FLT=0,C_HAS_FLT_TO_FIX=0,C_HAS_FLT_TO_FLT=0,C_HAS_RECIP=0,C_HAS_RECIP_SQRT=0,C_HAS_ABSOLUTE=0,C_HAS_LOGARITHM" & 
+"=0,C_HAS_EXPONENTIAL=0,C_HAS_FMA=0,C_HAS_FMS=0,C_HAS_UNFUSED_MULTIPLY_ADD=0,C_HAS_UNFUSED_MULTIPLY_SUB=0,C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_A=0,C_HAS_UNFUSED_MULTIPLY_ACCUMULATOR_S=0,C_HAS_ACCUMULATOR_A=0,C_HAS_ACCUMULATOR_S=0,C_HAS_ACCUMULATOR_PRIMITIVE_A=0,C_HAS_ACCUMULATOR_PRIMITIVE_S=0,C_A_WIDTH=32,C_A_FRACTION_WIDTH=24,C_B_WIDTH=32,C_B_FRACTION_WIDTH=24,C_C_WIDTH=32,C_C_FRACTION_WIDTH=24,C_RESULT_WIDTH=32,C_RESULT_FRACTION_WIDTH=24,C_COMPARE_OPERATION=8,C_LATENCY=2,C_OPTIMIZATION=1,C_MULT_U" & 
+"SAGE=3,C_BRAM_USAGE=0,C_RATE=1,C_ACCUM_INPUT_MSB=32,C_ACCUM_MSB=32,C_ACCUM_LSB=-31,C_HAS_UNDERFLOW=0,C_HAS_OVERFLOW=0,C_HAS_INVALID_OP=0,C_HAS_DIVIDE_BY_ZERO=0,C_HAS_ACCUM_OVERFLOW=0,C_HAS_ACCUM_INPUT_OVERFLOW=0,C_HAS_ACLKEN=1,C_HAS_ARESETN=0,C_THROTTLE_SCHEME=3,C_HAS_A_TUSER=0,C_HAS_A_TLAST=0,C_HAS_B=1,C_HAS_B_TUSER=0,C_HAS_B_TLAST=0,C_HAS_C=0,C_HAS_C_TUSER=0,C_HAS_C_TLAST=0,C_HAS_OPERATION=0,C_HAS_OPERATION_TUSER=0,C_HAS_OPERATION_TLAST=0,C_HAS_RESULT_TUSER=0,C_HAS_RESULT_TLAST=0,C_TLAST_RESOL" & 
+"UTION=0,C_A_TDATA_WIDTH=32,C_A_TUSER_WIDTH=1,C_B_TDATA_WIDTH=32,C_B_TUSER_WIDTH=1,C_C_TDATA_WIDTH=32,C_C_TUSER_WIDTH=1,C_OPERATION_TDATA_WIDTH=8,C_OPERATION_TUSER_WIDTH=1,C_RESULT_TDATA_WIDTH=32,C_RESULT_TUSER_WIDTH=1,C_FIXED_DATA_UNSIGNED=0}";
   ATTRIBUTE X_INTERFACE_INFO : STRING;
   ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TDATA";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF m_axis_result_tvalid: SIGNAL IS "XIL_INTERFACENAME M_AXIS_RESULT, TDATA_NUM_BYTES 1, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF m_axis_result_tvalid: SIGNAL IS "XIL_INTERFACENAME M_AXIS_RESULT, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
   ATTRIBUTE X_INTERFACE_INFO OF m_axis_result_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 M_AXIS_RESULT TVALID";
-  ATTRIBUTE X_INTERFACE_INFO OF s_axis_operation_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_OPERATION TDATA";
-  ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_operation_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_OPERATION, TDATA_NUM_BYTES 1, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
-  ATTRIBUTE X_INTERFACE_INFO OF s_axis_operation_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_OPERATION TVALID";
   ATTRIBUTE X_INTERFACE_INFO OF s_axis_b_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_B TDATA";
   ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_b_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_B, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
   ATTRIBUTE X_INTERFACE_INFO OF s_axis_b_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_B TVALID";
   ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tdata: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TDATA";
   ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_a_tvalid: SIGNAL IS "XIL_INTERFACENAME S_AXIS_A, TDATA_NUM_BYTES 4, TDEST_WIDTH 0, TID_WIDTH 0, TUSER_WIDTH 0, HAS_TREADY 0, HAS_TSTRB 0, HAS_TKEEP 0, HAS_TLAST 0, FREQ_HZ 100000000, PHASE 0.000, LAYERED_METADATA undef, INSERT_VIP 0";
   ATTRIBUTE X_INTERFACE_INFO OF s_axis_a_tvalid: SIGNAL IS "xilinx.com:interface:axis:1.0 S_AXIS_A TVALID";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF aclken: SIGNAL IS "XIL_INTERFACENAME aclken_intf, POLARITY ACTIVE_HIGH";
+  ATTRIBUTE X_INTERFACE_INFO OF aclken: SIGNAL IS "xilinx.com:signal:clockenable:1.0 aclken_intf CE";
+  ATTRIBUTE X_INTERFACE_PARAMETER OF aclk: SIGNAL IS "XIL_INTERFACENAME aclk_intf, ASSOCIATED_BUSIF S_AXIS_OPERATION:M_AXIS_RESULT:S_AXIS_C:S_AXIS_B:S_AXIS_A, ASSOCIATED_RESET aresetn, ASSOCIATED_CLKEN aclken, FREQ_HZ 10000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, INSERT_VIP 0";
+  ATTRIBUTE X_INTERFACE_INFO OF aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 aclk_intf CLK";
 BEGIN
   U0 : floating_point_v7_1_10
     GENERIC MAP (
       C_XDEVICEFAMILY => "zynquplus",
-      C_PART => "xczu7ev-ffvc1156-2-e",
+      C_PART => "xczu9eg-ffvc900-1-e",
       C_HAS_ADD => 0,
       C_HAS_SUBTRACT => 0,
-      C_HAS_MULTIPLY => 0,
+      C_HAS_MULTIPLY => 1,
       C_HAS_DIVIDE => 0,
       C_HAS_SQRT => 0,
-      C_HAS_COMPARE => 1,
+      C_HAS_COMPARE => 0,
       C_HAS_FIX_TO_FLT => 0,
       C_HAS_FLT_TO_FIX => 0,
       C_HAS_FLT_TO_FLT => 0,
@@ -241,12 +242,12 @@ BEGIN
       C_B_FRACTION_WIDTH => 24,
       C_C_WIDTH => 32,
       C_C_FRACTION_WIDTH => 24,
-      C_RESULT_WIDTH => 1,
-      C_RESULT_FRACTION_WIDTH => 0,
+      C_RESULT_WIDTH => 32,
+      C_RESULT_FRACTION_WIDTH => 24,
       C_COMPARE_OPERATION => 8,
-      C_LATENCY => 0,
+      C_LATENCY => 2,
       C_OPTIMIZATION => 1,
-      C_MULT_USAGE => 0,
+      C_MULT_USAGE => 3,
       C_BRAM_USAGE => 0,
       C_RATE => 1,
       C_ACCUM_INPUT_MSB => 32,
@@ -258,7 +259,7 @@ BEGIN
       C_HAS_DIVIDE_BY_ZERO => 0,
       C_HAS_ACCUM_OVERFLOW => 0,
       C_HAS_ACCUM_INPUT_OVERFLOW => 0,
-      C_HAS_ACLKEN => 0,
+      C_HAS_ACLKEN => 1,
       C_HAS_ARESETN => 0,
       C_THROTTLE_SCHEME => 3,
       C_HAS_A_TUSER => 0,
@@ -269,7 +270,7 @@ BEGIN
       C_HAS_C => 0,
       C_HAS_C_TUSER => 0,
       C_HAS_C_TLAST => 0,
-      C_HAS_OPERATION => 1,
+      C_HAS_OPERATION => 0,
       C_HAS_OPERATION_TUSER => 0,
       C_HAS_OPERATION_TLAST => 0,
       C_HAS_RESULT_TUSER => 0,
@@ -283,13 +284,13 @@ BEGIN
       C_C_TUSER_WIDTH => 1,
       C_OPERATION_TDATA_WIDTH => 8,
       C_OPERATION_TUSER_WIDTH => 1,
-      C_RESULT_TDATA_WIDTH => 8,
+      C_RESULT_TDATA_WIDTH => 32,
       C_RESULT_TUSER_WIDTH => 1,
       C_FIXED_DATA_UNSIGNED => 0
     )
     PORT MAP (
-      aclk => '0',
-      aclken => '1',
+      aclk => aclk,
+      aclken => aclken,
       aresetn => '1',
       s_axis_a_tvalid => s_axis_a_tvalid,
       s_axis_a_tdata => s_axis_a_tdata,
@@ -303,12 +304,12 @@ BEGIN
       s_axis_c_tdata => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 32)),
       s_axis_c_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_c_tlast => '0',
-      s_axis_operation_tvalid => s_axis_operation_tvalid,
-      s_axis_operation_tdata => s_axis_operation_tdata,
+      s_axis_operation_tvalid => '0',
+      s_axis_operation_tdata => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 8)),
       s_axis_operation_tuser => STD_LOGIC_VECTOR(TO_UNSIGNED(0, 1)),
       s_axis_operation_tlast => '0',
       m_axis_result_tvalid => m_axis_result_tvalid,
       m_axis_result_tready => '0',
       m_axis_result_tdata => m_axis_result_tdata
     );
-END uz_PI_Controller_sample_ap_fcmp_0_no_dsp_32_arch;
+END uz_PI_Controller_sample_ap_fmul_2_max_dsp_32_arch;

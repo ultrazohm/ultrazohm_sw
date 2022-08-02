@@ -16,18 +16,17 @@ INCLUDES=-I./. -I${INCLUDEDIR}
 INCLUDEFILES=*.h
 LIBSOURCES=*.c
 OUTS = *.o 
-OBJECTS = $(addsuffix .o, $(basename $(wildcard *.c)))
-ASSEMBLY_OBJECTS = $(addsuffix .o, $(basename $(wildcard *.S)))
+
 
 libs:
 	echo "Compiling uz_PI_Controller_sample"
 	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(LIBSOURCES)
-	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
+	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} $(OUTS)
 	make clean
 
 include: 
 	${CP} $(INCLUDEFILES) $(INCLUDEDIR)
 
 clean:
-	rm -rf ${OBJECTS} ${ASSEMBLY_OBJECTS}
+	rm -rf ${OUTS}
 

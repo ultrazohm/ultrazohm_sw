@@ -1388,7 +1388,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5502211b</spirit:value>
+            <spirit:value>ed51d7b0</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1407,7 +1407,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>83494277</spirit:value>
+            <spirit:value>0889962f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1426,7 +1426,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a143ebc0</spirit:value>
+            <spirit:value>5d924717</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1445,7 +1445,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>25b7b2c3</spirit:value>
+            <spirit:value>950d7125</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2973,7 +2973,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_verilogsynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_2_full_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_3_full_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2981,7 +2981,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_1_max_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_2_max_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3002,7 +3002,7 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3010,7 +3010,7 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_PI_Controller_sample_fmul_32ns_32ns_32_3_max_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_PI_Controller_sample_fmul_32ns_32ns_32_4_max_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3046,7 +3046,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3056,7 +3056,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_PI_Controller_sample_fmul_32ns_32ns_32_3_max_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_PI_Controller_sample_fmul_32ns_32ns_32_4_max_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3066,7 +3066,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_2_full_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_3_full_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3076,7 +3076,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_1_max_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_2_max_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3094,7 +3094,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlsynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_2_full_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_3_full_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3102,7 +3102,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_1_max_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_2_max_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3123,7 +3123,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_5_full_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3131,13 +3131,13 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_fmul_32ns_32ns_32_3_max_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_fmul_32ns_32ns_32_4_max_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_PI_Controller_sample.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_dc4a462e</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_7c68d9f9</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3168,7 +3168,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_faddfsub_32ns_32ns_32_5_full_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3178,7 +3178,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_fmul_32ns_32ns_32_3_max_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_PI_Controller_sample_fmul_32ns_32ns_32_4_max_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3188,7 +3188,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_2_full_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_faddfsub_3_full_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3198,7 +3198,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_1_max_dsp_32.vhd</spirit:name>
+        <spirit:name>hdl/ip/uz_PI_Controller_sample_ap_fmul_2_max_dsp_32.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3409,7 +3409,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">24</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">28</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -3426,8 +3426,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_piController</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2112532176</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-06-02T14:36:27Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112618834</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-01T18:55:11Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3438,10 +3438,10 @@
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="e2e4f337"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="6e335ea8"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="66174d0f"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="8bb3b1a5"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d0c187e0"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="fcb97036"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="948bed4a"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="d2fd92f2"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="daf6697b"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

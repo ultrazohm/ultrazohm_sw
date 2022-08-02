@@ -221,11 +221,25 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_no_id(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0133f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0133f, output.d);//Since Lq>Ld, id should be negative
     M_ref_Nm = 0.09f;
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0533f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0533f, output.d);//Since Lq>Ld, id should be negative
+}
+
+void test_uz_SetPoint_sample_MTPA_IPMSM_operation_Ld_greater_Lq(void){
+    //Results for comparision from simulation
+    config.motor_type = IPMSM;
+    config.config_PMSM.Lq_Henry = 0.0002f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,0.0133f, output.d);//Since Ld>Lq, id should be positive
+    M_ref_Nm = 0.09f;
+    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,0.0533f, output.d);//Since Ld>Lq, id should be positive
 }
 
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_manual_id(void){

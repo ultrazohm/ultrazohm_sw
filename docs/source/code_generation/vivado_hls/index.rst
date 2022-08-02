@@ -287,7 +287,7 @@ Procedure:
 11. The results can be seen through UART in the Vitis serial Terminal
 12. The memory location can be monitored through memory icon in the right pane of the Debug Window. The active processor should be selected to enable the memory icon.
 
-.. _vitis:
+.. _vitis_img:
 
 .. figure:: ./vitis.png
    :width: 500
@@ -323,6 +323,6 @@ More Information
 ..	toctree::
 		:maxdepth: 2
 		:hidden:
-		:caption: Vitis HLS (HDL)
+		:caption: Vitis_HLS (HDL)
 
 		definitions

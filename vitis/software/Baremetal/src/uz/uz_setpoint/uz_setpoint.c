@@ -71,7 +71,7 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
     i_ref = uz_signals_saturation(i_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
 
     if(self->config.is_field_weakening_enabled) {//Field-weakening
-        float V_SV_max = (V_DC_Volts / sqrtf(3.0f)) * 0.94f;
+        float V_SV_max = (V_DC_Volts / sqrtf(3.0f)) - (self->config.config_PMSM.R_ph_Ohm * self->config.config_PMSM.I_max_Ampere);
         uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_SV_max);
         float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
         if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {
@@ -212,7 +212,8 @@ static uz_3ph_dq_t uz_SetPoint_calculate_fw_currents(uz_SetPoint_t* self, float 
             float psi_pm_times_Ld = self->config.config_PMSM.Psi_PM_Vs * self->config.config_PMSM.Ld_Henry;
             float Lq_times_I_max = powf(self->config.config_PMSM.Lq_Henry, 2.0f) * powf(self->config.config_PMSM.I_max_Ampere, 2.0f);
             float V_max_diff_omega = powf(V_SV_max, 2.0f) / powf(omega_el_rad_per_sec, 2.0f); 
-            output.d = (-psi_pm_times_Ld + sqrtf(powf(psi_pm_times_Ld, 2.0f) - (Ld_minus_Lq * (powf(self->config.config_PMSM.Psi_PM_Vs, 2.0f) + Lq_times_I_max - V_max_diff_omega)))) / (Ld_minus_Lq);
+            float root_argument = (powf(psi_pm_times_Ld, 2.0f) - (Ld_minus_Lq * (powf(self->config.config_PMSM.Psi_PM_Vs, 2.0f) + Lq_times_I_max - V_max_diff_omega)));
+            output.d = (-psi_pm_times_Ld + sqrtf(root_argument)) / (Ld_minus_Lq);
         break;            
 
         default:

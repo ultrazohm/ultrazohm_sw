@@ -41,7 +41,8 @@ Example
         .config_PMSM.polePairs = 4.0f,
         .config_PMSM.Psi_PM_Vs = 0.0075f,
         .motor_type = SMPMSM,
-        .is_field_weakening_enabled = false
+        .is_field_weakening_enabled = false,
+        .id_ref_Ampere = 0.0f
      };
   }
 

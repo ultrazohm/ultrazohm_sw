@@ -16,72 +16,12 @@ Example
   int main(void) {
      float omega_m_rad_per_sec = 1.5f;
      float M_ref_Nm = 0.0045f;
-     float id_ref_Ampere = 0.0f;
      float V_DC_Volts = 24.0f;
-     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, id_ref_Ampere, V_DC_Volts);
+     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
   }
 
 Description
 ===========
-
-Calculates the reference currents depending on the user selection. 
-Either an MTPA or a field-weakening is active, depending on the operating condition of the machine.
-The reference currents are always limited to the max. allowed current. 
-I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{i_{d,ref}^2 + i_{q,ref}^2}` will be lower than the max allowed current.
-If a manual :math:`i_{d,ref}` is set in the MPTA state, this current overwrites the calculated :math:`i_{d,MTPA}` current.
-In MTPA operation the :math:`i_q` will get priority, whilst in the field-weakening case :math:`i_d` will get priority.
-The cut-off rotational speed for the field-weakening is calculated like the following[[#Wilfling]_].:
-
-.. math::
-
-  V_{SV,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}}\cdot 0.94\\
-  \omega_c &= \frac{-R_{ph} \cdot \psi_{PM} \cdot I_{max}}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2} 
-  + \sqrt{\frac{R_{ph}^2 \cdot \psi_{PM}^2 \cdot I_{max}^2 }{(I_{max}^2 \cdot L_q^2 + \psi_{PM}^2)^2} -    \frac{(I_{max}^2 - R_{ph}^2) - V_{SV,max}^2}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2}}\\
-
-SM-PMSM[[#matlab]_]
--------------------
-
-.. math::
-
-  i_{d,MTPA} &= 0\\
-  i_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
-
-
-for :math:`\omega_{el} > \omega_c\\`:
-
-.. math::
-
-  i_{d,fw} &= \frac{\psi_{PM}}{L_d}\cdot(1- \frac{\omega_c}{\omega_{el}})\\
-  i_{q,fw} &= i_{q,MTPA}\\
-  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
-
-I-PMSM[[#matlab]_]
-------------------
-
-.. warning::
-
-  :math:`L_d \neq L_q` is necessary and will be checked.
-
-.. math::
-
-  i_{m,ref} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
-  i_{d,MTPA} &= \frac{\psi_{PM}}{4 \cdot (L_q - L_d)} - \sqrt{\frac{\psi_{PM}^2}{16 \cdot (L_q - L_d)^2} + \frac{i_{m,ref}^2}{2}}\\
-  i_{q,MTPA} &= \sqrt{i_{m,ref}^2 - i_{d,MTPA}^2}\\
-
-for :math:`\omega_{el} > \omega_c\\`:
-
-.. math::
-
-  i_{d,fw} &= \frac{-\psi_{PM} \cdot L_d + \sqrt{(\psi_{PM} \cdot L_d)^2 - (L_d^2 - L_q^2) \cdot (\psi_{PM}^2 + L_q^2 \cdot I_{max}^2 - \frac{V_{SV,max}^2}{\omega_{el}^2} )} }{L_d^2 - L_q^2}\\
-  i_{q,fw} &= i_{q,MTPA}\\
-  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
-
-General notes:
---------------
-
-If the machine is not in the field weakening territory, the input ``id_ref_Ampere`` current will be used, if it is :math:`\neq 0`. 
-If the machine is inside the field weakening territory, the input ``id_ref_Ampere`` will only be used, if it's value is lower than the required ``id_fw`` current from the field weakening (i.e. ``id_ref_Ampere=-5`` and ``id_fw=-2`` will result in ``id_output=-5``).
-The max. current limit will still be respected in this case.
 
 .. tikz:: Schematic overview of the SetPoint module
   :align: center
@@ -109,10 +49,9 @@ The max. current limit will still be respected in this case.
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=SetPoint,rounded corners,fit=(STP) (MTPA)(FW) ,inner sep=5pt,minimum width=5cm] {};
   \end{scope}
-  \node[block,name=input1, below left = -8cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{m}$\\ \tiny{float}};
+  \node[block,name=input1, below left = -7cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{m}$\\ \tiny{float}};
   \node[block,name=input2, below = 0.5cm of input1,drop shadow,minimum width=2cm, align=center] {$M_{ref}$\\ \tiny{float}};
-  \node[block,name=input3, below = 0.5cm of input2,drop shadow,minimum width=2cm, align=center] { $i_{d,ref}$\\ \tiny{float}};
-  \node[block,name=input4, below = 0.5cm of input3,drop shadow,minimum width=2cm, align=center] { $V_{DC}$\\ \tiny{float}};
+  \node[block,name=input4, below = 0.5cm of input2,drop shadow,minimum width=2cm, align=center] { $V_{DC}$\\ \tiny{float}};
   \node[block,name=input5, above =1cm of SetPoint,drop shadow,minimum width=2cm, align=center] { instance\\ \tiny{uz\_SetPoint\_t}};
   \node[block,name=input6, left = 1cm of input5,drop shadow,minimum width=2cm, align=center] {config\\ \tiny{struct  uz\_SetPoint\_config}};
   \node[block,name=output, below right= -5.5cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_3ph\_dq\_t}};
@@ -122,13 +61,78 @@ The max. current limit will still be respected in this case.
   \draw[->](output.east) -- (Controller.west);
   \draw[->](input1.east) -- (SetPoint.west |- input1.east);
   \draw[->](input2.east) -- (SetPoint.west |- input2.east);
-  \draw[->](input3.east) -- (SetPoint.west |- input3.east);
   \draw[->](input4.east) -- (SetPoint.west |- input4.east);
   \draw[->](input6.east) -- (input5.west);
   \end{tikzpicture}
+
+Calculates the reference currents depending on the user selection. 
+Either an MTPA or a field-weakening is active, depending on the operating condition of the machine.
+The reference currents are always limited to the max. allowed current. 
+I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{i_{d,ref}^2 + i_{q,ref}^2}` will be lower than the max allowed current.
+If a manual :math:`i_{d,ref}` is set in the MPTA state, this current overwrites the calculated :math:`i_{d,MTPA}` current.
+In MTPA operation the :math:`i_q` will get priority, whilst in the field-weakening case :math:`i_d` will get priority.
+The cut-off rotational speed for the field-weakening is calculated like the following[[#Wilfling]_].:
+
+.. math::
+
+  V_{SV,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}} - R_{ph} \cdot I_{max}\\
+  \omega_c &= \frac{-R_{ph} \cdot \psi_{PM} \cdot I_{max}}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2} 
+  + \sqrt{\frac{R_{ph}^2 \cdot \psi_{PM}^2 \cdot I_{max}^2 }{(I_{max}^2 \cdot L_q^2 + \psi_{PM}^2)^2} -    \frac{(I_{max}^2 - R_{ph}^2) - V_{SV,max}^2}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2}}\\
+
+SM-PMSM[[#matlab]_]
+-------------------
+
+.. math::
+
+  i_{d,MTPA} &= 0\\
+  i_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
+
+
+for :math:`\omega_{el} > \omega_c\\`:
+
+.. math::
+
+  i_{d,fw} &= \frac{\psi_{PM}}{L_d}\cdot(1- \frac{\omega_c}{\omega_{el}})\\
+  i_{q,fw} &= i_{q,MTPA}\\
+  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
+
+I-PMSM[[#Schroeder]_ S.1095ff.][[#matlab]_]
+-------------------------------------------
+
+.. warning::
+
+  :math:`L_d \neq L_q` is necessary and will be checked.
+
+.. note::
+
+  To ensure proper operation in the case, that a manual user input instead of a SpeedController is used to set :math:`M_{ref}`, an assumption about the :math:`i_q` current has to be made. 
+  This assumption minimally distorts the MTPA currents.
+
+.. math::
+
+  i_{m,ref} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
+  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_d < L_q)\\
+  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_q < L_d)\\
+  i_{q,MTPA} &= \frac{M_{ref} \cdot 2}{3 \cdot p \cdot (\psi_{PM} + (L_d - L_q) \cdot i_{d,MTPA})}\\
+
+for :math:`\omega_{el} > \omega_c\\`:
+
+.. math::
+
+  i_{d,fw} &= \frac{-\psi_{PM} \cdot L_d + \sqrt{(\psi_{PM} \cdot L_d)^2 - (L_d^2 - L_q^2) \cdot (\psi_{PM}^2 + L_q^2 \cdot I_{max}^2 - \frac{V_{SV,max}^2}{\omega_{el}^2} )} }{L_d^2 - L_q^2}\\
+  i_{q,fw} &= i_{q,MTPA}\\
+  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
+
+General notes:
+--------------
+
+If the machine is not in the field weakening territory, the input ``id_ref_Ampere`` current will be used, if it is :math:`\neq 0`. 
+If the machine is inside the field weakening territory, the input ``id_ref_Ampere`` will only be used, if it's value is lower than the required ``id_fw`` current from the field weakening (i.e. ``id_ref_Ampere=-5`` and ``id_fw=-2`` will result in ``id_output=-5``).
+The max. current limit will still be respected in this case.
 
 Sources
 =======
 
 .. [#Wilfling] T. Wilfling, "Regelung eines Synchronaußenläufermotors und Optimierung der Rotorstruktur zur Drehmomentsteigerung", 2021
+.. [#Schroeder] D. Schröder, "Elektrische Antriebe - Regelung von Antriebssystemen", Berlin, Springer 2015
 .. [#matlab] `MTPA Control Reference, Mathworks <https://de.mathworks.com/help/mcb/ref/mtpacontrolreference.html>`_

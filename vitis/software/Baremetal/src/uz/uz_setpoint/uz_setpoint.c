@@ -38,9 +38,9 @@ static uz_SetPoint_t instances[UZ_SETPOINT_MAX_INSTANCES] = { 0 };
 
 static uz_SetPoint_t* uz_SetPoint_allocation(void);
 
-static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float id_ref_Ampere, float omega_m_rad_per_sec, float V_dc_volts, float i_ref);
-static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float id_ref_Ampere, float i_ref);
-static float uz_SetPoint_decide_id_ref(uz_SetPoint_t* self, float id_ref_Ampere, float id_field_weakening_Ampere, float i_ref);
+static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_m_rad_per_sec, float V_dc_volts, float i_ref);
+static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
+static float uz_SetPoint_decide_id_ref(uz_SetPoint_t* self, float id_field_weakening_Ampere, float i_ref);
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_SV_max);
 static uz_3ph_dq_t uz_SetPoint_calculate_fw_currents(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_SV_max);
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
@@ -61,7 +61,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     return(self);
 }
 
-uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float id_ref_Ampere, float V_DC_Volts) {
+uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(V_DC_Volts > 0.0f);
@@ -76,13 +76,13 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
         float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
         if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {
             self->is_field_weakening_active = true;
-            output_currents = uz_SetPoint_field_weakening(self, id_ref_Ampere, omega_el_rad_per_sec, V_SV_max, i_ref); 
+            output_currents = uz_SetPoint_field_weakening(self, omega_el_rad_per_sec, V_SV_max, i_ref); 
         } else { //MPTA, if not in FW territory
             self->is_field_weakening_active = false;
-            output_currents = uz_SetPoint_MTPA(self, id_ref_Ampere, i_ref);
+            output_currents = uz_SetPoint_MTPA(self, i_ref, M_ref_Nm);
         }
     } else {//MPTA
-        output_currents = uz_SetPoint_MTPA(self, id_ref_Ampere, i_ref);
+        output_currents = uz_SetPoint_MTPA(self, i_ref, M_ref_Nm);
     }
     return(output_currents);
 }
@@ -106,6 +106,12 @@ bool uz_SetPoint_get_clamping(uz_SetPoint_t* self){
     return(self->ext_clamping);
 }
 
+void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.id_ref_Ampere = id_ref_Ampere;
+}
+
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type) {
     uz_assert(input.polePairs > 0.0f);
 	uz_assert(fmodf(input.polePairs, 1.0f) == 0);
@@ -119,7 +125,7 @@ static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoin
     }
 }
 
-static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float id_ref_Ampere, float omega_el_rad_per_sec, float V_SV_max, float i_ref){
+static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_SV_max, float i_ref){
     uz_3ph_dq_t output = {0};
     uz_3ph_dq_t fw_currents = uz_SetPoint_calculate_fw_currents(self, omega_el_rad_per_sec, V_SV_max);
     float q_current_before_limit = i_ref;
@@ -129,32 +135,35 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float id_ref
     } else {
         self->ext_clamping = false;
     }
-    output.d = uz_SetPoint_decide_id_ref(self, id_ref_Ampere, fw_currents.d, i_ref);//field-weakening current for d-axis
+    output.d = uz_SetPoint_decide_id_ref(self, fw_currents.d, i_ref);//field-weakening current for d-axis
     return(output);
 }
 
-static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float id_ref_Ampere, float i_ref){
+static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm){
     uz_3ph_dq_t output = {0};
-    float id_limit = sqrtf(powf(self->config.config_PMSM.I_max_Ampere, 2.0f) - powf(i_ref, 2.0f));
+    float id_limit = sqrtf(powf(self->config.config_PMSM.I_max_Ampere, 2.0f) - powf(i_ref_Ampere, 2.0f));
     switch (self->config.motor_type)
 	{
         case (SMPMSM):
-            output.q = i_ref;         
-            output.d = uz_signals_saturation(id_ref_Ampere, id_limit, -id_limit);
+            output.q = i_ref_Ampere;         
+            output.d = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -id_limit);
             break;
 
         case (IPMSM):
-            if(fabsf(id_ref_Ampere) > 0.0f) {
-                output.q = i_ref;
-                output.d = uz_signals_saturation(id_ref_Ampere, id_limit, -id_limit);
+            if(fabsf(self->config.id_ref_Ampere) > 0.0f) {
+                output.q = i_ref_Ampere;
+                output.d = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -id_limit);
             } else { //If no input d-current is requested, calculate id-ref via MTPA
-                output.d = (self->config.config_PMSM.Psi_PM_Vs / (4.0f * (self->config.config_PMSM.Lq_Henry - self->config.config_PMSM.Ld_Henry))) - 
-                (sqrtf((powf(self->config.config_PMSM.Psi_PM_Vs, 2.0f) / (16.0f * powf((self->config.config_PMSM.Lq_Henry - self->config.config_PMSM.Ld_Henry), 2.0f))) + (powf(i_ref, 2.0f) / 2.0f)));
-                if (i_ref < 0.0f) {
-                    output.q = -sqrtf((powf(i_ref, 2.0f) - powf(output.d, 2.0f)));//Negative torque
+                if (self->config.config_PMSM.Ld_Henry < self->config.config_PMSM.Lq_Henry) {
+                    output.d = (-self->config.config_PMSM.Psi_PM_Vs / (2.0f * (self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry))) - 
+                (sqrtf((powf(self->config.config_PMSM.Psi_PM_Vs, 2.0f) / (4.0f * powf((self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry), 2.0f))) + (powf(i_ref_Ampere, 2.0f))));
                 } else {
-                    output.q = sqrtf((powf(i_ref, 2.0f) - powf(output.d, 2.0f)));
+                    output.d = (-self->config.config_PMSM.Psi_PM_Vs / (2.0f * (self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry))) + 
+                (sqrtf((powf(self->config.config_PMSM.Psi_PM_Vs, 2.0f) / (4.0f * powf((self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry), 2.0f))) + (powf(i_ref_Ampere, 2.0f))));
                 }
+                float iq_temp = (M_ref_Nm * 2.0f) / (3.0f * self->config.config_PMSM.polePairs * (self->config.config_PMSM.Psi_PM_Vs + (self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry) * output.d));
+                float iq_limit = sqrtf(powf(self->config.config_PMSM.I_max_Ampere, 2.0f) - powf(output.d, 2.0f));
+                output.q = uz_signals_saturation(iq_temp, iq_limit, -iq_limit);
             }
             break;
 
@@ -164,16 +173,16 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float id_ref_Ampere, fl
     return(output);
 }
 
-static float uz_SetPoint_decide_id_ref(uz_SetPoint_t* self, float id_ref_Ampere, float id_field_weakening_Ampere, float i_ref){
+static float uz_SetPoint_decide_id_ref(uz_SetPoint_t* self, float id_field_weakening_Ampere, float i_ref){
 	//Gives out the input id_ref, as long as fw is off, or the input value is lower than the needed id_fw value to reach its n_ref speed
 	float output = 0.0f;
     float id_limit = sqrtf(powf(self->config.config_PMSM.I_max_Ampere, 2.0f) - powf(i_ref, 2.0f));
-    bool id_ref_smaller_than_id_fw = id_ref_Ampere <= id_field_weakening_Ampere;
-    bool id_ref_valid = fabsf(id_ref_Ampere) <= id_limit;
+    bool id_ref_smaller_than_id_fw = self->config.id_ref_Ampere <= id_field_weakening_Ampere;
+    bool id_ref_valid = fabsf(self->config.id_ref_Ampere) <= id_limit;
     if(!self->is_field_weakening_active){
-		output = uz_signals_saturation(id_ref_Ampere, id_limit, -id_limit);      
+		output = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -id_limit);      
 	} else if ( (self->is_field_weakening_active) && (id_ref_smaller_than_id_fw == true) && (id_ref_valid == true)) {
-		output = uz_signals_saturation(id_ref_Ampere, id_limit, -self->config.config_PMSM.I_max_Ampere);
+		output = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -self->config.config_PMSM.I_max_Ampere);
     } else {
 	    output = id_field_weakening_Ampere;    
     }

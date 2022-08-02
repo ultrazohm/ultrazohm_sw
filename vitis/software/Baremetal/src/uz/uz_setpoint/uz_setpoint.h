@@ -21,6 +21,7 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
  */
 struct uz_SetPoint_config {
 	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
+	float id_ref_Ampere; 	/**< manual i_d reference current. If used, MTPA is deactivated */
 	bool is_field_weakening_enabled; /**< flag to enable field_weaking */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
 											0 = SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
@@ -41,11 +42,10 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
  * @param self pointer to uz_SetPoint_t object
  * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
  * @param M_ref_Nm reference torque in Nm
- * @param id_ref_Ampere if a manual d-current wants to be set, otherwise controlled by the field-weakening or MTPA
  * @param V_DC_Volts DC-link voltage 
  * @return uz_3ph_dq_t reference currents for current-control
  */
-uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float id_ref_Ampere, float V_DC_Volts);
+uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts);
 
 /**
  * @brief Enables or disables the field weakening
@@ -70,4 +70,12 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
  * @return current value as bool 
  */
 bool uz_SetPoint_get_clamping(uz_SetPoint_t* self);
+
+/**
+ * @brief Updates the manual reference id-current
+ * 
+ * @param self pointer to uz_SetPoint_t instance
+ * @param id_ref_Ampere new value for manual id-reference current
+ */
+void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere);
 #endif // UZ_SETPOINT_H

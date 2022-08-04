@@ -141,4 +141,4 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self);
  * @param offset Offset
  * @return uz_3ph_abc_t 
  */
-uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset);
+uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset, float phase);

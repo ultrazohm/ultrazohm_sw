@@ -6,6 +6,8 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_dac_interface/uz_dac_interface.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -81,6 +83,12 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
+	float ia1;
+	float ib1;
+	float ic1;
+	float ia2;
+	float ib2;
+	float ic2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -108,6 +116,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_dac_interface_t* dac_instance;
+	uz_3ph_abc_t three_phase1;
+	uz_3ph_abc_t three_phase2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "IP_Cores/uz_dac_interface/uz_dac_interface.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -38,6 +39,12 @@ DS_Data Global_Data = {
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
+};
+
+struct uz_dac_interface_config_t dac_config={
+    .base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR, // Depends on xparameters.h!
+    .ip_clk_frequency_Hz=100000000,
+    .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
 };
 
 enum init_chain
@@ -88,14 +95,20 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.dac_instance = uz_dac_interface_init(dac_config);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
-            //debug
-            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x100, 26214); //26214 = 0.1f (Q18)
-            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x104, 2621); //2621 = 0.01f (Q18)
-            uz_axi_write_uint32(XPAR_UZ_PU_CON_IP_0_BASEADDR + 0x108, 262); //262 = 0.001f (Q18)
+
+
+            //debug for pu ip core (set pu conversion values for channels)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x100, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x104, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x108, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x10C, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x110, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x114, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
 
 
             initialization_chain = print_msg;

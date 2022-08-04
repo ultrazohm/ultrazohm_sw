@@ -30,6 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_math_constants.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -41,6 +44,24 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+float amplitude1 = 4.0f;
+float frequency1 = 50.0f;
+float offset1 = 0.0f;
+float phase1 = 0.0f;
+
+float amplitude2 = 4.0f;
+float frequency2 = 50.0f;
+float offset2 = 0.0f;
+float phase2 = UZ_PIf/6.0f;
+
+uz_3ph_abc_t three_phase1, three_phase2;
+
+float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
+
+                uz_array_float_t dac_input_array={
+                .data=&dac_input[0],
+                .length=UZ_ARRAY_SIZE(dac_input)
+            };
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -69,6 +90,26 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+
+    Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
+    Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2 );
+
+    dac_input[0]=Global_Data.objects.three_phase1.a;
+    dac_input[1]=Global_Data.objects.three_phase1.b;
+    dac_input[2]=Global_Data.objects.three_phase1.c;
+    dac_input[3]=Global_Data.objects.three_phase2.a;
+    dac_input[4]=Global_Data.objects.three_phase2.b;
+    dac_input[5]=Global_Data.objects.three_phase2.c;
+
+    uz_dac_interface_set_ouput_values(Global_Data.objects.dac_instance,&dac_input_array);
+
+    Global_Data.av.ia1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x180),15);
+    Global_Data.av.ib1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x184),15);
+    Global_Data.av.ic1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x188),15);
+    Global_Data.av.ia2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x18C),15);
+    Global_Data.av.ib2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x190),15);
+    Global_Data.av.ic2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x194),15);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

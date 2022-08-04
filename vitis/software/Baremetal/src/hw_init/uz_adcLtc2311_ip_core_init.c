@@ -6,9 +6,9 @@
 #include <stdbool.h>
 
 #define XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY 100000000U
-#define DEFAULT_CONVERSION_FACTOR 1.0f
-#define DEFAULT_INTEGER_BITS 14
-#define DEFAULT_FRACTIONAL_BITS 4
+#define DEFAULT_CONVERSION_FACTOR 0.0001525879f // 10/(2^16) = 0.0001525879
+#define DEFAULT_INTEGER_BITS 3
+#define DEFAULT_FRACTIONAL_BITS 15
 #define DEFAULT_OFFSET 0
 
 void uz_adcLtc2311_ip_core_init(void)
@@ -40,6 +40,6 @@ void uz_adcLtc2311_ip_core_init(void)
     uz_adcLtc2311_init(default_configuration);
     default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR;
     uz_adcLtc2311_init(default_configuration);
-    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR;
-    uz_adcLtc2311_init(default_configuration);
+//    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR;
+//    uz_adcLtc2311_init(default_configuration);
 }

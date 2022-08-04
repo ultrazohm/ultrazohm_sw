@@ -119,14 +119,14 @@ float uz_wavegen_white_noise(float amplitude) {
 	return (amplitude * ( ((float)rand() / (float)RAND_MAX * 2.0f) - 1.0f) );
 }
 
-uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset)
+uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset, float phase)
 {
     uz_assert(frequency_Hz > 0.0f);
     float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
     float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
     uz_3ph_abc_t sine_output = {
-        .a = amplitude * sinf(angle) + offset,
-        .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f)) + offset,
-        .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f)) + offset};
+        .a = amplitude * sinf(angle - phase) + offset,
+        .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f) - phase) + offset,
+        .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f) - phase) + offset};
     return sine_output;
 }

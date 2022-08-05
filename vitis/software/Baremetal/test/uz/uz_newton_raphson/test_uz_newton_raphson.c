@@ -168,7 +168,6 @@ void test_uz_newton_raphson_4th_order_result_no_separate_coefficients(void) {
         .initial_value = 8.59106f,
         .iterations = 5U,
     };
-    //Since the separate coefficients array is not used, the assertion should not trigger
     uz_newton_raphson_derivate(config.poly_coefficients, config.derivate_poly_coefficients);
     float output = uz_newton_raphson(config);
     TEST_ASSERT_EQUAL_FLOAT(7.073508f, output);
@@ -189,8 +188,27 @@ void test_uz_newton_raphson_4th_order_result_separate_coefficients(void) {
         .initial_value = 8.59106f,
         .iterations = 5U,
     };
-    //Since the separate coefficients array is not used, the assertion should not trigger
     float output = uz_newton_raphson(config);
     TEST_ASSERT_EQUAL_FLOAT(7.073508f, output);
+}
+
+void test_uz_newton_raphson_10th_order_result_separate_coefficients(void) {
+    float poly_coefficients[11] = {1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+    float derivate_poly_coefficients[10] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,};
+    float coefficients[11] = {-48.0f, 0.0f, 32.0f, 1.0f, -24.0f, 0.0f, 8.0f, 0.0f, -1.0f, 5.0f, 1.0f};
+    struct uz_newton_raphson_config config = {
+        .poly_coefficients.length = UZ_ARRAY_SIZE(poly_coefficients),
+        .poly_coefficients.data = &poly_coefficients[0],
+        .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
+        .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
+        .coefficients.length = UZ_ARRAY_SIZE(coefficients),
+        .coefficients.data = &coefficients[0],
+        .use_separate_coefficients = true,
+        .initial_value = 5.0f,
+        .iterations = 15U,
+    };
+    uz_newton_raphson_derivate(config.poly_coefficients, config.derivate_poly_coefficients);
+    float output = uz_newton_raphson(config);
+    TEST_ASSERT_EQUAL_FLOAT(1.4142135f, output);//Solution is sqrt(2)
 }
 #endif // TEST

@@ -103,17 +103,22 @@ I-PMSM[[#Schroeder]_ S.1095ff.][[#matlab]_]
 
   :math:`L_d \neq L_q` is necessary and will be checked.
 
-.. note::
+.. math::
+  M_{ref} &= \frac{3}{2} \cdot p \cdot (\psi_{PM} \cdot i_{q,MTPA} + \frac{1}{2} \cdot (-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4 \cdot (L_d - L_q)^2 \cdot i_{q,MTPA}^2}))\\
+  0 &= i_{q,MTPA}^4 + \frac{2\cdot M_{ref} \cdot \psi_{PM}}{3\cdot (L_d - L_q)^2 \cdot p} \cdot i_{q,MTPA} - \frac{4\cdot M_{ref}^2}{9\cdot (L_d - L_q)^2 \cdot p^2} \\
 
-  To ensure proper operation in the case, that a manual user input instead of a SpeedController is used to set :math:`M_{ref}`, an assumption about the :math:`i_q` current has to be made. 
-  This assumption minimally distorts the MTPA currents.
+This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess being:
 
 .. math::
 
-  i_{m,ref} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
-  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_d < L_q)\\
+  i_{q,init} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
+
+The d-current, depending on the saliency ratio, will be calculated like the following:
+
+.. math::
+
+  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_q > L_d)\\
   i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_q < L_d)\\
-  i_{q,MTPA} &= \frac{M_{ref} \cdot 2}{3 \cdot p \cdot (\psi_{PM} + (L_d - L_q) \cdot i_{d,MTPA})}\\
 
 for :math:`\omega_{el} > \omega_c\\`:
 

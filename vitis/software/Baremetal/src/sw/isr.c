@@ -41,6 +41,81 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+// pre-loop code for 9ph model
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
+#include "../uz/uz_piController/uz_piController.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+extern uz_pmsm_model9ph_dq_t *pmsm;
+extern uz_PI_Controller *PI_d_current;
+extern uz_PI_Controller *PI_q_current;
+extern uz_PI_Controller *PI_rpm;
+
+
+uz_3ph_dq_t current_set_point = {
+    .d = 0.0f,
+    .q = 0.0f,
+    .zero = 0.0f};
+
+struct uz_pmsm_model9ph_dq_outputs_general_t pmsm_outputs = {
+    .torque = 10.0f,
+    .omega_mech = 0.0f,
+    .theta_el = 0.0f};
+
+uz_9ph_abc_t pmsm_output_currents = {0};
+uz_9ph_dq_t axi_currents = {0};
+
+float load_torque = 0.0f;
+float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
+
+// pre-loop for PWM
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+//#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph_hw.h"
+#include "../IP_Cores/uz_pmsm9ph_transformation/uz_pmsm9ph_transformation.h"
+
+struct uz_DutyCycle_t duty_cycle_sys1 = {0};
+struct uz_DutyCycle_t duty_cycle_sys2 = {0};
+struct uz_DutyCycle_t duty_cycle_sys3 = {0};
+
+uz_3ph_abc_t setpoint_abc_sys1 = {0};
+uz_3ph_abc_t setpoint_abc_sys2 = {0};
+uz_3ph_abc_t setpoint_abc_sys3 = {0};
+
+float V_dc_volts = 560.0f;
+
+extern uz_PWM_SS_2L_t *pwm_instance_1;
+extern uz_PWM_SS_2L_t *pwm_instance_2;
+extern uz_PWM_SS_2L_t *pwm_instance_3;
+
+extern struct uz_inverter_3ph_t *inverter_1;
+extern struct uz_inverter_3ph_t *inverter_2;
+extern struct uz_inverter_3ph_t *inverter_3;
+
+uz_3ph_abc_t voltage_inverter_1 = {0};
+uz_3ph_abc_t voltage_inverter_2 = {0};
+uz_3ph_abc_t voltage_inverter_3 = {0};
+
+uz_3ph_abc_t currents_inv1 = {0};
+
+extern uz_pmsm9ph_transformation_t *transformation_9ph;
+
+uz_9ph_abc_t actual_currents_abc = {0};
+uz_9ph_dq_t actual_currents_dq = {0};
+uz_9ph_dq_t in_voltage_dq = {0};
+
+int lets_go = 1;
+float theta_test;
+
+enum controller_state_t
+{
+    closed_loop_inverter = 0,
+    closed_loop_dgl_only
+};
+enum controller_state_t controller_state = closed_loop_inverter;
+uz_9ph_dq_t output_voltage_dq = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -53,13 +128,103 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+  /*  if(lets_go==1)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+        switch (controller_state)
+        {
+        case closed_loop_inverter:
+        	uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,false);
+
+            pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+            uz_pmsm_model9ph_dq_set_inputs_general(pmsm,setp_omega,load_torque);
+
+            actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+
+            actual_currents_dq = uz_transformation_9ph_abc_to_dq(actual_currents_abc, pmsm_outputs.theta_el);
+
+            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents_dq.d, false); // outputs_dq.d
+            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents_dq.q, false); // outputs_dq.q
+            uz_9ph_abc_t output_voltage_abc = uz_transformation_9ph_dq_to_abc(output_voltage_dq, pmsm_outputs.theta_el);
+            in_voltage_dq = uz_pmsm_model9ph_dq_get_input_voltages_unsafe(pmsm);
+            axi_currents = uz_pmsm_model9ph_dq_get_output_currents_unsafe(pmsm);
+
+            setpoint_abc_sys1.a = output_voltage_abc.a1;
+            setpoint_abc_sys1.b = output_voltage_abc.b1;
+            setpoint_abc_sys1.c = output_voltage_abc.c1;
+            setpoint_abc_sys2.a = output_voltage_abc.a2;
+            setpoint_abc_sys2.b = output_voltage_abc.b2;
+            setpoint_abc_sys2.c = output_voltage_abc.c2;
+            setpoint_abc_sys3.a = output_voltage_abc.a3;
+            setpoint_abc_sys3.b = output_voltage_abc.b3;
+            setpoint_abc_sys3.c = output_voltage_abc.c3;
+            //duty_cycle_sys1 = uz_FOC_generate_DutyCycles(setpoint_abc_sys1, V_dc_volts);
+            //duty_cycle_sys2 = uz_FOC_generate_DutyCycles(setpoint_abc_sys2, V_dc_volts);
+            //duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3, V_dc_volts);
+            theta_test = uz_pmsm9ph_transformation_get_theta_el(transformation_9ph);
+            break;
+        case closed_loop_dgl_only:
+        	uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,true);
+            pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+            uz_pmsm_model9ph_dq_set_inputs_general(pmsm,setp_omega,load_torque);
+
+            actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+
+            actual_currents_dq=uz_pmsm_model9ph_dq_get_output_currents(pmsm);
+            output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, current_set_point.d, actual_currents_dq.d, false); // outputs_dq.d
+            output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, current_set_point.q, actual_currents_dq.q, false); // outputs_dq.q
+            output_voltage_dq.x2 = uz_wavegen_sine(300,1000.0f);
+            output_voltage_dq.y2 = uz_wavegen_sine(280,1000.0f);
+            uz_pmsm_model9ph_dq_set_voltage_unsafe(pmsm,output_voltage_dq);
+            in_voltage_dq = uz_pmsm_model9ph_dq_get_input_voltages(pmsm);
+            theta_test = uz_pmsm9ph_transformation_get_theta_el(transformation_9ph);
+            break;
+        default:
+            break;
+        }
     }
+    else
+    {
+        uz_PI_Controller_reset(PI_q_current);
+        uz_PI_Controller_reset(PI_d_current);
+        uz_pmsm_model9ph_dq_reset(pmsm);
+        duty_cycle_sys1.DutyCycle_U = 0.0f;
+        duty_cycle_sys1.DutyCycle_V = 0.0f;
+        duty_cycle_sys1.DutyCycle_W = 0.0f;
+        duty_cycle_sys2.DutyCycle_U = 0.0f;
+        duty_cycle_sys2.DutyCycle_V = 0.0f;
+        duty_cycle_sys2.DutyCycle_W = 0.0f;
+        duty_cycle_sys3.DutyCycle_U = 0.0f;
+        duty_cycle_sys3.DutyCycle_V = 0.0f;
+        duty_cycle_sys3.DutyCycle_W = 0.0f;
+    }
+
+*/
+   duty_cycle_sys1.DutyCycle_V = 0.0f;
+   duty_cycle_sys1.DutyCycle_W = 0.0f;
+   duty_cycle_sys2.DutyCycle_U = 0.0f;
+   duty_cycle_sys2.DutyCycle_V = 0.0f;
+   duty_cycle_sys2.DutyCycle_W = 0.0f;
+   duty_cycle_sys3.DutyCycle_U = 0.0f;
+   duty_cycle_sys3.DutyCycle_V = 0.0f;
+   duty_cycle_sys3.DutyCycle_W = 0.0f;
+
+
+    // Duty Cycle
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
+    uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3, duty_cycle_sys3.DutyCycle_U, duty_cycle_sys3.DutyCycle_V, duty_cycle_sys3.DutyCycle_W);
+
+    actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
+    uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,false);
+
+                pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
+                uz_pmsm_model9ph_dq_set_inputs_general(pmsm,setp_omega,load_torque);
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

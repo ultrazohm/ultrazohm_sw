@@ -3,6 +3,7 @@
 #include "test_assert_with_exception.h"
 #include "unity.h"
 #include "uz_setpoint.h"
+#include "uz_newton_raphson.h"
 #include "../uz_signals/uz_signals.h"
 
 struct uz_SetPoint_config config = {0};
@@ -279,10 +280,6 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_limit_iq_id(void){
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 15.0f, output.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03,0.0f, output.d);
-    uz_SetPoint_set_id_ref(instance, 0.0f);
-    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 14.7192f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-2.8887f, output.d);
 }
 
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out(void){
@@ -292,10 +289,9 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out(void){
     config.config_PMSM.I_max_Ampere = 55.0f;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 2.0f;
-    //Since reference torque is too high, output will be limited. Priority is given to q-current
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 34.8489f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -20.6512, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 36.9712f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604, output.d);
     float M_output = 1.5f * config.config_PMSM.polePairs * output.q *(config.config_PMSM.Psi_PM_Vs + (config.config_PMSM.Ld_Henry - config.config_PMSM.Lq_Henry) * output.d);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, M_output);
 }
@@ -307,10 +303,9 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_negative_M_out(void){
     config.config_PMSM.I_max_Ampere = 55.0f;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = -2.0f;
-    //Since reference torque is too high, output will be limited. Priority is given to q-current
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -34.8489f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -20.6512, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -36.9712f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604, output.d);
     float M_output = 1.5f * config.config_PMSM.polePairs * output.q *(config.config_PMSM.Psi_PM_Vs + (config.config_PMSM.Ld_Henry - config.config_PMSM.Lq_Henry) * output.d);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.0f, M_output);
 }

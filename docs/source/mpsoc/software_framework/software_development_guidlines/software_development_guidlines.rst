@@ -293,7 +293,7 @@ Sources
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
 .. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
 .. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
-.. [#ModernC] `Modern C, Jens Gusted <https://gforge.inria.fr/frs/download.php/latestfile/5298/ModernC.pdf>`_
+.. [#ModernC] `Modern C, Jens Gusted <https://hal.inria.fr/hal-02383654/document>`_
 .. [#misra] Guidelines for the Use of the C Language in Critical Systems, ISBN 978-1-906400-10-1 (paperback), ISBN 978-1-906400-11-8 (PDF), March 2013.
 .. [#cert] `SEI CERT C Coding Standard <https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations>`_
 .. [#linuxCodingStyle] `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_

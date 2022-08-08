@@ -1,0 +1,5 @@
+vlib work
+vcom  VSD_6ph_ip_src_VSD_6ph_30deg_pkg.vhd
+vcom  VSD_6ph_ip_src_Detect_Rise_Positive.vhd
+vcom  VSD_6ph_ip_src_VSD_6ph_30deg_block.vhd
+vcom  VSD_6ph_ip_src_VSD_6ph_30deg.vhd

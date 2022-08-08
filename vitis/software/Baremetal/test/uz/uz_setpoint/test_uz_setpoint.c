@@ -291,7 +291,7 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out(void){
     M_ref_Nm = 2.0f;
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 36.9712f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604f, output.d);
     float M_output = 1.5f * config.config_PMSM.polePairs * output.q *(config.config_PMSM.Psi_PM_Vs + (config.config_PMSM.Ld_Henry - config.config_PMSM.Lq_Henry) * output.d);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, M_output);
 }
@@ -305,9 +305,29 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_negative_M_out(void){
     M_ref_Nm = -2.0f;
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -36.9712f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604f, output.d);
     float M_output = 1.5f * config.config_PMSM.polePairs * output.q *(config.config_PMSM.Psi_PM_Vs + (config.config_PMSM.Ld_Henry - config.config_PMSM.Lq_Henry) * output.d);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.0f, M_output);
+}
+
+
+void test_uz_SetPoint_sample_MTPA_IPMSM_operation_multiple_instances(void){
+    //Results for comparision from simulation
+    config.motor_type = IPMSM;
+    config.config_PMSM.Ld_Henry = 0.0002f;
+    config.config_PMSM.I_max_Ampere = 55.0f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    M_ref_Nm = 2.0f;
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 36.9712f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604f, output.d);
+    //Checks if multiple instances exist, that the coefficients for newton-algo are different (if different motor-params exist)
+    config.config_PMSM.Ld_Henry = 0.00015f;
+    uz_SetPoint_t* instance2 = uz_SetPoint_init(config);
+    uz_3ph_dq_t output2 = uz_SetPoint_sample(instance2, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 33.3333f, output2.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -16.6667f, output2.d);
+
 }
 
 

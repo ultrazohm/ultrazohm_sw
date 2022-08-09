@@ -13,6 +13,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["VSD_6ph_30deg_HDL:77"] = "VSD_6ph_30deg_HDL:7";
     this.sidParentMap["VSD_6ph_30deg_HDL:79"] = "VSD_6ph_30deg_HDL:7";
     this.sidParentMap["VSD_6ph_30deg_HDL:81"] = "VSD_6ph_30deg_HDL:7";
+    this.sidParentMap["VSD_6ph_30deg_HDL:106"] = "VSD_6ph_30deg_HDL:7";
     this.sidParentMap["VSD_6ph_30deg_HDL:40"] = "VSD_6ph_30deg_HDL:7";
     this.sidParentMap["VSD_6ph_30deg_HDL:72"] = "VSD_6ph_30deg_HDL:7";
     this.sidParentMap["VSD_6ph_30deg_HDL:74"] = "VSD_6ph_30deg_HDL:7";

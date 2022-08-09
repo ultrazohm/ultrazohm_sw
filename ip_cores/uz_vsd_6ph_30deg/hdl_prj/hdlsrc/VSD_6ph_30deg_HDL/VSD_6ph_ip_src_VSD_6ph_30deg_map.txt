@@ -1,4 +1,0 @@
- --> VSD_6ph_ip_src_VSD_6ph_30deg_pkg
-VSD_6ph_30deg_HDL/VSD_6ph_30deg/Detect Rise Positive --> VSD_6ph_ip_src_Detect_Rise_Positive
-VSD_6ph_30deg_HDL/VSD_6ph_30deg/VSD_6ph_30deg --> VSD_6ph_ip_src_VSD_6ph_30deg_block
-VSD_6ph_30deg_HDL/VSD_6ph_30deg --> VSD_6ph_ip_src_VSD_6ph_30deg

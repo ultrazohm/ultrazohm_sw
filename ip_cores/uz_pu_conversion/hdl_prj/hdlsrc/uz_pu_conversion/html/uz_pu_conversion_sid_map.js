@@ -91,6 +91,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_pu_conversion:674"] = "uz_pu_conversion:7";
     this.sidParentMap["uz_pu_conversion:728"] = "uz_pu_conversion:7";
     this.sidParentMap["uz_pu_conversion:730"] = "uz_pu_conversion:7";
+    this.sidParentMap["uz_pu_conversion:770"] = "uz_pu_conversion:7";
     this.sidParentMap["uz_pu_conversion:676"] = "uz_pu_conversion:7";
     this.sidParentMap["uz_pu_conversion:678"] = "uz_pu_conversion:7";
     this.sidParentMap["uz_pu_conversion:680"] = "uz_pu_conversion:7";

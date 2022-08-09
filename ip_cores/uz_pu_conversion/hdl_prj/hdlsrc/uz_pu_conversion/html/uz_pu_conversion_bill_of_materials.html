@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pu_conversion
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-33
+34
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-865
+866
 </td>
 
 </tr>
@@ -255,7 +255,7 @@ Multipliers (32)
 19x27-bit Multiply 							: 32
 </span>
 <span name="Multiply_1_1" id="Multiply_1_1">
-<ul class="SystemdefinedCollapse" id="fa907eed-d121-44e8-8af3-42a07b7b9ac0" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="d6561268-6dd5-4caa-a8d2-5fa4ff53b00a" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_pu_conversion:422')" name="code2model" class="code2model">
 Product
@@ -450,22 +450,40 @@ Product23
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'fa907eed-d121-44e8-8af3-42a07b7b9ac0')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'd6561268-6dd5-4caa-a8d2-5fa4ff53b00a')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
 </span>
 <br /><h5>
-Registers (32)
+Registers (33)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-27-bit Register 							: 32
+1-bit Register 							: 1
 </span>
 <span name="Register_1_1" id="Register_1_1">
-<ul class="SystemdefinedCollapse" id="0b3327c4-805d-40f7-8986-a6cda5c96e38" dataCollapse="off">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:770')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27-bit Register 							: 32
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="3609b1d3-634a-4ae4-bdd3-9a37ebb71af5" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_pu_conversion:669')" name="code2model" class="code2model">
 Delay
@@ -660,7 +678,7 @@ Delay31
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '0b3327c4-805d-40f7-8986-a6cda5c96e38')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '3609b1d3-634a-4ae4-bdd3-9a37ebb71af5')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -678,7 +696,7 @@ Multiplexers (64)
 27-bit 2-to-1 Multiplexer 							: 32
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
-<ul class="SystemdefinedCollapse" id="0d242600-2831-4810-b0fd-1635cfeb2427" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e612af0f-3f1b-4b27-ae2e-38bb52234356" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_pu_conversion:668')" name="code2model" class="code2model">
 Switch
@@ -873,7 +891,7 @@ Switch31
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '0d242600-2831-4810-b0fd-1635cfeb2427')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e612af0f-3f1b-4b27-ae2e-38bb52234356')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -888,7 +906,7 @@ Number of I/O Bits (2596)
 Number of Input Bits: 1443
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="c07db03a-a2c9-47e3-8fc9-db34185ef9bb" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="0a0cf903-fece-44e2-853a-f5f15cfc8f3d" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -1287,7 +1305,7 @@ adc_valid_trigger
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'c07db03a-a2c9-47e3-8fc9-db34185ef9bb')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '0a0cf903-fece-44e2-853a-f5f15cfc8f3d')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1299,7 +1317,7 @@ adc_valid_trigger
 Number of Output Bits: 1153
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="56786b02-f734-4168-9af8-ca3febdeda61" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="0a9fe361-5f67-4b96-8d39-3f6b46b0ea80" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_pu_conversion:361')" name="code2model" class="code2model">
 out0
@@ -1692,7 +1710,7 @@ out31_AXI
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '56786b02-f734-4168-9af8-ca3febdeda61')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '0a9fe361-5f67-4b96-8d39-3f6b46b0ea80')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

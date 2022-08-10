@@ -2377,7 +2377,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112613942">
+		<CoreRevision value="2112631210">
 		</CoreRevision>
 		<ComponentPath value="uz_pu_conversion/hdl_prj/ipcore/uz_pu_con_ip_v1_0/component.xml">
 		</ComponentPath>
@@ -2421,7 +2421,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112628296">
+		<CoreRevision value="2112631177">
 		</CoreRevision>
 		<ComponentPath value="uz_vsd_6ph_30deg/hdl_prj/ipcore/VSD_6ph_ip_v1_0/component.xml">
 		</ComponentPath>

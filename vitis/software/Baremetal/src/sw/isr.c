@@ -110,6 +110,13 @@ void ISR_Control(void *data)
     Global_Data.av.ib2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x190),15);
     Global_Data.av.ic2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x194),15);
 
+    Global_Data.av.alpha = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x100),11);
+    Global_Data.av.beta = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x104),11);
+    Global_Data.av.y1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x108),11);
+    Global_Data.av.x1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x10C),11);
+    Global_Data.av.z1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x110),11);
+    Global_Data.av.z2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x114),11);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

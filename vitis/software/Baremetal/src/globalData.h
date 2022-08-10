@@ -89,6 +89,12 @@ typedef struct _actualValues_ {
 	float ia2;
 	float ib2;
 	float ic2;
+	float alpha;
+	float beta;
+	float x1;
+	float y1;
+	float z1;
+	float z2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -298,16 +298,16 @@ const struct uz_PI_Controller_config config_ix = {
 	.Kp = 0.05f , //* 4.0f, //1.1f,
 	.Ki = 1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
 };
 
 const struct uz_PI_Controller_config config_iy = {
-	.Kp = 0.05f , //* 4.0f,//1.1f,
+	.Kp = 0.05f, //* 4.0f,//1.1f,
 	.Ki = 1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
 };
 
 struct uz_PI_Controller* PI_x_s;
@@ -316,19 +316,19 @@ struct uz_PI_Controller* PI_y_s;
 struct uz_PI_Controller* PI_y_n;
 
 const struct uz_PI_Controller_config config_iz1 = {
-	.Kp = 0.05f , //* 4.0f, //1.1f,
-	.Ki = 1/0.0008f *0.005f,
+	.Kp = 0.05*0.1f , //* 4.0f, //1.1f,
+	.Ki = 1/0.0008f *0.001f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
 };
 
 const struct uz_PI_Controller_config config_iz2 = {
-	.Kp = 0.05f , //* 4.0f,//1.1f,
-	.Ki = 1/0.0008f *0.005f,
+	.Kp = 0.05*0.1f , //* 4.0f,//1.1f,
+	.Ki = 1/0.0008f *0.001f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
 };
 
 struct uz_PI_Controller* PI_z1_s;

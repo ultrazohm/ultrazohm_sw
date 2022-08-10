@@ -165,6 +165,12 @@ float ref_xy_n_currents[2];
 float m_z1z2_currents[2];
 float ref_z1z2_currents[2];
 
+float m_z1z2_s_currents[2];
+float ref_z1z2_s_currents[2];
+
+float m_z1z2_n_currents[2];
+float ref_z1z2_n_currents[2];
+
 float ref_xy_voltage[2];
 float ref_xy_voltage_n[2];
 float ref_xy_voltage_s[2];
@@ -172,6 +178,12 @@ float ref_xy_voltage_s[2];
 float ref_xy_s_voltage[2];
 float ref_xy_n_voltage[2];
 
+float ref_z1z2_voltage[2];
+float ref_z1z2_voltage_n[2];
+float ref_z1z2_voltage_s[2];
+
+float ref_z1z2_s_voltage[2];
+float ref_z1z2_n_voltage[2];
 
 float m_ab_currents[2];
 float ref_ab_currents[2];
@@ -214,6 +226,9 @@ extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 bool dq_n = false;
 bool xy_n = false;
 bool xy_s = false;
+bool z1z2_n = false;
+bool z1z2_s = false;
+bool xy_R = false;
 
 float zw_1;
 float zw_2;
@@ -270,7 +285,7 @@ void ISR_Control(void *data)
 
 
 //Version 7:
-
+/*
     uz_FD_v7.input.HB_o = 0.2;
     uz_FD_v7.input.HB_u = 0.2;
     uz_FD_v7.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
@@ -292,10 +307,10 @@ void ISR_Control(void *data)
     	Rb1[i] = (float)uz_FD_v7.output.R_b1[i];
 		Rb1_filtered[i] = (float)uz_FD_v7.output.R_b1_filtered[i];
     }
-
+*/
 
 //Single Index:
-
+/*
     singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
     singleindex_FD.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
     singleindex_FD.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
@@ -305,7 +320,7 @@ void ISR_Control(void *data)
     uz_singleindex_faultdetection_step(&singleindex_FD);
 
     singleIndex_FD_R = singleindex_FD.output.FD_filtered;
-
+*/
     //movAverageFilter:
 
     //filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter, vsd_output_hyst_V4[0]);
@@ -366,8 +381,6 @@ void ISR_Control(void *data)
 	    toggle = 0;
     }
 
-
-
     //for FOC:
 /*
 	//Read the phase-currents
@@ -379,7 +392,6 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.c2 = (Global_Data.aa.A2.me.ADC_B6 + adc_offset) * adc_factor;
 */
 
-
 	//assign ADC values to motor currents
 
 /*
@@ -390,24 +402,7 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.b2 = -1.0*Global_Data.aa.A2.me.ADC_B7+0.0516*Global_Data.aa.A2.me.ADC_B7-0.0133;
 	m_6ph_abc_currents.c2 = -1.0*Global_Data.aa.A2.me.ADC_B6+0.0341*Global_Data.aa.A2.me.ADC_B6+0.0383;
 */
-/*
-    //Die zusätzlichen Offsets helfen schonmal Faktoren evtl. nochmal anpassen
-	m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4-0.0338*Global_Data.aa.A2.me.ADC_A4+0.0259-0.005	)*1;
-	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3+0.0407*Global_Data.aa.A2.me.ADC_A3+0.0280-0.045	)*1.05;
-	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2+0.0401*Global_Data.aa.A2.me.ADC_A2+0.0220-0.045	)*1.05;
-	m_6ph_abc_currents.a2 = (-1.0*Global_Data.aa.A2.me.ADC_B8+0.0541*Global_Data.aa.A2.me.ADC_B8+0.0352-0.035    )*1.09;
-	m_6ph_abc_currents.b2 = (-1.0*Global_Data.aa.A2.me.ADC_B7+0.0516*Global_Data.aa.A2.me.ADC_B7-0.0133+0.025    )*1.1;
-	m_6ph_abc_currents.c2 = (-1.0*Global_Data.aa.A2.me.ADC_B6+0.0341*Global_Data.aa.A2.me.ADC_B6+0.0383-0.058	)*1.1;
-*/
-	//Offset und Faktor:
-/*
-    m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4 +0.0209)*1.0;
-	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3-0.0170)*1.04;
-	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2-0.0230)*1.08;
-	m_6ph_abc_currents.a2 = (-1.0*Global_Data.aa.A2.me.ADC_B8+0.0)*1.04;
-	m_6ph_abc_currents.b2 = (-1.0*Global_Data.aa.A2.me.ADC_B7+0.012)*1.02;
-	m_6ph_abc_currents.c2 = (-1.0*Global_Data.aa.A2.me.ADC_B6-0.02)*1.03;
-*/
+
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4 +0.0209)*1.067;
 	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3-0.0170)*1.04;
 	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2-0.0230)*1.08;
@@ -481,9 +476,6 @@ void ISR_Control(void *data)
 	ref_dq0_currents.q = Global_Data.av.I_q_ref;
 
 
-
-
-
 	// ML_MT-OPF-Control get Reference-Values for Control:
 
 	R_FD_Filt.R1 = filteredFDIndices[0];
@@ -493,7 +485,7 @@ void ISR_Control(void *data)
 	R_FD_Filt.R5 = filteredFDIndices[4];
 	R_FD_Filt.R6 = filteredFDIndices[5];
 
-	R_FD_eval = uz_fsd_fd_evaluation(R_FD_Filt, 0.5);
+	R_FD_eval = uz_fsd_fd_evaluation(R_FD_Filt, 0.4);
 
 	//R_FD_eval;
 
@@ -527,7 +519,7 @@ void ISR_Control(void *data)
 
 
 	int N1N2 = 2;
-	int ML = 1;
+	int ML = 1;		//0 -> MT, 1 -> ML
 	float a = 0.0f;
 	int error_opf;
 
@@ -537,14 +529,12 @@ void ISR_Control(void *data)
 
 	// calculate reference values for xy and 0102:
 
-
 	// ref_dq0_currents.d = Global_Data.av.I_d_ref;
 	// ref_dq0_currents.q = Global_Data.av.I_q_ref;
 
 	// calculate alpha-beta-refs:
 
 	ref_alphabeta_currents = uz_transformation_3ph_dq_to_alphabeta(ref_dq0_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-
 
 	// x_ref = k1 * i_alpha + k2 * i_beta
 	// y_ref = k3 * i_alpha + k4 * i_beta
@@ -556,7 +546,7 @@ void ISR_Control(void *data)
 	ref_z1z2_currents[0] = k_parameter.k5 * ref_alphabeta_currents.alpha + k_parameter.k6 * ref_alphabeta_currents.beta;
 	ref_z1z2_currents[1] = k_parameter.k7 * ref_alphabeta_currents.alpha + k_parameter.k8 * ref_alphabeta_currents.beta;
 
-
+	/*-----------------------------------------------------------*/
 
 
 	// read data from gan inverters:
@@ -659,6 +649,7 @@ void ISR_Control(void *data)
     	// m_xy_currents[1] = m_6ph_alphabeta_currents.y;
 
     	// ref_xy_currents[0] = 0;
+
     	// ref_xy_currents[1] = 0;
 
     	ref_xy_voltage[0] = 0;
@@ -689,11 +680,10 @@ void ISR_Control(void *data)
     		ref_xy_n_voltage[0] = uz_PI_Controller_sample(PI_x_n, ref_xy_n_currents[0], m_xy_n_currents[0], false);
     		ref_xy_n_voltage[1] = uz_PI_Controller_sample(PI_y_n, ref_xy_n_currents[1], m_xy_n_currents[1], false);
 
-    		//Transform pack to stationary frame
-    		uz_park_transform(ref_xy_voltage_n, ref_xy_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
-    		double L_x = 0.00004 * 0.00001;
-    		double L_y = 0.00004 * 0.00001;
+
+    		double L_x = 0.00004;
+    		double L_y = 0.00004;
 
     	// antisynchron R-Controller 2. Harmonische:
     		r_c_2H_x.input.T_sw = 0.0001; //1/10000;
@@ -705,7 +695,7 @@ void ISR_Control(void *data)
 
 			uz_resonant_controller_step(&r_c_2H_x);
 
-			//ref_xy_voltage_n[0] = ref_xy_voltage_n[0] + r_c_2H_x.output.out;
+			//ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + r_c_2H_x.output.out;
 
     		r_c_2H_y.input.T_sw = 0.0001; //1/10000;
     		r_c_2H_y.input.VR =  0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*L_y;
@@ -716,17 +706,16 @@ void ISR_Control(void *data)
 
 			uz_resonant_controller_step(&r_c_2H_y);
 
-			//ref_xy_voltage_n[1] = ref_xy_voltage_n[1] + r_c_2H_y.output.out;
+			//ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + r_c_2H_y.output.out;
 
 
 		// alternativer R-Controller:
 
 			// Reglerparameter anpassen:
 
-			r_c_VR = 0.1 * (2.0*M_PI*1000.0)*(2.0*M_PI*1000.0)* 0.00004 *0.001;
+			r_c_VR = 0.1 * (2.0*M_PI*1000.0)*(2.0*M_PI*1000.0)* 0.00004;
 			r_c_Tsw = 0.0001f; // 1/10000;
-			r_c_omega_r = 2 * omega_el_rad_per_sec;
-
+			r_c_omega_r = 2 * omega_el_rad_per_sec;		// 2 gegen 6 austauschen für 6. Harmonische!!!
 
 			r_c_iir_2H_x->filterParameterA[0] = 1.0;
 			r_c_iir_2H_x->filterParameterA[1] = -2.0*cos(r_c_omega_r*r_c_Tsw);
@@ -750,10 +739,49 @@ void ISR_Control(void *data)
 			zw_2 = uz_filter_sample(r_c_iir_2H_y, (ref_xy_n_currents[1] - m_xy_n_currents[1]));
 
 
-			 //ref_xy_voltage_n[0] = ref_xy_voltage_n[0] + zw_1;
-			 //ref_xy_voltage_n[1] = ref_xy_voltage_n[1] + zw_2;
 
+			/* Bilineare Übertragungsfunktion:
+
+			float Kr = 120;
+			float Ta = 0.0001f;
+			float wc = 10;
+			float wr = 2 * omega_el_rad_per_sec;
+
+			r_c_iir_2H_x->filterParameterA[0] = -2*Kr*Ta;
+			r_c_iir_2H_x->filterParameterA[1] = 0;
+			r_c_iir_2H_x->filterParameterA[2] = 2*Kr*Ta;
+			r_c_iir_2H_x->filterParameterB[0] = 4-4*wc*Ta+wr*wr*Ta*Ta;
+			r_c_iir_2H_x->filterParameterB[1] = 2*wr*wr*Ta*Ta - 8;
+			r_c_iir_2H_x->filterParameterB[2] = 4 + 4*wc*Ta + wr*wr*Ta*Ta;
+
+
+			*/
+
+			/* Impulsinvariant Übertragungsfunktion:
+
+			float Kr = 100;
+			float Ta = 0.0001f;
+			float wc = 10;
+			float wr = 2 * omega_el_rad_per_sec;
+
+			r_c_iir_2H_x->filterParameterA[0] = -Kr*Ta*cos(wr*Ta);
+			r_c_iir_2H_x->filterParameterA[1] = 0;
+			r_c_iir_2H_x->filterParameterA[2] = Kr*Ta;
+			r_c_iir_2H_x->filterParameterB[0] = 1;
+			r_c_iir_2H_x->filterParameterB[1] = -2*cos(wr*Ta);
+			r_c_iir_2H_x->filterParameterB[2] = 1;
+
+
+			*/
+
+		if(xy_R){
+			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + zw_1;
+			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + zw_2;
+		}
     	//combine values from synchron- and antisynchron frame:
+
+		//Transform pack to stationary frame
+		uz_park_transform(ref_xy_voltage_n, ref_xy_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 
     	if(xy_n){
@@ -767,6 +795,55 @@ void ISR_Control(void *data)
 
 
 
+
+    //-z1z2-current control:--------------//
+
+
+    	ref_z1z2_voltage[0] = 0;
+    	ref_z1z2_voltage[1] = 0;
+
+    	// synchron PI-controller:
+
+    		//transform into synchronous frame:
+    		uz_park_transform(m_z1z2_s_currents, m_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+    		uz_park_transform(ref_z1z2_s_currents, ref_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+
+    		//PI-Controllers
+    		ref_z1z2_s_voltage[0] = uz_PI_Controller_sample(PI_z1_s, ref_z1z2_s_currents[0], m_z1z2_s_currents[0], false);
+    		ref_z1z2_s_voltage[1] = uz_PI_Controller_sample(PI_z2_s, ref_z1z2_s_currents[1], m_z1z2_s_currents[1], false);
+
+    		//inverse transform to stationary frame
+    		uz_inv_park_transform(ref_z1z2_voltage_s, ref_z1z2_s_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+
+
+
+    	// antisynchron PI-controller:
+
+    		//transform into antisynchronous frame:
+    		uz_inv_park_transform(m_z1z2_n_currents, m_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+    		uz_inv_park_transform(ref_z1z2_n_currents, ref_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+
+    		//PI-Controllers
+    		ref_z1z2_n_voltage[0] = uz_PI_Controller_sample(PI_z1_n, ref_z1z2_n_currents[0], m_z1z2_n_currents[0], false);
+    		ref_z1z2_n_voltage[1] = uz_PI_Controller_sample(PI_z2_n, ref_z1z2_n_currents[1], m_z1z2_n_currents[1], false);
+
+    		//Transform pack to stationary frame
+    		uz_park_transform(ref_z1z2_voltage_n, ref_z1z2_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+
+
+    	// enable/disable PI-Controllers:
+        	if(z1z2_n){
+        		ref_z1z2_voltage[0] = ref_z1z2_voltage_n[0];
+        		ref_z1z2_voltage[1] = ref_z1z2_voltage_n[1];
+        	}
+        	if(z1z2_s){
+        		ref_z1z2_voltage[0] += ref_z1z2_voltage_s[0];
+        		ref_z1z2_voltage[1] += ref_z1z2_voltage_s[1];
+        	}
+
+
+
+
     //----------------------------------//
 
 
@@ -777,8 +854,8 @@ void ISR_Control(void *data)
     	ref_6ph_alphabeta_voltage.beta = ref_alphabeta_voltage.beta;
     	ref_6ph_alphabeta_voltage.x = ref_xy_voltage[0];
     	ref_6ph_alphabeta_voltage.y = ref_xy_voltage[1];
-    	ref_6ph_alphabeta_voltage.z1 = 0.0f;
-    	ref_6ph_alphabeta_voltage.z2 = 0.0f;
+    	ref_6ph_alphabeta_voltage.z1 = ref_z1z2_voltage[0];
+    	ref_6ph_alphabeta_voltage.z2 = ref_z1z2_voltage[1];
 
     	ref_6ph_abc_voltage = uz_transformation_asym30deg_6ph_alphabeta_to_abc(ref_6ph_alphabeta_voltage);
 
@@ -803,7 +880,7 @@ void ISR_Control(void *data)
 
     }
     else{
-    	// Reset Controllers if not active
+    	// Reset Controllers if control-state is not active
     	uz_FOC_reset(FOC_dq);
     	uz_PI_Controller_reset(PI_d_n);
 		uz_PI_Controller_reset(PI_q_n);
@@ -815,6 +892,8 @@ void ISR_Control(void *data)
 		uz_PI_Controller_reset(PI_z1_n);
 		uz_PI_Controller_reset(PI_z2_s);
 		uz_PI_Controller_reset(PI_z2_n);
+		uz_filter_reset(r_c_iir_2H_x);
+		uz_filter_reset(r_c_iir_2H_y);
     }
 
 

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5cf5d014</spirit:value>
+            <spirit:value>725555bf</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5cf5d014</spirit:value>
+            <spirit:value>725555bf</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -901,11 +901,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_uz_vsd_6ph_30deg_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_uz_vsd_6ph_30deg_pkg.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -923,7 +923,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/VSD_6ph_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_603b5ebc</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_202a9023</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -949,12 +949,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_uz_vsd_6ph_30deg_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_uz_vsd_6ph_30deg_pkg.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/VSD_6ph_ip_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1032,14 +1032,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>VSD_6ph_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112630095</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-09T13:36:11Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112631177</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-10T07:37:40Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="391b4816"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4dd8f1e0"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2df3fa72"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="adb387dd"/>
     </xilinx:packagingInfo>

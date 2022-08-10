@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f36233c0</spirit:value>
+            <spirit:value>e062f8ea</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f36233c0</spirit:value>
+            <spirit:value>e062f8ea</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1785,6 +1785,10 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_pkg.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1799,7 +1803,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_2190a58c</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_10b45303</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1821,6 +1825,11 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pu_con_ip_axi_lite.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_pu_con_ip_src_uz_pu_conversion_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1898,14 +1907,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pu_con_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112630009</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-09T12:09:22Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112631210</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-10T08:10:53Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="436cc9c8"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="6038c00c"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="851824ab"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="e73b4467"/>
     </xilinx:packagingInfo>

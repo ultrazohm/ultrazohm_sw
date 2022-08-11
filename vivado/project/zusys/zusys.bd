@@ -114,7 +114,9 @@
         "util_ds_buf_9": "",
         "ila_0": "",
         "uz_pu_con_ip_0": "",
-        "VSD_6ph_ip_0": ""
+        "VSD_6ph_ip_0": "",
+        "xlconstant_1": "",
+        "uz_park_t_ip_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -5124,7 +5126,7 @@
             "xci_name": "zusys_smartconnect_1_1",
             "parameters": {
               "NUM_MI": {
-                "value": "4"
+                "value": "5"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5138,7 +5140,8 @@
                   "M00_AXI",
                   "M01_AXI",
                   "M02_AXI",
-                  "M03_AXI"
+                  "M03_AXI",
+                  "M04_AXI"
                 ],
                 "parameters": {
                   "NUM_READ_OUTSTANDING": {
@@ -5244,6 +5247,30 @@
                     "value": "0"
                   }
                 }
+              },
+              "M04_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             },
             "addressing": {
@@ -5254,7 +5281,8 @@
                     "M00_AXI",
                     "M01_AXI",
                     "M02_AXI",
-                    "M03_AXI"
+                    "M03_AXI",
+                    "M04_AXI"
                   ]
                 }
               }
@@ -5492,7 +5520,7 @@
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "9"
+                "value": "12"
               }
             }
           },
@@ -5502,20 +5530,42 @@
           },
           "VSD_6ph_ip_0": {
             "vlnv": "xilinx.com:ip:VSD_6ph_ip:1.0",
-            "xci_name": "zusys_VSD_6ph_ip_0_4"
+            "xci_name": "zusys_VSD_6ph_ip_0_5"
+          },
+          "xlconstant_1": {
+            "vlnv": "xilinx.com:ip:xlconstant:1.1",
+            "xci_name": "zusys_xlconstant_1_0",
+            "parameters": {
+              "CONST_VAL": {
+                "value": "1048576"
+              },
+              "CONST_WIDTH": {
+                "value": "24"
+              }
+            }
+          },
+          "uz_park_t_ip_0": {
+            "vlnv": "xilinx.com:ip:uz_park_t_ip:1.0",
+            "xci_name": "zusys_uz_park_t_ip_0_1"
           }
         },
         "interface_nets": {
-          "smartconnect_0_M10_AXI": {
-            "interface_ports": [
-              "S00_AXI",
-              "smartconnect_1/S00_AXI"
-            ]
-          },
           "smartconnect_1_M03_AXI": {
             "interface_ports": [
               "VSD_6ph_ip_0/AXI4_Lite",
               "smartconnect_1/M03_AXI"
+            ]
+          },
+          "smartconnect_1_M04_AXI": {
+            "interface_ports": [
+              "uz_park_t_ip_0/AXI4_Lite",
+              "smartconnect_1/M04_AXI"
+            ]
+          },
+          "smartconnect_0_M10_AXI": {
+            "interface_ports": [
+              "S00_AXI",
+              "smartconnect_1/S00_AXI"
             ]
           },
           "smartconnect_1_M01_AXI": {
@@ -5549,7 +5599,9 @@
               "uz_pu_con_ip_0/IPCORE_RESETN",
               "uz_pu_con_ip_0/AXI4_Lite_ARESETN",
               "VSD_6ph_ip_0/IPCORE_RESETN",
-              "VSD_6ph_ip_0/AXI4_Lite_ARESETN"
+              "VSD_6ph_ip_0/AXI4_Lite_ARESETN",
+              "uz_park_t_ip_0/IPCORE_RESETN",
+              "uz_park_t_ip_0/AXI4_Lite_ARESETN"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5564,14 +5616,16 @@
               "uz_pu_con_ip_0/IPCORE_CLK",
               "uz_pu_con_ip_0/AXI4_Lite_ACLK",
               "VSD_6ph_ip_0/IPCORE_CLK",
-              "VSD_6ph_ip_0/AXI4_Lite_ACLK"
+              "VSD_6ph_ip_0/AXI4_Lite_ACLK",
+              "uz_park_t_ip_0/IPCORE_CLK",
+              "uz_park_t_ip_0/AXI4_Lite_ACLK"
             ]
           },
           "Net": {
             "ports": [
               "adc_valid_trigger",
-              "ila_0/probe6",
-              "uz_pu_con_ip_0/adc_valid_trigger"
+              "uz_pu_con_ip_0/adc_valid_trigger",
+              "ila_0/probe8"
             ]
           },
           "in0_1": {
@@ -5835,8 +5889,8 @@
           "uz_pu_con_ip_0_pu_conv_done": {
             "ports": [
               "uz_pu_con_ip_0/pu_conv_done",
-              "ila_0/probe7",
-              "VSD_6ph_ip_0/pu_conv_valid"
+              "VSD_6ph_ip_0/pu_conv_valid",
+              "ila_0/probe9"
             ]
           },
           "uz_pu_con_ip_0_out0": {
@@ -5875,28 +5929,18 @@
               "VSD_6ph_ip_0/c2"
             ]
           },
-          "VSD_6ph_ip_0_vsd_done": {
+          "VSD_6ph_ip_0_alpha": {
             "ports": [
-              "VSD_6ph_ip_0/vsd_done",
-              "ila_0/probe8"
+              "VSD_6ph_ip_0/alpha",
+              "ila_0/probe0",
+              "uz_park_t_ip_0/u1"
             ]
           },
-          "VSD_6ph_ip_0_z2": {
+          "VSD_6ph_ip_0_beta": {
             "ports": [
-              "VSD_6ph_ip_0/z2",
-              "ila_0/probe5"
-            ]
-          },
-          "VSD_6ph_ip_0_z1": {
-            "ports": [
-              "VSD_6ph_ip_0/z1",
-              "ila_0/probe4"
-            ]
-          },
-          "VSD_6ph_ip_0_y1": {
-            "ports": [
-              "VSD_6ph_ip_0/y1",
-              "ila_0/probe3"
+              "VSD_6ph_ip_0/beta",
+              "ila_0/probe1",
+              "uz_park_t_ip_0/u2"
             ]
           },
           "VSD_6ph_ip_0_x1": {
@@ -5905,16 +5949,53 @@
               "ila_0/probe2"
             ]
           },
-          "VSD_6ph_ip_0_beta": {
+          "VSD_6ph_ip_0_y1": {
             "ports": [
-              "VSD_6ph_ip_0/beta",
-              "ila_0/probe1"
+              "VSD_6ph_ip_0/y1",
+              "ila_0/probe3"
             ]
           },
-          "VSD_6ph_ip_0_alpha": {
+          "VSD_6ph_ip_0_z1": {
             "ports": [
-              "VSD_6ph_ip_0/alpha",
-              "ila_0/probe0"
+              "VSD_6ph_ip_0/z1",
+              "ila_0/probe4"
+            ]
+          },
+          "VSD_6ph_ip_0_z2": {
+            "ports": [
+              "VSD_6ph_ip_0/z2",
+              "ila_0/probe5"
+            ]
+          },
+          "VSD_6ph_ip_0_vsd_done": {
+            "ports": [
+              "VSD_6ph_ip_0/vsd_done",
+              "ila_0/probe10",
+              "uz_park_t_ip_0/trigger"
+            ]
+          },
+          "xlconstant_1_dout": {
+            "ports": [
+              "xlconstant_1/dout",
+              "uz_park_t_ip_0/angle_el"
+            ]
+          },
+          "uz_park_t_ip_0_y1": {
+            "ports": [
+              "uz_park_t_ip_0/y1",
+              "ila_0/probe6"
+            ]
+          },
+          "uz_park_t_ip_0_calc_done": {
+            "ports": [
+              "uz_park_t_ip_0/calc_done",
+              "ila_0/probe11"
+            ]
+          },
+          "uz_park_t_ip_0_y2": {
+            "ports": [
+              "uz_park_t_ip_0/y2",
+              "ila_0/probe7"
             ]
           }
         }
@@ -9469,6 +9550,11 @@
               "SEG_uz_interlockDeadtime_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4/reg0",
                 "offset": "0x0080120000",
+                "range": "64K"
+              },
+              "SEG_uz_park_t_ip_0_reg0": {
+                "address_block": "/uz_user/uz_park_t_ip_0/AXI4_Lite/reg0",
+                "offset": "0x0080150000",
                 "range": "64K"
               },
               "SEG_uz_pu_con_ip_0_reg0": {

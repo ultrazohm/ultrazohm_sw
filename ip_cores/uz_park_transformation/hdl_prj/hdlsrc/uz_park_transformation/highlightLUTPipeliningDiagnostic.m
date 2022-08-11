@@ -1,0 +1,18 @@
+open_system('uz_park_transformation');
+open_system('gm_uz_park_transformation');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_park_transformation/uz_park_transformation/Sine HDL Optimized/Look-Up Table', 'user1');
+annotate_port('gm_uz_park_transformation/uz_park_transformation/Sine HDL Optimized/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('uz_park_transformation/uz_park_transformation/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 'user1');
+annotate_port('uz_park_transformation/uz_park_transformation/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_park_transformation/uz_park_transformation/Sine HDL Optimized/Look-Up Table1', 'user1');
+annotate_port('gm_uz_park_transformation/uz_park_transformation/Sine HDL Optimized/Look-Up Table1', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('uz_park_transformation/uz_park_transformation/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 'user1');
+annotate_port('uz_park_transformation/uz_park_transformation/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');

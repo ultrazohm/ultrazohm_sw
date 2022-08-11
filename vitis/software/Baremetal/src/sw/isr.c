@@ -54,7 +54,7 @@ float frequency2 = 50.0f;
 float offset2 = 0.0f;
 float phase2 = UZ_PIf/6.0f;
 
-uz_3ph_abc_t three_phase1, three_phase2;
+uz_3ph_abc_t three_phase1, three_phase1, three_phase2, three_phase22;
 
 float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
 
@@ -92,7 +92,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
 
     Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
-    Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2 );
+    Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
 
     dac_input[0]=Global_Data.objects.three_phase1.a;
     dac_input[1]=Global_Data.objects.three_phase1.b;

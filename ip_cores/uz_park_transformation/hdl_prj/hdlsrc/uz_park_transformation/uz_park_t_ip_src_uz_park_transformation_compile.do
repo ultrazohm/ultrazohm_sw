@@ -1,0 +1,5 @@
+vlib work
+vcom  uz_park_t_ip_src_uz_park_transformation_pkg.vhd
+vcom  uz_park_t_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_park_t_ip_src_Sine_HDL_Optimized.vhd
+vcom  uz_park_t_ip_src_uz_park_transformation.vhd

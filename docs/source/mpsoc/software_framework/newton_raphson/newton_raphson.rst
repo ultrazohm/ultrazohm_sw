@@ -1,17 +1,27 @@
 .. _uz_newton_raphson:
 
-============================
-Newton Raphson approximation
-============================
+=================================
+Newton Raphson root approximation
+=================================
 
 The Newton Raphson approximation is an approach for finding the roots of nonlinear equations. 
-This is a relative simple, but fast approach, which results in a relative slim computational effort. 
-Solving a 20th order polynomial with 20 iterations takes roughly 20µs.
-This approach needs the original function :math:`f(x)` as well as the derivate :math:`f'(x)`.
+This is a relative simple, but fast approach. 
+The original function :math:`f(x)` as well as the derivate :math:`f'(x)` is required.
+This implementation implementation is designed to only work with polynomial functions, i.e., functions that are built from the addition of the exponentiation of variables to a non-negative integer power:
+I.e., functions :math:`P(x)` with the following definition
+
+.. math::
+
+  \sum^n_{k=0} a_k x^k=a_n x^n+a_{n-1}x^{n-1}+\dots + a_2 x^2 + a_1 x+a_0
+
+with the coefficients :math:`a_k` and the variable :math:`x`. 
 To automatically calculate the derivate, refer to :ref:`uz_newton_raphson_derivate`.
 If there are not enough iterations for the approach to converge to the roots, the results can be inaccurate.
-A balance between computational effort (i.e. number of iterations) and accuracy of the results have to be made by the user.
+A balance between computational effort (i.e., number of iterations) and accuracy of the results have to be made by the user.
+Solving a 20th order polynomial with 20 iterations takes roughly 20µs.
 Your milage may wary. 
+
+
 
 Reference
 =========

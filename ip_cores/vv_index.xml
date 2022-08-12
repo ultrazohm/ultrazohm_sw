@@ -2089,7 +2089,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112632850">
+		<CoreRevision value="2112634266">
 		</CoreRevision>
 		<ComponentPath value="uz_park_transformation/hdl_prj/ipcore/uz_park_t_ip_v1_0/component.xml">
 		</ComponentPath>

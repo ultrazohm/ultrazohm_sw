@@ -5546,7 +5546,7 @@
           },
           "uz_park_t_ip_0": {
             "vlnv": "xilinx.com:ip:uz_park_t_ip:1.0",
-            "xci_name": "zusys_uz_park_t_ip_0_1"
+            "xci_name": "zusys_uz_park_t_ip_0_2"
           }
         },
         "interface_nets": {
@@ -5554,12 +5554,6 @@
             "interface_ports": [
               "VSD_6ph_ip_0/AXI4_Lite",
               "smartconnect_1/M03_AXI"
-            ]
-          },
-          "smartconnect_1_M04_AXI": {
-            "interface_ports": [
-              "uz_park_t_ip_0/AXI4_Lite",
-              "smartconnect_1/M04_AXI"
             ]
           },
           "smartconnect_0_M10_AXI": {
@@ -5585,6 +5579,12 @@
               "uz_dac_spi_interface_0/AXI4",
               "smartconnect_1/M02_AXI"
             ]
+          },
+          "smartconnect_1_M04_AXI": {
+            "interface_ports": [
+              "uz_park_t_ip_0/AXI4_Lite",
+              "smartconnect_1/M04_AXI"
+            ]
           }
         },
         "nets": {
@@ -5600,8 +5600,8 @@
               "uz_pu_con_ip_0/AXI4_Lite_ARESETN",
               "VSD_6ph_ip_0/IPCORE_RESETN",
               "VSD_6ph_ip_0/AXI4_Lite_ARESETN",
-              "uz_park_t_ip_0/IPCORE_RESETN",
-              "uz_park_t_ip_0/AXI4_Lite_ARESETN"
+              "uz_park_t_ip_0/AXI4_Lite_ARESETN",
+              "uz_park_t_ip_0/IPCORE_RESETN"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5617,8 +5617,8 @@
               "uz_pu_con_ip_0/AXI4_Lite_ACLK",
               "VSD_6ph_ip_0/IPCORE_CLK",
               "VSD_6ph_ip_0/AXI4_Lite_ACLK",
-              "uz_park_t_ip_0/IPCORE_CLK",
-              "uz_park_t_ip_0/AXI4_Lite_ACLK"
+              "uz_park_t_ip_0/AXI4_Lite_ACLK",
+              "uz_park_t_ip_0/IPCORE_CLK"
             ]
           },
           "Net": {
@@ -5980,16 +5980,16 @@
               "uz_park_t_ip_0/angle_el"
             ]
           },
-          "uz_park_t_ip_0_y1": {
-            "ports": [
-              "uz_park_t_ip_0/y1",
-              "ila_0/probe6"
-            ]
-          },
           "uz_park_t_ip_0_calc_done": {
             "ports": [
               "uz_park_t_ip_0/calc_done",
               "ila_0/probe11"
+            ]
+          },
+          "uz_park_t_ip_0_y1": {
+            "ports": [
+              "uz_park_t_ip_0/y1",
+              "ila_0/probe6"
             ]
           },
           "uz_park_t_ip_0_y2": {

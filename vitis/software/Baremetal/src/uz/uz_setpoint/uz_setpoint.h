@@ -71,14 +71,6 @@ void uz_SetPoint_set_field_weakening(uz_SetPoint_t* self, bool is_field_weakenin
 void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
 
 /**
- * @brief Returns the current value of the clamping signal
- * 
- * @param self pointer to uz_SetPoint_t instance
- * @return current value as bool 
- */
-bool uz_SetPoint_get_clamping(uz_SetPoint_t* self);
-
-/**
  * @brief Updates the manual reference id-current
  * 
  * @param self pointer to uz_SetPoint_t instance

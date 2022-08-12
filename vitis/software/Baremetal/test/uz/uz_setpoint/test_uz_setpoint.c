@@ -336,32 +336,16 @@ void test_uz_SetPoint_sample_field_weakening_SMPMSM_operation(void){
     config.is_field_weakening_enabled = true;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.09275f;
-    omega_m_rad_per_sec = 418.67f; 
+    omega_m_rad_per_sec = 418.66f; 
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.061f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.147f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.121f, output.d);
     //Negative speed
     M_ref_Nm = -0.09275f;
-    omega_m_rad_per_sec = -418.67f; 
+    omega_m_rad_per_sec = -418.66f; 
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.061f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.147f, output.d);  
-}
-
-void test_uz_SetPoint_sample_field_weakening_SMPMSM_manual_id(void){
-    //Results for comparision from simulation
-    config.is_field_weakening_enabled = true;
-    config.id_ref_Ampere = 5.0f; //Should be rejected, since its above the id_fw current
-    uz_SetPoint_t* instance = uz_SetPoint_init(config);
-    M_ref_Nm = 0.09275f;
-    omega_m_rad_per_sec = 418.67f;   
-    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.061f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.147f, output.d);
-    uz_SetPoint_set_id_ref(instance, -10.0f); //Should be accepted, since its below the id_fw current
-    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.061f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -10.0f, output.d);  
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.121f, output.d);  
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation(void){
@@ -399,10 +383,6 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_manual_id(void){
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.8955f, output.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -10.0f, output.d);  
-}
-
-void test_uz_SetPoint_get_clamping_assert_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_get_clamping(NULL));
 }
 
 #endif // TEST

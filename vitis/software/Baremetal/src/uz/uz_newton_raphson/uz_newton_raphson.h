@@ -4,7 +4,6 @@
 #include "../uz_array/uz_array.h"
 #include <stdbool.h>
 
-#define MAX_POLYNOMIAL_ORDER 20U
 
 struct uz_newton_raphson_config {
     uz_array_float_t coefficients; /**< Array which carries the coefficients of the polynomial (a,b,c,d,e etc.) */
@@ -17,7 +16,20 @@ struct uz_newton_raphson_config {
 
 };
 
+/**
+ * @brief Approximates the root of the polynomial
+ * 
+ * @param config uz_newton_raphson_config 
+ * @return float root of the polynomial
+ */
 float uz_newton_raphson(struct uz_newton_raphson_config config);
 
+/**
+ * @brief Calculates the derivate of the function
+ * 
+ * @param poly_coefficients coefficients of f(x)
+ * @param derivate_poly_coefficients coefficients of f'(x). Array size must be the array size of f(x)-1
+ */
 void uz_newton_raphson_derivate(uz_array_float_t poly_coefficients, uz_array_float_t derivate_poly_coefficients);
+
 #endif // UZ_NEWTON_RAPHSON

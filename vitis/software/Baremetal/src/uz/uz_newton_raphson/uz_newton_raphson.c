@@ -18,12 +18,8 @@
 #include <math.h>
 #include "../uz_HAL.h"
 
-/**
- * @brief Approximates the root of the polynomial
- * 
- * @param config uz_newton_raphson_config 
- * @return float root of the polynomial
- */
+#define MAX_POLYNOMIAL_ORDER 10U
+
 float uz_newton_raphson(struct uz_newton_raphson_config config) {
     uz_assert(config.poly_coefficients.length <= (MAX_POLYNOMIAL_ORDER + 1U));
     uz_assert(config.derivate_poly_coefficients.length == (config.poly_coefficients.length - 1U));
@@ -55,13 +51,6 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
     return (result);
 }
 
-
-/**
- * @brief Calculates the derivate of the function
- * 
- * @param poly_coefficients coefficients of f(x)
- * @param derivate_poly_coefficients coefficients of f'(x). Array size must be the array size of f(x)-1
- */
 void uz_newton_raphson_derivate(uz_array_float_t poly_coefficients, uz_array_float_t derivate_poly_coefficients) {
     uz_assert(derivate_poly_coefficients.length == (poly_coefficients.length - 1U));
     for (uint32_t i=0;i < derivate_poly_coefficients.length;i++) {

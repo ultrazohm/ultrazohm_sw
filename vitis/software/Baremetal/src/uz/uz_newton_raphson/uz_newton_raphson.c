@@ -35,43 +35,23 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         .length = UZ_ARRAY_SIZE(xpow_temp),
         .data = &xpow_temp[0]
     }; 
-    if(config.use_separate_coefficients) {
-        uz_assert(config.coefficients.length == config.poly_coefficients.length); 
-        for (uint32_t k=0U;k < config.iterations; k++) {
-            for (uint32_t i=0U;i < config.poly_coefficients.length;i++) {
-                if (i == 0U) {
-                    xpow.data[i] = 1.0f;
-                } else {
-                    xpow.data[i] = xpow.data[i-1] * result;
-                } 
-                f_x += config.poly_coefficients.data[i] * config.coefficients.data[i] * xpow.data[i];
-            }
-            for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
-                f_derivate_x += config.derivate_poly_coefficients.data[i] * config.coefficients.data[i+1] * xpow.data[i];
-            }
-            result = result - (f_x / f_derivate_x);
-            f_x = 0.0f;
-            f_derivate_x = 0.0f;  
+    uz_assert(config.coefficients.length == config.poly_coefficients.length); 
+    for (uint32_t k=0U;k < config.iterations; k++) {
+        for (uint32_t i=0U;i < config.poly_coefficients.length;i++) {
+            if (i == 0U) {
+                xpow.data[i] = 1.0f;
+            } else {
+                xpow.data[i] = xpow.data[i-1] * result;
+            } 
+            f_x += config.poly_coefficients.data[i] * config.coefficients.data[i] * xpow.data[i];
         }
-    } else {
-        for (uint32_t k=0U;k < config.iterations; k++) {
-            for (uint32_t i=0U;i < config.poly_coefficients.length;i++) {
-                if (i == 0U) {
-                    xpow.data[i] = 1.0f;
-                } else {
-                    xpow.data[i] = xpow.data[i-1] * result;
-                } 
-                f_x += config.poly_coefficients.data[i] * xpow.data[i];
-            }
-            for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
-                f_derivate_x += config.derivate_poly_coefficients.data[i] * xpow.data[i];
-            }
-            result = result - (f_x / f_derivate_x);
-            f_x = 0.0f;
-            f_derivate_x = 0.0f;  
+        for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
+            f_derivate_x += config.derivate_poly_coefficients.data[i] * config.coefficients.data[i+1] * xpow.data[i];
         }
-   }
-    
+        result = result - (f_x / f_derivate_x);
+        f_x = 0.0f;
+        f_derivate_x = 0.0f;  
+        }    
     return (result);
 }
 

@@ -24,7 +24,6 @@ void test_uz_newton_raphson_derivate_assert_length(void) {
         .poly_coefficients.data = &poly_coefficients[0],
         .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
         .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
-        .use_separate_coefficients = true,
     };
     TEST_ASSERT_FAIL_ASSERT(uz_newton_raphson_derivate(config.poly_coefficients, config.derivate_poly_coefficients));
 }
@@ -113,7 +112,6 @@ void test_uz_newton_raphson_assert_length_poly_derivate(void) {
         .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
         .coefficients.length = UZ_ARRAY_SIZE(coefficients),
         .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = true,
     };
     TEST_ASSERT_FAIL_ASSERT(uz_newton_raphson(config));
 }
@@ -130,47 +128,8 @@ void test_uz_newton_raphson_assert_length_poly_coefficients(void) {
         .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
         .coefficients.length = UZ_ARRAY_SIZE(coefficients),
         .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = true,
     };
     TEST_ASSERT_FAIL_ASSERT(uz_newton_raphson(config));
-}
-
-void test_uz_newton_raphson_assert_length_poly_coefficients_pass(void) {
-    //Length of the coefficients-array must be same length as the poly-array, otherwise assertion
-    float poly_coefficients[9] = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f};
-    float derivate_poly_coefficients[8] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    float coefficients[8] = {-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f};
-    struct uz_newton_raphson_config config = {
-        .poly_coefficients.length = UZ_ARRAY_SIZE(poly_coefficients),
-        .poly_coefficients.data = &poly_coefficients[0],
-        .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
-        .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
-        .coefficients.length = UZ_ARRAY_SIZE(coefficients),
-        .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = false,
-    };
-    //Since the separate coefficients array is not used, the assertion should not trigger
-    TEST_ASSERT_PASS_ASSERT(uz_newton_raphson(config));
-}
-
-void test_uz_newton_raphson_4th_order_result_no_separate_coefficients(void) {
-    float poly_coefficients[5] = {-1.417233563e+04f, 1.64965986e+03f, 0.0f, 0.0f, 1.0f};
-    float derivate_poly_coefficients[4] = {2.0f, 1.0f, 0.0f, 4.0f};
-    float coefficients[5] = {-1.417233563e+04f, 1.64965986e+03f, 0.0f, 0.0f, 1.0f};
-    struct uz_newton_raphson_config config = {
-        .poly_coefficients.length = UZ_ARRAY_SIZE(poly_coefficients),
-        .poly_coefficients.data = &poly_coefficients[0],
-        .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
-        .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
-        .coefficients.length = UZ_ARRAY_SIZE(coefficients),
-        .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = false,
-        .initial_value = 8.59106f,
-        .iterations = 5U,
-    };
-    uz_newton_raphson_derivate(config.poly_coefficients, config.derivate_poly_coefficients);
-    float output = uz_newton_raphson(config);
-    TEST_ASSERT_EQUAL_FLOAT(7.073508f, output);
 }
 
 void test_uz_newton_raphson_4th_order_result_separate_coefficients(void) {
@@ -184,7 +143,6 @@ void test_uz_newton_raphson_4th_order_result_separate_coefficients(void) {
         .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
         .coefficients.length = UZ_ARRAY_SIZE(coefficients),
         .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = true,
         .initial_value = 8.59106f,
         .iterations = 5U,
     };
@@ -203,7 +161,6 @@ void test_uz_newton_raphson_10th_order_result_separate_coefficients(void) {
         .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
         .coefficients.length = UZ_ARRAY_SIZE(coefficients),
         .coefficients.data = &coefficients[0],
-        .use_separate_coefficients = true,
         .initial_value = 5.0f,
         .iterations = 15U,
     };

@@ -15,7 +15,6 @@ struct uz_newton_raphson_config {
                                         They can either only carry the derivative part(use_separate_coefficients = true) or carry the combination of \n 
                                         of the derivate part and the corresponding coefficient*/
     float initial_value; /**< Initial value with which the approximation starts. Should be a reasonable start value, otherwise the algorithm may not converge */
-    bool use_separate_coefficients; /**< Depending on the selection, either the separate coefficients array is used or not. */
     uint32_t iterations;  /**< Number of iterations the algorithm will cycle through */
 
 };

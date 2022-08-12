@@ -17,6 +17,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_park_transformation:97"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:100"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:101"] = "uz_park_transformation:7";
+    this.sidParentMap["uz_park_transformation:104"] = "uz_park_transformation:7";
+    this.sidParentMap["uz_park_transformation:105"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:50"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:54"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:55"] = "uz_park_transformation:7";
@@ -47,6 +49,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_park_transformation:45"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:60"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:61"] = "uz_park_transformation:7";
+    this.sidParentMap["uz_park_transformation:102"] = "uz_park_transformation:7";
+    this.sidParentMap["uz_park_transformation:103"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:89"] = "uz_park_transformation:7";
     this.sidParentMap["uz_park_transformation:91:1"] = "uz_park_transformation:91";
     this.sidParentMap["uz_park_transformation:91:2"] = "uz_park_transformation:91";

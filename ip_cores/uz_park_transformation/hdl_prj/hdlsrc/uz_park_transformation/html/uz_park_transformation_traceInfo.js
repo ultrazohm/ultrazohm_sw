@@ -1,83 +1,87 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/Add */
-	this.urlHashMap["uz_park_transformation:30"] = "uz_park_t_ip_src_uz_park_transformation.vhd:378";
+	this.urlHashMap["uz_park_transformation:30"] = "uz_park_t_ip_src_uz_park_transformation.vhd:384";
 	/* <S1>/Add1 */
-	this.urlHashMap["uz_park_transformation:31"] = "uz_park_t_ip_src_uz_park_transformation.vhd:400";
+	this.urlHashMap["uz_park_transformation:31"] = "uz_park_t_ip_src_uz_park_transformation.vhd:406";
 	/* <S1>/Delay */
-	this.urlHashMap["uz_park_transformation:49"] = "uz_park_t_ip_src_uz_park_transformation.vhd:296,297,298,299,300,301,302,303,304,305";
+	this.urlHashMap["uz_park_transformation:49"] = "uz_park_t_ip_src_uz_park_transformation.vhd:302,303,304,305,306,307,308,309,310,311";
 	/* <S1>/Delay1 */
-	this.urlHashMap["uz_park_transformation:40"] = "uz_park_t_ip_src_uz_park_transformation.vhd:347,348,349,350,351,352,353,354,355,356";
+	this.urlHashMap["uz_park_transformation:40"] = "uz_park_t_ip_src_uz_park_transformation.vhd:353,354,355,356,357,358,359,360,361,362";
 	/* <S1>/Delay10 */
-	this.urlHashMap["uz_park_transformation:63"] = "uz_park_t_ip_src_uz_park_transformation.vhd:402,403,404,405,406,407,408,409,410,411";
+	this.urlHashMap["uz_park_transformation:63"] = "uz_park_t_ip_src_uz_park_transformation.vhd:408,409,410,411,412,413,414,415,416,417";
 	/* <S1>/Delay11 */
-	this.urlHashMap["uz_park_transformation:66"] = "uz_park_t_ip_src_uz_park_transformation.vhd:184,185,186,187,188,189,190,191,192,193";
+	this.urlHashMap["uz_park_transformation:66"] = "uz_park_t_ip_src_uz_park_transformation.vhd:190,191,192,193,194,195,196,197,198,199";
 	/* <S1>/Delay12 */
-	this.urlHashMap["uz_park_transformation:67"] = "uz_park_t_ip_src_uz_park_transformation.vhd:196,197,198,199,200,201,202,203,204,205";
+	this.urlHashMap["uz_park_transformation:67"] = "uz_park_t_ip_src_uz_park_transformation.vhd:202,203,204,205,206,207,208,209,210,211";
 	/* <S1>/Delay13 */
-	this.urlHashMap["uz_park_transformation:92"] = "uz_park_t_ip_src_uz_park_transformation.vhd:420,421,422,423,424,425,426,427,428,429,430,432";
+	this.urlHashMap["uz_park_transformation:92"] = "uz_park_t_ip_src_uz_park_transformation.vhd:430,431,432,433,434,435,436,437,438,439,440,442";
 	/* <S1>/Delay14 */
-	this.urlHashMap["uz_park_transformation:98"] = "uz_park_t_ip_src_uz_park_transformation.vhd:264,265,266,267,268,269,270,271,272,273";
+	this.urlHashMap["uz_park_transformation:98"] = "uz_park_t_ip_src_uz_park_transformation.vhd:270,271,272,273,274,275,276,277,278,279";
 	/* <S1>/Delay15 */
-	this.urlHashMap["uz_park_transformation:97"] = "uz_park_t_ip_src_uz_park_transformation.vhd:249,250,251,252,253,254,255,256,257,258";
+	this.urlHashMap["uz_park_transformation:97"] = "uz_park_t_ip_src_uz_park_transformation.vhd:255,256,257,258,259,260,261,262,263,264";
 	/* <S1>/Delay16 */
-	this.urlHashMap["uz_park_transformation:100"] = "uz_park_t_ip_src_uz_park_transformation.vhd:329,330,331,332,333,334,335,336,337,338";
+	this.urlHashMap["uz_park_transformation:100"] = "uz_park_t_ip_src_uz_park_transformation.vhd:335,336,337,338,339,340,341,342,343,344";
 	/* <S1>/Delay17 */
-	this.urlHashMap["uz_park_transformation:101"] = "uz_park_t_ip_src_uz_park_transformation.vhd:278,279,280,281,282,283,284,285,286,287";
+	this.urlHashMap["uz_park_transformation:101"] = "uz_park_t_ip_src_uz_park_transformation.vhd:284,285,286,287,288,289,290,291,292,293";
+	/* <S1>/Delay18 */
+	this.urlHashMap["uz_park_transformation:104"] = "uz_park_t_ip_src_uz_park_transformation.vhd:335,336,337,338,339,340,341,342,343,344";
+	/* <S1>/Delay19 */
+	this.urlHashMap["uz_park_transformation:105"] = "uz_park_t_ip_src_uz_park_transformation.vhd:284,285,286,287,288,289,290,291,292,293";
 	/* <S1>/Delay2 */
-	this.urlHashMap["uz_park_transformation:50"] = "uz_park_t_ip_src_uz_park_transformation.vhd:218,219,220,221,222,223,224,225,226,227";
+	this.urlHashMap["uz_park_transformation:50"] = "uz_park_t_ip_src_uz_park_transformation.vhd:224,225,226,227,228,229,230,231,232,233";
 	/* <S1>/Delay3 */
-	this.urlHashMap["uz_park_transformation:54"] = "uz_park_t_ip_src_uz_park_transformation.vhd:166,167,168,169,170,171,172,173,174,175";
+	this.urlHashMap["uz_park_transformation:54"] = "uz_park_t_ip_src_uz_park_transformation.vhd:172,173,174,175,176,177,178,179,180,181";
 	/* <S1>/Delay4 */
-	this.urlHashMap["uz_park_transformation:55"] = "uz_park_t_ip_src_uz_park_transformation.vhd:363,364,365,366,367,368,369,370,371,372";
+	this.urlHashMap["uz_park_transformation:55"] = "uz_park_t_ip_src_uz_park_transformation.vhd:369,370,371,372,373,374,375,376,377,378";
 	/* <S1>/Delay5 */
-	this.urlHashMap["uz_park_transformation:56"] = "uz_park_t_ip_src_uz_park_transformation.vhd:312,313,314,315,316,317,318,319,320,321";
+	this.urlHashMap["uz_park_transformation:56"] = "uz_park_t_ip_src_uz_park_transformation.vhd:318,319,320,321,322,323,324,325,326,327";
 	/* <S1>/Delay6 */
-	this.urlHashMap["uz_park_transformation:57"] = "uz_park_t_ip_src_uz_park_transformation.vhd:230,231,232,233,234,235,236,237,238,239";
+	this.urlHashMap["uz_park_transformation:57"] = "uz_park_t_ip_src_uz_park_transformation.vhd:236,237,238,239,240,241,242,243,244,245";
 	/* <S1>/Delay7 */
-	this.urlHashMap["uz_park_transformation:58"] = "uz_park_t_ip_src_uz_park_transformation.vhd:380,381,382,383,384,385,386,387,388,389";
+	this.urlHashMap["uz_park_transformation:58"] = "uz_park_t_ip_src_uz_park_transformation.vhd:386,387,388,389,390,391,392,393,394,395";
 	/* <S1>/Delay8 */
-	this.urlHashMap["uz_park_transformation:59"] = "uz_park_t_ip_src_uz_park_transformation.vhd:402,403,404,405,406,407,408,409,410,411";
+	this.urlHashMap["uz_park_transformation:59"] = "uz_park_t_ip_src_uz_park_transformation.vhd:408,409,410,411,412,413,414,415,416,417";
 	/* <S1>/Delay9 */
-	this.urlHashMap["uz_park_transformation:62"] = "uz_park_t_ip_src_uz_park_transformation.vhd:380,381,382,383,384,385,386,387,388,389";
+	this.urlHashMap["uz_park_transformation:62"] = "uz_park_t_ip_src_uz_park_transformation.vhd:386,387,388,389,390,391,392,393,394,395";
 	/* <S1>/Detect Rise
 Positive */
-	this.urlHashMap["uz_park_transformation:91"] = "uz_park_t_ip_src_uz_park_transformation.vhd:147,148,149,150,151,152,153";
+	this.urlHashMap["uz_park_transformation:91"] = "uz_park_t_ip_src_uz_park_transformation.vhd:153,154,155,156,157,158,159";
 	/* <S1>/Divide */
-	this.urlHashMap["uz_park_transformation:32"] = "uz_park_t_ip_src_uz_park_transformation.vhd:324,325";
+	this.urlHashMap["uz_park_transformation:32"] = "uz_park_t_ip_src_uz_park_transformation.vhd:330,331";
 	/* <S1>/Divide1 */
-	this.urlHashMap["uz_park_transformation:33"] = "uz_park_t_ip_src_uz_park_transformation.vhd:375,376";
+	this.urlHashMap["uz_park_transformation:33"] = "uz_park_t_ip_src_uz_park_transformation.vhd:381,382";
 	/* <S1>/Divide2 */
-	this.urlHashMap["uz_park_transformation:34"] = "uz_park_t_ip_src_uz_park_transformation.vhd:397,398";
+	this.urlHashMap["uz_park_transformation:34"] = "uz_park_t_ip_src_uz_park_transformation.vhd:403,404";
 	/* <S1>/Divide3 */
-	this.urlHashMap["uz_park_transformation:35"] = "uz_park_t_ip_src_uz_park_transformation.vhd:394,395";
+	this.urlHashMap["uz_park_transformation:35"] = "uz_park_t_ip_src_uz_park_transformation.vhd:400,401";
 	/* <S1>/From */
-	this.urlHashMap["uz_park_transformation:36"] = "uz_park_t_ip_src_uz_park_transformation.vhd:278,279,280,281,282,283,284,285,286,287";
+	this.urlHashMap["uz_park_transformation:36"] = "uz_park_t_ip_src_uz_park_transformation.vhd:284,285,286,287,288,289,290,291,292,293";
 	/* <S1>/From1 */
-	this.urlHashMap["uz_park_transformation:37"] = "uz_park_t_ip_src_uz_park_transformation.vhd:329,330,331,332,333,334,335,336,337,338";
+	this.urlHashMap["uz_park_transformation:37"] = "uz_park_t_ip_src_uz_park_transformation.vhd:335,336,337,338,339,340,341,342,343,344";
 	/* <S1>/From2 */
-	this.urlHashMap["uz_park_transformation:38"] = "uz_park_t_ip_src_uz_park_transformation.vhd:278,279,280,281,282,283,284,285,286,287";
+	this.urlHashMap["uz_park_transformation:38"] = "uz_park_t_ip_src_uz_park_transformation.vhd:284,285,286,287,288,289,290,291,292,293";
 	/* <S1>/From3 */
-	this.urlHashMap["uz_park_transformation:39"] = "uz_park_t_ip_src_uz_park_transformation.vhd:329,330,331,332,333,334,335,336,337,338";
+	this.urlHashMap["uz_park_transformation:39"] = "uz_park_t_ip_src_uz_park_transformation.vhd:335,336,337,338,339,340,341,342,343,344";
 	/* <S1>/Gain */
-	this.urlHashMap["uz_park_transformation:41"] = "uz_park_t_ip_src_uz_park_transformation.vhd:261,262";
+	this.urlHashMap["uz_park_transformation:41"] = "uz_park_t_ip_src_uz_park_transformation.vhd:267,268";
 	/* <S1>/Goto */
-	this.urlHashMap["uz_park_transformation:42"] = "uz_park_t_ip_src_uz_park_transformation.vhd:329,330,331,332,333,334,335,336,337,338";
+	this.urlHashMap["uz_park_transformation:42"] = "uz_park_t_ip_src_uz_park_transformation.vhd:335,336,337,338,339,340,341,342,343,344";
 	/* <S1>/Goto1 */
-	this.urlHashMap["uz_park_transformation:43"] = "uz_park_t_ip_src_uz_park_transformation.vhd:278,279,280,281,282,283,284,285,286,287";
+	this.urlHashMap["uz_park_transformation:43"] = "uz_park_t_ip_src_uz_park_transformation.vhd:284,285,286,287,288,289,290,291,292,293";
 	/* <S1>/Product */
-	this.urlHashMap["uz_park_transformation:64"] = "uz_park_t_ip_src_uz_park_transformation.vhd:246,247";
+	this.urlHashMap["uz_park_transformation:64"] = "uz_park_t_ip_src_uz_park_transformation.vhd:252,253";
 	/* <S1>/Sine
 HDL Optimized */
-	this.urlHashMap["uz_park_transformation:44"] = "uz_park_t_ip_src_uz_park_transformation.vhd:155,156,157,158,159,160,161,162";
+	this.urlHashMap["uz_park_transformation:44"] = "uz_park_t_ip_src_uz_park_transformation.vhd:161,162,163,164,165,166,167,168";
 	/* <S1>/Switch */
-	this.urlHashMap["uz_park_transformation:46"] = "uz_park_t_ip_src_uz_park_transformation.vhd:309,310";
+	this.urlHashMap["uz_park_transformation:46"] = "uz_park_t_ip_src_uz_park_transformation.vhd:315,316";
 	/* <S1>/Switch1 */
-	this.urlHashMap["uz_park_transformation:47"] = "uz_park_t_ip_src_uz_park_transformation.vhd:360,361";
+	this.urlHashMap["uz_park_transformation:47"] = "uz_park_t_ip_src_uz_park_transformation.vhd:366,367";
 	/* <S1>/Switch2 */
-	this.urlHashMap["uz_park_transformation:48"] = "uz_park_t_ip_src_uz_park_transformation.vhd:243,244";
+	this.urlHashMap["uz_park_transformation:48"] = "uz_park_t_ip_src_uz_park_transformation.vhd:249,250";
 	/* <S1>/Switch3 */
-	this.urlHashMap["uz_park_transformation:68"] = "uz_park_t_ip_src_uz_park_transformation.vhd:209,210";
+	this.urlHashMap["uz_park_transformation:68"] = "uz_park_t_ip_src_uz_park_transformation.vhd:215,216";
 	/* <S2>/Delay Input1 */
 	this.urlHashMap["uz_park_transformation:91:2"] = "uz_park_t_ip_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S2>/FixPt
@@ -232,6 +236,10 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_park_transformation:100"] = {rtwname: "<S1>/Delay16"};
 	this.rtwnameHashMap["<S1>/Delay17"] = {sid: "uz_park_transformation:101"};
 	this.sidHashMap["uz_park_transformation:101"] = {rtwname: "<S1>/Delay17"};
+	this.rtwnameHashMap["<S1>/Delay18"] = {sid: "uz_park_transformation:104"};
+	this.sidHashMap["uz_park_transformation:104"] = {rtwname: "<S1>/Delay18"};
+	this.rtwnameHashMap["<S1>/Delay19"] = {sid: "uz_park_transformation:105"};
+	this.sidHashMap["uz_park_transformation:105"] = {rtwname: "<S1>/Delay19"};
 	this.rtwnameHashMap["<S1>/Delay2"] = {sid: "uz_park_transformation:50"};
 	this.sidHashMap["uz_park_transformation:50"] = {rtwname: "<S1>/Delay2"};
 	this.rtwnameHashMap["<S1>/Delay3"] = {sid: "uz_park_transformation:54"};
@@ -292,6 +300,10 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_park_transformation:60"] = {rtwname: "<S1>/y1_AXI"};
 	this.rtwnameHashMap["<S1>/y2_AXI"] = {sid: "uz_park_transformation:61"};
 	this.sidHashMap["uz_park_transformation:61"] = {rtwname: "<S1>/y2_AXI"};
+	this.rtwnameHashMap["<S1>/sin"] = {sid: "uz_park_transformation:102"};
+	this.sidHashMap["uz_park_transformation:102"] = {rtwname: "<S1>/sin"};
+	this.rtwnameHashMap["<S1>/cos"] = {sid: "uz_park_transformation:103"};
+	this.sidHashMap["uz_park_transformation:103"] = {rtwname: "<S1>/cos"};
 	this.rtwnameHashMap["<S1>/calc_done"] = {sid: "uz_park_transformation:89"};
 	this.sidHashMap["uz_park_transformation:89"] = {rtwname: "<S1>/calc_done"};
 	this.rtwnameHashMap["<S2>/U"] = {sid: "uz_park_transformation:91:1"};

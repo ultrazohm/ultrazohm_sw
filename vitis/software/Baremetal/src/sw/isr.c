@@ -93,6 +93,9 @@ void ISR_Control(void *data)
 
     Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
     Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
+    Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
 
     dac_input[0]=Global_Data.objects.three_phase1.a;
     dac_input[1]=Global_Data.objects.three_phase1.b;
@@ -116,6 +119,9 @@ void ISR_Control(void *data)
     Global_Data.av.x1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x10C),11);
     Global_Data.av.z1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x110),11);
     Global_Data.av.z2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x114),11);
+
+    Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x104), 16);
+    Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x108), 16);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

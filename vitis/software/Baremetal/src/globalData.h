@@ -125,8 +125,6 @@ typedef struct{
 	uz_dac_interface_t* dac_instance;
 	uz_3ph_abc_t three_phase1;
 	uz_3ph_abc_t three_phase2;
-	uz_3ph_abc_t three_phase11;
-	uz_3ph_abc_t three_phase22;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

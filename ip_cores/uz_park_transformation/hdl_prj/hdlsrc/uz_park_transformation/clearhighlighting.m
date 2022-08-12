@@ -21,6 +21,10 @@ annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay16', 1, 1, 
 annotate_port('uz_park_transformation/uz_park_transformation/Delay16', 1, 1, '');
 annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay17', 1, 1, '');
 annotate_port('uz_park_transformation/uz_park_transformation/Delay17', 1, 1, '');
+annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay18', 1, 1, '');
+annotate_port('uz_park_transformation/uz_park_transformation/Delay18', 1, 1, '');
+annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay19', 1, 1, '');
+annotate_port('uz_park_transformation/uz_park_transformation/Delay19', 1, 1, '');
 annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay2', 1, 1, '');
 annotate_port('uz_park_transformation/uz_park_transformation/Delay2', 1, 1, '');
 annotate_port('gm_uz_park_transformation/uz_park_transformation/Delay3', 1, 1, '');

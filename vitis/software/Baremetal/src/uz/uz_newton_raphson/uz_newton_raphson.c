@@ -46,7 +46,20 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         result = result - (f_x / f_derivate_x);
         f_x = 0.0f;
         f_derivate_x = 0.0f;  
-    }    
+    }
+    f_x=0.0f;
+    for (uint32_t i=0U;i < config.coefficients.length;i++) {
+            if (i == 0U) {
+                xpow.data[i] = 1.0f;
+            } else {
+                xpow.data[i] = xpow.data[i-1U] * result;
+            } 
+            f_x += config.coefficients.data[i] * xpow.data[i];
+        }
+    if( (f_x > config.root_absolute_tolerance ) || ( f_x< -config.root_absolute_tolerance) ){
+        uz_assert(0U); // Root could not be approximated with sufficient precision
+    }
+
     return (result);
 }
 

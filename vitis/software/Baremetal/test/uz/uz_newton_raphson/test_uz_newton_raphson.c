@@ -130,6 +130,7 @@ void test_uz_newton_raphson_4th_order_result_separate_coefficients(void) {
         .coefficients.data = &coefficients[0],
         .initial_value = 8.59106f,
         .iterations = 5U,
+        .root_absolute_tolerance=0.05f
     };
     float output = uz_newton_raphson(config);
     TEST_ASSERT_EQUAL_FLOAT(7.073508f, output);
@@ -146,9 +147,28 @@ void test_uz_newton_raphson_10th_order_result_separate_coefficients(void) {
         .coefficients.data = &coefficients[0],
         .initial_value = 5.0f,
         .iterations = 15U,
+        .root_absolute_tolerance=0.05f
     };
     uz_newton_raphson_derivate(config);
     float output = uz_newton_raphson(config);
     TEST_ASSERT_EQUAL_FLOAT(1.4142135f, output);//Solution is sqrt(2)
 }
+
+void test_uz_newton_raphson_polynom_without_root(void) {
+    float derivate_poly_coefficients[2] = {0};
+    float coefficients[3] = {1.0f, 0.0f, 1.0f};
+    struct uz_newton_raphson_config config = {
+        .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
+        .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
+        .coefficients.length = UZ_ARRAY_SIZE(coefficients),
+        .coefficients.data = &coefficients[0],
+        .initial_value = 8.59106f,
+        .iterations = 25U,
+    };
+    uz_newton_raphson_derivate(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_newton_raphson(config)); // This test case triggers an assertion since x^2+1 does not have a real-valued root
+
+}
+
+
 #endif // TEST

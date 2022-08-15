@@ -12,7 +12,7 @@ struct uz_newton_raphson_config {
                                         The coefficients (a,b,c,d, etc.) are NOT included in this array.*/
     float initial_value; /**< Initial value with which the approximation starts. Should be a reasonable start value, otherwise the algorithm may not converge */
     uint32_t iterations;  /**< Number of iterations the algorithm will cycle through */
-
+    float root_absolute_tolerance; /**< Absolute tolerance of the approximated root. An assertion is triggered if the polynomial evaluates to a value outside of the tolerance (-tolerance<f(x_root)<tolerance) for the approximated root x_root. This happens if there are not enough iterations, the given polynomial does not have a real-valued root, or the initial value was not choosen in a way that leads to convergence. */
 };
 
 /**

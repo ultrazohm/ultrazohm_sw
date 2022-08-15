@@ -21,8 +21,8 @@
 #define MAX_POLYNOMIAL_ORDER 10U
 
 float uz_newton_raphson(struct uz_newton_raphson_config config) {
-    uz_assert(config.poly_coefficients.length <= (MAX_POLYNOMIAL_ORDER + 1U));
-    uz_assert(config.derivate_poly_coefficients.length == (config.poly_coefficients.length - 1U));
+    uz_assert(config.coefficients.length <= (MAX_POLYNOMIAL_ORDER + 1U));
+    uz_assert(config.derivate_poly_coefficients.length == (config.coefficients.length - 1U));
     float f_x = 0.0f;
     float f_derivate_x = 0.0f;  
     float result = config.initial_value;
@@ -31,15 +31,14 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         .length = UZ_ARRAY_SIZE(xpow_temp),
         .data = &xpow_temp[0]
     }; 
-    uz_assert(config.coefficients.length == config.poly_coefficients.length); 
     for (uint32_t k=0U;k < config.iterations; k++) {
-        for (uint32_t i=0U;i < config.poly_coefficients.length;i++) {
+        for (uint32_t i=0U;i < config.coefficients.length;i++) {
             if (i == 0U) {
                 xpow.data[i] = 1.0f;
             } else {
                 xpow.data[i] = xpow.data[i-1] * result;
             } 
-            f_x += config.poly_coefficients.data[i] * config.coefficients.data[i] * xpow.data[i];
+            f_x += config.coefficients.data[i] * xpow.data[i];
         }
         for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
             f_derivate_x += config.derivate_poly_coefficients.data[i] * config.coefficients.data[i+1] * xpow.data[i];
@@ -47,14 +46,20 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         result = result - (f_x / f_derivate_x);
         f_x = 0.0f;
         f_derivate_x = 0.0f;  
-        }    
+    }    
     return (result);
 }
 
-void uz_newton_raphson_derivate(uz_array_float_t poly_coefficients, uz_array_float_t derivate_poly_coefficients) {
-    uz_assert(derivate_poly_coefficients.length == (poly_coefficients.length - 1U));
-    for (uint32_t i=0;i < derivate_poly_coefficients.length;i++) {
-        derivate_poly_coefficients.data[i] = ((float)i + 1.0f) * poly_coefficients.data[i+1];
+void uz_newton_raphson_derivate(struct uz_newton_raphson_config config) {
+    uz_assert(config.derivate_poly_coefficients.length == (config.coefficients.length - 1U));
+    float temp = 0.0f;
+    for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
+        if(config.coefficients.data[i+1] != 0.0f) {
+            temp = 1.0f;    
+        } else {
+            temp = 0.0f;
+        }
+        config.derivate_poly_coefficients.data[i] = ((float)i + 1.0f) * temp;
     }
 }
 

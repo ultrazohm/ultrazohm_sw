@@ -6,11 +6,10 @@
 
 
 struct uz_newton_raphson_config {
-    uz_array_float_t coefficients; /**< Array which carries the coefficients of the polynomial (a,b,c,d,e etc.) */
-    uz_array_float_t poly_coefficients; /**< Array which carries the coefficients for the polynomial. \n 
-                                        They are scaled to 0/1 */
+    uz_array_float_t coefficients; /**< Array which carries the coefficients of the polynomial (i.e. 14*x³) */
     uz_array_float_t derivate_poly_coefficients; /**< Array which carries the coefficients for the derivate of the polynomial. \n 
-                                        They carry the derivative part, i.e. the scaled value of the original function times the factor from the derivate (x^4 -> 4x^3). */
+                                        They only carry the derivative part, i.e. the scaled value of the original function times the factor from the derivate (x^4 -> 4x^3). 
+                                        The coefficients (a,b,c,d, etc.) are NOT included in this array.*/
     float initial_value; /**< Initial value with which the approximation starts. Should be a reasonable start value, otherwise the algorithm may not converge */
     uint32_t iterations;  /**< Number of iterations the algorithm will cycle through */
 
@@ -19,17 +18,16 @@ struct uz_newton_raphson_config {
 /**
  * @brief Approximates the root of the polynomial
  * 
- * @param config uz_newton_raphson_config 
+ * @param config uz_newton_raphson_config struct
  * @return float root of the polynomial
  */
 float uz_newton_raphson(struct uz_newton_raphson_config config);
 
 /**
- * @brief Calculates the derivate of the function
+ * @brief Calculates the derivate of the function. Writes the values directly into the derivate array. The derivate is scaled to (0/1 * derivate_factor).
  * 
- * @param poly_coefficients coefficients of f(x)
- * @param derivate_poly_coefficients coefficients of f'(x). Array size must be the array size of f(x)-1
+ * @param config uz_newton_raphson_config struct
  */
-void uz_newton_raphson_derivate(uz_array_float_t poly_coefficients, uz_array_float_t derivate_poly_coefficients);
+void uz_newton_raphson_derivate(struct uz_newton_raphson_config config);
 
 #endif // UZ_NEWTON_RAPHSON

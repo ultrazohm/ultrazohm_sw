@@ -56,25 +56,52 @@ This can be represented differently:
 
 .. math::
 
-  f(x) &= a \cdot x^4 - c \cdot x^2 + d \cdot x + e\\
-  f'(x) &= a \cdot 4x^3 - c \cdot 2x + d\\
+  f(x) &= a_4 \cdot x^4 + a_3 \cdot x^3 + a_2 \cdot x^2 + a_1 \cdot x + a_0\\
+  f'(x) &= a_4 \cdot 4x^3 + a_3 \cdot x^2 + a_2 \cdot 2x + a_1\\
 
-There is a dedicated array for the coefficients (a,b,c,d, etc.) and another one for the polynomial itself, scaled to 0/1.
-The derivate carries only the polynomial again, but obviously with the derivate factors.
-If the coefficients change during runtime, only they have to be updated. The rest can stay the same.
+With the coefficients:
 
-The corresponding arrays would look like this:
+.. math::
+
+  a_4 &= 1 \\
+  a_3 &= 0 \\
+  a_2 &= -5 \\
+  a_1 &= -20.5 \\
+  a_0 &= 2 
+
+There is a dedicated array for the coefficients (a,b,c,d, etc.) and another one for calculating the coefficients of the derivate based on the coefficients of the polynomial and ``derivate_poly_coefficients``.
+If the coefficients change during runtime, only they have to be updated.
+The rest can stay the same.
+
+The coefficients are represented as a vector
+
+.. math::
+
+  \boldsymbol{a}=\begin{bmatrix} a_0 & a_1 & a_2 & a_3 & a_4 \end{bmatrix}
+
+which is implemented as arrays:
 
 .. code-block:: c
 
-    //float coefficients[5] = {e, d, c, b, a};
+    //float coefficients[5] = {a_0, a_1, a_2, a_3, a_4};
     //float derivate_poly_coefficients[4] = {1*x0, 2*x1, 3*x2, 4*x3};
     
     float coefficients[5] = {2.0f, -20.5f, -5.0f, 0.0f, 1.0f};
     float derivate_poly_coefficients[4] = {1.0f, 2.0f, 0.0f, 4.0f};
 
+Note that the values for ``derivate_poly_coefficients`` should be calculated using ``uz_newton_raphson_derivate`` (see :ref:`uz_newton_raphson_derivate`).
+
+
 Example
 =======
+
+Approximate the roots of
+
+.. math::
+
+  x^4-5.0 \cdot x^2-20.5x+2
+
+The function has two real roots at :math:`\approx 0.953476` and :math:`\approx 3.31653` (see `WolframAlpha solution <https://www.wolframalpha.com/input?i=x%5E4-5.0*x%5E2-20.5x%2B2>`_).
 
 .. code-block:: c
 
@@ -89,9 +116,18 @@ Example
             .coefficients.data = &coefficients[0],
             .initial_value = 5.0f,
             .iterations = 5U,
+            .root_absolute_tolerance=0.05f
         };
         float output = uz_newton_raphson(config);
     }
+
+Approximating the root of the polynomial takes :math:`\approx 2 us` with 5 iterations (result 3.316525) while 20 iterations take :math:`\approx 5 us`.
+
+Approximating the root of the following polynomial with 15 iteration takes :math:`\approx 9 us`:
+
+.. math::
+
+  f(x)= x^{10} - x^8 + 8 \cdot x^6 - 24 \cdot x^4 + 32 \cdot x^2 - 48
 
 Sources
 =======

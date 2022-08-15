@@ -15,17 +15,17 @@ Example
 
     #include "../uz/uz_newton_raphson/uz_newton_raphson.h"
     int main(void) {
-        float poly_coefficients_data[5] = {1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
+        float coefficients_data[5] = {2.0f, -20.5f, -5.0f, 0.0f, 1.0f};
         float derivate_poly_coefficients_data[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-        uz_array_float_t poly_coefficients = {
-          .length = UZ_ARRAY_SIZE(poly_coefficients_data),
-          .data = &poly_coefficients_data[0],
+        struct uz_newton_raphson_config config = {
+            .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
+            .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
+            .coefficients.length = UZ_ARRAY_SIZE(coefficients),
+            .coefficients.data = &coefficients[0],
+            .initial_value = 5.0f,
+            .iterations = 5U,
         };
-        uz_array_float_t derivate_poly_coefficients = {
-          .length = UZ_ARRAY_SIZE(derivate_poly_coefficients_data),
-          .data = &derivate_poly_coefficients_data[0],
-        };
-        uz_newton_raphson_derivate(poly_coefficients, derivate_poly_coefficients);
+        uz_newton_raphson_derivate(config);
     }
 
 Description
@@ -38,6 +38,10 @@ Otherwise an assertion triggers.
 This function assumes, that all powers of the polynomial are a positive natural value (i.e. 0,1,2,3.....).
 This means, this function can't be used to calculate the derivate of e.g. a square-root.
 
+The input is wrapped in the :ref:`uz_newton_raphson_config struct <uz_newton_raphson>`.
+This function only calculates the derivate part, i.e. the factor from the derivate calculation (x^4 -> ``4`` x^3). 
+The coefficients (a,b,c,d,e,etc.) are stored separately in the coefficients array. 
+
 Considering the following equation:
 
 .. math::
@@ -49,4 +53,4 @@ After the function finished, the derivate-array would look like this:
 
 .. code-block:: c
 
-    derivate_poly_coefficients[4] = {-20.5f, -10.0f, 0.0f, 4.0f};
+    derivate_poly_coefficients[4] = {1.0f, 2.0f, 0.0f, 4.0f};

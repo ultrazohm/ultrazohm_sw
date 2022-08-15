@@ -4,10 +4,10 @@
 Newton Raphson root approximation
 =================================
 
-The Newton Raphson approximation is an approach for finding the roots of nonlinear equations. 
+The Newton Raphson approximation is an approach for finding the (real-valued) roots of nonlinear equations. 
 This is a relative simple, but fast approach. 
 The original function :math:`f(x)` as well as the derivate :math:`f'(x)` is required.
-This implementation implementation is designed to only work with polynomial functions, i.e., functions that are built from the addition of the exponentiation of variables to a non-negative integer power:
+This implementation is designed to only work with polynomial functions, i.e., functions that are built from the addition of the exponentiation of variables to a non-negative integer power:
 I.e., functions :math:`P(x)` with the following definition
 
 .. math::
@@ -16,11 +16,11 @@ I.e., functions :math:`P(x)` with the following definition
 
 with the coefficients :math:`a_k` and the variable :math:`x`. 
 To automatically calculate the derivate, refer to :ref:`uz_newton_raphson_derivate`.
-If there are not enough iterations for the approach to converge to the roots, the results can be inaccurate.
+If there are not enough iterations for the approach to converge to the root, the results can be inaccurate.
 A balance between computational effort (i.e., number of iterations) and accuracy of the results have to be made by the user.
 Solving a 20th order polynomial with 20 iterations takes roughly 20µs.
-Your milage may wary. 
 
+.. note:: The basic Newton-Raphson method as implemented in this software module returns only one of the (potentially) multiple roots of the polynomial. Which root is returned depends on the polynomial and the initial guess for :math:`x`, i.e., ``initial_value`` of the ``uz_newton_raphson_config`` struct.
 
 
 Reference
@@ -52,7 +52,7 @@ Consider this equation:
   f'(x) &= 4x^3 - 10x - 20.5\\
 
 
-This can be represented in a different way:
+This can be represented differently:
 
 .. math::
 

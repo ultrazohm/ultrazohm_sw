@@ -36,12 +36,12 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
             if (i == 0U) {
                 xpow.data[i] = 1.0f;
             } else {
-                xpow.data[i] = xpow.data[i-1] * result;
+                xpow.data[i] = xpow.data[i-1U] * result;
             } 
             f_x += config.coefficients.data[i] * xpow.data[i];
         }
         for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
-            f_derivate_x += config.derivate_poly_coefficients.data[i] * config.coefficients.data[i+1] * xpow.data[i];
+            f_derivate_x += config.derivate_poly_coefficients.data[i] * config.coefficients.data[i+1U] * xpow.data[i];
         }
         result = result - (f_x / f_derivate_x);
         f_x = 0.0f;
@@ -54,7 +54,7 @@ void uz_newton_raphson_derivate(struct uz_newton_raphson_config config) {
     uz_assert(config.derivate_poly_coefficients.length == (config.coefficients.length - 1U));
     float temp = 0.0f;
     for (uint32_t i=0;i < config.derivate_poly_coefficients.length;i++) {
-        if(config.coefficients.data[i+1] != 0.0f) {
+        if(config.coefficients.data[i+1U] != 0.0f) {
             temp = 1.0f;    
         } else {
             temp = 0.0f;

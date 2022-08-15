@@ -50,9 +50,10 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
  * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
  * @param M_ref_Nm reference torque in Nm
  * @param V_DC_Volts DC-link voltage 
+ * @param actual_currents_Ampere uz_3ph_dq_t struct with measured currents in ampere
  * @return uz_3ph_dq_t reference currents for current-control
  */
-uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts);
+uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere);
 
 /**
  * @brief Enables or disables the field weakening

@@ -18,7 +18,6 @@ with the coefficients :math:`a_k` and the variable :math:`x`.
 To automatically calculate the derivate, refer to :ref:`uz_newton_raphson_derivate`.
 If there are not enough iterations for the approach to converge to the root, the results can be inaccurate.
 A balance between computational effort (i.e., number of iterations) and accuracy of the results have to be made by the user.
-Solving a 20th order polynomial with 20 iterations takes roughly 20µs.
 
 .. note:: The basic Newton-Raphson method as implemented in this software module returns only one of the (potentially) multiple roots of the polynomial. Which root is returned depends on the polynomial and the initial guess for :math:`x`, i.e., ``initial_value`` of the ``uz_newton_raphson_config`` struct.
 

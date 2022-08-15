@@ -192,28 +192,25 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
 
 static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm){
     uz_3ph_dq_t output = {0};
-    float id_limit = sqrtf((self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere) - (i_ref_Ampere * i_ref_Ampere));
+    float I_max_squared = self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere;
     switch (self->config.motor_type)
 	{
         case (SMPMSM):
             output.q = i_ref_Ampere;         
-            output.d = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -id_limit);
+            output.d = 0.0f;
             break;
 
         case (IPMSM):
-            if(fabsf(self->config.id_ref_Ampere) > 0.0f) {
-                output.q = i_ref_Ampere;
-                output.d = uz_signals_saturation(self->config.id_ref_Ampere, id_limit, -id_limit);
-            } else { //If no input d-current is requested, calculate id-ref via MTPA
-                output.q = uz_SetPoint_newton_MTPA_raphson_iq_approximation(self, i_ref_Ampere, M_ref_Nm);
-                output.d = uz_SetPoint_calculate_IPMSM_id_current(self, output.q);
-            }
+            output.q = uz_SetPoint_newton_MTPA_raphson_iq_approximation(self, i_ref_Ampere, M_ref_Nm);
+            output.d = uz_SetPoint_calculate_IPMSM_id_current(self, output.q);
             break;
 
         default:
             uz_assert(0);
             break;
     }
+    float id_limit = sqrtf((self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere) - (output.q * output.q));
+    output.d = uz_signals_saturation(output.d + self->config.id_ref_Ampere, id_limit, -id_limit);
     return(output);
 }
 

@@ -68,33 +68,34 @@ Description
 Calculates the reference currents depending on the user selection. 
 Either an MTPA or a field-weakening is active, depending on the operating condition of the machine.
 The reference currents are always limited to the max. allowed current. 
-I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{i_{d,ref}^2 + i_{q,ref}^2}` will be lower than the max allowed current.
-If a manual :math:`i_{d,ref}` is set in the MPTA state, this current overwrites the calculated :math:`i_{d,MTPA}` current.
-In MTPA operation the :math:`i_q` will get priority, whilst in the field-weakening case :math:`i_d` will get priority.
+I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{I_{d,ref}^2 + I_{q,ref}^2}` will be lower than the max allowed current.
+If a manual :math:`I_{d,ref}` is set in the MPTA state, this current overwrites the calculated :math:`I_{d,MTPA}` current.
+In MTPA operation the :math:`I_q` will get priority, whilst in the field-weakening case :math:`I_d` will get priority.
 The cut-off rotational speed for the field-weakening is calculated like the following[[#Wilfling]_].:
 
 .. math::
 
-  V_{SV,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}} - R_{ph} \cdot I_{max}\\
-  \omega_c &= \frac{-R_{ph} \cdot \psi_{PM} \cdot I_{max}}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2} 
-  + \sqrt{\frac{R_{ph}^2 \cdot \psi_{PM}^2 \cdot I_{max}^2 }{(I_{max}^2 \cdot L_q^2 + \psi_{PM}^2)^2} -    \frac{(I_{max}^2 - R_{ph}^2) - V_{SV,max}^2}{I_{max}^2 \cdot L_q^2 + \psi_{PM}^2}}\\
+  V_{SV,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}} - R_{ph}  I_{max}\\
+  I_1 &= \sqrt{i_{q,meas}^2 + i_{d,meas}^2}\\
+  \omega_c &= \frac{-R_{ph}  \psi_{PM}  I_1}{I_1^2  L_q^2 + \psi_{PM}^2} 
+  + \sqrt{\frac{R_{ph}^2  \psi_{PM}^2  I_1^2 }{(I_1^2  L_q^2 + \psi_{PM}^2)^2} -    \frac{(I_1^2 - R_{ph}^2) - V_{SV,max}^2}{I_1^2  L_q^2 + \psi_{PM}^2}}\\
 
 SM-PMSM[[#matlab]_]
 -------------------
 
 .. math::
 
-  i_{d,MTPA} &= 0\\
-  i_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
+  I_{d,MTPA} &= 0\\
+  I_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
 
 
 for :math:`\omega_{el} > \omega_c\\`:
 
 .. math::
 
-  i_{d,fw} &= \frac{\psi_{PM}}{L_d}\cdot(1- \frac{\omega_c}{\omega_{el}})\\
-  i_{q,fw} &= i_{q,MTPA}\\
-  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
+  I_{d,fw} &= \frac{\psi_{PM}}{L_d}(\frac{\omega_c}{\omega_{el}}-1)\\
+  I_{q,fw} &= I_{q,MTPA}\\
+  I_{q,fw,max} &= \sqrt{I_{max}^2 - I_{d,fw}^2}
 
 I-PMSM[[#Schroeder]_ S.1095ff.][[#matlab]_]
 -------------------------------------------
@@ -104,36 +105,44 @@ I-PMSM[[#Schroeder]_ S.1095ff.][[#matlab]_]
   :math:`L_d \neq L_q` is necessary and will be checked.
 
 .. math::
-  M_{ref} &= \frac{3}{2} \cdot p \cdot (\psi_{PM} \cdot i_{q,MTPA} + \frac{1}{2} \cdot (-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4 \cdot (L_d - L_q)^2 \cdot i_{q,MTPA}^2}))\\
-  0 &= i_{q,MTPA}^4 + \frac{2\cdot M_{ref} \cdot \psi_{PM}}{3\cdot (L_d - L_q)^2 \cdot p} \cdot i_{q,MTPA} - \frac{4\cdot M_{ref}^2}{9\cdot (L_d - L_q)^2 \cdot p^2} \\
+  M_{ref} &= \frac{3}{2}  p  (\psi_{PM}  I_{q,MTPA} + \frac{1}{2}  (-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}))\\
+  0 &= I_{q,MTPA}^4 + \frac{2 M_{ref}  \psi_{PM}}{3 (L_d - L_q)^2  p}  I_{q,MTPA} - \frac{4 M_{ref}^2}{9 (L_d - L_q)^2  p^2} \\
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess being:
 
 .. math::
 
-  i_{q,init} &= \frac{M_{ref}}{\frac{3}{2} \cdot p \cdot \psi_{PM}}\\
+  I_{q,init} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
 
 The d-current, depending on the saliency ratio, will be calculated like the following:
 
 .. math::
 
-  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_q > L_d)\\
-  i_{d,MTPA} &= \frac{-\psi_{PM}}{2 \cdot (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4 \cdot (L_d - L_q)^2} + i_{m,ref}^2} \ \ \ for \ \ (L_q < L_d)\\
+  I_{d,MTPA} &= \frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2} \ \ \ for \ \ (L_q > L_d)\\
+  I_{d,MTPA} &= \frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2} \ \ \ for \ \ (L_q < L_d)\\
 
 for :math:`\omega_{el} > \omega_c\\`:
 
 .. math::
 
-  i_{d,fw} &= \frac{-\psi_{PM} \cdot L_d + \sqrt{(\psi_{PM} \cdot L_d)^2 - (L_d^2 - L_q^2) \cdot (\psi_{PM}^2 + L_q^2 \cdot I_{max}^2 - \frac{V_{SV,max}^2}{\omega_{el}^2} )} }{L_d^2 - L_q^2}\\
-  i_{q,fw} &= i_{q,MTPA}\\
-  i_{q,fw,max} &= \sqrt{I_{max}^2 - i_{d,fw}^2}
+  M_{ref} &= \frac{3}{2}  p  (\psi_{PM}  I_{q,FW} + \frac{(L_d - L_q)}{L_d}  (-\psi_{PM} \pm \sqrt{\frac{V_{SV,max}^2}{\omega_{el}^2} - L_q^2  I_{q,FW}^2})I_{q,FW})\\
+  0 &= I_{q,MTPA}^4 + a_2 I_{q,MTPA}^2 + a_1 I_{q,MTPA} + a_0  \\ 
+
+This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess and the coefficients being:
+
+.. math::
+
+  I_{q,init} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
+  a_2 &= \frac{\psi_{PM}^2 L_q^2 - (L_d - L_q)^2 \frac{V_{SV,max}^2}{\omega_el^2}}{L_q^2 (L_d - L_q)^2}\\
+  a_1 &= \frac{-4 M_{ref} L_d L_q \psi_{PM}}{3 L_q^2 p (L_d - L_q)^2}\\
+  a_0 &= \frac{4 (M_{ref} L_d)^2}{9 L_q^2 p^2 (L_d - L_q)^2}\\
+
 
 General notes:
 --------------
 
-If the machine is not in the field weakening territory, the input ``id_ref_Ampere`` current will be used, if it is :math:`\neq 0`. 
-If the machine is inside the field weakening territory, the input ``id_ref_Ampere`` will only be used, if it's value is lower than the required ``id_fw`` current from the field weakening (i.e. ``id_ref_Ampere=-5`` and ``id_fw=-2`` will result in ``id_output=-5``).
-The max. current limit will still be respected in this case.
+If the machine is in the MTPA state, the input ``id_ref_Ampere`` current will be added to the calculated :math:`I_{d,MTPA}` current. 
+If the machine is inside the field weakening territory, the input ``id_ref_Ampere`` will be ignored.
 
 Sources
 =======

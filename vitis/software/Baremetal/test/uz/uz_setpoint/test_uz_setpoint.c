@@ -213,9 +213,25 @@ void test_uz_SetPoint_sample_MTPA_SMPMSM_operation_manual_id(void){
     TEST_ASSERT_EQUAL_FLOAT(1.0f, output.q);
     TEST_ASSERT_EQUAL_FLOAT(-1.23f, output.d);
     M_ref_Nm = 0.09f;
+    uz_SetPoint_set_id_ref(instance, 1.23f);
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_EQUAL_FLOAT(2.0f, output.q);
-    TEST_ASSERT_EQUAL_FLOAT(-1.23f, output.d);
+    TEST_ASSERT_EQUAL_FLOAT(1.23f, output.d);
+}
+
+void test_uz_SetPoint_sample_MTPA_SMPMSM_operation_manual_id_max_current(void){
+    //Results for comparision from simulation
+    //total current should not exceed 15A
+    config.id_ref_Ampere = -15.23f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(-14.9666f, output.d);
+    M_ref_Nm = 0.09f;
+    uz_SetPoint_set_id_ref(instance, 15.23f);
+    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_EQUAL_FLOAT(2.0f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(14.8661f, output.d);
 }
 
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_no_id(void){
@@ -254,11 +270,29 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_manual_id(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-5.23f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-5.2433f, output.d);
     M_ref_Nm = 0.09f;
+    uz_SetPoint_set_id_ref(instance, 1.23f);
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-5.23f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,1.1768f, output.d);
+}
+
+void test_uz_SetPoint_sample_MTPA_IPMSM_operation_manual_id_max_Current(void){
+    //Results for comparision from simulation
+    //total current should not exceed 15A
+    config.motor_type = IPMSM;
+    config.config_PMSM.Ld_Henry = 0.0002f;
+    config.id_ref_Ampere = -15.23f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-14.966f, output.d);
+    M_ref_Nm = 0.09f;
+    uz_SetPoint_set_id_ref(instance, 15.23f);
+    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,14.866f, output.d);
 }
 
 void test_uz_SetPoint_sample_MTPA_SMPMSM_operation_limit_iq_id(void){

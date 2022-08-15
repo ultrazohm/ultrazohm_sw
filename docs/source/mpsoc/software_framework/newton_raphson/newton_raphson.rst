@@ -67,13 +67,11 @@ The corresponding arrays would look like this:
 
 .. code-block:: c
 
-    //float poly_coefficients[5] = {x0, x1, x2, x3, x4};
-    //float derivate_poly_coefficients[4] = {1*x0, 2*x1, 3*x2, 4*x3};
     //float coefficients[5] = {e, d, c, b, a};
+    //float derivate_poly_coefficients[4] = {1*x0, 2*x1, 3*x2, 4*x3};
     
-    float poly_coefficients[5] = {1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
-    float derivate_poly_coefficients[4] = {1.0f, 2.0f, 0.0f, 4.0f};
     float coefficients[5] = {2.0f, -20.5f, -5.0f, 0.0f, 1.0f};
+    float derivate_poly_coefficients[4] = {1.0f, 2.0f, 0.0f, 4.0f};
 
 Example
 =======
@@ -82,12 +80,9 @@ Example
 
     #include "../uz/uz_newton_raphson/uz_newton_raphson.h"
     int main(void) {
-        float poly_coefficients[5] = {1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
         float derivate_poly_coefficients[4] = {1.0f, 2.0f, 0.0f, 4.0f};
         float coefficients[5] = {2.0f, -20.5f, -5.0f, 0.0f, 1.0f};
         struct uz_newton_raphson_config config = {
-            .poly_coefficients.length = UZ_ARRAY_SIZE(poly_coefficients),
-            .poly_coefficients.data = &poly_coefficients[0],
             .derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients),
             .derivate_poly_coefficients.data = &derivate_poly_coefficients[0],
             .coefficients.length = UZ_ARRAY_SIZE(coefficients),

@@ -40,7 +40,7 @@ This means, this function can't be used to calculate the derivate of e.g. a squa
 
 The input is wrapped in the :ref:`uz_newton_raphson_config struct <uz_newton_raphson>`.
 This function only calculates the derivate part, i.e. the factor from the derivate calculation (x^4 -> ``4`` x^3). 
-The coefficients (a,b,c,d,e,etc.) are stored separately in the coefficients array. 
+The coefficients (a0,a1,a2,a3,a4,etc.) are stored separately in the coefficients array. 
 
 Considering the following equation:
 

@@ -180,7 +180,7 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
             float Psi_divided_Ld = self->config.config_PMSM.Psi_PM_Vs / self->config.config_PMSM.Ld_Henry;
             output.d = (-Psi_divided_Ld) + ((1.0f / self->config.config_PMSM.Ld_Henry) * sqrtf((V_SV_squared / omega_squared) - (Lq_squared * iq_fw_squared)));
             id_limit = sqrtf(I_max_squared - iq_fw_squared);
-            output.d = uz_signals_saturation(output.d, 0, -id_limit);//To prevent id being positive 
+            output.d = uz_signals_saturation(output.d, 0, -id_limit);//To prevent id being positive
             break;            
 
         default:
@@ -209,7 +209,7 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, flo
             uz_assert(0);
             break;
     }
-    float id_limit = sqrtf((self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere) - (output.q * output.q));
+    float id_limit = sqrtf((I_max_squared) - (output.q * output.q));
     output.d = uz_signals_saturation(output.d + self->config.id_ref_Ampere, id_limit, -id_limit);
     return(output);
 }

@@ -132,7 +132,7 @@ This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, wit
 
 .. math::
 
-  I_{q,init} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
+  I_{q,init} &= \frac{I_{max}}{2}\\
   a_2 &= \frac{\psi_{PM}^2 L_q^2 - (L_d - L_q)^2 \frac{V_{SV,max}^2}{\omega_el^2}}{L_q^2 (L_d - L_q)^2}\\
   a_1 &= \frac{-4 M_{ref} L_d L_q \psi_{PM}}{3 L_q^2 p (L_d - L_q)^2}\\
   a_0 &= \frac{4 (M_{ref} L_d)^2}{9 L_q^2 p^2 (L_d - L_q)^2}\\

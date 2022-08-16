@@ -54,7 +54,7 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, flo
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_SV_max, uz_3ph_dq_t actual_currents_Ampere);
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
 static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
-static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm, float V_SV_max, float omega_el_rad_per_sec);
+static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float M_ref_Nm, float V_SV_max, float omega_el_rad_per_sec);
 static float uz_SetPoint_calculate_IPMSM_id_current(uz_SetPoint_t* self, float iq_ref_Ampere);
 
 static uz_SetPoint_t* uz_SetPoint_allocation(void){
@@ -74,6 +74,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
 	self->newton_MTPA.coefficients.length = UZ_ARRAY_SIZE(coefficients_MTPA);
 	self->newton_MTPA.coefficients.data = &coefficients_MTPA[0];
 	self->newton_MTPA.initial_value = 0.0f;
+	self->newton_MTPA.root_absolute_tolerance = 0.05f;
 	self->newton_MTPA.iterations = 12U;
 	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_FW);
 	self->newton_FW.derivate_poly_coefficients.data = &derivate_poly_coefficients_FW[0];
@@ -81,6 +82,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
 	self->newton_FW.coefficients.data = &coefficients_FW[0];
 	self->newton_FW.initial_value = 0.0f;
 	self->newton_FW.iterations = 12U;
+	self->newton_FW.root_absolute_tolerance = 0.05f;
     self->config = config;
     return(self);
 }
@@ -90,16 +92,22 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
     uz_assert(self->is_ready);
     uz_assert(V_DC_Volts > 0.0f);
     uz_3ph_dq_t output_currents = {0};
-    switch (self->config.control_type)
-    {
-    case (FOC):
-        output_currents = uz_SetPoint_FOC_control(self, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);
-        break;
+    if (M_ref_Nm != 0.0f) {//MTPA/FW can't solve for 0 reference torque
+        switch (self->config.control_type)
+        {
+        	case (FOC):
+        		output_currents = uz_SetPoint_FOC_control(self, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);
+        		break;
     
-    default:
-        uz_assert(0);
-        break;
+        	default:
+        		uz_assert(0);
+        		break;
+        }
+    } else {
+        output_currents.d = 0.0f;
+        output_currents.q = 0.0f;
     }
+    
     
     return(output_currents);
 }
@@ -172,7 +180,7 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
             break;
 
         case (IPMSM):;
-            output.q = uz_SetPoint_newton_FW_raphson_iq_approximation(self, im_ref, M_ref_Nm, V_SV_max, omega_el_rad_per_sec);
+            output.q = uz_SetPoint_newton_FW_raphson_iq_approximation(self, M_ref_Nm, V_SV_max, omega_el_rad_per_sec);
             float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
             float iq_fw_squared = output.q * output.q;
             float V_SV_squared = V_SV_max * V_SV_max;
@@ -214,7 +222,7 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, flo
     return(output);
 }
 
-static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm, float V_SV_max, float omega_el_rad_per_sec){
+static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float M_ref_Nm, float V_SV_max, float omega_el_rad_per_sec){
     //Calculate coefficients for polynomial
     float psi_pm_squared = self->config.config_PMSM.Psi_PM_Vs  * self->config.config_PMSM.Psi_PM_Vs;
     float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
@@ -229,7 +237,11 @@ static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self,
     self->newton_FW.coefficients.data[1] = (-4.0f * M_ref_Ld * self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Psi_PM_Vs) / 
                                             (3.0f * Lq_squared * self->config.config_PMSM.polePairs * Ld_minus_Lq_squared);
     self->newton_FW.coefficients.data[0] = (4.0f * M_ref_Ld_squared) / (9.0f * Lq_squared * polepairs_squared * Ld_minus_Lq_squared);                           
-    self->newton_FW.initial_value = i_ref_Ampere;
+    if(omega_el_rad_per_sec > 0.0f) {
+    	self->newton_FW.initial_value = self->config.config_PMSM.I_max_Ampere / 2.0f;
+    } else {
+    	self->newton_FW.initial_value = -self->config.config_PMSM.I_max_Ampere / 2.0f;
+    }
     float iq_ref_Ampere = uz_newton_raphson(self->newton_FW);
     iq_ref_Ampere = uz_signals_saturation(iq_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     return(iq_ref_Ampere);

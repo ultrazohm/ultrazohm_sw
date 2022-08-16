@@ -35,7 +35,10 @@ struct uz_filter_config {
 };
 
 /*
+ * @brief init function for the filter
  *
+ * @param uz_filter_config config struct for the filter
+ * @return uz_filter_t* pointer to the initilized filter
  */
 uz_filter_t* uz_filter_init(struct uz_filter_config config);
 
@@ -45,7 +48,9 @@ uz_filter_t* uz_filter_init(struct uz_filter_config config);
 float uz_filter_sample(uz_filter_t* self, float sample);
 
 /*
+ * @brief reset function for the filter
  *
+ * @param uz_filter_t* pointer to the filter
  */
 void uz_filter_reset(uz_filter_t* self);
 

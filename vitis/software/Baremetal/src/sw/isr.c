@@ -83,6 +83,15 @@ extern uz_singleindex_faultdetection singleindex_FD;
 
 extern uz_resonant_controller r_c_2H_x;
 extern uz_resonant_controller r_c_2H_y;
+extern uz_resonant_controller r_c_6H_x;
+extern uz_resonant_controller r_c_6H_y;
+extern uz_resonant_controller r_c_2H_d;
+extern uz_resonant_controller r_c_2H_q;
+
+extern uz_resonant_controller r_c_2H_z1;
+extern uz_resonant_controller r_c_2H_z2;
+extern uz_resonant_controller r_c_3H_z1;
+extern uz_resonant_controller r_c_3H_z2;
 
 extern uz_filter_t* r_c_iir_2H_x;
 extern uz_filter_t* r_c_iir_2H_y;
@@ -122,7 +131,8 @@ extern struct uz_FOC_config config_FOC;
 extern struct uz_PMSM_t config_PMSM;
 
 
-
+float error_z1z2_s[2];
+float error_z1z2_n[2];
 
 
 uz_6ph_abc_t m_6ph_abc_currents = {0};
@@ -182,6 +192,8 @@ float ref_z1z2_voltage[2];
 float ref_z1z2_voltage_n[2];
 float ref_z1z2_voltage_s[2];
 
+float z1z2_error[2];
+
 float ref_z1z2_s_voltage[2];
 float ref_z1z2_n_voltage[2];
 
@@ -224,11 +236,15 @@ extern struct uz_d_gan_inverter_t* gan_inverter_D3;
 extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
 bool dq_n = false;
-bool xy_n = false;
+bool xy_n = true;
 bool xy_s = false;
 bool z1z2_n = false;
 bool z1z2_s = false;
-bool xy_R = false;
+bool xy_n_2 = true;
+bool xy_n_6 = true;
+bool dq_2 = true;
+bool z1z2_2 = false;
+bool z1z2_3 = false;
 
 float zw_1;
 float zw_2;
@@ -518,7 +534,7 @@ void ISR_Control(void *data)
 
 
 
-	int N1N2 = 2;
+	int N1N2 = 1;
 	int ML = 1;		//0 -> MT, 1 -> ML
 	float a = 0.0f;
 	int error_opf;
@@ -597,6 +613,44 @@ void ISR_Control(void *data)
     	//Control
     		//FOC_instance
     	ref_dq_voltage = uz_FOC_sample(FOC_dq, ref_dq0_currents, m_dq_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+
+
+    	// R-Controller: 2 H. dq
+    	r_c_2H_d.input.T_sw = 0.0001; //1/10000;
+		r_c_2H_d.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+		r_c_2H_d.input.h = 2.0;
+		r_c_2H_d.input.omega_el = omega_el_rad_per_sec;
+		r_c_2H_d.input.in_ref = ref_dq0_currents.d;
+		r_c_2H_d.input.in_m = m_dq_currents.d;
+
+		uz_resonant_controller_step(&r_c_2H_d);
+
+		if (dq_2){
+			ref_dq_voltage.d = ref_dq_voltage.d + r_c_2H_d.output.out;
+		}
+
+
+		r_c_2H_q.input.T_sw = 0.0001; //1/10000;
+		r_c_2H_q.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+		r_c_2H_q.input.h = 2.0;
+		r_c_2H_q.input.omega_el = omega_el_rad_per_sec;
+		r_c_2H_q.input.in_ref = ref_dq0_currents.q;
+		r_c_2H_q.input.in_m = m_dq_currents.q;
+
+		uz_resonant_controller_step(&r_c_2H_q);
+
+		if(dq_2){
+			ref_dq_voltage.q = ref_dq_voltage.q + r_c_2H_q.output.out;
+		}
+
+
+
+
+
+
+
+
+
     	//Transform back to phase-values:
     	ref_alphabeta_voltage = uz_transformation_3ph_dq_to_alphabeta(ref_dq_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
@@ -630,7 +684,6 @@ void ISR_Control(void *data)
     		ref_ab_n_voltage[1] = uz_PI_Controller_sample(PI_q_n, ref_ab_n_currents[1], m_ab_n_currents[1], false);
 
     		//transform back to alpha-beta frame
-
     		uz_park_transform(ref_ab_voltage_n, ref_ab_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 
@@ -656,7 +709,8 @@ void ISR_Control(void *data)
     	ref_xy_voltage[1] = 0;
 
     	// synchron PI-controller:
-
+#define PI_CONTROLLER
+#ifndef PI_CONTROLLER
     		//transform into synchronous frame:
     		uz_park_transform(m_xy_s_currents, m_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
     		uz_park_transform(ref_xy_s_currents, ref_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
@@ -667,8 +721,7 @@ void ISR_Control(void *data)
 
     		//inverse transform to stationary frame
     		uz_inv_park_transform(ref_xy_voltage_s, ref_xy_s_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-
-
+#endif
 
     	// antisynchron PI-controller:
 
@@ -682,38 +735,68 @@ void ISR_Control(void *data)
 
 
 
-    		double L_x = 0.00004;
-    		double L_y = 0.00004;
 
     	// antisynchron R-Controller 2. Harmonische:
     		r_c_2H_x.input.T_sw = 0.0001; //1/10000;
-    		r_c_2H_x.input.VR = 0.1*(2.0*M_PI*10000.0/10.0)*(2*M_PI*10000.0/10.0)*L_x;
+    		r_c_2H_x.input.VR = 160; //0.1*(2.0*M_PI*10000.0/10.0)*(2*M_PI*10000.0/10.0)*0.00004;
     		r_c_2H_x.input.h = 2;
     		r_c_2H_x.input.omega_el = omega_el_rad_per_sec;
     		r_c_2H_x.input.in_ref = ref_xy_n_currents[0];
 			r_c_2H_x.input.in_m = m_xy_n_currents[0];
 
-			uz_resonant_controller_step(&r_c_2H_x);
+			//uz_resonant_controller_step(&r_c_2H_x);
 
 			//ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + r_c_2H_x.output.out;
 
     		r_c_2H_y.input.T_sw = 0.0001; //1/10000;
-    		r_c_2H_y.input.VR =  0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*L_y;
+    		r_c_2H_y.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
     		r_c_2H_y.input.h = 2.0;
     		r_c_2H_y.input.omega_el = omega_el_rad_per_sec;
     		r_c_2H_y.input.in_ref = ref_xy_n_currents[1];
 			r_c_2H_y.input.in_m = m_xy_n_currents[1];
 
-			uz_resonant_controller_step(&r_c_2H_y);
+			//uz_resonant_controller_step(&r_c_2H_y);
 
 			//ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + r_c_2H_y.output.out;
+
+
+			//////////////////
+
+    		r_c_6H_x.input.T_sw = 0.0001; //1/10000;
+    		r_c_6H_x.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    		r_c_6H_x.input.h = 2.0;
+    		r_c_6H_x.input.omega_el = omega_el_rad_per_sec;
+    		r_c_6H_x.input.in_ref = ref_xy_n_currents[0];
+    		r_c_6H_x.input.in_m = m_xy_n_currents[0];
+
+    		uz_resonant_controller_step(&r_c_6H_x);
+
+    		if (xy_n_6){
+    			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + r_c_6H_x.output.out;
+    		}
+
+
+    		r_c_6H_y.input.T_sw = 0.0001; //1/10000;
+    		r_c_6H_y.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    		r_c_6H_y.input.h = 2.0;
+    		r_c_6H_y.input.omega_el = omega_el_rad_per_sec;
+    		r_c_6H_y.input.in_ref = ref_xy_n_currents[1];
+    		r_c_6H_y.input.in_m = m_xy_n_currents[1];
+
+    		uz_resonant_controller_step(&r_c_6H_y);
+
+    		if(xy_n_6){
+    			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + r_c_6H_y.output.out;
+    		}
+
+    		/////////////////////////
 
 
 		// alternativer R-Controller:
 
 			// Reglerparameter anpassen:
 
-			r_c_VR = 0.1 * (2.0*M_PI*1000.0)*(2.0*M_PI*1000.0)* 0.00004;
+			r_c_VR = 160; //0.1 * (2.0*M_PI*1000.0)*(2.0*M_PI*1000.0)* 0.00004;
 			r_c_Tsw = 0.0001f; // 1/10000;
 			r_c_omega_r = 2 * omega_el_rad_per_sec;		// 2 gegen 6 austauschen für 6. Harmonische!!!
 
@@ -723,9 +806,6 @@ void ISR_Control(void *data)
 			r_c_iir_2H_x->filterParameterB[0] = r_c_VR*r_c_Tsw*cos(2.0*r_c_omega_r*r_c_Tsw);
 			r_c_iir_2H_x->filterParameterB[1] = r_c_VR*r_c_Tsw* -cos(r_c_omega_r*r_c_Tsw);
 			r_c_iir_2H_x->filterParameterB[2] = r_c_VR*r_c_Tsw*0;
-
-			// Ideal: a0 =1, a1 = -2, a2 = 1
-			// Ideal: b0 = 1*VR*Tsw; b1 = 1*VR*Tsw, b2 = 0
 
 			zw_1 = uz_filter_sample(r_c_iir_2H_x, (ref_xy_n_currents[0] - m_xy_n_currents[0]));
 
@@ -738,8 +818,6 @@ void ISR_Control(void *data)
 
 			zw_2 = uz_filter_sample(r_c_iir_2H_y, (ref_xy_n_currents[1] - m_xy_n_currents[1]));
 
-
-
 			/* Bilineare Übertragungsfunktion:
 
 			float Kr = 120;
@@ -747,34 +825,29 @@ void ISR_Control(void *data)
 			float wc = 10;
 			float wr = 2 * omega_el_rad_per_sec;
 
-			r_c_iir_2H_x->filterParameterA[0] = -2*Kr*Ta;
-			r_c_iir_2H_x->filterParameterA[1] = 0;
-			r_c_iir_2H_x->filterParameterA[2] = 2*Kr*Ta;
-			r_c_iir_2H_x->filterParameterB[0] = 4-4*wc*Ta+wr*wr*Ta*Ta;
-			r_c_iir_2H_x->filterParameterB[1] = 2*wr*wr*Ta*Ta - 8;
-			r_c_iir_2H_x->filterParameterB[2] = 4 + 4*wc*Ta + wr*wr*Ta*Ta;
-
-
+			r_c_iir_2H_x->filterParameterB[2] = -2*Kr*Ta;
+			r_c_iir_2H_x->filterParameterB[1] = 0;
+			r_c_iir_2H_x->filterParameterB[0] = 2*Kr*Ta;
+			r_c_iir_2H_x->filterParameterA[2] = 4-4*wc*Ta+wr*wr*Ta*Ta;
+			r_c_iir_2H_x->filterParameterA[1] = 2*wr*wr*Ta*Ta - 8;
+			r_c_iir_2H_x->filterParameterA[0] = 4 + 4*wc*Ta + wr*wr*Ta*Ta;
 			*/
 
 			/* Impulsinvariant Übertragungsfunktion:
-
 			float Kr = 100;
 			float Ta = 0.0001f;
 			float wc = 10;
 			float wr = 2 * omega_el_rad_per_sec;
 
-			r_c_iir_2H_x->filterParameterA[0] = -Kr*Ta*cos(wr*Ta);
-			r_c_iir_2H_x->filterParameterA[1] = 0;
-			r_c_iir_2H_x->filterParameterA[2] = Kr*Ta;
-			r_c_iir_2H_x->filterParameterB[0] = 1;
-			r_c_iir_2H_x->filterParameterB[1] = -2*cos(wr*Ta);
-			r_c_iir_2H_x->filterParameterB[2] = 1;
-
-
+			r_c_iir_2H_x->filterParameterB[2] = -Kr*Ta*cos(wr*Ta);
+			r_c_iir_2H_x->filterParameterB[1] = 0;
+			r_c_iir_2H_x->filterParameterB[0] = Kr*Ta;
+			r_c_iir_2H_x->filterParameterA[2] = 1;
+			r_c_iir_2H_x->filterParameterA[1] = -2*cos(wr*Ta);
+			r_c_iir_2H_x->filterParameterA[0] = 1;
 			*/
 
-		if(xy_R){
+		if(xy_n_2){
 			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + zw_1;
 			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + zw_2;
 		}
@@ -799,8 +872,99 @@ void ISR_Control(void *data)
     //-z1z2-current control:--------------//
 
 
+		z1z2_error[0] = ref_z1z2_currents[0] - m_z1z2_currents[0];
+		z1z2_error[1] = ref_z1z2_currents[1] - m_z1z2_currents[1];
+
+
+/*
+
+
     	ref_z1z2_voltage[0] = 0;
     	ref_z1z2_voltage[1] = 0;
+
+		z1z2_error[0] = ref_z1z2_currents[0] - m_z1z2_currents[0];
+		z1z2_error[1] = ref_z1z2_currents[1] - m_z1z2_currents[1];
+
+
+    	// make P-Controller from PI-Controller
+    	uz_PI_Controller_set_Ki(PI_z1_s, 0);
+    	uz_PI_Controller_set_Ki(PI_z2_s, 0);
+
+    	uz_PI_Controller_set_Kp(PI_z1_s, 0.05*0.1f);
+		uz_PI_Controller_set_Kp(PI_z2_s, 0.05*0.1f);
+
+    	ref_z1z2_voltage[0] = uz_PI_Controller_sample(PI_z1_s, ref_z1z2_currents[0], m_z1z2_currents[0], false);
+		ref_z1z2_voltage[1] = uz_PI_Controller_sample(PI_z2_s, ref_z1z2_currents[1], m_z1z2_currents[1], false);
+
+
+
+		z1z2_error[0] = ref_z1z2_currents[0] - m_z1z2_currents[0];
+		z1z2_error[1] = ref_z1z2_currents[1] - m_z1z2_currents[1];
+
+
+    	// R-Controller: 9 H. //fundamental frequency
+
+    	r_c_2H_z1.input.T_sw = 0.0001f; //1/10000;
+    	r_c_2H_z1.input.VR =  100; // 30; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    	r_c_2H_z1.input.h =9.0;
+    	r_c_2H_z1.input.omega_el = omega_el_rad_per_sec;
+    	r_c_2H_z1.input.in_ref = ref_z1z2_currents[0];
+    	r_c_2H_z1.input.in_m = m_z1z2_currents[0];
+
+		uz_resonant_controller_step(&r_c_2H_z1);
+
+		if (z1z2_2){
+			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + r_c_2H_z1.output.out;
+		}
+
+
+		r_c_2H_z2.input.T_sw = 0.0001; //1/10000;
+		r_c_2H_z2.input.VR = 100; // 30; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+		r_c_2H_z2.input.h = 9.0;
+		r_c_2H_z2.input.omega_el = omega_el_rad_per_sec;
+		r_c_2H_z2.input.in_ref = ref_z1z2_currents[1];
+		r_c_2H_z2.input.in_m = m_z1z2_currents[1];
+
+		uz_resonant_controller_step(&r_c_2H_z2);
+
+		if(z1z2_2){
+			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + r_c_2H_z2.output.out;
+		}
+
+
+
+
+
+    	// R-Controller: 3 H.
+		r_c_3H_z1.input.T_sw = 0.0001; //1/10000;
+		r_c_3H_z1.input.VR =  100; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+		r_c_3H_z1.input.h = 3.0;
+		r_c_3H_z1.input.omega_el = omega_el_rad_per_sec;
+		r_c_3H_z1.input.in_ref = ref_z1z2_currents[0];
+		r_c_3H_z1.input.in_m = m_z1z2_currents[0];
+
+		uz_resonant_controller_step(&r_c_3H_z1);
+
+		if (z1z2_3){
+			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + r_c_3H_z1.output.out;
+		}
+
+
+		r_c_3H_z2.input.T_sw = 0.0001; //1/10000;
+		r_c_3H_z2.input.VR =  100; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+		r_c_3H_z2.input.h = 3.0;
+		r_c_3H_z2.input.omega_el = omega_el_rad_per_sec;
+		r_c_3H_z2.input.in_ref = ref_z1z2_currents[1];
+		r_c_3H_z2.input.in_m = m_z1z2_currents[1];
+
+		uz_resonant_controller_step(&r_c_3H_z2);
+
+		if(z1z2_3){
+			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + r_c_3H_z2.output.out;
+		}
+*/
+
+
 
     	// synchron PI-controller:
 
@@ -808,9 +972,48 @@ void ISR_Control(void *data)
     		uz_park_transform(m_z1z2_s_currents, m_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
     		uz_park_transform(ref_z1z2_s_currents, ref_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
+
+    		error_z1z2_s[0] = ref_z1z2_s_currents[0] -m_z1z2_s_currents[0];
+    		error_z1z2_s[1] = ref_z1z2_s_currents[1] -m_z1z2_s_currents[1];
+
     		//PI-Controllers
     		ref_z1z2_s_voltage[0] = uz_PI_Controller_sample(PI_z1_s, ref_z1z2_s_currents[0], m_z1z2_s_currents[0], false);
     		ref_z1z2_s_voltage[1] = uz_PI_Controller_sample(PI_z2_s, ref_z1z2_s_currents[1], m_z1z2_s_currents[1], false);
+
+/*
+
+        	// R-Controller: 3 H.
+    		r_c_3H_z1.input.T_sw = 0.0001; //1/10000;
+    		r_c_3H_z1.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    		r_c_3H_z1.input.h = 2.0;
+    		r_c_3H_z1.input.omega_el = omega_el_rad_per_sec;
+    		r_c_3H_z1.input.in_ref = ref_z1z2_s_currents[0];
+    		r_c_3H_z1.input.in_m = m_z1z2_s_currents[0];
+
+    		uz_resonant_controller_step(&r_c_3H_z1);
+
+    		if (z1z2_3){
+    			ref_z1z2_s_voltage[0] = ref_z1z2_s_voltage[0] + r_c_3H_z1.output.out;
+    		}
+
+
+    		r_c_3H_z2.input.T_sw = 0.0001; //1/10000;
+    		r_c_3H_z2.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    		r_c_3H_z2.input.h = 2.0;
+    		r_c_3H_z2.input.omega_el = omega_el_rad_per_sec;
+    		r_c_3H_z2.input.in_ref = ref_z1z2_s_currents[1];
+    		r_c_3H_z2.input.in_m = m_z1z2_s_currents[1];
+
+    		uz_resonant_controller_step(&r_c_3H_z2);
+
+    		if(z1z2_3){
+    			ref_z1z2_s_voltage[1] = ref_z1z2_s_voltage[1] + r_c_3H_z2.output.out;
+    		}
+
+
+
+*/
+
 
     		//inverse transform to stationary frame
     		uz_inv_park_transform(ref_z1z2_voltage_s, ref_z1z2_s_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
@@ -823,12 +1026,52 @@ void ISR_Control(void *data)
     		uz_inv_park_transform(m_z1z2_n_currents, m_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
     		uz_inv_park_transform(ref_z1z2_n_currents, ref_z1z2_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
+    		error_z1z2_n[0] = ref_z1z2_n_currents[0] -m_z1z2_n_currents[0];
+    		error_z1z2_n[1] = ref_z1z2_n_currents[1] -m_z1z2_n_currents[1];
+
     		//PI-Controllers
     		ref_z1z2_n_voltage[0] = uz_PI_Controller_sample(PI_z1_n, ref_z1z2_n_currents[0], m_z1z2_n_currents[0], false);
     		ref_z1z2_n_voltage[1] = uz_PI_Controller_sample(PI_z2_n, ref_z1z2_n_currents[1], m_z1z2_n_currents[1], false);
 
-    		//Transform pack to stationary frame
+/*
+
+        	// R-Controller: 1 H.
+        	r_c_2H_z1.input.T_sw = 0.0001; //1/10000;
+        	r_c_2H_z1.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+        	r_c_2H_z1.input.h =2.0;
+        	r_c_2H_z1.input.omega_el = omega_el_rad_per_sec;
+        	r_c_2H_z1.input.in_ref = ref_z1z2_n_currents[0];
+        	r_c_2H_z1.input.in_m = m_z1z2_n_currents[0];
+
+    		uz_resonant_controller_step(&r_c_2H_z1);
+
+    		if (z1z2_2){
+    			ref_z1z2_n_voltage[0] += r_c_2H_z1.output.out;
+    		}
+
+
+    		r_c_2H_z2.input.T_sw = 0.0001; //1/10000;
+    		r_c_2H_z2.input.VR =  160; // 0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
+    		r_c_2H_z2.input.h = 2.0;
+    		r_c_2H_z2.input.omega_el = omega_el_rad_per_sec;
+    		r_c_2H_z2.input.in_ref = ref_z1z2_n_currents[1];
+    		r_c_2H_z2.input.in_m = m_z1z2_n_currents[1];
+
+    		uz_resonant_controller_step(&r_c_2H_z2);
+
+    		if(z1z2_2){
+    			ref_z1z2_n_voltage[1] += r_c_2H_z2.output.out;
+    		}
+
+*/
+
+
+
+    		//Transform back to stationary frame
     		uz_park_transform(ref_z1z2_voltage_n, ref_z1z2_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
+
+
+
 
 
     	// enable/disable PI-Controllers:

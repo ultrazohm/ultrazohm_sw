@@ -64,6 +64,17 @@ uz_vsd_opf_fd_v7 uz_FD_v7;
 
 uz_resonant_controller r_c_2H_x;
 uz_resonant_controller r_c_2H_y;
+uz_resonant_controller r_c_6H_x;
+uz_resonant_controller r_c_6H_y;
+uz_resonant_controller r_c_2H_d;
+uz_resonant_controller r_c_2H_q;
+
+uz_resonant_controller r_c_2H_z1;
+uz_resonant_controller r_c_2H_z2;
+uz_resonant_controller r_c_3H_z1;
+uz_resonant_controller r_c_3H_z2;
+
+
 
 //single Index FD:
 uz_singleindex_faultdetection singleindex_FD;
@@ -112,108 +123,7 @@ struct uz_filter_config filter_config_rc_2H_y = {
 };
 
 
-#define FILTER_LENGTH 11
-
-uz_filter_t* filter_a1;
-uz_filter_t* filter_b1;
-uz_filter_t* filter_c1;
-uz_filter_t* filter_a2;
-uz_filter_t* filter_b2;
-uz_filter_t* filter_c2;
-
-float ar_filterParameterA[FILTER_LENGTH] = {   1,
-		  -8.795170347593165516286717320326715707779,
-		  34.87498281940548139345992240123450756073 ,
-		 -82.095896845589493295847205445170402526855,
-		 127.042943858755734254373237490653991699219,
-		-135.035542883992434326501097530126571655273,
-		  99.835079040061941668682266026735305786133,
-		 -50.691818433648244024425366660580039024353,
-		  16.916722791727497821057113469578325748444,
-		  -3.350305445143596738688529512728564441204,
-		   0.299005477912280381858067812572699040174};
-
-float ar_filterParameterB[FILTER_LENGTH] = {0.000000000031148454939792163363898700541,
-		0.00000000031148454939792164656368407655    ,
-		0.000000001401680472290647254440213490781   ,
-		0.000000003737814592775059345173902642084   ,
-		0.000000006541175537356353440464023347133   ,
-		0.000000007849410644827625452045808101403   ,
-		0.00000000654117553735635426764463590016    ,
-		0.000000003737814592775059345173902642084   ,
-		0.000000001401680472290647461235366629038   ,
-		0.00000000031148454939792164656368407655    ,
-		0.000000000031148454939792163363898700541 };
-
-
-float ar_circularBufferInput_a1[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_a1[FILTER_LENGTH] = {0};
-float ar_circularBufferInput_b1[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_b1[FILTER_LENGTH] = {0};
-float ar_circularBufferInput_c1[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_c1[FILTER_LENGTH] = {0};
-float ar_circularBufferInput_a2[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_a2[FILTER_LENGTH] = {0};
-float ar_circularBufferInput_b2[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_b2[FILTER_LENGTH] = {0};
-float ar_circularBufferInput_c2[FILTER_LENGTH] = {0};
-float ar_circularBufferOutput_c2[FILTER_LENGTH] = {0};
-
-struct uz_filter_config filter_config_a1 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_a1,
-	.circularBufferOutput = ar_circularBufferOutput_a1
-};
-
-struct uz_filter_config filter_config_b1 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_b1,
-	.circularBufferOutput = ar_circularBufferOutput_b1
-};
-
-struct uz_filter_config filter_config_c1 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_c1,
-	.circularBufferOutput = ar_circularBufferOutput_c1
-};
-
-struct uz_filter_config filter_config_a2 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_a2,
-	.circularBufferOutput = ar_circularBufferOutput_a2
-};
-
-struct uz_filter_config filter_config_b2 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_b2,
-	.circularBufferOutput = ar_circularBufferOutput_b2
-};
-
-struct uz_filter_config filter_config_c2 = {
-	.filterLength = FILTER_LENGTH,
-	.filterParameterA = ar_filterParameterA,
-	.filterParameterB = ar_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_c2,
-	.circularBufferOutput = ar_circularBufferOutput_c2
-};
-
-
 //parameter for FOC
-
-
-
-
-
 
 struct uz_FOC* FOC_dq;
 
@@ -236,7 +146,6 @@ const struct uz_PI_Controller_config config_id = {
 	.lower_limit = -10.0f
 };
 
-
 const struct uz_PI_Controller_config config_iq = {
 	.Kp = 0.2f, //1.1f,
 	.Ki = 1/0.0008f *0.1,
@@ -251,7 +160,6 @@ struct uz_FOC_config config_FOC = {
    .config_id = config_id,
    .config_iq = config_iq
 };
-
 
 const struct uz_PI_Controller_config config_idn = {
 	.Kp = 0.05f,//1.1f,
@@ -271,9 +179,6 @@ const struct uz_PI_Controller_config config_iqn = {
 
 struct uz_PI_Controller* PI_d_n;
 struct uz_PI_Controller* PI_q_n;
-
-
-
 
 
 // alphabeta -> dq & reverse
@@ -298,16 +203,16 @@ const struct uz_PI_Controller_config config_ix = {
 	.Kp = 0.05f , //* 4.0f, //1.1f,
 	.Ki = 1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
 };
 
 const struct uz_PI_Controller_config config_iy = {
 	.Kp = 0.05f, //* 4.0f,//1.1f,
 	.Ki = 1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 10.0f,
+	.lower_limit = -10.0f
 };
 
 struct uz_PI_Controller* PI_x_s;
@@ -316,19 +221,19 @@ struct uz_PI_Controller* PI_y_s;
 struct uz_PI_Controller* PI_y_n;
 
 const struct uz_PI_Controller_config config_iz1 = {
-	.Kp = 0.05*0.1f , //* 4.0f, //1.1f,
-	.Ki = 1/0.0008f *0.001f,
+	.Kp = 0.05*0.05f , //* 4.0f, //1.1f,
+	.Ki = 1/0.0008f *0.0005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 0.5f,
+	.lower_limit = -0.5f
 };
 
 const struct uz_PI_Controller_config config_iz2 = {
-	.Kp = 0.05*0.1f , //* 4.0f,//1.1f,
-	.Ki = 1/0.0008f *0.001f,
+	.Kp = 0.05*0.05f , //* 4.0f,//1.1f,
+	.Ki = 1/0.0008f *0.0005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 0.5f,
+	.lower_limit = -0.5f
 };
 
 struct uz_PI_Controller* PI_z1_s;
@@ -407,14 +312,6 @@ int main(void)
             movAvFilter_R5 =  uz_movAverageFilter_init(movAvF_config);
             movAvFilter_R6 =  uz_movAverageFilter_init(movAvF_config);
 
-
-            filter_a1 = uz_filter_init(filter_config_a1);
-            filter_b1 = uz_filter_init(filter_config_b1);
-            filter_c1 = uz_filter_init(filter_config_c1);
-            filter_a2 = uz_filter_init(filter_config_a2);
-            filter_b2 = uz_filter_init(filter_config_b2);
-            filter_c2 = uz_filter_init(filter_config_c2);
-
             // Resonant-Controller in c (IIR-Filter)
             r_c_iir_2H_x = uz_filter_init(filter_config_rc_2H_x);
 			r_c_iir_2H_y = uz_filter_init(filter_config_rc_2H_y);
@@ -422,6 +319,16 @@ int main(void)
 			// Matlab Resonant Controller
             uz_resonant_controller_init(&r_c_2H_x);
             uz_resonant_controller_init(&r_c_2H_y);
+            uz_resonant_controller_init(&r_c_6H_x);
+            uz_resonant_controller_init(&r_c_6H_y);
+            uz_resonant_controller_init(&r_c_2H_d);
+            uz_resonant_controller_init(&r_c_2H_q);
+
+            uz_resonant_controller_init(&r_c_2H_z1);
+            uz_resonant_controller_init(&r_c_2H_z2);
+            uz_resonant_controller_init(&r_c_3H_z1);
+            uz_resonant_controller_init(&r_c_3H_z2);
+
 
             initialization_chain = init_FOC;
             break;

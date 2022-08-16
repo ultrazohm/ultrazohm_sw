@@ -85,8 +85,14 @@ extern float m_xy_s_currents[2];
 extern float ref_xy_s_currents[2];
 extern float m_xy_n_currents[2];
 extern float ref_xy_n_currents[2];
+extern float ref_z1z2_voltage[2];
 
+extern float ref_z1z2_n_voltage[2];
+extern float ref_z1z2_s_voltage[2];
 
+extern float z1z2_error[2];
+extern float error_z1z2_s[2];
+extern float error_z1z2_n[2];
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -165,11 +171,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_MOVAVG_c2] = &filteredFDIndices[5];
 
 	//R_FD_eval
-
-	js_ch_observable[JSO_Testvalue_1] = &ref_xy_voltage[0];
-	js_ch_observable[JSO_Testvalue_2] = &ref_xy_voltage[1];
-	js_ch_observable[JSO_Testvalue_3] = &ref_xy_voltage[0];
-	js_ch_observable[JSO_Testvalue_4] = &ref_xy_voltage[1];
+	js_ch_observable[JSO_Testvalue_1] = &ref_z1z2_n_voltage[0];
+	js_ch_observable[JSO_Testvalue_2] = &ref_z1z2_n_voltage[1];
+	js_ch_observable[JSO_Testvalue_3] = &ref_z1z2_s_voltage[0];
+	js_ch_observable[JSO_Testvalue_4] = &ref_z1z2_s_voltage[1];
 	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_currents.alpha;
 	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_currents.beta;
 	js_ch_observable[JSO_Testvalue_7] = &ref_xy_currents[0];
@@ -183,10 +188,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_12] = &ref_xy_voltage[1];
 	js_ch_observable[JSO_Testvalue_13] = &m_xy_s_currents[0];
 	js_ch_observable[JSO_Testvalue_14] = &m_xy_s_currents[1];
-	js_ch_observable[JSO_Testvalue_15] = &ref_xy_s_currents[0];
-	js_ch_observable[JSO_Testvalue_16] = &ref_xy_s_currents[1];
-	js_ch_observable[JSO_Testvalue_17] = &m_xy_n_currents[0];
-	js_ch_observable[JSO_Testvalue_18] = &m_xy_n_currents[1];
+	js_ch_observable[JSO_Testvalue_15] = &z1z2_error[0];
+	js_ch_observable[JSO_Testvalue_16] = &z1z2_error[1];
+	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
+	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
 
 	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
 

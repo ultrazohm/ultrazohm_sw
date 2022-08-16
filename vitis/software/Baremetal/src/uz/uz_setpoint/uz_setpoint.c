@@ -180,8 +180,8 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
             float Psi_divided_Ld = self->config.config_PMSM.Psi_PM_Vs / self->config.config_PMSM.Ld_Henry;
             output.d = (-Psi_divided_Ld) + ((1.0f / self->config.config_PMSM.Ld_Henry) * sqrtf((V_SV_squared / omega_squared) - (Lq_squared * iq_fw_squared)));
             id_limit = sqrtf(I_max_squared - iq_fw_squared);
-            output.d = uz_signals_saturation(output.d, 0, -id_limit);//To prevent id being positive
-            break;            
+            output.d = uz_signals_saturation(output.d, 0.0f, -id_limit);//To prevent id being positive
+            break;
 
         default:
             uz_assert(0);

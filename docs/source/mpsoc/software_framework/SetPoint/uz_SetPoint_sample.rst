@@ -49,9 +49,10 @@ Description
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=SetPoint,rounded corners,fit=(STP) (MTPA)(FW) ,inner sep=5pt,minimum width=5cm] {};
   \end{scope}
-  \node[block,name=input1, below left = -7cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{m}$\\ \tiny{float}};
+  \node[block,name=input1, below left = -8cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$\omega_{m}$\\ \tiny{float}};
   \node[block,name=input2, below = 0.5cm of input1,drop shadow,minimum width=2cm, align=center] {$M_{ref}$\\ \tiny{float}};
   \node[block,name=input4, below = 0.5cm of input2,drop shadow,minimum width=2cm, align=center] { $V_{DC}$\\ \tiny{float}};
+  \node[block,name=input7, below = 0.5cm of input4,drop shadow,minimum width=2cm, align=center] { $i_{meas}$\\ \tiny{uz\_3ph\_dq\_t}};
   \node[block,name=input5, above =1cm of SetPoint,drop shadow,minimum width=2cm, align=center] { instance\\ \tiny{uz\_SetPoint\_t}};
   \node[block,name=input6, left = 1cm of input5,drop shadow,minimum width=2cm, align=center] {config\\ \tiny{struct  uz\_SetPoint\_config}};
   \node[block,name=output, below right= -5.5cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_3ph\_dq\_t}};
@@ -63,14 +64,18 @@ Description
   \draw[->](input2.east) -- (SetPoint.west |- input2.east);
   \draw[->](input4.east) -- (SetPoint.west |- input4.east);
   \draw[->](input6.east) -- (input5.west);
+  \draw[->](input7.east) -- (SetPoint.west |- input7.east);
+  \draw[->]($(FW.north)+(0.5,0)$) -- ($(MTPA.south)+(0.5,0)$) ;
+  \draw[<-]($(FW.north)+(-0.5,0)$) -- ($(MTPA.south)+(-0.5,0)$) ;
+  \node[name=omega_cut, below = 0cm of MTPA]{$\omega_{cut}$};
   \end{tikzpicture}
 
 Calculates the reference currents depending on the user selection. 
 Either an MTPA or a field-weakening is active, depending on the operating condition of the machine.
 The reference currents are always limited to the max. allowed current. 
 I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{I_{d,ref}^2 + I_{q,ref}^2}` will be lower than the max allowed current.
-If a manual :math:`I_{d,ref}` is set in the MPTA state, this current overwrites the calculated :math:`I_{d,MTPA}` current.
-In MTPA operation the :math:`I_q` will get priority, whilst in the field-weakening case :math:`I_d` will get priority.
+If a manual :math:`I_{d,ref}` is set in the MPTA state, this current will be added on top of the :math:`I_{d,MTPA}` current.
+In FW operation, the :math:`I_{d,ref}` will be ignored.
 The cut-off rotational speed for the field-weakening is calculated like the following[[#Wilfling]_].:
 
 .. math::
@@ -97,8 +102,8 @@ for :math:`\omega_{el} > \omega_c\\`:
   I_{q,fw} &= I_{q,MTPA}\\
   I_{q,fw,max} &= \sqrt{I_{max}^2 - I_{d,fw}^2}
 
-I-PMSM[[#Schroeder]_ S.1095ff.][[#matlab]_]
--------------------------------------------
+I-PMSM[[#Schroeder]_ S.1095ff.]
+-------------------------------
 
 .. warning::
 

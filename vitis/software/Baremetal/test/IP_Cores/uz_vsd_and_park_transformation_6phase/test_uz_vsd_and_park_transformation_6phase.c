@@ -96,5 +96,46 @@ void test_uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_i0plus_i0
    TEST_ASSERT_FAIL_ASSERT(uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_i0plus_i0minus(testpointer));
 }
 
+void test_uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(void)
+{
+   uz_vsd_and_park_transformation_6phase_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
+   uz_vsd_and_park_transformation_6phase_t* test_instance = uz_vsd_and_park_transformation_6phase_init(config);
+
+   float ia1_expected = -4.25f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_a1_ExpectAndReturn(config.base_address, ia1_expected);
+
+   float ib1_expected = 3.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_b1_ExpectAndReturn(config.base_address, ib1_expected);
+
+   float ic1_expected = 6.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_c1_ExpectAndReturn(config.base_address, ic1_expected);
+
+   float ia2_expected = -7.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_a2_ExpectAndReturn(config.base_address, ia2_expected);
+
+   float ib2_expected = 9.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_b2_ExpectAndReturn(config.base_address, ib2_expected);
+
+   float ic2_expected = -9.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_c2_ExpectAndReturn(config.base_address, ic2_expected);
+
+
+
+   uz_6ph_abc_t currents = uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(test_instance);
+   
+   TEST_ASSERT_EQUAL_FLOAT(currents.a1, ia1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.b1, ib1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.c1, ic1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.a2, ia2_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.b2, ib2_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.c2, ic2_expected);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2_pointer(void)
+{
+   uz_vsd_and_park_transformation_6phase_t* testpointer = NULL;
+   TEST_ASSERT_FAIL_ASSERT(uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(testpointer));
+}
+
 
 #endif // TEST

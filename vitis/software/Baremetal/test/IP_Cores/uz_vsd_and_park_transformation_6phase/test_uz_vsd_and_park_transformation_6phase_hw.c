@@ -122,4 +122,70 @@ void test_uz_vsd_and_park_transformation_6phase_hw_get_i_0_minus(void){
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_a1(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_a1_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_a1(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_b1(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_b1_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_b1(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_c1(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_c1_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_c1(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_a2(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_a2_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_a2(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_b2(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_b2_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_b2(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_hw_get_i_c2(void){
+        struct uz_fixedpoint_definition_t fixedpoint_definition = {
+        .fractional_bits = 11,
+        .integer_bits = 7,
+        .is_signed = true};
+    float expected_return_value = -1.0;
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+i_c2_axi_Data_VSD_and_Park_transformation,fixedpoint_definition,expected_return_value);
+    float actual_return_value = uz_vsd_and_park_transformation_6phase_hw_get_i_c2(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
 #endif // TEST

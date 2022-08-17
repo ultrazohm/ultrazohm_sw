@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.109
+<td class="summaryTableSndColOddRow">1.113
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">15-Aug-2022 13:24:16
+<td class="summaryTableSndColOddRow">17-Aug-2022 10:05:48
 </td>
 </tr>
 <tr>
@@ -517,6 +517,90 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 </tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:261')">i_a1_axi</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En11
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"124"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:262')">i_b1_axi</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix18_En11
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"128"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:263')">i_c1_axi</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En11
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"12C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:264')">i_a2_axi</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix18_En11
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"130"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:265')">i_b2_axi</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En11
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"134"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:266')">i_c2_axi</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix18_En11
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"138"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -557,7 +641,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2208151324
+<td>contains unique IP timestamp (yymmddHHMM): 2208171005
 </td>
 </tr>
 <tr>
@@ -632,6 +716,54 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 <td class="distinctCellColor">data register for Outport i_0_minus_axi
 </td>
 </tr>
+<tr>
+<td>i_a1_axi_Data
+</td>
+<td>0x124
+</td>
+<td>data register for Outport i_a1_axi
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">i_b1_axi_Data
+</td>
+<td class="distinctCellColor">0x128
+</td>
+<td class="distinctCellColor">data register for Outport i_b1_axi
+</td>
+</tr>
+<tr>
+<td>i_c1_axi_Data
+</td>
+<td>0x12C
+</td>
+<td>data register for Outport i_c1_axi
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">i_a2_axi_Data
+</td>
+<td class="distinctCellColor">0x130
+</td>
+<td class="distinctCellColor">data register for Outport i_a2_axi
+</td>
+</tr>
+<tr>
+<td>i_b2_axi_Data
+</td>
+<td>0x134
+</td>
+<td>data register for Outport i_b2_axi
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">i_c2_axi_Data
+</td>
+<td class="distinctCellColor">0x138
+</td>
+<td class="distinctCellColor">data register for Outport i_c2_axi
+</td>
+</tr>
 </tbody>
 </table>
 <br/>
@@ -661,7 +793,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 9, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 15, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>

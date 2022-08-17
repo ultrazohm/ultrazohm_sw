@@ -59,4 +59,19 @@ uz_6ph_alphabeta_t uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_
     return currents;
 }
 
+uz_6ph_abc_t uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(uz_vsd_and_park_transformation_6phase_t* self) {
+
+    uz_assert_not_NULL(self);
+    uz_6ph_abc_t currents = { 0 };
+
+    currents.a1 = uz_vsd_and_park_transformation_6phase_hw_get_i_a1(self->config.base_address);
+    currents.b1 = uz_vsd_and_park_transformation_6phase_hw_get_i_b1(self->config.base_address);
+    currents.c1 = uz_vsd_and_park_transformation_6phase_hw_get_i_c1(self->config.base_address);
+    currents.a2 = uz_vsd_and_park_transformation_6phase_hw_get_i_a2(self->config.base_address);
+    currents.b2 = uz_vsd_and_park_transformation_6phase_hw_get_i_b2(self->config.base_address);
+    currents.c2 = uz_vsd_and_park_transformation_6phase_hw_get_i_c2(self->config.base_address);
+
+    return currents;
+}
+
 #endif

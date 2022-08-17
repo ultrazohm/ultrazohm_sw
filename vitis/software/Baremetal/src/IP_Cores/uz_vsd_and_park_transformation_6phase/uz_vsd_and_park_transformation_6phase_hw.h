@@ -12,5 +12,11 @@ float uz_vsd_and_park_transformation_6phase_hw_get_i_x(uint32_t base_address);
 float uz_vsd_and_park_transformation_6phase_hw_get_i_y(uint32_t base_address);
 float uz_vsd_and_park_transformation_6phase_hw_get_i_0_plus(uint32_t base_address);
 float uz_vsd_and_park_transformation_6phase_hw_get_i_0_minus(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_a1(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_b1(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_c1(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_a2(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_b2(uint32_t base_address);
+float uz_vsd_and_park_transformation_6phase_hw_get_i_c2(uint32_t base_address);
 
 #endif // UZ_VSD_AND_PARK_TRANSFORMATION_6PHASE_HW_H

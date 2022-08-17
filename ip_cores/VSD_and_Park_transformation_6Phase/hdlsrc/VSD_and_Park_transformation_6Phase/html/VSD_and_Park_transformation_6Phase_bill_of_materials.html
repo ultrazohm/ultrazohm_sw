@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-67
+85
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-926
+1250
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-450
+558
 </td>
 
 </tr>
@@ -291,7 +291,7 @@ Add2
 
 </span>
 <br /><h5>
-Registers (44)
+Registers (62)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -321,10 +321,10 @@ Delay23
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit Register 							: 22
+18-bit Register 							: 40
 </span>
 <span name="Register_1_2" id="Register_1_2">
-<ul class="SystemdefinedCollapse" id="a588be81-c7ef-4d13-b6de-6410af225a7f" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="9177b8fc-87a1-48e1-af7f-a4a2a9145439" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:219')" name="code2model" class="code2model">
 Delay7
@@ -459,7 +459,7 @@ Delay16
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'a588be81-c7ef-4d13-b6de-6410af225a7f')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '9177b8fc-87a1-48e1-af7f-a4a2a9145439')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -579,7 +579,7 @@ Switch1
 
 </span>
 <br /><h5>
-Number of I/O Bits (450)
+Number of I/O Bits (558)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -588,7 +588,7 @@ Number of I/O Bits (450)
 Number of Input Bits: 160
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="6c22643a-2716-47bf-b582-404699e6cbe4" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="733688d9-223b-4092-8ceb-368b207110b4" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -651,7 +651,7 @@ curent_valid_in
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '6c22643a-2716-47bf-b582-404699e6cbe4')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '733688d9-223b-4092-8ceb-368b207110b4')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -660,10 +660,10 @@ curent_valid_in
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 290
+Number of Output Bits: 398
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="ea8cf968-95d5-4b04-a0b0-4650e684b860" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="3310067c-81c6-42ef-a6ff-03a11d7e164b" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -769,9 +769,45 @@ done
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:261')" name="code2model" class="code2model">
+i_a1_axi
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:262')" name="code2model" class="code2model">
+i_b1_axi
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:263')" name="code2model" class="code2model">
+i_c1_axi
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:264')" name="code2model" class="code2model">
+i_a2_axi
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:265')" name="code2model" class="code2model">
+i_b2_axi
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('VSD_and_Park_transformation_6Phase:266')" name="code2model" class="code2model">
+i_c2_axi
+</a>
+: 18 bits
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'ea8cf968-95d5-4b04-a0b0-4650e684b860')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '3310067c-81c6-42ef-a6ff-03a11d7e164b')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

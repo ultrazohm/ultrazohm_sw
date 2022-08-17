@@ -39,5 +39,13 @@ uz_3ph_dq_t uz_vsd_and_park_transformation_6phase_get_id_iq(uz_vsd_and_park_tran
  */
 uz_6ph_alphabeta_t uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_i0plus_i0minus(uz_vsd_and_park_transformation_6phase_t* self);
 
+/**
+ * @brief Read the input currents ia1, ib1, ic1, ia2, ib2 and ic2 from the IP-Core and return them
+ *
+ * @param self Pointer to driver instance
+ * @return uz_6ph_abc_t
+ */
+uz_6ph_abc_t uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(uz_vsd_and_park_transformation_6phase_t* self);
+
 
 #endif // UZ_VSD_AND_PARK_TRANSFORMATION_6PHASE_H

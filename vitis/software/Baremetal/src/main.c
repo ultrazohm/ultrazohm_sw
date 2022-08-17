@@ -221,19 +221,19 @@ struct uz_PI_Controller* PI_y_s;
 struct uz_PI_Controller* PI_y_n;
 
 const struct uz_PI_Controller_config config_iz1 = {
-	.Kp = 0.05*0.05f , //* 4.0f, //1.1f,
-	.Ki = 1/0.0008f *0.0005f,
+	.Kp = 0.05f , //* 4.0f, //1.1f,
+	.Ki = 1/0.0008f *0.0005f   *0.0f  ,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 0.5f,
-	.lower_limit = -0.5f
+	.upper_limit = 5.0f,
+	.lower_limit = -5.0f
 };
 
 const struct uz_PI_Controller_config config_iz2 = {
-	.Kp = 0.05*0.05f , //* 4.0f,//1.1f,
-	.Ki = 1/0.0008f *0.0005f,
+	.Kp = 0.05f , //* 4.0f,//1.1f,
+	.Ki = 1/0.0008f * 0.0f,		///////// I-Anteil ausgeschaltet
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 0.5f,
-	.lower_limit = -0.5f
+	.upper_limit = 5.0f,
+	.lower_limit = -5.0f
 };
 
 struct uz_PI_Controller* PI_z1_s;
@@ -255,6 +255,23 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000
 };
+
+
+
+
+uz_vsd_and_park_transformation_6phase_t* vsd_park;
+
+struct uz_vsd_and_park_transformation_6phase_config_t uz_vsd_park_config = {
+    .base_address = XPAR_UZ_SYSTEM_VSD_AND_PARK_TRANSFO_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .theta_offset =  -0.14608003f
+};
+
+
+
+
+
+
 
 
 enum init_chain
@@ -376,6 +393,9 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+
+            vsd_park = uz_vsd_and_park_transformation_6phase_init(uz_vsd_park_config);
 
 
             gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);

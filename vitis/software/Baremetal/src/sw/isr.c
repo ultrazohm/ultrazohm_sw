@@ -42,6 +42,8 @@
 
 #include "../uz/uz_6ph_opf_control/parameter_MLMT_ADT.h"
 
+#include "../IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -171,6 +173,7 @@ float ref_xy_s_currents[2];
 float m_xy_n_currents[2];
 float ref_xy_n_currents[2];
 
+float xy_error[2];
 
 float m_z1z2_currents[2];
 float ref_z1z2_currents[2];
@@ -251,6 +254,12 @@ float zw_2;
 
 int opf_phases[6] = {0};
 int num_OPF = 0;
+
+
+extern uz_vsd_and_park_transformation_6phase_t* vsd_park;
+
+uz_3ph_dq_t value_1;
+uz_6ph_alphabeta_t value_2;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -421,8 +430,7 @@ void ISR_Control(void *data)
 
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4 +0.0209)*1.067;
 	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3-0.0170)*1.04;
-	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2-0.0230)*1.08;
-	m_6ph_abc_currents.a2 = (-1.0*Global_Data.aa.A2.me.ADC_B8+0.0)*1.06;
+	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2-0.0230)*1.08;	m_6ph_abc_currents.a2 = (-1.0*Global_Data.aa.A2.me.ADC_B8+0.0)*1.06;
 	m_6ph_abc_currents.b2 = (-1.0*Global_Data.aa.A2.me.ADC_B7+0.012)*1.05;
 	m_6ph_abc_currents.c2 = (-1.0*Global_Data.aa.A2.me.ADC_B6-0.02)*1.06;
 
@@ -601,6 +609,15 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge11DutyCycle = Global_Data.rasv.ref_halfBridge11DutyCycle;
 	Global_Data.rasv.halfBridge12DutyCycle = Global_Data.rasv.ref_halfBridge12DutyCycle;
 
+/*
+	value_1 = uz_vsd_and_park_transformation_6phase_get_id_iq(vsd_park);
+
+	value_2 = uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_i0plus_i0minus(vsd_park);
+*/
+
+
+
+
 
 
     if (current_state==control_state)
@@ -700,6 +717,9 @@ void ISR_Control(void *data)
 
     	// m_xy_currents[0] = m_6ph_alphabeta_currents.x;
     	// m_xy_currents[1] = m_6ph_alphabeta_currents.y;
+
+		xy_error[0] = ref_xy_currents[0] - m_xy_currents[0];
+		xy_error[1] = ref_xy_currents[1] - m_xy_currents[1];
 
     	// ref_xy_currents[0] = 0;
 
@@ -1010,9 +1030,9 @@ void ISR_Control(void *data)
     			ref_z1z2_s_voltage[1] = ref_z1z2_s_voltage[1] + r_c_3H_z2.output.out;
     		}
 
-
-
 */
+
+
 
 
     		//inverse transform to stationary frame
@@ -1062,8 +1082,8 @@ void ISR_Control(void *data)
     		if(z1z2_2){
     			ref_z1z2_n_voltage[1] += r_c_2H_z2.output.out;
     		}
-
 */
+
 
 
 

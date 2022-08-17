@@ -75,6 +75,7 @@ extern float m_ab_n_currents_testvariable3[2];
 extern float zw_1;
 extern float zw_2;
 extern float ref_xy_voltage_n[2];
+extern float ref_xy_voltage_s[2];
 
 extern float ref_xy_currents[2];
 extern float ref_z1z2_currents[2];
@@ -93,6 +94,10 @@ extern float ref_z1z2_s_voltage[2];
 extern float z1z2_error[2];
 extern float error_z1z2_s[2];
 extern float error_z1z2_n[2];
+extern float xy_error[2];
+
+extern uz_3ph_dq_t value_1;
+extern uz_6ph_alphabeta_t value_2;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -182,19 +187,33 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_9] = &ref_z1z2_currents[0];
 	js_ch_observable[JSO_Testvalue_10] = &ref_z1z2_currents[1];
 
-
-
 	js_ch_observable[JSO_Testvalue_11] = &ref_xy_voltage[0];
 	js_ch_observable[JSO_Testvalue_12] = &ref_xy_voltage[1];
-	js_ch_observable[JSO_Testvalue_13] = &m_xy_s_currents[0];
-	js_ch_observable[JSO_Testvalue_14] = &m_xy_s_currents[1];
+	js_ch_observable[JSO_Testvalue_13] = &xy_error[0];
+	js_ch_observable[JSO_Testvalue_14] = &xy_error[1];
+	js_ch_observable[JSO_Testvalue_15] = &ref_xy_voltage_n[0];
+	js_ch_observable[JSO_Testvalue_16] = &ref_xy_voltage_n[1];
+	js_ch_observable[JSO_Testvalue_17] = &ref_xy_voltage_s[0];
+	js_ch_observable[JSO_Testvalue_18] = &ref_xy_voltage_s[1];
+
+/*
 	js_ch_observable[JSO_Testvalue_15] = &z1z2_error[0];
 	js_ch_observable[JSO_Testvalue_16] = &z1z2_error[1];
 	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
 	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
+*/
 
+/*
+	js_ch_observable[JSO_Testvalue_11] = &value_1.d;
+	js_ch_observable[JSO_Testvalue_12] = &value_1.q;
+	js_ch_observable[JSO_Testvalue_13] = &value_2.alpha;
+	js_ch_observable[JSO_Testvalue_14] = &value_2.beta;
+	js_ch_observable[JSO_Testvalue_15] = &value_2.x;
+	js_ch_observable[JSO_Testvalue_16] = &value_2.y;
+	js_ch_observable[JSO_Testvalue_17] = &value_2.z1;
+	js_ch_observable[JSO_Testvalue_18] = &value_2.z2;
 	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
-
+*/
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

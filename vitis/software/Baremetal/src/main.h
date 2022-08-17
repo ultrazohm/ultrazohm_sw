@@ -30,7 +30,9 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
+#include "xparameters.h"
 
 // UltraZohm includes
 #include "globalData.h"
@@ -43,6 +45,13 @@
 #include "include/pwm_3L_driver.h"
 
 #include "uz/uz_HAL.h"
+
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_nn/uz_nn_layer.h"
+
+#include "uz/uz_matrix/uz_matrix.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
 #include "uz/uz_PushButton/uz_PushButton_facade.h"

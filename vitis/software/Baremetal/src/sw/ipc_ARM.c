@@ -25,6 +25,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+extern uz_3ph_dq_t i_reference_A;
+extern float omega_el_rad_per_sec;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -187,15 +190,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			i_reference_A.d = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			i_reference_A.q = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+			omega_el_rad_per_sec = value;
 			break;
 
 		case (Set_Send_Field_4):

@@ -26,10 +26,13 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../include/uz_platform_state_machine.h"
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "../uz/uz_global_configuration.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +43,31 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+extern uz_pmsmModel_t *pmsm;
+extern uz_matrix_t* input;
+extern uz_nn_t *layer;
+extern uz_matrix_t input_matrix;
+
+struct uz_3ph_dq_t i_actual_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_integrated_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+float omega_el_rad_per_sec = 0.0f;
+
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+  .omega_mech_1_s=0.0f,
+  .v_d_V=0.0f,
+  .v_q_V=0.0f,
+  .load_torque=0.0f
+};
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+  .i_d_A=0.0f,
+  .i_q_A=0.0f,
+  .torque_Nm=0.0f,
+  .omega_mech_1_s=0.0f
+};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -59,6 +87,27 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        uz_pmsmModel_trigger_input_strobe(pmsm);
+        uz_pmsmModel_trigger_output_strobe(pmsm);
+        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+        i_actual_A.d = pmsm_outputs.i_d_A;
+        i_actual_A.q = pmsm_outputs.i_q_A;
+        i_integrated_error_A.d += i_error_A.d * (1/UZ_PWM_FREQUENCY); // use Forward-Euler with error of previous timestep for integration
+        i_integrated_error_A.q += i_error_A.q * (1/UZ_PWM_FREQUENCY);
+        i_error_A.d = i_reference_A.d - i_actual_A.d;
+        i_error_A.q = i_reference_A.q - i_actual_A.q;
+        float observation[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q};
+        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++)
+        {
+        	uz_matrix_set_element_zero_based(input,observation[i],0,i);
+        }
+        uz_nn_ff(layer,input);
+        uz_matrix_t* output=uz_nn_get_output_data(layer);
+        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
+        pmsm_inputs.v_d_V = uz_matrix_get_element_zero_based(output,0,0);
+        pmsm_inputs.v_q_V = uz_matrix_get_element_zero_based(output,0,1);
+        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
+        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

@@ -20,35 +20,13 @@
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
-	JSO_ZEROVALUE=0,
-	JSO_ISR_ExecTime_us,
-	JSO_ISR_Period_us,
-	JSO_lifecheck,
-	JSO_theta_mech,
-	JSO_ua,
-	JSO_ub,
-	JSO_uc,
-	JSO_ia,
-	JSO_ib,
-	JSO_ic,
-	JSO_id,
-	JSO_iq,
-	JSO_ud,
-	JSO_uq,
-	JSO_Speed_rpm,
-	JSO_LoadSpeed_rpm,
-	JSO_volt_temp,
-	JSO_SoC_init,
-	JSO_Theta_el,
-	JSO_Theta_mech,
-	JSO_LoadTheta_mech,
-	JSO_DeltaTheta_mech,
-	JSO_Wtemp,
-	JSO_Rs_mOhm,
-	JSO_Ld_mH,
-	JSO_Lq_mH,
-	JSO_PsiPM_mVs,
-	JSO_ENDMARKER
+	   JSO_ZEROVALUE=0,
+	   JSO_i_q,
+	   JSO_i_d,
+	   JSO_omega,
+	   JSO_v_d,
+	   JSO_v_q,
+	   JSO_ENDMARKER
 };
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
@@ -152,9 +130,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	i_d_ref,
+	i_q_ref,
+	omega_el,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -165,12 +143,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
-	A,
-	A,
+	rad/s,
+	,
+	,
+	,
 	SND_LABELS_ENDMARKER
 
 
@@ -178,11 +156,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
+ 	i_q,
+ 	i_d,
+ 	omega_m,
+ 	v_q,
+ 	v_d,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
 
@@ -191,12 +169,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
+	rad/s,
 	V,
 	V,
+	sec,
 	RCV_LABELS_ENDMARKER
 
 
@@ -205,12 +183,12 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

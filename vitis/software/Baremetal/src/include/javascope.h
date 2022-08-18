@@ -156,11 +156,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
- 	i_q,
  	i_d,
+ 	i_q,
  	omega_m,
- 	v_q,
  	v_d,
+ 	v_q,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
 

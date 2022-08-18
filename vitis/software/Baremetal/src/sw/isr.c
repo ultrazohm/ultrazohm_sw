@@ -48,11 +48,13 @@ extern uz_pmsmModel_t *pmsm;
 extern uz_matrix_t* input;
 extern uz_nn_t *layer;
 extern uz_matrix_t input_matrix;
+extern uz_FOC* FOC_instance;
 
 struct uz_3ph_dq_t i_actual_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t i_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t i_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t i_integrated_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t FOC_output_Volts = {0};
 
 float omega_el_rad_per_sec = 0.0f;
 
@@ -68,6 +70,14 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .torque_Nm=0.0f,
   .omega_mech_1_s=0.0f
 };
+
+enum control
+{
+	foc,
+	ddpg
+};
+
+enum control control_type = ddpg;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -87,27 +97,44 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        uz_pmsmModel_trigger_input_strobe(pmsm);
-        uz_pmsmModel_trigger_output_strobe(pmsm);
-        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-        i_actual_A.d = pmsm_outputs.i_d_A;
-        i_actual_A.q = pmsm_outputs.i_q_A;
-        i_integrated_error_A.d += i_error_A.d * (1/UZ_PWM_FREQUENCY); // use Forward-Euler with error of previous timestep for integration
-        i_integrated_error_A.q += i_error_A.q * (1/UZ_PWM_FREQUENCY);
-        i_error_A.d = i_reference_A.d - i_actual_A.d;
-        i_error_A.q = i_reference_A.q - i_actual_A.q;
-        float observation[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q};
-        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++)
-        {
-        	uz_matrix_set_element_zero_based(input,observation[i],0,i);
-        }
-        uz_nn_ff(layer,input);
-        uz_matrix_t* output=uz_nn_get_output_data(layer);
-        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
-        pmsm_inputs.v_d_V = uz_matrix_get_element_zero_based(output,0,0);
-        pmsm_inputs.v_q_V = uz_matrix_get_element_zero_based(output,0,1);
-        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
-        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    	switch (control_type) {
+    		case foc:
+    	        uz_pmsmModel_trigger_input_strobe(pmsm);
+    	        uz_pmsmModel_trigger_output_strobe(pmsm);
+    	        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	        i_actual_A.d = pmsm_outputs.i_d_A;
+    	        i_actual_A.q = pmsm_outputs.i_q_A;
+    	        FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, 24.0f, omega_el_rad_per_sec);
+    	        pmsm_inputs.v_q_V=FOC_output_Volts.q;
+    	        pmsm_inputs.v_d_V=FOC_output_Volts.d;
+    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
+    	        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    			break;
+    		case ddpg:
+    	        uz_pmsmModel_trigger_input_strobe(pmsm);
+    	        uz_pmsmModel_trigger_output_strobe(pmsm);
+    	        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	        i_actual_A.d = pmsm_outputs.i_d_A;
+    	        i_actual_A.q = pmsm_outputs.i_q_A;
+    	        i_integrated_error_A.d += i_error_A.d * (1/UZ_PWM_FREQUENCY); // use Forward-Euler with error of previous timestep for integration
+    	        i_integrated_error_A.q += i_error_A.q * (1/UZ_PWM_FREQUENCY);
+    	        i_error_A.d = i_reference_A.d - i_actual_A.d;
+    	        i_error_A.q = i_reference_A.q - i_actual_A.q;
+    	        float observation[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q,omega_el_rad_per_sec/500.0f};
+    	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++)
+    	        {
+    	        	uz_matrix_set_element_zero_based(input,observation[i],0,i);
+    	        }
+    	        uz_nn_ff(layer,input);
+    	        uz_matrix_t* output=uz_nn_get_output_data(layer);
+    	        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
+    	        pmsm_inputs.v_d_V = uz_matrix_get_element_zero_based(output,0,0);
+    	        pmsm_inputs.v_q_V = uz_matrix_get_element_zero_based(output,0,1);
+    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
+    	        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    			break;
+    		default: abort();
+    	}
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

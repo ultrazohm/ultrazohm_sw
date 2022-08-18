@@ -31,6 +31,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_FOC/uz_FOC.h"
 
 #include "xparameters.h"
 

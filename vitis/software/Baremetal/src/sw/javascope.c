@@ -62,7 +62,7 @@ int JavaScope_initalize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	   js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
 	   js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
-	   js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
+	   js_ch_observable[JSO_omega] = &pmsm_inputs.omega_mech_1_s;
 	   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
 
@@ -74,7 +74,7 @@ int JavaScope_initalize(DS_Data* data)
 	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
 	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
 	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
+	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_inputs.omega_mech_1_s);
 	   js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
 	return Status;
 }

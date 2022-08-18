@@ -71,15 +71,15 @@ const struct uz_PI_Controller_config config_id = {
    .Kp = 2.5f,
    .Ki = 200.0f,
    .samplingTime_sec = 0.0001f,
-   .upper_limit = 50.0f,
-   .lower_limit = -50.0f
+   .upper_limit = 326.0f,
+   .lower_limit = -326.0f
 };
 const struct uz_PI_Controller_config config_iq = {
    .Kp = 2.5f,
    .Ki = 200.0f,
    .samplingTime_sec = 0.0001f,
-   .upper_limit = 50.0f,
-   .lower_limit = -50.0f
+   .upper_limit = 326.0f,
+   .lower_limit = -326.0f
 };
 struct uz_FOC_config config_FOC = {
    .decoupling_select = no_decoupling,

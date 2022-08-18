@@ -32,6 +32,7 @@
 #include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 
+#define MAX_PHASE_CURRENT_AMP  20.0f
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -150,8 +151,8 @@ void ISR_Control(void *data)
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
-	if(fabs(six_ph_currents.a1) > 10.0f || fabs(six_ph_currents.b1) > 10.0f || fabs(six_ph_currents.c1) > 10.0f ||
-	   fabs(six_ph_currents.a2) > 10.0f || fabs(six_ph_currents.b2) > 10.0f || fabs(six_ph_currents.c2) > 10.0f) {
+	if(fabs(six_ph_currents.a1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c1) > MAX_PHASE_CURRENT_AMP ||
+	   fabs(six_ph_currents.a2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c2) > MAX_PHASE_CURRENT_AMP) {
 		uz_assert(0);
 	}
 
@@ -159,9 +160,10 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
+    	//speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
-    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+//    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
     	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;

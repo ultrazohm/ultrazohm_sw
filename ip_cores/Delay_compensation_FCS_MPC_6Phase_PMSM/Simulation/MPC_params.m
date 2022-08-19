@@ -19,7 +19,7 @@ u_dc = 565;          % dc link voltage
 f_c = 100000; 
 
 % Rate-Trnsition time
-Rt = 4e-6;
+Rt = 1e-8;
 
 hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
  'C:\Xilinx\Vivado\2020.1\bin\vivado.bat');

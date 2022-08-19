@@ -46,17 +46,28 @@ extern DS_Data Global_Data;
 
 extern uz_pmsmModel_t *pmsm;
 extern uz_matrix_t* input;
+uz_matrix_t* output;
 extern uz_nn_t *layer;
 extern uz_matrix_t input_matrix;
 extern uz_FOC* FOC_instance;
 
 struct uz_3ph_dq_t i_actual_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_abc_t i_actual_A_abc = {0};
 struct uz_3ph_dq_t i_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t i_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t i_integrated_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t FOC_output_Volts = {0};
+struct uz_3ph_abc_t FOC_output_abc_Volts = {0};
+struct uz_3ph_dq_t ddpg_output_V = {0};
+struct uz_3ph_abc_t ddpg_output_abc_V = {0};
+
+struct uz_DutyCycle_t dutycyle = {0};
 
 float omega_el_rad_per_sec = 0.0f;
+float V_dc_volts = 24.0f;
+float theta_offset = 0.2f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float adc_scaling = (20.0f/2.084f)/3.0f;
+float poles = 3.0f;
 
 struct uz_pmsmModel_inputs_t pmsm_inputs={
   .omega_mech_1_s=0.0f,
@@ -73,11 +84,13 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 
 enum control
 {
-	foc,
-	ddpg
+	foc_ip,
+	foc_echt,
+	ddpg_ip,
+	ddpg_echt,
 };
 
-enum control control_type = ddpg;
+enum control control_type=ddpg_echt;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -93,24 +106,39 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    if ((control_type == foc_echt) || (control_type ==ddpg_echt)) {
+    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles,2*M_PI)-theta_offset; // *3 da bei PMSM config nur 1 Pol angegeben
+    i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling; // zeigt 2.5 bei 0 an
+    i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
+    i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
+    i_actual_A = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, Global_Data.av.theta_elec);
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*poles*2.0f*M_PI/60.0f;
+    }
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	switch (control_type) {
-    		case foc:
+    		case foc_ip:
     	        uz_pmsmModel_trigger_input_strobe(pmsm);
     	        uz_pmsmModel_trigger_output_strobe(pmsm);
     	        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
     	        i_actual_A.d = pmsm_outputs.i_d_A;
     	        i_actual_A.q = pmsm_outputs.i_q_A;
-    	        FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, 24.0f, omega_el_rad_per_sec);
+    	        FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
     	        pmsm_inputs.v_q_V=FOC_output_Volts.q;
     	        pmsm_inputs.v_d_V=FOC_output_Volts.d;
-    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
+    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/poles;
     	        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     			break;
-    		case ddpg:
+    		case foc_echt:
+    			FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
+    			FOC_output_abc_Volts = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, Global_Data.av.theta_elec);
+    			dutycyle = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts, V_dc_volts);
+    	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
+    			break;
+    		case ddpg_ip:
     	        uz_pmsmModel_trigger_input_strobe(pmsm);
     	        uz_pmsmModel_trigger_output_strobe(pmsm);
     	        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
@@ -120,31 +148,51 @@ void ISR_Control(void *data)
     	        i_integrated_error_A.q += i_error_A.q * (1/UZ_PWM_FREQUENCY);
     	        i_error_A.d = i_reference_A.d - i_actual_A.d;
     	        i_error_A.q = i_reference_A.q - i_actual_A.q;
-    	        float observation[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q,omega_el_rad_per_sec/500.0f};
+    	        float observation_ip[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q,omega_el_rad_per_sec/500.0f};
     	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++)
     	        {
-    	        	uz_matrix_set_element_zero_based(input,observation[i],0,i);
+    	        	uz_matrix_set_element_zero_based(input,observation_ip[i],0,i);
     	        }
     	        uz_nn_ff(layer,input);
-    	        uz_matrix_t* output=uz_nn_get_output_data(layer);
+    	        output=uz_nn_get_output_data(layer);
     	        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
     	        pmsm_inputs.v_d_V = uz_matrix_get_element_zero_based(output,0,0);
     	        pmsm_inputs.v_q_V = uz_matrix_get_element_zero_based(output,0,1);
-    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/3.0f; // 3 polepairs
+    	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/poles;
     	        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    			break;
+    		case ddpg_echt:
+    	        i_integrated_error_A.d += i_error_A.d * (1/UZ_PWM_FREQUENCY); // use Forward-Euler with error of previous timestep for integration
+    	        i_integrated_error_A.q += i_error_A.q * (1/UZ_PWM_FREQUENCY);
+    	        i_error_A.d = i_reference_A.d - i_actual_A.d;
+    	        i_error_A.q = i_reference_A.q - i_actual_A.q;
+    	        float observation_echt[NUMBER_OF_INPUTS] = {i_error_A.d,100*i_integrated_error_A.d,i_error_A.q,100*i_integrated_error_A.q,i_actual_A.d,i_actual_A.q,omega_el_rad_per_sec/500.0f};
+    	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++)
+    	        {
+    	        	uz_matrix_set_element_zero_based(input,observation_echt[i],0,i);
+    	        }
+    	        uz_nn_ff(layer,input);
+    	        output=uz_nn_get_output_data(layer);
+    	        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
+    	        ddpg_output_V.d = uz_matrix_get_element_zero_based(output,0,0);
+    	        ddpg_output_V.q = uz_matrix_get_element_zero_based(output,0,1);
+    	        ddpg_output_abc_V = uz_transformation_3ph_dq_to_abc(ddpg_output_V, Global_Data.av.theta_elec);
+    			dutycyle = uz_FOC_generate_DutyCycles(ddpg_output_abc_V, V_dc_volts);
+    	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
     			break;
     		default: abort();
     	}
     }
+    else{
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
+    }
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

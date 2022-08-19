@@ -39,6 +39,9 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+extern uz_3ph_dq_t i_reference_A;
+extern uz_3ph_abc_t i_actual_A_abc;
+extern uz_3ph_dq_t i_actual_A;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -60,11 +63,19 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	   js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
-	   js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
-	   js_ch_observable[JSO_omega] = &pmsm_inputs.omega_mech_1_s;
-	   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
-	   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
+	//   js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
+	//   js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
+	//   js_ch_observable[JSO_omega] = &pmsm_inputs.omega_mech_1_s;
+	//   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
+	//   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
+	js_ch_observable[JSO_i_d] 			= &i_actual_A.d;
+	js_ch_observable[JSO_i_q] 			= &i_actual_A.q;
+	js_ch_observable[JSO_i_d_ref] 			= &i_reference_A.d;
+	js_ch_observable[JSO_i_q_ref] 			= &i_reference_A.q;
+	js_ch_observable[JSO_i_a] 			= &i_actual_A_abc.a;
+	js_ch_observable[JSO_i_b] 			= &i_actual_A_abc.b;
+	js_ch_observable[JSO_i_c] 			= &i_actual_A_abc.c;
+	js_ch_observable[JSO_theta_elec] 		= &data->av.theta_elec;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

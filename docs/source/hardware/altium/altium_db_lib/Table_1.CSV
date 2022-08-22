@@ -16,7 +16,7 @@ ComponentLink6Description,,"See ""ComponentLink1Description""",
 ComponentLink6URL,,"See ""ComponentLink1URL""",
 Component Type,,Type of the component,x
 Description,,A descritption make the usage of the component easier to the designer,x
-Device Package,603,0603/ 0805…,
+Device Package,0603,0603/0805…,
 Footprint Path,footprints/Capacitor - Chip/PCB - CAPACITOR - CHIP - CAPC_0603.PCBLIB,Path were the footprint is saved,x
 Footprint Path 2,,"See ""Footprint Path""",
 Footprint Path 3,,"See ""Footprint Path""",

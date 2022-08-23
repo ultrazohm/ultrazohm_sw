@@ -8,7 +8,7 @@
 struct uz_delay_compensation_fcs_mpc_6phase_t {
     bool is_ready;
     struct uz_delay_compensation_fcs_mpc_6phase_config_t config;
-   // struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values;
+    struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values;
 };
 
 static uint32_t instance_counter = 0U;
@@ -43,8 +43,8 @@ uz_delay_compensation_fcs_mpc_6phase_t* uz_delay_compensation_fcs_mpc_6phase_ini
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_use_AXI(self->config.base_address, self->config.use_AXI);
     return (self);
 }
-/*
-void uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(uz_delay_compensation_fcs_mpc_6phase_t* self, uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values){
+
+void uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(uz_delay_compensation_fcs_mpc_6phase_t* self, struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values){
     
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -59,9 +59,9 @@ void uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(uz_delay_compensat
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_iy_measured(self->config.base_address, AXI_values.iy_measured);
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_omega_m_measured(self->config.base_address, AXI_values.omega_m_measured);
 }
-*/
-/*
-uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_fcs_mpc_6phase_pmsm_get_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_fcs_mpc_6phase_t* self){
+
+
+uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_fcs_mpc_6phase_t* self){
 
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -74,5 +74,5 @@ uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_fcs_mpc_6phase_pmsm_get_idk1_
 
     return currents;
 }
-*/
+
 #endif

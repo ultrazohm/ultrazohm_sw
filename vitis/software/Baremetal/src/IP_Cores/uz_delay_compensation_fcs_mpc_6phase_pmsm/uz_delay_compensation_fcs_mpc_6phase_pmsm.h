@@ -4,15 +4,15 @@
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
 /**
- * @brief Object data type definitions of the optional AXI_values for the delay_compensation_fcs_mpc_6phase_pmsm IP-Core driver
+ * @brief Object data type definitions of the output AXI_values for the delay_compensation_fcs_mpc_6phase_pmsm IP-Core driver
  * 
  */
-//typedef struct uz_6ph_idk1_iqk1_ixk1_iyk1_t{
-//    float id_k_1;    /**< Amplitude of the predicted id component */
-//    float iq_k_1;     /**< Amplitude of the predicted iq component */
-//    float ix_k_1;        /**< Amplitude of the predicted ix component */
-//    float iy_k_1;        /**< Amplitude of the predicted iy component */
-//}uz_6ph_idk1_iqk1_ixk1_iyk1_t;
+typedef struct uz_6ph_idk1_iqk1_ixk1_iyk1_t{
+    float id_k_1;    /**< Amplitude of the predicted id component */
+    float iq_k_1;     /**< Amplitude of the predicted iq component */
+    float ix_k_1;        /**< Amplitude of the predicted ix component */
+    float iy_k_1;        /**< Amplitude of the predicted iy component */
+}uz_6ph_idk1_iqk1_ixk1_iyk1_t;
 
 
 /**
@@ -35,17 +35,17 @@ struct uz_delay_compensation_fcs_mpc_6phase_config_t{
     _Bool use_AXI; /**< true when AXI_values in use */
 };  
 
- //struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t{
- //   float last_applied_optimal_voltage_ud; /**< last applied optimal voltge ud */ 
- //   float last_applied_optimal_voltage_uq; /**< last applied optimal voltge uq */
- //   float last_applied_optimal_voltage_ux; /**< last applied optimal voltge ux */
- //   float last_applied_optimal_voltage_uy; /**< last applied optimal voltge uy */
- //   float id_measured; /**< id current */
- //   float iq_measured; /**< iq current */
- //   float ix_measured; /**< ix current */
- //   float iy_measured; /**< iy current */
- //   float omega_m_measured; /**< omega_mech */
- //};
+ struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t{
+    float last_applied_optimal_voltage_ud; /**< last applied optimal voltge ud */ 
+    float last_applied_optimal_voltage_uq; /**< last applied optimal voltge uq */
+    float last_applied_optimal_voltage_ux; /**< last applied optimal voltge ux */
+    float last_applied_optimal_voltage_uy; /**< last applied optimal voltge uy */
+    float id_measured; /**< id current */
+    float iq_measured; /**< iq current */
+    float ix_measured; /**< ix current */
+    float iy_measured; /**< iy current */
+    float omega_m_measured; /**< omega_mech */
+ };
 
 /**
  * @brief Initialize an instance of the driver for the delay_compensation_fcs_mpc_6phase_pmsm IP-Core
@@ -60,7 +60,7 @@ uz_delay_compensation_fcs_mpc_6phase_t* uz_delay_compensation_fcs_mpc_6phase_ini
  * @param self Pointer to driver instance
  * @param AXI_values AXI values for the instance 
 */
-//void uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(uz_delay_compensation_fcs_mpc_6phase_t* self, uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values);
+void uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(uz_delay_compensation_fcs_mpc_6phase_t* self, struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values);
 
 /**
  * @brief Read the predicted output currents id_k_1, iq_k_1, ix_k_1 and iy_k_1 from the IP-Core and return them
@@ -68,5 +68,6 @@ uz_delay_compensation_fcs_mpc_6phase_t* uz_delay_compensation_fcs_mpc_6phase_ini
  * @param self Pointer to driver instance
  * @return uz_6ph_idk1_iqk1_ixk1_iyk1_t
  */
-//uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_fcs_mpc_6phase_pmsm_get_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_fcs_mpc_6phase_t* self);
+uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_fcs_mpc_6phase_t* self);
+
 #endif // UZ_DELAY_COMPENSATION_FCS_MPC_6PHASE_PMSM_H

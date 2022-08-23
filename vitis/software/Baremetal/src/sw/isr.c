@@ -62,6 +62,9 @@ float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
                 .data=&dac_input[0],
                 .length=UZ_ARRAY_SIZE(dac_input)
             };
+
+uint32_t test_index = 1;
+float test_angle = 0.0;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -93,7 +96,8 @@ void ISR_Control(void *data)
 
     Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
     Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
-    Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+    //Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+    Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
 
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
 
@@ -106,6 +110,7 @@ void ISR_Control(void *data)
 
     uz_dac_interface_set_ouput_values(Global_Data.objects.dac_instance,&dac_input_array);
 
+    // read p.u. phase currents from ip-core
     Global_Data.av.ia1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x180),15);
     Global_Data.av.ib1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x184),15);
     Global_Data.av.ic1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x188),15);
@@ -113,6 +118,7 @@ void ISR_Control(void *data)
     Global_Data.av.ib2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x190),15);
     Global_Data.av.ic2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x194),15);
 
+    // read VSD currents from ip-core
     Global_Data.av.alpha = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x100),11);
     Global_Data.av.beta = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x104),11);
     Global_Data.av.y1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x108),11);
@@ -120,8 +126,16 @@ void ISR_Control(void *data)
     Global_Data.av.z1 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x110),11);
     Global_Data.av.z2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x114),11);
 
+    // read dq currents from ip-core
     Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x104), 16);
     Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x108), 16);
+
+    // read p.u. voltages according to index
+    uz_axi_write_uint32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x104, test_index); //write index via AXI
+    Global_Data.av.ud_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x110), 24);
+    Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x114), 24);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

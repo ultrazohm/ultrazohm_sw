@@ -1,5 +1,4 @@
 vlib work
-vcom  delay_com_ip_src_delay_comp_pkg.vhd
 vcom  delay_com_ip_src_Detect_Rise_Positive.vhd
 vcom  delay_com_ip_src_delay_compensation.vhd
 vcom  delay_com_ip_src_delay_comp.vhd

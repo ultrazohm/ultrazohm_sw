@@ -78,6 +78,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_y1]			= &data->av.y1;
 	js_ch_observable[JSO_z1]			= &data->av.z1;
 	js_ch_observable[JSO_z2]			= &data->av.z2;
+	js_ch_observable[JSO_ud_pu]			= &data->av.ud_pu;
+	js_ch_observable[JSO_uq_pu]			= &data->av.uq_pu;
+	js_ch_observable[JSO_ux_pu]			= &data->av.ux_pu;
+	js_ch_observable[JSO_uy_pu]			= &data->av.uy_pu;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_id]			= &data->av.I_d;

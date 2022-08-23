@@ -110,6 +110,8 @@ int main(void)
             uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x110, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
             uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x114, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
 
+            //debug for 6ph-VSD voltages ip-core
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR + 0x100, 0); //0=index via AXI 1=index via PL
 
             initialization_chain = print_msg;
             break;

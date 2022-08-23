@@ -95,6 +95,10 @@ typedef struct _actualValues_ {
 	float y1;
 	float z1;
 	float z2;
+	float ud_pu;
+	float uq_pu;
+	float ux_pu;
+	float uy_pu;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

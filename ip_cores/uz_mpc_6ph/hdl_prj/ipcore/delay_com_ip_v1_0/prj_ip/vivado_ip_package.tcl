@@ -2,7 +2,6 @@ create_project prj_ip {} -part xczu9cg-ffvc900-1-e -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
-add_files -norecurse {../hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd}
 add_files -norecurse {../hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/delay_com_ip_src_delay_compensation.vhd}
 add_files -norecurse {../hdl/vhdl/delay_com_ip_src_delay_comp.vhd}
@@ -31,13 +30,9 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112640261 [ipx::current_core]
+set_property core_revision 2112650370 [ipx::current_core]
 
 # Add HDL source files to IP
-ipx::add_file {hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

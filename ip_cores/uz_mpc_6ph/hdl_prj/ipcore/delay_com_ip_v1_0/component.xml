@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ed1a8120</spirit:value>
+            <spirit:value>426c2e39</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ed1a8120</spirit:value>
+            <spirit:value>426c2e39</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -416,11 +416,11 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>vd_pu_0</spirit:name>
+        <spirit:name>vd_pu</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">1727</spirit:left>
+            <spirit:left spirit:format="long">26</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -433,11 +433,11 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>vq_pu_0</spirit:name>
+        <spirit:name>vq_pu</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">1727</spirit:left>
+            <spirit:left spirit:format="long">26</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -450,11 +450,11 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>vx_pu_0</spirit:name>
+        <spirit:name>vx_pu</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">1727</spirit:left>
+            <spirit:left spirit:format="long">26</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -467,45 +467,11 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>vy_pu_0</spirit:name>
+        <spirit:name>vy_pu</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">1727</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>omega_m_pu</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">17</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>index</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long">26</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -935,10 +901,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -957,7 +919,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_02b009dc</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_40bb2ec1</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -979,11 +941,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip_axi_lite.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1074,15 +1031,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>delay_com_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112640261</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-16T15:02:08Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112650370</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-23T15:30:31Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="934f7447"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="1443af39"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="06af8266"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="8345f70e"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="cda5cdaa"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

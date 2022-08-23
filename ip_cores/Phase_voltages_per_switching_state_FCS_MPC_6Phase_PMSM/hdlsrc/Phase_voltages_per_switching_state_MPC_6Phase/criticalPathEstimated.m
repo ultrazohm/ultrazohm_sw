@@ -1,0 +1,13 @@
+open_system('gm_Phase_voltages_per_switching_state_MPC_6Phase');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/MATLAB Function', 'user2');
+annotate_port('gm_Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/MATLAB Function', 0, 1, 'cp : 2.285 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/MATLAB Function/cos_to_sincos', 'user1');
+annotate_port('gm_Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/MATLAB Function/cos_to_sincos', 0, 1, 'cp : 2.285 ns');

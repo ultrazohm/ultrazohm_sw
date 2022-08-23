@@ -16,7 +16,7 @@ clear
 u_dc = 565;          % dc link voltage
 
 % SampleTime
-%f_c = 100000; 
+f_c = 100000; 
 
 % Rate-Trnsition time
 Rt = 1e-8;

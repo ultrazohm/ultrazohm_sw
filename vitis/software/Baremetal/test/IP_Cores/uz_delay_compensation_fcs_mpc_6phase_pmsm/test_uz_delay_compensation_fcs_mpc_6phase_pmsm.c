@@ -16,6 +16,7 @@ static struct uz_delay_compensation_fcs_mpc_6phase_config_t config={
     .base_address= TEST_BASE_ADDRESS,
     .ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
     .psiPM = 1.3f,
+    .Lq =0.3f,
     .Ld = 2.3f,
     .Rs = 2.2f,
     .SampleTime = 0.01f,
@@ -44,6 +45,7 @@ void setUp(void)
    config.base_address = TEST_BASE_ADDRESS;
    config.ip_clk_frequency_Hz = TEST_IP_CORE_FRQ;
    config.psiPM = 1.3f;
+   config.Lq = 0.3f;
    config.Ld = 2.3f;
    config.Rs = 2.2f;
    config.SampleTime = 0.01f;
@@ -108,7 +110,7 @@ void test_uz_delay_compensation_fcs_mpc_6phase_set_AXI_values_test(void)
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_iy_measured_Expect(config.base_address, AXI_values.iy_measured);
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_omega_m_measured_Expect(config.base_address, AXI_values.omega_m_measured);
 
-    uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(test_instance, AXI_values );
+    uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(test_instance, AXI_values);
 }
 
 void test_uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1_test(void)

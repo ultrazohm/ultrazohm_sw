@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+// IP-Core driver delay_compensation_fcs_mpc_6phase_pmsm
+#include "IP_Cores/uz_delay_compensation_fcs_mpc_6phase_pmsm/uz_delay_compensation_fcs_mpc_6phase_pmsm.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

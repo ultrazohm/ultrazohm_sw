@@ -38,6 +38,28 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
+// IP-Core delay_compensation_fcs_mpc_6phase_pmsm
+static struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values={
+    .last_applied_optimal_voltage_ud = 35.4f,
+    .last_applied_optimal_voltage_uq = 362.0f,
+    .last_applied_optimal_voltage_ux = 68.9f,
+    .last_applied_optimal_voltage_uy = -68.9f,
+    .id_measured = -0.182f,
+    .iq_measured = 9.74f,
+    .ix_measured = 0.0303f,
+    .iy_measured = 0.162f,
+    .omega_m_measured = 0.5f
+};
+
+struct uz_6ph_idk1_iqk1_ixk1_iyk1_t currents = {0};
+
+extern uz_delay_compensation_fcs_mpc_6phase_t* test_instance;
+
+extern float id_k_1;
+extern float iq_k_1;
+extern float ix_k_1;
+extern float iy_k_1;
+
 // Global variable structure
 extern DS_Data Global_Data;
 
@@ -54,6 +76,14 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // IP-Core delay_compensation_fcs_mpc_6phase_pmsm
+    uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(test_instance, AXI_values);
+    currents = uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1(test_instance);
+    id_k_1 = currents.id_k_1;
+    iq_k_1 = currents.iq_k_1;
+    ix_k_1 = currents.ix_k_1;
+    iy_k_1 = currents.iy_k_1;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

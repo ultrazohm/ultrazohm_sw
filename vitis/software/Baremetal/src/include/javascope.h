@@ -34,7 +34,7 @@ enum JS_OberservableData {
 	JSO_thetapendulum,
 	JSO_position_abs,
 	JSO_position_ref,
-	JSO_dqn_chart_position,
+	JSO_dqn_chart_error,
 	JSO_dqn_angle_derv,
 	JSO_dqn_chart_position_derv,
 	JSO_dqn_sin_angle,

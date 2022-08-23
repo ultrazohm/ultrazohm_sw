@@ -75,7 +75,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia] 				= &data->mv.measurement_current.a;
 	js_ch_observable[JSO_ib] 				= &data->mv.measurement_current.b;
 	js_ch_observable[JSO_ic] 				= &data->mv.measurement_current.c;
-	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;
+	js_ch_observable[JSO_dqn_chart_error] 	= &data->obs.dqn_chart_error;
 	js_ch_observable[JSO_dqn_angle_derv] 		= &data->obs.dqn_angle_derv;
 	js_ch_observable[JSO_dqn_chart_position_derv]= &data->obs.dqn_chart_position_derv;
 	js_ch_observable[JSO_dqn_angle] = 				&data->obs.dqn_angle;

@@ -153,6 +153,7 @@ typedef struct _dqn_observation_ {
     float dqn_angle_raw;
 	float dqn_chart_position_derv_raw;
     float dqn_angle_derv_raw;
+	float dqn_chart_error;
 	float dqn_chart_position;
     float dqn_angle_derv;
     float dqn_angle;

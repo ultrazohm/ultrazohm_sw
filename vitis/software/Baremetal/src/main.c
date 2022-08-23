@@ -17,9 +17,9 @@
 #include "main.h"
 
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 400
+#define DQN__CONTROL_FREQUENCY 40
 #define NUMBER_OF_INPUTS 5
-#define NUMBER_OF_OUTPUTS 5
+#define NUMBER_OF_OUTPUTS 3
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 128
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 128
@@ -238,7 +238,7 @@ static void dqn_step(void)
 	input_nn[0]=Global_Data.obs.dqn_sin_angle;
 	input_nn[1]=Global_Data.obs.dqn_cos_angle;
 	input_nn[2]=Global_Data.obs.dqn_chart_position_derv;
-	input_nn[3]=Global_Data.obs.dqn_chart_position;
+	input_nn[3]=Global_Data.obs.dqn_chart_error;
 	input_nn[4]=Global_Data.obs.dqn_angle_derv;
     uz_nn_ff(Global_Data.objects.uz_nn_instance, Global_Data.objects.input_instance);
 }
@@ -247,16 +247,10 @@ void Reset_global_Data(DS_Data *data)
 	data->obs.dqn_angle_raw=0.0f;
 	data->obs.dqn_chart_position_derv_raw=0.0f;
 	data->obs.dqn_angle_derv_raw=0.0f;
-	data->obs.dqn_chart_position=0.0f;
+	data->obs.dqn_chart_error=0.0f;
 	data->obs.dqn_angle_derv=0.0f;
 	data->obs.dqn_angle=0.0f;
 	data->obs.dqn_chart_position_derv=0.0f;
 	data->obs.dqn_sin_angle=0.0f;
 	data->obs.dqn_cos_angle=0.0f;
-//	data->mv.dq_measurement_current.d=0.0f;
-//	data->mv.dq_measurement_current.q=0.0f;
-//	data->mv.dq_measurement_current.zero=0.0f;
-//	data->mv.measurement_current.a=0.0f;
-//	data->mv.measurement_current.b=0.0f;
-//	data->mv.measurement_current.c=0.0f;
 }

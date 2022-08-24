@@ -1985,7 +1985,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112640261">
+		<CoreRevision value="2112651734">
 		</CoreRevision>
 		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/delay_com_ip_v1_0/component.xml">
 		</ComponentPath>

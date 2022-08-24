@@ -31,6 +31,11 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+float v_d;
+float v_q;
+float v_x;
+float v_y;
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -74,6 +79,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_v_d]	= &v_d;
+	js_ch_observable[JSO_v_q]	= &v_q;
+	js_ch_observable[JSO_v_x]	= &v_x;
+	js_ch_observable[JSO_v_y]	= &v_y;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

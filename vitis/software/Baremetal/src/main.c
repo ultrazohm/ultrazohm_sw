@@ -52,6 +52,16 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+// IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_config_t config={
+    .base_address= XPAR_UZ_SYSTEM_PHASE_VOLTAGES_PER_S_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .theta_el_offset=0.5f,
+    .u_dc_link_voltage=565.0f,
+    .use_AXI=1
+};
+uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* test_instance;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -76,6 +86,10 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
+            // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+            test_instance = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_init(config);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

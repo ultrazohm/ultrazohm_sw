@@ -54,6 +54,10 @@
 
 #include "include/pwm_init.h"
 
+// IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+#include "IP_Cores/uz_phase_voltages_per_switching_state_fcs_mpc_6phase/uz_phase_voltages_per_switching_state_fcs_mpc_6phase.h"
+
+
 
 //----------------------------------------------------
 // FUNCTIONS

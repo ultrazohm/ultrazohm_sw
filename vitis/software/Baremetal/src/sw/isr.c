@@ -49,11 +49,34 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+// IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+extern uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* test_instance;
+
+static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_AXI_values_t AXI_values={
+    .theta_el_AXI=2.4f,
+    .Index_AXI=55
+};
+
+struct uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t voltage;
+
+extern float v_d;
+extern float v_q;
+extern float v_x;
+extern float v_y;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+    uz_phase_voltages_per_switching_state_fcs_mpc_6phase_set_AXI_values(test_instance, AXI_values);
+    voltage = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_read_dvoltage_qvoltage_xvoltage_yvoltage(test_instance);
+	v_d = voltage.d;
+	v_q = voltage.q;
+	v_x = voltage.x;
+	v_y = voltage.y;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

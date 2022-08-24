@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Wed Aug 24 09:20:23 2022
-# Process ID: 20624
+# Start of session at: Wed Aug 24 16:14:19 2022
+# Process ID: 17152
 # Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/delay_com_ip_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/delay_com_ip_v1_0/prj_ip/vivado.log
@@ -33,8 +33,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_comp_pkg.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_comp_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_compensation.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_compensation.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_comp.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_src_delay_comp.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -49,4 +47,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_axi_lite.vhd" alrea
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/delay_com_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed Aug 24 09:20:35 2022...
+INFO: [Common 17-206] Exiting Vivado at Wed Aug 24 16:14:30 2022...

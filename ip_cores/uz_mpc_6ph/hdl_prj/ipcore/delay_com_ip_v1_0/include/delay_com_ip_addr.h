@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\delay_com_ip_v1_0\include\delay_com_ip_addr.h
  * Description:       C Header File
- * Created:           2022-08-24 09:20:20
+ * Created:           2022-08-24 16:14:17
 */
 
 #ifndef DELAY_COM_IP_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_delay_com_ip                   0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_delay_com_ip                  0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_delay_com_ip               0x8  //contains unique IP timestamp (yymmddHHMM): 2208240920
+#define  IPCore_Timestamp_delay_com_ip               0x8  //contains unique IP timestamp (yymmddHHMM): 2208241614
 #define  omega_m_pu_Data_delay_com_ip                0x100  //data register for Inport omega_m_pu
 #define  id_pred_pu_AXI_Data_delay_com_ip            0x104  //data register for Outport id_pred_pu_AXI
 #define  iq_pred_pu_AXI_Data_delay_com_ip            0x108  //data register for Outport iq_pred_pu_AXI

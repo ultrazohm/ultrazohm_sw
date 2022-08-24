@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6be9cc1b</spirit:value>
+            <spirit:value>d19d8709</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6be9cc1b</spirit:value>
+            <spirit:value>d19d8709</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -909,10 +909,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/delay_com_ip_src_delay_compensation.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip_src_delay_comp.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -923,7 +919,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_4389fd54</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5fc33b51</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -955,11 +951,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/delay_com_ip_src_delay_compensation.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1040,14 +1031,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>delay_com_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112651320</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-24T07:20:35Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112651734</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-08-24T14:14:29Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="caaafe13"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3242dbbe"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="8345f70e"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="cda5cdaa"/>
     </xilinx:packagingInfo>

@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/delay_com_ip_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="38c0b01ee6de4b588416ce8940663ded"/>
+    <Option Name="Id" Val="e6c1f6e170414b508cce591331a7123d"/>
     <Option Name="Part" Val="xczu9cg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -98,12 +98,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/delay_com_ip_src_Detect_Rise_Positive.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/delay_com_ip_src_delay_compensation.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

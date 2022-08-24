@@ -146,11 +146,11 @@ Summary Section
 </font>
 
 </a>
-<hr>Critical Path Delay : 1.726 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:55')" name="code2model" class="code2model">
-Delay
+<hr>Critical Path Delay : 6.667 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:44')" name="code2model" class="code2model">
+Delay20
 </a>
-<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:54')" name="code2model" class="code2model">
-delay_compensation
+<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:38')" name="code2model" class="code2model">
+Delay15
 </a>
 <br>Highlight Critical Path: <a href="matlab:run('hdl_prj\hdlsrc\uz_mpc_delay_comp\criticalPathEstimated')">hdl_prj\hdlsrc\uz_mpc_delay_comp\criticalPathEstimated.m</a> <br>Highlight Uncharacterized blocks: <a href="matlab:run('hdl_prj\hdlsrc\uz_mpc_delay_comp\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_mpc_delay_comp\highlightCriticalPathEstimationOffendingBlocks.m</a> <br><br /><br /><a name="Critical Path Details">
 <font size="+1" color="#000066">
@@ -200,8 +200,8 @@ Block Path
 0.0000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:55')" name="code2model" class="code2model">
-Delay
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:44')" name="code2model" class="code2model">
+Delay20
 </a>
 
 </td>
@@ -212,14 +212,14 @@ Delay
 2
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.7100
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.7100
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:30:4')" name="code2model" class="code2model">
-Positive
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:154')" name="code2model" class="code2model">
+Add2_stage2
 </a>
 
 </td>
@@ -230,14 +230,14 @@ Positive
 3
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.3740
+1.3920
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.6820
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:30:3')" name="code2model" class="code2model">
-FixPt Relational Operator
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:155')" name="code2model" class="code2model">
+Add2_stage3
 </a>
 
 </td>
@@ -248,14 +248,14 @@ FixPt Relational Operator
 4
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.7260
+2.0740
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.3520
+0.6820
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:157')" name="code2model" class="code2model">
-Switch28
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:156')" name="code2model" class="code2model">
+Add2_stage4
 </a>
 
 </td>
@@ -266,14 +266,14 @@ Switch28
 5
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.7260
+6.0220
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.0000
+3.9480
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:140')" name="code2model" class="code2model">
-Goto5
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:172')" name="code2model" class="code2model">
+Product5
 </a>
 
 </td>
@@ -284,14 +284,14 @@ Goto5
 6
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.7260
+6.6670
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.0000
+0.6450
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:120')" name="code2model" class="code2model">
-From7
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:157')" name="code2model" class="code2model">
+Add3
 </a>
 
 </td>
@@ -302,14 +302,50 @@ From7
 7
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.7260
+6.6670
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
 0.0000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:54')" name="code2model" class="code2model">
-delay_compensation
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:139')" name="code2model" class="code2model">
+Goto32
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+8
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+6.6670
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:93')" name="code2model" class="code2model">
+From19
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+9
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+6.6670
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_delay_comp:38')" name="code2model" class="code2model">
+Delay15
 </a>
 
 </td>

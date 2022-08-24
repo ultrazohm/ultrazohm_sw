@@ -25,7 +25,7 @@ struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     float theta_el_offset; /**< Offset of theta_el */
     float u_dc_link_voltage; /**< link voltage of the 6-Phase 2-level inverter */
-    _BOOL use_AXI; /** true when AXI_values in use */
+    _Bool use_AXI; /** true when AXI_values in use */
 };
 
 struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_AXI_values_t{

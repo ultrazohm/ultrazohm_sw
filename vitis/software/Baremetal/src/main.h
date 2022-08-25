@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+#include "IP_Cores/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

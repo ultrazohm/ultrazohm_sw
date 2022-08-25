@@ -49,11 +49,30 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+extern uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* test_instance;
+static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_AXI_values_t AXI_values={
+    .d_voltage_per_switching_state_AXI = 173.9f,
+    .q_voltage_per_switching_state_AXI = 72.19f,
+    .x_voltage_per_switching_state_AXI = -94.17f,
+    .y_voltage_per_switching_state_AXI = -163.1f,
+    .id_k_1_AXI = 0.4297f,
+    .iq_k_1_AXI = 9.988f,
+    .ix_k_1_AXI = 0.2219f,
+    .iy_k_1_AXI = -0.003051f,
+    .omega_m_measured_AXI = 313.3f
+ };
+float J_AXI;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_set_AXI_values(test_instance, AXI_values);
+    J_AXI = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(test_instance);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

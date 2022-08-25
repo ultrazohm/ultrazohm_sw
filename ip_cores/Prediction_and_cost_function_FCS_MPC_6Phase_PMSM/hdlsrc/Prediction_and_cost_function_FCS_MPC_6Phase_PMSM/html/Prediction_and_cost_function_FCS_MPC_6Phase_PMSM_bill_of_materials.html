@@ -1,0 +1,1413 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_9');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_7');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+17
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+406
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+3965
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+56291
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+4125
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+847
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+47
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:7')" name="code2model" class="code2model">
+HDL_DUT
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (70)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 19
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 17
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+20x1-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 10
+</span>
+<br /><span style="font-family:monospace">
+25-bit Subtractor 							: 5
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+35-bit Subtractor 							: 1
+</span>
+<br /><h5>
+Registers (659)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 314
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:67')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:192')" name="code2model" class="code2model">
+Delay56
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 40
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="e1b9ee21-6152-4b0b-b3c3-a79b97f2f3d3" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:69')" name="code2model" class="code2model">
+Delay23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:66')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:70')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:64')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:71')" name="code2model" class="code2model">
+Delay25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:63')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:72')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:62')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:61')" name="code2model" class="code2model">
+Delay16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:60')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:59')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:58')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:78')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:57')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:82')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:56')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:81')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:55')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:83')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:99')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:84')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:98')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:97')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:96')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:95')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:87')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:90')" name="code2model" class="code2model">
+Delay42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:76')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:91')" name="code2model" class="code2model">
+Delay43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:65')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:92')" name="code2model" class="code2model">
+Delay44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:54')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:93')" name="code2model" class="code2model">
+Delay45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:80')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e1b9ee21-6152-4b0b-b3c3-a79b97f2f3d3')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 13
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:73')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:165')" name="code2model" class="code2model">
+Delay47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:74')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:168')" name="code2model" class="code2model">
+Delay48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:75')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:171')" name="code2model" class="code2model">
+Delay49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:77')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:174')" name="code2model" class="code2model">
+Delay50
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 185
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 13
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 27
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 14
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_9')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 19
+</span>
+<span name="Register_1_9" id="Register_1_9">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:175')" name="code2model" class="code2model">
+Delay51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:178')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:85')" name="code2model" class="code2model">
+Delay38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:181')" name="code2model" class="code2model">
+Delay52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:86')" name="code2model" class="code2model">
+Delay39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:184')" name="code2model" class="code2model">
+Delay53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:88')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:187')" name="code2model" class="code2model">
+Delay54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:89')" name="code2model" class="code2model">
+Delay41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:190')" name="code2model" class="code2model">
+Delay55
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+2-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+25-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 7
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 5
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+20-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1633)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 220
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+real 2-to-1 Multiplexer 							: 30
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul class="SystemdefinedCollapse" id="64991c4a-0fb6-4772-9a6a-adef591e97d7" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:116')" name="code2model" class="code2model">
+Switch_on21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:115')" name="code2model" class="code2model">
+Switch_on20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:113')" name="code2model" class="code2model">
+Switch_on19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:112')" name="code2model" class="code2model">
+Switch_on18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:111')" name="code2model" class="code2model">
+Switch_on17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:110')" name="code2model" class="code2model">
+Switch_on16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:109')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:107')" name="code2model" class="code2model">
+Switch_on13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:106')" name="code2model" class="code2model">
+Switch_on12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:105')" name="code2model" class="code2model">
+Switch_on11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:104')" name="code2model" class="code2model">
+Switch_on10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:123')" name="code2model" class="code2model">
+Switch_on9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:122')" name="code2model" class="code2model">
+Switch_on8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:121')" name="code2model" class="code2model">
+Switch_on7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:120')" name="code2model" class="code2model">
+Switch_on6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:119')" name="code2model" class="code2model">
+Switch_on5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:118')" name="code2model" class="code2model">
+Switch_on4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:117')" name="code2model" class="code2model">
+Switch_on3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:114')" name="code2model" class="code2model">
+Switch_on2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:103')" name="code2model" class="code2model">
+Switch_on1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:108')" name="code2model" class="code2model">
+Switch_on14
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '64991c4a-0fb6-4772-9a6a-adef591e97d7')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:163')" name="code2model" class="code2model">
+Switch_on22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:166')" name="code2model" class="code2model">
+Switch_on23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:169')" name="code2model" class="code2model">
+Switch_on24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:172')" name="code2model" class="code2model">
+Switch_on25
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 1309
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 13
+</span>
+<span name="Multiplexer_1_7" id="Multiplexer_1_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:176')" name="code2model" class="code2model">
+Switch_on26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:179')" name="code2model" class="code2model">
+Switch_on27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:182')" name="code2model" class="code2model">
+Switch_on28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:185')" name="code2model" class="code2model">
+Switch_on29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:188')" name="code2model" class="code2model">
+Switch_on30
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+34-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (11)
+</h5>
+<span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Right 							: 1
+</span>
+<br /><h5>
+Number of I/O Bits (847)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 805
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="a6739eee-4c19-4904-9221-e82c309eda1c" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:41')" name="code2model" class="code2model">
+Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:42')" name="code2model" class="code2model">
+Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:30')" name="code2model" class="code2model">
+SampleTime_div_Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:31')" name="code2model" class="code2model">
+SampleTime_div_Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:32')" name="code2model" class="code2model">
+SampleTime_div_Lx_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:33')" name="code2model" class="code2model">
+SampleTime_div_Ly_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:34')" name="code2model" class="code2model">
+id_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:35')" name="code2model" class="code2model">
+iq_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:36')" name="code2model" class="code2model">
+ix_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:37')" name="code2model" class="code2model">
+iy_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:38')" name="code2model" class="code2model">
+Rs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:39')" name="code2model" class="code2model">
+omega_m_measured
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:40')" name="code2model" class="code2model">
+pole_pairs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:43')" name="code2model" class="code2model">
+psiPM_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:48')" name="code2model" class="code2model">
+id_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:49')" name="code2model" class="code2model">
+iq_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:50')" name="code2model" class="code2model">
+ix_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:51')" name="code2model" class="code2model">
+iy_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:44')" name="code2model" class="code2model">
+d_voltage_per_switching_state
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:45')" name="code2model" class="code2model">
+q_voltage_per_switching_state
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:46')" name="code2model" class="code2model">
+x_volatge_per_switching_state
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:47')" name="code2model" class="code2model">
+y_phase_volatge_per_switching_state
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:191')" name="code2model" class="code2model">
+use_AXI
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:164')" name="code2model" class="code2model">
+id_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:167')" name="code2model" class="code2model">
+iq_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:170')" name="code2model" class="code2model">
+ix_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:173')" name="code2model" class="code2model">
+iy_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:177')" name="code2model" class="code2model">
+omega_m_measured_AXI
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:180')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:183')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:186')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:189')" name="code2model" class="code2model">
+y_volatge_per_switching_state_AXI
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:52')" name="code2model" class="code2model">
+valid_in
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a6739eee-4c19-4904-9221-e82c309eda1c')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 42
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:124')" name="code2model" class="code2model">
+J
+</a>
+: 20 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:193')" name="code2model" class="code2model">
+J_AXI
+</a>
+: 20 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:125')" name="code2model" class="code2model">
+done
+</a>
+: 1 bit
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:101')" name="code2model" class="code2model">
+MATLAB Function
+</a>
+
+</h5>
+<h5>
+Multipliers (16)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 16
+</span>
+<br /><h5>
+Adders/Subtractors (336)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 52
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 146
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 16
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 16
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 18
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 34
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 18
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 18
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 18
+</span>
+<br /><h5>
+Registers (3305)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 659
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 1202
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 478
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 298
+</span>
+<br /><span style="font-family:monospace">
+18-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 50
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+2-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+25-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 112
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 80
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 108
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 54
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 72
+</span>
+<br /><h5>
+Multiplexers (2490)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1120
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 66
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 48
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 48
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 16
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 246
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 136
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 18
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><h5>
+Number of Shift operators (36)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 18
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 18
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:100')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:100:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

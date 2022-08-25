@@ -15,7 +15,7 @@ J = 2.5581e-4;          % rotor inertia
 % Linkvoltage of the 6 Phase 2-level inverter
 u_dc = 565;          % dc link voltage
 
-% SampleTime
+% Samplefrequenz
 f_c = 100000; 
 
 % Rate-Trnsition time

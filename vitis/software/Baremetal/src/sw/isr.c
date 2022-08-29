@@ -44,30 +44,8 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+// Variables for PMSM IP-Core
 extern uz_pmsmModel_t *pmsm;
-extern uz_matrix_t* input;
-uz_matrix_t* output;
-extern uz_nn_t *layer;
-extern uz_matrix_t input_matrix;
-extern uz_FOC* FOC_instance;
-
-struct uz_3ph_dq_t i_actual_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_abc_t i_actual_A_abc = {0};
-struct uz_3ph_dq_t i_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t i_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t i_integrated_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
-struct uz_3ph_dq_t FOC_output_Volts = {0};
-struct uz_3ph_abc_t FOC_output_abc_Volts = {0};
-struct uz_3ph_dq_t ddpg_output_V = {0};
-struct uz_3ph_abc_t ddpg_output_abc_V = {0};
-
-struct uz_DutyCycle_t dutycyle = {0};
-
-float omega_el_rad_per_sec = 0.0f;
-float V_dc_volts = 24.0f;
-float theta_offset = 0.2f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
-float adc_scaling = (20.0f/2.084f)/3.0f;
-float poles = 3.0f;
 
 struct uz_pmsmModel_inputs_t pmsm_inputs={
   .omega_mech_1_s=0.0f,
@@ -82,15 +60,66 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .omega_mech_1_s=0.0f
 };
 
+
+// Variables for NN
+extern uz_matrix_t* input;
+uz_matrix_t* output;
+extern uz_nn_t *layer;
+extern uz_matrix_t input_matrix;
+
+struct uz_3ph_dq_t ddpg_output_V = {0};
+struct uz_3ph_abc_t ddpg_output_abc_V = {0};
+
+// Variables for left motor
+extern uz_FOC* FOC_instance_left;
+
+struct uz_3ph_dq_t i_actual_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_abc_t i_actual_A_abc = {0};
+struct uz_3ph_dq_t i_reference_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_integrated_error_A = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t FOC_output_Volts = {0};
+struct uz_3ph_abc_t FOC_output_abc_Volts = {0};
+struct uz_DutyCycle_t dutycyle = {0};
+
+float omega_el_rad_per_sec = 0.0f;
+float V_dc_volts = 24.0f;
+float theta_offset = 0.2f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float adc_scaling = (20.0f/2.084f)/3.0f;
+float poles = 3.0f;
+
+// Variables for right motor
+extern uz_FOC* FOC_instance_right;
+extern uz_SpeedControl_t* Speed_control_instance;
+
+struct uz_3ph_dq_t i_actual_A_right = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_abc_t i_actual_A_abc_right = {0};
+struct uz_3ph_dq_t i_reference_A_right = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_error_A_right = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t i_integrated_error_A_right = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t FOC_output_Volts_right = {0};
+struct uz_3ph_abc_t FOC_output_abc_Volts_right = {0};
+struct uz_DutyCycle_t dutycyle_right = {0};
+
+float n_ref_rpm = 0.0f;
+float omega_el_ref_rad_per_sec_right = 0.0f;
+float omega_m_rad_per_sec_right = 0.0f;
+float omega_el_rad_per_sec_right = 0.0f;
+float theta_offset_right = 0.2f;
+float adc_scaling_right = (20.0f/2.084f)/3.0f;
+float poles_right = 3.0f;
+
+// Choose control type for left motor
 enum control
 {
 	foc_ip,
 	foc_echt,
 	ddpg_ip,
 	ddpg_echt,
+	none
 };
 
-enum control control_type=ddpg_echt;
+enum control control_type_motor_left=none;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -106,8 +135,18 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    if ((control_type == foc_echt) || (control_type ==ddpg_echt)) {
-    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles,2*M_PI)-theta_offset; // *3 da bei PMSM config nur 1 Pol angegeben
+    // right motor
+    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles_right,2*M_PI)-theta_offset_right; // *poles da bei PMSM config nur 1 Pol angegeben
+    i_actual_A_abc_right.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling_right; // zeigt 2.5 bei 0 an
+    i_actual_A_abc_right.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling_right;
+    i_actual_A_abc_right.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling_right;
+    i_actual_A_right = uz_transformation_3ph_abc_to_dq(i_actual_A_abc_right, Global_Data.av.theta_elec);
+    omega_m_rad_per_sec_right = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60.0f;
+    omega_el_rad_per_sec_right = omega_m_rad_per_sec_right*poles_right;
+
+    // left motor
+    if ((control_type_motor_left == foc_echt) || (control_type_motor_left ==ddpg_echt)) {
+    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles,2*M_PI)-theta_offset; // *poles da bei PMSM config nur 1 Pol angegeben
     i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling; // zeigt 2.5 bei 0 an
     i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
     i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
@@ -119,21 +158,30 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	switch (control_type) {
+    	// right motor
+    	n_ref_rpm = omega_el_ref_rad_per_sec_right*60.0f/(2.0f*M_PI);
+    	i_reference_A_right = uz_SpeedControl_sample(Speed_control_instance, omega_m_rad_per_sec_right, n_ref_rpm, V_dc_volts, i_reference_A_right.d);
+		FOC_output_Volts_right = uz_FOC_sample(FOC_instance_right, i_reference_A_right, i_actual_A_right, V_dc_volts, omega_el_rad_per_sec_right);
+		FOC_output_abc_Volts_right = uz_transformation_3ph_dq_to_abc(FOC_output_Volts_right, Global_Data.av.theta_elec);
+		dutycyle_right = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts_right, V_dc_volts);
+    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, dutycyle_right.DutyCycle_U, dutycyle_right.DutyCycle_V, dutycyle_right.DutyCycle_W);
+
+    	// left motor
+    	switch (control_type_motor_left) {
     		case foc_ip:
     	        uz_pmsmModel_trigger_input_strobe(pmsm);
     	        uz_pmsmModel_trigger_output_strobe(pmsm);
     	        pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
     	        i_actual_A.d = pmsm_outputs.i_d_A;
     	        i_actual_A.q = pmsm_outputs.i_q_A;
-    	        FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
+    	        FOC_output_Volts = uz_FOC_sample(FOC_instance_left, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
     	        pmsm_inputs.v_q_V=FOC_output_Volts.q;
     	        pmsm_inputs.v_d_V=FOC_output_Volts.d;
     	        pmsm_inputs.omega_mech_1_s = omega_el_rad_per_sec/poles;
     	        uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     			break;
     		case foc_echt:
-    			FOC_output_Volts = uz_FOC_sample(FOC_instance, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
+    			FOC_output_Volts = uz_FOC_sample(FOC_instance_left, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
     			FOC_output_abc_Volts = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, Global_Data.av.theta_elec);
     			dutycyle = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts, V_dc_volts);
     	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
@@ -179,6 +227,9 @@ void ISR_Control(void *data)
     	        ddpg_output_abc_V = uz_transformation_3ph_dq_to_abc(ddpg_output_V, Global_Data.av.theta_elec);
     			dutycyle = uz_FOC_generate_DutyCycles(ddpg_output_abc_V, V_dc_volts);
     	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
+    			break;
+    		case none:
+    			// Motor 1 auf was setzen?
     			break;
     		default: abort();
     	}

@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
---Date        : Tue Aug  9 11:34:54 2022
+--Date        : Fri Aug 26 14:45:32 2022
 --Host        : LAPTOP-5QRCM9NV running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -40,11 +40,9 @@ entity zusys_wrapper is
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D4_12 : in STD_LOGIC;
+    D4_13 : in STD_LOGIC;
+    D4_14 : in STD_LOGIC;
     Dig_09_Ch5 : in STD_LOGIC;
     Dig_10_Ch5 : in STD_LOGIC;
     Dig_11_Ch5 : in STD_LOGIC;
@@ -94,11 +92,6 @@ architecture STRUCTURE of zusys_wrapper is
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_09_Ch5 : in STD_LOGIC;
     Dig_10_Ch5 : in STD_LOGIC;
     Dig_11_Ch5 : in STD_LOGIC;
@@ -114,7 +107,10 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    D4_13 : in STD_LOGIC;
+    D4_12 : in STD_LOGIC;
+    D4_14 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -147,11 +143,9 @@ zusys_i: component zusys
       D3_OUT_27(0) => D3_OUT_27(0),
       D3_OUT_28(0) => D3_OUT_28(0),
       D3_OUT_29(0) => D3_OUT_29(0),
-      D4_OUT(7 downto 0) => D4_OUT(7 downto 0),
-      D4_OUT_26(0) => D4_OUT_26(0),
-      D4_OUT_27(0) => D4_OUT_27(0),
-      D4_OUT_28(0) => D4_OUT_28(0),
-      D4_OUT_29(0) => D4_OUT_29(0),
+      D4_12 => D4_12,
+      D4_13 => D4_13,
+      D4_14 => D4_14,
       Dig_09_Ch5 => Dig_09_Ch5,
       Dig_10_Ch5 => Dig_10_Ch5,
       Dig_11_Ch5 => Dig_11_Ch5,

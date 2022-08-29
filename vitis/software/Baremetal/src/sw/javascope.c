@@ -42,6 +42,8 @@ extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 extern uz_3ph_dq_t i_reference_A;
 extern uz_3ph_abc_t i_actual_A_abc;
 extern uz_3ph_dq_t i_actual_A;
+extern float omega_el_ref_rad_per_sec_right;
+extern float omega_el_rad_per_sec_right;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -70,22 +72,29 @@ int JavaScope_initalize(DS_Data* data)
 	//   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
 	js_ch_observable[JSO_i_d] 			= &i_actual_A.d;
 	js_ch_observable[JSO_i_q] 			= &i_actual_A.q;
-	js_ch_observable[JSO_i_d_ref] 			= &i_reference_A.d;
-	js_ch_observable[JSO_i_q_ref] 			= &i_reference_A.q;
+	js_ch_observable[JSO_i_d_ref] 		= &i_reference_A.d;
+	js_ch_observable[JSO_i_q_ref] 		= &i_reference_A.q;
 	js_ch_observable[JSO_i_a] 			= &i_actual_A_abc.a;
 	js_ch_observable[JSO_i_b] 			= &i_actual_A_abc.b;
 	js_ch_observable[JSO_i_c] 			= &i_actual_A_abc.c;
-	js_ch_observable[JSO_theta_elec] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_elec] 	= &data->av.theta_elec;
+	js_ch_observable[JSO_omega_el_ref] 	= &omega_el_ref_rad_per_sec_right;
+	js_ch_observable[JSO_omega_el] 		= &omega_el_rad_per_sec_right;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	   js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
-	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
-	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_inputs.omega_mech_1_s);
+	   js_slowDataArray[JSSD_FLOAT_i_d]                             = &i_actual_A.d;
+	   js_slowDataArray[JSSD_FLOAT_i_q]                             = &i_actual_A.q;
+	   js_slowDataArray[JSSD_FLOAT_i_d_ref] 						= &i_reference_A.d;
+	   js_slowDataArray[JSSD_FLOAT_i_q_ref] 					   	= &i_reference_A.q;
+	   js_slowDataArray[JSSD_FLOAT_i_a] 							= &i_actual_A_abc.a;
+	   js_slowDataArray[JSSD_FLOAT_i_b] 							= &i_actual_A_abc.b;
+	   js_slowDataArray[JSSD_FLOAT_i_c] 							= &i_actual_A_abc.c;
+	   js_slowDataArray[JSSD_FLOAT_theta_elec] 						= &data->av.theta_elec;
+	   js_slowDataArray[JSSD_FLOAT_omega_el_ref] 					= &omega_el_ref_rad_per_sec_right;
+   	   js_slowDataArray[JSSD_FLOAT_omega_el] 						= &omega_el_rad_per_sec_right;
 	   js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
 	return Status;
 }

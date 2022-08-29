@@ -27,6 +27,7 @@ extern uint32_t js_status_BareToRTOS;
 
 extern uz_3ph_dq_t i_reference_A;
 extern float omega_el_rad_per_sec;
+extern float omega_el_ref_rad_per_sec_right;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -198,11 +199,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			omega_el_rad_per_sec = value;
+			omega_el_ref_rad_per_sec_right = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			// omega_el_rad_per_sec = value; // for controlling ip-core
 			break;
 
 		case (Set_Send_Field_5):

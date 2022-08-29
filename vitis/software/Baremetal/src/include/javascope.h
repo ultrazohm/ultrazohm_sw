@@ -29,9 +29,8 @@ enum JS_OberservableData {
 	   JSO_i_b,
 	   JSO_i_c,
 	   JSO_theta_elec,
-	   JSO_omega,
-	   JSO_v_d,
-	   JSO_v_q,
+	   JSO_omega_el_ref,
+	   JSO_omega_el,
 	   JSO_ENDMARKER
 };
 
@@ -57,6 +56,14 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
+ 	JSSD_FLOAT_i_d_ref,
+ 	JSSD_FLOAT_i_q_ref,
+ 	JSSD_FLOAT_i_a,
+ 	JSSD_FLOAT_i_b,
+ 	JSSD_FLOAT_i_c,
+ 	JSSD_FLOAT_theta_elec,
+ 	JSSD_FLOAT_omega_el_ref,
+ 	JSSD_FLOAT_omega_el,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_encoderOffset,
@@ -136,9 +143,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	i_d_ref,
-	i_q_ref,
-	omega_el,
+	i_d_ref_left,
+	i_q_ref_left,
+	omega_el_ref_right,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -170,9 +177,8 @@ enum gui_button_mapping {
  	i_b,
  	i_c,
  	theta_elec,
- 	omega_m,
- 	v_d,
- 	v_q,
+ 	omega_el_ref,
+ 	omega_el,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
 
@@ -190,8 +196,7 @@ enum gui_button_mapping {
 	A,
 	rad,
 	rad/s,
-	V,
-	V,
+	rad/s,
 	sec,
 	RCV_LABELS_ENDMARKER
 
@@ -203,9 +208,14 @@ enum gui_button_mapping {
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_speed,
-	JSSD_FLOAT_u_d,
-	JSSD_FLOAT_u_q,
+ 	JSSD_FLOAT_i_d_ref,
+ 	JSSD_FLOAT_i_q_ref,
+ 	JSSD_FLOAT_i_a,
+ 	JSSD_FLOAT_i_b,
+ 	JSSD_FLOAT_i_c,
+ 	JSSD_FLOAT_theta_elec,
+ 	JSSD_FLOAT_omega_el_ref,
+ 	JSSD_FLOAT_omega_el,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER

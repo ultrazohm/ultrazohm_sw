@@ -32,6 +32,7 @@
 #include "include/uz_assertion_configuration.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 #include "xparameters.h"
 

@@ -47,6 +47,7 @@ enum init_chain
     init_software,
 	init_nn,
 	init_foc,
+	init_speed_control,
 	init_pmsm,
     init_ip_cores,
     print_msg,
@@ -59,7 +60,9 @@ enum init_chain initialization_chain = init_assertions;
 uz_pmsmModel_t *pmsm = NULL;
 uz_matrix_t* input = NULL;
 uz_nn_t *layer = NULL;
-uz_FOC* FOC_instance = NULL;
+uz_FOC* FOC_instance_left = NULL;
+uz_FOC* FOC_instance_right = NULL;
+uz_SpeedControl_t* Speed_control_instance = NULL;
 
 // config structs neural network
 // read in weights and bias from .csv
@@ -105,11 +108,15 @@ struct uz_matrix_t input_matrix={0};
 int main(void)
 {
     int status = UZ_SUCCESS;
-    // config structs of FOC
+    // config structs of FOC left motor
     struct uz_PMSM_t config_PMSM = {
-        .Ld_Henry = 3.00e-04f,
+    	.R_ph_Ohm = 0.543f,
+    	.Ld_Henry = 3.00e-04f,
         .Lq_Henry = 3.00e-04f,
-        .Psi_PM_Vs = 0.0075f};
+        .Psi_PM_Vs = 0.0075f,
+    	.polePairs = 3.0f,
+    	.J_kg_m_squared = 1.48e-05f,
+    	.I_max_Ampere = 10.0f};
     struct uz_PI_Controller_config config_id = {
         .Kp = 0.25f,
         .Ki = 158.8f,
@@ -127,6 +134,22 @@ int main(void)
         .config_PMSM = config_PMSM,
         .config_id = config_id,
         .config_iq = config_iq};
+    // config structs of FOC right motor
+    struct uz_FOC_config config_FOC_2 = {
+        .decoupling_select = 0,
+        .config_PMSM = config_PMSM,
+        .config_id = config_id,
+        .config_iq = config_iq};
+    // config struct for speed control
+    struct uz_SpeedControl_config config_speed = {
+    	.config_controller.Kp = 10.0f,
+    	.config_controller.Ki = 10.0f,
+    	.config_controller.samplingTime_sec = 0.00005f,
+    	.config_controller.upper_limit = 10.0f,
+        .config_controller.lower_limit = -10.0f,
+    	.config_PMSM = config_PMSM,
+    	.is_field_weakening_active = false
+    };
     // config struct of PMSM
     struct uz_pmsmModel_config_t pmsm_config={
     	.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
@@ -165,7 +188,12 @@ int main(void)
         	initialization_chain = init_foc;
         	break;
         case init_foc:
-            FOC_instance = uz_FOC_init(config_FOC);
+            FOC_instance_left = uz_FOC_init(config_FOC);
+            FOC_instance_right = uz_FOC_init(config_FOC_2);
+        	initialization_chain = init_speed_control;
+        	break;
+        case init_speed_control:
+            Speed_control_instance = uz_SpeedControl_init(config_speed);
         	initialization_chain = init_pmsm;
         	break;
         case init_pmsm:

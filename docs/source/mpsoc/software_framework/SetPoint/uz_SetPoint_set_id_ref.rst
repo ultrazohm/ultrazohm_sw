@@ -22,4 +22,5 @@ Example
 Description
 ===========
 
-Sets a new value for the reference :math:`i_d` current. This will overwrite, if possible, the MTPA and field-weakening :math:`i_d` current.
+Sets a new value for the manual :math:`I_{d,manual}` input current. This value will be added on top of the :math:`I_{d,MTPA}` current.
+In FW operation, this value will be ignored.

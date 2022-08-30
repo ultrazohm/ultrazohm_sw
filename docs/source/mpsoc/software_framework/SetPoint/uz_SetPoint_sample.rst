@@ -17,7 +17,8 @@ Example
      float omega_m_rad_per_sec = 1.5f;
      float M_ref_Nm = 0.0045f;
      float V_DC_Volts = 24.0f;
-     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts);
+     uz_3ph_dq_t actual_currents_Ampere = {1.0f, 2.0f, 0.0f};
+     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);
   }
 
 Description
@@ -70,12 +71,12 @@ Description
   \node[name=omega_cut, below = 0cm of MTPA]{$\omega_{cut}$};
   \end{tikzpicture}
 
-Calculates the reference currents depending on the user selection. 
-Either an MTPA or a field-weakening is active, depending on the operating condition of the machine.
+Calculates the reference currents based on the user selection. 
+Depending on the operating condition of the machine, either an MTPA or a field-weakening is active.
 The reference currents are always limited to the max. allowed current. 
 I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{I_{d,ref}^2 + I_{q,ref}^2}` will be lower than the max allowed current.
-If a manual :math:`I_{d,ref}` is set in the MPTA state, this current will be added on top of the :math:`I_{d,MTPA}` current.
-In FW operation, the :math:`I_{d,ref}` will be ignored.
+If a manual :math:`I_{d,manual}` input current is set in the MPTA state, this current will be added on top of the :math:`I_{d,MTPA}` current.
+In FW operation, the :math:`I_{d,manual}` input will be ignored.
 The cut-off rotational speed for the field-weakening is calculated like the following[[#Wilfling]_].:
 
 .. math::
@@ -90,8 +91,8 @@ SM-PMSM[[#matlab]_]
 
 .. math::
 
-  I_{d,MTPA} &= 0\\
   I_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
+  I_{d,MTPA} &= I_{d,manual}\\
 
 
 for :math:`\omega_{el} > \omega_c\\`:
@@ -110,7 +111,7 @@ I-PMSM[[#Schroeder]_ S.1095ff.]
   :math:`L_d \neq L_q` is necessary and will be checked.
 
 .. math::
-  M_{ref} &= \frac{3}{2}  p  (\psi_{PM}  I_{q,MTPA} + \frac{1}{2}  (-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}))\\
+  M_{ref} &= \frac{3}{2}  p  \left(\psi_{PM}  I_{q,MTPA} + \frac{1}{2}  \left(-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}\right)\right)\\
   0 &= I_{q,MTPA}^4 + \frac{2 M_{ref}  \psi_{PM}}{3 (L_d - L_q)^2  p}  I_{q,MTPA} - \frac{4 M_{ref}^2}{9 (L_d - L_q)^2  p^2} \\
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess being:
@@ -123,14 +124,14 @@ The d-current, depending on the saliency ratio, will be calculated like the foll
 
 .. math::
 
-  I_{d,MTPA} &= \frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2} \ \ \ for \ \ (L_q > L_d)\\
-  I_{d,MTPA} &= \frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2} \ \ \ for \ \ (L_q < L_d)\\
+  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q > L_d)\\
+  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{m,ref}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q < L_d)\\
 
 for :math:`\omega_{el} > \omega_c\\`:
 
 .. math::
 
-  M_{ref} &= \frac{3}{2}  p  (\psi_{PM}  I_{q,FW} + \frac{(L_d - L_q)}{L_d}  (-\psi_{PM} \pm \sqrt{\frac{V_{SV,max}^2}{\omega_{el}^2} - L_q^2  I_{q,FW}^2})I_{q,FW})\\
+  M_{ref} &= \frac{3}{2}  p  \left(\psi_{PM}  I_{q,FW} + \frac{(L_d - L_q)}{L_d}  \left(-\psi_{PM} \pm \sqrt{\frac{V_{SV,max}^2}{\omega_{el}^2} - L_q^2  I_{q,FW}^2}\right)I_{q,FW}\right)\\
   0 &= I_{q,MTPA}^4 + a_2 I_{q,MTPA}^2 + a_1 I_{q,MTPA} + a_0  \\ 
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess and the coefficients being:

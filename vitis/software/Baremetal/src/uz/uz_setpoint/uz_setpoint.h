@@ -25,14 +25,14 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
  * @brief Configuration struct for Setpoint module. Accessible by the user
  */
 struct uz_SetPoint_config {
-	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening */
-	float id_ref_Ampere; 	/**< manual i_d reference current. Will be added on top of the MTPA d-current. Not used, if FW is active. */
-	bool is_field_weakening_enabled; /**< flag to enable field_weaking */
+	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening and MTPA */
+	float id_ref_Ampere; 	/**< manual i_d reference current. Will be added on top of the MTPA d-current. Unused, if FW is active. */
+	bool is_field_weakening_enabled; /**< flag to enable field_weaking. True = enabled */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
 											0 = SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
 											1 = IPMSM -> interior PMSM (Ld=/=Lq) */
 	enum uz_Setpoint_control_type control_type; /**< Selection for which control type is used \n
-											0 = field oriented control (FOC) \n */							
+											0 = FOC -> field oriented control \n */							
 };
 
 /**
@@ -49,9 +49,9 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
  * @param self pointer to uz_SetPoint_t object
  * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
  * @param M_ref_Nm reference torque in Nm
- * @param V_DC_Volts DC-link voltage 
- * @param actual_currents_Ampere uz_3ph_dq_t struct with measured currents in ampere
- * @return uz_3ph_dq_t reference currents for current-control
+ * @param V_DC_Volts DC-link voltage in Volts
+ * @param actual_currents_Ampere uz_3ph_dq_t struct with measured currents in Ampere
+ * @return uz_3ph_dq_t reference currents for current-control module in Ampere
  */
 uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere);
 

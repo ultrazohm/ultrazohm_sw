@@ -5,8 +5,8 @@ Set Point
 =========
 
 Toolbox for a standard set-point module. The input is a reference torque. This will then be converted, depending on the machine type selection, into d- and q-reference currents.
-It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines. 
-The output currents will either be calculated via MTPA or field-weakening, depending on the operating condition of the machine.
+It currently supports surface-mounted (SMPMSM) and interior (IPMSM) permanent magnet synchronous machines. IPMSM with a positive and negative saliency ratio are both supported.
+The output currents will, depending on the operating condition of the machine, either be calculated via MTPA or field-weakening.
 It can not control a machine on its own. 
 
 Setup

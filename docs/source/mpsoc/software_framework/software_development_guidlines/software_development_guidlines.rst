@@ -140,6 +140,13 @@ Coding style
   - All control statements have braces (if, else, ..) [#misra]_ 
 
 - Indentation is a tab with size 8 [#linuxCodingStyle]_
+- Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
+- Optional: Change theme (Light/Dark)
+
+    #. ``Window``
+    #. ``Preferences``
+    #. ``Additional`` -> ``General`` -> ``Appearance``
+    #. Choose a ``Theme`` to adjust color palette
 
 Static code analysis
 --------------------

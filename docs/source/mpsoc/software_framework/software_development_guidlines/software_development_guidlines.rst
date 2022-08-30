@@ -140,21 +140,6 @@ Coding style
   - All control statements have braces (if, else, ..) [#misra]_ 
 
 - Indentation is a tab with size 8 [#linuxCodingStyle]_
-- Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
-- To use the UltraZohm coding style import the UltraZohm Vitis settings:
-- In Vitis follow these steps:
-    1. ``Window``
-    2. ``Preferences``
-    3. ``Import`` (bottom left) 
-    4. ``Browse``
-    5. ``ultrazohm_sw/vitis/ultrazohm_vitis_settings.epf``
-    6. ``Finish``
-    7. Restart Vitis
-    8. (Optional): Change theme (Light/Dark)
-    9. ``Window``
-    10. ``Preferences``
-    11. ``Additional`` -> ``General`` -> ``Appearance``
-    12. Choose a ``Theme`` to adjust color palette
 
 Static code analysis
 --------------------

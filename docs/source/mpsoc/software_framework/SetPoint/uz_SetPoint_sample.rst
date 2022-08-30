@@ -56,7 +56,7 @@ Description
   \node[block,name=input7, below = 0.5cm of input4,drop shadow,minimum width=2cm, align=center] { $i_{meas}$\\ \tiny{uz\_3ph\_dq\_t}};
   \node[block,name=input5, above =1cm of SetPoint,drop shadow,minimum width=2cm, align=center] { instance\\ \tiny{uz\_SetPoint\_t}};
   \node[block,name=input6, left = 1cm of input5,drop shadow,minimum width=2cm, align=center] {config\\ \tiny{struct  uz\_SetPoint\_config}};
-  \node[block,name=output, below right= -5.5cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_3ph\_dq\_t}};
+  \node[block,name=output, below right= -5.5cm and 0.75cm of SetPoint,drop shadow,minimum width=2cm, align=center] {$I_{ref}$\\ \tiny{uz\_3ph\_dq\_t}};
   \node[block,fill=orange!20,name=Controller, right=0.5 cm of output,drop shadow,minimum height=4cm,align=center] {independent\\external\\current\\control};
   \draw[->](input5.south) -- (SetPoint.north);
   \draw[<-](output.west) -- (SetPoint.east |- output.west);

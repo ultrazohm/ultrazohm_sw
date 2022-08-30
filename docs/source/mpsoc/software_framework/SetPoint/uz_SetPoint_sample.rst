@@ -132,7 +132,7 @@ for :math:`\omega_{el} > \omega_c\\`:
 .. math::
 
   M_{ref} &= \frac{3}{2}  p  \left(\psi_{PM}  I_{q,FW} + \frac{(L_d - L_q)}{L_d}  \left(-\psi_{PM} \pm \sqrt{\frac{V_{SV,max}^2}{\omega_{el}^2} - L_q^2  I_{q,FW}^2}\right)I_{q,FW}\right)\\
-  0 &= I_{q,MTPA}^4 + a_2 I_{q,MTPA}^2 + a_1 I_{q,MTPA} + a_0  \\ 
+  0 &= I_{q,FW}^4 + a_2 I_{q,FW}^2 + a_1 I_{q,FW} + a_0  \\ 
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess and the coefficients being:
 

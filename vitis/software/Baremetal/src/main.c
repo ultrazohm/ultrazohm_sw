@@ -52,6 +52,19 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+// IP-Core min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_config_t config={
+    .base_address= XPAR_UZ_SYSTEM_MIN_COST_FUNCTION_AN_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .use_AXI =1
+};
+
+uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* test_instance;
+
+
+
+
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -76,6 +89,10 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
+            // IP-Core min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+            test_instance = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_init(config);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

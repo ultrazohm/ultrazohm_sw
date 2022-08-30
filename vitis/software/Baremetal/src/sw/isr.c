@@ -49,11 +49,34 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+// IP-Core min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+extern uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* test_instance;
+
+static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_AXI_values_t AXI_values={
+    .J_in_AXI = 100.0f,
+    .Index_in_AXI = 1,
+    .d_phase_voltage_per_switchimng_state_AXI = 22.0f,
+    .q_phase_voltage_per_switchimng_state_AXI = 33.0f,
+    .x_phase_voltage_per_switchimng_state_AXI = 56.0f,
+    .y_phase_voltage_per_switchimng_state_AXI = 43.0f,
+    .valid_in_AXI = 0
+};
+
+uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t voltage;
+_Bool done_complete;
+int32_t Index_out;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // IP-Core min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+    uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_set_AXI_values(test_instance, AXI_values);
+    voltage = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(test_instance);
+    done_complete = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_done_complete_AXI(test_instance);
+    Index_out = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_Index_out(test_instance);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

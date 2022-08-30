@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+// IP-Core min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+#include "IP_Cores/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

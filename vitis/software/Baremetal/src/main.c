@@ -110,23 +110,23 @@ int main(void)
     int status = UZ_SUCCESS;
     // config structs of FOC left motor
     struct uz_PMSM_t config_PMSM = {
-    	.R_ph_Ohm = 0.543f,
-    	.Ld_Henry = 3.00e-04f,
-        .Lq_Henry = 3.00e-04f,
-        .Psi_PM_Vs = 0.0075f,
+    	.R_ph_Ohm =0.543f,
+    	.Ld_Henry = 1.13e-03f,
+        .Lq_Henry = 1.42e-03f,
+        .Psi_PM_Vs = 0.0169f,
     	.polePairs = 3.0f,
     	.J_kg_m_squared = 1.48e-05f,
     	.I_max_Ampere = 10.0f};
     struct uz_PI_Controller_config config_id = {
-        .Kp = 0.25f,
-        .Ki = 158.8f,
-        .samplingTime_sec = 0.00005f,
+        .Kp = 1.11f, // 0.5f
+        .Ki = 528.0f, //158.8f,
+        .samplingTime_sec = 0.0001f,
         .upper_limit = 10.0f,
         .lower_limit = -10.0f};
     struct uz_PI_Controller_config config_iq = {
-        .Kp = 0.25f,
-        .Ki = 158.8f,
-        .samplingTime_sec = 0.00005f,
+        .Kp = 1.11f, //0.5f,
+        .Ki = 528.0f,//158.8f,
+        .samplingTime_sec = 0.0001f,
         .upper_limit = 10.0f,
         .lower_limit = -10.0f};
     struct uz_FOC_config config_FOC = {
@@ -142,11 +142,11 @@ int main(void)
         .config_iq = config_iq};
     // config struct for speed control
     struct uz_SpeedControl_config config_speed = {
-    	.config_controller.Kp = 10.0f,
-    	.config_controller.Ki = 10.0f,
-    	.config_controller.samplingTime_sec = 0.00005f,
-    	.config_controller.upper_limit = 10.0f,
-        .config_controller.lower_limit = -10.0f,
+    	.config_controller.Kp = 0.0207f,
+    	.config_controller.Ki = 0.207f,
+    	.config_controller.samplingTime_sec = 0.0001f,
+    	.config_controller.upper_limit = 4.0f,
+        .config_controller.lower_limit = -4.0f,
     	.config_PMSM = config_PMSM,
     	.is_field_weakening_active = false
     };
@@ -216,6 +216,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            initialize_incremental_encoder_ipcore_on_D4(UZ_D4_INCREMENTAL_ENCODER_RESOLUTION, UZ_D4_MOTOR_POLE_PAIR_NUMBER);
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

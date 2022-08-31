@@ -34,6 +34,8 @@
 #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "../uz/uz_global_configuration.h"
 
+#define MAX_PHASE_CURRENT 5.0f
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -84,7 +86,7 @@ struct uz_DutyCycle_t dutycyle = {0};
 
 float omega_el_rad_per_sec = 0.0f;
 float V_dc_volts = 24.0f;
-float theta_offset = 0.2f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float theta_offset = 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
 float adc_scaling = (20.0f/2.084f)/3.0f;
 float poles = 3.0f;
 
@@ -104,9 +106,10 @@ struct uz_DutyCycle_t dutycyle_right = {0};
 float n_ref_rpm = 0.0f;
 float omega_el_ref_rad_per_sec_right = 0.0f;
 float omega_m_rad_per_sec_right = 0.0f;
+float omega_m_rad_per_sec_filtered_right = 0.0f;
 float omega_el_rad_per_sec_right = 0.0f;
-float theta_offset_right = 0.2f;
-float adc_scaling_right = (20.0f/2.084f)/3.0f;
+float theta_offset_right = 4.449785f;
+float adc_scaling_right = 4.92f;
 float poles_right = 3.0f;
 
 // Choose control type for left motor
@@ -119,7 +122,7 @@ enum control
 	none
 };
 
-enum control control_type_motor_left=none;
+enum control control_type_motor_left=ddpg_echt;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -133,39 +136,49 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    update_speed_and_position_of_encoder_on_D4(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     // right motor
-    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles_right,2*M_PI)-theta_offset_right; // *poles da bei PMSM config nur 1 Pol angegeben
-    i_actual_A_abc_right.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling_right; // zeigt 2.5 bei 0 an
-    i_actual_A_abc_right.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling_right;
-    i_actual_A_abc_right.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling_right;
-    i_actual_A_right = uz_transformation_3ph_abc_to_dq(i_actual_A_abc_right, Global_Data.av.theta_elec);
-    omega_m_rad_per_sec_right = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60.0f;
+    Global_Data.av.theta_elec_right = 2*M_PI-fmodf(Global_Data.av.theta_elec_left*poles_right,2*M_PI)-theta_offset_right; // *poles da bei PMSM config nur 1 Pol angegeben
+    i_actual_A_abc_right.a = (Global_Data.aa.A1.me.ADC_B6-2.5f)*adc_scaling_right; // zeigt 2.5 bei 0 an
+    i_actual_A_abc_right.b = (Global_Data.aa.A1.me.ADC_B7-2.5f)*adc_scaling_right;
+    i_actual_A_abc_right.c = (Global_Data.aa.A1.me.ADC_B8-2.5f)*adc_scaling_right;
+    i_actual_A_right = uz_transformation_3ph_abc_to_dq(i_actual_A_abc_right, Global_Data.av.theta_elec_right);
+    omega_m_rad_per_sec_right = -1.0f*Global_Data.av.mechanicalRotorSpeed_left*2.0f*M_PI/60.0f;
+    omega_m_rad_per_sec_filtered_right = -1.0f*Global_Data.av.mechanicalRotorSpeed_filtered_left*2.0f*M_PI/60.0f;
     omega_el_rad_per_sec_right = omega_m_rad_per_sec_right*poles_right;
 
+    if(fabs(i_actual_A_abc_right.a) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc_right.b) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc_right.c) > MAX_PHASE_CURRENT)
+    	{
+    		uz_assert(0);
+    	}
+
     // left motor
-    if ((control_type_motor_left == foc_echt) || (control_type_motor_left ==ddpg_echt)) {
-    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec*poles,2*M_PI)-theta_offset; // *poles da bei PMSM config nur 1 Pol angegeben
+    //if ((control_type_motor_left == foc_echt) || (control_type_motor_left ==ddpg_echt)) {
+    Global_Data.av.theta_elec_left = fmodf(Global_Data.av.theta_elec_left*poles,2*M_PI)-theta_offset; // *poles da bei PMSM config nur 1 Pol angegeben
     i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling; // zeigt 2.5 bei 0 an
     i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
     i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
-    i_actual_A = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, Global_Data.av.theta_elec);
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*poles*2.0f*M_PI/60.0f;
-    }
+    i_actual_A = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, Global_Data.av.theta_elec_left);
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_left*poles*2.0f*M_PI/60.0f;
+    if(fabs(i_actual_A_abc.a) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc.b) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc.c) > MAX_PHASE_CURRENT)
+    	{
+    		uz_assert(0);
+    	}
+    //}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	// right motor
-    	n_ref_rpm = omega_el_ref_rad_per_sec_right*60.0f/(2.0f*M_PI);
+    	n_ref_rpm = omega_el_ref_rad_per_sec_right*60.0f/(2.0f*M_PI*poles_right);
     	i_reference_A_right = uz_SpeedControl_sample(Speed_control_instance, omega_m_rad_per_sec_right, n_ref_rpm, V_dc_volts, i_reference_A_right.d);
 		FOC_output_Volts_right = uz_FOC_sample(FOC_instance_right, i_reference_A_right, i_actual_A_right, V_dc_volts, omega_el_rad_per_sec_right);
-		FOC_output_abc_Volts_right = uz_transformation_3ph_dq_to_abc(FOC_output_Volts_right, Global_Data.av.theta_elec);
+		FOC_output_abc_Volts_right = uz_transformation_3ph_dq_to_abc(FOC_output_Volts_right, Global_Data.av.theta_elec_right);
 		dutycyle_right = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts_right, V_dc_volts);
     	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, dutycyle_right.DutyCycle_U, dutycyle_right.DutyCycle_V, dutycyle_right.DutyCycle_W);
-
     	// left motor
     	switch (control_type_motor_left) {
     		case foc_ip:
@@ -182,7 +195,7 @@ void ISR_Control(void *data)
     			break;
     		case foc_echt:
     			FOC_output_Volts = uz_FOC_sample(FOC_instance_left, i_reference_A, i_actual_A, V_dc_volts, omega_el_rad_per_sec);
-    			FOC_output_abc_Volts = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, Global_Data.av.theta_elec);
+    			FOC_output_abc_Volts = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, Global_Data.av.theta_elec_left);
     			dutycyle = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts, V_dc_volts);
     	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
     			break;
@@ -224,7 +237,7 @@ void ISR_Control(void *data)
     	        uz_matrix_multiply_by_scalar(output,48.0f); // scaling layer of nn
     	        ddpg_output_V.d = uz_matrix_get_element_zero_based(output,0,0);
     	        ddpg_output_V.q = uz_matrix_get_element_zero_based(output,0,1);
-    	        ddpg_output_abc_V = uz_transformation_3ph_dq_to_abc(ddpg_output_V, Global_Data.av.theta_elec);
+    	        ddpg_output_abc_V = uz_transformation_3ph_dq_to_abc(ddpg_output_V, Global_Data.av.theta_elec_left);
     			dutycyle = uz_FOC_generate_DutyCycles(ddpg_output_abc_V, V_dc_volts);
     	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
     			break;

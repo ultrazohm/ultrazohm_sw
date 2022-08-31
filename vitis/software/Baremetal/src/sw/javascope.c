@@ -42,8 +42,12 @@ extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 extern uz_3ph_dq_t i_reference_A;
 extern uz_3ph_abc_t i_actual_A_abc;
 extern uz_3ph_dq_t i_actual_A;
+extern uz_3ph_dq_t i_actual_A_right;
 extern float omega_el_ref_rad_per_sec_right;
 extern float omega_el_rad_per_sec_right;
+extern float omega_el_rad_per_sec;
+extern float omega_m_rad_per_sec_right;
+extern float omega_m_rad_per_sec_filtered_right;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -70,16 +74,22 @@ int JavaScope_initalize(DS_Data* data)
 	//   js_ch_observable[JSO_omega] = &pmsm_inputs.omega_mech_1_s;
 	//   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	//   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
-	js_ch_observable[JSO_i_d] 			= &i_actual_A.d;
-	js_ch_observable[JSO_i_q] 			= &i_actual_A.q;
-	js_ch_observable[JSO_i_d_ref] 		= &i_reference_A.d;
-	js_ch_observable[JSO_i_q_ref] 		= &i_reference_A.q;
-	js_ch_observable[JSO_i_a] 			= &i_actual_A_abc.a;
-	js_ch_observable[JSO_i_b] 			= &i_actual_A_abc.b;
-	js_ch_observable[JSO_i_c] 			= &i_actual_A_abc.c;
-	js_ch_observable[JSO_theta_elec] 	= &data->av.theta_elec;
-	js_ch_observable[JSO_omega_el_ref] 	= &omega_el_ref_rad_per_sec_right;
-	js_ch_observable[JSO_omega_el] 		= &omega_el_rad_per_sec_right;
+	js_ch_observable[JSO_i_d_left] 			= &i_actual_A.d;
+	js_ch_observable[JSO_i_q_left] 			= &i_actual_A.q;
+	js_ch_observable[JSO_i_d_right] 			= &i_actual_A_right.d;
+	js_ch_observable[JSO_i_q_right] 			= &i_actual_A_right.q;
+	js_ch_observable[JSO_i_d_ref_left] 		= &i_reference_A.d;
+	js_ch_observable[JSO_i_q_ref_left] 		= &i_reference_A.q;
+	js_ch_observable[JSO_i_a_left] 			= &i_actual_A_abc.a;
+	js_ch_observable[JSO_i_b_left] 			= &i_actual_A_abc.b;
+	js_ch_observable[JSO_i_c_left] 			= &i_actual_A_abc.c;
+	js_ch_observable[JSO_theta_elec_left] 	= &data->av.theta_elec_left;
+	js_ch_observable[JSO_theta_elec_right] 	= &data->av.theta_elec_right;
+	js_ch_observable[JSO_omega_el_ref_right] 	= &omega_el_ref_rad_per_sec_right;
+	js_ch_observable[JSO_omega_el_right] 		= &omega_el_rad_per_sec_right;
+	js_ch_observable[JSO_omega_el_left] 		= &omega_el_rad_per_sec;
+	js_ch_observable[JSO_omega_m_right]			= &omega_m_rad_per_sec_right;
+	js_ch_observable[JSO_omega_m_filtered_right]			= &omega_m_rad_per_sec_filtered_right;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -92,7 +102,8 @@ int JavaScope_initalize(DS_Data* data)
 	   js_slowDataArray[JSSD_FLOAT_i_a] 							= &i_actual_A_abc.a;
 	   js_slowDataArray[JSSD_FLOAT_i_b] 							= &i_actual_A_abc.b;
 	   js_slowDataArray[JSSD_FLOAT_i_c] 							= &i_actual_A_abc.c;
-	   js_slowDataArray[JSSD_FLOAT_theta_elec] 						= &data->av.theta_elec;
+	   js_slowDataArray[JSSD_FLOAT_theta_elec] 						= &data->av.theta_elec_left;
+	   js_slowDataArray[JSSD_FLOAT_theta_elec_right] 				= &data->av.theta_elec_right;
 	   js_slowDataArray[JSSD_FLOAT_omega_el_ref] 					= &omega_el_ref_rad_per_sec_right;
    	   js_slowDataArray[JSSD_FLOAT_omega_el] 						= &omega_el_rad_per_sec_right;
 	   js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);

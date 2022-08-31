@@ -66,8 +66,10 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
+	float mechanicalRotorSpeed_left; 		// in rpm
+	float mechanicalRotorSpeed_filtered_left; // in rpm
+	float mechanicalRotorSpeed_right; 		// in rpm
+	float mechanicalRotorSpeed_filtered_right; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
 	float mechanicalTorqueSensitive; // in Nm
@@ -76,7 +78,8 @@ typedef struct _actualValues_ {
 	float I_q;
 	float U_d;
 	float U_q;
-	float theta_elec;
+	float theta_elec_left;
+	float theta_elec_right;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;

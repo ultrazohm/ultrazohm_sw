@@ -27,3 +27,4 @@ IP Cores
     uz_dac_interface/uz_dac_interface
     uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
     uz_pmsm_model_9ph_dq/uz_pmsm_model_9ph_dq
+    uz_sr_flip_flop/uz_sr_flip_flop

@@ -68,6 +68,7 @@ uz_9ph_dq_t axi_currents = {0};
 
 float load_torque = 0.0f;
 float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
+float setp_rpm = 0.0f;
 
 // pre-loop for PWM
 #include "../uz/uz_FOC/uz_FOC.h"
@@ -116,6 +117,13 @@ enum controller_state_t
 enum controller_state_t controller_state = closed_loop_inverter;
 uz_9ph_dq_t output_voltage_dq = {0};
 
+const float dRPM = 1000.0f; //dOmega Ramp
+const float samples = 10.0f*10000.0f; //amount of samples  = timeframe/timeISR
+float ramprate1 = dRPM/samples;
+float ramprate2 = -2*dRPM/samples;
+
+unsigned int n=0;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -131,7 +139,27 @@ void ISR_Control(void *data)
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-  /*  if(lets_go==1)
+
+    n++;
+
+    if((0<=n) && (n<samples))
+    	setp_rpm = setp_rpm + ramprate1;
+    else if((samples<=n) && (n<2*samples))
+    	setp_rpm = 1000.0f;
+    else if((2*samples<=n) && (n<3*samples))
+    	setp_rpm = setp_rpm + ramprate1;
+    else if((3*samples<=n) && (n<4*samples))
+    	setp_rpm = 2000.0f;
+    else if((4*samples<=n) && (n<5*samples))
+    	setp_rpm = setp_rpm + ramprate2;
+    else if((5*samples<=n) && (n<5.5*samples))
+    	setp_rpm = 0.0f;
+    else
+    	n=0;
+
+    setp_omega = setp_rpm / 60.0f * 2.0f * M_PI;
+
+    if(lets_go==1)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
@@ -162,9 +190,9 @@ void ISR_Control(void *data)
             setpoint_abc_sys3.a = output_voltage_abc.a3;
             setpoint_abc_sys3.b = output_voltage_abc.b3;
             setpoint_abc_sys3.c = output_voltage_abc.c3;
-            //duty_cycle_sys1 = uz_FOC_generate_DutyCycles(setpoint_abc_sys1, V_dc_volts);
-            //duty_cycle_sys2 = uz_FOC_generate_DutyCycles(setpoint_abc_sys2, V_dc_volts);
-            //duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3, V_dc_volts);
+            duty_cycle_sys1 = uz_FOC_generate_DutyCycles(setpoint_abc_sys1, V_dc_volts);
+            duty_cycle_sys2 = uz_FOC_generate_DutyCycles(setpoint_abc_sys2, V_dc_volts);
+            duty_cycle_sys3 = uz_FOC_generate_DutyCycles(setpoint_abc_sys3, V_dc_volts);
             theta_test = uz_pmsm9ph_transformation_get_theta_el(transformation_9ph);
             break;
         case closed_loop_dgl_only:
@@ -203,7 +231,8 @@ void ISR_Control(void *data)
         duty_cycle_sys3.DutyCycle_W = 0.0f;
     }
 
-*/
+/*
+   duty_cycle_sys1.DutyCycle_V = 1.0f;
    duty_cycle_sys1.DutyCycle_V = 0.0f;
    duty_cycle_sys1.DutyCycle_W = 0.0f;
    duty_cycle_sys2.DutyCycle_U = 0.0f;
@@ -211,19 +240,13 @@ void ISR_Control(void *data)
    duty_cycle_sys2.DutyCycle_W = 0.0f;
    duty_cycle_sys3.DutyCycle_U = 0.0f;
    duty_cycle_sys3.DutyCycle_V = 0.0f;
-   duty_cycle_sys3.DutyCycle_W = 0.0f;
+   duty_cycle_sys3.DutyCycle_W = 0.0f;*/
 
 
     // Duty Cycle
     uz_PWM_SS_2L_set_duty_cycle(pwm_instance_1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
     uz_PWM_SS_2L_set_duty_cycle(pwm_instance_2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
     uz_PWM_SS_2L_set_duty_cycle(pwm_instance_3, duty_cycle_sys3.DutyCycle_U, duty_cycle_sys3.DutyCycle_V, duty_cycle_sys3.DutyCycle_W);
-
-    actual_currents_abc = uz_pmsm9ph_transformation_get_currents(transformation_9ph);
-    uz_pmsm_model9ph_dq_set_use_axi_input(pmsm,false);
-
-                pmsm_outputs = uz_pmsm_model9ph_dq_get_outputs_general(pmsm);
-                uz_pmsm_model9ph_dq_set_inputs_general(pmsm,setp_omega,load_torque);
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

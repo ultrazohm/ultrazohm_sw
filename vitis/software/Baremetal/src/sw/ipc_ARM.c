@@ -17,6 +17,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -24,6 +25,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+
+extern uz_3ph_dq_t current_set_point;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -187,11 +190,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+		current_set_point.d = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+		current_set_point.q = value;
 			break;
 
 		case (Set_Send_Field_3):

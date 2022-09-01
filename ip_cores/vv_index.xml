@@ -1377,6 +1377,58 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:SR_Flip_Flop:1.0">
+		</VLNV>
+		<DisplayName value="SR_Flip_Flop">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112661732">
+		</CoreRevision>
+		<ComponentPath value="SR_Flip_Flop/hdl_prj/ipcore/SR_Flip_Flop_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:Trans_123_dq_V11_ip:1.0">
 		</VLNV>
 		<DisplayName value="Trans_123_dq_V11_ip">
@@ -1988,6 +2040,58 @@
 		<CoreRevision value="2110211105">
 		</CoreRevision>
 		<ComponentPath value="uz_mux_axi/hdl_prj/ipcore/mux_axi_ip_v1_2/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:uz_ninephase_VSD_transformation:1.1">
+		</VLNV>
+		<DisplayName value="uz_ninephase_VSD_transformation">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112661726">
+		</CoreRevision>
+		<ComponentPath value="uz_ninephase_VSD_transformation/hdlsrc/ipcore/uz_ninephase_VSD_transformation_v1_1/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="azynq">

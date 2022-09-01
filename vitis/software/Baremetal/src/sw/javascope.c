@@ -48,8 +48,10 @@ extern uz_9ph_dq_t actual_currents_dq;
 extern uz_9ph_dq_t in_voltage_dq;
 
 extern float setp_omega;
+extern float setp_rpm;
 extern float setp_q;
 extern uz_3ph_dq_t current_set_point;
+
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
@@ -108,7 +110,6 @@ int JavaScope_initalize(DS_Data* data)
 		js_ch_observable[JSO_uzero] 			= &in_voltage_dq.zero;
 		js_ch_observable[JSO_id_setpoint]   = &current_set_point.d;
 		js_ch_observable[JSO_iq_setpoint]   = &current_set_point.q;
-		js_ch_observable[JSO_Theta_el] 		= &pmsm_outputs.theta_el;
 		js_ch_observable[JSO_setp_omega] 	= &setp_omega;
 		js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 
@@ -117,7 +118,10 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_setpoint_rpm] 	= &setp_rpm;
+	js_slowDataArray[JSSD_FLOAT_id] 	= &actual_currents_dq.d;
+	js_slowDataArray[JSSD_FLOAT_iq] 	= &actual_currents_dq.q;
+	/*js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
@@ -126,7 +130,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
-	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;*/
 
 	return Status;
 }

@@ -1,0 +1,9 @@
+ --> UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter_pkg
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Detect Rise Positive1 --> UZ_D_GaN_Inverter_src_Detect_Rise_Positive1
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Detect Fall Nonpositive1 --> UZ_D_GaN_Inverter_src_Detect_Fall_Nonpositive1
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Reciprocal/Reciprocal_iv/NewtonPolynomialIVStage --> UZ_D_GaN_Inverter_src_NewtonPolynomialIVStage
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Reciprocal/Reciprocal_iv --> UZ_D_GaN_Inverter_src_Reciprocal_iv
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Reciprocal/Reciprocal_core --> UZ_D_GaN_Inverter_src_Reciprocal_core
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/Reciprocal --> UZ_D_GaN_Inverter_src_Reciprocal
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection --> UZ_D_GaN_Inverter_src_PWMdutyFreqDetection
+UZ_D_GaN_Inverter/UZ_D_GaN_Inverter --> UZ_D_GaN_Inverter_src_UZ_D_GaN_Inverter

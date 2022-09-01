@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 13:18:43 on 29/08/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:59:54 on 01/09/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\Min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM\hdlworkflow.m'
 %     Overwrite : true

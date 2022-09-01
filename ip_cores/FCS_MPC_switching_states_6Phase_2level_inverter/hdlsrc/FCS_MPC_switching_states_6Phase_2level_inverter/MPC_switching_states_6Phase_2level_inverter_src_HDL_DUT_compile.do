@@ -1,0 +1,6 @@
+vlib work
+vcom  MPC_switching_states_6Phase_2level_inverter_src_HDL_DUT_pkg.vhd
+vcom  MPC_switching_states_6Phase_2level_inverter_src_Positive.vhd
+vcom  MPC_switching_states_6Phase_2level_inverter_src_Detect_Rise_Positive.vhd
+vcom  MPC_switching_states_6Phase_2level_inverter_src_MATLAB_Function1.vhd
+vcom  MPC_switching_states_6Phase_2level_inverter_src_HDL_DUT.vhd

@@ -2,6 +2,8 @@ SLStudio.Utils.RemoveHighlighting(get_param('Delay_compensation_FCS_MPC_6Phase_P
 SLStudio.Utils.RemoveHighlighting(get_param('gm_Delay_compensation_FCS_MPC_6Phase_PMSM', 'handle'));
 annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive', 1, 1, '');
 annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive1', 1, 1, '');
+annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive1', 1, 1, '');
 annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/MATLAB Function', 0, 1, '');
 annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Data Type Conversion', 1, 1, '');
 annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Data Type Conversion', 1, 1, '');
@@ -25,4 +27,6 @@ annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Data Type Conve
 annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Data Type Conversion9', 1, 1, '');
 annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive/Positive', 1, 1, '');
 annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive1/Positive', 1, 1, '');
+annotate_port('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/Detect Rise Positive1/Positive', 1, 1, '');
 annotate_port('gm_Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/MATLAB Function/adder', 0, 1, '');

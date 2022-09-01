@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/Delay_compensation_FCS_MPC_6Phase_PMSM/ipcore/Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="08ce45fe53b94c219ffc82a9c3bf7317"/>
+    <Option Name="Id" Val="76834e5b31c9456da987540e7818987f"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -116,6 +116,18 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/Delay_compensation_FCS_MPC_6Phase_PMSM_src_nfp_convert_sfix_18_En11_to_single.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/Delay_compensation_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/Delay_compensation_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 09:13:35 on 22/08/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:15:53 on 01/09/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\hdlworkflow.m'
 %     Overwrite : true
@@ -112,8 +112,8 @@ hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/omega_m_measured', 
 hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/omega_m_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterface', 'External Port');
-hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/use_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/use_AXI', 'IOInterfaceMapping', 'x"148"');
 
 % Set Inport HDL parameters
 hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/last_applied_optimal_voltage_ud_AXI', 'IOInterface', 'AXI4-Lite');
@@ -152,8 +152,12 @@ hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/omega_m_measured_AX
 hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/omega_m_measured_AXI', 'IOInterfaceMapping', 'x"144"');
 
 % Set Inport HDL parameters
-hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/use_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/use_AXI', 'IOInterfaceMapping', 'x"148"');
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in_ADC', 'IOInterface', 'External Port');
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in_ADC', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterface', 'External Port');
+hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
 hdlset_param('Delay_compensation_FCS_MPC_6Phase_PMSM/HDL_DUT/id_k_1', 'IOInterface', 'External Port');

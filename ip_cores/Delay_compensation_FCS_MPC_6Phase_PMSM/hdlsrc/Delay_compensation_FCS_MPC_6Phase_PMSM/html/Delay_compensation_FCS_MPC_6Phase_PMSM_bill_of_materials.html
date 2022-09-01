@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-2790
+2798
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-39191
+39199
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-3261
+3263
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-823
+824
 </td>
 
 </tr>
@@ -288,19 +288,25 @@ Adders/Subtractors (78)
 33-bit Subtractor 							: 4
 </span>
 <br /><h5>
-Registers (661)
+Registers (668)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 263
+1-bit Register 							: 270
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:52')" name="code2model" class="code2model">
 Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:217')" name="code2model" class="code2model">
+Delay35
 </a>
 
 </li>
@@ -315,7 +321,7 @@ Delay11
 32-bit Register 							: 31
 </span>
 <span name="Register_1_2" id="Register_1_2">
-<ul class="SystemdefinedCollapse" id="77f40f29-5e46-4378-a66e-2dd4709f5eaa" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="7dff1eba-1b06-47dd-a56a-5098c201909a" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:63')" name="code2model" class="code2model">
 Delay21
@@ -450,7 +456,7 @@ Delay33
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '77f40f29-5e46-4378-a66e-2dd4709f5eaa')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '7dff1eba-1b06-47dd-a56a-5098c201909a')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -564,7 +570,7 @@ Multiplexers (1664)
 real 2-to-1 Multiplexer 							: 26
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
-<ul class="SystemdefinedCollapse" id="009488e1-4c5f-4705-a1a9-23e39533a40b" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="be1ae04c-02f0-465c-9e72-54935cdc0a9d" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:94')" name="code2model" class="code2model">
 Switch_on2
@@ -651,7 +657,7 @@ Switch_on14
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '009488e1-4c5f-4705-a1a9-23e39533a40b')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'be1ae04c-02f0-465c-9e72-54935cdc0a9d')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -771,16 +777,16 @@ Number of Shift operators (17)
 31-bit Dynamic Shift Right 							: 4
 </span>
 <br /><h5>
-Number of I/O Bits (823)
+Number of I/O Bits (824)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 677
+Number of Input Bits: 678
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="6bae4b34-6657-4ce5-b992-099fefd8a873" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="171a8053-c33a-466c-bcbc-5d2189c993d2" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -899,8 +905,8 @@ omega_m_measured
 : 24 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:48')" name="code2model" class="code2model">
-valid_in
+<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:178')" name="code2model" class="code2model">
+use_AXI
 </a>
 : 1 bit
 </li>
@@ -959,14 +965,20 @@ omega_m_measured_AXI
 : 24 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:178')" name="code2model" class="code2model">
-use_AXI
+<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:216')" name="code2model" class="code2model">
+valid_in_ADC
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:48')" name="code2model" class="code2model">
+valid_in
 </a>
 : 1 bit
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '6bae4b34-6657-4ce5-b992-099fefd8a873')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '171a8053-c33a-466c-bcbc-5d2189c993d2')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1183,6 +1195,37 @@ Number of Shift operators (22)
 </span>
 <br /><span style="font-family:monospace">
 28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:218')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:218:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('Delay_compensation_FCS_MPC_6Phase_PMSM:84')" name="code2model" class="code2model">

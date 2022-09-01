@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.26
+<td class="summaryTableSndColOddRow">1.29
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">22-Aug-2022 09:12:13
+<td class="summaryTableSndColOddRow">01-Sep-2022 09:14:22
 </td>
 </tr>
 <tr>
@@ -406,15 +406,15 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:48')">valid_in</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:178')">use_AXI</a>
 </td>
 <td>Inport
 </td>
 <td>boolean
 </td>
-<td>External Port
+<td>AXI4-Lite
 </td>
-<td>
+<td>x"148"
 </td>
 <td>
 </td>
@@ -546,40 +546,12 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:178')">use_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:216')">valid_in_ADC</a>
 </td>
 <td>Inport
 </td>
 <td>boolean
 </td>
-<td>AXI4-Lite
-</td>
-<td>x"148"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:102')">id_k_1</a>
-</td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">sfix18_En11
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:103')">iq_k_1</a>
-</td>
-<td>Outport
-</td>
-<td>sfix18_En11
-</td>
 <td>External Port
 </td>
 <td>
@@ -588,37 +560,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:104')">ix_k_1</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:48')">valid_in</a>
 </td>
-<td class="distinctCellColor">Outport
-</td>
-<td class="distinctCellColor">sfix18_En11
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:105')">iy_k_1</a>
-</td>
-<td>Outport
-</td>
-<td>sfix18_En11
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:106')">done</a>
-</td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">boolean
 </td>
@@ -630,21 +574,77 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:208')">id_k_1_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:102')">id_k_1</a>
 </td>
 <td>Outport
 </td>
 <td>sfix18_En11
 </td>
-<td>AXI4-Lite
+<td>External Port
 </td>
-<td>x"14C"
+<td>
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:209')">iq_k_1_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:103')">iq_k_1</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix18_En11
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:104')">ix_k_1</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En11
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:105')">iy_k_1</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix18_En11
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:106')">done</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:208')">id_k_1_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -652,13 +652,13 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"150"
+<td class="distinctCellColor">x"14C"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:210')">ix_k_1_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:209')">iq_k_1_AXI</a>
 </td>
 <td>Outport
 </td>
@@ -666,13 +666,13 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"154"
+<td>x"150"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:211')">iy_k_1_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:210')">ix_k_1_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -680,9 +680,23 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"158"
+<td class="distinctCellColor">x"154"
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Delay_compensation_FCS_MPC_6Phase_PMSM:211')">iy_k_1_AXI</a>
+</td>
+<td>Outport
+</td>
+<td>sfix18_En11
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"158"
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -725,7 +739,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2208220912
+<td>contains unique IP timestamp (yymmddHHMM): 2209010914
 </td>
 </tr>
 <tr>
@@ -998,6 +1012,10 @@ Following files are generated under this folder:
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\ipcore\Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Positive.vhd')">hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Positive.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\ipcore\Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd')">hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\ipcore\Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd')">hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\ipcore\Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd')">hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Delay_compensation_FCS_MPC_6Phase_PMSM\ipcore\Delay_compensation_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd')">hdl\vhdl\Delay_compensation_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd</a>
 <br/>

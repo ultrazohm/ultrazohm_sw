@@ -52,6 +52,23 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+// IP-Core delay_compensation_fcs_mpc_6hase_pmsm
+static struct uz_delay_compensation_fcs_mpc_6phase_config_t config={
+    .base_address= XPAR_UZ_SYSTEM_DELAY_COMPENSATION_F_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .psiPM = 0.19f,
+	.Lq = 0.0064f,
+    .Ld = 0.0020f,
+    .Rs = 0.19f,
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,
+    .Lx = 0.0030f,
+    .Ly = 0.0030f,
+    .use_AXI =1
+};
+
+uz_delay_compensation_fcs_mpc_6phase_t* test_instance;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -76,6 +93,10 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
+            // IP-Core delay_compensation_fcs_mpc_6phase_pmsm
+            test_instance = uz_delay_compensation_fcs_mpc_6phase_init(config);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

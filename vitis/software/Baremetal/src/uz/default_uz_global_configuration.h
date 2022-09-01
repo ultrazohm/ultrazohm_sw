@@ -44,7 +44,7 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_VSD_AND_PARK_TRANSFORMATION_6PHASE_MAX_INSTANCES      1U
-
+#define UZ_DELAY_COMPENSATION_FCS_MPC_6PHASE_PMSM_MAX_INSTANCES 1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -74,4 +74,5 @@
     #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_VSD_AND_PARK_TRANSFORMATION_6PHASE_MAX_INSTANCES      11U
+    #define UZ_DELAY_COMPENSATION_FCS_MPC_6PHASE_PMSM_MAX_INSTANCES 11U
 #endif

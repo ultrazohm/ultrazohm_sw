@@ -31,6 +31,12 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+// IP-Core delay_compensation_fcs_mpc_6phase_pmsm
+float id_k_1;
+float iq_k_1;
+float ix_k_1;
+float iy_k_1;
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -75,6 +81,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
+	js_ch_observable[JSO_id_k_1]		=&id_k_1;
+	js_ch_observable[JSO_iq_k_1]		=&iq_k_1;
+	js_ch_observable[JSO_ix_k_1]		=&ix_k_1;
+	js_ch_observable[JSO_iy_k_1]		=&iy_k_1;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

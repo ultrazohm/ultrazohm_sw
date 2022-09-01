@@ -52,6 +52,7 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+<<<<<<< HEAD
 // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
 static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_config_t config={
     .base_address= XPAR_UZ_SYSTEM_PHASE_VOLTAGES_PER_S_0_BASEADDR,
@@ -61,6 +62,28 @@ static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_config_t conf
     .use_AXI=1
 };
 uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* test_instance;
+=======
+// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_config_t config={
+    .base_address = XPAR_UZ_SYSTEM_PREDICTION_AND_COST_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .psiPM = 0.19f,
+    .Lq = 0.0064f,
+    .Ld = 0.002f,
+    .Rs = 0.19f,
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,
+    .Lx = 0.003f,
+    .Ly = 0.003f,
+    .id_ref = 0.0f,
+    .iq_ref = 10.0f,
+    .ix_ref = 0.0f,
+    .iy_ref = 0.0f,
+    .use_AXI = 1
+};
+
+uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* test_instance;
+>>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
 
 int main(void)
 {
@@ -87,8 +110,13 @@ int main(void)
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
 
+<<<<<<< HEAD
             // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
             test_instance = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_init(config);
+=======
+            // IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+            test_instance = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_init(config);
+>>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

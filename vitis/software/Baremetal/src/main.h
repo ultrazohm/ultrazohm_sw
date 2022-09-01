@@ -54,9 +54,14 @@
 
 #include "include/pwm_init.h"
 
+<<<<<<< HEAD
 // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
 #include "IP_Cores/uz_phase_voltages_per_switching_state_fcs_mpc_6phase/uz_phase_voltages_per_switching_state_fcs_mpc_6phase.h"
 
+=======
+// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+#include "IP_Cores/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm.h"
+>>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
 
 
 //----------------------------------------------------

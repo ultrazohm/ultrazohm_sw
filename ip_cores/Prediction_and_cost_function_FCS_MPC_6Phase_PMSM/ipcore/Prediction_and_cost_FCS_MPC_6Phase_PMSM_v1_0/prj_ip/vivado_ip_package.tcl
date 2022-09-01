@@ -3,8 +3,13 @@ set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd}
+add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd}
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd}
+add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd}
+add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd}
+add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd}
+add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd}
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd}
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_mul_single.vhd}
 add_files -norecurse {../hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_sub_single.vhd}
@@ -38,13 +43,17 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112652794 [ipx::current_core]
+set_property core_revision 2112662967 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -53,6 +62,22 @@ ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.24
+<td class="summaryTableSndColOddRow">1.31
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">25-Aug-2022 09:54:36
+<td class="summaryTableSndColOddRow">01-Sep-2022 11:27:52
 </td>
 </tr>
 <tr>
@@ -616,6 +616,34 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:268')">Reset</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:277')">valid_in_ADC</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
 <td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:124')">J</a>
 </td>
 <td class="distinctCellColor">Outport
@@ -655,6 +683,20 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM:274')">Index</a>
+</td>
+<td>Outport
+</td>
+<td>int32
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -697,7 +739,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2208250951: 2208250954
+<td>contains unique IP timestamp (yymmddHHMM): 2209011127
 </td>
 </tr>
 <tr>
@@ -975,9 +1017,19 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT_pkg.vhd</a>
 <br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd</a>
+<br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\ipcore\Prediction_and_cost_FCS_MPC_6Phase_PMSM_v1_0\hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd')">hdl\vhdl\Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_add_single.vhd</a>
 <br/>

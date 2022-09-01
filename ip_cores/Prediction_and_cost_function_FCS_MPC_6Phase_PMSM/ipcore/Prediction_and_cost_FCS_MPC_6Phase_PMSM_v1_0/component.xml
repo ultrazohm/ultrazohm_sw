@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>52377b2e</spirit:value>
+            <spirit:value>9940dfea</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>52377b2e</spirit:value>
+            <spirit:value>9940dfea</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -514,6 +514,32 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>Reset_1</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>valid_in_ADC</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_Lite_ACLK</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
@@ -730,6 +756,23 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>Index</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_Lite_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -883,6 +926,14 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_convert_sfix_24_En11_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -907,6 +958,18 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_HDL_DUT.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -917,7 +980,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f4c24b4e</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_87eda8ac</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -963,6 +1026,16 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive2.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_convert_sfix_24_En11_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -989,6 +1062,21 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_nfp_convert_single_to_sfix_20_En11.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Positive_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Detect_Rise_Positive1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/Prediction_and_cost_FCS_MPC_6Phase_PMSM_src_Compare_To_Constant.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1057,15 +1145,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Prediction_and_cost_FCS_MPC_6Phase_PMSM</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112652794</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-08-25T07:54:54Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112662967</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-09-01T09:28:11Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="743ac20f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="804d8c9e"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="87a336ee"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="e3687507"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="bc1ba79d"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="4a0ff8f7"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

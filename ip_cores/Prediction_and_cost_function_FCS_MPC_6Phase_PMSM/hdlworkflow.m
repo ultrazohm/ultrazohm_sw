@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 09:55:59 on 25/08/2022
+% Generated with MATLAB 9.12 (R2022a) at 11:28:34 on 01/09/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\Prediction_and_cost_function_FCS_MPC_6Phase_PMSM\hdlworkflow.m'
 %     Overwrite : true
@@ -171,6 +171,14 @@ hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/y_volatge
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterface', 'External Port');
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
 
+% Set Inport HDL parameters
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/Reset', 'IOInterface', 'External Port');
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/Reset', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in_ADC', 'IOInterface', 'External Port');
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/valid_in_ADC', 'IOInterfaceMapping', '');
+
 % Set Outport HDL parameters
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/J', 'IOInterface', 'External Port');
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/J', 'IOInterfaceMapping', '');
@@ -182,6 +190,10 @@ hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/J_AXI', '
 % Set Outport HDL parameters
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/done', 'IOInterface', 'External Port');
 hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/done', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/Index', 'IOInterface', 'External Port');
+hdlset_param('Prediction_and_cost_function_FCS_MPC_6Phase_PMSM/HDL_DUT/Index', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings

@@ -2,7 +2,7 @@
 
 #define  IPCore_Reset_Prediction_and_cost_FCS_MPC_6Phase_PMSM                             0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_Prediction_and_cost_FCS_MPC_6Phase_PMSM                            0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_Prediction_and_cost_FCS_MPC_6Phase_PMSM                         0x8  //contains unique IP timestamp (yymmddHHMM): 2208250951: 2208250954
+#define  IPCore_Timestamp_Prediction_and_cost_FCS_MPC_6Phase_PMSM                         0x8  //contains unique IP timestamp (yymmddHHMM): 2209011127
 #define  Lq_AXI_Data_Prediction_and_cost_FCS_MPC_6Phase_PMSM                              0x100  //data register for Inport Lq_AXI
 #define  Ld_AXI_Data_Prediction_and_cost_FCS_MPC_6Phase_PMSM                              0x104  //data register for Inport Ld_AXI
 #define  SampleTime_div_Ld_AXI_Data_Prediction_and_cost_FCS_MPC_6Phase_PMSM               0x108  //data register for Inport SampleTime_div_Ld_AXI

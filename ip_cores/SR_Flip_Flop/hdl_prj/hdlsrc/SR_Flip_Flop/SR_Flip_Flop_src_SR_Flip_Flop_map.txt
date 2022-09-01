@@ -1,0 +1,3 @@
+ --> SR_Flip_Flop_src_SR_Flip_Flop_pkg
+SR_Flip_Flop/SR_Flip_Flop/S-R Flip Flop --> SR_Flip_Flop_src_S_R_Flip_Flop
+SR_Flip_Flop/SR_Flip_Flop --> SR_Flip_Flop_src_SR_Flip_Flop

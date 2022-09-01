@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 14:00:47 on 23/08/2022
+% Generated with MATLAB 9.12 (R2022a) at 10:37:45 on 01/09/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM\hdlworkflow.m'
 %     Overwrite : true
@@ -68,8 +68,16 @@ hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/Index_AXI', 
 hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/Index_AXI', 'IOInterfaceMapping', 'x"110"');
 
 % Set Inport HDL parameters
-hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in', 'IOInterface', 'External Port');
-hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_ADC', 'IOInterface', 'External Port');
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_ADC', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_delay_compensation', 'IOInterface', 'External Port');
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_delay_compensation', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_min_cost_function-and_vopt', 'IOInterface', 'External Port');
+hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/valid_in_min_cost_function-and_vopt', 'IOInterfaceMapping', '');
 
 % Set Sum HDL parameters
 hdlset_param('Phase_voltages_per_switching_state_MPC_6Phase/HDL_DUT/Add1', 'OutputPipeline', 1);

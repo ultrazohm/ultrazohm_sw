@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM/ipcore/Phase_voltages_per_switching_state_MPC_6Phase_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="9649510af2c24f218f3f566e2970f9d4"/>
+    <Option Name="Id" Val="b1767f77383f4b47a298589f36762d08"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -134,6 +134,18 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/Phase_voltages_per_switching_state_MPC_6Phase_src_nfp_add_single.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/Phase_voltages_per_switching_state_MPC_6Phase_src_Positive_block.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/Phase_voltages_per_switching_state_MPC_6Phase_src_Detect_Rise_Positive2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-279
+280
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-2594
+2602
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-47951
+47959
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1646
+1647
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-375
+377
 </td>
 
 </tr>
@@ -288,19 +288,37 @@ Adders/Subtractors (44)
 39-bit Subtractor 							: 4
 </span>
 <br /><h5>
-Registers (607)
+Registers (614)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 356
+1-bit Register 							: 363
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:44')" name="code2model" class="code2model">
 Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:118')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:117')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:121')" name="code2model" class="code2model">
+Delay16
 </a>
 
 </li>
@@ -534,16 +552,16 @@ Number of Shift operators (15)
 37-bit Dynamic Shift Right 							: 4
 </span>
 <br /><h5>
-Number of I/O Bits (375)
+Number of I/O Bits (377)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 181
+Number of Input Bits: 183
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="d6e4a312-7f01-46d6-9a7f-4d57b7a2b7d4" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="de72110a-1c04-45d5-b082-563b54fff877" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -597,13 +615,22 @@ Index_AXI
 </li>
 <li>
 <a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:33')" name="code2model" class="code2model">
-valid_in
+valid_in_ADC
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:115')" name="code2model" class="code2model">
+valid_in_delay_compensation
+</a>
+: 1 bit
+</li>
+<li>
+valid_in_min_cost_function_and_vopt: 1 bit
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'd6e4a312-7f01-46d6-9a7f-4d57b7a2b7d4')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'de72110a-1c04-45d5-b082-563b54fff877')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -668,7 +695,7 @@ y_voltage_per_switching_state_AXI
 : 24 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:65')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:122')" name="code2model" class="code2model">
 done
 </a>
 : 1 bit
@@ -690,9 +717,12 @@ Multipliers (19)
 18x24-bit Multiply 							: 19
 </span>
 <br /><h5>
-Adders/Subtractors (235)
+Adders/Subtractors (236)
 </h5>
 <span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
 32x32-bit Adder 							: 142
 </span>
 <br /><span style="font-family:monospace">
@@ -852,16 +882,16 @@ Registers (1986)
 5-bit Register 							: 6
 </span>
 <br /><h5>
-Multiplexers (1049)
+Multiplexers (1048)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 237
-</span>
-<br /><span style="font-family:monospace">
-32-bit 2-to-1 Multiplexer 							: 1
+32-bit 3-to-1 Multiplexer 							: 1
 </span>
 <br /><span style="font-family:monospace">
 real 2-to-1 Multiplexer 							: 378
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 236
 </span>
 <br /><span style="font-family:monospace">
 8-bit 2-to-1 Multiplexer 							: 161
@@ -940,6 +970,37 @@ Static Shift Left 							: 2
 </span>
 <br /><span style="font-family:monospace">
 28-bit Dynamic Shift Right 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:119')" name="code2model" class="code2model">
+Detect Rise
+Positive2
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:119:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('Phase_voltages_per_switching_state_MPC_6Phase:54')" name="code2model" class="code2model">

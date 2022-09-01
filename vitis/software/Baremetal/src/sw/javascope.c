@@ -31,11 +31,18 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+<<<<<<< HEAD
 // IP-Core delay_compensation_fcs_mpc_6phase_pmsm
 float id_k_1;
 float iq_k_1;
 float ix_k_1;
 float iy_k_1;
+=======
+float v_d;
+float v_q;
+float v_x;
+float v_y;
+>>>>>>> feature/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
@@ -80,6 +87,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_v_d]	= &v_d;
+	js_ch_observable[JSO_v_q]	= &v_q;
+	js_ch_observable[JSO_v_x]	= &v_x;
+	js_ch_observable[JSO_v_y]	= &v_y;
 
 	js_ch_observable[JSO_id_k_1]		=&id_k_1;
 	js_ch_observable[JSO_iq_k_1]		=&iq_k_1;

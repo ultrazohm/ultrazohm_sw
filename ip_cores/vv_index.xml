@@ -430,6 +430,7 @@
 	</IP>
 	<IP>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<VLNV value="xilinx.com:ip:Delay_compensation_FCS_MPC_6Phase_PMSM:1.0">
 		</VLNV>
 		<DisplayName value="Delay_compensation_FCS_MPC_6Phase_PMSM">
@@ -460,6 +461,8 @@
 	<IP>
 =======
 >>>>>>> feature/min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+=======
+>>>>>>> feature/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM
 		<VLNV value="xilinx.com:ip:IncreEncoder_V24_ip:24.0">
 		</VLNV>
 		<DisplayName value="IncreEncoder_V24_ip">
@@ -827,6 +830,7 @@
 	</IP>
 	<IP>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		<VLNV value="xilinx.com:ip:min_cost_function_and_vopt_FCS_MPC_6Phase:1.0">
 		</VLNV>
@@ -857,6 +861,8 @@
 	</IP>
 	<IP>
 >>>>>>> feature/min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
+=======
+>>>>>>> feature/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM
 		<VLNV value="mwn.de:ip:mux_axi_ip:1.1">
 		</VLNV>
 		<DisplayName value="mux_axi_ip">
@@ -911,6 +917,37 @@
 		</Interfaces>
 	</IP>
 	<IP>
+<<<<<<< HEAD
+=======
+		<VLNV value="xilinx.com:ip:Phase_voltages_per_switching_state_MPC_6Phase:1.0">
+		</VLNV>
+		<DisplayName value="Phase_voltages_per_switching_state_MPC_6Phase">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112650159">
+		</CoreRevision>
+		<ComponentPath value="Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM/ipcore/Phase_voltages_per_switching_state_MPC_6Phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+>>>>>>> feature/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM
 		<VLNV value="xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0">
 		</VLNV>
 		<DisplayName value="PWM_and_SS_control_V3_ip">

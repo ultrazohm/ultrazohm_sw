@@ -429,6 +429,7 @@
 		</Interfaces>
 	</IP>
 	<IP>
+<<<<<<< HEAD
 		<VLNV value="xilinx.com:ip:Delay_compensation_FCS_MPC_6Phase_PMSM:1.0">
 		</VLNV>
 		<DisplayName value="Delay_compensation_FCS_MPC_6Phase_PMSM">
@@ -457,6 +458,8 @@
 		</Interfaces>
 	</IP>
 	<IP>
+=======
+>>>>>>> feature/min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
 		<VLNV value="xilinx.com:ip:IncreEncoder_V24_ip:24.0">
 		</VLNV>
 		<DisplayName value="IncreEncoder_V24_ip">
@@ -823,6 +826,37 @@
 		</Interfaces>
 	</IP>
 	<IP>
+<<<<<<< HEAD
+=======
+		<VLNV value="xilinx.com:ip:min_cost_function_and_vopt_FCS_MPC_6Phase:1.0">
+		</VLNV>
+		<DisplayName value="min_cost_function_and_vopt_FCS_MPC_6Phase">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112658757">
+		</CoreRevision>
+		<ComponentPath value="Min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/ipcore/min_cost_function_and_vopt_FCS_MPC_6Phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+>>>>>>> feature/min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM
 		<VLNV value="mwn.de:ip:mux_axi_ip:1.1">
 		</VLNV>
 		<DisplayName value="mux_axi_ip">

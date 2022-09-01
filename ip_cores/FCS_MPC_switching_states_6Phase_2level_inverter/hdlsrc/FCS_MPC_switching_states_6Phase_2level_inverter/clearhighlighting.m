@@ -1,0 +1,12 @@
+SLStudio.Utils.RemoveHighlighting(get_param('FCS_MPC_switching_states_6Phase_2level_inverter', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_FCS_MPC_switching_states_6Phase_2level_inverter', 'handle'));
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Detect Rise Positive', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Delay', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Delay2', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Switch_on2', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Detect Rise Positive/Positive', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Detect Rise Positive/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/Detect Rise Positive/Positive/Compare', 0, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('gm_FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('FCS_MPC_switching_states_6Phase_2level_inverter/HDL_DUT/MATLAB Function1', 1, 1, '');

@@ -59,6 +59,9 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+extern pre_calc_val_t pre_calc_val;
+extern uz_PMSM_6ph_t dengine;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -112,6 +115,16 @@ int main(void)
 
             //debug for 6ph-VSD voltages ip-core
             uz_axi_write_uint32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR + 0x100, 0); //0=index via AXI 1=index via PL
+
+            //debug for delay_comp ip-core
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
+            uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
+            uz_axi_write_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR + 0x12C, dengine.polePairs);
 
             initialization_chain = print_msg;
             break;

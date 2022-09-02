@@ -45,12 +45,12 @@ XTmrCtr Timer_Interrupt;
 extern DS_Data Global_Data;
 
 float amplitude1 = 4.0f;
-float frequency1 = 50.0f;
+float frequency1 = 250.0f;
 float offset1 = 0.0f;
 float phase1 = 0.0f;
 
 float amplitude2 = 4.0f;
-float frequency2 = 50.0f;
+float frequency2 = 250.0f;
 float offset2 = 0.0f;
 float phase2 = UZ_PIf/6.0f;
 
@@ -63,7 +63,49 @@ float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
                 .length=UZ_ARRAY_SIZE(dac_input)
             };
 
-uint32_t test_index = 1;
+// 2x3ph PMSM parameters
+const uz_PMSM_6ph_t dengine={
+		.R_ph_Ohm=0.19f,
+		.Ld_Henry=0.002f,
+		.Lq_Henry=0.0064f,
+		.Lx_Henry=0.003f,
+		.Ly_Henry=0.003f,
+		.polePairs=5.0f,
+		.Psi_PM_Vs=0.19f
+};
+
+// 2x3ph PMSM rated values
+const rated_val_t rated_val={
+		.VR=400.0f,
+		.IR=7.071f,
+		.nR=3000.0f
+};
+
+// p.u. base values
+const base_val_t base_val={
+		.VB=sqrt(2.0f/3.0f)*rated_val.VR,
+		.IB=sqrt(2.0f)*rated_val.IR,
+		.omegaB=rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs,
+		.ZB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR),
+		.LB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs),
+		.psiB=(sqrt(2.0f/3.0f)*rated_val.VR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs)
+};
+
+const float Ts = 1.0f/UZ_PWM_FREQUENCY;
+
+//pre-calculated factors for delay compensation and prediction model
+const pre_calc_val_t pre_calc_val={
+		.Rs_over_ZB = dengine.R_ph_Ohm/base_val.ZB,
+		.Ts_times_ZB_over_Ld = Ts*base_val.ZB/dengine.Ld_Henry,
+		.Ts_times_ZB_over_Lq = Ts*base_val.ZB/dengine.Lq_Henry,
+		.Ts_times_ZB_over_Lx = Ts*base_val.ZB/dengine.Lx_Henry,
+		.Ts_times_ZB_over_Ly = Ts*base_val.ZB/dengine.Ly_Henry,
+		.Ld_over_LB = dengine.Ld_Henry/base_val.LB,
+		.Lq_over_LB = dengine.Lq_Henry/base_val.LB,
+		.psi_pm_over_psiB = dengine.Psi_PM_Vs/base_val.psiB
+};
+
+uint32_t test_index = 42;
 float test_angle = 0.0;
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -96,8 +138,8 @@ void ISR_Control(void *data)
 
     Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
     Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
-    //Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
-    Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
+    Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+    //Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
 
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
 
@@ -136,6 +178,13 @@ void ISR_Control(void *data)
     Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x10C), 24);
     Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x110), 24);
     Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x114), 24);
+
+    // read delay compensation currents from ip-core
+    uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(frequency1/dengine.polePairs*2.0f*UZ_PIf/base_val.omegaB, 15));
+    Global_Data.av.id_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x104), 24);
+    Global_Data.av.iq_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.ix_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.iy_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x110), 24);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

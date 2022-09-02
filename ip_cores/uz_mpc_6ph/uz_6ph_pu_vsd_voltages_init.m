@@ -77,4 +77,4 @@ omega_m = n_rpm*pi/30;
 f = n_rpm/60.0*p;     % fundamental frequency
 Harmonic_Orders = [3 5 7 9 11 13 15 17 19 21];
                         %3    5    7    9   11   13   15    17   19    21
-Harmonic_Amplitudes = [0.00 0.03 0.02 0.00 0.00 0.00 0.000 0.00 0.00 0.000];
+Harmonic_Amplitudes = [0.00 0.0 0.0 0.00 0.00 0.00 0.000 0.00 0.00 0.000];

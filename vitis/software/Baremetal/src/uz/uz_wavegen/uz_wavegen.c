@@ -123,10 +123,21 @@ uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, 
 {
     uz_assert(frequency_Hz > 0.0f);
     float t_Sec = uz_SystemTime_GetGlobalTimeInSec();
+//    static uint32_t counter = 0;
+//    static uint32_t mod_count = 0;
+//    float t_Sec = counter * 0.0001f;
+//    if (counter > (1.0f/frequency_Hz*10000.0f)) {
+//    	counter = 0;
+//    }
+//    if (mod_count >= 1) {
+//    	mod_count=0;
+//    	counter++;
+//    }
     float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
     uz_3ph_abc_t sine_output = {
         .a = amplitude * sinf(angle - phase) + offset,
         .b = amplitude * sinf(angle - (2.0f * UZ_PIf / 3.0f) - phase) + offset,
         .c = amplitude * sinf(angle - (4.0f * UZ_PIf / 3.0f) - phase) + offset};
+//    mod_count++;
     return sine_output;
 }

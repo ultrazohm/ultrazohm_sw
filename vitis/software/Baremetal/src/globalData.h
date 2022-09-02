@@ -99,6 +99,10 @@ typedef struct _actualValues_ {
 	float uq_pu;
 	float ux_pu;
 	float uy_pu;
+	float id_delay;
+	float iq_delay;
+	float ix_delay;
+	float iy_delay;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

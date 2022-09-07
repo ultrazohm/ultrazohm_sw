@@ -45,7 +45,6 @@ extern uz_3ph_dq_t outputs_dq;
 extern uz_3ph_dq_t setpoint_dq;
 extern uz_9ph_abc_t actual_currents_abc;
 extern uz_9ph_dq_t actual_currents_dq;
-extern uz_9ph_dq_t in_voltage_dq;
 
 extern float setp_omega;
 extern float setp_rpm;
@@ -99,15 +98,6 @@ int JavaScope_initalize(DS_Data* data)
 		js_ch_observable[JSO_ix3] 			= &actual_currents_dq.x3;
 		js_ch_observable[JSO_iy3] 			= &actual_currents_dq.y3;
 		js_ch_observable[JSO_izero] 			= &actual_currents_dq.zero;
-		js_ch_observable[JSO_ud] 			= &in_voltage_dq.d;
-		js_ch_observable[JSO_uq] 			= &in_voltage_dq.q;
-		js_ch_observable[JSO_ux1] 			= &in_voltage_dq.x1;
-		js_ch_observable[JSO_uy1] 			= &in_voltage_dq.y1;
-		js_ch_observable[JSO_ux2] 			= &in_voltage_dq.x2;
-		js_ch_observable[JSO_uy2] 			= &in_voltage_dq.y2;
-		js_ch_observable[JSO_ux3] 			= &in_voltage_dq.x3;
-		js_ch_observable[JSO_uy3] 			= &in_voltage_dq.y3;
-		js_ch_observable[JSO_uzero] 			= &in_voltage_dq.zero;
 		js_ch_observable[JSO_id_setpoint]   = &current_set_point.d;
 		js_ch_observable[JSO_iq_setpoint]   = &current_set_point.q;
 		js_ch_observable[JSO_setp_omega] 	= &setp_omega;

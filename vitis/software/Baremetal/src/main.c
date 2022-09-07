@@ -16,6 +16,10 @@
 // Includes from own files
 #include "main.h"
 
+#include "xtest_data_signals.h"
+#include "xuz_log_data.h"
+#include "xbram.h"
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -52,8 +56,16 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+XTest_data_signals PL_Data_1;	// instance of test_data_signals IP Core
+XUz_log_data PL_Logger_1;		// instance of uz_log_data IP Core
+//XBram BRAM_LogData;				// instance of BRAM
+
 int main(void)
 {
+	XTest_data_signals_Config *PL_Data_Config;
+	XUz_log_data_Config *PL_Logger_Config;
+	//XBram_Config *BRAM_LogData_Config;
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -92,6 +104,45 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
+
+            //call the test_data_pl signal generation
+            PL_Data_Config = XTest_data_signals_LookupConfig(XPAR_UZ_USER_TEST_DATA_SIGNALS_0_DEVICE_ID);
+            XTest_data_signals_CfgInitialize(&PL_Data_1, PL_Data_Config);
+
+            //call data logger
+            PL_Logger_Config = XUz_log_data_LookupConfig(XPAR_UZ_USER_UZ_LOG_DATA_0_DEVICE_ID);
+            XUz_log_data_CfgInitialize(&PL_Logger_1, PL_Logger_Config);
+
+            //call bram
+            //BRAM_LogData_Config = XBram_LookupConfig(XPAR_UZ_USER_AXI_BRAM_CTRL_0_DEVICE_ID);
+            //XBram_CfgInitialize(&BRAM_LogData, BRAM_LogData_Config, BRAM_LogData_Config->CtrlBaseAddress);
+
+            //control for int-float-apfixed-float-apfixed-float-apfixed
+            u32 control_signal_1 = 0b00000000000000000000000001010101;
+            u32 control_signal_2 = 0b00000000000000000000000001111110;
+            XUz_log_data_Set_control_1(&PL_Logger_1, control_signal_1);
+            XUz_log_data_Set_control_2(&PL_Logger_1, control_signal_2);
+
+            u64 OCM_BASE_ADDRESS = 0x00FFFC0000;
+            //int *OCM_BASE_ADDRESS = (int *) 0x00FFFC0000;
+            // casten !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            float PL_Data_amp = 2.0f;
+            float PL_Data_freq = 5e2f;
+            int PL_Data_period = 16;//0.5f;
+            u32 *PL_Data_amp_u32 = ((u32*)&PL_Data_amp);
+            u32 *PL_Data_freq_u32 = ((u32*)&PL_Data_freq);
+            u32 *PL_Data_period_u32 = ((u32*)&PL_Data_period);
+
+            // OCM:
+            //XUz_log_data_Set_dlog_1(&PL_Logger_1, OCM_BASE_ADDRESS);
+
+            XTest_data_signals_Set_amplitude(&PL_Data_1, *PL_Data_amp_u32);
+            //XTest_data_signal_generation_Set_frequency(&PL_Data_1, 5e2f);
+            //XTest_data_signal_generation_Set_dutycycle(&PL_Data_1, 0.5f);
+            //XTest_data_signal_generation_Set_increment(&PL_Data_1, 1.0f);
+            XTest_data_signals_Set_frequency(&PL_Data_1, *PL_Data_freq_u32);
+            XTest_data_signals_Set_period(&PL_Data_1, *PL_Data_period_u32);
+
             break;
         case print_msg:
             uz_printf("\r\n\r\n");

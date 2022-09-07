@@ -31,6 +31,9 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "xtest_data_signals.h"
+#include "xuz_log_data.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -49,11 +52,19 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+extern XTest_data_signals PL_Data_1;
+extern XUz_log_data PL_Logger_1;
+float DataLogger_out;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    XTest_data_signals_Start(&PL_Data_1);
+    XUz_log_data_Start(&PL_Logger_1);
+    //DataLogger_out = (float)XUz_log_data_Get_dlog_1(&PL_Logger_1);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

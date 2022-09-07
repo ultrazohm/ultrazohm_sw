@@ -77,7 +77,7 @@ int main() {
 
 	// Compare the "results.dat" file with the "golden.results.dat" file
 	// retval = system("diff --brief -w results.dat golden_results.dat"); 										// unix
-	retval = system("fc /c results.dat C:\\UltraZohm\\ultrazohm_sw\\ip_cores\\TestData\\golden.results.dat");	// windows
+	//retval = system("fc /c results.dat C:\\UltraZohm\\ultrazohm_sw\\ip_cores\\TestData\\golden.results.dat");	// windows
 
 	// Print Results
 	if (retval == 0) {

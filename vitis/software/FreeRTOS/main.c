@@ -33,6 +33,9 @@
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
+#include "xbram.h"
+#include "xil_mmu.h"
+
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -45,6 +48,9 @@ err_t dhcp_start(struct netif *netif);
 static struct netif server_netif;
 
 A53_Data Global_Data_A53;
+
+XBram BRAM_LogData;				// instance of BRAM
+float log_array_local[32];
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -74,6 +80,31 @@ int main()
 {
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
+
+	XBram_Config *BRAM_LogData_Config;
+	//call bram
+	BRAM_LogData_Config = XBram_LookupConfig(XPAR_UZ_USER_AXI_BRAM_CTRL_0_DEVICE_ID);
+	XBram_CfgInitialize(&BRAM_LogData, BRAM_LogData_Config, BRAM_LogData_Config->CtrlBaseAddress);
+
+	//test writing to BRAM
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 24, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 28, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 32, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 36, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 40, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 44, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 48, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 52, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 56, 9);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 60, 9);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 64, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 68, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 72, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 76, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 80, 3);
+
+	//Xil_SetTlbAttributes(XPAR_BRAM_0_BASEADDR, 0x15de6);
+	//Xil_SetTlbAttributes(XPAR_BRAM_0_BASEADDR, NORM_WB_CACHE);
 
 	//Start the main-threat
 	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
@@ -167,6 +198,21 @@ void network_thread(void *p)
     dhcp_start(netif);
     while (1) {
     	lifeCheck_networkThread++;
+
+    	//log_array_local[0] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 0);
+   	    //log_array_local[1] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 4);
+        //log_array_local[2] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 8);
+    	//log_array_local[3] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 12);
+       	//log_array_local[4] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 16);
+    	//log_array_local[5] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 20);
+    	Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, NORM_WB_CACHE); //XPAR_BRAM_0_BASEADDR
+    	memcpy(log_array_local, (void *)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+    	//for(int i=0; i<16; i++){
+    	//	log_array_local[i] = *(float*)(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + 4*i);
+    	//}
+    	//float log_sample = log_array_local[1];
+    	//*(float *)0x00FFFC0000 = log_sample;
+
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}

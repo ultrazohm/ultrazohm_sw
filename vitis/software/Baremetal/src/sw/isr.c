@@ -46,17 +46,35 @@ extern float CurrentOn_Angle_deg;
 extern float CurrentOff_Angle_deg;
 extern float CurrentOn_Reference_A;
 extern float i_ref;
+extern float PIon_Angle_Active_deg;
+extern float PIon_Angle_Inactive_deg;
+extern float flg_theta_mech_prediction;
+extern float flg_InductanceDeviation_Compensation;
+extern float flg_Inductance_PreControl;
 
 struct uz_3ph_abc_t ref_voltage = {0};
 float theta_m_deg = 0.0f;
 struct uz_DutyCycle_t output = {0};
 int flg_PI_on_active = 0U;			// local variable for activation of rising/falling current control
+float L_min = 2*0.470f/1000.0f;
+float L_max = 2*2.0f/1000.0f;
+float R = 2.0f*48.32f/1000.0f;
+float i_ref_last = 0.0f;
+float u_precontrol = 0.0f;
+float Inductance_deviation = 0.001f*(4.0f-0.94f)/(80.0f*M_PI/180.0f);	// H/rad
+int u_precontrol_counter = 0;
 
-#define PHASE_CURRENT_CONV	37.735f
+#define PHASE_CURRENT_CONV	37.373/4.0f
+#define PHASE_VOLTAGE_CONV		250.0f
+#define PHASE_VOLT_OFF		0.0f
+#define INV_TEMP_CONV		1.0f
 #define DC_VOLT_CONV		250.0f
 #define DC_VOLT_OFF			250.0f
-#define MAX_CURRENT_ASSERTION 10.0f
-#define MAX_SPEED_ASSERTION	  100.0f
+
+#define MAX_CURRENT_ASSERTION 45.0f
+#define MAX_SPEED_ASSERTION	  1500.0f
+#define T_dead_prediction	1.0f/SAMPLE_FREQUENCY
+
 
 
 //==============================================================================================================================================================
@@ -81,10 +99,18 @@ void ISR_Control(void *data)
     // convert ADC readings to dc link voltages
     Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
 
+    // Read phase voltages
+    Global_Data.av.u_a1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLTAGE_CONV - PHASE_VOLT_OFF;
+    Global_Data.av.u_b1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_VOLTAGE_CONV - PHASE_VOLT_OFF;
+    Global_Data.av.u_c1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_VOLTAGE_CONV - PHASE_VOLT_OFF;
+
+    // Read temperature of inverter
+    Global_Data.av.inverter_temp = Global_Data.aa.A1.me.ADC_A4 * PHASE_VOLTAGE_CONV - PHASE_VOLT_OFF;
+
     // filter values
     Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
-    Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
-    Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
+    //Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
+    //Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
 	if(fabs(Global_Data.av.i_a1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_b1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_c1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION) {
@@ -97,22 +123,61 @@ void ISR_Control(void *data)
 	}
 
     // theta offset and scaling to el. angle
-    Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech - Global_Data.av.theta_offset;
+	Global_Data.av.theta_mech_unwraped = Global_Data.av.theta_mech - Global_Data.av.theta_offset;
+	// Wrap mechanical angle from 0...2pi
+	if (Global_Data.av.theta_mech_unwraped < 0.0f){
+		Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech_unwraped + (2*M_PI);
+	} else{
+		Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech_unwraped;
+	}
+    //Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech - Global_Data.av.theta_offset;
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
 
 
-    // Set Current reference value
-    theta_m_deg = Global_Data.av.theta_m_offset_comp * 180.0f/M_PI;
-    if((theta_m_deg >= CurrentOn_Angle_deg && theta_m_deg <= CurrentOff_Angle_deg) || (theta_m_deg >= (CurrentOn_Angle_deg + 180.0f) && theta_m_deg <= (CurrentOff_Angle_deg + 180.0f))){
-    	i_ref = CurrentOn_Reference_A;
-    	flg_PI_on_active = 1U;
-    	// Reset unused controller
-    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_off);
+    //Prediction of mechanical angle
+    if (flg_theta_mech_prediction == 1.0f || flg_Inductance_PreControl == 1.0f){
+    	theta_m_deg = Global_Data.av.theta_m_offset_comp * 180.0f/M_PI + Global_Data.av.mechanicalRotorSpeed/60.0f * 360.0f * T_dead_prediction;
     } else{
-    	i_ref = 0.0f;
-    	flg_PI_on_active = 0U;
-    	// Reset unused controller
-    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_on);
+    	theta_m_deg = Global_Data.av.theta_m_offset_comp * 180.0f/M_PI;
+    }
+
+    //Set active Controller
+    if((theta_m_deg >= PIon_Angle_Active_deg && theta_m_deg <= PIon_Angle_Inactive_deg) || (theta_m_deg >= (PIon_Angle_Active_deg + 180.0f) && theta_m_deg <= (PIon_Angle_Inactive_deg + 180.0f))){
+    	// Controller for low inductance
+    	flg_PI_on_active = 1U;
+    	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_off);
+    } else {
+    	// Controller for high inductance
+		flg_PI_on_active = 0U;
+		uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_on);
+    }
+
+
+	// Set precontroller to zero
+    u_precontrol = 0.0f;
+    // Set Current reference value
+    if((theta_m_deg >= CurrentOn_Angle_deg && theta_m_deg <= CurrentOff_Angle_deg) || (theta_m_deg >= (CurrentOn_Angle_deg + 180.0f) && theta_m_deg <= (CurrentOff_Angle_deg + 180.0f))){
+    	if (flg_Inductance_PreControl == 1.0f && u_precontrol_counter < 1 && i_ref_last == 0.0f){
+    		// Set reference value for controller to zero
+    		i_ref = 0.0;
+    		// Calculate voltage of u = R * i + L * di/dt for next timestep
+    		u_precontrol = L_min * CurrentOn_Reference_A/T_dead_prediction + R * CurrentOn_Reference_A;
+    		u_precontrol_counter++;
+    	} else{
+        	i_ref = CurrentOn_Reference_A;
+        	u_precontrol_counter = 0;
+    	}
+    } else{
+    	if (flg_Inductance_PreControl == 1.0f && i_ref_last != 0.0f && u_precontrol_counter < 1){
+    		// Leave reference value of controller at last setpoint
+    		i_ref = CurrentOn_Reference_A;
+    		// Calculate voltage of u = R * i + L * di/dt for next timestep
+			u_precontrol = -1.0*(L_max * CurrentOn_Reference_A/T_dead_prediction);
+			u_precontrol_counter++;
+    	} else{
+    		i_ref = 0.0f;
+    		u_precontrol_counter=0;
+    	}
     }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -122,19 +187,28 @@ void ISR_Control(void *data)
     	// One controller used for both coils in series
     	if (flg_PI_on_active == 1U){
     		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
+    		// Inductance deviation compensation: u_ind = dL/dt * i
+    		if (flg_InductanceDeviation_Compensation == 1.0f){
+    			ref_voltage.a = ref_voltage.a + Inductance_deviation * Global_Data.av.mechanicalRotorSpeed/60.0 * 2.0 * M_PI * Global_Data.av.i_a1_filt;
+    		}
     	} else{
     		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
+    	}
+    	if (flg_Inductance_PreControl == 1.0f){
+			ref_voltage.a = ref_voltage.a + u_precontrol;
     	}
     	ref_voltage.b = 0.0f;
     	ref_voltage.c = 0.0f;
 
+    	i_ref_last = i_ref;
+
 
     	output = uz_FOC_generate_DutyCycles(ref_voltage, Global_Data.av.U_ZK_filt);
 
-    	//Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
-    	//Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
-    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
+    	//Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	//Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
@@ -147,6 +221,7 @@ void ISR_Control(void *data)
     	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
     	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_on);
     	uz_PI_Controller_reset(Global_Data.objects.PI_cntr1_off);
+    	ref_voltage.a = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

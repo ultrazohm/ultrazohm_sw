@@ -38,6 +38,11 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float theta_mech_calc_from_resolver;
 extern float i_ref;
+extern float PIon_Angle_Active_deg;
+extern float PIon_Angle_Inactive_deg;
+extern float flg_theta_mech_prediction;
+extern float flg_InductanceDeviation_Compensation;
+extern float flg_Inductance_PreControl;
 extern uz_3ph_abc_t ref_voltage;
 
 int JavaScope_initalize(DS_Data* data)
@@ -80,6 +85,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_u_a1_ref]		= &ref_voltage.a;
 	js_ch_observable[JSO_u_b1_ref]		= &ref_voltage.b;
 	js_ch_observable[JSO_u_c1_ref]		= &ref_voltage.c;
+	js_ch_observable[JSO_u_a1]		= &data->av.u_a1;
+	js_ch_observable[JSO_u_b1]		= &data->av.u_b1;
+	js_ch_observable[JSO_u_c1]		= &data->av.u_c1;
+	js_ch_observable[JSO_inverter_temperature] = &data->av.inverter_temp;
+	js_ch_observable[JSO_PIon_Angle_Active_deg] = &PIon_Angle_Active_deg;
+	js_ch_observable[JSO_PIon_Angle_Inactive_deg] = &PIon_Angle_Inactive_deg;
+	js_ch_observable[JSO_flg_Comp_dL_dTheta] = &flg_InductanceDeviation_Compensation;
+	js_ch_observable[JSO_flg_theta_m_pred] = &flg_theta_mech_prediction;
+	js_ch_observable[JSO_flg_Comp_L_dI_dt] = &flg_Inductance_PreControl;
 
 
 

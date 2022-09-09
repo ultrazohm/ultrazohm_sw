@@ -88,6 +88,11 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float theta_m_offset_comp;
 	float polepairs;
+	float u_a1;
+	float u_b1;
+	float u_c1;
+	float inverter_temp;	// in °C
+	float theta_mech_unwraped;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 

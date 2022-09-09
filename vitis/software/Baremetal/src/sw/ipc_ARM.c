@@ -27,6 +27,9 @@ extern uint32_t js_status_BareToRTOS;
 extern float CurrentOn_Angle_deg;
 extern float CurrentOff_Angle_deg;
 extern float CurrentOn_Reference_A;
+extern float flg_theta_mech_prediction;
+extern float flg_InductanceDeviation_Compensation;
+extern float flg_Inductance_PreControl;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -194,19 +197,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-			CurrentOn_Angle_deg = value;
+			flg_InductanceDeviation_Compensation = value;
 			break;
 
 		case (Set_Send_Field_3):
-			CurrentOff_Angle_deg = value;
+			flg_Inductance_PreControl = value;
 			break;
 
 		case (Set_Send_Field_4):
-			data->av.theta_offset = value;
+			flg_theta_mech_prediction = value;
 			break;
 
 		case (Set_Send_Field_5):
-			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
+			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_off, value);
 			break;
 
 		case (Set_Send_Field_6):
@@ -223,7 +226,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.05f;
 			data->rasv.halfBridge2DutyCycle = 0.0f;
 			data->rasv.halfBridge3DutyCycle = 0.0f;
 			data->rasv.halfBridge4DutyCycle = 0.0f;

@@ -47,8 +47,13 @@ DS_Data Global_Data = {
 // Current reference values for POHR
 float CurrentOn_Angle_deg = 120.0f;
 float CurrentOff_Angle_deg = 175.0f;
-float CurrentOn_Reference_A = 10.0f;
+float CurrentOn_Reference_A = 5.0f;
 float i_ref = 0.0f;		// Actual reference value
+float PIon_Angle_Active_deg = 45.0f;
+float PIon_Angle_Inactive_deg = 350.0f;
+float flg_theta_mech_prediction = 1.0f;	// Predicts theta_mech for one time_step to set reference values
+float flg_InductanceDeviation_Compensation = 1.0f;	// Compensation of dL/dt * i
+float flg_Inductance_PreControl = 0.0f;				// Do NOT Use with theta_mech_prediction
 
 struct uz_IIR_Filter_config iir_config_dc_volts = {
 		.selection = LowPass_first_order,
@@ -66,20 +71,25 @@ struct uz_IIR_Filter_config iir_config_rpm_ref = {
 		.sample_frequency_Hz = SAMPLE_FREQUENCY};
 
 // Active for both coils in series for rising current edge
+// L_min = 2*0.4699 mH;  L_max = 2*1.9957 mH;	R = 2*0.044 Ohm
+// Kp = L * 2*Pi*BW
+// Ki = R/L
+// Kp(L_max,800Hz) =  20.1;	Ki(L_max,800Hz) = 22.05
+// Kp(L_min,800Hz) =  4.7240;	Ki(L_max,800Hz) = 93.64
 const struct uz_PI_Controller_config config_PI1_on = {
-   .Kp = 1.0f,
-   .Ki = 0.0f,
+   .Kp = 10.0f,
+   .Ki = 700.0f,
    .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
-   .upper_limit = 10.0f,
-   .lower_limit = -10.0f
+   .upper_limit = 200.0f,
+   .lower_limit = -200.0f
 };
 // Active for both coils in series for falling current edge
 const struct uz_PI_Controller_config config_PI1_off = {
-   .Kp = 1.0f,
-   .Ki = 0.0f,
+   .Kp = 20.0f,
+   .Ki = 600.0f,
    .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
-   .upper_limit = 10.0f,
-   .lower_limit = -10.0f
+   .upper_limit = 200.0f,
+   .lower_limit = -200.0f
 };
 
 enum init_chain
@@ -119,7 +129,7 @@ int main(void)
             Global_Data.objects.iir_i_b1 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_c1 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_rpm_ref = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
-            Global_Data.av.theta_offset = 0.0f;
+            Global_Data.av.theta_offset = 0.48583f;
             Global_Data.av.polepairs = 1.0f;
             Global_Data.objects.PI_cntr1_on = uz_PI_Controller_init(config_PI1_on);
             Global_Data.objects.PI_cntr1_off = uz_PI_Controller_init(config_PI1_off);

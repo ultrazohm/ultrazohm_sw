@@ -41,6 +41,15 @@ enum JS_OberservableData {
 	JSO_u_a1_ref,
 	JSO_u_b1_ref,
 	JSO_u_c1_ref,
+	JSO_u_a1,
+	JSO_u_b1,
+	JSO_u_c1,
+	JSO_inverter_temperature,
+	JSO_PIon_Angle_Active_deg,
+	JSO_PIon_Angle_Inactive_deg,
+	JSO_flg_Comp_dL_dTheta,
+	JSO_flg_theta_m_pred,
+	JSO_flg_Comp_L_dI_dt,
 	JSO_ENDMARKER
 };
 
@@ -148,9 +157,9 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	i_amp,
-	angle_on,
-	angle_off,
-	theta_offset,
+	comp_dL_dtheta,
+	comp_L_di_dt,
+	flg_theta_pred,
 	Kp,
 	Ki,
 	SND_FLD_ENDMARKER

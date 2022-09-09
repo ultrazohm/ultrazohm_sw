@@ -4,6 +4,17 @@
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
 /**
+ * @brief Object data type definitions of the reference current values for the prediction_and_cost_function_fcs_mpc_6phase_pmsm IP-Core driver
+ * 
+ */
+typedef struct uz_6ph_idref_iqref_ixref_iyref_t{
+    float id_ref;    /**< Amplitude of the d-phase reference current*/
+    float iq_ref;    /**< Amplitude of the q-phase reference current */
+    float ix_ref;    /**< Amplitude of the x-phase reference current */
+    float iy_ref;    /**< Amplitude of the y-phase reference current */
+}uz_6ph_idref_iqref_ixref_iyref_t;
+
+/**
  * @brief Object data type definition of the prediction_and_cost_function_fcs_mpc_6phase_pmsm IP-Core driver
  *
  */
@@ -61,5 +72,12 @@ void uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_set_AXI_values(uz_predi
  * @return float
  */
 float uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* self);
+
+/** 
+ * @brief Set updated reference currents id_ref, iq_ref, ix_ref and iy_ref
+ * @param self Pointer to driver instance
+ * @param updated_values AXI values for the instance 
+*/
+void uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* self, uz_6ph_idref_iqref_ixref_iyref_t updated_values);
 
 #endif // UZ_PREDICTION_AND_COST_FUNCTION_FCS_MPC_6PHASE_PMSM_H

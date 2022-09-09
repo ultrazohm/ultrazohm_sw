@@ -75,4 +75,15 @@ float uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(uz_predictio
     return J_AXI;
 }
 
+void uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* self, uz_6ph_idref_iqref_ixref_iyref_t updated_values){
+ 
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_id_ref(self->config.base_address, updated_values.id_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iq_ref(self->config.base_address, updated_values.iq_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_ix_ref(self->config.base_address, updated_values.ix_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iy_ref(self->config.base_address, updated_values.iy_ref);
+}
+
 #endif

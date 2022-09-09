@@ -41,6 +41,12 @@ static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_config_t confi
     .omega_m_measured_AXI = 1.1f
  };
 
+ uz_6ph_idref_iqref_ixref_iyref_t updated_values={
+    .id_ref=10.0f,
+    .iq_ref=2.2f,
+    .ix_ref=1.1f,
+    .iy_ref=0.0f
+ };
 
 void setUp(void)
 {
@@ -69,6 +75,11 @@ void setUp(void)
     AXI_values.ix_k_1_AXI = 3.2f;
     AXI_values.iy_k_1_AXI = 4.2f;
     AXI_values.omega_m_measured_AXI = 1.1f;
+
+    updated_values.id_ref=10.0f;
+    updated_values.iq_ref=2.2f;
+    updated_values.ix_ref=1.1f;
+    updated_values.iy_ref=0.0f;
 }
 
 void tearDown(void)
@@ -158,5 +169,32 @@ void test_uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI_test_poi
     uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* testpointer = NULL;
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(testpointer));
 }
+
+void test_uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update_test(void)
+{
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_Lq_Expect(config.base_address, config.Lq);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_Ld_Expect(config.base_address, config.Ld);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_SampleTime_div_Ld_Expect(config.base_address, config.SampleTime, config.Ld);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_SampleTime_div_Lq_Expect(config.base_address, config.SampleTime, config.Lq);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_SampleTime_div_Lx_Expect(config.base_address, config.SampleTime, config.Lx);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_pole_pairs_Expect(config.base_address, config.pole_pairs);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_SampleTime_div_Ly_Expect(config.base_address, config.SampleTime, config.Ly);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_Rs_Expect(config.base_address, config.Rs);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_psiPM_Expect(config.base_address, config.psiPM);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_id_ref_Expect(config.base_address, config.id_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iq_ref_Expect(config.base_address, config.iq_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_ix_ref_Expect(config.base_address, config.ix_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iy_ref_Expect(config.base_address, config.iy_ref);
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_use_AXI_Expect(config.base_address, config.use_AXI);
+    
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* test_instance = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_init(config);
+
+   uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_id_ref_Expect(config.base_address, updated_values.id_ref);
+   uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iq_ref_Expect(config.base_address, updated_values.iq_ref);
+   uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_ix_ref_Expect(config.base_address, updated_values.ix_ref);
+   uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_hw_set_iy_ref_Expect(config.base_address, updated_values.iy_ref);
+
+   uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(test_instance,updated_values);
+   }
 
 #endif // TEST

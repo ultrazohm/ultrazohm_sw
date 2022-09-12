@@ -46,7 +46,7 @@ DS_Data Global_Data = {
 
 // Current reference values for POHR
 float CurrentOn_Angle_deg = 120.0f;
-float CurrentOff_Angle_deg = 175.0f;
+float CurrentOff_Angle_deg = 165.0f;
 float CurrentOn_Reference_A = 5.0f;
 float i_ref = 0.0f;		// Actual reference value
 float PIon_Angle_Active_deg = 45.0f;
@@ -77,19 +77,19 @@ struct uz_IIR_Filter_config iir_config_rpm_ref = {
 // Kp(L_max,800Hz) =  20.1;	Ki(L_max,800Hz) = 22.05
 // Kp(L_min,800Hz) =  4.7240;	Ki(L_max,800Hz) = 93.64
 const struct uz_PI_Controller_config config_PI1_on = {
-   .Kp = 10.0f,
-   .Ki = 700.0f,
+   .Kp = 5.0f,	//Serial: 10.0
+   .Ki = 400.0f,	//Serial: 700
    .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
-   .upper_limit = 200.0f,
-   .lower_limit = -200.0f
+   .upper_limit = 250.0f,
+   .lower_limit = -250.0f
 };
 // Active for both coils in series for falling current edge
 const struct uz_PI_Controller_config config_PI1_off = {
-   .Kp = 20.0f,
-   .Ki = 600.0f,
+   .Kp = 12.0f,		//Serial: 20.0
+   .Ki = 400.0f,	//Serial 600
    .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
-   .upper_limit = 200.0f,
-   .lower_limit = -200.0f
+   .upper_limit = 250.0f,
+   .lower_limit = -250.0f
 };
 
 enum init_chain

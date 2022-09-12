@@ -56,15 +56,16 @@ struct uz_3ph_abc_t ref_voltage = {0};
 float theta_m_deg = 0.0f;
 struct uz_DutyCycle_t output = {0};
 int flg_PI_on_active = 0U;			// local variable for activation of rising/falling current control
-float L_min = 2*0.470f/1000.0f;
-float L_max = 2*2.0f/1000.0f;
-float R = 2.0f*48.32f/1000.0f;
+float L_min = 1*0.470f/1000.0f;
+float L_max = 1*2.0f/1000.0f;
+//float R = 2.0f*0.044;		// Serial
+float R = 0.022;
 float i_ref_last = 0.0f;
 float u_precontrol = 0.0f;
-float Inductance_deviation = 0.001f*(4.0f-0.94f)/(80.0f*M_PI/180.0f);	// H/rad
+float Inductance_deviation = 0.001f*(2.0f-0.47f)/(80.0f*M_PI/180.0f);	// H/rad 	//Parallel
 int u_precontrol_counter = 0;
 
-#define PHASE_CURRENT_CONV	37.373/4.0f
+#define PHASE_CURRENT_CONV	0.5f*37.373/2.0f	//Parallel: factor of 0.5 to get current of each coil
 #define PHASE_VOLTAGE_CONV		250.0f
 #define PHASE_VOLT_OFF		0.0f
 #define INV_TEMP_CONV		1.0f
@@ -72,7 +73,7 @@ int u_precontrol_counter = 0;
 #define DC_VOLT_OFF			250.0f
 
 #define MAX_CURRENT_ASSERTION 45.0f
-#define MAX_SPEED_ASSERTION	  1500.0f
+#define MAX_SPEED_ASSERTION	  3500.0f
 #define T_dead_prediction	1.0f/SAMPLE_FREQUENCY
 
 
@@ -112,6 +113,8 @@ void ISR_Control(void *data)
     //Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
     //Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
+
+    Global_Data.av.U_ZK_filt = 500.0f;
 
 	if(fabs(Global_Data.av.i_a1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_b1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.i_c1_filt) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION) {
     	// Assertion

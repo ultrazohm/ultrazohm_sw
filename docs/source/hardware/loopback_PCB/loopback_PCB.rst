@@ -7,7 +7,7 @@ Loopback PCB
 	   
 Designed by Nina Diringer (TH Nürnberg), 07/2022
 
-.. figure:: sphx_glr_loopback_pcb.jpg
+.. figure:: sphx_glr_loopback_pcb.png
    :width: 45%
 
    Loopback PCB
@@ -17,7 +17,7 @@ Revisions
 insert revisions here
 
 General description
-********
+*******************
 This PCB is used for the :ref:`adc_loopback` tutorial. 
 The LEDs indicate the state of the signals from the digital voltage card (:ref:`digitalVoltage`). 
 Furthermore eight of the twelve gate signals are filtered and can be looped back to the ADC card (:ref:`Analog_LTC2311_16_v3`, :ref:`Analog_LTC2311_16_v2` ) via Ethernet connector. 

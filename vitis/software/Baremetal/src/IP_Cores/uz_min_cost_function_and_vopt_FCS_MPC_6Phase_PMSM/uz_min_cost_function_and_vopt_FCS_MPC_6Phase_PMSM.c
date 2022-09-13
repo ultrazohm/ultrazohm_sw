@@ -49,11 +49,11 @@ void uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_set_AXI_values(uz_min_cos
     uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_hw_set_valid_in_AXI(self->config.base_address, AXI_values.valid_in_AXI);
 }
 
-uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* self){
+uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* self){
 
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t voltage = {0};
+    uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t voltage = {0};
 
     voltage.d = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_hw_get_last_applied_optimal_voltage_ud_AXI(self->config.base_address);
     voltage.q = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_hw_get_last_applied_optimal_voltage_uq_AXI(self->config.base_address);

@@ -91,7 +91,7 @@ void test_uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_op
     float uy_expected = 0.6f;
     uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_hw_get_last_applied_optimal_voltage_uy_AXI_ExpectAndReturn(config.base_address, uy_expected);
 
-    struct uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t voltage = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(test_instance);
+    struct uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t voltage = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(test_instance);
 
    TEST_ASSERT_EQUAL_FLOAT(voltage.d, ud_expected);
    TEST_ASSERT_EQUAL_FLOAT(voltage.q, uq_expectet);

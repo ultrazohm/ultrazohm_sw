@@ -54,16 +54,12 @@
 
 #include "include/pwm_init.h"
 
-<<<<<<< HEAD
-// IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
+// Includes IP-Cores driver for 6 Phase FSC-MPC
+#include "IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
+#include "IP_Cores/uz_delay_compensation_fcs_mpc_6phase_pmsm/uz_delay_compensation_fcs_mpc_6phase_pmsm.h"
 #include "IP_Cores/uz_phase_voltages_per_switching_state_fcs_mpc_6phase/uz_phase_voltages_per_switching_state_fcs_mpc_6phase.h"
-
-=======
-// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
 #include "IP_Cores/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm.h"
->>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
-
-
+#include "IP_Cores/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

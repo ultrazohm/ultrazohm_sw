@@ -49,37 +49,99 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
-<<<<<<< HEAD
-// IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
-extern uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* test_instance;
+//IP-Cores for 6 Phase FSC-MPC
+extern uz_vsd_and_park_transformation_6phase_t* instance_vsd_and_park_transformation;
+uz_3ph_dq_t dq_currents_vsd_and_park_transformation;
+uz_6ph_alphabeta_t alpha_beta_x_y_currents_vsd_and_park_transformation;
+uz_6ph_abc_t a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation;
 
-static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_AXI_values_t AXI_values={
+extern float d_current_vsd_and_park_transformation;
+extern float q_current_vsd_and_park_transformation;
+extern float alpha_current_vsd_and_park_transformation;
+extern float beta_current_vsd_and_park_transformation;
+extern float x_current_vsd_and_park_transformation;
+extern float y_current_vsd_and_park_transformation;
+extern float a1_current_vsd_and_park_transformation;
+extern float b1_current_vsd_and_park_transformation;
+extern float c1_current_vsd_and_park_transformation;
+extern float a2_current_vsd_and_park_transformation;
+extern float b2_current_vsd_and_park_transformation;
+extern float c2_current_vsd_and_park_transformation;
+
+/*
+extern uz_delay_compensation_fcs_mpc_6phase_t* instance_delay_compensation_fcs_mpc_6phase_pmsm;
+static struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values_delay_compensation_fcs_mpc_6phase_pmsm={
+    .last_applied_optimal_voltage_ud = 6.3f,
+    .last_applied_optimal_voltage_uq = 5.3f,
+    .last_applied_optimal_voltage_ux = 4.3f,
+    .last_applied_optimal_voltage_uy = 3.3f,
+    .id_measured = 1.2f,
+    .iq_measured = 2.2f,
+    .ix_measured = 3.2f,
+    .iy_measured = 4.2f,
+    .omega_m_measured = 1.1f
+};
+uz_6ph_idk1_iqk1_ixk1_iyk1_t idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm;
+
+extern float idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+extern float iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+extern float ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+extern float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+
+
+extern uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* instance_phase_voltages_per_switching_state_fcs_mpc_6phase;
+static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_AXI_values_t AXI_values_phase_voltages_per_switching_states_fcs_mpc_6phase={
     .theta_el_AXI=2.4f,
-    .Index_AXI=55
+    .Index_AXI=46
+};
+uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t d_q_x_y_voltages_per_switching_state;
+
+extern float d_voltage_per_switching_state;
+extern float q_voltage_per_switching_state;
+extern float x_voltage_per_switching_state;
+extern float y_voltage_per_switching_state;
+
+
+extern uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm;
+static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_AXI_values_t AXI_values_prediction_and_cost_function_fcs_mpc_6phase_pmsm={
+   .d_voltage_per_switching_state_AXI = 6.3f,
+   .q_voltage_per_switching_state_AXI = 5.3f,
+   .x_voltage_per_switching_state_AXI = 4.3f,
+   .y_voltage_per_switching_state_AXI = 3.3f,
+   .id_k_1_AXI = 1.2f,
+   .iq_k_1_AXI = 2.2f,
+   .ix_k_1_AXI = 3.2f,
+   .iy_k_1_AXI = 4.2f,
+   .omega_m_measured_AXI = 1.1f
 };
 
-struct uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t voltage;
+uz_6ph_idref_iqref_ixref_iyref_t updated_values_idref_iqref_ix_ref_iy_ref={
+   .id_ref=10.0f,
+   .iq_ref=2.2f,
+   .ix_ref=1.1f,
+   .iy_ref=0.0f
+};
 
-extern float v_d;
-extern float v_q;
-extern float v_x;
-extern float v_y;
-=======
-// IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
-extern uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* test_instance;
-static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_AXI_values_t AXI_values={
-    .d_voltage_per_switching_state_AXI = 173.9f,
-    .q_voltage_per_switching_state_AXI = 72.19f,
-    .x_voltage_per_switching_state_AXI = -94.17f,
-    .y_voltage_per_switching_state_AXI = -163.1f,
-    .id_k_1_AXI = 0.4297f,
-    .iq_k_1_AXI = 9.988f,
-    .ix_k_1_AXI = 0.2219f,
-    .iy_k_1_AXI = -0.003051f,
-    .omega_m_measured_AXI = 313.3f
- };
-float J_AXI;
->>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+extern float J_AXI;
+
+
+extern uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm;
+static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_AXI_values_t AXI_values_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm={
+    .J_in_AXI = 35.3f,
+    .Index_in_AXI = 23,
+    .d_phase_voltage_per_switchimng_state_AXI = 22.4f,
+    .q_phase_voltage_per_switchimng_state_AXI = 33.2f,
+    .x_phase_voltage_per_switchimng_state_AXI = 56.0f,
+    .y_phase_voltage_per_switchimng_state_AXI = 43.7f,
+    .valid_in_AXI = 1
+};
+uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t last_applied_optimal_voltages;
+
+extern float last_applied_optimal_voltage_d;
+extern float last_applied_optimal_voltage_q;
+extern float last_applied_optimal_voltage_x;
+extern float last_applied_optimal_voltage_y;
+*/
 
 void ISR_Control(void *data)
 {
@@ -87,19 +149,65 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-<<<<<<< HEAD
-    // IP-Core phase_voltages_per_switching_state_fcs_mpc_6phase
-    uz_phase_voltages_per_switching_state_fcs_mpc_6phase_set_AXI_values(test_instance, AXI_values);
-    voltage = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_read_dvoltage_qvoltage_xvoltage_yvoltage(test_instance);
-	v_d = voltage.d;
-	v_q = voltage.q;
-	v_x = voltage.x;
-	v_y = voltage.y;
-=======
-    // IP-Core prediction_and_cost_function_FCS_MPC_6Phase_PMSM
-    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_set_AXI_values(test_instance, AXI_values);
-    J_AXI = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(test_instance);
->>>>>>> feature/Prediction_and_cost_function_FCS_MPC_6Phase_PMSM
+
+    //IP-Cores for 6 Phase FSC-MPC
+    dq_currents_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_get_id_iq(instance_vsd_and_park_transformation);
+    d_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.d;
+    q_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.q;
+
+    alpha_beta_x_y_currents_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_get_ialpha_ibeta_ix_iy_i0plus_i0minus(instance_vsd_and_park_transformation);
+    alpha_current_vsd_and_park_transformation = alpha_beta_x_y_currents_vsd_and_park_transformation.alpha;
+    beta_current_vsd_and_park_transformation = alpha_beta_x_y_currents_vsd_and_park_transformation.beta;
+    x_current_vsd_and_park_transformation = alpha_beta_x_y_currents_vsd_and_park_transformation.x;
+    y_current_vsd_and_park_transformation = alpha_beta_x_y_currents_vsd_and_park_transformation.y;
+
+    a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_get_ia1_ib1_ic1_ia2_ib2_ic2(instance_vsd_and_park_transformation);
+    a1_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.a1;
+    b1_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b1;
+    c1_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c1;
+    a2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.a2;
+    b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
+    c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
+
+/*
+    //crude over current protection
+    if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values_idref_iqref_ix_ref_iy_ref.id_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iq_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.ix_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iy_ref) > 15.0f)) {
+    	uz_assert(0);
+    	}
+*/
+    //uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm, updated_values_idref_iqref_ix_ref_iy_ref);
+
+    /*
+    uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(instance_delay_compensation_fcs_mpc_6phase_pmsm, AXI_values_delay_compensation_fcs_mpc_6phase_pmsm);
+
+    idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm = uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1(instance_delay_compensation_fcs_mpc_6phase_pmsm);
+    idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm = idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm.id_k_1;
+    iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm = idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm.iq_k_1;
+    ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm = idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm.ix_k_1;
+    iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm = idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm.iy_k_1;
+
+
+    uz_phase_voltages_per_switching_state_fcs_mpc_6phase_set_AXI_values(instance_phase_voltages_per_switching_state_fcs_mpc_6phase, AXI_values_phase_voltages_per_switching_states_fcs_mpc_6phase);
+
+    d_q_x_y_voltages_per_switching_state = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_read_dvoltage_qvoltage_xvoltage_yvoltage(instance_phase_voltages_per_switching_state_fcs_mpc_6phase);
+    d_voltage_per_switching_state = d_q_x_y_voltages_per_switching_state.d;
+    q_voltage_per_switching_state = d_q_x_y_voltages_per_switching_state.q;
+    x_voltage_per_switching_state = d_q_x_y_voltages_per_switching_state.x;
+	y_voltage_per_switching_state = d_q_x_y_voltages_per_switching_state.y;
+
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_set_AXI_values(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm, AXI_values_prediction_and_cost_function_fcs_mpc_6phase_pmsm);
+    J_AXI = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_get_J_AXI(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm);
+
+
+    uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_set_AXI_values(instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm, AXI_values_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm);
+
+    last_applied_optimal_voltages = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm);
+    last_applied_optimal_voltage_d = last_applied_optimal_voltages.d;
+    last_applied_optimal_voltage_q = last_applied_optimal_voltages.q;
+    last_applied_optimal_voltage_x = last_applied_optimal_voltages.x;
+    last_applied_optimal_voltage_y = last_applied_optimal_voltages.y;
+    */
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

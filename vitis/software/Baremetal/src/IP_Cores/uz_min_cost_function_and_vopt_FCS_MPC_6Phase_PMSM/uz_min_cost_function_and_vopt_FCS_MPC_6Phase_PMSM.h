@@ -7,12 +7,12 @@
  * @brief Object data type definitions of the output AXI_values for the MIN_COST_FUNCTION_AND_VOPT_FCS_MPC_6PHASE_PMSM IP-Core driver
  * 
  */
-typedef struct uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t{
+typedef struct uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t{
     float d;    /**< Amplitude of the last applied optimal d-voltage */
     float q;    /**< Amplitude of the last applied optimal q-voltage */
     float x;    /**< Amplitude of the last applied optimal x-voltage */
     float y;    /**< Amplitude of the last applied optimal y-voltage */
-}uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t;
+}uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t;
 
 /**
  * @brief Object data type definition of the MIN_COST_FUNCTION_AND_VOPT_FCS_MPC_6PHASE_PMSM IP-Core driver
@@ -55,9 +55,9 @@ void uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_set_AXI_values(uz_min_cos
  * @brief Read the last applied optimal voltages d, q, x, y per switching state from the IP-Core and return them
  *
  * @param self Pointer to driver instance
- * @return uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t
+ * @return uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t
  */
-uz_6ph_dvoltage_qvoltage_xvoltage_yvoltage_t uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* self);
+uz_6ph_optimal_dvoltage_qvoltage_xvoltage_yvoltage_t uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_read_last_applied_optimal_voltage_d_q_x_y(uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* self);
 
 /**
  * @brief Read the done complete flag the IP-Core and return them

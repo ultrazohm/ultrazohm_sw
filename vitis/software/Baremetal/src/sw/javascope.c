@@ -31,25 +31,42 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
-<<<<<<< HEAD
-// IP-Core delay_compensation_fcs_mpc_6phase_pmsm
-float id_k_1;
-float iq_k_1;
-float ix_k_1;
-float iy_k_1;
-=======
-float v_d;
-float v_q;
-float v_x;
-float v_y;
->>>>>>> feature/Phase_voltages_per_switching_state_FCS_MPC_6Phase_PMSM
-
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+//IP-Cores for 6 Phase FSC-MPC
+float d_current_vsd_and_park_transformation;
+float q_current_vsd_and_park_transformation;
+float alpha_current_vsd_and_park_transformation;
+float beta_current_vsd_and_park_transformation;
+float x_current_vsd_and_park_transformation;
+float y_current_vsd_and_park_transformation;
+float a1_current_vsd_and_park_transformation;
+float b1_current_vsd_and_park_transformation;
+float c1_current_vsd_and_park_transformation;
+float a2_current_vsd_and_park_transformation;
+float b2_current_vsd_and_park_transformation;
+float c2_current_vsd_and_park_transformation;
+
+float idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+
+float d_voltage_per_switching_state;
+float q_voltage_per_switching_state;
+float x_voltage_per_switching_state;
+float y_voltage_per_switching_state;
+
+float J_AXI;
+
+float last_applied_optimal_voltage_d;
+float last_applied_optimal_voltage_q;
+float last_applied_optimal_voltage_x;
+float last_applied_optimal_voltage_y;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -87,15 +104,31 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_v_d]	= &v_d;
-	js_ch_observable[JSO_v_q]	= &v_q;
-	js_ch_observable[JSO_v_x]	= &v_x;
-	js_ch_observable[JSO_v_y]	= &v_y;
-
-	js_ch_observable[JSO_id_k_1]		=&id_k_1;
-	js_ch_observable[JSO_iq_k_1]		=&iq_k_1;
-	js_ch_observable[JSO_ix_k_1]		=&ix_k_1;
-	js_ch_observable[JSO_iy_k_1]		=&iy_k_1;
+	js_ch_observable[JSO_d_current_vsd_and_park_transformation] = &d_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_q_current_vsd_and_park_transformation] = &q_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_alpha_current_vsd_and_park_transformation] = &alpha_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_beta_current_vsd_and_park_transformation] = &beta_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_x_current_vsd_and_park_transformation] = &x_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_y_current_vsd_and_park_transformation] = &y_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_a1_current_vsd_and_park_transformation] = &a1_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_b1_current_vsd_and_park_transformation] = &b1_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_c1_current_vsd_and_park_transformation] = &c1_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_a2_current_vsd_and_park_transformation] = &a2_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_b2_current_vsd_and_park_transformation] = &b2_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_c2_current_vsd_and_park_transformation] = &c2_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm] = &idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+	js_ch_observable[JSO_iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm] = &iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+	js_ch_observable[JSO_ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm] = &ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+	js_ch_observable[JSO_iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm] = &iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+	js_ch_observable[JSO_d_voltage_per_switching_state] = &d_voltage_per_switching_state;
+	js_ch_observable[JSO_q_voltage_per_switching_state] = &q_voltage_per_switching_state;
+	js_ch_observable[JSO_x_voltage_per_switching_state] = &x_voltage_per_switching_state;
+	js_ch_observable[JSO_y_voltage_per_switching_state] = &y_voltage_per_switching_state;
+	js_ch_observable[JSO_J_AXI] = &J_AXI;
+	js_ch_observable[JSO_last_applied_optimal_voltage_d] = &last_applied_optimal_voltage_d;
+	js_ch_observable[JSO_last_applied_optimal_voltage_q] = &last_applied_optimal_voltage_q;
+	js_ch_observable[JSO_last_applied_optimal_voltage_x] = &last_applied_optimal_voltage_x;
+	js_ch_observable[JSO_last_applied_optimal_voltage_y] = &last_applied_optimal_voltage_y;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

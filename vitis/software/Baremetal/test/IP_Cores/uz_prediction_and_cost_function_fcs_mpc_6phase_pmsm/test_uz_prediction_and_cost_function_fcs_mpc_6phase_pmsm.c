@@ -76,6 +76,11 @@ void setUp(void)
     AXI_values.ix_k_1_AXI = 3.2f;
     AXI_values.iy_k_1_AXI = 4.2f;
     AXI_values.omega_m_measured_AXI = 1.1f;
+
+    updated_values.id_ref=10.0f;
+    updated_values.iq_ref=2.2f;
+    updated_values.ix_ref=1.1f;
+    updated_values.iy_ref=0.0f;
 }
 
 void tearDown(void)

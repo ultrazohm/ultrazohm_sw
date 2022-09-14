@@ -93,6 +93,9 @@ typedef struct _actualValues_ {
 	float u_c1;
 	float inverter_temp;	// in °C
 	float theta_mech_unwraped;
+	float u_precontrol;
+	float flg_rising_edge;
+	float flg_falling_edge;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 

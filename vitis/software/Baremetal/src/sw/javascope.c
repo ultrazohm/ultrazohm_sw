@@ -94,6 +94,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_flg_Comp_dL_dTheta] = &flg_InductanceDeviation_Compensation;
 	js_ch_observable[JSO_flg_theta_m_pred] = &flg_theta_mech_prediction;
 	js_ch_observable[JSO_flg_Comp_L_dI_dt] = &flg_Inductance_PreControl;
+	js_ch_observable[JSO_u_precontrol] = &data->av.u_precontrol;
+	js_ch_observable[JSO_flg_rising_edge] = &data->av.flg_rising_edge;
+	js_ch_observable[JSO_flg_falling_edge] = &data->av.flg_falling_edge;
 
 
 

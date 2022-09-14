@@ -201,11 +201,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			flg_Inductance_PreControl = value;
+			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
 			break;
 
 		case (Set_Send_Field_4):
-			flg_theta_mech_prediction = value;
+			uz_PI_Controller_set_Ki(data->objects.PI_cntr1_on, value);
 			break;
 
 		case (Set_Send_Field_5):

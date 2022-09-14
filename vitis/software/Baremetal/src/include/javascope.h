@@ -50,6 +50,9 @@ enum JS_OberservableData {
 	JSO_flg_Comp_dL_dTheta,
 	JSO_flg_theta_m_pred,
 	JSO_flg_Comp_L_dI_dt,
+	JSO_u_precontrol,
+	JSO_flg_rising_edge,
+	JSO_flg_falling_edge,
 	JSO_ENDMARKER
 };
 
@@ -158,8 +161,8 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	i_amp,
 	comp_dL_dtheta,
-	comp_L_di_dt,
-	flg_theta_pred,
+	Kp_on,
+	Ki_on,
 	Kp,
 	Ki,
 	SND_FLD_ENDMARKER

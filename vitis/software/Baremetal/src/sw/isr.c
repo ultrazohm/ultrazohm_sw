@@ -69,14 +69,14 @@ float u_precontrol_counter_off = 0.0f;
 float T_dead_prediction = 0.0001f;
 
 
-#define PHASE_CURRENT_CONV	0.5f*37.373/4.0f	//Parallel: factor of 0.5 to get current of each coil
+#define PHASE_CURRENT_CONV	0.5f*37.373/2.0f	//Parallel: factor of 0.5 to get current of each coil
 #define PHASE_VOLTAGE_CONV	250.0f
 #define PHASE_VOLT_OFF		0.0f
 #define INV_TEMP_CONV		1.0f
 #define DC_VOLT_CONV		250.0f
 #define DC_VOLT_OFF			210.0f
 
-#define MAX_CURRENT_ASSERTION 25.0f
+#define MAX_CURRENT_ASSERTION 50.0f
 #define MAX_SPEED_ASSERTION	  3500.0f
 
 
@@ -99,8 +99,8 @@ void ISR_Control(void *data)
     // convert ADC readings to currents in Amps
     // Connect coil with phase a1 and b1
     Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV *2.0f;
-    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV *2.0f;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
 
     //CHanged to phase C for higher currents
     //Global_Data.av.i_a1 = Global_Data.av.i_c1;
@@ -214,7 +214,7 @@ void ISR_Control(void *data)
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_rising_edge == 1.0f){
     			u_precontrol_counter_on++;
         		// Calculate voltage of u = R * i + L * di/dt
-    			Global_Data.av.u_precontrol = L_on * (CurrentOn_Reference_A-Global_Data.av.i_a1)/T_dead_prediction + R * CurrentOn_Reference_A;
+    			Global_Data.av.u_precontrol = L_on * (CurrentOn_Reference_A-Global_Data.av.i_a1_filt)/T_dead_prediction + R * CurrentOn_Reference_A;
         		ref_voltage.a = Global_Data.av.u_precontrol;
     		} else{
     			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
@@ -228,7 +228,7 @@ void ISR_Control(void *data)
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_falling_edge == 1.0f){
     			u_precontrol_counter_off++;
     			// Calculate voltage of u = R * i + L * di/dt
-    			Global_Data.av.u_precontrol = -1.0f*(L_max * Global_Data.av.i_a1/T_dead_prediction);
+    			Global_Data.av.u_precontrol = -1.0f*(L_max * Global_Data.av.i_a1_filt/T_dead_prediction);
         		ref_voltage.a = Global_Data.av.u_precontrol;
     		} else{
     			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);

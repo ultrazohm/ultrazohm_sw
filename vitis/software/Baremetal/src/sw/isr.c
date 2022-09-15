@@ -63,14 +63,14 @@ float L_max = 1.0f*2.0f/1000.0f;
 float R = 0.022f;
 float i_ref_last = 0.0f;
 //float u_precontrol = 0.0f;
-float Inductance_deviation = 0.001f*(2.0f-0.47f)/(80.0f*M_PI/180.0f);	// H/rad 	//Parallel
-int u_precontrol_counter = 0;
+float Inductance_deviation = 0.001f*(2.0f-0.47f)/(60.0f*M_PI/180.0f);	// H/rad 	//Parallel
+float u_precontrol_counter_on = 0.0f;
+float u_precontrol_counter_off = 0.0f;
 float T_dead_prediction = 0.0001f;
-//int flg_rising_edge = 0;
-//int flg_falling_edge = 0;
+
 
 #define PHASE_CURRENT_CONV	0.5f*37.373/4.0f	//Parallel: factor of 0.5 to get current of each coil
-#define PHASE_VOLTAGE_CONV		250.0f
+#define PHASE_VOLTAGE_CONV	250.0f
 #define PHASE_VOLT_OFF		0.0f
 #define INV_TEMP_CONV		1.0f
 #define DC_VOLT_CONV		250.0f
@@ -99,8 +99,12 @@ void ISR_Control(void *data)
     // convert ADC readings to currents in Amps
     // Connect coil with phase a1 and b1
     Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV *2.0f;
+    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV *2.0f;
+
+    //CHanged to phase C for higher currents
+    //Global_Data.av.i_a1 = Global_Data.av.i_c1;
+
     // convert ADC readings to dc link voltages
     Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
 
@@ -115,7 +119,11 @@ void ISR_Control(void *data)
     // filter values
     Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
     //Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
-    //Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
+   // Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
+
+    //Changed to phase C for higher Currents
+    //Global_Data.av.i_a1_filt = Global_Data.av.i_c1_filt;
+
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
     Global_Data.av.U_ZK_filt = 600.0f;
@@ -138,10 +146,12 @@ void ISR_Control(void *data)
 		Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech_unwraped;
 	}
     //Global_Data.av.theta_m_offset_comp = Global_Data.av.theta_mech - Global_Data.av.theta_offset;
-    Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+    //Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
 
 
     //Prediction of mechanical angle
+	// Save non predicted value
+	Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp;
     if (flg_theta_mech_prediction == 1.0f || flg_Inductance_PreControl == 1.0f){
     	theta_m_deg = Global_Data.av.theta_m_offset_comp * 180.0f/M_PI + Global_Data.av.mechanicalRotorSpeed/60.0f * 360.0f * T_dead_prediction;
     } else{
@@ -169,11 +179,13 @@ void ISR_Control(void *data)
     		Global_Data.av.flg_rising_edge = 1.0f;
     		Global_Data.av.flg_falling_edge = 0.0f;
     		i_ref = CurrentOn_Reference_A;
+    		u_precontrol_counter_on = 0;
     	} else{
         	i_ref = CurrentOn_Reference_A;
-        	if (Global_Data.av.i_a1 > i_ref){
+        	if (Global_Data.av.i_a1 > i_ref || u_precontrol_counter_on >= Global_Data.av.precontrol_counter_on){
         		Global_Data.av.flg_rising_edge = 0.0f;
         		Global_Data.av.flg_falling_edge = 0.0f;
+        		u_precontrol_counter_on = 0;
         	}
     	}
     } else{
@@ -182,11 +194,13 @@ void ISR_Control(void *data)
     		Global_Data.av.flg_rising_edge = 0.0f;
     		Global_Data.av.flg_falling_edge = 1.0f;
     		i_ref = 0.0f;
+    		u_precontrol_counter_off = 0;
     	} else{
     		i_ref = 0.0f;
-    		if (Global_Data.av.i_a1 <= 0.0f){
+    		if (Global_Data.av.i_a1 <= 0.0f || u_precontrol_counter_off >= Global_Data.av.precontrol_counter_off){
     			Global_Data.av.flg_rising_edge = 0.0f;
     			Global_Data.av.flg_falling_edge = 0.0f;
+    			u_precontrol_counter_off = 0;
     		}
     	}
     }
@@ -197,12 +211,13 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
     	// One controller used for both coils in series
     	if (flg_PI_on_active == 1U){
-    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
-
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_rising_edge == 1.0f){
+    			u_precontrol_counter_on++;
         		// Calculate voltage of u = R * i + L * di/dt
-    			Global_Data.av.u_precontrol = L_on * CurrentOn_Reference_A/T_dead_prediction + R * CurrentOn_Reference_A;
+    			Global_Data.av.u_precontrol = L_on * (CurrentOn_Reference_A-Global_Data.av.i_a1)/T_dead_prediction + R * CurrentOn_Reference_A;
         		ref_voltage.a = Global_Data.av.u_precontrol;
+    		} else{
+    			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
     		}
 
     		// Inductance deviation compensation: u_ind = dL/dt * i
@@ -210,12 +225,13 @@ void ISR_Control(void *data)
     			ref_voltage.a = ref_voltage.a + Inductance_deviation * Global_Data.av.mechanicalRotorSpeed/60.0 * 2.0 * M_PI * Global_Data.av.i_a1_filt;
     		}
     	} else{
-    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
-
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_falling_edge == 1.0f){
+    			u_precontrol_counter_off++;
     			// Calculate voltage of u = R * i + L * di/dt
-    			Global_Data.av.u_precontrol = -1.0f*(L_max * CurrentOn_Reference_A/T_dead_prediction);
-        		ref_voltage.a = ref_voltage.a + Global_Data.av.u_precontrol;
+    			Global_Data.av.u_precontrol = -1.0f*(L_max * Global_Data.av.i_a1/T_dead_prediction);
+        		ref_voltage.a = Global_Data.av.u_precontrol;
+    		} else{
+    			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
     		}
     	}
 

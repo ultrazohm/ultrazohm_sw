@@ -46,11 +46,11 @@ DS_Data Global_Data = {
 
 // Current reference values for POHR
 float CurrentOn_Angle_deg = 120.0f;
-float CurrentOff_Angle_deg = 170.0f;
+float CurrentOff_Angle_deg = 175.0f;
 float CurrentOn_Reference_A = 5.0f;
 float i_ref = 0.0f;		// Actual reference value
-float PIon_Angle_Active_deg = 45.0f;
-float PIon_Angle_Inactive_deg = 168.0f;
+float PIon_Angle_Active_deg = 115.0f;
+float PIon_Angle_Inactive_deg = 175.0f;
 float flg_theta_mech_prediction = 1.0f;	// Predicts theta_mech for one time_step to set reference values
 float flg_InductanceDeviation_Compensation = 1.0f;	// Compensation of dL/dt * i
 float flg_Inductance_PreControl = 1.0f;
@@ -134,6 +134,8 @@ int main(void)
             Global_Data.av.flg_rising_edge = 0.0f;
             Global_Data.av.flg_falling_edge = 0.0f;
             Global_Data.av.u_precontrol = 0.0f;
+            Global_Data.av.precontrol_counter_on = 3.0f;
+            Global_Data.av.precontrol_counter_off = 3.0f;
             Global_Data.objects.PI_cntr1_on = uz_PI_Controller_init(config_PI1_on);
             Global_Data.objects.PI_cntr1_off = uz_PI_Controller_init(config_PI1_off);
             initialization_chain = init_ip_cores;

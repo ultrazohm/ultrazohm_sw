@@ -160,11 +160,11 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	i_amp,
-	comp_dL_dtheta,
+	Counter_Precontrol,
 	Kp_on,
 	Ki_on,
-	Kp,
-	Ki,
+	Kp_off,
+	Ki_off,
 	SND_FLD_ENDMARKER
 
 
@@ -173,9 +173,9 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	A,
-	deg,
-	deg,
-	rad,
+	-,
+	-,
+	-,
 	-,
 	-,
 	SND_LABELS_ENDMARKER

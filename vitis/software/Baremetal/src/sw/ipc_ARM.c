@@ -197,7 +197,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-			flg_InductanceDeviation_Compensation = value;
+			data->av.precontrol_counter_on = value;
+			data->av.precontrol_counter_off = value;
 			break;
 
 		case (Set_Send_Field_3):

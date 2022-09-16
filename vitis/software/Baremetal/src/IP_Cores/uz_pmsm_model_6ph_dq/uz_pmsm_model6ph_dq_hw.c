@@ -134,6 +134,7 @@ float uz_pmsm_model6ph_hw_read_u_z1(uint32_t base_address){
 float uz_pmsm_model6ph_hw_read_u_z2(uint32_t base_address){
     uz_assert_not_zero(base_address);
     return uz_axi_read_float(base_address + voltage_input_dq_out_axi_fb_Data_uz_pmsm_model_6ph_dq+0x14);
+}
 
 // Current output
 uz_6ph_dq_t uz_pmsm_model6ph_hw_read_currents_dq_unsafe(uint32_t base_address)
@@ -149,6 +150,7 @@ uz_6ph_dq_t uz_pmsm_model6ph_hw_read_currents_dq_unsafe(uint32_t base_address)
 
     return readout;
 }
+
 float uz_pmsm_model6ph_hw_read_i_d(uint32_t base_address){
     uz_assert_not_zero(base_address);
     return uz_axi_read_float(base_address + currents_dq_out_axi_Data_uz_pmsm_model_6ph_dq+0x00);

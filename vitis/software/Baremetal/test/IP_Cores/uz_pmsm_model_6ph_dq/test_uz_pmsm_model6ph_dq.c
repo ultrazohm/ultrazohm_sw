@@ -16,29 +16,23 @@ struct uz_pmsm_model6ph_dq_config_t config = {
     .r_1 = 2.1f,
     .inductance.d = 0.00005f,
     .inductance.q = 0.00005f,
-    .inductance.x1 = 0.0001f,
-    .inductance.y1 = 0.0002f,
-    .inductance.x2 = 0.0003f,
-    .inductance.y2 = 0.0004f,
-    .inductance.x3 = 0.0005f,
-    .inductance.y3 = 0.0006f,
-    .inductance.zero = 0.0007f,
+    .inductance.x = 0.0001f,
+    .inductance.y = 0.0002f,
+    .inductance.z1 = 0.0003f,
+    .inductance.z2 = 0.0004f,
     .psi_pm = 0.05f,
     .polepairs = 2.0f,
     .inertia = 0.001f,
     .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f};
 
-uz_9ph_dq_t ninephase_struct_expect = {
+uz_6ph_dq_t ninephase_struct_expect = {
     .d = 1.0f,
     .q = 2.0f,
-    .x1 = 3.0f,
-    .y1 = 4.0f,
-    .x2 = 5.0f,
-    .y2 = 6.0f,
-    .x3 = 7.0f,
-    .y3 = 8.0f,
-    .zero = 9.0f};
+    .x = 3.0f,
+    .y = 4.0f,
+    .z1 = 5.0f,
+    .z2 = 6.0f};
 
 void setUp(void)
 {
@@ -57,13 +51,10 @@ uz_pmsm_model6ph_dq_t *successful_init(struct uz_pmsm_model6ph_dq_config_t confi
     uz_pmsm_model6ph_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
     uz_pmsm_model6ph_hw_write_L_d_Expect(BASE_ADDRESS, configuration.inductance.d);
     uz_pmsm_model6ph_hw_write_L_q_Expect(BASE_ADDRESS, configuration.inductance.q);
-    uz_pmsm_model6ph_hw_write_L_x1_Expect(BASE_ADDRESS, configuration.inductance.x1);
-    uz_pmsm_model6ph_hw_write_L_y1_Expect(BASE_ADDRESS, configuration.inductance.y1);
-    uz_pmsm_model6ph_hw_write_L_x2_Expect(BASE_ADDRESS, configuration.inductance.x2);
-    uz_pmsm_model6ph_hw_write_L_y2_Expect(BASE_ADDRESS, configuration.inductance.y2);
-    uz_pmsm_model6ph_hw_write_L_x3_Expect(BASE_ADDRESS, configuration.inductance.x3);
-    uz_pmsm_model6ph_hw_write_L_y3_Expect(BASE_ADDRESS, configuration.inductance.y3);
-    uz_pmsm_model6ph_hw_write_L_zero_Expect(BASE_ADDRESS, configuration.inductance.zero);
+    uz_pmsm_model6ph_hw_write_L_x_Expect(BASE_ADDRESS, configuration.inductance.x);
+    uz_pmsm_model6ph_hw_write_L_y_Expect(BASE_ADDRESS, configuration.inductance.y);
+    uz_pmsm_model6ph_hw_write_L_z1_Expect(BASE_ADDRESS, configuration.inductance.z1);
+    uz_pmsm_model6ph_hw_write_L_z2_Expect(BASE_ADDRESS, configuration.inductance.z2);
     if (configuration.simulate_mechanical_system)
     {
         uz_pmsm_model6ph_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
@@ -83,7 +74,7 @@ uz_pmsm_model6ph_dq_t *successful_init(struct uz_pmsm_model6ph_dq_config_t confi
     return (instance);
 }
 
-void test_uz_pmsm_model_9ph_successful_init(void)
+void test_uz_pmsm_model_6ph_successful_init(void)
 {
     uz_pmsm_model6ph_dq_t *test_instance = successful_init(config);
     TEST_ASSERT_NOT_NULL(test_instance);
@@ -100,13 +91,10 @@ void test_uz_pmsm_model6ph_dq_reset(void){
 
     uz_pmsm_model6ph_hw_write_u_d_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
     uz_pmsm_model6ph_hw_write_u_q_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_x1_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_y1_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_x2_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_y2_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_x3_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_y3_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
-    uz_pmsm_model6ph_hw_write_u_zero_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
+    uz_pmsm_model6ph_hw_write_u_x_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
+    uz_pmsm_model6ph_hw_write_u_y_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
+    uz_pmsm_model6ph_hw_write_u_z1_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
+    uz_pmsm_model6ph_hw_write_u_z2_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
     uz_pmsm_model6ph_trigger_voltage_input_strobe_hw_Expect(BASE_ADDRESS); // from uz_pmsm_model6ph_dq_set_voltage
     
     uz_pmsm_model6ph_hw_write_reset_Expect(BASE_ADDRESS, false);
@@ -147,13 +135,10 @@ void test_set_inputs(void){
     // Test uz_pmsm_model6ph_dq_set_voltage
     uz_pmsm_model6ph_hw_write_u_d_Expect(BASE_ADDRESS, ninephase_struct_expect.d); 
     uz_pmsm_model6ph_hw_write_u_q_Expect(BASE_ADDRESS, ninephase_struct_expect.q); 
-    uz_pmsm_model6ph_hw_write_u_x1_Expect(BASE_ADDRESS, ninephase_struct_expect.x1);
-    uz_pmsm_model6ph_hw_write_u_y1_Expect(BASE_ADDRESS, ninephase_struct_expect.y1);
-    uz_pmsm_model6ph_hw_write_u_x2_Expect(BASE_ADDRESS, ninephase_struct_expect.x2);
-    uz_pmsm_model6ph_hw_write_u_y2_Expect(BASE_ADDRESS, ninephase_struct_expect.y2);
-    uz_pmsm_model6ph_hw_write_u_x3_Expect(BASE_ADDRESS, ninephase_struct_expect.x3);
-    uz_pmsm_model6ph_hw_write_u_y3_Expect(BASE_ADDRESS, ninephase_struct_expect.y3);
-    uz_pmsm_model6ph_hw_write_u_zero_Expect(BASE_ADDRESS, ninephase_struct_expect.zero);
+    uz_pmsm_model6ph_hw_write_u_x_Expect(BASE_ADDRESS, ninephase_struct_expect.x);
+    uz_pmsm_model6ph_hw_write_u_y_Expect(BASE_ADDRESS, ninephase_struct_expect.y);
+    uz_pmsm_model6ph_hw_write_u_z1_Expect(BASE_ADDRESS, ninephase_struct_expect.z1);
+    uz_pmsm_model6ph_hw_write_u_z2_Expect(BASE_ADDRESS, ninephase_struct_expect.z2);
     uz_pmsm_model6ph_trigger_voltage_input_strobe_hw_Expect(BASE_ADDRESS);
     uz_pmsm_model6ph_dq_set_voltage(test_instance,ninephase_struct_expect);
 }
@@ -179,45 +164,33 @@ void test_get_outputs(void){
     uz_pmsm_model6ph_trigger_current_output_strobe_hw_Expect(BASE_ADDRESS);
     uz_pmsm_model6ph_hw_read_i_d_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.d);
     uz_pmsm_model6ph_hw_read_i_q_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.q);
-    uz_pmsm_model6ph_hw_read_i_x1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x1);
-    uz_pmsm_model6ph_hw_read_i_y1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y1);
-    uz_pmsm_model6ph_hw_read_i_x2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x2);
-    uz_pmsm_model6ph_hw_read_i_y2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y2);
-    uz_pmsm_model6ph_hw_read_i_x3_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x3);
-    uz_pmsm_model6ph_hw_read_i_y3_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y3);
-    uz_pmsm_model6ph_hw_read_i_zero_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.zero);
-    uz_9ph_dq_t out_ninephase = uz_pmsm_model6ph_dq_get_output_currents(test_instance);
+    uz_pmsm_model6ph_hw_read_i_x_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x);
+    uz_pmsm_model6ph_hw_read_i_y_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y);
+    uz_pmsm_model6ph_hw_read_i_z1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z1);
+    uz_pmsm_model6ph_hw_read_i_z2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z2);
+    uz_6ph_dq_t out_ninephase = uz_pmsm_model6ph_dq_get_output_currents(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.d,ninephase_struct_expect.d);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.q,ninephase_struct_expect.q);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x1,ninephase_struct_expect.x1);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y1,ninephase_struct_expect.y1);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x2,ninephase_struct_expect.x2);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y2,ninephase_struct_expect.y2);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x3,ninephase_struct_expect.x3);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y3,ninephase_struct_expect.y3);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.zero,ninephase_struct_expect.zero);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x,ninephase_struct_expect.x);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y,ninephase_struct_expect.y);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.z1,ninephase_struct_expect.z1);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.z2,ninephase_struct_expect.z2);
 
     // Test uz_pmsm_model6ph_dq_get_input_voltages
     uz_pmsm_model6ph_trigger_voltage_output_strobe_hw_Expect(BASE_ADDRESS);
     uz_pmsm_model6ph_hw_read_u_d_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.d);
     uz_pmsm_model6ph_hw_read_u_q_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.q);
-    uz_pmsm_model6ph_hw_read_u_x1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x1);
-    uz_pmsm_model6ph_hw_read_u_y1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y1);
-    uz_pmsm_model6ph_hw_read_u_x2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x2);
-    uz_pmsm_model6ph_hw_read_u_y2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y2);
-    uz_pmsm_model6ph_hw_read_u_x3_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x3);
-    uz_pmsm_model6ph_hw_read_u_y3_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y3);
-    uz_pmsm_model6ph_hw_read_u_zero_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.zero);
+    uz_pmsm_model6ph_hw_read_u_x_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.x);
+    uz_pmsm_model6ph_hw_read_u_y_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y);
+    uz_pmsm_model6ph_hw_read_u_z1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z1);
+    uz_pmsm_model6ph_hw_read_u_z2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z2);
     out_ninephase = uz_pmsm_model6ph_dq_get_input_voltages(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.d,ninephase_struct_expect.d);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.q,ninephase_struct_expect.q);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x1,ninephase_struct_expect.x1);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y1,ninephase_struct_expect.y1);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x2,ninephase_struct_expect.x2);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y2,ninephase_struct_expect.y2);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x3,ninephase_struct_expect.x3);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y3,ninephase_struct_expect.y3);
-    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.zero,ninephase_struct_expect.zero);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.x,ninephase_struct_expect.x);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.y,ninephase_struct_expect.y);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.z1,ninephase_struct_expect.z1);
+    TEST_ASSERT_EQUAL_FLOAT(out_ninephase.z2,ninephase_struct_expect.z2);
 }
 
 

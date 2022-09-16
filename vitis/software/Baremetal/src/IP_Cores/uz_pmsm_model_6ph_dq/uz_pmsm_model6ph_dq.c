@@ -16,7 +16,7 @@
 ******************************************************************************/
 
 #include "../../uz/uz_global_configuration.h"
-#if UZ_PMSM_model6ph_DQ_MAX_INSTANCES > 0U 
+#if UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES > 0U 
 #include "uz_pmsm_model6ph_dq.h"
 #include "uz_pmsm_model6ph_dq_hw.h"
 #include <stdbool.h>
@@ -30,13 +30,13 @@ struct uz_pmsm_model6ph_dq_t
 };
 
 static size_t instance_counter = 0U;
-static uz_pmsm_model6ph_dq_t instances[UZ_PMSM_model6ph_DQ_MAX_INSTANCES ] = {0};
+static uz_pmsm_model6ph_dq_t instances[UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES ] = {0};
 
 static uz_pmsm_model6ph_dq_t *uz_pmsm_model6ph_dq_allocation(void);
 
 static uz_pmsm_model6ph_dq_t *uz_pmsm_model6ph_dq_allocation(void)
 {
-    uz_assert(instance_counter < UZ_PMSM_model6ph_DQ_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES);
     uz_pmsm_model6ph_dq_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
@@ -54,13 +54,10 @@ uz_pmsm_model6ph_dq_t *uz_pmsm_model6ph_dq_init(struct uz_pmsm_model6ph_dq_confi
     uz_assert(config.r_1 > 0.0f);
     uz_assert(config.inductance.d > 0.0f);
     uz_assert(config.inductance.q > 0.0f);
-    uz_assert(config.inductance.x1 > 0.0f);
-    uz_assert(config.inductance.y1 > 0.0f);
-    uz_assert(config.inductance.x2 > 0.0f);
-    uz_assert(config.inductance.y2 > 0.0f);
-    uz_assert(config.inductance.x3 > 0.0f);
-    uz_assert(config.inductance.y3 > 0.0f);
-    uz_assert(config.inductance.zero > 0.0f);
+    uz_assert(config.inductance.x > 0.0f);
+    uz_assert(config.inductance.y > 0.0f);
+    uz_assert(config.inductance.z1 > 0.0f);
+    uz_assert(config.inductance.z2 > 0.0f);
     uz_assert(config.psi_pm >= 0.0f);
     uz_assert(config.polepairs > 0.0f);
     // If the mechanical system is not simulated, set default values
@@ -89,7 +86,7 @@ void uz_pmsm_model6ph_dq_reset(uz_pmsm_model6ph_dq_t *self)
     uz_pmsm_model6ph_dq_set_inputs_general(self, 0.0f, 0.0f);
     // if voltages are set from PS: also reset them
     if(self->config.switch_pspl){
-        uz_9ph_dq_t zero_voltages = {0};
+        uz_6ph_dq_t zero_voltages = {0};
         uz_pmsm_model6ph_dq_set_voltage(self, zero_voltages);
     }
     uz_pmsm_model6ph_hw_write_reset(self->config.base_address, false);
@@ -126,68 +123,59 @@ struct uz_pmsm_model6ph_dq_outputs_general_t uz_pmsm_model6ph_dq_get_outputs_gen
     return outputs;
 }
 
-void uz_pmsm_model6ph_dq_set_voltage(uz_pmsm_model6ph_dq_t *self, uz_9ph_dq_t voltages){
+void uz_pmsm_model6ph_dq_set_voltage(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t voltages){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsm_model6ph_hw_write_u_d(self->config.base_address, voltages.d);
     uz_pmsm_model6ph_hw_write_u_q(self->config.base_address, voltages.q);
-    uz_pmsm_model6ph_hw_write_u_x1(self->config.base_address, voltages.x1);
-    uz_pmsm_model6ph_hw_write_u_y1(self->config.base_address, voltages.y1);
-    uz_pmsm_model6ph_hw_write_u_x2(self->config.base_address, voltages.x2);
-    uz_pmsm_model6ph_hw_write_u_y2(self->config.base_address, voltages.y2);
-    uz_pmsm_model6ph_hw_write_u_x3(self->config.base_address, voltages.x3);
-    uz_pmsm_model6ph_hw_write_u_y3(self->config.base_address, voltages.y3);
-    uz_pmsm_model6ph_hw_write_u_zero(self->config.base_address, voltages.zero);
+    uz_pmsm_model6ph_hw_write_u_x(self->config.base_address, voltages.x);
+    uz_pmsm_model6ph_hw_write_u_y(self->config.base_address, voltages.y);
+    uz_pmsm_model6ph_hw_write_u_z1(self->config.base_address, voltages.z1);
+    uz_pmsm_model6ph_hw_write_u_z2(self->config.base_address, voltages.z2);
     uz_pmsm_model6ph_trigger_voltage_input_strobe(self);
 }
 
-void uz_pmsm_model6ph_dq_set_voltage_unsafe(uz_pmsm_model6ph_dq_t *self, uz_9ph_dq_t voltages){
+void uz_pmsm_model6ph_dq_set_voltage_unsafe(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t voltages){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsm_model6ph_hw_write_voltage_dq_unsafe(self->config.base_address,voltages);
 }
 
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages(uz_pmsm_model6ph_dq_t *self){
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages(uz_pmsm_model6ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_9ph_dq_t out = {0};
+    uz_6ph_dq_t out = {0};
     uz_pmsm_model6ph_trigger_voltage_output_strobe(self);
     out.d = uz_pmsm_model6ph_hw_read_u_d(self->config.base_address);
     out.q = uz_pmsm_model6ph_hw_read_u_q(self->config.base_address);
-    out.x1 = uz_pmsm_model6ph_hw_read_u_x1(self->config.base_address);
-    out.y1 = uz_pmsm_model6ph_hw_read_u_y1(self->config.base_address);
-    out.x2 = uz_pmsm_model6ph_hw_read_u_x2(self->config.base_address);
-    out.y2 = uz_pmsm_model6ph_hw_read_u_y2(self->config.base_address);
-    out.x3 = uz_pmsm_model6ph_hw_read_u_x3(self->config.base_address);
-    out.y3 = uz_pmsm_model6ph_hw_read_u_y3(self->config.base_address);
-    out.zero = uz_pmsm_model6ph_hw_read_u_zero(self->config.base_address);
+    out.x = uz_pmsm_model6ph_hw_read_u_x(self->config.base_address);
+    out.y = uz_pmsm_model6ph_hw_read_u_y(self->config.base_address);
+    out.z1 = uz_pmsm_model6ph_hw_read_u_z1(self->config.base_address);
+    out.z2 = uz_pmsm_model6ph_hw_read_u_z2(self->config.base_address);
     return out;
 }
 
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages_unsafe(uz_pmsm_model6ph_dq_t *self){
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages_unsafe(uz_pmsm_model6ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_pmsm_model6ph_hw_read_voltage_dq_unsafe(self->config.base_address);
 }
 
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_output_currents(uz_pmsm_model6ph_dq_t *self){
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_output_currents(uz_pmsm_model6ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_9ph_dq_t out = {0};
+    uz_6ph_dq_t out = {0};
     uz_pmsm_model6ph_trigger_current_output_strobe(self);
     out.d = uz_pmsm_model6ph_hw_read_i_d(self->config.base_address);
     out.q =  uz_pmsm_model6ph_hw_read_i_q(self->config.base_address);
-    out.x1 = uz_pmsm_model6ph_hw_read_i_x1(self->config.base_address);
-    out.y1 = uz_pmsm_model6ph_hw_read_i_y1(self->config.base_address);
-    out.x2 = uz_pmsm_model6ph_hw_read_i_x2(self->config.base_address);
-    out.y2 = uz_pmsm_model6ph_hw_read_i_y2(self->config.base_address);
-    out.x3 = uz_pmsm_model6ph_hw_read_i_x3(self->config.base_address);
-    out.y3 = uz_pmsm_model6ph_hw_read_i_y3(self->config.base_address);
-    out.zero = uz_pmsm_model6ph_hw_read_i_zero(self->config.base_address);
+    out.x = uz_pmsm_model6ph_hw_read_i_x(self->config.base_address);
+    out.y = uz_pmsm_model6ph_hw_read_i_y(self->config.base_address);
+    out.z1 = uz_pmsm_model6ph_hw_read_i_z1(self->config.base_address);
+    out.z2 = uz_pmsm_model6ph_hw_read_i_z2(self->config.base_address);
     return out;
 }
 
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_output_currents_unsafe(uz_pmsm_model6ph_dq_t *self){
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_output_currents_unsafe(uz_pmsm_model6ph_dq_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_pmsm_model6ph_hw_read_currents_dq_unsafe(self->config.base_address);
@@ -202,13 +190,10 @@ static void write_config_to_pl(uz_pmsm_model6ph_dq_t *self)
     uz_pmsm_model6ph_hw_write_psi_pm(self->config.base_address, self->config.psi_pm);
     uz_pmsm_model6ph_hw_write_L_d(self->config.base_address, self->config.inductance.d);
     uz_pmsm_model6ph_hw_write_L_q(self->config.base_address, self->config.inductance.q);
-    uz_pmsm_model6ph_hw_write_L_x1(self->config.base_address, self->config.inductance.x1);
-    uz_pmsm_model6ph_hw_write_L_y1(self->config.base_address, self->config.inductance.y1);
-    uz_pmsm_model6ph_hw_write_L_x2(self->config.base_address, self->config.inductance.x2);
-    uz_pmsm_model6ph_hw_write_L_y2(self->config.base_address, self->config.inductance.y2);
-    uz_pmsm_model6ph_hw_write_L_x3(self->config.base_address, self->config.inductance.x3);
-    uz_pmsm_model6ph_hw_write_L_y3(self->config.base_address, self->config.inductance.y3);
-    uz_pmsm_model6ph_hw_write_L_zero(self->config.base_address, self->config.inductance.zero);
+    uz_pmsm_model6ph_hw_write_L_x(self->config.base_address, self->config.inductance.x);
+    uz_pmsm_model6ph_hw_write_L_y(self->config.base_address, self->config.inductance.y);
+    uz_pmsm_model6ph_hw_write_L_z1(self->config.base_address, self->config.inductance.z1);
+    uz_pmsm_model6ph_hw_write_L_z2(self->config.base_address, self->config.inductance.z2);
     uz_pmsm_model6ph_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
     uz_pmsm_model6ph_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsm_model6ph_hw_write_inertia(self->config.base_address, self->config.inertia);

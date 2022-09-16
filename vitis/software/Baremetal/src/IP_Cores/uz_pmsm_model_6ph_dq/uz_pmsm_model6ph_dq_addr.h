@@ -4,8 +4,8 @@
  * Created:           2022-06-05 23:10:16
 */
 
-#ifndef UZ_PMSM_MODEL6PH_DQ_HW_H
-#define UZ_PMSM_MODEL6PH_DQ_HW_H
+#ifndef UZ_PMSM_MODEL6PH_DQ_HW_H_
+#define UZ_PMSM_MODEL6PH_DQ_HW_H_
 
 // Auto generated
 #define  IPCore_Reset_uz_pmsm_model_6ph_dq                         0x0  //write 0x1 to bit 0 to reset IP core

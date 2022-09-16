@@ -1,5 +1,5 @@
-#ifndef UZ_PMSM_model6ph_DQ_H
-#define UZ_PMSM_model6ph_DQ_H
+#ifndef UZ_PMSM_MODEL6PH_DQ_H
+#define UZ_PMSM_MODEL6PH_DQ_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -21,7 +21,7 @@ struct uz_pmsm_model6ph_dq_config_t
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
     float polepairs; /**< Polepairs of the PMSM */
     float r_1; /**< Stator resistance in ohm */
-    uz_9ph_dq_t inductance; /**< Subsystem inductances */
+    uz_6ph_dq_t inductance; /**< Subsystem inductances */
     float psi_pm; /**< PM flux linkage */
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
@@ -91,49 +91,49 @@ struct uz_pmsm_model6ph_dq_outputs_general_t uz_pmsm_model6ph_dq_get_outputs_gen
  * @brief Safe function to set the input voltages of PMSM if PS is selected as source for voltages
  * 
  * @param self
- * @param voltages struct of type uz_9ph_dq_t containing the voltages to set
+ * @param voltages struct of type uz_6ph_dq_t containing the voltages to set
  */
-void uz_pmsm_model6ph_dq_set_voltage(uz_pmsm_model6ph_dq_t *self, uz_9ph_dq_t voltages);
+void uz_pmsm_model6ph_dq_set_voltage(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t voltages);
 
 /**
  * @brief Unsafe function to set the input voltages of PMSM if PS is selected as source for voltages
  * 
  * @param self
- * @param voltages struct of type uz_9ph_dq_t containing the voltages to set
+ * @param voltages struct of type uz_6ph_dq_t containing the voltages to set
  */
-void uz_pmsm_model6ph_dq_set_voltage_unsafe(uz_pmsm_model6ph_dq_t *self, uz_9ph_dq_t voltages);
+void uz_pmsm_model6ph_dq_set_voltage_unsafe(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t voltages);
 
 /**
  * @brief Safe function to read out the set input voltages of PMSM. Works for voltages coming from PS and PL.
  * 
  * @param self
- * @return struct of type uz_9ph_dq_t containing the set voltages
+ * @return struct of type uz_6ph_dq_t containing the set voltages
  */
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages(uz_pmsm_model6ph_dq_t *self);
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages(uz_pmsm_model6ph_dq_t *self);
 
 /**
  * @brief Unsafe function to read out the set input voltages of PMSM. Works for voltages coming from PS and PL.
  * 
  * @param self
- * @return struct of type uz_9ph_dq_t containing the set voltages
+ * @return struct of type uz_6ph_dq_t containing the set voltages
  */
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages_unsafe(uz_pmsm_model6ph_dq_t *self);
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_input_voltages_unsafe(uz_pmsm_model6ph_dq_t *self);
 
 /**
  * @brief Safe function to read out the actual currents of PMSM
  * 
  * @param self
- * @return struct of type uz_9ph_dq_t containing the actual currents
+ * @return struct of type uz_6ph_dq_t containing the actual currents
  */
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_output_currents(uz_pmsm_model6ph_dq_t *self);
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_output_currents(uz_pmsm_model6ph_dq_t *self);
 
 /**
  * @brief Unsafe function to read out the actual currents of PMSM
  * 
  * @param self
- * @return struct of type uz_9ph_dq_t containing the actual currents
+ * @return struct of type uz_6ph_dq_t containing the actual currents
  */
-uz_9ph_dq_t uz_pmsm_model6ph_dq_get_output_currents_unsafe(uz_pmsm_model6ph_dq_t *self);
+uz_6ph_dq_t uz_pmsm_model6ph_dq_get_output_currents_unsafe(uz_pmsm_model6ph_dq_t *self);
 
 /**
  * @brief Resets the PMSM model by writing zero to all PS inputs and sets integrators to zero

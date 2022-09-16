@@ -21,7 +21,7 @@ void test_uz_pmsm_model6ph_hw_write_reset(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+reset_integrators_Data_uz_pmsm_model_6ph_dq,true);
     uz_pmsm_model6ph_hw_write_reset(BASE_ADDRESS,true);
 }
-/*
+
 void test_uz_pmsm_model6ph_hw_write_simulate_mechanical(void){
     _Bool simulate_mech=true;
     uz_axi_write_bool_Expect(BASE_ADDRESS+simulate_mechanical_Data_uz_pmsm_model_6ph_dq,simulate_mech);
@@ -256,5 +256,5 @@ void test_uz_pmsm_model6ph_trigger_current_output_strobe_hw(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+currents_dq_out_axi_Strobe_uz_pmsm_model_6ph_dq,false);
     uz_pmsm_model6ph_trigger_current_output_strobe_hw(BASE_ADDRESS);
 }
-*/
+
 #endif // TEST

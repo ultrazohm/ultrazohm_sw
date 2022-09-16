@@ -213,6 +213,9 @@ structs for sixphase VSD transformation
 .. doxygenstruct:: uz_6ph_alphabeta_t
   :members:
 
+.. doxygenstruct:: uz_6ph_dq_t
+  :members:
+
 Functions for sixphase VSD systems transformation
 **************************************************
 

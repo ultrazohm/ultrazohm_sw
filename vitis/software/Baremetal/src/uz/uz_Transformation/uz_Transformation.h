@@ -56,6 +56,18 @@ typedef struct uz_6ph_abc_t{
     float c2;   /**< Amplitude of the c2 phase */
 }uz_6ph_abc_t;
 
+/**
+ * @brief struct for variables of an alpha-beta-system six-phase-system
+ * 
+ */
+typedef struct uz_6ph_dq_t{
+    float d;        /**< Amplitude of the d component */
+    float q;        /**< Amplitude of the q component */
+    float x;        /**< Amplitude of the x component */
+    float y;        /**< Amplitude of the y component */
+    float z1;       /**< Amplitude of the z1 component */
+    float z2;       /**< Amplitude of the z2 component */
+}uz_6ph_dq_t;
 
 /**
  * @brief Struct for the variables of an alpha-beta nine-phase system

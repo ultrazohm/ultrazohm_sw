@@ -63,7 +63,7 @@ float L_max = 1.0f*2.0f/1000.0f;
 float R = 0.022f;
 float i_ref_last = 0.0f;
 //float u_precontrol = 0.0f;
-float Inductance_deviation = 0.001f*(2.0f-0.47f)/(60.0f*M_PI/180.0f);	// H/rad 	//Parallel
+float Inductance_deviation = 4.0f * 0.001f*(2.0f-0.47f)/(60.0f*M_PI/180.0f);	// H/rad 	//Parallel
 float u_precontrol_counter_on = 0.0f;
 float u_precontrol_counter_off = 0.0f;
 float T_dead_prediction = 0.0001f;
@@ -182,7 +182,7 @@ void ISR_Control(void *data)
     		u_precontrol_counter_on = 0;
     	} else{
         	i_ref = CurrentOn_Reference_A;
-        	if (Global_Data.av.i_a1 > i_ref || u_precontrol_counter_on >= Global_Data.av.precontrol_counter_on){
+        	if (u_precontrol_counter_on >= Global_Data.av.precontrol_counter_on){
         		Global_Data.av.flg_rising_edge = 0.0f;
         		Global_Data.av.flg_falling_edge = 0.0f;
         		u_precontrol_counter_on = 0;
@@ -211,13 +211,15 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
     	// One controller used for both coils in series
     	if (flg_PI_on_active == 1U){
+    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
+
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_rising_edge == 1.0f){
     			u_precontrol_counter_on++;
         		// Calculate voltage of u = R * i + L * di/dt
-    			Global_Data.av.u_precontrol = L_on * (CurrentOn_Reference_A-Global_Data.av.i_a1_filt)/T_dead_prediction + R * CurrentOn_Reference_A;
-        		ref_voltage.a = Global_Data.av.u_precontrol;
+    			Global_Data.av.u_precontrol = L_on * (CurrentOn_Reference_A - Global_Data.av.i_a1)/T_dead_prediction + R * CurrentOn_Reference_A;
+        		ref_voltage.a = ref_voltage.a + Global_Data.av.u_precontrol;
     		} else{
-    			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
+    			//ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_on, i_ref, Global_Data.av.i_a1, false);
     		}
 
     		// Inductance deviation compensation: u_ind = dL/dt * i
@@ -225,13 +227,15 @@ void ISR_Control(void *data)
     			ref_voltage.a = ref_voltage.a + Inductance_deviation * Global_Data.av.mechanicalRotorSpeed/60.0 * 2.0 * M_PI * Global_Data.av.i_a1_filt;
     		}
     	} else{
+    		ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
+
     		if (flg_Inductance_PreControl == 1.0f && Global_Data.av.flg_falling_edge == 1.0f){
     			u_precontrol_counter_off++;
     			// Calculate voltage of u = R * i + L * di/dt
     			Global_Data.av.u_precontrol = -1.0f*(L_max * Global_Data.av.i_a1_filt/T_dead_prediction);
-        		ref_voltage.a = Global_Data.av.u_precontrol;
+        		ref_voltage.a = ref_voltage.a +  Global_Data.av.u_precontrol;
     		} else{
-    			ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
+    			//ref_voltage.a = uz_PI_Controller_sample(Global_Data.objects.PI_cntr1_off, i_ref, Global_Data.av.i_a1, false);
     		}
     	}
 

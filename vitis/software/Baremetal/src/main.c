@@ -64,7 +64,11 @@ int main(void)
 {
 	XTest_data_signals_Config *PL_Data_Config;
 	XUz_log_data_Config *PL_Logger_Config;
+
 	//XBram_Config *BRAM_LogData_Config;
+	//call bram
+	//BRAM_LogData_Config = XBram_LookupConfig(XPAR_UZ_USER_AXI_BRAM_CTRL_0_DEVICE_ID);
+	//XBram_CfgInitialize(&BRAM_LogData, BRAM_LogData_Config, BRAM_LogData_Config->CtrlBaseAddress);
 
     int status = UZ_SUCCESS;
     while (1)
@@ -123,7 +127,7 @@ int main(void)
             XUz_log_data_Set_control_1(&PL_Logger_1, control_signal_1);
             XUz_log_data_Set_control_2(&PL_Logger_1, control_signal_2);
 
-            u64 OCM_BASE_ADDRESS = 0x00FFFC0000;
+            //u64 OCM_BASE_ADDRESS = 0x00FFFC0000;
             //int *OCM_BASE_ADDRESS = (int *) 0x00FFFC0000;
             // casten !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             float PL_Data_amp = 2.0f;

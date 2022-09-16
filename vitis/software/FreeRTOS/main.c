@@ -35,6 +35,8 @@
 
 #include "xbram.h"
 #include "xil_mmu.h"
+#include "xil_cache.h" //for flushing cache
+#include "xil_mem.h"
 
 
 size_t lifecheck_mainThread = 0;
@@ -50,7 +52,7 @@ static struct netif server_netif;
 A53_Data Global_Data_A53;
 
 XBram BRAM_LogData;				// instance of BRAM
-float log_array_local[32];
+float log_array_local[64];
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -87,7 +89,8 @@ int main()
 	XBram_CfgInitialize(&BRAM_LogData, BRAM_LogData_Config, BRAM_LogData_Config->CtrlBaseAddress);
 
 	//test writing to BRAM
-	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 24, 5);
+	//Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, NORM_WB_CACHE); //XPAR_BRAM_0_BASEADDR
+	/*XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 24, 5);
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 28, 5);
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 32, 6);
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 36, 6);
@@ -102,6 +105,44 @@ int main()
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 72, 2);
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 76, 2);
 	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 80, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 84, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 88, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 92, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 96, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 100, 4);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 104, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 108, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 112, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 116, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 120, 9);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 124, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 128, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 132, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 136, 4);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 140, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 144, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 148, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 152, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 156, 9);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 160, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 164, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 168, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 172, 4);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 176, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 180, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 184, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 188, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 192, 9);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 196, 1);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 200, 2);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 204, 3);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 208, 4);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 212, 5);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 216, 6);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 220, 7);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 224, 8);
+	XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 228, 9);*/
+	/*Xil_DCacheFlushRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 128);*/
 
 	//Xil_SetTlbAttributes(XPAR_BRAM_0_BASEADDR, 0x15de6);
 	//Xil_SetTlbAttributes(XPAR_BRAM_0_BASEADDR, NORM_WB_CACHE);
@@ -205,13 +246,18 @@ void network_thread(void *p)
     	//log_array_local[3] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 12);
        	//log_array_local[4] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 16);
     	//log_array_local[5] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 20);
-    	Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, NORM_WB_CACHE); //XPAR_BRAM_0_BASEADDR
-    	memcpy(log_array_local, (void *)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
-    	//for(int i=0; i<16; i++){
-    	//	log_array_local[i] = *(float*)(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + 4*i);
-    	//}
-    	//float log_sample = log_array_local[1];
-    	//*(float *)0x00FFFC0000 = log_sample;
+    	Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, NORM_WB_CACHE); //XPAR_BRAM_0_BASEADDR //NORM_WT_CACHE
+    	//Xil_SetTlbAttributes(log_array_local[0], NORM_WB_CACHE);
+    	//printf("memory address of log_array_local[0]= %p \n", &log_array_local[0]);
+    	//printf("value of it= %f \n", log_array_local[0]);
+    	//Xil_MemCpy(log_array_local, (void *)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local)); //sizeof(log_array_local)
+    	//Xil_DCacheFlushRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 64);
+    	//Xil_DCacheFlushRange(log_array_local[0], 128);
+
+    	for(int i=0; i<64; i++){
+    		log_array_local[i] = *(float*)(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + 4*i);
+    	}
+    	Xil_DCacheFlushRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 64);
 
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;

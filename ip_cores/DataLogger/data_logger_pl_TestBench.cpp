@@ -35,7 +35,11 @@ int main() {
 
 	// OUTPUTS
 	//float dlog_1_TB =  0.0f;
-	float buff_TB[7] =  {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	float buff_TB[40] =  {	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+							0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 
 
 	int retval = 0;
@@ -84,7 +88,12 @@ int main() {
 		//triangle_apFixed_TB = 0x00004000; // uint: 16384, apfixed: 4, float:0x40800000
 		triangle_apFixed_TB = 0x00001800; // 1.5
 		// call top function
-		uz_log_data(&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &control_1_TB, &control_2_TB, buff_TB);
+		uz_log_data(&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &counter_TB,
+					&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &counter_TB,
+					&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &counter_TB,
+					&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &counter_TB,
+					&counter_TB, &sine_float_TB, &sine_apFixed_TB, &square_float_TB, &square_apFixed_TB, &triangle_float_TB, &triangle_apFixed_TB, &counter_TB,
+					&control_1_TB, &control_2_TB, buff_TB);
 
 	//}
 

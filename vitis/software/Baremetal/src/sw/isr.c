@@ -33,6 +33,9 @@
 
 #include "xtest_data_signals.h"
 #include "xuz_log_data.h"
+//#include "xbram.h"
+//#include "xil_mmu.h"
+//#include "xil_cache.h" //for flushing cache
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -43,6 +46,8 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+//float log_array_local[64];
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -75,6 +80,14 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+	//Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 0x16DEA); //XPAR_BRAM_0_BASEADDR //NORM_WT_CACHE
+	//Xil_SetTlbAttributes(log_array_local[0], 0x16DEA);
+	//printf("memory address of log_array_local[0]= %p \n", &log_array_local[0]);
+	//printf("value of it= %f \n", log_array_local[0]);
+	//memcpy(log_array_local, (void *)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+	//Xil_DCacheFlushRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 128);
+	//Xil_DCacheFlushRange(log_array_local[0], 128);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

@@ -1,13 +1,16 @@
 .. _uz_pmsm_model_9ph_dq:
 
-=====================
-Nine-phase PMSM Model
-=====================
-Important: This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained).
+======================
+Multi-phase PMSM Model
+======================
+Important: 
+
+- This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained).
+- There is a nine-phase and a six-phase IP-core. The nine-phase version of the IP-core was created first and is explained here. Everything that is stated here, also applies to the six-phase IP-core, which works in the same way (e.g. drivers, general usage and interfaces).
 
 Differences to the three-phase PMSM model IP-core:
 
-- IP-Core of a nine-phase PMSM model
+- IP-Core of a nine-phase and a six-phase PMSM model
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - All calculations in the IP-Core are done in double precision

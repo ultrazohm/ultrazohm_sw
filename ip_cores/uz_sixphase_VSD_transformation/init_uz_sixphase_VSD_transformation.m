@@ -1,6 +1,6 @@
 %% Init Parameters and Variables for uz_ninephase_VSD_transformation IP-core model
 
-ts_uz_ninephase_VSD_transformation = 1/100e6;
+ts_uz_sixphase_VSD_transformation = 1/1e6;
 
 gamma = pi/6;
 tl1 = [1  cos(4*gamma) cos(8*gamma)   cos(1*gamma)  cos(5*gamma) cos(9*gamma)];

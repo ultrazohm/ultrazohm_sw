@@ -128,6 +128,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_sixphase_VSD_transformation_s
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_sixphase_VSD_transformation_src_adder_MultiplyAdd_nw_block28.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_sixphase_VSD_transformation_src_adder_MultiplyAdd_nw_block28.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 INFO: [Common 17-14] Message 'IP_Flow 19-1971' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-206] Exiting Vivado at Sat Sep 17 15:32:39 2022...
+INFO: [Common 17-206] Exiting Vivado at Sat Sep 17 18:31:34 2022...
 
-Elapsed time is 19.8942 seconds.
+Elapsed time is 15.5783 seconds.

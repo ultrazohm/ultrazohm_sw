@@ -4,6 +4,7 @@
 Ninephase VSD and Park tranformation IP-Core
 ============================================
 
+- There is a nine-phase and a six-phase IP-core. The nine-phase version of the IP-core was created first and is explained here. Everything that is stated here, also applies to the six-phase IP-core, which works in the same way (e.g. drivers, general usage and interfaces).
 - Applies nine-phase VSD transformation to input and Park transformation to only alpha and beta values
 - Performs respective inverse transformation
 - Input interface is PL-only

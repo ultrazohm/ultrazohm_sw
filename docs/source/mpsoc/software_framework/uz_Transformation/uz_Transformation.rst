@@ -17,6 +17,10 @@ Transformations for multiphase systems do exist as well.
 * :ref:`dq_alphabeta_transformation`
 * :ref:`6ph_abc_to_alphabeta`
 * :ref:`6ph_alphabeta_to_abc`
+* :ref:`6ph_alphabeta_to_dq`
+* :ref:`6ph_dq_to_alphabeta`
+* :ref:`6ph_abc_to_dq`
+* :ref:`6ph_dq_to_abc`
 * :ref:`9ph_abc_to_alphabeta`
 * :ref:`9ph_alphabeta_to_abc`
 * :ref:`9ph_alphabeta_to_dq`
@@ -213,6 +217,9 @@ structs for sixphase VSD transformation
 .. doxygenstruct:: uz_6ph_alphabeta_t
   :members:
 
+.. doxygenstruct:: uz_6ph_dq_t
+  :members:
+
 Functions for sixphase VSD systems transformation
 **************************************************
 
@@ -257,6 +264,35 @@ The inverse transformation uses the inverse of the before shown matrix.
 
   \begin{bmatrix} X_{a_1} \\ X_{b_1} \\ X_{c_1} \\ X_{a_2} \\ X_{b_2} \\ X_{c_2}  \end{bmatrix} = 
   \begin{bmatrix} C \end{bmatrix}^{-1}\cdot\begin{bmatrix} X_{\alpha} \\ X_{\beta} \\ X_{x} \\ X_{y} \\ X_{z_1} \\ X_{z_2}   \end{bmatrix}
+
+.. _6ph_alphabeta_to_dq:
+
+6ph-αβγ to 6ph-dq transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_alphabeta_to_dq
+
+.. _6ph_dq_to_alphabeta:
+
+6ph-dq to 6ph-αβγ transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_to_alphabeta
+
+.. _6ph_abc_to_dq:
+
+6ph-abc to 6ph-dq transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_abc_to_dq
+
+.. _6ph_dq_to_abc:
+
+6ph-dq to 6ph-abc transformation
+--------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_to_abc
+
 
 
 structs for ninephase VSD transformation

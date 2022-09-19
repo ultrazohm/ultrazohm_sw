@@ -19,7 +19,6 @@ Transformations for multiphase systems do exist as well.
 * :ref:`6ph_alphabeta_to_abc`
 * :ref:`6ph_alphabeta_to_dq`
 * :ref:`6ph_dq_to_alphabeta`
-* :ref:`6ph_dq_to_alphabeta`
 * :ref:`6ph_abc_to_dq`
 * :ref:`6ph_dq_to_abc`
 * :ref:`9ph_abc_to_alphabeta`

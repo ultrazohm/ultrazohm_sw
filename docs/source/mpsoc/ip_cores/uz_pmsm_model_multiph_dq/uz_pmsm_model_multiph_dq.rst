@@ -1,16 +1,14 @@
-.. _uz_pmsm_model_9ph_dq:
+.. _uz_pmsm_model_multiph_dq:
 
 ======================
 Multi-phase PMSM Model
 ======================
 Important: 
-
-- This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained).
-- There is a nine-phase and a six-phase IP-core. The nine-phase version of the IP-core was created first and is explained here. Everything that is stated here, also applies to the six-phase IP-core, which works in the same way (e.g. drivers, general usage and interfaces).
+- The multi-phase PMSM IP-cores are based on the three-phase :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained)
+- There are two mulit-phase IP-cores, a six-phase and a nine-phase one
 
 Differences to the three-phase PMSM model IP-core:
-
-- IP-Core of a nine-phase and a six-phase PMSM model
+- IP-Cores model a six-phase and nine-phase PMSM
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - All calculations in the IP-Core are done in double precision
@@ -18,18 +16,16 @@ Differences to the three-phase PMSM model IP-core:
 
 System description
 ==================
-
-The modelling of the nine-phase machine is based on [[#Slunjski_Diss]_].
-The general idea in this work and also the common approach to model multiphase machines is to transform the phase variables with the VSD and Park transformations as shown and done in :ref:`uz_pmsm9ph_transformation` and :ref:`uz_transformation`.
+The modelling of the multi-phase machine is based on [[#Slunjski_Diss]_].
+The general idea in this work and also the common approach to model multi-phase machines is, to transform the phase variables with the VSD and Park transformations, as shown and done in :ref:`uz_pmsm9ph_transformation` and :ref:`uz_transformation`.
 Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
-This IP-core contains the electric differential equations and the mechanical part where the torque is calculated.
+This IP-core contains the electric differential equations and the mechanical part, where the torque is calculated.
 Additionally, either a torque load or a fixed speed can be set to test the machine model.
-While the equations are mostly similar to the ones of :ref:`uz_pmsmModel`, thy will be shown here again for the sake of completeness.
+While the equations are mostly similar to the ones of the three-phase :ref:`uz_pmsmModel`, they will be shown here again for the sake of completeness.
 To obtain more details about the equations and integrators, reading :ref:`uz_pmsmModel` is advised.
 
 dq equations
-************
-
+------------
 .. math::
 
   \begin{align}
@@ -39,23 +35,8 @@ dq equations
       \psi_{q}(k) &= L_{q} i_{q}(k) \label{eq:psiq_ld}
   \end{align}
 
-Additional system equations
-***************************
-
-.. math::
-
-  \begin{align}
-    \psi_{x,i}(k+1) &= T_s \big( v_{x,i}(k) - R_{1} i_{x,i}(k)); i=1,2,3\\
-    \psi_{x,i}(k) &= L_{ls} i_{x,i}(k) \\
-    \psi_{y,i}(k+1) &= T_s \big( v_{y,i}(k) - R_{1} i_{y,i}(k)); i=1,2,3\\
-    \psi_{y,i}(k) &= L_{ls} i_{y,i}(k)\\
-    \psi_{0}(k+1) &= T_s \big( v_{0}(k) - R_{1} i_{0}(k))\\
-    \psi_{0}(k) &= L_{ls} i_{0}(k)
-  \end{align}
-
 Mechanical equations
-********************
-
+--------------------
 .. math::
 
   \begin{align}
@@ -66,22 +47,90 @@ Mechanical equations
 
 Note that the integrator for :math:`\theta_{el}` is limited to :math:`\pm \pi` to avoid overflow (wrapping integrator).
 
+Additional system equations
+---------------------------
+Six-phase model
+***************
+.. math::
+
+  \begin{align}
+    \psi_{x}(k+1) &= T_s \big( v_{x}(k) - R_{1} i_{x}(k))+\psi_{x}(k)\\
+    \psi_{x}(k) &= L_{ls} i_{x}(k) \\
+    \psi_{y}(k+1) &= T_s \big( v_{y}(k) - R_{1} i_{y}(k))+\psi_{y}(k)\\
+    \psi_{y}(k) &= L_{ls} i_{y}(k) \\
+    \psi_{zi}(k+1) &= T_s \big( v_{zi}(k) - R_{1} i_{zi}(k))+\psi_{zi}(k)\\
+    \psi_{zi}(k) &= L_{ls} i_{zi}(k) \\
+    \nonumber\textrm{with } i&=1,2
+  \end{align}
+
+Nine-phase model
+****************
+.. math::
+
+  \begin{align}
+    \psi_{xi}(k+1) &= T_s \big( v_{xi}(k) - R_{1} i_{xi}(k))+\psi_{xi}(k)\\
+    \psi_{xi}(k) &= L_{ls} i_{xi}(k) \\
+    \psi_{yi}(k+1) &= T_s \big( v_{yi}(k) - R_{1} i_{yi}(k))+\psi_{yi}(k)\\
+    \psi_{yi}(k) &= L_{ls} i_{yi}(k) \\
+    \psi_{0}(k+1) &= T_s \big( v_{0}(k) - R_{1} i_{0}(k))+\psi_{0}(k) \\
+    \psi_{0}(k) &= L_{ls} i_{0}(k) \\
+    \nonumber\textrm{with } i&=1,2,3
+  \end{align}
+
 IP-core interfaces
 ==================
-
-.. csv-table:: Interface of ninephase PMSM Model IP-Core
-   :file: uz_pmsm_model_9ph_dq_interfaces.csv
+.. csv-table:: Interface of nine-phase PMSM Model IP-Core
+   :file: uz_pmsm_model_multiph_dq_interfaces.csv
    :widths: 50 40 80 60 60 190
    :header-rows: 1
 
 Driver reference
 ================
-
 The set and get functions for voltage and currents are implemented as normal and unsafe version.
 In addition to the regular functions, *unsafe* versions of the driver exist (``_unsafe``).
 These functions are considerably faster than their safe counterparts but violate the software rules outlined in :ref:`software_development_guidelines`.
 It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
 
+Six-phase model
+---------------
+.. doxygentypedef:: uz_pmsm_model6ph_dq_t
+
+.. doxygenstruct:: uz_pmsm_model6ph_dq_config_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_model6ph_dq_outputs_general_t
+  :members:
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_init
+
+.. doxygenfunction:: uz_pmsm_model6ph_trigger_voltage_input_strobe
+
+.. doxygenfunction:: uz_pmsm_model6ph_trigger_voltage_output_strobe
+
+.. doxygenfunction:: uz_pmsm_model6ph_trigger_current_output_strobe
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_set_inputs_general
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_get_outputs_general
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_set_voltage
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_set_voltage_unsafe
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_get_input_voltages
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_get_input_voltages_unsafe
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_get_output_currents
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_get_output_currents_unsafe
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_reset
+
+.. doxygenfunction:: uz_pmsm_model6ph_dq_set_use_axi_input
+
+Nine-phase model
+----------------
 .. doxygentypedef:: uz_pmsm_model9ph_dq_t
 
 .. doxygenstruct:: uz_pmsm_model9ph_dq_config_t
@@ -120,16 +169,15 @@ It is strongly advised to manually test by comparing the safe and unsafe version
 
 Example usage
 =============
-
 The IP-core has two intended use cases:
-The model can be used in the dq domain only and the inputs are set from the PS.
-It is also possible to combine the model with the IP-cores :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
+- Using the model in the dq domain only with inputs coming from the PS
+- Simulating a complete multi-phase drive system including the :ref:`uz_inverter_3ph`, :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` IP-cores (used for CIL)
 
 Usage in PS only
-****************
-
-Using the model in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
+----------------
+Using the IP-core in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
 The placement of the IP-core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
+For the example the nine-phase model is used, but the same can also be applied for the six-phase model.
 
 .. figure:: open_loop_ps.jpg
 
@@ -215,12 +263,10 @@ The results were recreated with the Simulink model.
   \end{align}
 
 
-Nine-phase drive system in PL (HIL)
-***********************************
-
-Describe HIL model here as soon as all necessary IP-cores are merged.
+Nine-phase drive system in PL (CIL)
+-----------------------------------
+Link to CIL Docs page.
 
 Sources
 =======
-
 .. [#Slunjski_Diss] M. Slunjski, “Control of a ninephase symmetrical pmsm with reduced rare earth material,” Dissertation, Liverpool John Moores University, 2020. [Online]. Available: https://researchonline.ljmu.ac.uk/id/eprint/14732/1/2021MarkoPhD.pdf

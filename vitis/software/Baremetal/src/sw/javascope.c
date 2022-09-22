@@ -29,6 +29,7 @@ extern float position_abs;
 extern float position_ref;
 extern float input_nn[5];
 extern float dqn_mutex_float;
+extern float position_target;
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -71,7 +72,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_position_motor]	= &data->av.position_motor;
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
 	js_ch_observable[JSO_position_abs]		= &position_abs;
-	js_ch_observable[JSO_position_ref]		= &position_ref;
+	js_ch_observable[JSO_position_target]		= &position_target;
 	js_ch_observable[JSO_ia] 				= &data->mv.measurement_current.a;
 	js_ch_observable[JSO_ib] 				= &data->mv.measurement_current.b;
 	js_ch_observable[JSO_ic] 				= &data->mv.measurement_current.c;

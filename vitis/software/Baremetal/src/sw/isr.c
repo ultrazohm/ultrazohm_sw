@@ -54,7 +54,7 @@ float Ki_iq = 1500.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
 float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
-float action_current = 4.5f; // I_q für Agenten
+float action_current = 3.5f; // I_q für Agenten
 // speed control
 bool ext_clamping = false;
 
@@ -124,7 +124,7 @@ void ISR_Control(void *data)
     pos_strich = (int)Global_Data.av.position_pendulum;
     // calculate and transform observations for dqn
     Global_Data.obs.dqn_chart_position=position_abs/1.0e3f;
-    Global_Data.obs.dqn_chart_error = Global_Data.obs.dqn_chart_position-position_target;
+    Global_Data.obs.dqn_chart_error = -Global_Data.obs.dqn_chart_position-position_target;
     // derivation angle and position with filtering and treshold
     angle_derv=(Global_Data.av.theta_pendulum-old_theta_pendulum)/Global_Data.av.isr_samplerate_s;// rad/s
     Global_Data.obs.dqn_angle_raw = Global_Data.av.theta_pendulum;
@@ -184,9 +184,13 @@ void ISR_Control(void *data)
 		            switch (action){
 		            case 0: Global_Data.rasv.dq_reference_current.q =action_current;
 		            break;
-		            case 1:	Global_Data.rasv.dq_reference_current.q=0.0f;
+		            case 1:	Global_Data.rasv.dq_reference_current.q=action_current/2.0f;
 		            break;
-		            case 2: Global_Data.rasv.dq_reference_current.q=-action_current;
+		            case 2: Global_Data.rasv.dq_reference_current.q=0.0f;
+		            break;
+		            case 3:	Global_Data.rasv.dq_reference_current.q=-action_current/2.0f;
+		            break;
+		            case 4: Global_Data.rasv.dq_reference_current.q=-action_current;
 		            break;
 		            default: uz_assert(0);
 		            }

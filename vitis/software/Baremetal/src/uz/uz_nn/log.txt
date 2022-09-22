@@ -1,0 +1,1 @@
+22.09: Modell umgebaut auf 6 eingänge für das neuronale Netz, vorher 5 (Observation position kommt hinzu)

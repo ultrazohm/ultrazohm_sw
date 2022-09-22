@@ -17,9 +17,9 @@
 #include "main.h"
 
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 40
-#define NUMBER_OF_INPUTS 5
-#define NUMBER_OF_OUTPUTS 3
+#define DQN__CONTROL_FREQUENCY 400
+#define NUMBER_OF_INPUTS 6
+#define NUMBER_OF_OUTPUTS 5
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 128
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 128
@@ -74,8 +74,8 @@ enum init_chain initialization_chain = init_assertions;
 static void dqn_step(void);
 static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN__CONTROL_FREQUENCY;
 bool dqn_mutex=false;
-float dqn_mutex_float =0.0f;
-float input_nn[5] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f};
+float dqn_mutex_float = 0.0f;
+float input_nn[6] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f, 0.0f};
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -200,7 +200,7 @@ int main(void)
             Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
-            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
+            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.rasv.V_dc_volts = 48.0f;
             initialization_chain = print_msg;
             break;
@@ -240,6 +240,7 @@ static void dqn_step(void)
 	input_nn[2]=Global_Data.obs.dqn_chart_position_derv;
 	input_nn[3]=Global_Data.obs.dqn_chart_error;
 	input_nn[4]=Global_Data.obs.dqn_angle_derv;
+	input_nn[5]=Global_Data.obs.dqn_chart_position;
     uz_nn_ff(Global_Data.objects.uz_nn_instance, Global_Data.objects.input_instance);
 }
 void Reset_global_Data(DS_Data *data)

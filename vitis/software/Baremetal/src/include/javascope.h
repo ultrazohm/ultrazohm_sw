@@ -33,7 +33,7 @@ enum JS_OberservableData {
 	JSO_position_motor,
 	JSO_thetapendulum,
 	JSO_position_abs,
-	JSO_position_ref,
+	JSO_position_target,
 	JSO_dqn_chart_error,
 	JSO_dqn_angle_derv,
 	JSO_dqn_chart_position_derv,
@@ -170,11 +170,11 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	Reference speed,
-	Position,
-	K_p_speed controller,
-	K_i_speed controller,
-	K_p_iq controller,
-	K_i_iq controller,
+	Position_DQN_Agent,
+	,
+	,
+	,
+	,
 	SND_FLD_ENDMARKER
 
 
@@ -183,7 +183,7 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
+	m,
 	,
 	,
 	,

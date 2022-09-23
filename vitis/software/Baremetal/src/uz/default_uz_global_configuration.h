@@ -44,6 +44,7 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
+#define UZ_MOTORCONTROL_MAX_INSTANCES                   0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -73,4 +74,5 @@
     #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
     #define UZ_SETPOINT_MAX_INSTANCES                       50U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
+    #define UZ_MOTORCONTROL_MAX_INSTANCES                   100U
 #endif

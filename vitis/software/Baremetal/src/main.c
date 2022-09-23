@@ -200,7 +200,7 @@ int main(void)
             Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
-            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, 5);
+            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.rasv.V_dc_volts = 48.0f;
             initialization_chain = print_msg;
             break;

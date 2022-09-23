@@ -3,4 +3,5 @@ vcom  uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization_pkg.vhd
 vcom  uz_6ph_cost_ip_src_Detect_Rise_Positive.vhd
 vcom  uz_6ph_cost_ip_src_FiniteControlSetSwitchingTable.vhd
 vcom  uz_6ph_cost_ip_src_MATLAB_Function.vhd
+vcom  uz_6ph_cost_ip_src_iterativesearch.vhd
 vcom  uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd

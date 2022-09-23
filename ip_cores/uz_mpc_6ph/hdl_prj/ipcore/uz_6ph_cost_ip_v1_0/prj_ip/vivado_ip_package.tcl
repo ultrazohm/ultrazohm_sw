@@ -6,6 +6,7 @@ add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimi
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_FiniteControlSetSwitchingTable.vhd}
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_MATLAB_Function.vhd}
+add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_iterativesearch.vhd}
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd}
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/uz_6ph_cost_ip_dut.vhd}
@@ -32,7 +33,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112690242 [ipx::current_core]
+set_property core_revision 2112695063 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -51,6 +52,10 @@ ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_MATLAB_Function.vhd} [ipx::get_file_g
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_6ph_cost_ip_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_6ph_cost_ip_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_iterativesearch.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_6ph_cost_ip_src_iterativesearch.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_iterativesearch.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_6ph_cost_ip_src_iterativesearch.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

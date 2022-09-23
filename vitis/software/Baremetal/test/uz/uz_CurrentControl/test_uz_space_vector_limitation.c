@@ -24,21 +24,21 @@ void setUp(void)
     ext_clamping = false;
 }
 
-void test_uz_FOC_SpaceVector_Limitation_ext_clamping_NULL(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, NULL));
+void test_uz_CurrentControl_SpaceVector_Limitation_ext_clamping_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, NULL));
 }
 
-void test_uz_FOC_SpaceVector_Limitation_V_dc_negative(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_V_dc_negative(void){
     V_dc_volts = -5.2f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
-void test_uz_FOC_SpaceVector_Limitation_V_dc_zero(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_V_dc_zero(void){
     V_dc_volts = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
 }
 
-void test_uz_FOC_SpaceVector_Limitation_output(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_output(void){
     //Values for comparision from simulation
     float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
 	float values_omega[11]={0.0f, 0.0f, 0.0f, 0.0f, 0.0121f, 0.0402f, 0.0861f, 0.149f, 0.227f, 0.315f, 0.408f};
@@ -51,13 +51,13 @@ void test_uz_FOC_SpaceVector_Limitation_output(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
     }
 }
 
-void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_output_transition_to_limit(void){
     //Values for comparision from simulation
     V_dc_volts = 12.0f;
     float values_iq[11]={1.7f, 1.7f, 1.7f, 1.7f, 1.7f, 0.761f, 0.82f, 0.865f, 0.898f, 0.923f, 0.942f};
@@ -72,14 +72,14 @@ void test_uz_FOC_SpaceVector_Limitation_output_transition_to_limit(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);
     }
 }
 
-void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_output_limited(void){
     //Values for comparision from simulation
     V_dc_volts = 12.0f;
     float values_iq[11]={1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f, 1.05f};
@@ -94,14 +94,14 @@ void test_uz_FOC_SpaceVector_Limitation_output_limited(void){
         omega_el_rad_per_sec = values_omega[i];
         u_input_Volts.d = ud_in[i];
         u_input_Volts.q = uq_in[i];
-        uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+        uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 		TEST_ASSERT_FLOAT_WITHIN(1e-03, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02, uq_out[i], output.q);
         TEST_ASSERT_EQUAL_INT(output_ref[i], ext_clamping);
     }
 }
 
-void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
     //Tests, that the function still works, if very low values for V_dc are used and the d-axis is prioritized
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
@@ -110,12 +110,12 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
     omega_el_rad_per_sec = 100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 8.0f;
-    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1096966, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.0360555f, output.q);
 }
 
-void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
     //Tests, that the function still works, if very low values for V_dc are used and the q-axis is prioritized
     //Values for comparision manually calculated
     V_dc_volts = 0.2f;
@@ -124,12 +124,12 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio(void){
     omega_el_rad_per_sec = -100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 8.0f;
-    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.0360555f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1096966f, output.q);
 }
 
-void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
     //Tests, that the function still works, if very low values for V_dc are used and the d-axis is prioritized and the prioritized
     //voltage is lower than 95% of U_SV_max
     //Values for comparision manually calculated
@@ -139,12 +139,12 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_d_axis_prio_95(void){
     omega_el_rad_per_sec = 100.0f;
     u_input_Volts.d = 0.1f;
     u_input_Volts.q = 8.0f;
-    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.057735f, output.q);
 }
 
-void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio_95(void){
+void test_uz_CurrentControl_SpaceVector_Limitation_very_low_V_dc_q_axis_prio_95(void){
     //Tests, that the function still works, if very low values for V_dc are used and the q-axis is prioritized and the prioritized
     //voltage is lower than 95% of U_SV_max
     //Values for comparision manually calculated
@@ -154,7 +154,7 @@ void test_uz_FOC_SpaceVector_Limitation_very_low_V_dc_q_axis_prio_95(void){
     omega_el_rad_per_sec = -100.0f;
     u_input_Volts.d = 5.0f;
     u_input_Volts.q = 0.1f;
-    uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+    uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.057735f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-05, 0.1, output.q);
 }

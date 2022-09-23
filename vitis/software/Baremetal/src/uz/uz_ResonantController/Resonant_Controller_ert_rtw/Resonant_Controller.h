@@ -68,22 +68,28 @@ typedef struct {
 } DW_Resonant_Controller_T;
 
 /* External inputs (root inport signals with default storage) */
+/**
+ * @brief Input struct for the generated resonant controller
+ */
 typedef struct {
-  real_T in_ref;                       /* '<Root>/in_ref' */
-  real_T in_m;                         /* '<Root>/in_m' */
-  real_T omega_el;                     /* '<Root>/omega_el' */
-  real_T h;                            /* '<Root>/h' */
-  real_T T_sw;                         /* '<Root>/T_sw' */
-  real_T VR;                           /* '<Root>/VR' */
-  real_T Klim;                         /* '<Root>/Klim' */
-  real_T upper_limit;                  /* '<Root>/upper_limit' */
-  real_T lower_limit;                  /* '<Root>/lower_limit' */
-  real_T Reset;                        /* '<Root>/Reset' */
+  real_T in_ref;                       /**< Reference value for the controller*/
+  real_T in_m;                         /**< Measured value for the controller*/             
+  real_T omega_el;                     /**< Frequency in rad/s*/
+  real_T h;                            /**< Order of harmonic to be controlled*/
+  real_T T_sw;                         /**< Sampling time*/
+  real_T VR;                           /**< Gain of the controller*/
+  real_T Klim;                         /**< Gain of anti-windup feedback*/
+  real_T upper_limit;                  /**< Upper saturation limit*/
+  real_T lower_limit;                  /**< Lower saturation limit*/
+  real_T Reset;                        /**< Reset input of the controller*/
 } ExtU_Resonant_Controller_T;
 
 /* External outputs (root outports fed by signals with default storage) */
+/**
+ * @brief Output struct for the generated resonant controller
+ */
 typedef struct {
-  real_T out;                          /* '<Root>/out' */
+  real_T out;                          /**< Output of the controller*/
 } ExtY_Resonant_Controller_T;
 
 /* Real-time Model Data Structure */

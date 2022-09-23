@@ -35,8 +35,8 @@ static uz_MotorControl_t instances[UZ_MOTORCONTROL_MAX_INSTANCES] = {0};
 static uz_MotorControl_t* uz_MotorControl_allocation(void);
 
 static uz_MotorControl_t* uz_MotorControl_allocation(void) {
-	uz_assert(instances_counter < UZ_CURRENTCONTROL_MAX_INSTANCES);
-	uz_CurrentControl_t* self = &instances[instances_counter];
+	uz_assert(instances_counter < UZ_MOTORCONTROL_MAX_INSTANCES);
+	uz_MotorControl_t* self = &instances[instances_counter];
 	uz_assert(self->is_ready == false);
 	instances_counter++;
 	self->is_ready = true;

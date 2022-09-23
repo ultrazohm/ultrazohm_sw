@@ -12,15 +12,15 @@ t_ADC = 1/f_ADC;        % ADC sample time in s
 Ts = t_ADC;
 
 % amplitude of sinusoidal signal sources
-A = 1.0;
+A = 0.1;
 
 % machine parameters
 Rs = 0.19;              % Phase resistance in Ohm
 psi_pm = 0.19;          % PM flux linkage in Vs
-Ld = 2.0e-3;            % d-inductance in H
-Lq = 6.4e-3;            % q-inductance in H
-Lx = 3.0e-3;            % x-inductance in H
-Ly = 3.0e-3;            % y-inductance in H
+Ld = 20.0e-3;            % d-inductance in H
+Lq = 60.4e-3;            % q-inductance in H
+Lx = 30.0e-3;            % x-inductance in H
+Ly = 30.0e-3;            % y-inductance in H
 p = 5;                  % pole pairs
 
 VR = 400;               % Rated eff. line-line voltage in V
@@ -69,10 +69,10 @@ fixdt_type_delta_u_costs = fixdt(0,27,24);
 fixdt_type_vsd = fixdt(1,18,15);
 v_dc = 565.0;
 id_ref = 0.0;
-iq_ref = -10.0;
+iq_ref = 5.0;
 ix_ref = 0.0;
 iy_ref = 0.0;
-n_rpm = 3000;
+n_rpm = 1000.0;
 omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;
@@ -86,3 +86,9 @@ f = n_rpm/60.0*p;     % fundamental frequency
 Harmonic_Orders = [3 5 7 9 11 13 15 17 19 21];
                         %3    5    7    9   11   13   15    17   19    21
 Harmonic_Amplitudes = [0.00 0.0 0.0 0.00 0.00 0.00 0.000 0.00 0.00 0.000];
+
+
+%simulation control model motor testbench
+RDSon = 0.01;
+J = 1e-4;
+C_dc_link = 800e-6;

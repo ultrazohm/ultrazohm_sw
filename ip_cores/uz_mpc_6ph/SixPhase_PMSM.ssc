@@ -1,0 +1,124 @@
+component SixPhase_PMSM
+
+
+nodes
+    a1 = foundation.electrical.electrical;              % a1:left
+    b1 = foundation.electrical.electrical;              % b1:left
+    c1 = foundation.electrical.electrical;              % c1:left
+    a2 = foundation.electrical.electrical;              % a2:left
+    b2 = foundation.electrical.electrical;              % b2:left
+    c2 = foundation.electrical.electrical;              % c2:left
+    n1 = foundation.electrical.electrical;              % n1:left
+    n2 = foundation.electrical.electrical;              % n2:left
+    R  = foundation.mechanical.rotational.rotational;   % R:right
+    C  = foundation.mechanical.rotational.rotational;   % C:right
+end
+
+parameters
+    Rs      =   {0.0353, 'Ohm'};           % Phase Resistance
+    Ld      =   {0.824e-3, 'H'};          % d inductance
+    Lq      =   {2.488e-3, 'H'};         % q inductance
+    Lx      =   {0.2744e-3, 'H'};         % x inductance
+    Ly      =   {0.2744e-3, 'H'};         % y inductance
+    psiPM   =   {0.039614, 'Wb'};         % flux linkage
+    np      =   {3, '1'};               % polepairs
+end
+
+    variables
+        theta_m  = {0, 'rad'};        % Startposition des mech. Rotorwinkels bezüglich a-Achse
+    end
+    
+        variables (Access=protected)
+        m_m        = {0, 'N*m' };    % inneres elektrisches Drehmoment
+        i_a1       = {0, 'A' };      % Strom Strang a1 
+        i_b1       = {0, 'A' };      % Strom Strang b1 
+        i_c1       = {0, 'A' };      % Strom Strang c1
+        i_a2       = {0, 'A' };      % Strom Strang a2 
+        i_b2       = {0, 'A' };      % Strom Strang b2 
+        i_c2       = {0, 'A' };      % Strom Strang c2
+        % Ströme nach VSD Transformation
+        i_alpha = {0, 'A'};       % Strom in Alpha-Komponente
+        i_beta  = {0, 'A'};       % Strom in Beta-Komponente
+        i_x    = {0, 'A'};       % Strom der x-Komponente
+        i_y    = {0, 'A'};       % Strom der y-Komponente
+        % Ströme im rotorfesten Koordinatensystem
+        i_d       = {0, 'A'};       % Strom in d-Achse 
+        i_q       = {0, 'A'};       % Strom in q-Achse
+        end
+    
+      branches   %*** Orientierung der Flussvariablen ***%
+        m_m : C.t -> R.t;      % positiv, wenn rein bei  C und raus bei  R
+        i_a1 : a1.i -> n1.i;    % positiv, wenn rein bei a1 und Richtung n1
+        i_b1 : b1.i -> n1.i;    % positiv, wenn rein bei b1 und Richtung n1
+        i_c1 : c1.i -> n1.i;    % positiv, wenn rein bei c1 und Richtung n1
+        i_a2 : a2.i -> n2.i;    % positiv, wenn rein bei a2 und Richtung n2
+        i_b2 : b2.i -> n2.i;    % positiv, wenn rein bei b2 und Richtung n2
+        i_c2 : c2.i -> n2.i;    % positiv, wenn rein bei c2 und Richtung n2
+      end
+    
+       equations   %*** Gleichungsteil ***% 
+        let     %*** Substiutionen für übersichtlicheren Gleichungsteil ***% 
+                    
+
+            
+            % Definition der Potentialvariablen durch eine Potentialdifferenz
+            omega_m = R.w - C.w;   % mech. Winkelgeschwindigkeit aus Differenz R und C
+                                   % R = Welle (engl.: Rod), C = Gehäuse (engl.: Case)
+                     
+            % Definition der Strangspannungen
+            u_a1 = a1.v - n1.v;   
+            u_b1 = b1.v - n1.v;         
+            u_c1 = c1.v - n1.v;
+            u_a2 = a2.v - n2.v;   
+            u_b2 = b2.v - n2.v;         
+            u_c2 = c2.v - n2.v;
+            
+
+            
+            % Transformation VSD
+            u_alpha = 1/3.0 * [1    -0.5    -0.5    0.866   -0.866  0]  * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            u_beta  = 1/3.0 * [0    0.866   -0.866  0.5     0.5     -1] * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            u_x    = 1/3.0 * [1    -0.5    -0.5    -0.866  0.866   0]  * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            u_y    = 1/3.0 * [0    -0.866  0.866   0.5     0.5     -1] * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            u_0p   = 1/3.0 * [1 1 1 0 0 0] * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            u_0n   = 1/3.0 * [0 0 0 1 1 1] * [u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+             
+            % dq Transformation
+            u_d    = [ cos(theta_el) sin(theta_el) ] * [u_alpha; u_beta];
+            u_q    = [-sin(theta_el) cos(theta_el) ] * [u_alpha; u_beta];
+            
+            % Zusammenhang elek. und mech. Winkel
+            theta_el = np * theta_m;
+            
+            in  %*** vom Solver zu lösende Gleichungen (DGL) ***% 
+            % Zusammenhang Winkelgeschw. und Winkel
+            omega_m == theta_m.der;
+            
+            % Spannungsgleichungen der PMSM im rotorfesten Koordinatensystem
+            u_d     == i_d * Rs + i_d.der * Ld - np * omega_m * i_q * Lq;
+            u_q     == i_q * Rs + i_q.der * Lq + np * omega_m * i_d * Ld + np * omega_m * psiPM;
+            u_x     == i_x * Rs + i_x.der * Lx;% + np * omega_m * i_y * Ll; 
+            u_y     == i_y * Rs + i_y.der * Ly;% - np * omega_m * i_x * Ll;
+            u_0p    == 0.0;
+            u_0n    == 0.0;
+
+            % Transformation VSD
+            i_alpha == 1/3.0 * [1    -0.5    -0.5    0.866   -0.866  0]  * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            i_beta  == 1/3.0 * [0    0.866   -0.866  0.5     0.5     -1] * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            i_x    == 1/3.0 * [1    -0.5    -0.5    -0.866  0.866   0]  * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            i_y    == 1/3.0 * [0    -0.866  0.866   0.5     0.5     -1] * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            %0.0 ==  1/3.0 * [1 1 1 0 0 0] * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            %0.0 ==  1/3.0 * [0 0 0 1 1 1] * [i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+             
+            % dq Transformation
+            i_d    == [ cos(theta_el) sin(theta_el) ] * [i_alpha; i_beta];
+            i_q    == [-sin(theta_el) cos(theta_el) ] * [i_alpha; i_beta];    
+            
+            % Drehmomentgleichung der PMSM
+            m_m == 3 * np *(psiPM* i_q + (Ld - Lq) * i_q * i_d);
+            
+
+        end
+       end
+end
+        

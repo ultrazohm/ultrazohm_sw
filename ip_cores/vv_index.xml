@@ -2199,7 +2199,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112638604">
+		<CoreRevision value="2112641285">
 		</CoreRevision>
 		<ComponentPath value="VSD_and_Park_transformation_6Phase/ipcore/VSD_and_Park_transformation_v1_0/component.xml">
 		</ComponentPath>

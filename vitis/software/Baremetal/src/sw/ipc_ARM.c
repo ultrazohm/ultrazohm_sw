@@ -29,6 +29,8 @@ extern float ph_a2;
 extern float ph_b2;
 extern float ph_c2;
 
+extern bool no_reset;
+
 extern DS_Data Global_Data;
 
 
@@ -205,7 +207,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			Global_Data.av.kp_d = value;
+			no_reset = value;
 			break;
 
 		case (Set_Send_Field_4):

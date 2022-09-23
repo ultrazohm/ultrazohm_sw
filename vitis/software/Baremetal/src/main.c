@@ -62,19 +62,20 @@ DS_Data Global_Data = {
 //fault detection:
 uz_vsd_opf_fd_v7 uz_FD_v7;
 
-uz_resonant_controller r_c_2H_x;
-uz_resonant_controller r_c_2H_y;
-uz_resonant_controller r_c_6H_x;
-uz_resonant_controller r_c_6H_y;
-uz_resonant_controller r_c_2H_d;
-uz_resonant_controller r_c_2H_q;
 
-uz_resonant_controller r_c_2H_z1;
-uz_resonant_controller r_c_2H_z2;
-uz_resonant_controller r_c_3H_z1;
-uz_resonant_controller r_c_3H_z2;
+uz_resonantController rc_2H_x;
+uz_resonantController rc_2H_y;
+uz_resonantController rc_6H_x;
+uz_resonantController rc_6H_y;
+uz_resonantController rc_2H_d;
+uz_resonantController rc_2H_q;
 
-
+uz_resonantController rc_1H_z1;
+uz_resonantController rc_1H_z2;
+uz_resonantController rc_3H_z1;
+uz_resonantController rc_3H_z2;
+uz_resonantController rc_9H_z1;
+uz_resonantController rc_9H_z2;
 
 //single Index FD:
 uz_singleindex_faultdetection singleindex_FD;
@@ -90,39 +91,6 @@ uz_movAverageFilter_t* movAvFilter_R5;
 uz_movAverageFilter_t* movAvFilter_R6;
 
 
-uz_filter_t* r_c_iir_2H_x;
-uz_filter_t* r_c_iir_2H_y;
-
-float r_c_filterParameterA[3] = {	1,
-									-2*cos(0.0f*0.0001f),
-									1};
-
-float r_c_filterParameterB[3] = {	0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004f*0.0001f*cos(2.0f*0.0f*0.0001f),
-		0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004f*0.0001f* -cos(0.0f*0.0001f),
-									0.1f * (2.0f*M_PI*1000.0f)*(2.0f*M_PI*1000.0f)* 0.00004*0.0001f*0.0f};
-
-float ar_circularBufferInput_2H_x[3]={0};
-float ar_circularBufferInput_2H_y[3]={0};
-float ar_circularBufferOutput_2H_x[3]={0};
-float ar_circularBufferOutput_2H_y[3]={0};
-
-struct uz_filter_config filter_config_rc_2H_x = {
-	.filterLength = 3,
-	.filterParameterA = r_c_filterParameterA,
-	.filterParameterB = r_c_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_2H_x,
-	.circularBufferOutput = ar_circularBufferOutput_2H_x
-};
-
-struct uz_filter_config filter_config_rc_2H_y = {
-	.filterLength = 3,
-	.filterParameterA = r_c_filterParameterA,
-	.filterParameterB = r_c_filterParameterB,
-	.circularBufferInput = ar_circularBufferInput_2H_y,
-	.circularBufferOutput = ar_circularBufferOutput_2H_y
-};
-
-
 //parameter for FOC
 
 struct uz_FOC* FOC_dq;
@@ -134,21 +102,21 @@ const struct uz_PMSM_t config_PMSM = {
    .R_ph_Ohm = 0.0f,
    .polePairs = 5.0f,
    .J_kg_m_squared = 0.0f,
-   .I_max_Ampere = 10.0f
+   .I_max_Ampere = 20.0f
 };
 
 
 const struct uz_PI_Controller_config config_id = {
-	.Kp = 0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
-	.Ki = 1/0.0008f *0.1,															 // Ki = 1/Tn
+	.Kp = 0.6, //0.75, //1.125f, //0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
+	.Ki = 770, //1/0.0008f *0.1,															 // Ki = 1/Tn *Kp ( * Kp da wir eine Parallelform haben)
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
 };
 
 const struct uz_PI_Controller_config config_iq = {
-	.Kp = 0.2f, //1.1f,
-	.Ki = 1/0.0008f *0.1,
+	.Kp = 0.6, //0.75, //1.125f, //0.2f, //1.1f,
+	.Ki = 770, //1/0.0008f *0.1,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
@@ -160,25 +128,6 @@ struct uz_FOC_config config_FOC = {
    .config_id = config_id,
    .config_iq = config_iq
 };
-
-const struct uz_PI_Controller_config config_idn = {
-	.Kp = 0.05f,//1.1f,
-	.Ki = 1/0.0008f * 0.005f,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
-};
-
-const struct uz_PI_Controller_config config_iqn = {
-	.Kp = 0.05f,//1.1f,
-	.Ki = 1/0.0008f * 0.005f,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 10.0f,
-	.lower_limit = -10.0f
-};
-
-struct uz_PI_Controller* PI_d_n;
-struct uz_PI_Controller* PI_q_n;
 
 
 // alphabeta -> dq & reverse
@@ -198,48 +147,36 @@ void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
     output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
 }
 
+struct uz_PI_Controller* PI_x_n;
+struct uz_PI_Controller* PI_y_n;
+struct uz_PI_Controller* PI_z1;
+struct uz_PI_Controller* PI_z2;
 
 const struct uz_PI_Controller_config config_ix = {
-	.Kp = 0.05f , //* 4.0f, //1.1f,
-	.Ki = 1/0.0008f *0.005f,
+	.Kp = 0.25f , //* 4.0f, //1.1f,
+	.Ki = 260, //1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
 };
 
 const struct uz_PI_Controller_config config_iy = {
-	.Kp = 0.05f, //* 4.0f,//1.1f,
-	.Ki = 1/0.0008f *0.005f,
+	.Kp = 0.25f, //* 4.0f,//1.1f,
+	.Ki = 260, //1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 10.0f,
 	.lower_limit = -10.0f
 };
 
-struct uz_PI_Controller* PI_x_s;
-struct uz_PI_Controller* PI_x_n;
-struct uz_PI_Controller* PI_y_s;
-struct uz_PI_Controller* PI_y_n;
-
-const struct uz_PI_Controller_config config_iz1 = {
-	.Kp = 0.05f , //* 4.0f, //1.1f,
-	.Ki = 1/0.0008f *0.0005f   *0.0f  ,
+const struct uz_PI_Controller_config config_iz1z2 = {
+	.Kp = 0.25f , //* 4.0f,//1.1f,
+	.Ki = 0,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 5.0f,
 	.lower_limit = -5.0f
 };
 
-const struct uz_PI_Controller_config config_iz2 = {
-	.Kp = 0.05f , //* 4.0f,//1.1f,
-	.Ki = 1/0.0008f * 0.0f,		///////// I-Anteil ausgeschaltet
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 5.0f,
-	.lower_limit = -5.0f
-};
 
-struct uz_PI_Controller* PI_z1_s;
-struct uz_PI_Controller* PI_z1_n;
-struct uz_PI_Controller* PI_z2_s;
-struct uz_PI_Controller* PI_z2_n;
 
 
 
@@ -256,20 +193,13 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
     .ip_clk_frequency_Hz = 100000
 };
 
-
-
-
 uz_vsd_and_park_transformation_6phase_t* vsd_park;
 
 struct uz_vsd_and_park_transformation_6phase_config_t uz_vsd_park_config = {
     .base_address = XPAR_UZ_SYSTEM_VSD_AND_PARK_TRANSFO_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000000,
-    .theta_offset =  -0.14608003f
+    .theta_offset =  -1*-0.14608003f
 };
-
-
-
-
 
 
 
@@ -329,22 +259,21 @@ int main(void)
             movAvFilter_R5 =  uz_movAverageFilter_init(movAvF_config);
             movAvFilter_R6 =  uz_movAverageFilter_init(movAvF_config);
 
-            // Resonant-Controller in c (IIR-Filter)
-            r_c_iir_2H_x = uz_filter_init(filter_config_rc_2H_x);
-			r_c_iir_2H_y = uz_filter_init(filter_config_rc_2H_y);
 
 			// Matlab Resonant Controller
-            uz_resonant_controller_init(&r_c_2H_x);
-            uz_resonant_controller_init(&r_c_2H_y);
-            uz_resonant_controller_init(&r_c_6H_x);
-            uz_resonant_controller_init(&r_c_6H_y);
-            uz_resonant_controller_init(&r_c_2H_d);
-            uz_resonant_controller_init(&r_c_2H_q);
+            uz_resonantController_init(&rc_2H_x);
+            uz_resonantController_init(&rc_2H_y);
+            uz_resonantController_init(&rc_6H_x);
+            uz_resonantController_init(&rc_6H_y);
+            uz_resonantController_init(&rc_2H_d);
+            uz_resonantController_init(&rc_2H_q);
 
-            uz_resonant_controller_init(&r_c_2H_z1);
-            uz_resonant_controller_init(&r_c_2H_z2);
-            uz_resonant_controller_init(&r_c_3H_z1);
-            uz_resonant_controller_init(&r_c_3H_z2);
+            uz_resonantController_init(&rc_1H_z1);
+            uz_resonantController_init(&rc_1H_z2);
+            uz_resonantController_init(&rc_3H_z1);
+            uz_resonantController_init(&rc_3H_z2);
+            uz_resonantController_init(&rc_9H_z1);
+            uz_resonantController_init(&rc_9H_z2);
 
 
             initialization_chain = init_FOC;
@@ -353,25 +282,15 @@ int main(void)
 
         	FOC_dq = uz_FOC_init(config_FOC);
 
-        	PI_d_n = uz_PI_Controller_init(config_idn);
-			PI_q_n = uz_PI_Controller_init(config_iqn);
-
         	Global_Data.av.kp_d = config_FOC.config_id.Kp;
         	Global_Data.av.ki_d = config_FOC.config_id.Ki;
         	Global_Data.av.kp_q = config_FOC.config_iq.Kp;
         	Global_Data.av.ki_q = config_FOC.config_iq.Ki;
 
-
-        	PI_x_s = uz_PI_Controller_init(config_ix);
         	PI_x_n = uz_PI_Controller_init(config_ix);
-        	PI_y_s = uz_PI_Controller_init(config_iy);
         	PI_y_n = uz_PI_Controller_init(config_iy);
-
-
-        	PI_z1_s = uz_PI_Controller_init(config_iz1);
-        	PI_z1_n = uz_PI_Controller_init(config_iz1);
-        	PI_z2_s = uz_PI_Controller_init(config_iz2);
-        	PI_z2_n = uz_PI_Controller_init(config_iz2);
+        	PI_z1 = uz_PI_Controller_init(config_iz1z2);
+        	PI_z2 = uz_PI_Controller_init(config_iz1z2);
 
 
             initialization_chain = init_ip_cores;

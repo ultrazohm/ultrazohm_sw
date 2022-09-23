@@ -64,6 +64,8 @@
 
 #include "Codegen/uz_resonant_controller.h"
 
+#include "Codegen/uz_ResonantController/uz_resonant_controller.h"
+
 #include "IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
 
 //----------------------------------------------------

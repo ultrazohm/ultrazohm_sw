@@ -11,7 +11,9 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 	uz_6phFD_indices output = {0};
 	float denum = 0;
 
-	//fault index for phase 1
+/////////////////////////
+/*
+		//fault index for phase 1
 	if(input.alpha + input.z1 == 0){
 		output.R1 = 0.0f;
 	}else{
@@ -58,6 +60,57 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 		output.R6 = -input.y/(input.beta - input.z2);
 	}
 
+*/
+/////////////////////////
+
+	//fault index for phase 1
+	if(input.alpha + input.z1 == 0){
+		output.R1 = 0.0f;
+	}else{
+		output.R1 = -input.x/(input.alpha + input.z1);
+	}
+
+
+	//fault index for phase 2
+	denum = -input.alpha + sqrt(3)* input.beta;
+	if(denum == 0){
+		output.R2 = 0.0f;
+	}else{
+		output.R2 = (input.x + sqrt(3)*input.y - 2*input.z1)/(denum);
+	}
+
+	//fault index for phase 3
+	denum = -input.alpha - sqrt(3)*input.beta;
+	if(denum == 0){
+		output.R3 = 0.0f;
+	}else{
+		output.R3 = (input.x - sqrt(3)*input.y -2*input.z1)/(denum);
+	}
+
+	//fault index for phase 4
+	denum = input.alpha + 1/sqrt(3)*input.beta;
+	if(input.alpha + input.z1 == 0){
+		output.R4 = 0.0f;
+	}else{
+		output.R4 = (input.x -1/sqrt(3)*input.y - 2/sqrt(3) * input.z2)/(denum);
+	}
+
+	//fault index for phase 5
+	denum = input.alpha - 1/sqrt(3)*input.beta;
+	if(denum == 0){
+		output.R5 = 0.0f;
+	}else{
+		output.R5 = (input.x  + 1/sqrt(3)*input.y + 2/sqrt(3)*input.z2)/(denum);
+	}
+
+	//fault index for phase 6
+	if(input.beta - input.z2 == 0){
+		output.R6 = 0.0f;
+	}else{
+		output.R6 = -input.y/(input.beta - input.z2);
+	}
+
+/////
 	return output;
 }
 

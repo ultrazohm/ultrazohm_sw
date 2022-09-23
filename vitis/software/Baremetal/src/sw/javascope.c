@@ -98,6 +98,9 @@ extern float xy_error[2];
 
 extern uz_3ph_dq_t value_1;
 extern uz_6ph_alphabeta_t value_2;
+extern uz_6ph_abc_t value_3;
+
+extern int display_OPF_f;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -180,6 +183,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_2] = &ref_z1z2_n_voltage[1];
 	js_ch_observable[JSO_Testvalue_3] = &ref_z1z2_s_voltage[0];
 	js_ch_observable[JSO_Testvalue_4] = &ref_z1z2_s_voltage[1];
+
+
+
 	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_currents.alpha;
 	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_currents.beta;
 	js_ch_observable[JSO_Testvalue_7] = &ref_xy_currents[0];
@@ -187,21 +193,34 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_9] = &ref_z1z2_currents[0];
 	js_ch_observable[JSO_Testvalue_10] = &ref_z1z2_currents[1];
 
+
+	/*
+	js_ch_observable[JSO_Testvalue_5] = &value_3.a1;
+	js_ch_observable[JSO_Testvalue_6] = &value_3.b1;
+	js_ch_observable[JSO_Testvalue_7] = &value_3.c1;
+	js_ch_observable[JSO_Testvalue_8] = &value_3.a2;
+	js_ch_observable[JSO_Testvalue_9] = &value_3.b2;
+	js_ch_observable[JSO_Testvalue_10] = &value_3.c2;
+*/
+
+
+
 	js_ch_observable[JSO_Testvalue_11] = &ref_xy_voltage[0];
 	js_ch_observable[JSO_Testvalue_12] = &ref_xy_voltage[1];
 	js_ch_observable[JSO_Testvalue_13] = &xy_error[0];
 	js_ch_observable[JSO_Testvalue_14] = &xy_error[1];
+
+	/*
 	js_ch_observable[JSO_Testvalue_15] = &ref_xy_voltage_n[0];
 	js_ch_observable[JSO_Testvalue_16] = &ref_xy_voltage_n[1];
 	js_ch_observable[JSO_Testvalue_17] = &ref_xy_voltage_s[0];
 	js_ch_observable[JSO_Testvalue_18] = &ref_xy_voltage_s[1];
+	 */
 
-/*
-	js_ch_observable[JSO_Testvalue_15] = &z1z2_error[0];
-	js_ch_observable[JSO_Testvalue_16] = &z1z2_error[1];
+	js_ch_observable[JSO_Testvalue_15] = & m_xy_n_currents[0];
+	js_ch_observable[JSO_Testvalue_16] = & m_xy_n_currents[1];
 	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
 	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
-*/
 
 /*
 	js_ch_observable[JSO_Testvalue_11] = &value_1.d;
@@ -212,8 +231,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_16] = &value_2.y;
 	js_ch_observable[JSO_Testvalue_17] = &value_2.z1;
 	js_ch_observable[JSO_Testvalue_18] = &value_2.z2;
-	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
 */
+
+
+
+	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -242,6 +265,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_I_a2] = &(data->av.I_X_Filtered);
 	js_slowDataArray[JSSD_FLOAT_I_b2] = &(data->av.I_Y_Filtered);
 	js_slowDataArray[JSSD_FLOAT_I_c2] = &(data->av.I_Z_Filtered);
+	js_slowDataArray[JSSD_FLOAT_display_OPF] = &(display_OPF_f);
 
 	return Status;
 }

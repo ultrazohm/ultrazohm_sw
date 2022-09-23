@@ -17,7 +17,7 @@ void uz_adcLtc2311_ip_core_init(void)
         .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
         .channel_config = {
-            .conversion_factor = -0.001526 * 0.5,
+            .conversion_factor = -0.001526 *0.55,
             .conversion_factor_definition = {
                 .is_signed = true,
                 .integer_bits = 7,

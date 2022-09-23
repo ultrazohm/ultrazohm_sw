@@ -179,6 +179,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_I_a2,
 	JSSD_FLOAT_I_b2,
 	JSSD_FLOAT_I_c2,
+	JSSD_FLOAT_display_OPF,
 	JSSD_ENDMARKER
 };
 
@@ -221,7 +222,7 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	I_d_ref,
 	I_q_ref,
-	kp_d,
+	no_reset,
 	Ki_d,
 	kp_q,
 	ki_q,
@@ -250,7 +251,7 @@ enum gui_button_mapping {
 	receive_field_3,
 	receive_field_4,
 	receive_field_5,
-	receive_field_6,
+	display_OPF,
 	RCV_FLD_ENDMARKER
 
 
@@ -277,7 +278,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_display_OPF,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

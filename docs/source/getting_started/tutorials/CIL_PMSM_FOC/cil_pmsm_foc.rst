@@ -1,13 +1,13 @@
 .. _cil_pmsm_foc:
 
-=======================================
-Controlling a PMSM IP-Core with the FOC
-=======================================
+=========================================================
+Controlling a PMSM IP-Core with the CurrentControl module
+=========================================================
 
 Aim of the tutorial
 *******************
 
-In this tutorial the :ref:`PMSM IP-Core <uz_pmsmModel>` will be added to the Vivado project and controlled using the :ref:`uz_FOC`.
+In this tutorial the :ref:`PMSM IP-Core <uz_pmsmModel>` will be added to the Vivado project and controlled using the :ref:`uz_CurrentControl`.
 
 Requirements
 ************
@@ -16,7 +16,7 @@ The following tutorial requires:
 
 - :ref:`The previous tutorial <gate_signals>`.
 - :ref:`Check the documentation about the PMSM IP-Core <uz_pmsmModel>`.
-- :ref:`Check the documentation about the FOC<uz_FOC>`.
+- :ref:`Check the documentation about the CurrentControl<uz_CurrentControl>`.
 
 Initial steps
 *************
@@ -63,11 +63,11 @@ Initial steps
 
    * ``#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"``
    * ``#include "xparameters.h"``
-   * ``#include "uz/uz_FOC/uz_FOC.h"``
+   * ``#include "uz/uz_CurrentControl/uz_CurrentControl.h"``
 
 #. In the ``main.c`` add another entry (e.g. ``init_pmsm`` ) to the ``init_chain`` enum and ``switch-case`` structure after the ``init_software`` case.
 #. Add the declaration as a global variable of the PMSM IP-Core before the ``main``-function.
-#. Add to the new ``init_foc_pmsm`` case the config struct and the init-function as show in the :ref:`PMSM IP-core docs <uz_pmsmModel>`. 
+#. Add to the new ``init_CurrentControl_pmsm`` case the config struct and the init-function as show in the :ref:`PMSM IP-core docs <uz_pmsmModel>`. 
 
    .. note:: 
 
@@ -75,7 +75,7 @@ Initial steps
       We implemented the IP-Core in the ``uz_user`` subblock in Vivado, therefore the IP-Core base address has to be adjusted to the following: ``XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR`` .
       If the IP-Core is not included into the block design in a subblock, the base address form the :ref:`PMSM IP-core docs <uz_pmsmModel>` is the correct one.
 
-#. Initialize in the same switch-case the FOC as shown :ref:`here <uz_FOC>`.
+#. Initialize in the same switch-case the CurrentControl as shown :ref:`here <uz_CurrentControl>`.
 #. Your ``main.c`` should look similar to this now.
 
    .. code-block:: c  
@@ -89,14 +89,14 @@ Initial steps
            init_assertions = 0,
            init_gpios,
            init_software,
-           init_foc_pmsm,
+           init_CurrentControl_pmsm,
            init_ip_cores,
            print_msg,
            init_interrupts,
            infinite_loop
          };
          uz_pmsmModel_t *pmsm=NULL;
-         uz_FOC* FOC_instance = NULL;
+         uz_CurrentControl_t* CurrentControl_instance = NULL;
          //....
          int main(void)
          {
@@ -110,9 +110,9 @@ Initial steps
                        Initialize_Timer();
                        uz_SystemTime_init();
                        JavaScope_initalize(&Global_Data);
-                       initialization_chain = init_foc_pmsm;
+                       initialization_chain = init_CurrentControl_pmsm;
                        break;
-                   case init_foc_pmsm:;
+                   case init_CurrentControl_pmsm:;
                        struct uz_PMSM_t config_PMSM = {
                            .Ld_Henry = 3.00e-04f,
                            .Lq_Henry = 3.00e-04f,
@@ -129,12 +129,12 @@ Initial steps
                            .samplingTime_sec = 0.00005f,
                            .upper_limit = 10.0f,
                            .lower_limit = -10.0f};
-                       struct uz_FOC_config config_FOC = {
+                       struct uz_CurrentControl_config config_CurrentControl = {
                            .decoupling_select = linear_decoupling,
                            .config_PMSM = config_PMSM,
                            .config_id = config_id,
                            .config_iq = config_iq};
-                       FOC_instance = uz_FOC_init(config_FOC);
+                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
                        struct uz_pmsmModel_config_t pmsm_config={
                            .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
                            .ip_core_frequency_Hz=100000000,
@@ -156,7 +156,7 @@ Initial steps
            return (status);
          }
 
-#. Add the code below to the ``isr.c`` . This will write the input and outputs of the IP-Core. The FOC ``uz_FOC_sample`` function will give out reference voltages for the PMSM IP-core.
+#. Add the code below to the ``isr.c`` . This will write the input and outputs of the IP-Core. The CurrentControl ``uz_CurrentControl_sample`` function will give out reference voltages for the PMSM IP-core.
 
    .. code-block:: c
         :linenos:
@@ -165,10 +165,10 @@ Initial steps
    
          //....
          extern uz_pmsmModel_t *pmsm;
-         extern uz_FOC* FOC_instance;
+         extern uz_CurrentControl_t* CurrentControl_instance;
          uz_3ph_dq_t reference_currents_Amp = {0};
          uz_3ph_dq_t measured_currents_Amp = {0};
-         uz_3ph_dq_t FOC_output_Volts = {0};
+         uz_3ph_dq_t CurrentControl_output_Volts = {0};
          float omega_el_rad_per_sec = 0.0f;
          struct uz_pmsmModel_inputs_t pmsm_inputs={
            .omega_mech_1_s=0.0f,
@@ -193,9 +193,9 @@ Initial steps
                measured_currents_Amp.d = pmsm_outputs.i_d_A;
                measured_currents_Amp.q = pmsm_outputs.i_q_A;
                omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-               FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-               pmsm_inputs.v_q_V=FOC_output_Volts.q;
-               pmsm_inputs.v_d_V=FOC_output_Volts.d;
+               CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+               pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+               pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
                uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
            }
            //....
@@ -329,7 +329,7 @@ Initial steps
 #. Press *Enable System* and *Enable Control* and you should see, that the PMSM is running.
 
    * Notice, that the speed changes, if the current increases. This is the case, because the PMSM IP-Core is configured, to simulate the mechanical system.
-   * Increasing the current over ~9.32A is not possible at first. This is the case, because the FOC has a :ref:`uz_spacevectorlimiation` to limit the voltage from exceeding the DC-link voltage.
+   * Increasing the current over ~9.32A is not possible at first. This is the case, because the CurrentControl has a :ref:`uz_spacevectorlimiation` to limit the voltage from exceeding the DC-link voltage.
    * Setting a negative d-current (e.g. -5A) lets you increase the q-current further. The machine operates now in the field weakening territory.
 
 #. Try out different combinations of d- and q-currents and observe how the PMSM model reacts.

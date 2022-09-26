@@ -5,8 +5,7 @@ Speed Control
 =============
 
 Toolbox for a standard SpeedControl with a :ref:`PI-Controller <uz_piController>` in parallel form. 
-It outputs only the reference currents for the :ref:`FOC <uz_FOC>`.
-Other control algorithms can be used as well.
+It outputs only the reference **torque** for a subsequent setpoint and current-control module.
 It can not control a machine on its own. 
 
 Setup
@@ -23,7 +22,6 @@ Configuration
   :members:
 
 In order to configure the SpeedControl check the :ref:`configuration section of the PI-Controller <uz_piController_config>` for further information.
-If field_weakening is to be used, some values of the :ref:`uz_PMSM_t struct <uz_PMSM_config>` have to be initialized as well. Otherwise they can be left zero.
 
 Example
 ^^^^^^^
@@ -40,13 +38,6 @@ Example
         .config_controller.samplingTime_sec = 0.00005f,
         .config_controller.upper_limit = 10.0f,
         .config_controller.lower_limit = -10.0f,
-        .config_PMSM.R_ph_Ohm = 0.08f,
-        .config_PMSM.Ld_Henry = 0.00027f,
-        .config_PMSM.Lq_Henry = 0.00027f,
-        .config_PMSM.Psi_PM_Vs = 0.0082f,
-        .config_PMSM.polePairs = 4.0f,
-        .config_PMSM.I_max_Ampere = 10.0f,
-        .is_field_weakening_active = false
      };
   }
 

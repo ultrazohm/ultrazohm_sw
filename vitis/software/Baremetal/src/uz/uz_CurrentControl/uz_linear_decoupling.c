@@ -17,7 +17,7 @@
 #include "uz_linear_decoupling.h"
 #include "../uz_HAL.h"
 
-uz_3ph_dq_t uz_FOC_linear_decoupling(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec) {
+uz_3ph_dq_t uz_CurrentControl_linear_decoupling(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec) {
     uz_assert(config.Ld_Henry > 0.0f);
 	uz_assert(config.Lq_Henry > 0.0f);
 	uz_assert(config.Psi_PM_Vs >= 0.0f);

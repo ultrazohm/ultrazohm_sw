@@ -18,32 +18,32 @@ void setUp(void)
     omega_el_rad_per_sec = 0.0f;
 }
 
-void test_uz_FOC_linear_decoupling_output_positive_omega(void){
+void test_uz_CurrentControl_linear_decoupling_output_positive_omega(void){
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = 714.0f;
 	i_actual_Ampere.q = 1.0f;
 	i_actual_Ampere.d = 1.0f;
-	uz_3ph_dq_t output = uz_FOC_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
+	uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, -0.19f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.05f,output.q);
 }
 
-void test_uz_FOC_linear_decoupling_output_negative_omega(void){
+void test_uz_CurrentControl_linear_decoupling_output_negative_omega(void){
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = -714.0f;
 	i_actual_Ampere.q = 1.0f;
 	i_actual_Ampere.d = 1.0f;
-	uz_3ph_dq_t output = uz_FOC_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
+	uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.19f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, -6.05f,output.q);
 }
 
-void test_uz_FOC_linear_decoupling_output_zero(void){
+void test_uz_CurrentControl_linear_decoupling_output_zero(void){
 	//Values for comparision from simulation
 	omega_el_rad_per_sec = 0.0f;
 	i_actual_Ampere.q = 1.0f;
 	i_actual_Ampere.d = 1.0f;
-	uz_3ph_dq_t output = uz_FOC_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
+	uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(config, i_actual_Ampere, omega_el_rad_per_sec);
 	TEST_ASSERT_FLOAT_WITHIN(1e-04, 0.0f,output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-04, 0.0f,output.q);
 }

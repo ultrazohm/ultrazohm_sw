@@ -1,4 +1,4 @@
-﻿set,reset,out
+﻿ff_set,ff_reset,out
 0,0,0
 0,1,0
 1,0,1

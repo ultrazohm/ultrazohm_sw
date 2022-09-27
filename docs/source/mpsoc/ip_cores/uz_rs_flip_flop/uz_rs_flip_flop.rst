@@ -1,10 +1,10 @@
-.. _uz_sr_flip_flop:
+.. _uz_rs_flip_flop:
 
 ============
-SR Flip Flop
+RS Flip Flop
 ============
 
-- SR Flip Flop from Simulink library for usage in PL only
+- RS Flip Flop from Simulink library for usage in PL only
 - no frequency specified, tested with :math:`f_{clk}=100\,MHz`
 
 .. csv-table:: Truthtable of Flip Flop

@@ -1,0 +1,259 @@
+<html>
+<head>
+<title>IP Core Generation Report for uz_rs_flip_flop</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<style type="text/css">
+table {
+	width: 100%;
+	border: 1px solid black;
+}
+
+div {
+	line-heigh: 90%;
+}
+
+h2.title {
+	color: #000066;
+	font-weight: bold;
+}
+
+h3.sectionHeading {
+	color: #000066;
+	font-weight: bold;
+}
+
+td.distinctCellColor {
+	background-color: #eeeeff;
+}
+
+td.summaryTableSndColOddRow {
+	background-color: #eeeeff;
+	text-align: right;
+}
+
+td.summaryTableSndColEvenRow {
+	text-align: right;
+}
+
+thead.reportTableHeader {
+	background-color: #eeeeee;
+	font-weight: bold;
+}
+
+</style>
+
+</head>
+<body>
+<h2 class="title">IP Core Generation Report for uz_rs_flip_flop</h2>
+<div>
+<h3 class="sectionHeading">Summary</h3>
+<table>
+<tbody>
+<tr>
+<td class="distinctCellColor">IP core name
+</td>
+<td class="summaryTableSndColOddRow">SR_Flip_Flop
+</td>
+</tr>
+<tr>
+<td>IP core version
+</td>
+<td class="summaryTableSndColEvenRow">1.0
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">IP core folder
+</td>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\*.*')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0</a>
+</td>
+</tr>
+<tr>
+<td>IP core zip file name
+</td>
+<td class="summaryTableSndColEvenRow">SR_Flip_Flop_v1_0.zip
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Target platform
+</td>
+<td class="summaryTableSndColOddRow">Generic Xilinx Platform
+</td>
+</tr>
+<tr>
+<td>Target tool
+</td>
+<td class="summaryTableSndColEvenRow">Xilinx Vivado
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Target language
+</td>
+<td class="summaryTableSndColOddRow">VHDL
+</td>
+</tr>
+<tr>
+<td>Model
+</td>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_rs_flip_flop')">uz_rs_flip_flop</a>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">Model version
+</td>
+<td class="summaryTableSndColOddRow">1.3
+</td>
+</tr>
+<tr>
+<td>HDL Coder version
+</td>
+<td class="summaryTableSndColEvenRow">3.19
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">IP core generated on
+</td>
+<td class="summaryTableSndColOddRow">00-Jan-0000
+</td>
+</tr>
+<tr>
+<td>IP core generated for
+</td>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_rs_flip_flop:7')">uz_rs_flip_flop</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3 class="sectionHeading">Target Interface Configuration</h3>
+Target platform interface table:
+<br/>
+<table>
+<thead class="reportTableHeader">
+<tr>
+<td>Port Name
+</td>
+<td>Port Type
+</td>
+<td>Data Type
+</td>
+<td>Target Platform Interfaces
+</td>
+<td>Interface Mapping
+</td>
+<td>Interface Options
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_rs_flip_flop:9')">ff_reset</a>
+</td>
+<td>Inport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_rs_flip_flop:8')">ff_set</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_rs_flip_flop:10')">ff_out</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3 class="sectionHeading">IP Core User Guide</h3>
+<b>Theory of Operation</b>
+<br/><br/>
+This IP core also support the 
+<b>External Port </b>
+interface. To connect the external ports to the FPGA external IO pins, add FPGA pin assignment constraints in the Xilinx Vivado environment.
+<br/><br/>
+<b>Xilinx Vivado Environment Integration</b>
+<br/><br/>
+This IP Core is generated for the Xilinx Vivado environment. The following steps are an example showing how to integrate the generated IP core into Xilinx Vivado environment:
+<br/><br/>
+1. The generated IP core is a zip package file under the IP core folder. Please check the Summary section of this report for the IP zip file name and folder.
+<br/>
+2. In the Vivado project, go to Project Settings -> IP -> Repository Manager, add the folder containing the IP zip file as IP Repository.
+<br/>
+3. In Repository Manger, click the "Add IP" button to add IP zip file to the IP repository. This step adds the generated IP into the Vivado IP Catalog.
+<br/>
+4. In the Vivado project, find the generated IP core in the IP Catalog under category "HDL Coder Generated IP". In you have a Vivado block design open, you can add the generated IP into your block design.
+<br/>
+5. Connect the AXI4SlaveEmpty port of the IP core to the embedded processor's AXI master port.
+<br/>
+6. Connect the clock and reset ports of the IP core to the global clock and reset signals.
+<br/>
+7. Assign an Offset Address for the IP core in the Address Editor.
+<br/>
+8. Connect external ports and add FPGA pin assignment constraints to constraint file.
+<br/>
+9. Generate FPGA bitstream and download the bitstream to target device.
+<br/><br/>
+If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Package for Xilinx Zynq Platform, you can select the board you are using in the Target platform option in the Set Target > Set Target Device and Synthesis Tool task. You can then use Embedded System Integration tasks in HDL Workflow Advisor to help you integrate the generated IP core into Xilinx Vivado environment.
+</div>
+<div>
+<h3 class="sectionHeading">IP Core File List</h3>
+The IP core folder is located at:
+<br/>
+<a href="matlab:uiopen('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\*.*')">C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0</a>
+<br/>
+Following files are generated under this folder:
+<br/><br/>
+<b>IP core zip file</b>
+<br/>
+<a href="matlab:uiopen('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\*.*')">SR_Flip_Flop_v1_0.zip</a>
+<br/><br/>
+<b>IP core report</b>
+<br/>
+<a href="matlab:web('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\doc\uz_rs_flip_flop_ip_core_report.html')">doc\uz_rs_flip_flop_ip_core_report.html</a>
+<br/><br/>
+<b>IP core HDL source files</b>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop_src_uz_rs_flip_flop_pkg.vhd')">hdl\vhdl\SR_Flip_Flop_src_uz_rs_flip_flop_pkg.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop_src_S_R_Flip_Flop.vhd')">hdl\vhdl\SR_Flip_Flop_src_S_R_Flip_Flop.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop_src_uz_rs_flip_flop.vhd')">hdl\vhdl\SR_Flip_Flop_src_uz_rs_flip_flop.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop_reset_sync.vhd')">hdl\vhdl\SR_Flip_Flop_reset_sync.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop_dut.vhd')">hdl\vhdl\SR_Flip_Flop_dut.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_rs_flip_flop\hdl_prj\ipcore\SR_Flip_Flop_v1_0\hdl\vhdl\SR_Flip_Flop.vhd')">hdl\vhdl\SR_Flip_Flop.vhd</a>
+<br/>
+<br/>
+</div>
+</body>
+</html>

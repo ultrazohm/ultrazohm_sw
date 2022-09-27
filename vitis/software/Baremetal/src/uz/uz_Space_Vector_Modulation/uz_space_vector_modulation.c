@@ -24,9 +24,9 @@ struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float
 struct uz_DutyCycle_t output = {0};   
 uz_3ph_alphabeta_t reference = uz_transformation_3ph_dq_to_alphabeta(v_ref_Volts, theta_el_rad);
 float V_DC_scaling = V_DC_Volts * (2.0f / 3.0f);	
-float a = (fabsf(reference.alpha) + (1.0f / sqrtf(3.0f)) * fabsf(reference.beta)) * V_DC_scaling;
-float b = (fabsf(reference.alpha) - (1.0f / sqrtf(3.0f)) * fabsf(reference.beta)) * V_DC_scaling;
-float c = (2.0f / sqrtf(3.0f)) * fabsf(reference.beta) * V_DC_scaling;
+float a = (fabsf(reference.alpha) + (1.0f / sqrtf(3.0f)) * fabsf(reference.beta)) / V_DC_scaling;
+float b = (fabsf(reference.alpha) - (1.0f / sqrtf(3.0f)) * fabsf(reference.beta)) / V_DC_scaling;
+float c = (2.0f / sqrtf(3.0f)) * fabsf(reference.beta) / V_DC_scaling;
 uint16_t quadrant = 0U;
 uint16_t sector = 0U;
 
@@ -124,9 +124,9 @@ output.DutyCycle_A = output.DutyCycle_A * 0.5f;
 output.DutyCycle_B = output.DutyCycle_B * 0.5f;
 output.DutyCycle_C = output.DutyCycle_C * 0.5f;
 
-uz_signals_saturation(output.DutyCycle_A, 1.0f, 0.0f);
-uz_signals_saturation(output.DutyCycle_B, 1.0f, 0.0f);
-uz_signals_saturation(output.DutyCycle_C, 1.0f, 0.0f);
+output.DutyCycle_A = uz_signals_saturation(output.DutyCycle_A, 1.0f, 0.0f);
+output.DutyCycle_B = uz_signals_saturation(output.DutyCycle_B, 1.0f, 0.0f);
+output.DutyCycle_C = uz_signals_saturation(output.DutyCycle_C, 1.0f, 0.0f);
 
 return (output);
 }

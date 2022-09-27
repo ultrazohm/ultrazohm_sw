@@ -68,7 +68,7 @@ extern float a2_current_vsd_and_park_transformation;
 extern float b2_current_vsd_and_park_transformation;
 extern float c2_current_vsd_and_park_transformation;
 
-/*
+
 extern uz_delay_compensation_fcs_mpc_6phase_t* instance_delay_compensation_fcs_mpc_6phase_pmsm;
 static struct uz_delay_compensation_fcs_mpc_6phase_AXI_values_t AXI_values_delay_compensation_fcs_mpc_6phase_pmsm={
     .last_applied_optimal_voltage_ud = 6.3f,
@@ -116,9 +116,9 @@ static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_AXI_values_t A
 };
 
 uz_6ph_idref_iqref_ixref_iyref_t updated_values_idref_iqref_ix_ref_iy_ref={
-   .id_ref=10.0f,
-   .iq_ref=2.2f,
-   .ix_ref=1.1f,
+   .id_ref=0.0f,
+   .iq_ref=0.0f,
+   .ix_ref=0.0f,
    .iy_ref=0.0f
 };
 
@@ -141,7 +141,7 @@ extern float last_applied_optimal_voltage_d;
 extern float last_applied_optimal_voltage_q;
 extern float last_applied_optimal_voltage_x;
 extern float last_applied_optimal_voltage_y;
-*/
+
 
 void ISR_Control(void *data)
 {
@@ -169,15 +169,15 @@ void ISR_Control(void *data)
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
 
-/*
+
     //crude over current protection
     if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values_idref_iqref_ix_ref_iy_ref.id_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iq_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.ix_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iy_ref) > 15.0f)) {
     	uz_assert(0);
     	}
-*/
-    //uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm, updated_values_idref_iqref_ix_ref_iy_ref);
 
-    /*
+    uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm, updated_values_idref_iqref_ix_ref_iy_ref);
+
+
     uz_delay_compensation_fcs_mpc_6phase_pmsm_set_AXI_values(instance_delay_compensation_fcs_mpc_6phase_pmsm, AXI_values_delay_compensation_fcs_mpc_6phase_pmsm);
 
     idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm = uz_delay_compensation_fcs_mpc_6phase_pmsm_read_idk1_iqK1_ixk1_iyk1(instance_delay_compensation_fcs_mpc_6phase_pmsm);
@@ -206,7 +206,7 @@ void ISR_Control(void *data)
     last_applied_optimal_voltage_q = last_applied_optimal_voltages.q;
     last_applied_optimal_voltage_x = last_applied_optimal_voltages.x;
     last_applied_optimal_voltage_y = last_applied_optimal_voltages.y;
-    */
+
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

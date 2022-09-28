@@ -11,3 +11,4 @@ x_abc_out_axi,Output,sfix27_En18 (9),AXI 0x140,-256 to +255,output inverse trans
 x_abc_1,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 1 values
 x_abc_2,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 2 values
 x_abc_3,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 3 values
+refresh_values,Output,boolean,External Signal,,feedback signal: trigger_new_values has been acknowledged

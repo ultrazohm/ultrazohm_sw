@@ -58,7 +58,7 @@ struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float
 			if(b < 0.0f) {
 				sector = 2U;
 			} else {
-            	ector = 3U;
+            	sector = 3U;
 			}
 		} else {
 			quadrant = 1U;

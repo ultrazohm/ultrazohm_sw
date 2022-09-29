@@ -75,13 +75,13 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
 	self->newton_MTPA.coefficients.data = &coefficients_MTPA[0];
 	self->newton_MTPA.initial_value = 0.0f;
 	self->newton_MTPA.root_absolute_tolerance = 0.25f;
-	self->newton_MTPA.iterations = 12U;
+	self->newton_MTPA.iterations = 10U;
 	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_FW);
 	self->newton_FW.derivate_poly_coefficients.data = &derivate_poly_coefficients_FW[0];
 	self->newton_FW.coefficients.length = UZ_ARRAY_SIZE(coefficients_FW);
 	self->newton_FW.coefficients.data = &coefficients_FW[0];
 	self->newton_FW.initial_value = 0.0f;
-	self->newton_FW.iterations = 12U;
+	self->newton_FW.iterations = 10U;
 	self->newton_FW.root_absolute_tolerance = 0.25f;
     self->config = config;
     return(self);
@@ -118,7 +118,7 @@ void uz_SetPoint_set_field_weakening(uz_SetPoint_t* self, bool is_field_weakenin
 	self->config.is_field_weakening_enabled = is_field_weakening_enabled;
 }
 
-void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
+void uz_SetPoint_set_PMSM_parameters(uz_SetPoint_t* self, uz_PMSM_t input) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_SetPoint_assert_motor_parameters(input, self->config.motor_type);

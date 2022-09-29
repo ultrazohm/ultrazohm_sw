@@ -1,0 +1,4355 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Code Generation Report for parallel_phase_voltages_per_switching_state_6
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdSummaryPage'); else local_onload();}} catch(err) {};">
+<font SIZE="+2" COLOR="#000066">
+HDL Code Generation Report Summary for parallel_phase_voltages_per_switching_state_6
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Model
+</td>
+<td align="right" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6')" name="code2model" class="code2model">
+parallel_phase_voltages_per_switching_state_6
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Model version
+</td>
+<td align="right" valign="top" style="border-style: none">
+1.21
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDL Coder version
+</td>
+<td align="right" valign="top" style="border-style: none">
+3.20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+HDL code generated on
+</td>
+<td align="right" valign="top" style="border-style: none">
+2022-09-29 14:34:14
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDL code generated for
+</td>
+<td align="right" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:30')" name="code2model" class="code2model">
+Phase_voltages_per_switching_state
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Target Language
+</td>
+<td align="right" valign="top" style="border-style: none">
+VHDL
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Target Directory
+</td>
+<td align="right" valign="top" style="border-style: none">
+C:\ultrazohm_sw\ip_cores\parallel_phase_voltages_6Phase\hdlsrc
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Non-default model properties">
+<font size="+1" color="#000066">
+<b class="midprod">
+Non-default model properties
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+CriticalPathEstimation
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+FloatingPointTargetConfiguration
+</td>
+<td align="right" valign="top" style="border-style: none">
+hdlcoder.FloatingPointTargetConfig
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+HDLSubsystem
+</td>
+<td align="right" valign="top" style="border-style: none">
+parallel_phase_voltages_per_switching_state_6/Phase_voltages_per_switching_state
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ModulePrefix
+</td>
+<td align="right" valign="top" style="border-style: none">
+Parallel_phase_voltages_6Phase_src_
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OptimizationReport
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ResetType
+</td>
+<td align="right" valign="top" style="border-style: none">
+Synchronous
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ResourceReport
+</td>
+<td align="right" valign="top" style="border-style: none">
+on
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisTool
+</td>
+<td align="right" valign="top" style="border-style: none">
+Xilinx Vivado
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisToolChipFamily
+</td>
+<td align="right" valign="top" style="border-style: none">
+Zynq UltraScale+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+SynthesisToolDeviceName
+</td>
+<td align="right" valign="top" style="border-style: none">
+xczu9eg-ffvc900-1L-i
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+TargetDirectory
+</td>
+<td align="right" valign="top" style="border-style: none">
+C:\ultrazohm_sw\ip_cores\parallel_phase_voltages_6Phase\hdlsrc
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+TargetFrequency
+</td>
+<td align="right" valign="top" style="border-style: none">
+100
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+TargetPlatform
+</td>
+<td align="right" valign="top" style="border-style: none">
+Generic Xilinx Platform
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Workflow
+</td>
+<td align="right" valign="top" style="border-style: none">
+IP Core Generation
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Non-default block properties">
+<font size="+1" color="#000066">
+<b class="midprod">
+Non-default block properties
+</b>
+
+</font>
+
+</a>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:30')" name="code2model" class="code2model">
+Phase_voltages_per_switching_state
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IPCoreName
+</td>
+<td align="right" valign="top" style="border-style: none">
+Parallel_phase_voltages_6Phase
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:31')" name="code2model" class="code2model">
+theta_el
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:32')" name="code2model" class="code2model">
+theta_el_offset_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"100"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:33')" name="code2model" class="code2model">
+u_dc_link_voltage_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:34')" name="code2model" class="code2model">
+Index
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:35')" name="code2model" class="code2model">
+use_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"108"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:36')" name="code2model" class="code2model">
+theta_el_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:37')" name="code2model" class="code2model">
+Index_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"110"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:38')" name="code2model" class="code2model">
+valid_in_delay_compensation
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:39')" name="code2model" class="code2model">
+valid_in_min_cost_function-and_vopt
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:40')" name="code2model" class="code2model">
+valid_in_ADC
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:41')" name="code2model" class="code2model">
+Add1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Linear )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OutputPipeline
+</td>
+<td align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:42')" name="code2model" class="code2model">
+Add2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Linear )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OutputPipeline
+</td>
+<td align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:43')" name="code2model" class="code2model">
+Add3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Linear )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OutputPipeline
+</td>
+<td align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:44')" name="code2model" class="code2model">
+Compare
+Limit_High
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OutputPipeline
+</td>
+<td align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:45')" name="code2model" class="code2model">
+Compare
+Limit_Low
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+OutputPipeline
+</td>
+<td align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:395')" name="code2model" class="code2model">
+done
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:396')" name="code2model" class="code2model">
+d_voltage_per_switching_state_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:397')" name="code2model" class="code2model">
+q_voltage_per_switching_state_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:398')" name="code2model" class="code2model">
+x_voltage_per_switching_state_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:399')" name="code2model" class="code2model">
+y_voltage_per_switching_state_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:400')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"114"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:401')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"118"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:402')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"11C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:403')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"120"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:405')" name="code2model" class="code2model">
+d_voltage_per_switching_state_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:406')" name="code2model" class="code2model">
+q_voltage_per_switching_state_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:407')" name="code2model" class="code2model">
+x_voltage_per_switching_state_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:408')" name="code2model" class="code2model">
+y_voltage_per_switching_state_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:409')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"124"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:410')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"128"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:411')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"12C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:412')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"130"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:414')" name="code2model" class="code2model">
+d_voltage_per_switching_state_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:415')" name="code2model" class="code2model">
+q_voltage_per_switching_state_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:416')" name="code2model" class="code2model">
+x_voltage_per_switching_state_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:417')" name="code2model" class="code2model">
+y_voltage_per_switching_state_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:418')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"134"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:419')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"138"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:420')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"13C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:421')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"140"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:423')" name="code2model" class="code2model">
+d_voltage_per_switching_state_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:424')" name="code2model" class="code2model">
+q_voltage_per_switching_state_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:425')" name="code2model" class="code2model">
+x_voltage_per_switching_state_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:426')" name="code2model" class="code2model">
+y_voltage_per_switching_state_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:427')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"144"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:428')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"148"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:429')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"14C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:430')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"150"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:432')" name="code2model" class="code2model">
+d_voltage_per_switching_state_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:433')" name="code2model" class="code2model">
+q_voltage_per_switching_state_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:434')" name="code2model" class="code2model">
+x_voltage_per_switching_state_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:435')" name="code2model" class="code2model">
+y_voltage_per_switching_state_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:436')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"154"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:437')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"158"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:438')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"15C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:439')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"160"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:441')" name="code2model" class="code2model">
+d_voltage_per_switching_state_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:442')" name="code2model" class="code2model">
+q_voltage_per_switching_state_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:443')" name="code2model" class="code2model">
+x_voltage_per_switching_state_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:444')" name="code2model" class="code2model">
+y_voltage_per_switching_state_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:445')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"164"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:446')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"168"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:447')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"16C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:448')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"170"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:450')" name="code2model" class="code2model">
+d_voltage_per_switching_state_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:451')" name="code2model" class="code2model">
+q_voltage_per_switching_state_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:452')" name="code2model" class="code2model">
+x_voltage_per_switching_state_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:453')" name="code2model" class="code2model">
+y_voltage_per_switching_state_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:454')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"174"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:455')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"178"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:456')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"17C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:457')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"180"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:459')" name="code2model" class="code2model">
+d_voltage_per_switching_state_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:460')" name="code2model" class="code2model">
+q_voltage_per_switching_state_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:461')" name="code2model" class="code2model">
+x_voltage_per_switching_state_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:462')" name="code2model" class="code2model">
+y_voltage_per_switching_state_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:463')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"184"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:464')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"188"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:465')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"18C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:466')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"190"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:468')" name="code2model" class="code2model">
+d_voltage_per_switching_state_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:469')" name="code2model" class="code2model">
+q_voltage_per_switching_state_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:470')" name="code2model" class="code2model">
+x_voltage_per_switching_state_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:471')" name="code2model" class="code2model">
+y_voltage_per_switching_state_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:472')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"194"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:473')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"198"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:474')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"19C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:475')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1A0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:477')" name="code2model" class="code2model">
+d_voltage_per_switching_state_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:478')" name="code2model" class="code2model">
+q_voltage_per_switching_state_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:479')" name="code2model" class="code2model">
+x_voltage_per_switching_state_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:480')" name="code2model" class="code2model">
+y_voltage_per_switching_state_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:481')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1A4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:482')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1A8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:483')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1AC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:484')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1B0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:486')" name="code2model" class="code2model">
+d_voltage_per_switching_state_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:487')" name="code2model" class="code2model">
+q_voltage_per_switching_state_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:488')" name="code2model" class="code2model">
+x_voltage_per_switching_state_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:489')" name="code2model" class="code2model">
+y_voltage_per_switching_state_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:490')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1B4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:491')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1B8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:492')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1BC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:493')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1C0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:495')" name="code2model" class="code2model">
+d_voltage_per_switching_state_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:496')" name="code2model" class="code2model">
+q_voltage_per_switching_state_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:497')" name="code2model" class="code2model">
+x_voltage_per_switching_state_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:498')" name="code2model" class="code2model">
+y_voltage_per_switching_state_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:499')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1C4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:500')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1C8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:501')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1CC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:502')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_12
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1D0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:504')" name="code2model" class="code2model">
+d_voltage_per_switching_state_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:505')" name="code2model" class="code2model">
+q_voltage_per_switching_state_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:506')" name="code2model" class="code2model">
+x_voltage_per_switching_state_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:507')" name="code2model" class="code2model">
+y_voltage_per_switching_state_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:508')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1D4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:509')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1D8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:510')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1DC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:511')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_13
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1E0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:513')" name="code2model" class="code2model">
+d_voltage_per_switching_state_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:514')" name="code2model" class="code2model">
+q_voltage_per_switching_state_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:515')" name="code2model" class="code2model">
+x_voltage_per_switching_state_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:516')" name="code2model" class="code2model">
+y_voltage_per_switching_state_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:517')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1E4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:518')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1E8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:519')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1EC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:520')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_14
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1F0"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:522')" name="code2model" class="code2model">
+d_voltage_per_switching_state_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:523')" name="code2model" class="code2model">
+q_voltage_per_switching_state_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:524')" name="code2model" class="code2model">
+x_voltage_per_switching_state_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:525')" name="code2model" class="code2model">
+y_voltage_per_switching_state_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:526')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1F4"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:527')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1F8"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:528')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"1FC"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:529')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_15
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"200"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:531')" name="code2model" class="code2model">
+d_voltage_per_switching_state_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:532')" name="code2model" class="code2model">
+q_voltage_per_switching_state_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:533')" name="code2model" class="code2model">
+x_voltage_per_switching_state_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:534')" name="code2model" class="code2model">
+y_voltage_per_switching_state_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:535')" name="code2model" class="code2model">
+d_voltage_per_switching_state_AXI_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"204"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:536')" name="code2model" class="code2model">
+q_voltage_per_switching_state_AXI_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"208"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:537')" name="code2model" class="code2model">
+x_voltage_per_switching_state_AXI_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"20C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('parallel_phase_voltages_per_switching_state_6:538')" name="code2model" class="code2model">
+y_voltage_per_switching_state_AXI_16
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"210"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><br />
+</body>
+
+</html>

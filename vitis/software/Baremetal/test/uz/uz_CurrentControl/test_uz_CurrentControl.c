@@ -13,7 +13,7 @@
 struct uz_CurrentControl_config config = {0};
 uz_3ph_dq_t i_actual_Ampere = {0};
 uz_3ph_dq_t i_reference_Ampere = {0};
-float omega_el_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec = 0.0f;
 float V_dc_volts = 0.0f;
 
 void setUp(void)
@@ -31,7 +31,7 @@ void setUp(void)
     i_actual_Ampere.d = 0.0f;
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.zero = 0.0f;
-    omega_el_rad_per_sec = 0.0f;
+    omega_m_rad_per_sec = 0.0f;
     V_dc_volts = 24.0f;
     config.config_PMSM.Ld_Henry = 0.00027f;
     config.config_PMSM.Lq_Henry = 0.00027f;
@@ -119,8 +119,8 @@ void test_uz_CurrentControl_sample_output(void){
     for(int i=0;i<11;i++){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
-        omega_el_rad_per_sec = values_omega[i];
-        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        omega_m_rad_per_sec = (values_omega[i] / config.config_PMSM.polePairs);
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -130,13 +130,13 @@ void test_uz_CurrentControl_sample_abc_output(void) {
     //Values for comparision from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     float theta_el_rad = (float)M_PI;
-    uz_3ph_abc_t output = uz_CurrentControl_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    uz_3ph_abc_t output = uz_CurrentControl_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-6.75f,output.a);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,-2.4707f,output.b);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,9.2207f,output.c);
     theta_el_rad = (float)M_PI * 1.5f;
     uz_CurrentControl_reset(instance);
-    output = uz_CurrentControl_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+    output = uz_CurrentControl_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec, theta_el_rad);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,6.75f,output.a);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,-9.2207f,output.b);
     TEST_ASSERT_FLOAT_WITHIN(1e-02,2.4707f,output.c);
@@ -154,8 +154,8 @@ void test_uz_CurrentControl_sample_output_SVLimitation_active(void){
     for(int i=0;i<11;i++){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
-        omega_el_rad_per_sec = values_omega[i];
-        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        omega_m_rad_per_sec = (values_omega[i] / config.config_PMSM.polePairs);
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -172,8 +172,8 @@ void test_uz_CurrentControl_reset(void){
     for(int i=0;i<5;i++){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
-        omega_el_rad_per_sec = values_omega[i];
-        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        omega_m_rad_per_sec = (values_omega[i] / config.config_PMSM.polePairs);
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -181,8 +181,8 @@ void test_uz_CurrentControl_reset(void){
     for(int i=0;i<5;i++){
         i_actual_Ampere.q = values_iq[i];
         i_actual_Ampere.d = values_id[i];
-        omega_el_rad_per_sec = values_omega[i];
-        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        omega_m_rad_per_sec = (values_omega[i] / config.config_PMSM.polePairs);
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
@@ -194,7 +194,7 @@ void test_uz_CurrentControl_set_Kp_and_Ki_id(void){
     //Values for comparision from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     for(int i=0;i<11;i++){
-        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     }    
     TEST_ASSERT_FLOAT_WITHIN(1e-02f, 6.95f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02f, 6.95f, output.q);
@@ -202,7 +202,7 @@ void test_uz_CurrentControl_set_Kp_and_Ki_id(void){
     uz_CurrentControl_set_Ki_id(instance, 0.0f);
     uz_CurrentControl_reset(instance);
     for(int i=0;i<5;i++){
-        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     }
     TEST_ASSERT_FLOAT_WITHIN(1e-02f, 0.0f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02f, 6.83f, output.q);
@@ -214,7 +214,7 @@ void test_uz_CurrentControl_set_Kp_and_Ki_iq(void){
     //Values for comparision from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     for(int i=0;i<11;i++){
-        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     }    
     TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.95f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.95f, output.q);
@@ -222,7 +222,7 @@ void test_uz_CurrentControl_set_Kp_and_Ki_iq(void){
     uz_CurrentControl_set_Ki_iq(instance, 0.0f);
     uz_CurrentControl_reset(instance);
     for(int i=0;i<5;i++){
-        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     }
     TEST_ASSERT_FLOAT_WITHIN(1e-02, 6.83f, output.d);
 	TEST_ASSERT_FLOAT_WITHIN(1e-02, 0.0f, output.q);
@@ -240,8 +240,8 @@ void test_uz_CurrentControl_set_PMSM_parameters(void) {
     //Check outputs from the linear decoupling
     i_actual_Ampere.q = 4.0f;
     i_actual_Ampere.d = 4.0f;
-    omega_el_rad_per_sec = 500.0f;
-    output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    omega_m_rad_per_sec = (500.0f / config.config_PMSM.polePairs);
+    output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     TEST_ASSERT_EQUAL_FLOAT(-0.54f, output.d);
     TEST_ASSERT_EQUAL_FLOAT(4.64f, output.q);
     //Set params of linear decoupling to 0
@@ -249,7 +249,7 @@ void test_uz_CurrentControl_set_PMSM_parameters(void) {
     config.config_PMSM.Lq_Henry = 0.0001f;
     config.config_PMSM.Psi_PM_Vs = 0.0f;
     uz_CurrentControl_set_PMSM_parameters(instance, config.config_PMSM);
-    output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     //Check, if the output is changed
     TEST_ASSERT_EQUAL_FLOAT(-0.2f, output.d);
     TEST_ASSERT_EQUAL_FLOAT(0.2f, output.q);
@@ -264,14 +264,14 @@ void test_uz_CurrentControl_get_ext_clamping_output(void){
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.d = 0.0f;
-    omega_el_rad_per_sec =  0.0f; 
-    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    omega_m_rad_per_sec =  0.0f; 
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     TEST_ASSERT_EQUAL_INT(0,uz_CurrentControl_get_ext_clamping(instance));
     V_dc_volts = 10.0f;
     i_actual_Ampere.q = 0.874f;
     i_actual_Ampere.d = 1.0f;
-    omega_el_rad_per_sec =  673.0f; 
-    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    omega_m_rad_per_sec = (673.0f / config.config_PMSM.polePairs);
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
     TEST_ASSERT_EQUAL_INT(1,uz_CurrentControl_get_ext_clamping(instance));
 }
 
@@ -280,7 +280,7 @@ void test_uz_CurrentControl_sample_no_decoupling(void) {
     config.config_PMSM.Ld_Henry = 0.0f;
     config.config_PMSM.Lq_Henry = 0.0f;
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
-    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec);
 }
 
 void test_uz_CurrentControl_set_decoupling_method(void) {
@@ -288,7 +288,7 @@ void test_uz_CurrentControl_set_decoupling_method(void) {
     config.config_PMSM.Ld_Henry = 0.0f;
     config.config_PMSM.Lq_Henry = 0.0f;
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
-    TEST_ASSERT_PASS_ASSERT(uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
+    TEST_ASSERT_PASS_ASSERT(uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_m_rad_per_sec));
     //Assertion should trigger now, since for the linear_decoupling Ld/Lq must be greater than 0.0f
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_decoupling_method(instance, linear_decoupling));
 }

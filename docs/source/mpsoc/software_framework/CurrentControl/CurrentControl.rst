@@ -85,7 +85,8 @@ Example
      struct uz_PMSM_t config_PMSM = {
         .Ld_Henry = 0.0001f,
         .Lq_Henry = 0.0002f, 
-        .Psi_PM_Vs = 0.008f
+        .Psi_PM_Vs = 0.008f,
+        .polepairs = 4.0f
       };//these parameters are only needed if linear decoupling is selected
       struct uz_PI_Controller_config config_id = {
         .Kp = 10.0f,
@@ -114,7 +115,8 @@ Description
     
 With these config structs one can customize the CurrentControl and the included :ref:`PI-Controller <uz_piController>` and :ref:`PMSM config <uz_PMSM_config>`. 
 It is possible to use the CurrentControl with or without the :ref:`linear decoupling <uz_lineardecoupling>` via the CurrentControl_config member ``decoupling_select``. 
-If no decoupling is selected, no variables for the ``struct uz_PMSM_t`` have to be configured and can be left 0.
+If no decoupling is selected, only the ``polepairs`` member of the ``struct uz_PMSM_t`` has to be configured.
+The rest can be left 0.
 Each of the two PI-Controller need their own :ref:`config struct <uz_piController_config>`.
 One for the id-Controller and the other one for the iq-Controller. 
 

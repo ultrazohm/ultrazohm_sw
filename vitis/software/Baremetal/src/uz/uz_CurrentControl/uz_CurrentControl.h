@@ -56,7 +56,7 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @return uz_dq_t Output dq-reference voltage struct
  */
-uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
+uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_m_rad_per_sec);
 
 /**
  * @brief calculates last sample and transforms the dq-output voltage into the abc-system
@@ -69,7 +69,7 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
  * @param theta_el_rad electrical theta in rad
  * @return uz_3ph_abc_t Output abc-voltage struct
  */
-uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
+uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_m_rad_per_sec, float theta_el_rad);
 /**
  * @brief Resets the CurrentControl and the integrators of the PI-Controllers
  *

@@ -33,7 +33,7 @@ Calculates one sample of the CurrentControl.
 
 .. note::
 
-  Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_UVW`` function to get the output voltages in the UVW-system. 
+  Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_abc`` function to get the output voltages in the ABC-system. 
 
 .. warning::
 

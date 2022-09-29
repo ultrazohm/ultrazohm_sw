@@ -4,6 +4,9 @@
 Space vector Modulation
 =======================
 
+.. doxygenstruct:: uz_DutyCycle_t
+  :members:
+
 .. doxygenfunction:: uz_Space_Vector_Modulation
 
 Example

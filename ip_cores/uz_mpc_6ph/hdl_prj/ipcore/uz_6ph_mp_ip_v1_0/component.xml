@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1c48c314</spirit:value>
+            <spirit:value>bcb3af11</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1c48c314</spirit:value>
+            <spirit:value>bcb3af11</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -781,20 +781,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>calc_done</spirit:name>
-        <spirit:wire>
-          <spirit:direction>out</spirit:direction>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>last_prediciton_done</spirit:name>
+        <spirit:name>prediction_done</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -811,7 +798,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long">7</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -995,7 +982,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_6ph_mp_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_60ef8c2d</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5e1e244c</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1119,15 +1106,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_6ph_mp_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112689181</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-09-19T14:22:18Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112703585</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-09-29T14:25:51Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="5e2f0e18"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="f828f100"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="5753018c"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="59201d7c"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="e9f17f84"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

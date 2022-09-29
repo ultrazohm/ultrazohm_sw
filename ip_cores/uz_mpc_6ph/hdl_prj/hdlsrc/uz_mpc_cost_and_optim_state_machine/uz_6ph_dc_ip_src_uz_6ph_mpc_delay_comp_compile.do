@@ -1,0 +1,6 @@
+vlib work
+vcom  uz_6ph_dc_ip_src_uz_6ph_mpc_delay_comp_pkg.vhd
+vcom  uz_6ph_dc_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_6ph_dc_ip_src_Detect_Rise_Positive1.vhd
+vcom  uz_6ph_dc_ip_src_Subsystem.vhd
+vcom  uz_6ph_dc_ip_src_uz_6ph_mpc_delay_comp.vhd

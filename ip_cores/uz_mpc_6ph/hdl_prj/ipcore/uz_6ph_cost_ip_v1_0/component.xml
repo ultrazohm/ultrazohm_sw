@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0e5ceb76</spirit:value>
+            <spirit:value>b8830b9c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0e5ceb76</spirit:value>
+            <spirit:value>b8830b9c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -421,23 +421,6 @@
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
             <spirit:left spirit:format="long">7</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>last_optim_index</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1019,7 +1002,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_6ph_cost_ip.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_074b6984</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_aa6b7ab4</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1138,15 +1121,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_6ph_cost_ip</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112695063</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-09-23T16:23:55Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112703588</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-09-29T14:28:18Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cc994396"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="c1cba068"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a0802b35"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="d6036364"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="57333b68"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

@@ -1,0 +1,5 @@
+ --> uz_6_ph_dc_ip_src_uz_6_ph_mpc_delay_comp_pkg
+uz_mpc_cost_and_optim_state_machine/uz_6_ph_mpc_delay_comp/Detect Rise Positive --> uz_6_ph_dc_ip_src_Detect_Rise_Positive
+uz_mpc_cost_and_optim_state_machine/uz_6_ph_mpc_delay_comp/Detect Rise Positive1 --> uz_6_ph_dc_ip_src_Detect_Rise_Positive1
+uz_mpc_cost_and_optim_state_machine/uz_6_ph_mpc_delay_comp/Subsystem --> uz_6_ph_dc_ip_src_Subsystem
+uz_mpc_cost_and_optim_state_machine/uz_6_ph_mpc_delay_comp --> uz_6_ph_dc_ip_src_uz_6_ph_mpc_delay_comp

@@ -1,0 +1,6 @@
+vlib work
+vcom  uz_6_ph_pu_ip_src_uz_6ph_mpc_pu_voltages_vsd_pkg.vhd
+vcom  uz_6_ph_pu_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_6_ph_pu_ip_src_Subsystem.vhd
+vcom  uz_6_ph_pu_ip_src_finite_control_set.vhd
+vcom  uz_6_ph_pu_ip_src_uz_6ph_mpc_pu_voltages_vsd.vhd

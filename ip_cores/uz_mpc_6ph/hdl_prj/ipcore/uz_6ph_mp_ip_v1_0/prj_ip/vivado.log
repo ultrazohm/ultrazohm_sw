@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Mon Sep 19 16:22:05 2022
-# Process ID: 25896
+# Start of session at: Thu Sep 29 16:25:42 2022
+# Process ID: 9896
 # Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_mp_ip_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_mp_ip_v1_0/prj_ip/vivado.log
@@ -55,4 +55,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_6ph_mp_ip_axi_lite.vhd" alrea
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_6ph_mp_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_6ph_mp_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_6ph_mp_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Sep 19 16:22:18 2022...
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 29 16:25:52 2022...

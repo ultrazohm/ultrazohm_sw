@@ -36,10 +36,38 @@ void setUp(void)
     config.config_PMSM.Ld_Henry = 0.00027f;
     config.config_PMSM.Lq_Henry = 0.00027f;
     config.config_PMSM.Psi_PM_Vs = 0.0082f;
+    config.config_PMSM.polePairs = 4.0f;
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;
     config.decoupling_select = linear_decoupling;
+}
+void test_uz_CurrentControl_init_assert_polepairs(void) {
+    config.config_PMSM.polePairs = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+    config.config_PMSM.polePairs = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+    config.config_PMSM.polePairs = 2.5f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+}
+
+void test_uz_CurrentControl_init_assert_Ld_for_linear_decoupling(void) {
+    config.config_PMSM.Ld_Henry = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+    config.config_PMSM.Ld_Henry = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+}
+
+void test_uz_CurrentControl_init_assert_Lq_for_linear_decoupling(void) {
+    config.config_PMSM.Lq_Henry = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+    config.config_PMSM.Lq_Henry = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+}
+
+void test_uz_CurrentControl_init_assert_Psi_PM_for_linear_decoupling(void) {
+    config.config_PMSM.Psi_PM_Vs = -10.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
 }
 
 void test_uz_CurrentControl_reset_NULL(void){
@@ -261,8 +289,7 @@ void test_uz_CurrentControl_set_decoupling_method(void) {
     config.config_PMSM.Lq_Henry = 0.0f;
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     TEST_ASSERT_PASS_ASSERT(uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
-    uz_CurrentControl_set_decoupling_method(instance, linear_decoupling);
     //Assertion should trigger now, since for the linear_decoupling Ld/Lq must be greater than 0.0f
-    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_decoupling_method(instance, linear_decoupling));
 }
 #endif // TEST

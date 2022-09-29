@@ -52,6 +52,13 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
 	uz_CurrentControl_t* self = uz_CurrentControl_allocation();
 	self->Controller_id = uz_PI_Controller_init(config.config_id);
 	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
+	if(config.decoupling_select == linear_decoupling) {
+		uz_assert(config.config_PMSM.Ld_Henry > 0.0f);
+		uz_assert(config.config_PMSM.Lq_Henry > 0.0f);
+		uz_assert(config.config_PMSM.Psi_PM_Vs >= 0.0f);
+	}
+	uz_assert(config.config_PMSM.polePairs > 0.0f);
+	uz_assert(fmodf(config.config_PMSM.polePairs, 1.0f) == 0);
 	self->config = config;
 	return (self);
 }
@@ -129,12 +136,20 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
     uz_assert(pmsm_config.Ld_Henry > 0.0f);
 	uz_assert(pmsm_config.Lq_Henry > 0.0f);
 	uz_assert(pmsm_config.Psi_PM_Vs >= 0.0f);
+	uz_assert(pmsm_config.polePairs > 0.0f);
+	uz_assert(fmodf(pmsm_config.polePairs, 1.0f) == 0);
 	self->config.config_PMSM = pmsm_config;
 }
 
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
+	//Assert again, since the module could've been init with 0 values
+	if(decoupling_select == linear_decoupling) {
+		uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+		uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+		uz_assert(self->config.config_PMSM.Psi_PM_Vs >= 0.0f);
+	}
 	self->config.decoupling_select=decoupling_select;
 }
 

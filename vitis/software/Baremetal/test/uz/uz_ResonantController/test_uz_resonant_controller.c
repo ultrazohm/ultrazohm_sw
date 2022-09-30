@@ -30,21 +30,25 @@ void setUp(void)
 void test_uz_resonant_controller_Init(void)
 {
     uz_resonantController_init(&test_R_controller);
+
+	TEST_ASSERT_EQUAL((test_R_controller.PtrToModelData), (&test_R_controller.modelData) );
+	TEST_ASSERT_EQUAL((test_R_controller.PtrToModelData->dwork), (&test_R_controller.dwork) );
+	TEST_ASSERT_EQUAL((test_R_controller.PtrToModelData)->inputs, (&test_R_controller.input) );
+	TEST_ASSERT_EQUAL((test_R_controller.PtrToModelData->outputs), (&test_R_controller.output) );
 }
 
-void test_uz_resonant_controller_Step(void)
-{
-    uz_resonantController_step(&test_R_controller);
-}
 
 void test_uz_resonant_controller_Reset(void)
 {
+	test_R_controller.input.in_m = 3.5;
+	uz_resonantController_step(&test_R_controller);
     uz_resonantController_reset(&test_R_controller);
     TEST_ASSERT_EQUAL_FLOAT(0.0f,test_R_controller.input.in_m);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, test_R_controller.input.in_ref);
+	TEST_ASSERT_EQUAL_FLOAT(0.0f, test_R_controller.output.out);
 }
 
-void test_uz_resonant_controller_Step2(void)
+void test_uz_resonant_controller_Step(void)
 {
     	test_R_controller.input.T_sw = 0.0001;
 		test_R_controller.input.VR = 160;

@@ -36,9 +36,9 @@ typedef struct uz_MotorControl_t uz_MotorControl_t;
  * @param config configuration struct for MotorControl
  * @return uz_MotorControl_t* Pointer to uz_MotorControl_t instance
  */
-uz_MotorControl_t* uz_MotorControl_init(struct uz_MotorControl_config config, uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5) ;
+uz_MotorControl_t* uz_MotorControl_init(struct uz_MotorControl_config config) ;
 
-void uz_MotorControl_sample(uz_MotorControl_t* self, uz_3ph_dq_t i_meas_Ampere, float V_DC_Volts, float omega_m_rad_per_sec, float theta_el_rad);
+struct uz_DutyCycle_t uz_MotorControl_sample(uz_MotorControl_t* self, uz_3ph_dq_t i_meas_Ampere, float V_DC_Volts, float omega_m_rad_per_sec, float theta_el_rad);
 
 
 void uz_MotorControl_set_reference_torque(uz_MotorControl_t* self, float M_ref_Nm);

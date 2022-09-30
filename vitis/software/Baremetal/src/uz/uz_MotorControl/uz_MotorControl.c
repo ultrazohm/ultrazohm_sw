@@ -22,7 +22,6 @@ typedef struct uz_MotorControl_t {
 	uz_CurrentControl_t* CurrentControl;
 	uz_SpeedControl_t* SpeedControl;
 	uz_SetPoint_t* SetPoint;
-	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
 	struct uz_MotorControl_config config;
 	bool ext_clamping;
 }uz_MotorControl_t;
@@ -48,7 +47,7 @@ static uz_MotorControl_t* uz_MotorControl_allocation(void) {
 	return (self);
 }
 
-uz_MotorControl_t* uz_MotorControl_init(struct uz_MotorControl_config config, uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5) {
+uz_MotorControl_t* uz_MotorControl_init(struct uz_MotorControl_config config) {
 	uz_MotorControl_t* self = uz_MotorControl_allocation();
 	//Ensure, that the SetPoint module is enabled, if SpeedControl is enabled
 	if(config.is_SpeedControl_selected) {
@@ -59,12 +58,11 @@ uz_MotorControl_t* uz_MotorControl_init(struct uz_MotorControl_config config, uz
 	self->SpeedControl = uz_SpeedControl_init(config.SC_config);
 	self->config.SP_config.config_PMSM = config.config_PMSM;
 	self->SetPoint = uz_SetPoint_init(config.SP_config);
-	self->pwm_d1_pin_0_to_5 = pwm_d1_pin_0_to_5;
 	self->config = config;
 	return (self);
 }
 
-void uz_MotorControl_sample(uz_MotorControl_t* self, uz_3ph_dq_t i_meas_Ampere, float V_DC_Volts, float omega_m_rad_per_sec, float theta_el_rad) {
+struct uz_DutyCycle_t uz_MotorControl_sample(uz_MotorControl_t* self, uz_3ph_dq_t i_meas_Ampere, float V_DC_Volts, float omega_m_rad_per_sec, float theta_el_rad) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_DC_Volts > 0.0f);
@@ -89,7 +87,7 @@ void uz_MotorControl_sample(uz_MotorControl_t* self, uz_3ph_dq_t i_meas_Ampere, 
 	}
 	self->ext_clamping = (self->CurrentControl);
 	DutyCycle = uz_Space_Vector_Modulation(v_ref_Volts, V_DC_Volts, theta_el_rad);
-	uz_PWM_SS_2L_set_duty_cycle(self->pwm_d1_pin_0_to_5, DutyCycle.DutyCycle_A, DutyCycle.DutyCycle_B, DutyCycle.DutyCycle_C);
+	return (DutyCycle);
 }
 
 void uz_MotorControl_reset(uz_MotorControl_t* self){

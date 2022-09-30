@@ -1,0 +1,591 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_sixphase_VSD_transformation
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_sixphase_VSD_transformation
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+101
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+89
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+665
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+19332
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+276
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+852
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3197')" name="code2model" class="code2model">
+abc_to_dq
+</a>
+
+</h5>
+<h5>
+Multipliers (101)
+</h5>
+<span style="font-family:monospace">
+18x18-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+18x27-bit Multiply 							: 86
+</span>
+<br /><span style="font-family:monospace">
+27x18-bit Multiply 							: 14
+</span>
+<br /><h5>
+Adders/Subtractors (81)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+27x27-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+3x3-bit Adder 							: 6
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 42
+</span>
+<br /><span style="font-family:monospace">
+28x28-bit Adder 							: 24
+</span>
+<br /><span style="font-family:monospace">
+27x27-bit Subtractor 							: 4
+</span>
+<br /><h5>
+Registers (663)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3508')" name="code2model" class="code2model">
+Unit Delay
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+18-bit Register 							: 195
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 260
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+46-bit Register 							: 72
+</span>
+<br /><h5>
+Multiplexers (254)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 2
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3507')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 31
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 58
+</span>
+<span name="Multiplexer_1_4" id="Multiplexer_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3506')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+18-bit 6-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+27-bit 6-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+45-bit 2-to-1 Multiplexer 							: 42
+</span>
+<br /><span style="font-family:monospace">
+27-bit 3-to-1 Multiplexer 							: 66
+</span>
+<br /><span style="font-family:monospace">
+46-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><h5>
+Number of I/O Bits (852)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 346
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="065621ae-9ce5-4c0a-ae07-fc60e02d7767" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+x_in_dq_0: 27 bits
+</li>
+<li>
+x_in_dq_1: 27 bits
+</li>
+<li>
+x_in_dq_2: 27 bits
+</li>
+<li>
+x_in_dq_3: 27 bits
+</li>
+<li>
+x_in_dq_4: 27 bits
+</li>
+<li>
+x_in_dq_5: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3199')" name="code2model" class="code2model">
+theta_el
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3502')" name="code2model" class="code2model">
+trigger_new_values
+</a>
+: 1 bit
+</li>
+<li>
+x_abc1_ll_pl_0: 27 bits
+</li>
+<li>
+x_abc1_ll_pl_1: 27 bits
+</li>
+<li>
+x_abc1_ll_pl_2: 27 bits
+</li>
+<li>
+x_abc2_ll_pl_0: 27 bits
+</li>
+<li>
+x_abc2_ll_pl_1: 27 bits
+</li>
+<li>
+x_abc2_ll_pl_2: 27 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '065621ae-9ce5-4c0a-ae07-fc60e02d7767')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 506
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="a3172147-7e4a-4727-b465-1a131505a8af" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3509')" name="code2model" class="code2model">
+theta_el_axi
+</a>
+: 18 bits
+</li>
+<li>
+x_abc_out_axi_0: 27 bits
+</li>
+<li>
+x_abc_out_axi_1: 27 bits
+</li>
+<li>
+x_abc_out_axi_2: 27 bits
+</li>
+<li>
+x_abc_out_axi_3: 27 bits
+</li>
+<li>
+x_abc_out_axi_4: 27 bits
+</li>
+<li>
+x_abc_out_axi_5: 27 bits
+</li>
+<li>
+x_abc_1_0: 27 bits
+</li>
+<li>
+x_abc_1_1: 27 bits
+</li>
+<li>
+x_abc_1_2: 27 bits
+</li>
+<li>
+x_abc_2_0: 27 bits
+</li>
+<li>
+x_abc_2_1: 27 bits
+</li>
+<li>
+x_abc_2_2: 27 bits
+</li>
+<li>
+x_out_dq_0: 27 bits
+</li>
+<li>
+x_out_dq_1: 27 bits
+</li>
+<li>
+x_out_dq_2: 27 bits
+</li>
+<li>
+x_out_dq_3: 27 bits
+</li>
+<li>
+x_out_dq_4: 27 bits
+</li>
+<li>
+x_out_dq_5: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3511')" name="code2model" class="code2model">
+refresh_values
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a3172147-7e4a-4727-b465-1a131505a8af')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sixphase_VSD_transformation:3213')" name="code2model" class="code2model">
+Sine
+HDL Optimized
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (8)
+</h5>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 5
+</span>
+<br /><span style="font-family:monospace">
+20x20-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 2
+</span>
+<br /><h5>
+Registers (2)
+</h5>
+<span style="font-family:monospace">
+18-bit Register 							: 2
+</span>
+<br /><h5>
+Multiplexers (22)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span style="font-family:monospace">
+19-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+8-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+10-bit 3-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

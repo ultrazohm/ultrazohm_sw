@@ -173,18 +173,18 @@ void ISR_Control(void *data)
     Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x108), 16);
 
     // read p.u. voltages according to index
-    uz_axi_write_uint32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x104, test_index); //write index via AXI
-    Global_Data.av.ud_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x108), 24);
-    Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x10C), 24);
-    Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x110), 24);
-    Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6PH_PU_IP_0_BASEADDR+0x114), 24);
+    uz_axi_write_uint32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x104, test_index); //write index via AXI
+    Global_Data.av.ud_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x110), 24);
+    Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x114), 24);
 
     // read delay compensation currents from ip-core
-    uz_axi_write_int32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(frequency1/dengine.polePairs*2.0f*UZ_PIf/base_val.omegaB, 15));
-    Global_Data.av.id_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x104), 24);
-    Global_Data.av.iq_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x108), 24);
-    Global_Data.av.ix_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x10C), 24);
-    Global_Data.av.iy_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_DELAY_COM_IP_0_BASEADDR+0x110), 24);
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(frequency1/dengine.polePairs*2.0f*UZ_PIf/base_val.omegaB, 15));
+    Global_Data.av.id_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x104), 24);
+    Global_Data.av.iq_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.ix_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.iy_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x110), 24);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

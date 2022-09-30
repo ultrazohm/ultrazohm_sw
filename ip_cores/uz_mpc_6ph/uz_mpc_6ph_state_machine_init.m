@@ -19,8 +19,8 @@ Rs = 0.19;              % Phase resistance in Ohm
 psi_pm = 0.19;          % PM flux linkage in Vs
 Ld = 20.0e-3;            % d-inductance in H
 Lq = 60.4e-3;            % q-inductance in H
-Lx = 30.0e-3;            % x-inductance in H
-Ly = 30.0e-3;            % y-inductance in H
+Lx = 300.0e-3;            % x-inductance in H
+Ly = 300.0e-3;            % y-inductance in H
 p = 5;                  % pole pairs
 
 VR = 400;               % Rated eff. line-line voltage in V
@@ -68,7 +68,7 @@ fixdt_type_delta_u_costs = fixdt(0,27,24);
 % reference values for simulation
 fixdt_type_vsd = fixdt(1,18,15);
 v_dc = 565.0;
-id_ref = 0.0;
+id_ref = -0.0;
 iq_ref = 5.0;
 ix_ref = 0.0;
 iy_ref = 0.0;

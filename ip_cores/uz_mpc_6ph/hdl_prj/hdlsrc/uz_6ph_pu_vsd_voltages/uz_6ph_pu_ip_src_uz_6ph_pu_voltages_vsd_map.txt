@@ -1,4 +1,0 @@
- --> uz_6ph_pu_ip_src_uz_6ph_pu_voltages_vsd_pkg
-uz_6ph_pu_vsd_voltages/uz_6ph_pu_voltages_vsd/Detect Rise Positive --> uz_6ph_pu_ip_src_Detect_Rise_Positive
-uz_6ph_pu_vsd_voltages/uz_6ph_pu_voltages_vsd/finite_control_set --> uz_6ph_pu_ip_src_finite_control_set
-uz_6ph_pu_vsd_voltages/uz_6ph_pu_voltages_vsd --> uz_6ph_pu_ip_src_uz_6ph_pu_voltages_vsd

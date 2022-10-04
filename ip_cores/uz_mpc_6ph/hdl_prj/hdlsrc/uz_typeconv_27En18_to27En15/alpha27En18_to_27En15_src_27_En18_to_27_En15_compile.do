@@ -1,0 +1,3 @@
+vlib work
+vcom  alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd
+vcom  alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd

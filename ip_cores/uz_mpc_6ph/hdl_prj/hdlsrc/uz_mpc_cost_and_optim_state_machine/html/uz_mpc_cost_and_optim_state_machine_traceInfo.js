@@ -30,7 +30,7 @@ function RTW_Sid2UrlHash() {
 	this.urlHashMap["uz_mpc_cost_and_optim_state_machine:1379"] = "msg=&block=uz_mpc_cost_and_optim_state_machine:1379";
 	/* <S3>/lambda_u_AXI */
 	this.urlHashMap["uz_mpc_cost_and_optim_state_machine:1386"] = "msg=&block=uz_mpc_cost_and_optim_state_machine:1386";
-	/* <S3>/trigger */
+	/* <S3>/trigger_prediciton_done */
 	this.urlHashMap["uz_mpc_cost_and_optim_state_machine:1169"] = "msg=&block=uz_mpc_cost_and_optim_state_machine:1169";
 	/* <S3>/Add */
 	this.urlHashMap["uz_mpc_cost_and_optim_state_machine:1265"] = "uz_6ph_cost_ip_src_uz_6ph_mpc_costs_and_optimization.vhd:997,998,999";
@@ -596,8 +596,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_mpc_cost_and_optim_state_machine:1379"] = {rtwname: "<S3>/lambda_y_AXI"};
 	this.rtwnameHashMap["<S3>/lambda_u_AXI"] = {sid: "uz_mpc_cost_and_optim_state_machine:1386"};
 	this.sidHashMap["uz_mpc_cost_and_optim_state_machine:1386"] = {rtwname: "<S3>/lambda_u_AXI"};
-	this.rtwnameHashMap["<S3>/trigger"] = {sid: "uz_mpc_cost_and_optim_state_machine:1169"};
-	this.sidHashMap["uz_mpc_cost_and_optim_state_machine:1169"] = {rtwname: "<S3>/trigger"};
+	this.rtwnameHashMap["<S3>/trigger_prediciton_done"] = {sid: "uz_mpc_cost_and_optim_state_machine:1169"};
+	this.sidHashMap["uz_mpc_cost_and_optim_state_machine:1169"] = {rtwname: "<S3>/trigger_prediciton_done"};
 	this.rtwnameHashMap["<S3>/Add"] = {sid: "uz_mpc_cost_and_optim_state_machine:1265"};
 	this.sidHashMap["uz_mpc_cost_and_optim_state_machine:1265"] = {rtwname: "<S3>/Add"};
 	this.rtwnameHashMap["<S3>/Add1"] = {sid: "uz_mpc_cost_and_optim_state_machine:1282"};

@@ -1,0 +1,8 @@
+vlib work
+vcom  uz_6ph_predict_ip_src_uz_6ph_mpc_prediction_pkg.vhd
+vcom  uz_6ph_predict_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_6ph_predict_ip_src_Detect_Rise_Positive1.vhd
+vcom  uz_6ph_predict_ip_src_Detect_Rise_Positive2.vhd
+vcom  uz_6ph_predict_ip_src_Detect_Rise_Positive3.vhd
+vcom  uz_6ph_predict_ip_src_Subsystem.vhd
+vcom  uz_6ph_predict_ip_src_uz_6ph_mpc_prediction.vhd

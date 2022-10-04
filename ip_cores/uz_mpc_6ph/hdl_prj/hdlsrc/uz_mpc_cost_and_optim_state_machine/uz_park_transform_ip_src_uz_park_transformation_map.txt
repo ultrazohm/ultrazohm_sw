@@ -1,0 +1,4 @@
+ --> uz_park_transform_ip_src_uz_park_transformation_pkg
+uz_mpc_cost_and_optim_state_machine/uz_park_transformation/Detect Rise Positive --> uz_park_transform_ip_src_Detect_Rise_Positive
+uz_mpc_cost_and_optim_state_machine/uz_park_transformation/Sine HDL Optimized --> uz_park_transform_ip_src_Sine_HDL_Optimized
+uz_mpc_cost_and_optim_state_machine/uz_park_transformation --> uz_park_transform_ip_src_uz_park_transformation

@@ -1,0 +1,3 @@
+vlib work
+vcom  uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd
+vcom  uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd

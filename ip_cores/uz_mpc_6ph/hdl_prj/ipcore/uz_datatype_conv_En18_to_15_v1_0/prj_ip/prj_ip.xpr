@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/27En18_to_27En15_v1_0/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="49" Path="C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="95f27128edd043ddba241fa5ec14d531"/>
+    <Option Name="Id" Val="b9a87f1e2e3b4c6ca34f886ea113e78a"/>
     <Option Name="Part" Val="xczu9cg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -67,31 +67,31 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/../hdl/vhdl/alpha27En18_to_27En15_reset_sync.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_datatype_conv_En18_to_15_reset_sync.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/alpha27En18_to_27En15_dut.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_datatype_conv_En18_to_15_dut.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/alpha27En18_to_27En15.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_datatype_conv_En18_to_15.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -102,8 +102,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="alpha27En18_to_27En15"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TopModule" Val="uz_datatype_conv_En18_to_15"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
@@ -115,9 +114,7 @@
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="alpha27En18_to_27En15"/>
-        <Option Name="TopLib" Val="xil_defaultlib"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TopModule" Val="uz_datatype_conv_En18_to_15"/>
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>
         <Option Name="SelectedSimModel" Val="rtl"/>

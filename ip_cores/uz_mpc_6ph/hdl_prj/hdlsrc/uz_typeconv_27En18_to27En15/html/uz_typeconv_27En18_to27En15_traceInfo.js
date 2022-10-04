@@ -1,30 +1,30 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/Data Type Conversion */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:30"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:141";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:30"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:141";
 	/* <S1>/Delay */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:45"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:125,126,127,128,129,130,131,132,133,134";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:45"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:125,126,127,128,129,130,131,132,133,134";
 	/* <S1>/Delay1 */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:46"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:113,114,115,116,117,118,119,120,121,122";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:46"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:113,114,115,116,117,118,119,120,121,122";
 	/* <S1>/Delay2 */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:47"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:95,96,97,98,99,100,101,102,103,104";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:47"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:95,96,97,98,99,100,101,102,103,104";
 	/* <S1>/Delay3 */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:48"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:143,144,145,146,147,148,149,150,151,152";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:48"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:143,144,145,146,147,148,149,150,151,152";
 	/* <S1>/Delay4 */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:49"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:157,158,159,160,161,162,163,164,165,166";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:49"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:157,158,159,160,161,162,163,164,165,166";
 	/* <S1>/Detect Rise
 Positive */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:43"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:85,86,87,88,89,90,91";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:43"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:85,86,87,88,89,90,91";
 	/* <S1>/Switch */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:44"] = "alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd:138,139";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:44"] = "uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd:138,139";
 	/* <S2>/Delay Input1 */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:43:2"] = "alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:43:2"] = "uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S2>/FixPt
 Relational
 Operator */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:43:3"] = "alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd:62,63";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:43:3"] = "uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd:62,63";
 	/* <S2>/Positive */
-	this.urlHashMap["uz_typeconv_27En18_to27En15:43:4"] = "alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd:45,46";
+	this.urlHashMap["uz_typeconv_27En18_to27En15:43:4"] = "uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd:45,46";
 	/* <S3>/Compare */
 	this.urlHashMap["uz_typeconv_27En18_to27En15:43:4:2"] = "msg=rtwMsg_notTraceable&block=uz_typeconv_27En18_to27En15:43:4:2";
 	/* <S3>/Constant */
@@ -37,8 +37,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap = new Array();
 	this.rtwnameHashMap["<Root>"] = {sid: "uz_typeconv_27En18_to27En15"};
 	this.sidHashMap["uz_typeconv_27En18_to27En15"] = {rtwname: "<Root>"};
-	this.rtwnameHashMap["<S1>/27En18"] = {sid: "uz_typeconv_27En18_to27En15:8"};
-	this.sidHashMap["uz_typeconv_27En18_to27En15:8"] = {rtwname: "<S1>/27En18"};
+	this.rtwnameHashMap["<S1>/sfix27En18"] = {sid: "uz_typeconv_27En18_to27En15:8"};
+	this.sidHashMap["uz_typeconv_27En18_to27En15:8"] = {rtwname: "<S1>/sfix27En18"};
 	this.rtwnameHashMap["<S1>/trigger"] = {sid: "uz_typeconv_27En18_to27En15:41"};
 	this.sidHashMap["uz_typeconv_27En18_to27En15:41"] = {rtwname: "<S1>/trigger"};
 	this.rtwnameHashMap["<S1>/Data Type Conversion"] = {sid: "uz_typeconv_27En18_to27En15:30"};
@@ -57,8 +57,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["uz_typeconv_27En18_to27En15:43"] = {rtwname: "<S1>/Detect Rise Positive"};
 	this.rtwnameHashMap["<S1>/Switch"] = {sid: "uz_typeconv_27En18_to27En15:44"};
 	this.sidHashMap["uz_typeconv_27En18_to27En15:44"] = {rtwname: "<S1>/Switch"};
-	this.rtwnameHashMap["<S1>/27En15"] = {sid: "uz_typeconv_27En18_to27En15:10"};
-	this.sidHashMap["uz_typeconv_27En18_to27En15:10"] = {rtwname: "<S1>/27En15"};
+	this.rtwnameHashMap["<S1>/sfix27En15"] = {sid: "uz_typeconv_27En18_to27En15:10"};
+	this.sidHashMap["uz_typeconv_27En18_to27En15:10"] = {rtwname: "<S1>/sfix27En15"};
 	this.rtwnameHashMap["<S1>/done"] = {sid: "uz_typeconv_27En18_to27En15:42"};
 	this.sidHashMap["uz_typeconv_27En18_to27En15:42"] = {rtwname: "<S1>/done"};
 	this.rtwnameHashMap["<S2>/U"] = {sid: "uz_typeconv_27En18_to27En15:43:1"};

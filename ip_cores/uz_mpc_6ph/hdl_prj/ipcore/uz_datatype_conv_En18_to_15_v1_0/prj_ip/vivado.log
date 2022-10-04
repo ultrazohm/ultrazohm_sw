@@ -1,11 +1,14 @@
-Task "Vivado IP Packager" successful.
-Generated logfile: 
-
-****** Vivado v2020.1.1 (64-bit)
-  **** SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
-  **** IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
-
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Tue Oct  4 13:10:02 2022
+# Process ID: 25032
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/prj_ip/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
 Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/prj_ip'
@@ -31,5 +34,3 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_datatype_conv_En18_to_15_dut.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_datatype_conv_En18_to_15.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_datatype_conv_En18_to_15.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 INFO: [Common 17-206] Exiting Vivado at Tue Oct  4 13:10:12 2022...
-
-Elapsed time is 11.387 seconds.

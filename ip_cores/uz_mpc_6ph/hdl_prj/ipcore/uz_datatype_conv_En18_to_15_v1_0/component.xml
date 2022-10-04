@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>ip</spirit:library>
-  <spirit:name>27En18_to_27En15</spirit:name>
+  <spirit:name>uz_datatype_conv_En18_to_15</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -57,14 +57,14 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>VHDL</spirit:language>
-        <spirit:modelName>alpha27En18_to_27En15</spirit:modelName>
+        <spirit:modelName>uz_datatype_conv_En18_to_15</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fe454cc4</spirit:value>
+            <spirit:value>84410d6d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -73,14 +73,14 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>VHDL</spirit:language>
-        <spirit:modelName>alpha27En18_to_27En15</spirit:modelName>
+        <spirit:modelName>uz_datatype_conv_En18_to_15</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fe454cc4</spirit:value>
+            <spirit:value>84410d6d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -143,7 +143,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>alpha27En18</spirit:name>
+        <spirit:name>sfix27En18</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -173,7 +173,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>alpha27En15</spirit:name>
+        <spirit:name>sfix27En15</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -208,51 +208,51 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_reset_sync.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_dut.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_dut.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_c461a9d9</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_45925cff</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_reset_sync.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_reset_sync.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_src_Detect_Rise_Positive.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_src_Detect_Rise_Positive.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_src_27_En18_to_27_En15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_src_uz_datatype_conv_En18_to_15.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15_dut.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15_dut.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/alpha27En18_to_27En15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_datatype_conv_En18_to_15.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -260,7 +260,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/27En18_to_27En15_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/uz_datatype_conv_En18_to_15_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_f64a5dae</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -276,7 +276,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_miscfiles_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>include/27En18_to_27En15_addr.h</spirit:name>
+        <spirit:name>include/uz_datatype_conv_En18_to_15_addr.h</spirit:name>
         <spirit:fileType>cSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
@@ -285,7 +285,7 @@
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">_7En18_to_27En15_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_datatype_conv_En18_to_15_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -300,17 +300,17 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/HDL Coder Generated IP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>27En18_to_27En15</xilinx:displayName>
+      <xilinx:displayName>uz_datatype_conv_En18_to_15</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112710574</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-10-04T10:54:39Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112710589</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-10-04T11:10:12Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="935bed94"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b12768f2"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="e5e1c91d"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="bc9e1eac"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c24f1667"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="eed533bf"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="b29c0def"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

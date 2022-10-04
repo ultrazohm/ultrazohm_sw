@@ -58,7 +58,6 @@ annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optim
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay34', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay35', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay35', 1, 1, '');
-annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay36', 0, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay36', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay36', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay37', 1, 1, '');
@@ -74,7 +73,6 @@ annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimiza
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay41', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay41', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay42', 1, 1, '');
-annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay42', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay42', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay43', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay43', 1, 1, '');
@@ -82,6 +80,7 @@ annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optim
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay44', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay45', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay45', 1, 1, '');
+annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay46', 0, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay46', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay46', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay47', 1, 1, '');
@@ -133,6 +132,7 @@ annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimiza
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay68', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay68', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay69', 1, 1, '');
+annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay69', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay69', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay7', 1, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay7', 1, 1, '');
@@ -155,7 +155,7 @@ annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optim
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay35_ctrl_delay', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay50_ctrl_delay', 1, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Delay73_ctrl_delay', 1, 1, '');
-annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Product4', 0, 1, '');
+annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/Product', 0, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/FiniteControlSetSwitchingTable/FiniteControlSetSwitchingTable', 0, 1, '');
 annotate_port('gm_uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/FiniteControlSetSwitchingTable/FiniteControlSetSwitchingTable', 0, 1, '');
 annotate_port('uz_mpc_cost_and_optim_state_machine/uz_6ph_mpc_costs_and_optimization/FiniteControlSetSwitchingTable', 0, 1, '');

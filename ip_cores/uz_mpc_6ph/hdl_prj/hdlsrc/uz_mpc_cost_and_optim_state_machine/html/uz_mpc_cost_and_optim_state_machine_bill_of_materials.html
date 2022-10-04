@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_mpc_cost_and_optim_state_machine
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Multiply_1_4');hdlTableShrink(this, 'Multiply_1_5');hdlTableShrink(this, 'Multiply_1_6');hdlTableShrink(this, 'Multiply_1_7');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Subtractor_1_2');hdlTableShrink(this, 'Subtractor_1_3');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_5');hdlTableShrink(this, 'Register_1_6');hdlTableShrink(this, 'Register_1_7');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Multiplexer_1_5');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Multiply_1_4');hdlTableShrink(this, 'Multiply_1_5');hdlTableShrink(this, 'Multiply_1_6');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Subtractor_1_2');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_5');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Multiplexer_1_5');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1855
+1943
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-379
+397
 </td>
 
 </tr>
@@ -252,7 +252,7 @@ Multipliers (20)
 [+]
 </span>
 <span style="font-family:monospace">
-27x27-bit Multiply 							: 2
+27x27-bit Multiply 							: 4
 </span>
 <span name="Multiply_1_1" id="Multiply_1_1">
 <ul>
@@ -268,18 +268,6 @@ Product5
 </a>
 
 </li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_2')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-18x18-bit Multiply 							: 3
-</span>
-<span name="Multiply_1_2" id="Multiply_1_2">
-<ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1321')" name="code2model" class="code2model">
 Product6
@@ -292,6 +280,18 @@ Product7
 </a>
 
 </li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_2" id="Multiply_1_2">
+<ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1519')" name="code2model" class="code2model">
 Product14
@@ -306,7 +306,7 @@ Product14
 [+]
 </span>
 <span style="font-family:monospace">
-28x28-bit Multiply 							: 2
+32x32-bit Multiply 							: 4
 </span>
 <span name="Multiply_1_3" id="Multiply_1_3">
 <ul>
@@ -319,6 +319,18 @@ Product
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1285')" name="code2model" class="code2model">
 Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1289')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1293')" name="code2model" class="code2model">
+Product3
 </a>
 
 </li>
@@ -366,33 +378,9 @@ Product12
 [+]
 </span>
 <span style="font-family:monospace">
-19x19-bit Multiply 							: 2
-</span>
-<span name="Multiply_1_5" id="Multiply_1_5">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1289')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1293')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_6')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
 9x9-bit Multiply 							: 6
 </span>
-<span name="Multiply_1_6" id="Multiply_1_6">
+<span name="Multiply_1_5" id="Multiply_1_5">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1356')" name="code2model" class="code2model">
@@ -404,13 +392,13 @@ Product8
 </ul>
 
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_7')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_6')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 18x16-bit Multiply 							: 1
 </span>
-<span name="Multiply_1_7" id="Multiply_1_7">
+<span name="Multiply_1_6" id="Multiply_1_6">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1415')" name="code2model" class="code2model">
@@ -435,7 +423,7 @@ Adders/Subtractors (22)
 [+]
 </span>
 <span style="font-family:monospace">
-28x28-bit Subtractor 							: 2
+32x32-bit Subtractor 							: 4
 </span>
 <span name="Subtractor_1_1" id="Subtractor_1_1">
 <ul>
@@ -451,18 +439,6 @@ Add1
 </a>
 
 </li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_2')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 2
-</span>
-<span name="Subtractor_1_2" id="Subtractor_1_2">
-<ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1286')" name="code2model" class="code2model">
 Add2
@@ -479,13 +455,13 @@ Add3
 </ul>
 
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_3')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 9x9-bit Subtractor 							: 6
 </span>
-<span name="Subtractor_1_3" id="Subtractor_1_3">
+<span name="Subtractor_1_2" id="Subtractor_1_2">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1355')" name="code2model" class="code2model">
@@ -540,13 +516,37 @@ Delay1
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 8
+32-bit Register 							: 12
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1254')" name="code2model" class="code2model">
 Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2074')" name="code2model" class="code2model">
+Delay46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2075')" name="code2model" class="code2model">
+Delay47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2076')" name="code2model" class="code2model">
+Delay48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2077')" name="code2model" class="code2model">
+Delay49
 </a>
 
 </li>
@@ -570,10 +570,10 @@ Delay4
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit Register 							: 32
+18-bit Register 							: 26
 </span>
 <span name="Register_1_3" id="Register_1_3">
-<ul class="SystemdefinedCollapse" id="a06194ce-1dbf-4360-8006-c8a8916709e8" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="7926ec6e-fe24-43ec-a323-5f8e09aefbc5" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1373')" name="code2model" class="code2model">
 Delay26
@@ -589,42 +589,6 @@ Delay25
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2092')" name="code2model" class="code2model">
 Delay64
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1206')" name="code2model" class="code2model">
-Delay7
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1207')" name="code2model" class="code2model">
-Delay8
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2058')" name="code2model" class="code2model">
-Delay40
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1208')" name="code2model" class="code2model">
-Delay9
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1209')" name="code2model" class="code2model">
-Delay10
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2059')" name="code2model" class="code2model">
-Delay41
 </a>
 
 </li>
@@ -768,7 +732,7 @@ Delay68
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'a06194ce-1dbf-4360-8006-c8a8916709e8')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '7926ec6e-fe24-43ec-a323-5f8e09aefbc5')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -777,10 +741,10 @@ Delay68
 [+]
 </span>
 <span style="font-family:monospace">
-27-bit Register 							: 26
+27-bit Register 							: 32
 </span>
 <span name="Register_1_4" id="Register_1_4">
-<ul class="SystemdefinedCollapse" id="781e2a3c-544d-4c33-8569-a6b88a30599f" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="a21831df-df21-4933-9ebe-a12fce79e956" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1202')" name="code2model" class="code2model">
 Delay2
@@ -830,8 +794,44 @@ Delay43
 
 </li>
 <li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1206')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1207')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2058')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2072')" name="code2model" class="code2model">
 Delay44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1208')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1209')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2059')" name="code2model" class="code2model">
+Delay41
 </a>
 
 </li>
@@ -939,7 +939,7 @@ Delay94
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '781e2a3c-544d-4c33-8569-a6b88a30599f')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a21831df-df21-4933-9ebe-a12fce79e956')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -948,57 +948,9 @@ Delay94
 [+]
 </span>
 <span style="font-family:monospace">
-28-bit Register 							: 2
-</span>
-<span name="Register_1_5" id="Register_1_5">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2074')" name="code2model" class="code2model">
-Delay46
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2075')" name="code2model" class="code2model">
-Delay47
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_6')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19-bit Register 							: 2
-</span>
-<span name="Register_1_6" id="Register_1_6">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2076')" name="code2model" class="code2model">
-Delay48
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2077')" name="code2model" class="code2model">
-Delay49
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_7')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
 16-bit Register 							: 7
 </span>
-<span name="Register_1_7" id="Register_1_7">
+<span name="Register_1_5" id="Register_1_5">
 <ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:2086')" name="code2model" class="code2model">
@@ -1089,25 +1041,13 @@ Saturation
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit 2-to-1 Multiplexer 							: 12
+18-bit 2-to-1 Multiplexer 							: 10
 </span>
 <span name="Multiplexer_1_4" id="Multiplexer_1_4">
-<ul class="SystemdefinedCollapse" id="8e976950-ec2f-4474-9b3c-002abf88b1e4" dataCollapse="off">
+<ul>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1371')" name="code2model" class="code2model">
 Switch15
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1212')" name="code2model" class="code2model">
-Switch3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1213')" name="code2model" class="code2model">
-Switch4
 </a>
 
 </li>
@@ -1167,16 +1107,13 @@ Switch19
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '8e976950-ec2f-4474-9b3c-002abf88b1e4')" onmouseover="this.style.cursor = 'pointer'">
-&#8743; Less
-</span>
-<br />
+
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_5')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-27-bit 2-to-1 Multiplexer 							: 7
+27-bit 2-to-1 Multiplexer 							: 9
 </span>
 <span name="Multiplexer_1_5" id="Multiplexer_1_5">
 <ul>
@@ -1189,6 +1126,18 @@ Switch1
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1211')" name="code2model" class="code2model">
 Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1212')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1213')" name="code2model" class="code2model">
+Switch4
 </a>
 
 </li>
@@ -1221,16 +1170,16 @@ Switch14
 
 </span>
 <br /><h5>
-Number of I/O Bits (379)
+Number of I/O Bits (397)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 306
+Number of Input Bits: 324
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="8660ef90-fdc9-41bb-9200-cf76bb938085" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="ac0f1866-545a-4152-a88f-69e83cd82e4f" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -1280,13 +1229,13 @@ iq_pred_pu
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1200')" name="code2model" class="code2model">
 ix_pred_pu
 </a>
-: 18 bits
+: 27 bits
 </li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1201')" name="code2model" class="code2model">
 iy_pred_pu
 </a>
-: 18 bits
+: 27 bits
 </li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_mpc_cost_and_optim_state_machine:1214')" name="code2model" class="code2model">
@@ -1338,7 +1287,7 @@ trigger_prediciton_done
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '8660ef90-fdc9-41bb-9200-cf76bb938085')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ac0f1866-545a-4152-a88f-69e83cd82e4f')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -1350,7 +1299,7 @@ trigger_prediciton_done
 Number of Output Bits: 73
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="e0255cb1-e420-4db0-a4e7-1a9abb0a959d" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="c4a891bb-877b-47fb-b116-f5156e140ace" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -1446,7 +1395,7 @@ costs
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'e0255cb1-e420-4db0-a4e7-1a9abb0a959d')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'c4a891bb-877b-47fb-b116-f5156e140ace')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

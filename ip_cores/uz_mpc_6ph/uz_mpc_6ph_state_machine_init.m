@@ -50,7 +50,8 @@ Ld_minus_Lq_over_LB = (Ld-Lq)/LB;
 psi_pm_over_psiB = psi_pm/psiB;
 
 % fixed-point data types 
-fixdt_type_dq_currents = fixdt(1,27,16);
+% fixdt_type_dq_currents = fixdt(1,27,16);
+fixdt_type_dq_currents = fixdt(1,27,24);
 fixdt_type_xy_currents = fixdt(1,18,11);
 fixdt_type_dqxy_ref_currents = fixdt(1,18,15);
 fixdt_type_dqxy_voltages = fixdt(1,27,24);

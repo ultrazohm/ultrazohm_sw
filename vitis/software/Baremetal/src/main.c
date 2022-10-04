@@ -169,7 +169,7 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            initialization_chain = init_foc;
             break;
         case init_foc:
         	FOC_instance = uz_FOC_init(config_FOC);

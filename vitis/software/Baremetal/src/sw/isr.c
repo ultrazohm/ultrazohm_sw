@@ -55,7 +55,7 @@ struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_ref_Volts ={0};
 struct uz_DutyCycle_t output = {0};
 struct uz_3ph_abc_t uvw_ref ={0};
-float theta_offset = -0.827f;
+float theta_offset = -0.02f;
 float V_dc_volts = 48.0f;
 float omega_m_rad_per_sec = 0.0f;
 float omega_el_rad_per_sec = 0.0f;

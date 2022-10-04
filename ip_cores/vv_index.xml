@@ -2029,94 +2029,6 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:delay_com_ip:1.0">
-		</VLNV>
-		<DisplayName value="delay_com_ip">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112651734">
-		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/delay_com_ip_v1_0/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
-		<VLNV value="xilinx.com:ip:mpc_ip:1.0">
-		</VLNV>
-		<DisplayName value="mpc_ip">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112658974">
-		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/mpc_ip_v1_0/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
 		<VLNV value="xilinx.com:ip:uz_6ph_cost_ip:1.0">
 		</VLNV>
 		<DisplayName value="uz_6ph_cost_ip">
@@ -2125,7 +2037,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112703588">
+		<CoreRevision value="2112710483">
 		</CoreRevision>
 		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_cost_ip_v1_0/component.xml">
 		</ComponentPath>
@@ -2161,17 +2073,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_6ph_dc_ip:1.0">
+		<VLNV value="xilinx.com:ip:uz_6ph_delay_ip:1.0">
 		</VLNV>
-		<DisplayName value="uz_6ph_dc_ip">
+		<DisplayName value="uz_6ph_delay_ip">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112703581">
+		<CoreRevision value="2112710478">
 		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_dc_ip_v1_0/component.xml">
+		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_delay_ip_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="kintexu">
@@ -2205,17 +2117,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_6ph_mp_ip:1.0">
+		<VLNV value="xilinx.com:ip:uz_6ph_predict_ip:1.0">
 		</VLNV>
-		<DisplayName value="uz_6ph_mp_ip">
+		<DisplayName value="uz_6ph_predict_ip">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112703585">
+		<CoreRevision value="2112710480">
 		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_mp_ip_v1_0/component.xml">
+		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_predict_ip_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="kintexu">
@@ -2249,17 +2161,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_6ph_pu_ip:1.0">
+		<VLNV value="xilinx.com:ip:uz_6_ph_voltages_ip:1.0">
 		</VLNV>
-		<DisplayName value="uz_6ph_pu_ip">
+		<DisplayName value="uz_6_ph_voltages_ip">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112650012">
+		<CoreRevision value="2112710476">
 		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6ph_pu_ip_v1_0/component.xml">
+		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6_ph_voltages_ip_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="kintexu">
@@ -2293,17 +2205,57 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_6_ph_pu_ip:1.0">
+		<VLNV value="xilinx.com:ip:uz_datatype_conv_En18_to_15:1.0">
 		</VLNV>
-		<DisplayName value="uz_6_ph_pu_ip">
+		<DisplayName value="uz_datatype_conv_En18_to_15">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/uz_typeconv_27En18_to27En15_ip_core_report.html">
+		</ProductGuide>
+		<CoreRevision value="2112710589">
+		</CoreRevision>
+		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_datatype_conv_En18_to_15_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:uz_park_transform_ip:1.0">
+		</VLNV>
+		<DisplayName value="uz_park_transform_ip">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112703583">
+		<CoreRevision value="2112710472">
 		</CoreRevision>
-		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_6_ph_pu_ip_v1_0/component.xml">
+		<ComponentPath value="uz_mpc_6ph/hdl_prj/ipcore/uz_park_transform_ip_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="kintexu">

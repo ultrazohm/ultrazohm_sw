@@ -32,9 +32,6 @@ The following tutorial requires:
 - If the analog adapter card is used in a different slot, change the variables accordingly
 - The loopback PCB connected to the digital voltage card and the analog adapter card
 
-The Loopback PCB
-****************
-.. image:: ./img/PCB_Loopback.png
 
 UltraZohm Setup
 ***************

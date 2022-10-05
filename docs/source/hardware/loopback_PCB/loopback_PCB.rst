@@ -14,7 +14,7 @@ Designed by Nina Diringer (TH Nürnberg), 07/2022
 
 Revisions
 *********
-insert revisions here
+Rev01
 
 General description
 *******************
@@ -44,12 +44,12 @@ The PCB is structured by functional areas as shown in the figure on the right.
 Documentation
 -------------
 
-A ZIP file with complete documentation can be downloaded here *insert link* .
-
+A ZIP file with documentation can be downloaded :download:`here <docs.zip>`.
 It contains:
-  - DOC
-  - ASM
-  - BOM
+
+ * SCH
+ * ASM
+ * BOM
 
 
 

@@ -1,0 +1,16 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Thu May 12 15:51:26 2022
+# Process ID: 17604
+# Current directory: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent16728 C:\ultrazohm_sw\ip_cores\uz_axi_mytestIP\hdl_prj\ipcore\uz_axi_my_ip_v1_0\prj_ip\prj_ip.xpr
+# Log file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.xpr
+update_compile_order -fileset sources_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1

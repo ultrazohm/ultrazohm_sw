@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Thu May 12 15:53:12 2022
+# Process ID: 19648
+# Current directory: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.runs/synth_1
+# Command line: vivado.exe -log uz_axi_my_ip.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source uz_axi_my_ip.tcl
+# Log file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.runs/synth_1/uz_axi_my_ip.vds
+# Journal file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source uz_axi_my_ip.tcl -notrace

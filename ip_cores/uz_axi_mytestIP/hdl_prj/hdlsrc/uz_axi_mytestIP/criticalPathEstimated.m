@@ -1,0 +1,13 @@
+open_system('gm_uz_axi_mytestIP');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_axi_mytestIP/uz_axi_mytestIP/Delay1', 'user1');
+annotate_port('gm_uz_axi_mytestIP/uz_axi_mytestIP/Delay1', 0, 1, 'cp : 0.33 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_axi_mytestIP/uz_axi_mytestIP/Product', 'user1');
+annotate_port('gm_uz_axi_mytestIP/uz_axi_mytestIP/Product', 0, 1, 'cp : 5.235 ns');

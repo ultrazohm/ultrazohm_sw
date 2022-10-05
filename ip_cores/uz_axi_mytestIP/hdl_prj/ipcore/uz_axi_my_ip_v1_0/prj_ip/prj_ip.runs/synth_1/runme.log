@@ -1,0 +1,29 @@
+
+*** Running vivado
+    with args -log uz_axi_my_ip.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source uz_axi_my_ip.tcl
+
+
+
+****** Vivado v2020.1 (64-bit)
+  **** SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+  **** IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source uz_axi_my_ip.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.runs/synth_1'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+WARNING: [IP_Flow 19-4995] The host OS only allows 260 characters in a normal path. The IP cache path is more than 80 characters. If you experience issues with IP caching, please consider changing the IP cache to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. 
+Current IP cache path is c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.cache/ip 
+Command: synth_design -top uz_axi_my_ip -part xczu9eg-ffvb1156-1-e
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xczu9eg'
+WARNING: [Common 17-348] Failed to get the license for feature 'Synthesis' and/or device 'xczu9eg'. Explanation: Problem encountered while checking for license feature Synthesis license version 2020.05. Try setting the environment variable FLEXLM_DIAGNOSTICS=3 and re-running this software to get more information.
+Resolution: Check the status of your licenses in the Vivado License Manager. For debug help search Xilinx Support for "Licensing FAQ". 
+3 Infos, 3 Warnings, 0 Critical Warnings and 1 Errors encountered.
+synth_design failed
+ERROR: [Common 17-345] A valid license was not found for feature 'Synthesis' and/or device 'xczu9eg'. Please run the Vivado License Manager for assistance in determining
+which features and devices are licensed for your system.
+Resolution: Check the status of your licenses in the Vivado License Manager. For debug help search Xilinx Support for "Licensing FAQ". If you are using a license server, verify that the license server is up and running a version of the xilinx daemon that is compatible with the version of Xilinx software that you are using. Please note that Vivado 2017.3 and later requires upgrading your license server tools to the Flex 11.14.1 tools. Please confirm with your license admin that the correct version of the license server tools are installed.
+INFO: [Common 17-206] Exiting Vivado at Thu May 12 15:53:19 2022...

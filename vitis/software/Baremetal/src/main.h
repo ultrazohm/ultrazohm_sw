@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

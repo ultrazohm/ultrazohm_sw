@@ -18,6 +18,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include <math.h>
+#include <stdbool.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
@@ -31,6 +32,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,6 +42,13 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+uz_3ph_abc_t three_phase_output = {0};
+bool is_three_phase_active = false;
+float amplitude = 1.0f;
+float frequency = 1.0f;
+float offset = 0.5f;
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -58,10 +67,20 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	if (is_three_phase_active) {
+    		three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
+    		Global_Data.rasv.halfBridge1DutyCycle = three_phase_output.a;
+    		Global_Data.rasv.halfBridge2DutyCycle = three_phase_output.b;
+    		Global_Data.rasv.halfBridge3DutyCycle = three_phase_output.c;
+    	}
+    } else if (current_state!=control_state || !is_three_phase_active) {
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    // Set duty cycles for three-level modulator
+        // Start: Control algorithm - only if ultrazohm is in control state
+uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+// Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);

@@ -1,0 +1,28 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Thu May 12 15:51:26 2022
+# Process ID: 17604
+# Current directory: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent16728 C:\ultrazohm_sw\ip_cores\uz_axi_mytestIP\hdl_prj\ipcore\uz_axi_my_ip_v1_0\prj_ip\prj_ip.xpr
+# Log file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/vivado.log
+# Journal file: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.xpr
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] Default IP Output Path : Could not find the directory 'C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.srcs/sources_1'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+open_project: Time (s): cpu = 00:00:19 ; elapsed = 00:00:10 . Memory (MB): peak = 1014.457 ; gain = 0.000
+update_compile_order -fileset sources_1
+exit
+INFO: [Common 17-206] Exiting Vivado at Thu May 12 15:58:43 2022...
+.
+Run output will be captured here: C:/ultrazohm_sw/ip_cores/uz_axi_mytestIP/hdl_prj/ipcore/uz_axi_my_ip_v1_0/prj_ip/prj_ip.runs/synth_1/runme.log
+exit
+INFO: [Common 17-206] Exiting Vivado at Thu May 12 15:58:46 2022...

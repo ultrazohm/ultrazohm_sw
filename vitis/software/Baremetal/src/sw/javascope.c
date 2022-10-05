@@ -36,7 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern uz_3ph_abc_t three_phase_output;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -62,9 +62,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+    js_ch_observable[JSO_ua]            = &three_phase_output.a;
+    js_ch_observable[JSO_ub]            = &three_phase_output.b;
+    js_ch_observable[JSO_uc]            = &three_phase_output.c;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

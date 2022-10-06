@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a7ba3806</spirit:value>
+            <spirit:value>00329c25</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a7ba3806</spirit:value>
+            <spirit:value>00329c25</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -933,7 +933,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_prediction_and_cost_function_6phase.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_bc33e068</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_e8a3458d</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1111,14 +1111,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_prediction_and_cost_function_6phase</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112704853</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-09-30T11:33:27Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112713247</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-10-06T07:27:42Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="743ac20f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9e2dcfe7"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="6bcd4391"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="9d34fdda"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="148609a7"/>
     </xilinx:packagingInfo>

@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 13:33:52 on 30/09/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:28:05 on 06/10/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_Prediction_and_cost_function_6phase\hdlworkflow.m'
 %     Overwrite : true
@@ -113,46 +113,6 @@ hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_f
 % Set Inport HDL parameters
 hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iy_ref_AXI', 'IOInterface', 'AXI4-Lite');
 hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iy_ref_AXI', 'IOInterfaceMapping', 'x"130"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/use_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/use_AXI', 'IOInterfaceMapping', 'x"134"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/id_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/id_k_1_AXI', 'IOInterfaceMapping', 'x"138"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iq_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iq_k_1_AXI', 'IOInterfaceMapping', 'x"13C"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/ix_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/ix_k_1_AXI', 'IOInterfaceMapping', 'x"140"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iy_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/iy_k_1_AXI', 'IOInterfaceMapping', 'x"144"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/omega_m_measured_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/omega_m_measured_AXI', 'IOInterfaceMapping', 'x"148"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/d_voltage_per_switching_state_AXI_61_64', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/d_voltage_per_switching_state_AXI_61_64', 'IOInterfaceMapping', 'x"14C"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/q_voltage_per_switching_state_AXI_61_64', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/q_voltage_per_switching_state_AXI_61_64', 'IOInterfaceMapping', 'x"150"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/x_voltage_per_switching_state_AXI_61_64', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/x_voltage_per_switching_state_AXI_61_64', 'IOInterfaceMapping', 'x"154"');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/y_volatge_per_switching_state_AXI_61_64', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/y_volatge_per_switching_state_AXI_61_64', 'IOInterfaceMapping', 'x"158"');
 
 % Set Inport HDL parameters
 hdlset_param('parallel_prediction_and_cost_function_6phase/Prediction_and_cost_function/valid_in', 'IOInterface', 'External Port');

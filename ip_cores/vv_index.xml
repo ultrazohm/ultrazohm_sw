@@ -933,6 +933,118 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:parallel_delay_compensation_6Phase:1.0">
+		</VLNV>
+		<DisplayName value="parallel_delay_compensation_6Phase">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112712110">
+		</CoreRevision>
+		<ComponentPath value="parallel_delay_compensation_6phase/ipcore/parallel_delay_compensation_6Phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_min_cost_function_vopt_6Phase:1.0">
+		</VLNV>
+		<DisplayName value="parallel_min_cost_function_vopt_6Phase">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112712078">
+		</CoreRevision>
+		<ComponentPath value="parallel_min_cost_function_vopt_6phase/ipcore/parallel_min_cost_function_vopt_6Phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_phase_voltages_per_switching_state:1.0">
+		</VLNV>
+		<DisplayName value="parallel_phase_voltages_per_switching_state">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112712175">
+		</CoreRevision>
+		<ComponentPath value="parallel_phase_voltages_6Phase/ipcore/parallel_phase_voltages_per_switching_state_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_prediction_and_cost_function_6phase:1.0">
+		</VLNV>
+		<DisplayName value="parallel_prediction_and_cost_function_6phase">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112713247">
+		</CoreRevision>
+		<ComponentPath value="parallel_Prediction_and_cost_function_6phase/ipcore/parallel_prediction_and_cost_function_6phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:Phase_voltages_per_switching_state_MPC_6Phase:1.0">
 		</VLNV>
 		<DisplayName value="Phase_voltages_per_switching_state_MPC_6Phase">

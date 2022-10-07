@@ -997,7 +997,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112712175">
+		<CoreRevision value="2112713536">
 		</CoreRevision>
 		<ComponentPath value="parallel_phase_voltages_6Phase/ipcore/parallel_phase_voltages_per_switching_state_v1_0/component.xml">
 		</ComponentPath>

@@ -147,7 +147,7 @@ xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:xlslice:1.0\
-xilinx.com:ip:PWM_and_SS_control_V4_ip:4.0\
+xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1\
 user.org:ip:uz_interlockDeadtime2L:1.0\
 mwn.de:ip:PWM_SS_3L_ip:1.4\
 "
@@ -424,16 +424,16 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   create_bd_pin -dir I -type rst RESETN
 
   # Create instance: PWM_and_SS_control_V_0, and set properties
-  set PWM_and_SS_control_V_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.0 PWM_and_SS_control_V_0 ]
+  set PWM_and_SS_control_V_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_0 ]
 
   # Create instance: PWM_and_SS_control_V_1, and set properties
-  set PWM_and_SS_control_V_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.0 PWM_and_SS_control_V_1 ]
+  set PWM_and_SS_control_V_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_1 ]
 
   # Create instance: PWM_and_SS_control_V_2, and set properties
-  set PWM_and_SS_control_V_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.0 PWM_and_SS_control_V_2 ]
+  set PWM_and_SS_control_V_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_2 ]
 
   # Create instance: PWM_and_SS_control_V_3, and set properties
-  set PWM_and_SS_control_V_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.0 PWM_and_SS_control_V_3 ]
+  set PWM_and_SS_control_V_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_3 ]
 
   # Create instance: util_vector_logic_0, and set properties
   set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
@@ -3793,7 +3793,6 @@ proc create_root_design { parentCell } {
   # Restore current instance
   current_bd_instance $oldCurInst
 
-  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -3805,4 +3804,6 @@ proc create_root_design { parentCell } {
 
 create_root_design ""
 
+
+common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

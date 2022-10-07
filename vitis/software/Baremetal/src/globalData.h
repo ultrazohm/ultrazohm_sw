@@ -98,6 +98,7 @@ typedef struct _actualValues_ {
 	float flg_falling_edge;
 	float precontrol_counter_on;
 	float precontrol_counter_off;
+	float add_on_voltage;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 

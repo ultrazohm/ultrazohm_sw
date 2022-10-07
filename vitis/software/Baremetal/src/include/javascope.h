@@ -160,11 +160,11 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	i_amp,
-	Counter_Precontrol,
+	Counter_Precontrol_on,
+	Counter_Precontrol_off,
+	voltage_offset_on,
 	Kp_on,
 	Ki_on,
-	Kp_off,
-	Ki_off,
 	SND_FLD_ENDMARKER
 
 

@@ -198,23 +198,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_2):
 			data->av.precontrol_counter_on = value;
-			data->av.precontrol_counter_off = value;
+			//data->av.precontrol_counter_off = value;
 			break;
 
 		case (Set_Send_Field_3):
-			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
+			//uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
+			data->av.precontrol_counter_off = value;
 			break;
 
 		case (Set_Send_Field_4):
-			uz_PI_Controller_set_Ki(data->objects.PI_cntr1_on, value);
+			//uz_PI_Controller_set_Ki(data->objects.PI_cntr1_on, value);
+			data->av.add_on_voltage = value;
 			break;
 
 		case (Set_Send_Field_5):
-			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_off, value);
+			uz_PI_Controller_set_Kp(data->objects.PI_cntr1_on, value);
 			break;
 
 		case (Set_Send_Field_6):
-			uz_PI_Controller_set_Ki(data->objects.PI_cntr1_off, value);
+			uz_PI_Controller_set_Ki(data->objects.PI_cntr1_on, value);
 			break;
 
 		case (My_Button_1):

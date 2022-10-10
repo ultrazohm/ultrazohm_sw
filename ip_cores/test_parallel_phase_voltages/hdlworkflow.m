@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:14:56 on 07/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 13:28:15 on 10/10/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\test_parallel_phase_voltages\hdlworkflow.m'
 %     Overwrite : true
@@ -39,7 +39,7 @@ hdlset_param('parallel_phase_voltages_per_switching_state_6', 'TargetPlatform', 
 hdlset_param('parallel_phase_voltages_per_switching_state_6', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_phase_voltages_per_switching_state_6/Phase_voltages_per_switching_state', 'IPCoreName', 'tets_parallel_phase_voltages');
+hdlset_param('parallel_phase_voltages_per_switching_state_6/Phase_voltages_per_switching_state', 'IPCoreName', 'test2_parallel_phase_voltages');
 hdlset_param('parallel_phase_voltages_per_switching_state_6/Phase_voltages_per_switching_state', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters

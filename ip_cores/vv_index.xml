@@ -1629,17 +1629,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:test_parallel_delay_compensation_6Phase:1.0">
+		<VLNV value="xilinx.com:ip:test2_parallel_delay_compensation_6Phase:1.0">
 		</VLNV>
-		<DisplayName value="test_parallel_delay_compensation_6Phase">
+		<DisplayName value="test2_parallel_delay_compensation_6Phase">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112714911">
+		<CoreRevision value="2112719170">
 		</CoreRevision>
-		<ComponentPath value="test_delay_compensation/ipcore/test_parallel_delay_compensation_6Phase_v1_0/component.xml">
+		<ComponentPath value="test_delay_compensation/ipcore/test2_parallel_delay_compensation_6Phase_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

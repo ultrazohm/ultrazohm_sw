@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 14:54:00 on 07/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 12:10:58 on 10/10/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\test_delay_compensation\hdlworkflow.m'
 %     Overwrite : true
@@ -39,7 +39,7 @@ hdlset_param('parallel_delay_compensation_6phase', 'TargetPlatform', 'Generic Xi
 hdlset_param('parallel_delay_compensation_6phase', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_delay_compensation_6phase/HDL_DUT', 'IPCoreName', 'test_parallel_delay_compensation_6Phase');
+hdlset_param('parallel_delay_compensation_6phase/HDL_DUT', 'IPCoreName', 'test2_parallel_delay_compensation_6Phase');
 hdlset_param('parallel_delay_compensation_6phase/HDL_DUT', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters

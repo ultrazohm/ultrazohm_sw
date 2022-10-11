@@ -68,10 +68,15 @@ Output struct
 .. doxygenstruct:: ExtY_Resonant_Controller_T
   :members:
 
+.. doxygentypedef:: real_T
+
 Description
 ^^^^^^^^^^^
 
 Struct containing the output of the resonant controller.
+
+ 
+
 
 Step function
 -------------

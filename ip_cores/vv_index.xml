@@ -1657,17 +1657,73 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:tets_parallel_phase_voltages:1.0">
+		<VLNV value="xilinx.com:ip:test_parallel_min_cost_function:1.0">
 		</VLNV>
-		<DisplayName value="tets_parallel_phase_voltages">
+		<DisplayName value="test_parallel_min_cost_function">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112714732">
+		<CoreRevision value="2112719508">
 		</CoreRevision>
-		<ComponentPath value="test_parallel_phase_voltages/ipcore/tets_parallel_phase_voltages_v1_0/component.xml">
+		<ComponentPath value="test_min_cost_function/ipcore/test_parallel_min_cost_function_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:test2_parallel_phase_voltages:1.0">
+		</VLNV>
+		<DisplayName value="test2_parallel_phase_voltages">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112719247">
+		</CoreRevision>
+		<ComponentPath value="test_parallel_phase_voltages/ipcore/test2_parallel_phase_voltages_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:test_parallel_prediction_and_cost_function:1.0">
+		</VLNV>
+		<DisplayName value="test_parallel_prediction_and_cost_function">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112720714">
+		</CoreRevision>
+		<ComponentPath value="test_prediction_and_cost_function/ipcore/test_parallel_prediction_and_cost_function_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

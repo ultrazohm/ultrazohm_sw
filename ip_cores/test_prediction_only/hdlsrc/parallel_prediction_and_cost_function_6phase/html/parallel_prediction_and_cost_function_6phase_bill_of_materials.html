@@ -1,0 +1,4221 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for parallel_prediction_and_cost_function_6phase
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_9');hdlTableShrink(this, 'Multiplexer_1_7');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for parallel_prediction_and_cost_function_6phase
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+193
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+4395
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+25277
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+378996
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+38086
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+3112
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+549
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:30')" name="code2model" class="code2model">
+Prediction_and_cost_function
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (683)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 78
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Adder 							: 139
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 69
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+18x1-bit Adder 							: 64
+</span>
+<br /><span style="font-family:monospace">
+25-bit Subtractor 							: 65
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 133
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 64
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 64
+</span>
+<br /><h5>
+Registers (4250)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 1518
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:321')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:360')" name="code2model" class="code2model">
+Delay57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:361')" name="code2model" class="code2model">
+Delay58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:364')" name="code2model" class="code2model">
+Delay60
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 141
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="80815817-4bb9-4fcf-9558-65f45698f5de" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:410')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:362')" name="code2model" class="code2model">
+Delay59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:252')" name="code2model" class="code2model">
+Delay135
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:251')" name="code2model" class="code2model">
+Delay134
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:250')" name="code2model" class="code2model">
+Delay133
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:249')" name="code2model" class="code2model">
+Delay132
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:248')" name="code2model" class="code2model">
+Delay131
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:247')" name="code2model" class="code2model">
+Delay130
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:245')" name="code2model" class="code2model">
+Delay129
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:244')" name="code2model" class="code2model">
+Delay128
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:243')" name="code2model" class="code2model">
+Delay127
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:242')" name="code2model" class="code2model">
+Delay126
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:241')" name="code2model" class="code2model">
+Delay125
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:240')" name="code2model" class="code2model">
+Delay124
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:239')" name="code2model" class="code2model">
+Delay123
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:238')" name="code2model" class="code2model">
+Delay122
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:237')" name="code2model" class="code2model">
+Delay121
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:236')" name="code2model" class="code2model">
+Delay120
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:234')" name="code2model" class="code2model">
+Delay119
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:233')" name="code2model" class="code2model">
+Delay118
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:232')" name="code2model" class="code2model">
+Delay117
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:231')" name="code2model" class="code2model">
+Delay116
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:230')" name="code2model" class="code2model">
+Delay115
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:229')" name="code2model" class="code2model">
+Delay114
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:228')" name="code2model" class="code2model">
+Delay113
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:227')" name="code2model" class="code2model">
+Delay112
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:226')" name="code2model" class="code2model">
+Delay111
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:225')" name="code2model" class="code2model">
+Delay110
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:223')" name="code2model" class="code2model">
+Delay109
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:222')" name="code2model" class="code2model">
+Delay108
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:221')" name="code2model" class="code2model">
+Delay107
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:220')" name="code2model" class="code2model">
+Delay106
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:219')" name="code2model" class="code2model">
+Delay105
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:218')" name="code2model" class="code2model">
+Delay104
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:217')" name="code2model" class="code2model">
+Delay103
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:216')" name="code2model" class="code2model">
+Delay102
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:215')" name="code2model" class="code2model">
+Delay101
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:214')" name="code2model" class="code2model">
+Delay100
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:406')" name="code2model" class="code2model">
+Delay99
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:405')" name="code2model" class="code2model">
+Delay98
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:404')" name="code2model" class="code2model">
+Delay97
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:403')" name="code2model" class="code2model">
+Delay96
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:402')" name="code2model" class="code2model">
+Delay95
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:401')" name="code2model" class="code2model">
+Delay94
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:400')" name="code2model" class="code2model">
+Delay93
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:399')" name="code2model" class="code2model">
+Delay92
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:398')" name="code2model" class="code2model">
+Delay91
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:397')" name="code2model" class="code2model">
+Delay90
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:395')" name="code2model" class="code2model">
+Delay89
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:394')" name="code2model" class="code2model">
+Delay88
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:393')" name="code2model" class="code2model">
+Delay87
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:392')" name="code2model" class="code2model">
+Delay86
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:391')" name="code2model" class="code2model">
+Delay85
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:390')" name="code2model" class="code2model">
+Delay84
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:389')" name="code2model" class="code2model">
+Delay83
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:388')" name="code2model" class="code2model">
+Delay82
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:387')" name="code2model" class="code2model">
+Delay81
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:386')" name="code2model" class="code2model">
+Delay80
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:384')" name="code2model" class="code2model">
+Delay79
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:383')" name="code2model" class="code2model">
+Delay78
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:382')" name="code2model" class="code2model">
+Delay77
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:381')" name="code2model" class="code2model">
+Delay76
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:323')" name="code2model" class="code2model">
+Delay23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:320')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:324')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:312')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:325')" name="code2model" class="code2model">
+Delay25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:301')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:326')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:290')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:279')" name="code2model" class="code2model">
+Delay16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:268')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:257')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:246')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:332')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:235')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:336')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:224')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:335')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:213')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:337')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:396')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:338')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:385')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:374')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:363')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:352')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:341')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '80815817-4bb9-4fcf-9558-65f45698f5de')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 258
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1270')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:354')" name="code2model" class="code2model">
+Delay51
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 1448
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 197
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 207
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 69
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 137
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_9')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 72
+</span>
+<span name="Register_1_9" id="Register_1_9">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:327')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:328')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:329')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:331')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+31-bit Register 							: 192
+</span>
+<br /><h5>
+Multiplexers (12559)
+</h5>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 66
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1596
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 68
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 10072
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 394
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 142
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+real 2-to-1 Multiplexer 							: 146
+</span>
+<span name="Multiplexer_1_7" id="Multiplexer_1_7">
+<ul class="SystemdefinedCollapse" id="33124056-31fe-4223-af24-163709247b3b" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:888')" name="code2model" class="code2model">
+Switch_on90
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:886')" name="code2model" class="code2model">
+Switch_on89
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:885')" name="code2model" class="code2model">
+Switch_on88
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:884')" name="code2model" class="code2model">
+Switch_on87
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:883')" name="code2model" class="code2model">
+Switch_on86
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:882')" name="code2model" class="code2model">
+Switch_on85
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:881')" name="code2model" class="code2model">
+Switch_on84
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:880')" name="code2model" class="code2model">
+Switch_on83
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:879')" name="code2model" class="code2model">
+Switch_on82
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:878')" name="code2model" class="code2model">
+Switch_on81
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:877')" name="code2model" class="code2model">
+Switch_on80
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:875')" name="code2model" class="code2model">
+Switch_on79
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:874')" name="code2model" class="code2model">
+Switch_on78
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:873')" name="code2model" class="code2model">
+Switch_on77
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:872')" name="code2model" class="code2model">
+Switch_on76
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:871')" name="code2model" class="code2model">
+Switch_on75
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:870')" name="code2model" class="code2model">
+Switch_on74
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:869')" name="code2model" class="code2model">
+Switch_on73
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:868')" name="code2model" class="code2model">
+Switch_on72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:867')" name="code2model" class="code2model">
+Switch_on71
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:866')" name="code2model" class="code2model">
+Switch_on70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:864')" name="code2model" class="code2model">
+Switch_on69
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:863')" name="code2model" class="code2model">
+Switch_on68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:862')" name="code2model" class="code2model">
+Switch_on67
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:861')" name="code2model" class="code2model">
+Switch_on66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:860')" name="code2model" class="code2model">
+Switch_on65
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:859')" name="code2model" class="code2model">
+Switch_on64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:858')" name="code2model" class="code2model">
+Switch_on63
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:857')" name="code2model" class="code2model">
+Switch_on62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:856')" name="code2model" class="code2model">
+Switch_on61
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:855')" name="code2model" class="code2model">
+Switch_on60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:853')" name="code2model" class="code2model">
+Switch_on59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:852')" name="code2model" class="code2model">
+Switch_on58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:851')" name="code2model" class="code2model">
+Switch_on57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:850')" name="code2model" class="code2model">
+Switch_on56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:849')" name="code2model" class="code2model">
+Switch_on55
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:848')" name="code2model" class="code2model">
+Switch_on54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:847')" name="code2model" class="code2model">
+Switch_on53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:846')" name="code2model" class="code2model">
+Switch_on52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:845')" name="code2model" class="code2model">
+Switch_on51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:844')" name="code2model" class="code2model">
+Switch_on50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:842')" name="code2model" class="code2model">
+Switch_on49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:841')" name="code2model" class="code2model">
+Switch_on48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:840')" name="code2model" class="code2model">
+Switch_on47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:839')" name="code2model" class="code2model">
+Switch_on46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:838')" name="code2model" class="code2model">
+Switch_on45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:837')" name="code2model" class="code2model">
+Switch_on44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:836')" name="code2model" class="code2model">
+Switch_on43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:835')" name="code2model" class="code2model">
+Switch_on42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:834')" name="code2model" class="code2model">
+Switch_on41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:833')" name="code2model" class="code2model">
+Switch_on40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:831')" name="code2model" class="code2model">
+Switch_on39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:830')" name="code2model" class="code2model">
+Switch_on38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:829')" name="code2model" class="code2model">
+Switch_on37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:828')" name="code2model" class="code2model">
+Switch_on36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:827')" name="code2model" class="code2model">
+Switch_on35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:826')" name="code2model" class="code2model">
+Switch_on34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:825')" name="code2model" class="code2model">
+Switch_on33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:824')" name="code2model" class="code2model">
+Switch_on32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:823')" name="code2model" class="code2model">
+Switch_on31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:812')" name="code2model" class="code2model">
+Switch_on21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:811')" name="code2model" class="code2model">
+Switch_on20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:809')" name="code2model" class="code2model">
+Switch_on19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:808')" name="code2model" class="code2model">
+Switch_on18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:807')" name="code2model" class="code2model">
+Switch_on17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:806')" name="code2model" class="code2model">
+Switch_on16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:805')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:803')" name="code2model" class="code2model">
+Switch_on13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:802')" name="code2model" class="code2model">
+Switch_on12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:801')" name="code2model" class="code2model">
+Switch_on11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:800')" name="code2model" class="code2model">
+Switch_on10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:887')" name="code2model" class="code2model">
+Switch_on9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:876')" name="code2model" class="code2model">
+Switch_on8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:865')" name="code2model" class="code2model">
+Switch_on7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:854')" name="code2model" class="code2model">
+Switch_on6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:843')" name="code2model" class="code2model">
+Switch_on5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:832')" name="code2model" class="code2model">
+Switch_on4
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '33124056-31fe-4223-af24-163709247b3b')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+31-bit 2-to-1 Multiplexer 							: 64
+</span>
+<br /><h5>
+Number of Shift operators (197)
+</h5>
+<span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 69
+</span>
+<br /><span style="font-family:monospace">
+31-bit Dynamic Shift Left 							: 64
+</span>
+<br /><span style="font-family:monospace">
+31-bit Dynamic Shift Right 							: 64
+</span>
+<br /><h5>
+Number of I/O Bits (3112)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 1926
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="2ffe8b2b-a0b3-40f8-932c-2371074a3f09" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:31')" name="code2model" class="code2model">
+Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:32')" name="code2model" class="code2model">
+Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:33')" name="code2model" class="code2model">
+SampleTime_div_Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:34')" name="code2model" class="code2model">
+SampleTime_div_Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:35')" name="code2model" class="code2model">
+SampleTime_div_Lx_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:36')" name="code2model" class="code2model">
+SampleTime_div_Ly_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:37')" name="code2model" class="code2model">
+id_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:38')" name="code2model" class="code2model">
+iq_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:39')" name="code2model" class="code2model">
+ix_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:40')" name="code2model" class="code2model">
+iy_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:41')" name="code2model" class="code2model">
+Rs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:42')" name="code2model" class="code2model">
+omega_m_measured
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:43')" name="code2model" class="code2model">
+pole_pairs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:44')" name="code2model" class="code2model">
+psiPM_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:63')" name="code2model" class="code2model">
+valid_in
+</a>
+: 1 bit
+</li>
+<li>
+Reset_1: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:65')" name="code2model" class="code2model">
+valid_in_ADC
+</a>
+: 1 bit
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_0: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_1: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_2: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_3: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_4: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_5: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_6: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_7: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_8: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_9: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_10: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_11: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_12: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_13: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_14: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_15: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_16: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_17: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_18: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_19: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_20: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_21: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_22: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_23: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_24: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_25: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_26: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_27: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_28: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_29: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_30: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_31: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_32: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_33: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_34: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_35: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_36: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_37: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_38: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_39: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_40: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_41: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_42: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_43: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_44: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_45: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_46: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_47: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_48: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_49: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_50: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_51: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_52: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_53: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_54: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_55: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_56: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_57: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_58: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_59: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_60: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_61: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_62: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_63: 24 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '2ffe8b2b-a0b3-40f8-932c-2371074a3f09')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 1186
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="54d4cf05-49c7-4fc3-a87c-fb7c3131479e" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:891')" name="code2model" class="code2model">
+done
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:892')" name="code2model" class="code2model">
+Index
+</a>
+: 32 bits
+</li>
+<li>
+Prediction_0: 18 bits
+</li>
+<li>
+Prediction_1: 18 bits
+</li>
+<li>
+Prediction_2: 18 bits
+</li>
+<li>
+Prediction_3: 18 bits
+</li>
+<li>
+Prediction_4: 18 bits
+</li>
+<li>
+Prediction_5: 18 bits
+</li>
+<li>
+Prediction_6: 18 bits
+</li>
+<li>
+Prediction_7: 18 bits
+</li>
+<li>
+Prediction_8: 18 bits
+</li>
+<li>
+Prediction_9: 18 bits
+</li>
+<li>
+Prediction_10: 18 bits
+</li>
+<li>
+Prediction_11: 18 bits
+</li>
+<li>
+Prediction_12: 18 bits
+</li>
+<li>
+Prediction_13: 18 bits
+</li>
+<li>
+Prediction_14: 18 bits
+</li>
+<li>
+Prediction_15: 18 bits
+</li>
+<li>
+Prediction_16: 18 bits
+</li>
+<li>
+Prediction_17: 18 bits
+</li>
+<li>
+Prediction_18: 18 bits
+</li>
+<li>
+Prediction_19: 18 bits
+</li>
+<li>
+Prediction_20: 18 bits
+</li>
+<li>
+Prediction_21: 18 bits
+</li>
+<li>
+Prediction_22: 18 bits
+</li>
+<li>
+Prediction_23: 18 bits
+</li>
+<li>
+Prediction_24: 18 bits
+</li>
+<li>
+Prediction_25: 18 bits
+</li>
+<li>
+Prediction_26: 18 bits
+</li>
+<li>
+Prediction_27: 18 bits
+</li>
+<li>
+Prediction_28: 18 bits
+</li>
+<li>
+Prediction_29: 18 bits
+</li>
+<li>
+Prediction_30: 18 bits
+</li>
+<li>
+Prediction_31: 18 bits
+</li>
+<li>
+Prediction_32: 18 bits
+</li>
+<li>
+Prediction_33: 18 bits
+</li>
+<li>
+Prediction_34: 18 bits
+</li>
+<li>
+Prediction_35: 18 bits
+</li>
+<li>
+Prediction_36: 18 bits
+</li>
+<li>
+Prediction_37: 18 bits
+</li>
+<li>
+Prediction_38: 18 bits
+</li>
+<li>
+Prediction_39: 18 bits
+</li>
+<li>
+Prediction_40: 18 bits
+</li>
+<li>
+Prediction_41: 18 bits
+</li>
+<li>
+Prediction_42: 18 bits
+</li>
+<li>
+Prediction_43: 18 bits
+</li>
+<li>
+Prediction_44: 18 bits
+</li>
+<li>
+Prediction_45: 18 bits
+</li>
+<li>
+Prediction_46: 18 bits
+</li>
+<li>
+Prediction_47: 18 bits
+</li>
+<li>
+Prediction_48: 18 bits
+</li>
+<li>
+Prediction_49: 18 bits
+</li>
+<li>
+Prediction_50: 18 bits
+</li>
+<li>
+Prediction_51: 18 bits
+</li>
+<li>
+Prediction_52: 18 bits
+</li>
+<li>
+Prediction_53: 18 bits
+</li>
+<li>
+Prediction_54: 18 bits
+</li>
+<li>
+Prediction_55: 18 bits
+</li>
+<li>
+Prediction_56: 18 bits
+</li>
+<li>
+Prediction_57: 18 bits
+</li>
+<li>
+Prediction_58: 18 bits
+</li>
+<li>
+Prediction_59: 18 bits
+</li>
+<li>
+Prediction_60: 18 bits
+</li>
+<li>
+Prediction_61: 18 bits
+</li>
+<li>
+Prediction_62: 18 bits
+</li>
+<li>
+Prediction_63: 18 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '54d4cf05-49c7-4fc3-a87c-fb7c3131479e')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:413')" name="code2model" class="code2model">
+Subsystem
+</a>
+
+</h5>
+<h5>
+Registers (384)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 384
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1784')" name="code2model" class="code2model">
+Subsystem9
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1732')" name="code2model" class="code2model">
+Subsystem8
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1680')" name="code2model" class="code2model">
+Subsystem7
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1628')" name="code2model" class="code2model">
+Subsystem6
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1576')" name="code2model" class="code2model">
+Subsystem5
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1524')" name="code2model" class="code2model">
+Subsystem4
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1471')" name="code2model" class="code2model">
+Subsystem3
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1419')" name="code2model" class="code2model">
+Subsystem2
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:2097')" name="code2model" class="code2model">
+Subsystem15
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:2044')" name="code2model" class="code2model">
+Subsystem14
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1992')" name="code2model" class="code2model">
+Subsystem13
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1940')" name="code2model" class="code2model">
+Subsystem12
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1888')" name="code2model" class="code2model">
+Subsystem11
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1836')" name="code2model" class="code2model">
+Subsystem10
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1367')" name="code2model" class="code2model">
+Subsystem1
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:1344')" name="code2model" class="code2model">
+Subsystem
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1290)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 270
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:409')" name="code2model" class="code2model">
+Detect Rise
+Positive2
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:409:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:408')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:408:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:407')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:407:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_prediction_and_cost_function_6phase:126')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

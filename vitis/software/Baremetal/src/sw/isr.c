@@ -33,7 +33,10 @@
 #include "../IP_Cores/uz_dac_interface/uz_dac_interface.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../uz/uz_math_constants.h"
-
+#include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -107,6 +110,41 @@ const pre_calc_val_t pre_calc_val={
 
 uint32_t test_index = 42;
 float test_angle = 0.0;
+
+float id_ref = 0.0f;
+float iq_ref = 10.0f;
+float ix_ref = 0.0f;
+float iy_ref = 0.0f;
+
+float lambda_d = 1.0f;
+float lambda_q = 1.0f;
+float lambda_x = 1.0f;
+float lambda_y = 1.0f;
+float lambda_u = 0.000f;
+
+uz_6ph_abc_t pmsm_ph_currents = {0};
+
+
+// pointers to initalized IP-cores and others from main
+extern uz_pmsm_model6ph_dq_t *pmsm;
+extern uz_PWM_SS_2L_t *pwm_instance_1;
+extern uz_PWM_SS_2L_t *pwm_instance_2;
+extern uz_pmsm6ph_transformation_t *transformation_6ph;
+
+// data storage for PMSM
+struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_outputs = {
+    .torque = 0.0f,
+    .omega_mech = 0.0f,
+    .theta_el = 0.0f};
+float load_torque = 0.0f;
+float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
+float setp_rpm = 60.0f;
+
+
+
+
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -120,6 +158,14 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    setp_omega = setp_rpm / 60.0f * 2.0f * M_PI;
+    // set use PL interfaces for PMSM
+    uz_pmsm_model6ph_dq_set_use_axi_input(pmsm,false);
+
+    // read and write general outputs and inputs from PMSM
+    pmsm_outputs = uz_pmsm_model6ph_dq_get_outputs_general(pmsm);
+    uz_pmsm_model6ph_dq_set_inputs_general(pmsm,setp_omega,load_torque);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -136,19 +182,20 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
-    Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
-    Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
-    Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+    //Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
+    //Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
+    //Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
     //Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
 
-    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
+    //uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(1.0f, 14));
 
-    dac_input[0]=Global_Data.objects.three_phase1.a;
-    dac_input[1]=Global_Data.objects.three_phase1.b;
-    dac_input[2]=Global_Data.objects.three_phase1.c;
-    dac_input[3]=Global_Data.objects.three_phase2.a;
-    dac_input[4]=Global_Data.objects.three_phase2.b;
-    dac_input[5]=Global_Data.objects.three_phase2.c;
+//    dac_input[0]=Global_Data.objects.three_phase1.a;
+//    dac_input[1]=Global_Data.objects.three_phase1.b;
+//    dac_input[2]=Global_Data.objects.three_phase1.c;
+//    dac_input[3]=Global_Data.objects.three_phase2.a;
+//    dac_input[4]=Global_Data.objects.three_phase2.b;
+//    dac_input[5]=Global_Data.objects.three_phase2.c;
 
     uz_dac_interface_set_ouput_values(Global_Data.objects.dac_instance,&dac_input_array);
 
@@ -160,6 +207,15 @@ void ISR_Control(void *data)
     Global_Data.av.ib2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x190),15);
     Global_Data.av.ic2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR+0x194),15);
 
+    // read SI phase currents from pmsm ip-core
+    pmsm_ph_currents = uz_pmsm6ph_transformation_get_currents(transformation_6ph);
+    Global_Data.av.ia1_cil = pmsm_ph_currents.a1;
+    Global_Data.av.ib1_cil = pmsm_ph_currents.b1;
+    Global_Data.av.ic1_cil = pmsm_ph_currents.c1;
+    Global_Data.av.ia2_cil = pmsm_ph_currents.a2;
+    Global_Data.av.ib2_cil = pmsm_ph_currents.b2;
+    Global_Data.av.ic2_cil = pmsm_ph_currents.c2;
+
     // read VSD currents from ip-core
     Global_Data.av.alpha = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x100),11);
     Global_Data.av.beta = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x104),11);
@@ -169,22 +225,34 @@ void ISR_Control(void *data)
     Global_Data.av.z2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x114),11);
 
     // read dq currents from ip-core
-    Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x104), 16);
-    Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_T_IP_0_BASEADDR+0x108), 16);
+    Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104), 16);
+    Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x108), 16);
 
     // read p.u. voltages according to index
-    uz_axi_write_uint32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x104, test_index); //write index via AXI
-    Global_Data.av.ud_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x108), 24);
-    Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x10C), 24);
-    Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x110), 24);
-    Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_PU_IP_0_BASEADDR+0x114), 24);
+    //uz_axi_write_uint32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x104, test_index); //write index via AXI
+    Global_Data.av.ud_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.uq_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.ux_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x110), 24);
+    Global_Data.av.uy_pu = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x114), 24);
 
     // read delay compensation currents from ip-core
-    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(frequency1/dengine.polePairs*2.0f*UZ_PIf/base_val.omegaB, 15));
-    Global_Data.av.id_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x104), 24);
-    Global_Data.av.iq_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x108), 24);
-    Global_Data.av.ix_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x10C), 24);
-    Global_Data.av.iy_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DC_IP_0_BASEADDR+0x110), 24);
+    //uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(frequency1/dengine.polePairs*2.0f*UZ_PIf/base_val.omegaB, 15));
+    Global_Data.av.id_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR+0x104), 24);
+    Global_Data.av.iq_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR+0x108), 24);
+    Global_Data.av.ix_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR+0x10C), 24);
+    Global_Data.av.iy_delay = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR+0x110), 24);
+
+    // cost
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(id_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(iq_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(ix_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(iy_ref/base_val.IB, 11));
+
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x114, uz_convert_float_to_sfixed(lambda_d, 17));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(lambda_q, 17));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(lambda_x, 17));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(lambda_y, 17));
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(lambda_u, 17));
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

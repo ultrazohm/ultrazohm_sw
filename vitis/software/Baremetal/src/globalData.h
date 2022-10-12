@@ -103,6 +103,12 @@ typedef struct _actualValues_ {
 	float iq_delay;
 	float ix_delay;
 	float iy_delay;
+	float ia1_cil;
+	float ib1_cil;
+	float ic1_cil;
+	float ia2_cil;
+	float ib2_cil;
+	float ic2_cil;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

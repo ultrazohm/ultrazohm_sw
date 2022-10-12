@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.290
+<td class="summaryTableSndColOddRow">1.295
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">04-Oct-2022 11:12:33
+<td class="summaryTableSndColOddRow">12-Oct-2022 15:32:39
 </td>
 </tr>
 <tr>
@@ -224,21 +224,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:476')">y1</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:2167')">offset_angle_el_AXI</a>
 </td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">sfix27_En16
+<td class="distinctCellColor">sfix18_En14
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"104"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:477')">y2</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:476')">y1</a>
 </td>
 <td>Outport
 </td>
@@ -252,21 +252,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:478')">y1_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:477')">y2</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
 <td class="distinctCellColor">sfix27_En16
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"104"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:479')">y2_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:478')">y1_AXI</a>
 </td>
 <td>Outport
 </td>
@@ -280,21 +280,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:480')">sin</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:479')">y2_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix18_En16
+<td class="distinctCellColor">sfix27_En16
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"10C"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:481')">cos</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:480')">sin</a>
 </td>
 <td>Outport
 </td>
@@ -308,17 +308,31 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:482')">park_done</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:481')">cos</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">boolean
+<td class="distinctCellColor">sfix18_En16
 </td>
 <td class="distinctCellColor">External Port
 </td>
 <td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_mpc_cost_and_optim_state_machine:482')">park_done</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -361,7 +375,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2210041112
+<td>contains unique IP timestamp (yymmddHHMM): 2210121532
 </td>
 </tr>
 <tr>
@@ -373,19 +387,27 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>y1_AXI_Data
+<td>offset_angle_el_AXI_Data
 </td>
 <td>0x104
 </td>
-<td>data register for Outport y1_AXI
+<td>data register for Inport offset_angle_el_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">y2_AXI_Data
+<td class="distinctCellColor">y1_AXI_Data
 </td>
 <td class="distinctCellColor">0x108
 </td>
-<td class="distinctCellColor">data register for Outport y2_AXI
+<td class="distinctCellColor">data register for Outport y1_AXI
+</td>
+</tr>
+<tr>
+<td>y2_AXI_Data
+</td>
+<td>0x10C
+</td>
+<td>data register for Outport y2_AXI
 </td>
 </tr>
 </tbody>

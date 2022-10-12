@@ -50,6 +50,11 @@ static uz_CurrentControl_t* uz_CurrentControl_allocation(void) {
 
 uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config config) {
 	uz_CurrentControl_t* self = uz_CurrentControl_allocation();
+	//Disables the built in limitation of the PI-Controllers, since the limitation is done by the space-vector-limitation module
+	config.config_id.upper_limit = INFINITY;
+	config.config_id.lower_limit = -INFINITY;
+	config.config_iq.upper_limit = INFINITY;
+	config.config_iq.lower_limit = -INFINITY;
 	self->Controller_id = uz_PI_Controller_init(config.config_id);
 	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
 	self->config = config;

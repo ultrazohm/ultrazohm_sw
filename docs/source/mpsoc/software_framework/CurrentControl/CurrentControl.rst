@@ -91,15 +91,11 @@ Example
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,
-        .upper_limit = 10.0f,
-        .lower_limit = -10.0f
      };
      struct uz_PI_Controller_config config_iq = {
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,
-        .upper_limit = 10.0f,
-        .lower_limit = -10.0f
      };
      struct uz_CurrentControl_config CC_config = {
         .decoupling_select = linear_decoupling,
@@ -108,6 +104,11 @@ Example
         .config_iq = config_iq
      };
   }
+
+.. note::
+
+  The limitation of the internal PI-Controllers are deactivated, since only the :ref:`uz_spacevectorlimiation` will be used. The limits can be left at 0 in the config.  
+
 
 Description
 ^^^^^^^^^^^

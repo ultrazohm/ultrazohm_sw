@@ -7,8 +7,15 @@
 #include "../../uz_HAL.h"
 #include "uz_sum.h" 
 
+#include "uz_codegen0_ert_rtw/uz_codegen0.h"
+
 struct uz_sum_t {
     bool is_ready;
+    ExtY output;
+    ExtU input;
+    DW rtDW;                        /* Observable states */
+    RT_MODEL modelData;
+    RT_MODEL *PtrToModelData;
 };
 
 static uint32_t instance_counter = 0U;
@@ -25,9 +32,22 @@ static uz_sum_t* uz_sum_allocation(void){
     return (self);
 }
 
-uz_sum_t* uz_sum_init() {
+uz_sum_t* uz_sum_init(void) {
     uz_sum_t* self = uz_sum_allocation();
     return (self);
+}
+
+void uz_sum_step(uz_sum_t* self, float a, float b, float c){
+    
+}
+
+
+float uz_sum_get_sum(uz_sum_t* self){
+
+}
+
+float uz_sum_get_integral_over_sum(uz_sum_t* self){
+
 }
 
 #endif

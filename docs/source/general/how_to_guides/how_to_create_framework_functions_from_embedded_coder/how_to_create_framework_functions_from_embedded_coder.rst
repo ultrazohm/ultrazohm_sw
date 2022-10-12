@@ -32,6 +32,7 @@ Thus, the code ought to calculate:
     y_2 &=\int y
 
 The Simulink model uses forward euler integration (see `Matlab documentation discrete integrator <https://de.mathworks.com/help/simulink/slref/discretetimeintegrator.html>`_).
+Note that the integration time :math:`T_s=\frac{1}{10000}=0.0001` is hard coded in the module, due to the model settings in :ref:`embedded_coder`.
 The chirp function is not used in this guide but can be implemented with the same principles.
 
 Create framework function
@@ -63,7 +64,7 @@ Create framework function
 .. code-block:: c
 
     typedef struct uz_sum_t uz_sum_t;
-    uz_sum_t* uz_sum_init();
+    uz_sum_t* uz_sum_init(void);
 
 
 9. In ``test_uz_sum.c``, change the existing test to:
@@ -76,7 +77,85 @@ Create framework function
     }
 
 10. Run the tests, they compile but ``test_uz_sum.c`` does not perform any real tests
+#. Create the interface for stepping the model once (one integration / time step) with the given summand in ``uz_sum.h``:
 
+.. code-block:: c
+
+    void uz_sum_step(uz_sum_t* self, float a, float b, float c);
+
+
+#. Add an interface for reading the results from the module in ``uz_sum.h``
+
+.. code-block:: c
+
+    float uz_sum_get_sum(uz_sum_t* self);
+    float uz_sum_get_integral_over_sum(uz_sum_t* self);
+
+#. Write empty functions for the defined interface in ``uz_sum.c``
+
+.. code-block:: c
+
+    void uz_sum_step(uz_sum_t* self, float a, float b, float c){
+    
+    }
+
+
+    float uz_sum_get_sum(uz_sum_t* self){
+
+    }
+
+    float uz_sum_get_integral_over_sum(uz_sum_t* self){
+
+    }
+
+#. Write a test that checks for the summation of three values:
+
+.. code-block:: c
+
+    void test_uz_sum_add_numbers(void)
+    {
+       uz_sum_t* test_instance=uz_sum_init();
+        float a=1.1f;
+        float b=2.2f;
+        float c=3.3f;
+        float expected_result=6.6f;
+
+        uz_sum_step(test_instance,a,b,c);
+        float result=uz_sum_get_sum(test_instance);
+        TEST_ASSERT_EQUAL_FLOAT(result,expected_result);
+
+    }
+
+#. Run the tests. They will fail but compile.
+
+#. Next steps: copy paste from uz_codegen.c to init of uz_sum
+
+
+
+#. Add the include for the generated code as well as private data to ``uz_sum.c`` (note: this has to be in the ``.c`` file!)
+
+.. code-block:: c
+
+    #include "uz_codegen0_ert_rtw/uz_codegen0.h"
+
+    struct uz_sum_t {
+        bool is_ready;
+        ExtY output;
+        ExtU input;
+        DW rtDW;                        /* Observable states */
+        RT_MODEL modelData;
+        RT_MODEL *PtrToModelData;
+    };
+
+
+
+
+
+
+
+
+
+    
 
 
 

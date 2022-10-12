@@ -65,6 +65,7 @@ Struct containing all the inputs of the resonant controller.
 
 Output struct
 -------------
+
 .. doxygenstruct:: ExtY_Resonant_Controller_T
   :members:
 
@@ -75,8 +76,10 @@ Description
 
 Struct containing the output of the resonant controller.
 
- Datatype struct
+
+Datatype struct
 ---------------
+
 .. doxygentypedef:: real32_T
 
 

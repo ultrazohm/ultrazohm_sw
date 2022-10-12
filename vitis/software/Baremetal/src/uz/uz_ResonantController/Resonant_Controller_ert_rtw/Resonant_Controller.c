@@ -50,7 +50,7 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
   /* Trigonometry: '<S1>/Cos1' incorporates:
    *  Gain: '<S1>/Gain'
    */
-  rtb_Cos1 = cos(2.0f * rtb_Cos);
+  rtb_Cos1 = cosf(2.0f * rtb_Cos);
 
   /* Delay: '<S1>/Delay' incorporates:
    *  Delay: '<S1>/Delay1'
@@ -83,7 +83,7 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
     Resonant_Controller_U->VR * Resonant_Controller_U->T_sw;
 
   /* Trigonometry: '<S1>/Cos' */
-  rtb_Cos = cos(rtb_Cos);
+  rtb_Cos = cosf(rtb_Cos);
 
   /* Sum: '<S1>/Sum2' incorporates:
    *  Delay: '<S1>/Delay1'

@@ -1,0 +1,2208 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for cost_function_only
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_1');hdlTableShrink(this, 'Subtractor_2_1');hdlTableShrink(this, 'Multiply_3_1');hdlTableShrink(this, 'Subtractor_3_1');hdlTableShrink(this, 'Multiply_4_1');hdlTableShrink(this, 'Subtractor_4_1');hdlTableShrink(this, 'Multiply_5_1');hdlTableShrink(this, 'Subtractor_5_1');hdlTableShrink(this, 'Multiply_6_1');hdlTableShrink(this, 'Subtractor_6_1');hdlTableShrink(this, 'Multiply_7_1');hdlTableShrink(this, 'Subtractor_7_1');hdlTableShrink(this, 'Multiply_8_1');hdlTableShrink(this, 'Subtractor_8_1');hdlTableShrink(this, 'Multiply_9_1');hdlTableShrink(this, 'Subtractor_9_1');hdlTableShrink(this, 'Multiply_10_1');hdlTableShrink(this, 'Subtractor_10_1');hdlTableShrink(this, 'Multiply_11_1');hdlTableShrink(this, 'Subtractor_11_1');hdlTableShrink(this, 'Multiply_12_1');hdlTableShrink(this, 'Subtractor_12_1');hdlTableShrink(this, 'Multiply_13_1');hdlTableShrink(this, 'Subtractor_13_1');hdlTableShrink(this, 'Multiply_14_1');hdlTableShrink(this, 'Subtractor_14_1');hdlTableShrink(this, 'Multiply_15_1');hdlTableShrink(this, 'Subtractor_15_1');hdlTableShrink(this, 'Multiply_16_1');hdlTableShrink(this, 'Subtractor_16_1');hdlTableShrink(this, 'Multiply_17_1');hdlTableShrink(this, 'Subtractor_17_1');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for cost_function_only
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+64
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+112
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+155
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+2771
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+75
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+1550
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:7')" name="code2model" class="code2model">
+HDL_DUT
+</a>
+
+</h5>
+<h5>
+Registers (154)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 2
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:31')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:33')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 136
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:260')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:282')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:262')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:272')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:263')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:270')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:264')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:268')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:265')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:266')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 16
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:581')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (73)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 5
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 68
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:283')" name="code2model" class="code2model">
+Switch_on4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:273')" name="code2model" class="code2model">
+Switch_on3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:271')" name="code2model" class="code2model">
+Switch_on2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:269')" name="code2model" class="code2model">
+Switch_on1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:267')" name="code2model" class="code2model">
+Switch_on14
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (1550)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 1228
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="79325dbd-bba4-42e7-91ce-af43d58324f2" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:30')" name="code2model" class="code2model">
+valid_in
+</a>
+: 1 bit
+</li>
+<li>
+Prediction_0: 18 bits
+</li>
+<li>
+Prediction_1: 18 bits
+</li>
+<li>
+Prediction_2: 18 bits
+</li>
+<li>
+Prediction_3: 18 bits
+</li>
+<li>
+Prediction_4: 18 bits
+</li>
+<li>
+Prediction_5: 18 bits
+</li>
+<li>
+Prediction_6: 18 bits
+</li>
+<li>
+Prediction_7: 18 bits
+</li>
+<li>
+Prediction_8: 18 bits
+</li>
+<li>
+Prediction_9: 18 bits
+</li>
+<li>
+Prediction_10: 18 bits
+</li>
+<li>
+Prediction_11: 18 bits
+</li>
+<li>
+Prediction_12: 18 bits
+</li>
+<li>
+Prediction_13: 18 bits
+</li>
+<li>
+Prediction_14: 18 bits
+</li>
+<li>
+Prediction_15: 18 bits
+</li>
+<li>
+Prediction_16: 18 bits
+</li>
+<li>
+Prediction_17: 18 bits
+</li>
+<li>
+Prediction_18: 18 bits
+</li>
+<li>
+Prediction_19: 18 bits
+</li>
+<li>
+Prediction_20: 18 bits
+</li>
+<li>
+Prediction_21: 18 bits
+</li>
+<li>
+Prediction_22: 18 bits
+</li>
+<li>
+Prediction_23: 18 bits
+</li>
+<li>
+Prediction_24: 18 bits
+</li>
+<li>
+Prediction_25: 18 bits
+</li>
+<li>
+Prediction_26: 18 bits
+</li>
+<li>
+Prediction_27: 18 bits
+</li>
+<li>
+Prediction_28: 18 bits
+</li>
+<li>
+Prediction_29: 18 bits
+</li>
+<li>
+Prediction_30: 18 bits
+</li>
+<li>
+Prediction_31: 18 bits
+</li>
+<li>
+Prediction_32: 18 bits
+</li>
+<li>
+Prediction_33: 18 bits
+</li>
+<li>
+Prediction_34: 18 bits
+</li>
+<li>
+Prediction_35: 18 bits
+</li>
+<li>
+Prediction_36: 18 bits
+</li>
+<li>
+Prediction_37: 18 bits
+</li>
+<li>
+Prediction_38: 18 bits
+</li>
+<li>
+Prediction_39: 18 bits
+</li>
+<li>
+Prediction_40: 18 bits
+</li>
+<li>
+Prediction_41: 18 bits
+</li>
+<li>
+Prediction_42: 18 bits
+</li>
+<li>
+Prediction_43: 18 bits
+</li>
+<li>
+Prediction_44: 18 bits
+</li>
+<li>
+Prediction_45: 18 bits
+</li>
+<li>
+Prediction_46: 18 bits
+</li>
+<li>
+Prediction_47: 18 bits
+</li>
+<li>
+Prediction_48: 18 bits
+</li>
+<li>
+Prediction_49: 18 bits
+</li>
+<li>
+Prediction_50: 18 bits
+</li>
+<li>
+Prediction_51: 18 bits
+</li>
+<li>
+Prediction_52: 18 bits
+</li>
+<li>
+Prediction_53: 18 bits
+</li>
+<li>
+Prediction_54: 18 bits
+</li>
+<li>
+Prediction_55: 18 bits
+</li>
+<li>
+Prediction_56: 18 bits
+</li>
+<li>
+Prediction_57: 18 bits
+</li>
+<li>
+Prediction_58: 18 bits
+</li>
+<li>
+Prediction_59: 18 bits
+</li>
+<li>
+Prediction_60: 18 bits
+</li>
+<li>
+Prediction_61: 18 bits
+</li>
+<li>
+Prediction_62: 18 bits
+</li>
+<li>
+Prediction_63: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:248')" name="code2model" class="code2model">
+id_ref_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:249')" name="code2model" class="code2model">
+iq_ref_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:250')" name="code2model" class="code2model">
+ix_ref_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:251')" name="code2model" class="code2model">
+iy_ref_AXI
+</a>
+: 18 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '79325dbd-bba4-42e7-91ce-af43d58324f2')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 322
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="9a659066-3fa3-474d-a7ea-ed90063db136" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:34')" name="code2model" class="code2model">
+done
+</a>
+: 1 bit
+</li>
+<li>
+J_0: 20 bits
+</li>
+<li>
+J_1: 20 bits
+</li>
+<li>
+J_2: 20 bits
+</li>
+<li>
+J_3: 20 bits
+</li>
+<li>
+J_4: 20 bits
+</li>
+<li>
+J_5: 20 bits
+</li>
+<li>
+J_6: 20 bits
+</li>
+<li>
+J_7: 20 bits
+</li>
+<li>
+J_8: 20 bits
+</li>
+<li>
+J_9: 20 bits
+</li>
+<li>
+J_10: 20 bits
+</li>
+<li>
+J_11: 20 bits
+</li>
+<li>
+J_12: 20 bits
+</li>
+<li>
+J_13: 20 bits
+</li>
+<li>
+J_14: 20 bits
+</li>
+<li>
+J_15: 20 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '9a659066-3fa3-474d-a7ea-ed90063db136')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:446')" name="code2model" class="code2model">
+Subsystem9
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_2_1" id="Multiply_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:615')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:616')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:617')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:618')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_2_1" id="Subtractor_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:457')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:458')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:459')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:460')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:429')" name="code2model" class="code2model">
+Subsystem8
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_3_1" id="Multiply_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:619')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:620')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:621')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:622')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_3_1" id="Subtractor_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:440')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:441')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:442')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:443')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:412')" name="code2model" class="code2model">
+Subsystem7
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_4_1" id="Multiply_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:623')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:624')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:625')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:626')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_4_1" id="Subtractor_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:423')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:424')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:425')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:426')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:395')" name="code2model" class="code2model">
+Subsystem6
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_5_1" id="Multiply_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:627')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:628')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:629')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:630')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_5_1" id="Subtractor_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:406')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:407')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:408')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:409')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:378')" name="code2model" class="code2model">
+Subsystem5
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_6_1" id="Multiply_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:631')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:632')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:633')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:634')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_6_1" id="Subtractor_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:389')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:390')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:391')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:392')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:361')" name="code2model" class="code2model">
+Subsystem4
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_7_1" id="Multiply_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:635')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:636')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:637')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:638')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_7_1" id="Subtractor_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:372')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:373')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:374')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:375')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:344')" name="code2model" class="code2model">
+Subsystem3
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_8_1" id="Multiply_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:639')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:640')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:641')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:642')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_8_1" id="Subtractor_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:355')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:356')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:357')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:358')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:327')" name="code2model" class="code2model">
+Subsystem2
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_9_1" id="Multiply_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:643')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:644')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:645')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:646')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_9_1" id="Subtractor_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:338')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:339')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:340')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:341')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:548')" name="code2model" class="code2model">
+Subsystem15
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_10_1" id="Multiply_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:590')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:591')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:592')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:593')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_10_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_10_1" id="Subtractor_10_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:559')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:560')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:561')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:562')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:531')" name="code2model" class="code2model">
+Subsystem14
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_11_1" id="Multiply_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:594')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:595')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:596')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:597')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_11_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_11_1" id="Subtractor_11_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:542')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:543')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:544')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:545')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:514')" name="code2model" class="code2model">
+Subsystem13
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_12_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_12_1" id="Multiply_12_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:598')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:599')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:600')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:601')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_12_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_12_1" id="Subtractor_12_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:525')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:526')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:527')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:528')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:497')" name="code2model" class="code2model">
+Subsystem12
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_13_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_13_1" id="Multiply_13_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:602')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:603')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:604')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:605')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_13_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_13_1" id="Subtractor_13_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:508')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:509')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:510')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:511')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:480')" name="code2model" class="code2model">
+Subsystem11
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_14_1" id="Multiply_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:606')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:607')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:608')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:609')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_14_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_14_1" id="Subtractor_14_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:491')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:492')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:493')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:494')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:463')" name="code2model" class="code2model">
+Subsystem10
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_15_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_15_1" id="Multiply_15_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:610')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:612')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:613')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:614')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_15_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_15_1" id="Subtractor_15_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:474')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:475')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:476')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:477')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:310')" name="code2model" class="code2model">
+Subsystem1
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_16_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_16_1" id="Multiply_16_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:647')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:648')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:649')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:650')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_16_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_16_1" id="Subtractor_16_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:321')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:322')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:323')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:324')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:293')" name="code2model" class="code2model">
+Subsystem
+</a>
+
+</h5>
+<h5>
+Multipliers (4)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_17_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20x20-bit Multiply 							: 4
+</span>
+<span name="Multiply_17_1" id="Multiply_17_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:651')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:652')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:653')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:654')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (7)
+</h5>
+<span style="font-family:monospace">
+21x21-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+22x22-bit Adder 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_17_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x19-bit Subtractor 							: 4
+</span>
+<span name="Subtractor_17_1" id="Subtractor_17_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:305')" name="code2model" class="code2model">
+Subtract4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:306')" name="code2model" class="code2model">
+Subtract5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:307')" name="code2model" class="code2model">
+Subtract6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('cost_function_only:308')" name="code2model" class="code2model">
+Subtract7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:32')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('cost_function_only:32:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

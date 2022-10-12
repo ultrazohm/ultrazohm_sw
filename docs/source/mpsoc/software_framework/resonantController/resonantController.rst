@@ -16,7 +16,7 @@ The implemented discrete time transfer function is created by impulseinvariant d
     	G_R(s) = K_R T_{s} \frac{\cos(2\omega_R T_{s}) - z^{-1}\cos(\omega_R T_{s}) }{1-2 z^{-1} \cos(\omega_R T_{s} )+ z^{-2} }
 
 
-The resonant frequency is specified by :math:`\omega_R = h \cdot \omega_{el}`, with the order h of the harmonic to be controlled and the fundamental frequency :math:`\omega_{el}`.
+The resonant frequency is specified by :math:`\omega_R = h \cdot \omega_{el}`, with the order :math:`h` of the harmonic to be controlled and the fundamental frequency :math:`\omega_{el}`.
 
 Resonant-Controller
 -------------------
@@ -139,16 +139,16 @@ Description
 ^^^^^^^^^^^
 
 Resets the Resonant-Controller. The initial condition for the integrator and the output after the reset is 0.0f.
-Alternatively, the reset input of the controller can be set to 1 will calling the step-function.
+Alternatively, the reset input of the controller can be set to 1 while calling the step-function.
 
 
 
 Saturation and Anti-Windup
 --------------------------
 The output of the controller is limited by the inputvalues ``upper_limit`` and ``lower_limit``.
-As an anti-windup strategy teh difference between the unsaturated and by the limits saturated outputvalue is fed back to the input of the controller.
+As an anti-windup strategy the back calculation method is used.
 The gain of the anti-windup feedback is given by the inputvalue ``Klim``.
-To disable the Anti-Windup strategie the feedback can be set to 0.
+To disable the Anti-Windup strategy the feedback can be set to 0.
 
 
 

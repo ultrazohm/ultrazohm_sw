@@ -1,11 +1,3 @@
-/**
-* @file uz_resonant_controller.h
-* @author Josef Knoblach
-* @brief Resonant-controller, created with Matlab/Simulink Embedded-Coder from a resonant-controller implemented in Simulink
-* @version 0.1
-* @date 2022-10-12
-* 
-*/
 #ifndef UZ_RESONANTCONTROLLER_H
 #define UZ_RESONANTCONTROLLER_H
 

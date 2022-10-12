@@ -15,7 +15,7 @@ Example
 
   int main(void) {
     float id_ref_Ampere = 2.5f;
-    uz_SetPoint_set_id_ref(instance, id_ref_Ampere);
+    uz_SetPoint_set_id_ref(SP_instance, id_ref_Ampere);
   }
 
 

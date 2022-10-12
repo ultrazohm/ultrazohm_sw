@@ -18,7 +18,7 @@ Example
      float M_ref_Nm = 0.0045f;
      float V_DC_Volts = 24.0f;
      uz_3ph_dq_t actual_currents_Ampere = {1.0f, 2.0f, 0.0f};
-     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);
+     uz_3ph_dq_t output = uz_SetPoint_sample(SP_instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);
   }
 
 Description

@@ -44,7 +44,7 @@ struct uz_SetPoint_config {
 uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
 
 /**
- * @brief Calculates reference torque 
+ * @brief Calculates reference currents based on MTPA or FW strategy and different motor topologies 
  * 
  * @param self pointer to uz_SetPoint_t object
  * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad

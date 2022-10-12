@@ -32,7 +32,7 @@ Example
   
   #include "uz/uz_SpeedControl/uz_speedcontrol.h"
   int main(void) {
-     struct uz_SpeedControl_config config = {
+     struct uz_SpeedControl_config SC_config = {
         .config_controller.Kp = 10.0f,
         .config_controller.Ki = 10.0f,
         .config_controller.samplingTime_sec = 0.00005f,
@@ -56,7 +56,7 @@ Example
   :caption: Example function call to init the SpeedController for the SpeedControl. ``config`` according to :ref:`configuration section<uz_SpeedControl_config>`
   
   int main(void) {
-     uz_SpeedControl_t* instance = uz_SpeedControl_init(config);
+     uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(SC_config);
   }
 
 Description
@@ -80,7 +80,7 @@ Example
   :caption: Example function call to reset the SpeedControl. SpeedControl instance via :ref:`init-function <uz_SpeedControl_init>`.
 
   int main(void) {
-     uz_SpeedControl_reset(instance);
+     uz_SpeedControl_reset(SC_instance);
   }
 
 Description

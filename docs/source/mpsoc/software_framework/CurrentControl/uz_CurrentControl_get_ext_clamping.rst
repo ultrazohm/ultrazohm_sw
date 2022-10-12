@@ -14,7 +14,7 @@ Example
   :caption: Example function call to get the ext_clamping value. CurrentControl-Instance via :ref:`init-function <uz_CurrentControl_init>`
 
   int main(void) {
-     float ext_clamping = uz_CurrentControl_get_ext_clamping(CurrentControl_instance);
+     float ext_clamping = uz_CurrentControl_get_ext_clamping(CC_instance);
   }
 
 Description

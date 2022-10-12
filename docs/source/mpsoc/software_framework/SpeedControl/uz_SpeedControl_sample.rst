@@ -16,7 +16,7 @@ Example
   int main(void) {
      float omega_m_rad_per_sec = 1.5f;
      float n_ref_rpm = 500.0f;
-     float torque_out = uz_SpeedControl_sample(instance, omega_m_rad_per_sec, n_ref_rpm);
+     float torque_out = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);
   }
 
 Description

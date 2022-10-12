@@ -35,7 +35,7 @@ Example
   
   #include "uz/uz_setpoint/uz_setpoint.h"
   int main(void) {
-     struct uz_SetPoint_config config = {
+     struct uz_SetPoint_config SP_config = {
         .config_PMSM.I_max_Ampere = 15.0f,
         .config_PMSM.Ld_Henry = 0.0003f,
         .config_PMSM.Lq_Henry = 0.0003f,
@@ -64,7 +64,7 @@ Example
   :caption: Example function call to init the SpeedController for the SpeedControl. ``config`` according to :ref:`configuration section<uz_SetPoint_config>`
   
   int main(void) {
-     uz_SetPoint_t* instance = uz_SetPoint_init(config);
+     uz_SetPoint_t* SP_instance = uz_SetPoint_init(SP_config);
   }
 
 Description

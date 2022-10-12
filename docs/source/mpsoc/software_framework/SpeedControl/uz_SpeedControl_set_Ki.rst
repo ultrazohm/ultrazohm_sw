@@ -13,7 +13,7 @@ Example
 
   int main(void) {
   float new_Ki = 14.5f;
-     uz_SpeedControl_set_Ki(SpeedControl_instance, new_Ki);
+     uz_SpeedControl_set_Ki(SC_instance, new_Ki);
   }
 
 Description

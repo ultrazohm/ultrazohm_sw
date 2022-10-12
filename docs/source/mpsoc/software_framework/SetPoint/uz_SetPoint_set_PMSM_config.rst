@@ -23,7 +23,7 @@ Example
       .J_kg_m_squared = 0.00001773f,
       .I_max_Ampere = 10.0f
     };
-    uz_SetPoint_set_PMSM_config(instance, input);
+    uz_SetPoint_set_PMSM_config(SP_instance, input);
   }
 
 

@@ -21,9 +21,9 @@ Example
      float theta_el_rad = 1.2f;
      struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      struct uz_3ph_dq_t i_reference_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t v_dq_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
      //Alternatively the sample function can output the UVW-values
-     struct uz_3ph_abc_t v_abc_Volts = uz_CurrentControl_sample_abc(CurrentControl_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
+     struct uz_3ph_abc_t v_abc_Volts = uz_CurrentControl_sample_abc(CC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
   }
 
 Description
@@ -33,7 +33,7 @@ Calculates one sample of the CurrentControl.
 
 .. note::
 
-  Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_UVW`` function to get the output voltages in the UVW-system. 
+  Either use the ``uz_CurrentControl_sample`` function to get the output voltages in the dq0-frame or use the ``uz_CurrentControl_sample_abc`` function to get the output voltages in the ABC-system. 
 
 .. warning::
 

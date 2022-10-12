@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 4.1
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Sep 14 13:32:43 2022
+ * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

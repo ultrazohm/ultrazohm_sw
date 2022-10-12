@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 4.1
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Sep 14 13:32:43 2022
+ * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -61,35 +61,29 @@ typedef struct tag_RTM_Resonant_Controller_T RT_MODEL_Resonant_Controller_T;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real_T Delay_DSTATE;                 /* '<S1>/Delay' */
-  real_T Delay3_DSTATE;                /* '<S1>/Delay3' */
-  real_T Delay1_DSTATE;                /* '<S1>/Delay1' */
-  real_T Delay2_DSTATE;                /* '<S1>/Delay2' */
+  real32_T Delay_DSTATE;               /* '<S1>/Delay' */
+  real32_T Delay3_DSTATE;              /* '<S1>/Delay3' */
+  real32_T Delay1_DSTATE;              /* '<S1>/Delay1' */
+  real32_T Delay2_DSTATE;              /* '<S1>/Delay2' */
 } DW_Resonant_Controller_T;
 
 /* External inputs (root inport signals with default storage) */
-/**
- * @brief Input struct for the generated resonant controller
- */
 typedef struct {
-  real_T in_ref;                       /**< Reference value for the controller*/
-  real_T in_m;                         /**< Measured value for the controller*/             
-  real_T omega_el;                     /**< Frequency in rad/s*/
-  real_T h;                            /**< Order of harmonic to be controlled*/
-  real_T T_sw;                         /**< Sampling time*/
-  real_T VR;                           /**< Gain of the controller*/
-  real_T Klim;                         /**< Gain of anti-windup feedback*/
-  real_T upper_limit;                  /**< Upper saturation limit*/
-  real_T lower_limit;                  /**< Lower saturation limit*/
-  real_T Reset;                        /**< Reset input of the controller*/
+	real32_T in_ref;                       /**< Reference value for the controller*/
+	real32_T in_m;                         /**< Measured value for the controller*/
+	real32_T omega_el;                     /**< Frequency in rad/s*/
+	real32_T h;                            /**< Order of harmonic to be controlled*/
+	real32_T T_sw;                         /**< Sampling time*/
+	real32_T VR;                           /**< Gain of the controller*/
+	real32_T Klim;                         /**< Gain of anti-windup feedback*/
+	real32_T upper_limit;                  /**< Upper saturation limit*/
+	real32_T lower_limit;                  /**< Lower saturation limit*/
+	real32_T Reset;                        /**< Reset input of the controller*/
 } ExtU_Resonant_Controller_T;
 
 /* External outputs (root outports fed by signals with default storage) */
-/**
- * @brief Output struct for the generated resonant controller
- */
 typedef struct {
-  real_T out;                          /**< Output of the controller*/
+  real32_T out;                         /**< Output of the controller*/
 } ExtY_Resonant_Controller_T;
 
 /* Real-time Model Data Structure */
@@ -123,14 +117,14 @@ extern void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ResonantController_2022/Resonant_Controller')    - opens subsystem uz_ResonantController_2022/Resonant_Controller
- * hilite_system('uz_ResonantController_2022/Resonant_Controller/Kp') - opens and selects block Kp
+ * hilite_system('uz_ResonantController/Resonant_Controller')    - opens subsystem uz_ResonantController/Resonant_Controller
+ * hilite_system('uz_ResonantController/Resonant_Controller/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ResonantController_2022'
- * '<S1>'   : 'uz_ResonantController_2022/Resonant_Controller'
- * '<S2>'   : 'uz_ResonantController_2022/Resonant_Controller/saturation'
+ * '<Root>' : 'uz_ResonantController'
+ * '<S1>'   : 'uz_ResonantController/Resonant_Controller'
+ * '<S2>'   : 'uz_ResonantController/Resonant_Controller/saturation'
  */
 
 /*-

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 4.1
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Sep 14 13:32:43 2022
+ * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -34,9 +34,9 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
     (ExtU_Resonant_Controller_T *) Resonant_Controller_M->inputs;
   ExtY_Resonant_Controller_T *Resonant_Controller_Y =
     (ExtY_Resonant_Controller_T *) Resonant_Controller_M->outputs;
-  float rtb_Cos;
-  float rtb_Cos1;
-  float rtb_Product2;
+  real32_T rtb_Cos;
+  real32_T rtb_Cos1;
+  real32_T rtb_Product2;
 
   /* Product: '<S1>/Product' incorporates:
    *  Inport: '<Root>/T_sw'
@@ -50,7 +50,7 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
   /* Trigonometry: '<S1>/Cos1' incorporates:
    *  Gain: '<S1>/Gain'
    */
-  rtb_Cos1 = cosf(2.0f * rtb_Cos);
+  rtb_Cos1 = cosf(2.0F * rtb_Cos);
 
   /* Delay: '<S1>/Delay' incorporates:
    *  Delay: '<S1>/Delay1'
@@ -58,11 +58,11 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
    *  Delay: '<S1>/Delay3'
    *  Inport: '<Root>/Reset'
    */
-  if (Resonant_Controller_U->Reset != 0.0f) {
-    Resonant_Controller_DW->Delay_DSTATE = 0.0f;
-    Resonant_Controller_DW->Delay3_DSTATE = 0.0f;
-    Resonant_Controller_DW->Delay1_DSTATE = 0.0f;
-    Resonant_Controller_DW->Delay2_DSTATE = 0.0f;
+  if (Resonant_Controller_U->Reset != 0.0F) {
+    Resonant_Controller_DW->Delay_DSTATE = 0.0F;
+    Resonant_Controller_DW->Delay3_DSTATE = 0.0F;
+    Resonant_Controller_DW->Delay1_DSTATE = 0.0F;
+    Resonant_Controller_DW->Delay2_DSTATE = 0.0F;
   }
 
   /* Product: '<S1>/Product2' incorporates:
@@ -98,7 +98,7 @@ void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
    *  Sum: '<S1>/Sum3'
    */
   rtb_Cos = ((-rtb_Cos * Resonant_Controller_DW->Delay3_DSTATE +
-              -Resonant_Controller_DW->Delay1_DSTATE) + 2.0f * rtb_Cos *
+              -Resonant_Controller_DW->Delay1_DSTATE) + 2.0F * rtb_Cos *
              Resonant_Controller_DW->Delay2_DSTATE) + rtb_Cos1 * rtb_Product2;
 
   /* MATLAB Function: '<S1>/saturation' incorporates:
@@ -164,19 +164,19 @@ void Resonant_Controller_initialize(RT_MODEL_Resonant_Controller_T *const
   (void)memset(Resonant_Controller_U, 0, sizeof(ExtU_Resonant_Controller_T));
 
   /* external outputs */
-  Resonant_Controller_Y->out = 0.0f;
+  Resonant_Controller_Y->out = 0.0F;
 
   /* InitializeConditions for Delay: '<S1>/Delay' */
-  Resonant_Controller_DW->Delay_DSTATE = 0.0f;
+  Resonant_Controller_DW->Delay_DSTATE = 0.0F;
 
   /* InitializeConditions for Delay: '<S1>/Delay3' */
-  Resonant_Controller_DW->Delay3_DSTATE = 0.0f;
+  Resonant_Controller_DW->Delay3_DSTATE = 0.0F;
 
   /* InitializeConditions for Delay: '<S1>/Delay1' */
-  Resonant_Controller_DW->Delay1_DSTATE = 0.0f;
+  Resonant_Controller_DW->Delay1_DSTATE = 0.0F;
 
   /* InitializeConditions for Delay: '<S1>/Delay2' */
-  Resonant_Controller_DW->Delay2_DSTATE = 0.0f;
+  Resonant_Controller_DW->Delay2_DSTATE = 0.0F;
 }
 
 /*

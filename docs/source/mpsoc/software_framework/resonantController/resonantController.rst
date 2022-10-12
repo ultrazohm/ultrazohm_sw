@@ -68,7 +68,9 @@ Output struct
 .. doxygenstruct:: ExtY_Resonant_Controller_T
   :members:
 
-.. doxygentypedef:: real_T
+Datatype struct
+---------------
+.. doxygentypedef:: real32_T
 
 Description
 ^^^^^^^^^^^
@@ -91,13 +93,13 @@ Example
   :caption: Example function call to step the resonant controller.
 
   int main(void) {
-    R_controller_instance.input.T_sw = 0.0001;
-    R_controller_instance.input.VR = 160;
-    R_controller_instance.input.h = 2.0;
+    R_controller_instance.input.T_sw = 0.0001f;
+    R_controller_instance.input.VR = 160.0f;
+    R_controller_instance.input.h = 2.0f;
     R_controller_instance.input.omega_el = omega_el_rad_per_sec;
-    R_controller_instance.input.lower_limit = -2.0;
-    R_controller_instance.input.upper_limit = 2.0;
-    R_controller_instance.input.Klim = 1.0;
+    R_controller_instance.input.lower_limit = -2.0f;
+    R_controller_instance.input.upper_limit = 2.0f;
+    R_controller_instance.input.Klim = 1.0f;
     R_controller_instance.input.in_ref = d_current_ref;
     R_controller_instance.input.in_m = d_current_m;
 

@@ -18,7 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (12), Warning (1), Error (0)
  */
-
+#ifdef TEST
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
 #ifndef uz_codegen0_COMMON_INCLUDES_
@@ -129,3 +129,4 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  *
  * [EOF]
  */
+#endif

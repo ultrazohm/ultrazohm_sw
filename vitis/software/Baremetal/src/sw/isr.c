@@ -87,7 +87,7 @@ struct uz_DutyCycle_t dutycyle = {0};
 float omega_el_rad_per_sec = 0.0f;
 float V_dc_volts = 24.0f;
 float theta_offset = 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
-float adc_scaling = (20.0f/2.084f)/3.0f;
+float adc_scaling = (20.0f/2.084f); //3.2f
 float poles = 3.0f;
 
 // Variables for right motor
@@ -136,9 +136,10 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D4(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D4(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    /*
     // right motor
     Global_Data.av.theta_elec_right = 2*M_PI-fmodf(Global_Data.av.theta_elec_left*poles_right,2*M_PI)-theta_offset_right; // *poles da bei PMSM config nur 1 Pol angegeben
     i_actual_A_abc_right.a = (Global_Data.aa.A1.me.ADC_B6-2.5f)*adc_scaling_right; // zeigt 2.5 bei 0 an
@@ -149,17 +150,19 @@ void ISR_Control(void *data)
     omega_m_rad_per_sec_filtered_right = -1.0f*Global_Data.av.mechanicalRotorSpeed_filtered_left*2.0f*M_PI/60.0f;
     omega_el_rad_per_sec_right = omega_m_rad_per_sec_right*poles_right;
 
+
     if(fabs(i_actual_A_abc_right.a) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc_right.b) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc_right.c) > MAX_PHASE_CURRENT)
     	{
     		uz_assert(0);
     	}
+    */
 
     // left motor
     //if ((control_type_motor_left == foc_echt) || (control_type_motor_left ==ddpg_echt)) {
     Global_Data.av.theta_elec_left = fmodf(Global_Data.av.theta_elec_left*poles,2*M_PI)-theta_offset; // *poles da bei PMSM config nur 1 Pol angegeben
-    i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.5f)*adc_scaling; // zeigt 2.5 bei 0 an
-    i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A3-2.5f)*adc_scaling;
-    i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A4-2.5f)*adc_scaling;
+    i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.425f)*adc_scaling; // zeigt 2.5 bei 0 an
+    i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A4-2.425f)*adc_scaling;
+    i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A3-2.425f)*adc_scaling;
     i_actual_A = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, Global_Data.av.theta_elec_left);
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_left*poles*2.0f*M_PI/60.0f;
     if(fabs(i_actual_A_abc.a) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc.b) > MAX_PHASE_CURRENT || fabs(i_actual_A_abc.c) > MAX_PHASE_CURRENT)
@@ -173,12 +176,14 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	// right motor
+    	/*
     	n_ref_rpm = omega_el_ref_rad_per_sec_right*60.0f/(2.0f*M_PI*poles_right);
     	i_reference_A_right = uz_SpeedControl_sample(Speed_control_instance, omega_m_rad_per_sec_right, n_ref_rpm, V_dc_volts, i_reference_A_right.d);
 		FOC_output_Volts_right = uz_FOC_sample(FOC_instance_right, i_reference_A_right, i_actual_A_right, V_dc_volts, omega_el_rad_per_sec_right);
 		FOC_output_abc_Volts_right = uz_transformation_3ph_dq_to_abc(FOC_output_Volts_right, Global_Data.av.theta_elec_right);
 		dutycyle_right = uz_FOC_generate_DutyCycles(FOC_output_abc_Volts_right, V_dc_volts);
     	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, dutycyle_right.DutyCycle_U, dutycyle_right.DutyCycle_V, dutycyle_right.DutyCycle_W);
+    	*/
     	// left motor
     	switch (control_type_motor_left) {
     		case foc_ip:
@@ -242,7 +247,6 @@ void ISR_Control(void *data)
     	    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, dutycyle.DutyCycle_U, dutycyle.DutyCycle_V, dutycyle.DutyCycle_W);
     			break;
     		case none:
-    			// Motor 1 auf was setzen?
     			break;
     		default: abort();
     	}
@@ -253,6 +257,7 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
     }
+
     // Set duty cycles for three-level modulator
 //    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 //                        Global_Data.rasv.halfBridge2DutyCycle,

@@ -31,7 +31,7 @@ typedef struct uz_resonantController_t{
 }uz_resonantController_t;
 
 /**
- * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user
+ * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user.
  */
 struct uz_resonantController_config {
 	float T_sw;			/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
@@ -82,9 +82,9 @@ float uz_resonantController_get_output(uz_resonantController_t *self);
 /**
  * @brief sets input of the resonant controller
  * @param self pointer to uz_resonantController_t* object
- * @param float in_ref input reference value for the controller
- * @param float in_m input measured value for the controller
- * @param float omega_el current omega_el for the controller
+ * @param float in_ref, input reference value for the controller
+ * @param float in_m, input measured value for the controller
+ * @param float omega_el, current angular velocity for the controller
  * @return void
  */
 void uz_resonantController_set_input(uz_resonantController_t *self, float in_ref, float in_m, float omega_el);
@@ -93,10 +93,10 @@ void uz_resonantController_set_input(uz_resonantController_t *self, float in_ref
 /**
  * @brief sets config of resonant controller
  * @param self pointer to uz_resonantController_t* object
- * @param struct uz_resonantController_config config new config for the resonant controller
+ * @param struct uz_resonantController_config, new config for the resonant controller
  * @return void
  */
-void uz_resonantController_config(uz_resonantController_t *self, struct uz_resonantController_config config);
+void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config);
 
 
 #endif //UZ_RESONANTCONTROLLER_H

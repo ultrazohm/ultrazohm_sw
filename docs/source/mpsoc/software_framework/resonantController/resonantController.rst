@@ -21,8 +21,8 @@ The resonant frequency is specified by :math:`\omega_R = h \cdot \omega_{el}`, w
 Resonant-Controller
 -------------------
 
-.. doxygenstruct:: uz_resonantController
-  :members:
+.. doxygenstruct:: uz_resonantController_t
+
 
 Description
 ^^^^^^^^^^^
@@ -30,13 +30,19 @@ Description
 Struct to create a resonant controller instance.
 
 
+.. doxygenstruct:: uz_resonantController_config
+  :members:
+
+Description
+^^^^^^^^^^^
+
+Struct for the configuration of the resonant controller
+
+
 Init function
 -------------
 
-
 .. doxygenfunction:: uz_resonantController_init
-
-
 
 
 Example
@@ -44,49 +50,54 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example to create and init a resonant-Controller instance.
+  :caption: Example to create and initialize a resonant-Controller instance.
 
   int main(void) {
-    uz_resonantController* R_controller_instance;
-    R_controller_instance = uz_resonantController_init();
+    uz_resonantController_t* R_controller_instance;
+
+    const struct uz_resonantController_config config_R = {
+		.T_sw = 0.0001f,
+		.VR = 52.5f,
+		.h = 2.0f,
+		.omega_el = 10.0f,
+		.lower_limit = -4.0f,
+		.upper_limit = 4.0f,
+		.Klim = 10.0f,
+		.in_ref = 0.0f,
+		.in_m = 0.0f,
+		.Reset = 0.0f
+    };
+
+    R_controller_instance = uz_resonantController_init(config_R);
   }
 
+Set input function
+------------------
 
-Input struct
-------------
-
-.. doxygenstruct:: ExtU_Resonant_Controller_T
-  :members:
+.. doxygenfunction:: uz_resonantController_set_input
 
 Description
 ^^^^^^^^^^^
 
-Struct containing all the inputs of the resonant controller.
+Function to set the input of the resonant controller before each step.
 
-Output struct
--------------
+Get output function
+-------------------
 
-.. doxygenstruct:: ExtY_Resonant_Controller_T
-  :members:
-
-
+.. doxygenfunction:: uz_resonantController_get_output
 
 Description
 ^^^^^^^^^^^
 
-Struct containing the output of the resonant controller.
+Function to get the output of the resonant controller after each step.
 
-
-Datatype struct
----------------
-
-.. doxygentypedef:: real32_T
 
 
 Step function
 -------------
 
 .. doxygenfunction:: uz_resonantController_step
+
 
 Example
 ^^^^^^^
@@ -96,19 +107,13 @@ Example
   :caption: Example function call to step the resonant controller once
 
   int main(void) {
-    R_controller_instance->input.T_sw = 0.0001f;
-    R_controller_instance->input.VR = 160.0f;
-    R_controller_instance->input.h = 2.0f;
-    R_controller_instance->input.omega_el = omega_el_rad_per_sec;
-    R_controller_instance->input.lower_limit = -2.0f;
-    R_controller_instance->input.upper_limit = 2.0f;
-    R_controller_instance->input.Klim = 1.0f;
-    R_controller_instance->input.in_ref = d_current_ref;
-    R_controller_instance->input.in_m = d_current_m;
 
+    // set inputs
+    uz_resonantController_set_input(R_controller_instance, in_ref, in_m, omega_el_rad_per_sec);
+    // step once
     uz_resonantController_step(R_controller_instance);
-
-    output = R_controller_instance->output.out;
+    //read output
+    output = uz_resonantController_get_output(R_controller_instance);
     
   }
 
@@ -132,14 +137,38 @@ Example
   :caption: Example function call to reset the resonant controller.
 
   int main(void) {
-     uz_resonantController_reset(&_controller_instance);
+     uz_resonantController_reset(R_controller_instance);
   }
 
 Description
 ^^^^^^^^^^^
 
 Resets the Resonant-Controller. The initial condition for the integrator and the output after the reset is 0.0f.
-Alternatively, the reset input of the controller can be set to 1 while calling the step-function.
+
+
+Config function
+---------------
+
+.. doxygenfunction:: uz_resonantController_set_config
+
+Example
+^^^^^^^
+
+.. code-block:: c
+  :linenos:
+  :caption: Example to change the config of the resonant controller.
+
+  int main(void) {
+    config.lower_limit = -10.0f;
+    config.upper_limit = 10.0f;
+    config.h = 7.0f;
+	  uz_resonantController_config(R_controller_instance, config);
+  }
+
+Description
+^^^^^^^^^^^
+
+Function to change the configuration of the resonant controller by passing a new or changed config struct to the controller.
 
 
 

@@ -115,14 +115,6 @@ void test_uz_resonant_controller_StepAndReset(void)
 }
 
 
-
-
-
-
-
-
-
-
 void test_uz_resonant_controller_set_input(void){
 	
 	uz_resonantController_t* test_R_controller_set_input;
@@ -160,7 +152,17 @@ void test_uz_resonantController_get_output(void)
 	
 }
 
+void test_uz_resonantController_set_config(void)
+{
+	
+	uz_resonantController_t* test_R_controller_config;
+	test_R_controller_config = uz_resonantController_init(config);
 
+	config.h = 7.0f;
+
+	uz_resonantController_set_config(test_R_controller_config, config);
+
+}
 
 
 #endif // TEST

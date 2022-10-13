@@ -95,7 +95,7 @@ void uz_resonantController_set_input(uz_resonantController_t *self, float _in_re
 
 
 
-void uz_resonantController_config(uz_resonantController_t *self, struct uz_resonantController_config config){
+void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config){
 	uz_assert(config.T_sw >= 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);

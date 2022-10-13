@@ -1,3 +1,4 @@
+#ifdef TEST
 #ifndef UZ_SUM_H
 #define UZ_SUM_H
 
@@ -10,3 +11,4 @@ float uz_sum_get_integral_over_sum(uz_sum_t* self);
 
 
 #endif // UZ_SUM_H
+#endif

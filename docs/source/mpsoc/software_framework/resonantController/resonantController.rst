@@ -44,11 +44,11 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example create and init a resonant-Controller instance.
+  :caption: Example to create and init a resonant-Controller instance.
 
   int main(void) {
-    uz_resonantController R_controller_instance;
-    uz_resonantController_init(&R_controller_instance);
+    uz_resonantController* R_controller_instance;
+    R_controller_instance = uz_resonantController_init();
   }
 
 
@@ -93,22 +93,22 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call to step the resonant controller.
+  :caption: Example function call to step the resonant controller once
 
   int main(void) {
-    R_controller_instance.input.T_sw = 0.0001f;
-    R_controller_instance.input.VR = 160.0f;
-    R_controller_instance.input.h = 2.0f;
-    R_controller_instance.input.omega_el = omega_el_rad_per_sec;
-    R_controller_instance.input.lower_limit = -2.0f;
-    R_controller_instance.input.upper_limit = 2.0f;
-    R_controller_instance.input.Klim = 1.0f;
-    R_controller_instance.input.in_ref = d_current_ref;
-    R_controller_instance.input.in_m = d_current_m;
+    R_controller_instance->input.T_sw = 0.0001f;
+    R_controller_instance->input.VR = 160.0f;
+    R_controller_instance->input.h = 2.0f;
+    R_controller_instance->input.omega_el = omega_el_rad_per_sec;
+    R_controller_instance->input.lower_limit = -2.0f;
+    R_controller_instance->input.upper_limit = 2.0f;
+    R_controller_instance->input.Klim = 1.0f;
+    R_controller_instance->input.in_ref = d_current_ref;
+    R_controller_instance->input.in_m = d_current_m;
 
-    uz_resonantController_step(&R_controller_instance);
+    uz_resonantController_step(R_controller_instance);
 
-    output = R_controller_instance.output.out;
+    output = R_controller_instance->output.out;
     
   }
 
@@ -132,7 +132,7 @@ Example
   :caption: Example function call to reset the resonant controller.
 
   int main(void) {
-     uz_resonantController_reset(&R_controller_instance);
+     uz_resonantController_reset(&_controller_instance);
   }
 
 Description

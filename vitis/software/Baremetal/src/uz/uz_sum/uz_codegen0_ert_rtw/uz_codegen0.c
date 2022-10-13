@@ -18,6 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (12), Warning (1), Error (0)
  */
+#ifdef TEST
 
 #include "uz_codegen0.h"
 #include <math.h>
@@ -132,3 +133,4 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
  *
  * [EOF]
  */
+#endif

@@ -18,7 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (12), Warning (1), Error (0)
  */
-
+#ifdef TEST
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
 
@@ -180,3 +180,4 @@ typedef void * pointer_T;
  *
  * [EOF]
  */
+#endif

@@ -18,6 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (12), Warning (1), Error (0)
  */
+#ifdef TEST
 
 #ifndef RTW_HEADER_rtmodel_h_
 #define RTW_HEADER_rtmodel_h_
@@ -49,3 +50,4 @@
  *
  * [EOF]
  */
+#endif

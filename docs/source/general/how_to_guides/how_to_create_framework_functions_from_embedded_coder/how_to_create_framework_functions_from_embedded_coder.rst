@@ -56,6 +56,9 @@ Create framework function
 
     cp -R src/Codegen/uz_codegen0_ert_rtw/ src/uz/uz_sum/
 
+.. warning:: Re-using this module with the same name breaks the software. In the finished code of this how to guide, everything in ``uz_sum`` folder is protected by ``#ifdef TEST`` such that it can only be used in the ceedling unit tests.
+
+
 5. Create the allocation scheme using the allocation snippet (see :ref:`static_memory_allocation`)
 
 .. code-block::

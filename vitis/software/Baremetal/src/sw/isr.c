@@ -112,7 +112,7 @@ uint32_t test_index = 42;
 float test_angle = 0.0;
 
 float id_ref = 0.0f;
-float iq_ref = 10.0f;
+float iq_ref = 5.0f;
 float ix_ref = 0.0f;
 float iy_ref = 0.0f;
 
@@ -138,7 +138,7 @@ struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_outputs = {
     .theta_el = 0.0f};
 float load_torque = 0.0f;
 float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
-float setp_rpm = 60.0f;
+float setp_rpm = 1000.0f;
 
 
 
@@ -190,6 +190,9 @@ void ISR_Control(void *data)
     //uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(1.0f, 14));
 
+    //write offset angle to park transform ip core
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104, uz_convert_float_to_sfixed(UZ_PIf, 14)); //PMSM ip has angle -pi to pi, i need 0 to 2pi
+
 //    dac_input[0]=Global_Data.objects.three_phase1.a;
 //    dac_input[1]=Global_Data.objects.three_phase1.b;
 //    dac_input[2]=Global_Data.objects.three_phase1.c;
@@ -225,8 +228,8 @@ void ISR_Control(void *data)
     Global_Data.av.z2 = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x114),11);
 
     // read dq currents from ip-core
-    Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104), 16);
-    Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x108), 16);
+    Global_Data.av.I_d = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x108), 16);
+    Global_Data.av.I_q = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x10C), 16);
 
     // read p.u. voltages according to index
     //uz_axi_write_uint32(XPAR_UZ_USER_UZ_6_PH_VOLTAGES_IP_0_BASEADDR+0x104, test_index); //write index via AXI

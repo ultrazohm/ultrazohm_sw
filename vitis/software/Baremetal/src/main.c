@@ -190,7 +190,7 @@ int main(void)
             uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
             uz_axi_write_uint32(XPAR_UZ_USER_UZ_6PH_DELAY_IP_0_BASEADDR + 0x12C, dengine.polePairs);
 
-            //debug for prediciton ip-core
+            //debug for prediction ip-core
             uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_PREDICT_IP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
             uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_PREDICT_IP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
             uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_PREDICT_IP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));

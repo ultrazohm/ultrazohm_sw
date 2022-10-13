@@ -56,7 +56,7 @@ Create framework function
 
     cp -R src/Codegen/uz_codegen0_ert_rtw/ src/uz/uz_sum/
 
-5. Create the allocation scheme using the allocation snippet (see :ref:`how_to_create_ipcore_driver`)
+5. Create the allocation scheme using the allocation snippet (see :ref:`static_memory_allocation`)
 
 .. code-block::
 

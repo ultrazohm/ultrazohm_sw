@@ -34,20 +34,27 @@ static uz_sum_t* uz_sum_allocation(void){
 
 uz_sum_t* uz_sum_init(void) {
     uz_sum_t* self = uz_sum_allocation();
+    self->PtrToModelData=&self->modelData;
+    self->PtrToModelData->dwork=&self->rtDW;
+    self->PtrToModelData->inputs=&self->input;
+    self->PtrToModelData->outputs=&self->output;
     return (self);
 }
 
 void uz_sum_step(uz_sum_t* self, float a, float b, float c){
-    
+    self->input.summand1=a;
+    self->input.summand2=b;
+    self->input.summand3=c;
+    uz_codegen0_step(self->PtrToModelData);
 }
 
 
 float uz_sum_get_sum(uz_sum_t* self){
-
+    return self->output.sum;
 }
 
 float uz_sum_get_integral_over_sum(uz_sum_t* self){
-
+    return self->output.IntegrationOfSum;
 }
 
 #endif

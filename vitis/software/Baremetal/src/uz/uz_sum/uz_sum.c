@@ -5,7 +5,7 @@
 #if UZ_SUM_MAX_INSTANCES > 0U
 
 #ifndef TEST
-#error DO NOT USE! This function is only exists for demonstration purposes in the How to create framework functions from embedded coder example.
+#error DO NOT USE! This function only exists for demonstration purposes in the How to create framework functions from embedded coder example.
 #endif
 
 

@@ -56,30 +56,20 @@ Example
     uz_resonantController_t* R_controller_instance;
 
     const struct uz_resonantController_config config_R = {
-		.T_sw = 0.0001f,
-		.VR = 52.5f,
-		.h = 2.0f,
-		.omega_el = 10.0f,
+		.sampling_time = 0.0001f,
+		.gain = 52.5f,
+		.harmonic_order = 2.0f,
+		.fundamental_frequency = 10.0f,
 		.lower_limit = -4.0f,
 		.upper_limit = 4.0f,
-		.Klim = 10.0f,
-		.in_ref = 0.0f,
-		.in_m = 0.0f,
-		.Reset = 0.0f
+		.antiwindup_gain = 10.0f,
+		.in_reference_value = 0.0f,
+		.in_measured_value = 0.0f,
+		.reset = 0.0f
     };
 
     R_controller_instance = uz_resonantController_init(config_R);
   }
-
-Set input function
-------------------
-
-.. doxygenfunction:: uz_resonantController_set_input
-
-Description
-^^^^^^^^^^^
-
-Function to set the input of the resonant controller before each step.
 
 Get output function
 -------------------
@@ -108,10 +98,8 @@ Example
 
   int main(void) {
 
-    // set inputs
-    uz_resonantController_set_input(R_controller_instance, in_ref, in_m, omega_el_rad_per_sec);
     // step once
-    uz_resonantController_step(R_controller_instance);
+    uz_resonantController_step(R_controller_instance, in_ref_value, in_measured_value, fundamental_fequency);
     //read output
     output = uz_resonantController_get_output(R_controller_instance);
     
@@ -146,8 +134,8 @@ Description
 Resets the Resonant-Controller. The initial condition for the integrator and the output after the reset is 0.0f.
 
 
-Config function
----------------
+Set-Config function
+-------------------
 
 .. doxygenfunction:: uz_resonantController_set_config
 
@@ -161,8 +149,9 @@ Example
   int main(void) {
     config.lower_limit = -10.0f;
     config.upper_limit = 10.0f;
-    config.h = 7.0f;
-	  uz_resonantController_config(R_controller_instance, config);
+    config.harmonic_order= 7.0f;
+
+	  uz_resonantController_set_config(R_controller_instance, config);
   }
 
 Description

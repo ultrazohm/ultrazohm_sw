@@ -51,7 +51,7 @@ struct uz_resonantController_config {
 
 /**
  * @brief init function for the resonant controller
- * @param uz_resonantController_config config for the resonant controller
+ * @param struct uz_resonantController_config config for the resonant controller
  * @return uz_resonant_controller* to the resonant controller
  */
 uz_resonantController_t* uz_resonantController_init(struct uz_resonantController_config config);

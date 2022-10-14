@@ -61,7 +61,7 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
  * @param self pointer to uz_resonantController_t* object
  * @return void
  */
-void uz_resonantController_step(uz_resonantController_t *self);
+void uz_resonantController_step(uz_resonantController_t *self, float in_ref, float in_m, float omega_el);
 
 /**
  * @brief reset function of the resonant controller
@@ -74,20 +74,12 @@ void uz_resonantController_reset(uz_resonantController_t *self);
 /**
  * @brief returns output of the resonant controller
  * @param self pointer to uz_resonantController_t* object
- * @return float output value
- */
-float uz_resonantController_get_output(uz_resonantController_t *self);
-
-
-/**
- * @brief sets input of the resonant controller
- * @param self pointer to uz_resonantController_t* object
  * @param float in_ref, input reference value for the controller
  * @param float in_m, input measured value for the controller
  * @param float omega_el, current angular velocity for the controller
- * @return void
+ * @return float output value
  */
-void uz_resonantController_set_input(uz_resonantController_t *self, float in_ref, float in_m, float omega_el);
+float uz_resonantController_get_output(uz_resonantController_t *self);
 
 
 /**

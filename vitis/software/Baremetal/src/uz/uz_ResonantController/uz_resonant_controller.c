@@ -47,20 +47,20 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
 	Resonant_Controller_initialize(self->PtrToModelData);
 
 
-  	uz_assert(config.T_sw >= 0.0f);
+  	uz_assert(config.sampling_time >= 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
 
-	self->input.T_sw = config.T_sw;
-	self->input.VR = config.VR;
-	self->input.h = config.h;
-	self->input.omega_el = config.omega_el;
+	self->input.T_sw = config.sampling_time;
+	self->input.VR = config.gain;
+	self->input.h = config.harmonic_order;
+	self->input.omega_el = config.fundamental_frequency;
 	self->input.lower_limit = config.lower_limit;
 	self->input.upper_limit = config.upper_limit;
-	self->input.Klim = config.Klim;
-	self->input.in_ref = config.in_ref;
-	self->input.in_m = config.in_m;
-	self->input.Reset = config.Reset;
+	self->input.Klim = config.antiwindup_gain;
+	self->input.in_ref = config.in_reference_value;
+	self->input.in_m = config.in_measured_value;
+	self->input.Reset = config.reset;
 	return (self);
 }
 
@@ -91,20 +91,20 @@ float uz_resonantController_get_output(uz_resonantController_t *self){
 
 
 void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config){
-	uz_assert(config.T_sw >= 0.0f);
+	uz_assert(config.sampling_time >= 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
 
-	self->input.T_sw = config.T_sw;
-	self->input.VR = config.VR;
-	self->input.h = config.h;
-	self->input.omega_el = config.omega_el;
+	self->input.T_sw = config.sampling_time;
+	self->input.VR = config.gain;
+	self->input.h = config.harmonic_order;
+	self->input.omega_el = config.fundamental_frequency;
 	self->input.lower_limit = config.lower_limit;
 	self->input.upper_limit = config.upper_limit;
-	self->input.Klim = config.Klim;
-	self->input.in_ref = config.in_ref;
-	self->input.in_m = config.in_m;
-	self->input.Reset = config.Reset;
+	self->input.Klim = config.antiwindup_gain;
+	self->input.in_ref = config.in_reference_value;
+	self->input.in_m = config.in_measured_value;
+	self->input.Reset = config.reset;
 }
 
 

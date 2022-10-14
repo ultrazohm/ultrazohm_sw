@@ -34,16 +34,16 @@ typedef struct uz_resonantController_t{
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user.
  */
 struct uz_resonantController_config {
-	float T_sw;			/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
-	float VR;			/**< Gain of the resonant Controller*/
-	float h;			/**< Order of harmonic to be controlled*/
-	float omega_el;		/**< Fundamental Frequency in rad/s */
-	float lower_limit;	/**< Lower limit for the output limitation */
-	float upper_limit;	/**< Upper limit for the output limitation. Must be greater than lower limit */
-	float Klim;			/**< Gain of anti-windup feedback*/
-	float in_ref;		/**< Input reference value*/
-	float in_m;			/**< Input measured value*/
-	float Reset;		/**< Reset input*/
+	float sampling_time;			/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+	float gain;						/**< Gain of the resonant Controller*/
+	float harmonic_order;			/**< Order of harmonic to be controlled*/
+	float fundamental_frequency;	/**< Fundamental Frequency in rad/s */
+	float lower_limit;				/**< Lower limit for the output limitation */
+	float upper_limit;				/**< Upper limit for the output limitation. Must be greater than lower limit */
+	float antiwindup_gain;			/**< Gain of anti-windup feedback*/
+	float in_reference_value;		/**< Input reference value*/
+	float in_measured_value;		/**< Input measured value*/
+	float reset;					/**< Reset input*/
 };
 
 
@@ -59,9 +59,12 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
 /**
  * @brief step function of the resonant controller, steps the controller once
  * @param self pointer to uz_resonantController_t* object
+ * @param float in_reference_value, input reference value for the controller
+ * @param float in_measured_value, input measured value for the controller
+ * @param float fundamental_frequency, current angular velocity for the controller
  * @return void
  */
-void uz_resonantController_step(uz_resonantController_t *self, float in_ref, float in_m, float omega_el);
+void uz_resonantController_step(uz_resonantController_t *self, float in_reference_value, float in_measured_value, float fundamental_frequency);
 
 /**
  * @brief reset function of the resonant controller
@@ -74,9 +77,6 @@ void uz_resonantController_reset(uz_resonantController_t *self);
 /**
  * @brief returns output of the resonant controller
  * @param self pointer to uz_resonantController_t* object
- * @param float in_ref, input reference value for the controller
- * @param float in_m, input measured value for the controller
- * @param float omega_el, current angular velocity for the controller
  * @return float output value
  */
 float uz_resonantController_get_output(uz_resonantController_t *self);

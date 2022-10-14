@@ -13,16 +13,16 @@
 struct uz_resonantController_config config = {0};
 void setUp(void)
 {
-	config.T_sw = 0.0001f;	/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
-	config.VR = 160.0f;		/**< Gain of the resonant Controller*/
-	config.h = 2.0f;			/**< Order of harmonic to be controlled*/
-	config.omega_el = 10.0f;	/**< Fundamental Frequency in rad/s */
-	config.lower_limit = -2.0f;	/**< Lower limit for the output limitation */
-	config.upper_limit = 2.0f;	/**< Upper limit for the output limitation. Must be greater than lower limit */
-	config.Klim = 1.0f;			/**< Gain of anti-windup feedback*/
-	config.in_ref = 3.0f;		/**< Input reference value*/
-	config.in_m = 3.0f;			/**< Input measured value*/
-	config.Reset = 0.0f;		/**< Reset input*/
+	config.sampling_time = 0.0001f;			/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+	config.gain = 160.0f;					/**< Gain of the resonant Controller*/
+	config.harmonic_order = 2.0f;			/**< Order of harmonic to be controlled*/
+	config.fundamental_frequency = 10.0f;	/**< Fundamental Frequency in rad/s */
+	config.lower_limit = -2.0f;				/**< Lower limit for the output limitation */
+	config.upper_limit = 2.0f;				/**< Upper limit for the output limitation. Must be greater than lower limit */
+	config.antiwindup_gain = 1.0f;			/**< Gain of anti-windup feedback*/
+	config.in_reference_value = 3.0f;		/**< Input reference value*/
+	config.in_measured_value = 3.0f;		/**< Input measured value*/
+	config.reset = 0.0f;					/**< Reset input*/
 
 
 }
@@ -142,7 +142,7 @@ void test_uz_resonantController_set_config(void)
 	uz_resonantController_t* test_R_controller_config;
 	test_R_controller_config = uz_resonantController_init(config);
 
-	config.h = 7.0f;
+	config.harmonic_order = 7.0f;
 
 	uz_resonantController_set_config(test_R_controller_config, config);
 

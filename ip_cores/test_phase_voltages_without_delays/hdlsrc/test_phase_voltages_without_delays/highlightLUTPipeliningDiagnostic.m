@@ -1,0 +1,18 @@
+open_system('test_phase_voltages_without_delays');
+open_system('gm_test_phase_voltages_without_delays');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/Look-Up Table', 'user1');
+annotate_port('gm_test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 'user1');
+annotate_port('test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/sincos hdl/cos_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/Look-Up Table1', 'user1');
+annotate_port('gm_test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/Look-Up Table1', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 'user1');
+annotate_port('test_phase_voltages_without_delays/Phase_voltages_per_switching_state1/Sine HDL Optimized/sincos hdl/sin_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');

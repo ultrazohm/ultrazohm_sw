@@ -36,13 +36,12 @@
 
 #include "../Codegen/uz_singleindex_faultdetection.h"
 
-#include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
 #include "../uz/uz_FOC/uz_FOC.h"
 #include "../uz/uz_filter/uz_filter.h"
 
-#include "../uz/uz_6ph_opf_control/parameter_MLMT_ADT.h"
 
-#include "../IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
+#include "../uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
+#include "../uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -60,6 +59,8 @@ uz_6ph_abc_t i_6phase_filtered = {0};
 uz_6ph_alphabeta_t i_abxyz1z2 = {0};
 uz_6ph_alphabeta_t i_abxyz1z2_filtered = {0};
 
+float theta_ = 0;
+
 float vsd_output[6] = {0};
 float vsd_output_hyst[6] = {0};
 float vsd_output_filtered[6] = {0};
@@ -68,6 +69,8 @@ float vsd_output_V4[6] = {0};
 float vsd_output_hyst_V4[6] = {0};
 float vsd_output_filtered_V4[6] = {0};
 
+
+int toggle = 0;
 float Rb1[5] = {0};
 float Rb1_filtered[5] = {0};
 
@@ -75,27 +78,31 @@ float singleIndex_FD_R = 0.0f;
 
 uz_6phFD_indices R_FD = {0};
 uz_6phFD_indices R_FD_Filt = {0};
+uz_6phFD_indices R_FD_Filt_hyst = {0};
 uz_6phFD_indices R_FD_eval = {0};
 
-
-extern uz_vsd_opf_fd_v7 uz_FD_v7;
+uz_6phFD_indices FD_indices = {0};
 
 extern uz_singleindex_faultdetection singleindex_FD;
 
 
-extern uz_resonantController rc_2H_x;
-extern uz_resonantController rc_2H_y;
-extern uz_resonantController rc_6H_x;
-extern uz_resonantController rc_6H_y;
-extern uz_resonantController rc_2H_d;
-extern uz_resonantController rc_2H_q;
+extern uz_resonantController_t* rc_2H_x;
+extern uz_resonantController_t* rc_2H_y;
+extern uz_resonantController_t* rc_6H_x;
+extern uz_resonantController_t* rc_6H_y;
+extern uz_resonantController_t* rc_2H_d;
+extern uz_resonantController_t* rc_2H_q;
+extern uz_resonantController_t* rc_8H_d;
+extern uz_resonantController_t* rc_8H_q;
+extern uz_resonantController_t* rc_12H_d;
+extern uz_resonantController_t* rc_12H_q;
 
-extern uz_resonantController rc_1H_z1;
-extern uz_resonantController rc_1H_z2;
-extern uz_resonantController rc_3H_z1;
-extern uz_resonantController rc_3H_z2;
-extern uz_resonantController rc_9H_z1;
-extern uz_resonantController rc_9H_z2;
+extern uz_resonantController_t* rc_1H_z1;
+extern uz_resonantController_t* rc_1H_z2;
+extern uz_resonantController_t* rc_3H_z1;
+extern uz_resonantController_t* rc_3H_z2;
+extern uz_resonantController_t* rc_9H_z1;
+extern uz_resonantController_t* rc_9H_z2;
 
 
 
@@ -104,25 +111,22 @@ float r_c_Tsw;
 float r_c_omega_r;
 
 
-extern uz_movAverageFilter_t* movAvFilter;
+extern uz_movingAverageFilter_t* movAvFilter_R1;
+extern uz_movingAverageFilter_t* movAvFilter_R2;
+extern uz_movingAverageFilter_t* movAvFilter_R3;
+extern uz_movingAverageFilter_t* movAvFilter_R4;
+extern uz_movingAverageFilter_t* movAvFilter_R5;
+extern uz_movingAverageFilter_t* movAvFilter_R6;
 
-extern uz_movAverageFilter_t* movAvFilter_R1;
-extern uz_movAverageFilter_t* movAvFilter_R2;
-extern uz_movAverageFilter_t* movAvFilter_R3;
-extern uz_movAverageFilter_t* movAvFilter_R4;
-extern uz_movAverageFilter_t* movAvFilter_R5;
-extern uz_movAverageFilter_t* movAvFilter_R6;
-
-int toggle = 0;
+extern uz_movingAverageFilter_t* movAvFilter_temp1;
+extern uz_movingAverageFilter_t* movAvFilter_temp2;
+extern uz_movingAverageFilter_t* movAvFilter_temp3;
+extern uz_movingAverageFilter_t* movAvFilter_temp4;
+extern uz_movingAverageFilter_t* movAvFilter_temp5;
 
 float filteredFDIndices[6] = {0};
 
-extern uz_filter_t* filter_a1;
-extern uz_filter_t* filter_b1;
-extern uz_filter_t* filter_c1;
-extern uz_filter_t* filter_a2;
-extern uz_filter_t* filter_b2;
-extern uz_filter_t* filter_c2;
+float tempfilteredFDIndices[5] = {0};
 
 float testvalue = 0.0f;
 
@@ -131,11 +135,22 @@ float testvalue = 0.0f;
 
 extern uz_FOC* FOC_dq;
 extern struct uz_FOC_config config_FOC;
-extern struct uz_PMSM_t config_PMSM;
 
 
 float error_z1z2_s[2];
 float error_z1z2_n[2];
+
+float dq_error[2];
+
+float xy2Rout[2];
+float xy6Rout[2];
+float dq2Rout[2];
+float dq12Rout[2];
+float dq8Rout[2];
+float z1z2_1Rout[2];
+float z1z2_3Rout[2];
+float z1z2_9Rout[2];
+int ref_counter = 0;
 
 
 uz_6ph_abc_t m_6ph_abc_currents = {0};
@@ -151,12 +166,10 @@ uz_3ph_alphabeta_t ref_alphabeta_voltage = {0};
 uz_3ph_dq_t ref_dq_voltage = {0};
 uz_3ph_dq_t ref_dq_n_voltage = {0};
 
+uz_3ph_dq_t ref_dq_voltage_PI = {0};
 
-extern uz_PI_Controller* PI_d_n;
-extern uz_PI_Controller* PI_q_n;
-extern uz_PI_Controller* PI_x_s;
+
 extern uz_PI_Controller* PI_x_n;
-extern uz_PI_Controller* PI_y_s;
 extern uz_PI_Controller* PI_y_n;
 extern uz_PI_Controller* PI_z1;
 extern uz_PI_Controller* PI_z2;
@@ -227,20 +240,29 @@ float theta_el_offset = 0.0f;
 
 float omega_el_rad_per_sec = 0.0f;
 int mov_average_filter_length = 0;
+int mov_average_filter_length1 = 0;
+int mov_average_filter_length2 = 0;
+int mov_average_filter_length3 = 0;
+int mov_average_filter_length4 = 0;
+int mov_average_filter_length5 = 0;
 
+float movave_length = 0.0f;
 
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;
 extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
 
-bool dq_2 = false;
-bool xy_n = false;
-bool xy_n_2 = false;
-bool xy_n_6 = false;
-bool z1z2_1H = false;
-bool z1z2_3H = false;
-bool z1z2_9H = false;
-bool z1z2_control = false;
+bool dq_2 = true;
+bool dq_8 = false;
+bool dq_12 = true;
+bool xy_n_PI = true;
+bool xy_n = true;
+bool xy_n_2 = true;
+bool xy_n_6 = true;
+bool z1z2_1H = true;
+bool z1z2_3H = true;
+bool z1z2_9H = true;
+bool z1z2_control = true;
 
 
 int opf_phases[6] = {0};
@@ -255,8 +277,6 @@ int OPF_b2;
 int OPF_c2;
 int display_OPF;
 float display_OPF_f;
-
-extern uz_vsd_and_park_transformation_6phase_t* vsd_park;
 
 
 //==============================================================================================================================================================
@@ -302,7 +322,7 @@ void ISR_Control(void *data)
 */
 
 	//crude over current protection
-	if(fabs(m_6ph_abc_currents.a1) > 20.0f || fabs(m_6ph_abc_currents.b1) > 20.0f || fabs(m_6ph_abc_currents.c1) > 20.0f || fabs(m_6ph_abc_currents.a2) > 20.0f || fabs(m_6ph_abc_currents.b2) > 20.0f || fabs(m_6ph_abc_currents.c2) > 20.0f){
+	if(fabs(m_6ph_abc_currents.a1) > 25.0f || fabs(m_6ph_abc_currents.b1) > 25.0f || fabs(m_6ph_abc_currents.c1) > 25.0f || fabs(m_6ph_abc_currents.a2) > 25.0f || fabs(m_6ph_abc_currents.b2) > 25.0f || fabs(m_6ph_abc_currents.c2) > 25.0f){
 
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -372,8 +392,8 @@ void ISR_Control(void *data)
 		// calculation of fault indices
     R_FD = uz_vsd_opf_6ph_faultdetection(m_6ph_alphabeta_currents);
     	// hysteresis filter
-    R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.8, 1.2);
-
+    R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.9, 1.1);
+    R_FD_Filt_hyst = R_FD_Filt;
 //Single Index Fault detection:
 /*
     singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
@@ -391,7 +411,7 @@ void ISR_Control(void *data)
     // moving average filter for fault indices:
 
     //calculate optimal filterlength from omega_el
-    float k = 1.0;	//portion of one electric period
+    float k = 0.4;	//portion of one electric period
 
     if (omega_el_rad_per_sec != 0){
     	mov_average_filter_length = k * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
@@ -399,32 +419,53 @@ void ISR_Control(void *data)
     	mov_average_filter_length = 0;
     }
 
+    ///////// temp
+    if (omega_el_rad_per_sec != 0){
+    	mov_average_filter_length1 = 0.1 * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
+    	mov_average_filter_length2 = 0.2 * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
+    	mov_average_filter_length3 = 0.3 * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
+    	mov_average_filter_length4 = 0.4 * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
+    	mov_average_filter_length5 = 0.6 * 10000 * 2 * M_PI / abs(omega_el_rad_per_sec);
+    }else{
+    	mov_average_filter_length = 0;
+    }
+    ///////////////////
+
+    movave_length = (float)mov_average_filter_length/k;
+
     //Splitted the movAverageFiltering into two sets, each executed every other cycle (10kHz reduced to 5kHz) to save computations
+
     mov_average_filter_length = mov_average_filter_length/2;
 
+if(toggle == 0){
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R1, mov_average_filter_length);
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R2, mov_average_filter_length);
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R3, mov_average_filter_length);
 
-    if(toggle == 0){
-		uz_movAverageFilter_set_filterLength(movAvFilter_R1, mov_average_filter_length);
-		uz_movAverageFilter_set_filterLength(movAvFilter_R2, mov_average_filter_length);
-		uz_movAverageFilter_set_filterLength(movAvFilter_R3, mov_average_filter_length);
+	filteredFDIndices[0] = uz_movingAverageFilter_sample(movAvFilter_R1, R_FD_Filt.R1);
+    filteredFDIndices[1] = uz_movingAverageFilter_sample(movAvFilter_R2, R_FD_Filt.R2);
+    filteredFDIndices[2] = uz_movingAverageFilter_sample(movAvFilter_R3, R_FD_Filt.R3);
+    toggle = 1;
+}else{
 
-	    filteredFDIndices[0] = uz_movAverageFilter_sample(movAvFilter_R1, R_FD_Filt.R1);
-	    filteredFDIndices[1] = uz_movAverageFilter_sample(movAvFilter_R2, R_FD_Filt.R2);
-	    filteredFDIndices[2] = uz_movAverageFilter_sample(movAvFilter_R3, R_FD_Filt.R3);
-	    toggle = 1;
-    }
-    else{
-		uz_movAverageFilter_set_filterLength(movAvFilter_R4, mov_average_filter_length);
-		uz_movAverageFilter_set_filterLength(movAvFilter_R5, mov_average_filter_length);
-		uz_movAverageFilter_set_filterLength(movAvFilter_R6, mov_average_filter_length);
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R4, mov_average_filter_length);
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R5, mov_average_filter_length);
+	uz_movingAverageFilter_set_filterLength(movAvFilter_R6, mov_average_filter_length);
 
-	    filteredFDIndices[3] = uz_movAverageFilter_sample(movAvFilter_R4, R_FD_Filt.R4);
-	    filteredFDIndices[4] = uz_movAverageFilter_sample(movAvFilter_R5, R_FD_Filt.R5);
-	    filteredFDIndices[5] = uz_movAverageFilter_sample(movAvFilter_R6, R_FD_Filt.R6);
+	    filteredFDIndices[3] = uz_movingAverageFilter_sample(movAvFilter_R4, R_FD_Filt.R4);
+	    filteredFDIndices[4] = uz_movingAverageFilter_sample(movAvFilter_R5, R_FD_Filt.R5);
+	    filteredFDIndices[5] = uz_movingAverageFilter_sample(movAvFilter_R6, R_FD_Filt.R6);
 	    toggle = 0;
-    }
+}
 
-
+/*
+    filteredFDIndices[0] = 0;
+    filteredFDIndices[1] = 0;
+    filteredFDIndices[2] = 0;
+    filteredFDIndices[3] = 0;
+    filteredFDIndices[4] = 0;
+    filteredFDIndices[5] = 0;
+*/
     //evaluation of fault-indices:
 
 	R_FD_Filt.R1 = filteredFDIndices[0];
@@ -434,7 +475,7 @@ void ISR_Control(void *data)
 	R_FD_Filt.R5 = filteredFDIndices[4];
 	R_FD_Filt.R6 = filteredFDIndices[5];
 
-	R_FD_eval = uz_fsd_fd_evaluation(R_FD_Filt, 0.4);
+	R_FD_eval = uz_vsd_fd_evaluation(R_FD_Filt, 0.4f);
 
 
 
@@ -516,22 +557,338 @@ void ISR_Control(void *data)
 	display_OPF_f = (float)display_OPF;
 
 
+	FD_indices.R1 = OPF_a1;
+	FD_indices.R2 = OPF_b1;
+	FD_indices.R3 = OPF_c1;
+	FD_indices.R4 = OPF_a2;
+	FD_indices.R5 = OPF_b2;
+	FD_indices.R6 = OPF_c2;
 
 
 	// Neutral Point configuration (N1N2 = 1 -> 1N with one neutral point, N1N2 = 2 -> 2N with two separate neutral points)
-	int N1N2 = 1;
-	int ML = 0;		//0 -> MT, 1 -> ML (selection of optimization)
-	float a = 0.0f;	//float for derating factor
-	int error_opf;
+	int N1N2 = 2;
+	int ML = 1;		//0 -> MT, 1 -> ML (selection of optimization)
+
 
 	// get k-parameter from Look-up-table
 	kparameter k_parameter;
-	k_parameter = get_k_parameter(opf_phases[0], opf_phases[1], opf_phases[2], num_OPF, N1N2, ML, &a, &error_opf);
-
+	//k_parameter = get_k_parameter(opf_phases[0], opf_phases[1], opf_phases[2], num_OPF, N1N2, ML, &a, &error_opf);
+	k_parameter = get_k_parameter(FD_indices,  N1N2, ML);
 
 	// Reference Values for d and q current from reference value (Torque control)
 	ref_dq0_currents.d = Global_Data.av.I_d_ref;
 	ref_dq0_currents.q = Global_Data.av.I_q_ref;
+
+
+	// enable, disable Controllers depending on OPFs
+
+	/*
+	if(num_OPF == 1){
+		// disable z1z2-Controller
+		//z1z2_control = false;
+		z1z2_1H = false;
+		dq_2 = false;
+		xy_n_2 = false;
+	}
+	else if(num_OPF == 2){
+		// disable z1z2-Controller
+		//z1z2_control = false;
+		z1z2_1H = false;
+		dq_2 = false;
+		xy_n_2 = false;
+
+		// disable x or y-Controller
+		//z1z2_control = false;
+	}
+	else if(num_OPF == 3){
+		// disable z1z2-Controller
+		//z1z2_control = false;
+		z1z2_1H = false;
+		// disable xy-Controller
+		dq_2 = false;
+		xy_n_2 = false;
+	}
+*/
+
+	// Temporaerer Sollwergenerator (Sprünge):
+
+/*
+	if(ref_counter == 0){
+		Global_Data.av.I_q_ref = 0;
+	}
+	if(ref_counter == 1000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 100000){
+		Global_Data.av.I_q_ref = 0;
+	}
+	if(ref_counter >= 110000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter >= 111000){
+		Global_Data.av.I_q_ref = 4;
+	}
+	if(ref_counter >= 112000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter >= 113000){
+		Global_Data.av.I_q_ref = 8;
+	}
+	if(ref_counter >= 114000){
+		Global_Data.av.I_q_ref = 10;
+	}
+	if(ref_counter >= 115000){
+		Global_Data.av.I_q_ref = 0;
+	}
+
+	if(ref_counter >= 130000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter >= 131000){
+		Global_Data.av.I_d_ref = 1;
+	}
+	if(ref_counter >= 132000){
+		Global_Data.av.I_q_ref = 4;
+	}
+	if(ref_counter >= 133000){
+		Global_Data.av.I_d_ref = 3;
+	}
+	if(ref_counter >= 134000){
+		Global_Data.av.I_q_ref = 10;
+	}
+	if(ref_counter >= 135000){
+		Global_Data.av.I_q_ref = 0;
+		Global_Data.av.I_d_ref = 0;
+	}
+
+
+	if(ref_counter == 150000){
+		Global_Data.av.I_q_ref = 0;
+	}
+	if(ref_counter >= 152000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter >= 154000){
+		Global_Data.av.I_q_ref = 4;
+	}
+	if(ref_counter >= 156000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter >= 158000){
+		Global_Data.av.I_q_ref = 8;
+	}
+	if(ref_counter >= 160000){
+		Global_Data.av.I_q_ref = 10;
+	}
+	if(ref_counter >= 162000){
+		Global_Data.av.I_q_ref = 0;
+	}
+
+	if(ref_counter == 170000){
+		Global_Data.av.I_q_ref = 0;
+	}
+	if(ref_counter >= 171000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter >= 172000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter >= 173000){
+		Global_Data.av.I_d_ref = 2;
+	}
+	if(ref_counter >= 174000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter >= 175000){
+		Global_Data.av.I_d_ref = 3;
+	}
+	if(ref_counter >= 176000){
+		Global_Data.av.I_q_ref = 10;
+	}
+	if(ref_counter >= 177000){
+		Global_Data.av.I_q_ref = 0;
+		Global_Data.av.I_d_ref = 0;
+	}
+
+	if(ref_counter == 180000){
+		Global_Data.av.I_q_ref = 0;
+	}
+	if(ref_counter >= 181000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter >= 182000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter >= 183000){
+		Global_Data.av.I_d_ref = 1;
+	}
+	if(ref_counter >= 184000){
+		Global_Data.av.I_d_ref = 3;
+	}
+	if(ref_counter >= 185000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter >= 186000){
+		Global_Data.av.I_d_ref = 1;
+	}
+	if(ref_counter >= 187000){
+		Global_Data.av.I_q_ref = 10;
+	}
+	if(ref_counter >= 188000){
+		Global_Data.av.I_q_ref = 0;
+		Global_Data.av.I_d_ref = 0;
+	}
+
+	ref_dq0_currents.d = Global_Data.av.I_d_ref;
+	ref_dq0_currents.q = Global_Data.av.I_q_ref;
+*/
+
+
+
+/*
+	if(ref_counter == 10000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 155000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 160000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 165000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 170000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 175000){
+		Global_Data.av.I_q_ref = 7;
+	}
+	if(ref_counter == 180000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 185000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 190000){
+		Global_Data.av.I_d_ref = 2;
+	}
+	if(ref_counter == 195000){
+		Global_Data.av.I_d_ref = 1;
+	}
+	if(ref_counter == 200000){
+		Global_Data.av.I_d_ref = 0;
+	}
+	if(ref_counter == 205000){
+		Global_Data.av.I_q_ref =5;
+	}
+
+
+	if(ref_counter == 220000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 225000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 230000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 235000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 240000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 245000){
+		Global_Data.av.I_q_ref = 7;
+	}
+	if(ref_counter == 250000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 255000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 260000){
+		Global_Data.av.I_d_ref = 2;
+	}
+	if(ref_counter == 265000){
+		Global_Data.av.I_d_ref = 1;
+	}
+	if(ref_counter == 270000){
+		Global_Data.av.I_d_ref = 0;
+	}
+	if(ref_counter == 275000){
+		Global_Data.av.I_q_ref =5;
+	}
+
+	if(ref_counter == 290000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter == 295000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 300000){
+		Global_Data.av.I_q_ref = 4;
+	}
+	if(ref_counter == 305000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 310000){
+		Global_Data.av.I_q_ref = 2;
+	}
+	if(ref_counter == 315000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 320000){
+		Global_Data.av.I_q_ref = 0.7;
+	}
+	if(ref_counter == 325000){
+		Global_Data.av.I_q_ref = 0.5;
+	}
+	if(ref_counter == 330000){
+		Global_Data.av.I_q_ref = 0.4;
+	}
+	if(ref_counter == 335000){
+		Global_Data.av.I_q_ref = 0.3;
+	}
+
+	if(ref_counter == 350000){
+		Global_Data.av.I_q_ref = 6;
+	}
+	if(ref_counter == 355000){
+		Global_Data.av.I_q_ref = 5;
+	}
+	if(ref_counter == 360000){
+		Global_Data.av.I_q_ref = 4;
+	}
+	if(ref_counter == 365000){
+		Global_Data.av.I_q_ref = 3;
+	}
+	if(ref_counter == 370000){
+		Global_Data.av.I_q_ref = 2;
+	}
+	if(ref_counter == 375000){
+		Global_Data.av.I_q_ref = 1;
+	}
+	if(ref_counter == 380000){
+		Global_Data.av.I_q_ref = 0.7;
+	}
+	if(ref_counter == 385000){
+		Global_Data.av.I_q_ref = 0.5;
+	}
+	if(ref_counter == 390000){
+		Global_Data.av.I_q_ref = 0.4;
+	}
+	if(ref_counter == 395000){
+		Global_Data.av.I_q_ref = 0.3;
+	}
+
+
+	ref_dq0_currents.d = Global_Data.av.I_d_ref;
+	ref_dq0_currents.q = Global_Data.av.I_q_ref;
+
+*/
+
 
 	// calculate reference values in alpha-beta-subspace
 	ref_alphabeta_currents = uz_transformation_3ph_dq_to_alphabeta(ref_dq0_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
@@ -547,7 +904,7 @@ void ISR_Control(void *data)
 	ref_z1z2_currents[1] = k_parameter.k7 * ref_alphabeta_currents.alpha + k_parameter.k8 * ref_alphabeta_currents.beta;
 
 
-
+	// ref_xy_currents[0] = sin(7* (Global_Data.av.theta_elec + Global_Data.av.theta_offset));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Stuff for the inverter															////
@@ -593,7 +950,7 @@ void ISR_Control(void *data)
 
 
 
-
+	theta_ = Global_Data.av.theta_elec + Global_Data.av.theta_offset;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,6 +958,10 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (current_state==control_state)
     {
+
+    	ref_counter = ref_counter + 1;
+
+
         // Start: Control algorithm - only if ultrazohm is in control state
 
 
@@ -608,41 +969,65 @@ void ISR_Control(void *data)
 
  //------------------------------------dq-current-control----------------------------------//
 
+		dq_error[0] = ref_dq0_currents.d - m_dq_currents.d;
+		dq_error[1] = ref_dq0_currents.q - m_dq_currents.q;
+
     	//Control
     	// d-q-PI-Controller
     	ref_dq_voltage = uz_FOC_sample(FOC_dq, ref_dq0_currents, m_dq_currents, Global_Data.av.U_ZK, omega_el_rad_per_sec);
-
+    	ref_dq_voltage_PI = ref_dq_voltage;
 
     	// R-Controller: 2H d
-		rc_2H_d.input.T_sw = 0.0001;
-		rc_2H_d.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_2H_d.input.h = 2.0;
-		rc_2H_d.input.omega_el = omega_el_rad_per_sec;
-		rc_2H_d.input.lower_limit = -2.0;
-		rc_2H_d.input.upper_limit = 2.0;
-		rc_2H_d.input.Klim = 1.0;
-		rc_2H_d.input.in_ref = ref_dq0_currents.d;
-		rc_2H_d.input.in_m = m_dq_currents.d;
+		rc_2H_d->input.lower_limit = -8.0;
+		rc_2H_d->input.upper_limit = 8.0;
 
-		uz_resonantController_step(&rc_2H_d);
+
+		uz_resonantController_step(rc_2H_d, ref_dq0_currents.d, m_dq_currents.d, omega_el_rad_per_sec);
+		dq2Rout[0] = rc_2H_d->output.out;
+		/*if (dq_2){
+			ref_dq_voltage.d = ref_dq_voltage.d + rc_2H_d->output.out;
+		}*/
+
 		if (dq_2){
-			ref_dq_voltage.d = ref_dq_voltage.d + rc_2H_d.output.out;
+			ref_dq_voltage.d = ref_dq_voltage.d + uz_resonantController_get_output(rc_2H_d);
 		}
 
-		// R-Controller: 2H q
-		rc_2H_q.input.T_sw = 0.0001;
-		rc_2H_q.input.VR = 160;
-		rc_2H_q.input.h = 2.0;
-		rc_2H_q.input.omega_el = omega_el_rad_per_sec;
-		rc_2H_q.input.lower_limit = -2.0;
-		rc_2H_q.input.upper_limit = 2.0;
-		rc_2H_q.input.Klim = 1.0;
-		rc_2H_q.input.in_ref = ref_dq0_currents.q;
-		rc_2H_q.input.in_m = m_dq_currents.q;
 
-		uz_resonantController_step(&rc_2H_q);
+		// R-Controller: 2H q
+		rc_2H_q->input.lower_limit = -8.0;	//4
+		rc_2H_q->input.upper_limit = 8.0;	//4
+
+		uz_resonantController_step(rc_2H_q, ref_dq0_currents.q, m_dq_currents.q, omega_el_rad_per_sec);
+		dq2Rout[1] = rc_2H_q->output.out;
+		/*if (dq_2){
+			ref_dq_voltage.q = ref_dq_voltage.q + rc_2H_q->output.out;
+		}*/
 		if (dq_2){
-			ref_dq_voltage.q = ref_dq_voltage.q + rc_2H_q.output.out;
+			ref_dq_voltage.q = ref_dq_voltage.q + uz_resonantController_get_output(rc_2H_q);
+		}
+
+
+    	// R-Controller: 12H d
+		rc_12H_d->input.lower_limit = -4.0;
+		rc_12H_d->input.upper_limit = 4.0;
+
+
+
+		uz_resonantController_step(rc_12H_d, ref_dq0_currents.d, m_dq_currents.d, omega_el_rad_per_sec);
+		dq12Rout[0] = rc_12H_d->output.out;
+		if (dq_12){
+			ref_dq_voltage.d = ref_dq_voltage.d + rc_12H_d->output.out;
+		}
+
+		// R-Controller: 12H q
+		rc_12H_q->input.lower_limit = -4.0;
+		rc_12H_q->input.upper_limit = 4.0;
+
+
+		uz_resonantController_step(rc_12H_q, ref_dq0_currents.q, m_dq_currents.q, omega_el_rad_per_sec);
+		dq12Rout[1] = rc_12H_q->output.out;
+		if (dq_12){
+			ref_dq_voltage.q = ref_dq_voltage.q + rc_12H_q->output.out;
 		}
 
 
@@ -671,77 +1056,74 @@ void ISR_Control(void *data)
 		uz_inv_park_transform(m_xy_n_currents, m_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 		uz_inv_park_transform(ref_xy_n_currents, ref_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
+
+
+
+
 		//PI-Controllers in antisynchronous frame
 		ref_xy_n_voltage[0] = uz_PI_Controller_sample(PI_x_n, ref_xy_n_currents[0], m_xy_n_currents[0], false);
 		ref_xy_n_voltage[1] = uz_PI_Controller_sample(PI_y_n, ref_xy_n_currents[1], m_xy_n_currents[1], false);
+
+		// lineare Vorsteuerung:
+		float L_y = 0.0000499; 	// in Henry
+		float L_x = 0.0000557;
+		ref_xy_n_voltage[0] += omega_el_rad_per_sec * L_y * m_xy_n_currents[1];
+		ref_xy_n_voltage[1] += -omega_el_rad_per_sec * L_x * m_xy_n_currents[0];
+
+		// ausschalten PI-Regler
+		if(!xy_n_PI){
+			ref_xy_n_voltage[0]=0;
+			ref_xy_n_voltage[0]=0;
+		}
+
 
 		xy_error[0] = ref_xy_n_currents[0] - m_xy_n_currents[0];
 		xy_error[1] = ref_xy_n_currents[1] - m_xy_n_currents[1];
 
 		// R-Controller: 6H. x
-		rc_6H_x.input.T_sw = 0.0001;
-		rc_6H_x.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_6H_x.input.h = 6.0;
-		rc_6H_x.input.omega_el = omega_el_rad_per_sec;
-		rc_6H_x.input.lower_limit = -2.0;
-		rc_6H_x.input.upper_limit = 2.0;
-		rc_6H_x.input.Klim = 1.0;
-		rc_6H_x.input.in_ref = ref_xy_n_currents[0];
-		rc_6H_x.input.in_m = m_xy_n_currents[0];
+		rc_6H_x->input.lower_limit = -4.0;
+		rc_6H_x->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_6H_x);
+
+		uz_resonantController_step(rc_6H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
+		xy6Rout[0] = rc_6H_x->output.out;
 		if (xy_n_6){
-			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_6H_x.output.out;
+			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_6H_x->output.out;
 		}
 
 		// R-Controller: 6H. y
-		rc_6H_y.input.T_sw = 0.0001;
-		rc_6H_y.input.VR = 160;
-		rc_6H_y.input.h = 6.0;
-		rc_6H_y.input.omega_el = omega_el_rad_per_sec;
-		rc_6H_y.input.lower_limit = -2.0;
-		rc_6H_y.input.upper_limit = 2.0;
-		rc_6H_y.input.Klim = 1.0;
-		rc_6H_y.input.in_ref = ref_xy_n_currents[1];
-		rc_6H_y.input.in_m = m_xy_n_currents[1];
+		rc_6H_y->input.lower_limit = -4.0;
+		rc_6H_y->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_6H_y);
+
+		uz_resonantController_step(rc_6H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
+		xy6Rout[1] = rc_6H_y->output.out;
 		if (xy_n_6){
-			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_6H_y.output.out;
+			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_6H_y->output.out;
 		}
 
 
 
 		// Controller: 2H. x
-		rc_2H_x.input.T_sw = 0.0001;
-		rc_2H_x.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_2H_x.input.h = 2.0;
-		rc_2H_x.input.omega_el = omega_el_rad_per_sec;
-		rc_2H_x.input.lower_limit = -2.0;
-		rc_2H_x.input.upper_limit = 2.0;
-		rc_2H_x.input.Klim = 1.0;
-		rc_2H_x.input.in_ref = ref_xy_n_currents[0];
-		rc_2H_x.input.in_m = m_xy_n_currents[0];
+		rc_2H_x->input.lower_limit = -4.0;	//4
+		rc_2H_x->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_2H_x);
+
+		uz_resonantController_step(rc_2H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
+		xy2Rout[0] = rc_2H_x->output.out;
 		if (xy_n_2){
-			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_2H_x.output.out;
+			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_2H_x->output.out;
 		}
 
-		// Controller: 2H. x
-		rc_2H_y.input.T_sw = 0.0001;
-		rc_2H_y.input.VR = 160;
-		rc_2H_y.input.h = 2.0;
-		rc_2H_y.input.omega_el = omega_el_rad_per_sec;
-		rc_2H_y.input.lower_limit = -2.0;
-		rc_2H_y.input.upper_limit = 2.0;
-		rc_2H_y.input.Klim = 1.0;
-		rc_2H_y.input.in_ref = ref_xy_n_currents[1];
-		rc_2H_y.input.in_m = m_xy_n_currents[1];
+		// Controller: 2H. y
+		rc_2H_y->input.lower_limit = -4.0;	//4
+		rc_2H_y->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_2H_y);
+
+		uz_resonantController_step(rc_2H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
+		xy2Rout[1] = rc_2H_y->output.out;
 		if (xy_n_2){
-			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_2H_y.output.out;
+			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_2H_y->output.out;
 		}
 
 
@@ -750,7 +1132,7 @@ void ISR_Control(void *data)
 		uz_park_transform(ref_xy_voltage_n, ref_xy_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 		// activate control in xy-subspace
-    	if(xy_n){
+    	if(xy_n_PI){
     		ref_xy_voltage[0] = ref_xy_voltage_n[0];
     		ref_xy_voltage[1] = ref_xy_voltage_n[1];
     	}
@@ -771,106 +1153,75 @@ void ISR_Control(void *data)
 		ref_z1z2_voltage[1] = uz_PI_Controller_sample(PI_z2, ref_z1z2_currents[1], m_z1z2_currents[1], false);
 
 
-    	//  R-Controller: 9H. z1
-		rc_9H_z1.input.T_sw = 0.0001;
-		rc_9H_z1.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_9H_z1.input.h = 9.0;
-		rc_9H_z1.input.omega_el = omega_el_rad_per_sec;
-		rc_9H_z1.input.lower_limit = -2.0;
-		rc_9H_z1.input.upper_limit = 2.0;
-		rc_9H_z1.input.Klim = 1.0;
-		rc_9H_z1.input.in_ref = ref_z1z2_currents[0];
-    	rc_9H_z1.input.in_m = m_z1z2_currents[0];
 
-		uz_resonantController_step(&rc_9H_z1);
+    	//  R-Controller: 9H. z1
+		rc_9H_z1->input.lower_limit = -4.0;
+		rc_9H_z1->input.upper_limit = 4.0;
+
+		uz_resonantController_step(rc_9H_z1, ref_z1z2_currents[0], m_z1z2_currents[0], omega_el_rad_per_sec);
+		z1z2_9Rout[0] = rc_9H_z1->output.out;
 		if (z1z2_9H){
-			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_9H_z1.output.out;
+			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_9H_z1->output.out;
 		}
 
 		//  R-Controller: 9H. z2
-		rc_9H_z2.input.T_sw = 0.0001;
-		rc_9H_z2.input.VR = 160;
-		rc_9H_z2.input.h = 9.0;
-		rc_9H_z2.input.omega_el = omega_el_rad_per_sec;
-		rc_9H_z2.input.lower_limit = -2.0;
-		rc_9H_z2.input.upper_limit = 2.0;
-		rc_9H_z2.input.Klim = 1.0;
-		rc_9H_z2.input.in_ref = ref_z1z2_currents[1];
-		rc_9H_z2.input.in_m = m_z1z2_currents[1];
+		rc_9H_z2->input.lower_limit = -4.0;
+		rc_9H_z2->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_9H_z2);
 
+		uz_resonantController_step(rc_9H_z2, ref_z1z2_currents[1], m_z1z2_currents[1], omega_el_rad_per_sec);
+		z1z2_9Rout[1] = rc_9H_z2->output.out;
 		if(z1z2_9H){
-			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_9H_z2.output.out;
+			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_9H_z2->output.out;
 		}
 
 
 
     	//  R-Controller: 3H. z1
-		rc_3H_z1.input.T_sw = 0.0001;
-		rc_3H_z1.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_3H_z1.input.h = 3.0;
-		rc_3H_z1.input.omega_el = omega_el_rad_per_sec;
-		rc_3H_z1.input.lower_limit = -1.0;
-		rc_3H_z1.input.upper_limit = 1.0;
-		rc_3H_z1.input.Klim = 1.0;
-    	rc_3H_z1.input.in_ref = ref_z1z2_currents[0];
-    	rc_3H_z1.input.in_m = m_z1z2_currents[0];
+		rc_3H_z1->input.lower_limit = -4.0;
+		rc_3H_z1->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_3H_z1);
+
+
+		uz_resonantController_step(rc_3H_z1, ref_z1z2_currents[0], m_z1z2_currents[0], omega_el_rad_per_sec);
+		z1z2_3Rout[0] = rc_3H_z1->output.out;
 		if (z1z2_3H){
-			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_3H_z1.output.out;
+			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_3H_z1->output.out;
 		}
 
 		//  R-Controller: 3H. z1
-		rc_3H_z2.input.T_sw = 0.0001;
-		rc_3H_z2.input.VR = 160;
-		rc_3H_z2.input.h = 3.0;
-		rc_3H_z2.input.omega_el = omega_el_rad_per_sec;
-		rc_3H_z2.input.lower_limit = -1.0;
-		rc_3H_z2.input.upper_limit = 1.0;
-		rc_3H_z2.input.Klim = 1.0;
-		rc_3H_z2.input.in_ref = ref_z1z2_currents[1];
-		rc_3H_z2.input.in_m = m_z1z2_currents[1];
+		rc_3H_z2->input.lower_limit = -4.0;
+		rc_3H_z2->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_3H_z2);
 
+		uz_resonantController_step(rc_3H_z2, ref_z1z2_currents[1], m_z1z2_currents[1], omega_el_rad_per_sec);
+		z1z2_3Rout[1] = rc_3H_z2->output.out;
 		if(z1z2_3H){
-			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_3H_z2.output.out;
+			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_3H_z2->output.out;
 		}
 
 
     	//  R-Controller: 1H. z1
-		rc_1H_z1.input.T_sw = 0.0001;
-		rc_1H_z1.input.VR = 160;			//0.1*(2.0*M_PI*1000.0f)*(2.0*M_PI*1000.0f)*0.00004;
-		rc_1H_z1.input.h = 1.0;
-		rc_1H_z1.input.omega_el = omega_el_rad_per_sec;
-		rc_1H_z1.input.lower_limit = -1.0;
-		rc_1H_z1.input.upper_limit = 1.0;
-		rc_1H_z1.input.Klim = 1.0;
-		rc_1H_z1.input.in_ref = ref_z1z2_currents[0];
-    	rc_1H_z1.input.in_m = m_z1z2_currents[0];
+		rc_1H_z1->input.lower_limit = -4.0;
+		rc_1H_z1->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_1H_z1);
+
+		uz_resonantController_step(rc_1H_z1, ref_z1z2_currents[0], m_z1z2_currents[0], omega_el_rad_per_sec);
+		z1z2_1Rout[0] = rc_1H_z1->output.out;
 		if (z1z2_1H){
-			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_1H_z1.output.out;
+			ref_z1z2_voltage[0] = ref_z1z2_voltage[0] + rc_1H_z1->output.out;
 		}
 
+
 		//  R-Controller: 1H. z2
-		rc_1H_z2.input.T_sw = 0.0001;
-		rc_1H_z2.input.VR = 160;
-		rc_1H_z2.input.h = 1.0;
-		rc_1H_z2.input.omega_el = omega_el_rad_per_sec;
-		rc_1H_z2.input.lower_limit = -1.0;
-		rc_1H_z2.input.upper_limit = 1.0;
-		rc_1H_z2.input.Klim = 1.0;
-		rc_1H_z2.input.in_ref = ref_z1z2_currents[1];
-		rc_1H_z2.input.in_m = m_z1z2_currents[1];
+		rc_1H_z2->input.lower_limit = -4.0;
+		rc_1H_z2->input.upper_limit = 4.0;
 
-		uz_resonantController_step(&rc_1H_z2);
 
+		uz_resonantController_step(rc_1H_z2, ref_z1z2_currents[1], m_z1z2_currents[1], omega_el_rad_per_sec);
+		z1z2_1Rout[1] = rc_1H_z2->output.out;
 		if(z1z2_1H){
-			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_1H_z2.output.out;
+			ref_z1z2_voltage[1] = ref_z1z2_voltage[1] + rc_1H_z2->output.out;
 		}
 
 		// activate control in xy-subspace
@@ -878,7 +1229,6 @@ void ISR_Control(void *data)
     		ref_z1z2_voltage[0] = 0;
     		ref_z1z2_voltage[1] = 0;
     	}
-
 
 //----------------combine reference values form alpha-beta, x-y and z1-z2 control----------------//
 
@@ -920,19 +1270,25 @@ void ISR_Control(void *data)
 		uz_PI_Controller_reset(PI_z1);
 		uz_PI_Controller_reset(PI_z2);
 
-		uz_resonantController_reset(&rc_2H_x);
-        uz_resonantController_reset(&rc_2H_y);
-        uz_resonantController_reset(&rc_6H_x);
-        uz_resonantController_reset(&rc_6H_y);
-        uz_resonantController_reset(&rc_2H_d);
-        uz_resonantController_reset(&rc_2H_q);
+		uz_resonantController_reset(rc_2H_x);
+        uz_resonantController_reset(rc_2H_y);
+        uz_resonantController_reset(rc_6H_x);
+        uz_resonantController_reset(rc_6H_y);
+        uz_resonantController_reset(rc_2H_d);
+        uz_resonantController_reset(rc_2H_q);
+        uz_resonantController_reset(rc_8H_d);
+        uz_resonantController_reset(rc_8H_q);
+        uz_resonantController_reset(rc_12H_d);
+        uz_resonantController_reset(rc_12H_q);
 
-        uz_resonantController_reset(&rc_1H_z1);
-        uz_resonantController_reset(&rc_1H_z2);
-        uz_resonantController_reset(&rc_3H_z1);
-        uz_resonantController_reset(&rc_3H_z2);
-        uz_resonantController_reset(&rc_9H_z1);
-        uz_resonantController_reset(&rc_9H_z2);
+        uz_resonantController_reset(rc_1H_z1);
+        uz_resonantController_reset(rc_1H_z2);
+        uz_resonantController_reset(rc_3H_z1);
+        uz_resonantController_reset(rc_3H_z2);
+        uz_resonantController_reset(rc_9H_z1);
+        uz_resonantController_reset(rc_9H_z2);
+
+        ref_counter = 0;
     }
 
 

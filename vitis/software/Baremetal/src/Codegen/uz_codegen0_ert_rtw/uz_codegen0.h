@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.29
- * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed May 18 10:51:10 2022
+ * Model version                  : 3.0
+ * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
+ * C/C++ source code generated on : Thu Oct 13 13:29:10 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -21,12 +21,13 @@
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
-#include <math.h>
-#include <string.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
 #endif                                 /* uz_codegen0_COMMON_INCLUDES_ */
+
+#include <stddef.h>
+#include <string.h>
 
 /* Model Code Variants */
 

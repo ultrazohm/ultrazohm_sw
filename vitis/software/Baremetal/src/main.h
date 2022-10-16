@@ -57,16 +57,13 @@
 #include "Codegen/uz_singleindex_faultdetection.h"
 #include "Codegen/uz_vsd_opf_fd_v7.h"
 
-#include "uz/uz_movAverageFilter/uz_movAverageFilter.h"
 #include "uz/uz_filter/uz_filter.h"
 
 #include "uz/uz_FOC/uz_FOC.h"
 
-#include "Codegen/uz_resonant_controller.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
 
-#include "Codegen/uz_ResonantController/uz_resonant_controller.h"
-
-#include "IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 //----------------------------------------------------
 // FUNCTIONS

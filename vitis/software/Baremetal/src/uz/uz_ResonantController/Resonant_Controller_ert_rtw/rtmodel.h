@@ -5,23 +5,23 @@
  *
  * File: rtmodel.h
  *
- * Code generated for Simulink model 'uz_codegen0'.
+ * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 3.0
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Oct 13 13:29:10 2022
+ * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (10), Warnings (2), Error (0)
  */
 
 #ifndef RTW_HEADER_rtmodel_h_
 #define RTW_HEADER_rtmodel_h_
-#include "uz_codegen0.h"
+#include "Resonant_Controller.h"
 
 /*
  * ROOT_IO_FORMAT: 0 (Individual arguments)

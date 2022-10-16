@@ -19,7 +19,7 @@
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../uz/uz_VSD_6ph_FD/uz_VSD6phFD.h"
+#include "../uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -36,10 +36,13 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-
+extern uz_3ph_dq_t ref_dq_voltage;
 extern uz_6ph_alphabeta_t i_abxyz1z2_filtered;
+extern uz_6ph_abc_t ref_6ph_abc_voltage;
 
+extern float theta_;
 
+extern uz_6phFD_indices R_FD;
 extern float vsd_output[6];
 extern float vsd_output_filtered[6];
 extern float vsd_output_hyst[6];
@@ -51,9 +54,19 @@ extern float vsd_output_filtered_V4[6];
 extern float Rb1[5];
 extern float Rb1_filtered[5];
 
+extern float xy2Rout[2];
+extern float xy6Rout[2];
+extern float dq2Rout[2];
+extern float dq12Rout[2];
+extern float dq8Rout[2];
+extern float z1z2_1Rout[2];
+extern float z1z2_3Rout[2];
+extern float z1z2_9Rout[2];
+
 extern uz_6phFD_indices R_FD_Filt;
 extern uz_6phFD_indices R_FD;
 extern uz_6phFD_indices R_FD_eval;
+extern uz_6phFD_indices R_FD_Filt_hyst;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -100,7 +113,14 @@ extern uz_3ph_dq_t value_1;
 extern uz_6ph_alphabeta_t value_2;
 extern uz_6ph_abc_t value_3;
 
+extern float tempfilteredFDIndices[5];
+extern float movave_length;
+
 extern int display_OPF_f;
+extern float dq_error[2];
+extern uz_3ph_dq_t ref_dq_voltage_PI;
+
+extern uz_3ph_alphabeta_t ref_alphabeta_voltage;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -151,26 +171,21 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_y] = &data->av.I_y;
 	js_ch_observable[JSO_i_z1] = &data->av.I_z1;
 	js_ch_observable[JSO_i_z2] = &data->av.I_z2;
+	js_ch_observable[JSO_i_d_ref] = &data->av.I_d_ref;
+	js_ch_observable[JSO_i_q_ref] = &data->av.I_q_ref;
 
-	js_ch_observable[JSO_FD_a1] = &vsd_output[0];
-	js_ch_observable[JSO_FD_b1] = &vsd_output[1];
-	js_ch_observable[JSO_FD_c1] = &vsd_output[2];
-	js_ch_observable[JSO_FD_a2] = &vsd_output[3];
-	js_ch_observable[JSO_FD_b2] = &vsd_output[4];
-	js_ch_observable[JSO_FD_c2] = &vsd_output[5];
-	js_ch_observable[JSO_FD_Hyst_a1] = &vsd_output_hyst[0];
-	js_ch_observable[JSO_FD_Hyst_b1] = &vsd_output_hyst[1];
-	js_ch_observable[JSO_FD_Hyst_c1] = &vsd_output_hyst[2];
-	js_ch_observable[JSO_FD_Hyst_a2] = &vsd_output_hyst[3];
-	js_ch_observable[JSO_FD_Hyst_b2] = &vsd_output_hyst[4];
-	js_ch_observable[JSO_FD_Hyst_c2] = &vsd_output_hyst[5];
-	js_ch_observable[JSO_FD_Filtered_a1] = &vsd_output_filtered[0];
-	js_ch_observable[JSO_FD_Filtered_b1] = &vsd_output_filtered[1];
-	js_ch_observable[JSO_FD_Filtered_c1] = &vsd_output_filtered[2];
-	js_ch_observable[JSO_FD_Filtered_a2] = &vsd_output_filtered[3];
-	js_ch_observable[JSO_FD_Filtered_b2] = &vsd_output_filtered[4];
-	js_ch_observable[JSO_FD_Filtered_c2] = &vsd_output_filtered[5];
-
+	js_ch_observable[JSO_FD_a1] = &R_FD.R1;
+	js_ch_observable[JSO_FD_b1] = &R_FD.R2;
+	js_ch_observable[JSO_FD_c1] = &R_FD.R3;
+	js_ch_observable[JSO_FD_a2] = &R_FD.R4;
+	js_ch_observable[JSO_FD_b2] = &R_FD.R5;
+	js_ch_observable[JSO_FD_c2] = &R_FD.R6;
+	js_ch_observable[JSO_FD_Hyst_a1] = &R_FD_Filt_hyst.R1;
+	js_ch_observable[JSO_FD_Hyst_b1] = &R_FD_Filt_hyst.R2;
+	js_ch_observable[JSO_FD_Hyst_c1] = &R_FD_Filt_hyst.R3;
+	js_ch_observable[JSO_FD_Hyst_a2] = &R_FD_Filt_hyst.R4;
+	js_ch_observable[JSO_FD_Hyst_b2] = &R_FD_Filt_hyst.R5;
+	js_ch_observable[JSO_FD_Hyst_c2] = &R_FD_Filt_hyst.R6;
 	js_ch_observable[JSO_FD_MOVAVG_a1] = &filteredFDIndices[0];
 	js_ch_observable[JSO_FD_MOVAVG_b1] = &filteredFDIndices[1];
 	js_ch_observable[JSO_FD_MOVAVG_c1] = &filteredFDIndices[2];
@@ -178,13 +193,18 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_MOVAVG_b2] = &filteredFDIndices[4];
 	js_ch_observable[JSO_FD_MOVAVG_c2] = &filteredFDIndices[5];
 
-	//R_FD_eval
-	js_ch_observable[JSO_Testvalue_1] = &ref_z1z2_n_voltage[0];
-	js_ch_observable[JSO_Testvalue_2] = &ref_z1z2_n_voltage[1];
-	js_ch_observable[JSO_Testvalue_3] = &ref_z1z2_s_voltage[0];
-	js_ch_observable[JSO_Testvalue_4] = &ref_z1z2_s_voltage[1];
 
+	js_ch_observable[JSO_Testvalue_1] = &theta_;
 
+	//js_ch_observable[JSO_Testvalue_1] = &ref_dq_voltage.d;
+	js_ch_observable[JSO_Testvalue_2] = &ref_dq_voltage.q;
+//	js_ch_observable[JSO_Testvalue_3] = &dq_error[0];
+//	js_ch_observable[JSO_Testvalue_4] = &dq_error[1];
+	js_ch_observable[JSO_Testvalue_3] = &ref_xy_voltage[0];
+	js_ch_observable[JSO_Testvalue_4] = &ref_xy_voltage[1];
+
+//	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_voltage.alpha;
+//	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_voltage.beta;
 
 	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_currents.alpha;
 	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_currents.beta;
@@ -193,7 +213,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_9] = &ref_z1z2_currents[0];
 	js_ch_observable[JSO_Testvalue_10] = &ref_z1z2_currents[1];
 
-
+	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
+	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
 	/*
 	js_ch_observable[JSO_Testvalue_5] = &value_3.a1;
 	js_ch_observable[JSO_Testvalue_6] = &value_3.b1;
@@ -203,35 +224,52 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Testvalue_10] = &value_3.c2;
 */
 
+	js_ch_observable[JSO_Testvalue_11] = &ref_6ph_abc_voltage.a1;
+	js_ch_observable[JSO_Testvalue_12] = &ref_6ph_abc_voltage.b1;
+//	js_ch_observable[JSO_Testvalue_13] = &ref_6ph_abc_voltage.c1;
+//	js_ch_observable[JSO_Testvalue_14] = &ref_6ph_abc_voltage.a2;
+//	js_ch_observable[JSO_Testvalue_15] = &ref_6ph_abc_voltage.b2;
+//	js_ch_observable[JSO_Testvalue_16] = &ref_6ph_abc_voltage.c2;
 
+	js_ch_observable[JSO_Testvalue_15] = &ref_dq_voltage_PI.d;
+	js_ch_observable[JSO_Testvalue_16] = &ref_dq_voltage_PI.q;
 
+/*
 	js_ch_observable[JSO_Testvalue_11] = &ref_xy_voltage[0];
 	js_ch_observable[JSO_Testvalue_12] = &ref_xy_voltage[1];
 	js_ch_observable[JSO_Testvalue_13] = &xy_error[0];
 	js_ch_observable[JSO_Testvalue_14] = &xy_error[1];
+*/
 
-	/*
-	js_ch_observable[JSO_Testvalue_15] = &ref_xy_voltage_n[0];
-	js_ch_observable[JSO_Testvalue_16] = &ref_xy_voltage_n[1];
-	js_ch_observable[JSO_Testvalue_17] = &ref_xy_voltage_s[0];
+//	js_ch_observable[JSO_Testvalue_15] = &ref_xy_voltage_n[0];
+//	js_ch_observable[JSO_Testvalue_16] = &ref_xy_voltage_n[1];
+/*	js_ch_observable[JSO_Testvalue_17] = &ref_xy_voltage_s[0];
 	js_ch_observable[JSO_Testvalue_18] = &ref_xy_voltage_s[1];
 	 */
 
-	js_ch_observable[JSO_Testvalue_15] = & m_xy_n_currents[0];
-	js_ch_observable[JSO_Testvalue_16] = & m_xy_n_currents[1];
-	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
-	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
+//	js_ch_observable[JSO_Testvalue_15] = & m_xy_n_currents[0];
+//	js_ch_observable[JSO_Testvalue_16] = & m_xy_n_currents[1];
+//	js_ch_observable[JSO_Testvalue_17] = &ref_z1z2_voltage[0];
+//	js_ch_observable[JSO_Testvalue_18] = &ref_z1z2_voltage[1];
 
-/*
-	js_ch_observable[JSO_Testvalue_11] = &value_1.d;
-	js_ch_observable[JSO_Testvalue_12] = &value_1.q;
-	js_ch_observable[JSO_Testvalue_13] = &value_2.alpha;
-	js_ch_observable[JSO_Testvalue_14] = &value_2.beta;
-	js_ch_observable[JSO_Testvalue_15] = &value_2.x;
-	js_ch_observable[JSO_Testvalue_16] = &value_2.y;
-	js_ch_observable[JSO_Testvalue_17] = &value_2.z1;
-	js_ch_observable[JSO_Testvalue_18] = &value_2.z2;
-*/
+
+	js_ch_observable[JSO_xy2Rout_x] = &xy2Rout[0];
+	js_ch_observable[JSO_xy2Rout_y] = &xy2Rout[1];
+	js_ch_observable[JSO_xy6Rout_x] = &xy6Rout[0];
+	js_ch_observable[JSO_xy6Rout_y] = &xy6Rout[1];
+	js_ch_observable[JSO_dq2Rout_d] = &dq2Rout[0];
+	js_ch_observable[JSO_dq2Rout_q] = &dq2Rout[1];
+	js_ch_observable[JSO_dq12Rout_d] = &dq12Rout[0];
+	js_ch_observable[JSO_dq12Rout_q] = &dq12Rout[1];
+	js_ch_observable[JSO_dq8Rout_d] = &dq8Rout[0];
+	js_ch_observable[JSO_dq8Rout_q] = &dq8Rout[1];
+	js_ch_observable[JSO_z1z2_1Rout_z1] = &z1z2_1Rout[0];
+	js_ch_observable[JSO_z1z2_1Rout_z2] = &z1z2_1Rout[1];
+	js_ch_observable[JSO_z1z2_3Rout_z1] = &z1z2_3Rout[0];
+	js_ch_observable[JSO_z1z2_3Rout_z2] = &z1z2_3Rout[1];
+	js_ch_observable[JSO_z1z2_9Rout_z1] = &z1z2_9Rout[0];
+	js_ch_observable[JSO_z1z2_9Rout_z2] = &z1z2_9Rout[1];
+
 
 
 

@@ -1,1 +1,0 @@
-var modelInfo = {model:"Resonant_Controller"};var modelHierarchy=[{model:"Resonant_Controller",relativePath:"_internal.html",parent:"null"},];

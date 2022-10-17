@@ -933,6 +933,118 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_cost_function:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_cost_function">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112729440">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_cost_function/ipcore/parallel_8_cost_function_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_min_cost_function:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_min_cost_function">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112729465">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_min_cost_function/ipcore/parallel_8_min_cost_function_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_phase_voltages:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_phase_voltages">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112729419">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_phase_voltages/ipcore/parallel_8_phase_voltages_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_prediction:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_prediction">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112729431">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_prediction/ipcore/parallel_8_prediction_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:parallel_delay_compensation_6Phase:1.0">
 		</VLNV>
 		<DisplayName value="parallel_delay_compensation_6Phase">
@@ -1657,6 +1769,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:test_cost_function_only_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_cost_function_only_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112725157">
+		</CoreRevision>
+		<ComponentPath value="test_cost_function_only_without_delays/ipcore/test_cost_function_only_without_delays_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:test2_parallel_delay_compensation_6Phase:1.0">
 		</VLNV>
 		<DisplayName value="test2_parallel_delay_compensation_6Phase">
@@ -1668,6 +1808,34 @@
 		<CoreRevision value="2112719170">
 		</CoreRevision>
 		<ComponentPath value="test_delay_compensation/ipcore/test2_parallel_delay_compensation_6Phase_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:test_delay_compensation_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_delay_compensation_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112724827">
+		</CoreRevision>
+		<ComponentPath value="test_delay_compensation_only_without_delay/ipcore/test_delay_compensation_without_delays_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">
@@ -1713,6 +1881,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:test_min_cost_function_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_min_cost_function_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112725173">
+		</CoreRevision>
+		<ComponentPath value="test_min_cost_function_without_delays/ipcore/test_min_cost_function_without_delays_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:test2_parallel_phase_voltages:1.0">
 		</VLNV>
 		<DisplayName value="test2_parallel_phase_voltages">
@@ -1741,6 +1937,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:test_phase_voltages_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_phase_voltages_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112725040">
+		</CoreRevision>
+		<ComponentPath value="test_phase_voltages_without_delays/ipcore/test_phase_voltages_without_delays_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:test_parallel_prediction_only:1.0">
 		</VLNV>
 		<DisplayName value="test_parallel_prediction_only">
@@ -1752,6 +1976,62 @@
 		<CoreRevision value="2112721928">
 		</CoreRevision>
 		<ComponentPath value="test_prediction_only/ipcore/test_parallel_prediction_only_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:test_prediction_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_prediction_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112725074">
+		</CoreRevision>
+		<ComponentPath value="test_prediction_without_delays/ipcore/test_prediction_without_delays_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:test_swithcing_states_6Phase_without_delays:1.0">
+		</VLNV>
+		<DisplayName value="test_swithcing_states_6Phase_without_delays">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112725182">
+		</CoreRevision>
+		<ComponentPath value="test_switching_states_6Phase_without_delays/ipcore/test_swithcing_states_6Phase_without_delays_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

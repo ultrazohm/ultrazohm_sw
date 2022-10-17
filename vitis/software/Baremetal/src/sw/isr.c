@@ -31,6 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz/uz_filter_cumulativeavg/uz_filter_cumulativeavg.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -53,24 +54,56 @@ struct uz_3ph_abc_t i_actual_A_abc = {0};
 struct uz_DutyCycle_t dutycyle = {0};
 
 struct uz_3ph_dq_t i_actual_Ampere = {
-		.d = 0.0f,
-		.q = 0.0f,
-		.zero = 0.0f};
+    .d = 0.0f,
+    .q = 0.0f,
+    .zero = 0.0f};
 
 struct uz_3ph_dq_t i_reference_Ampere = {
-		.d = 0.0f,
-		.q = 0.0f,
-		.zero = 0.0f};
+    .d = 0.0f,
+    .q = 0.0f,
+    .zero = 0.0f};
 
 float V_dc_volts = 24.0f;
 float omega_el_rad_per_sec = 0.0f;
 float theta_el_rad = 0.0f;
 
-float theta_offset = -0.54f; //0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
-float adc_scaling = (20.0f/2.084f); //3.2f
+float theta_offset = -0.54f;          // 0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float adc_scaling = (20.0f / 2.084f); // 3.2f
 float poles = 3.0f;
-struct uz_3ph_dq_t v_dq_Volts={0};
-extern uz_CurrentControl_t* CC_instance;
+struct uz_3ph_dq_t v_dq_Volts = {0};
+extern uz_CurrentControl_t *CC_instance;
+
+enum encoderoffset_states
+{
+    encoderoffset_init = 0,
+    encoderoffset_positive_accelerate,
+    encoderoffset_positive_i0,
+    encoderoffset_positive_measurement,
+    encoderoffset_negative_accelerate,
+    encoderoffset_negative_i0,
+    encoderoffset_negative_measurement,
+    encoderoffset_calculate_offset,
+    encoderoffset_sgd,
+    encoderoffset_finished,
+};
+
+uz_filter_cumulativeavg_t filter_i_q=NULL;
+uz_filter_cumulativeavg_t filter_i_d=NULL;
+uz_filter_cumulativeavg_t filter_u_d=NULL;
+uz_filter_cumulativeavg_t filter_u_q=NULL;
+uz_filter_cumulativeavg_t filter_omega_el=NULL;
+
+enum encoderoffset_states encoderoffset_current_state;
+bool theta_offset_estimation = false;
+
+
+float value_filter_i_q=0.0f;
+float value_filter_i_d=0.0f;
+float value_filter_u_d=0.0f;
+float value_filter_u_q=0.0f;
+float value_filter_omega_el=0.0f;
+
+
 
 void ISR_Control(void *data)
 {
@@ -78,32 +111,75 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-
-    theta_el_rad = fmodf(Global_Data.av.theta_elec*poles-theta_offset,2*M_PI); // *poles da bei PMSM config nur 1 Pol angegeben
-    i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2-2.425f)*adc_scaling; // zeigt 2.5 bei 0 an
-    i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A4-2.425f)*adc_scaling;
-    i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A3-2.425f)*adc_scaling;
+    theta_el_rad = fmodf(Global_Data.av.theta_elec * poles - theta_offset, 2 * M_PI); // *poles da bei PMSM config nur 1 Pol angegeben
+    i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2 - 2.425f) * adc_scaling;          // zeigt 2.5 bei 0 an
+    i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A4 - 2.425f) * adc_scaling;
+    i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A3 - 2.425f) * adc_scaling;
     i_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, theta_el_rad);
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*poles*2.0f*M_PI/60.0f;
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * poles * 2.0f * M_PI / 60.0f;
 
-
-
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    	   //Alternatively the sample function can output the UVW-values
-    	v_dq_Volts= uz_CurrentControl_sample(CC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
-    	   struct uz_3ph_abc_t v_abc_Volts =  uz_transformation_3ph_dq_to_abc(v_dq_Volts, theta_el_rad);
-			dutycyle = uz_CurrentControl_generate_DutyCycles(v_abc_Volts, V_dc_volts);
-			Global_Data.rasv.halfBridge1DutyCycle=dutycyle.DutyCycle_U;
-			Global_Data.rasv.halfBridge2DutyCycle=dutycyle.DutyCycle_V;
-			Global_Data.rasv.halfBridge3DutyCycle=dutycyle.DutyCycle_W;
+        if (theta_offset_estimation)
+        {
 
-    }else{
-		Global_Data.rasv.halfBridge1DutyCycle=0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle=0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle=0.0f;
+            float uz_encoderoffset_estimate_offset()
+            {
+
+                switch (encoderoffset_current_state)
+                {
+                case encoderoffset_init:
+                    i_reference_Ampere.q = 0.0f;
+                    i_reference_Ampere.d = 0.0f;
+                    encoderoffset_current_state = encoderoffset_positive_accelerate;
+                    break;
+                case encoderoffset_positive_accelerate:
+                    if (i_actual_Ampere.q < abs(1.0f))
+                    {
+                        i_reference_Ampere.q = 1.0f;
+                    }
+                    else
+                    {
+                        i_reference_Ampere.q = 0.0f;
+                        encoderoffset_current_state = encoderoffset_positive_i0;
+                    }
+                    break;
+                case encoderoffset_positive_i0:
+                    if (i_actual_Ampere.q < abs(0.1f)) // wait until current is actually zero
+                    {
+                        if (omega_el_rad_per_sec > abs(5.0f)) // measure as long as omega_el is not zero
+                        {
+                            // measure
+                        }
+                        else
+                        {
+                            encoderoffset_current_state=encoderoffset_positive_measurement; // measurement is finished
+                        }
+                    }
+                    break;
+                case encoderoffset_positive_measurement:
+                    // nothing
+                default:
+                    break;
+                }
+            };
+        }
+
+        // Start: Control algorithm - only if ultrazohm is in control state
+        // Alternatively the sample function can output the UVW-values
+        v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        struct uz_3ph_abc_t v_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, theta_el_rad);
+        dutycyle = uz_CurrentControl_generate_DutyCycles(v_abc_Volts, V_dc_volts);
+        Global_Data.rasv.halfBridge1DutyCycle = dutycyle.DutyCycle_U;
+        Global_Data.rasv.halfBridge2DutyCycle = dutycyle.DutyCycle_V;
+        Global_Data.rasv.halfBridge3DutyCycle = dutycyle.DutyCycle_W;
+    }
+    else
+    {
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -129,6 +205,14 @@ void ISR_Control(void *data)
 int Initialize_ISR()
 {
 
+
+    filter_i_q=uz_filter_cumulativeavg_init();
+    filter_i_d=uz_filter_cumulativeavg_init();
+    filter_u_d=uz_filter_cumulativeavg_init();
+    filter_u_q=uz_filter_cumulativeavg_init();
+    filter_omega_el=uz_filter_cumulativeavg_init();
+
+
     int Status = 0;
 
     // Initialize interrupt controller for the IPI -> Initialize RPU IPI
@@ -148,10 +232,10 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }

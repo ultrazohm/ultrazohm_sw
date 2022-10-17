@@ -22,7 +22,7 @@
 typedef struct uz_movingAverageFilter_t{
 	bool is_ready;
 	float circularBuffer[MAX_FILTERLENGTH];	//array to save the last [MAX_FILTERLENGTH] input-samples of the filter
-	int bufferPointer;						//index in circularBuffer where to put new samples
+	int bufferindex;						//index in circularBuffer where to put new samples
 	int filterLength;
 }uz_movingAverageFilter_t;
 
@@ -44,7 +44,7 @@ static uz_movingAverageFilter_t* uz_movingAverageFilter_allocation(void){
 
 uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFilter_config config){
 	uz_movingAverageFilter_t* self = uz_movingAverageFilter_allocation();
-	self->bufferPointer = 0;
+	self->bufferindex = 0;
 	uz_assert(config.filterLength <= MAX_FILTERLENGTH);
 	self->filterLength = config.filterLength;
 
@@ -64,13 +64,13 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 	uz_assert_not_NULL(self);
 
 	//add new sample to circular buffer
-	self->circularBuffer[self->bufferPointer] = sample;
+	self->circularBuffer[self->bufferindex] = sample;
 
 	float output = 0.0f;
 
 	//calculate filter output: sum of i samples in circular buffer, i = current length of the filter
 	for(int i = 0; i < self->filterLength; i++){
-		int index = (self->bufferPointer - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
+		int index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 		output = output + self->circularBuffer[index];
 	}
 
@@ -79,21 +79,21 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 
 	/*
 	// add sample to buffer
-	self->circularBuffer[self->bufferPointer] = sample/((float)self->filterLength);
+	self->circularBuffer[self->bufferindex] = sample/((float)self->filterLength);
 
 	// find oldest sample in current sum
-	int firstsample = (self->bufferPointer - filterLength +1);
+	int firstsample = (self->bufferindex - filterLength +1);
 	if (firstsample < 0){
 		firstsample = firstsample + MAX_FILTERLENGTH;
 	}
 
-	self->sum = self->sum + self->circularBuffer[self->bufferPointer] - self->circularBuffer[firstsample];
+	self->sum = self->sum + self->circularBuffer[self->bufferindex] - self->circularBuffer[firstsample];
 
 	output = self->sum;
 */
 
-	//modulo-increment of buffer-pointer
-	self->bufferPointer = (self->bufferPointer + 1) % MAX_FILTERLENGTH;
+	//modulo-increment of buffer-index
+	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
 
 	return output;
 }
@@ -104,7 +104,7 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
-	self->bufferPointer = 0;
+	self->bufferindex = 0;
 
 }
 

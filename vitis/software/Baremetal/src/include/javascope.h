@@ -112,6 +112,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSO_Speed_rpm_filtered,
 	JSSD_ENDMARKER
 };
 
@@ -154,9 +155,9 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	send_field_1,
 	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
+	i_d,
+	i_q,
+	theta_offset,
 	send_field_6,
 	SND_FLD_ENDMARKER
 
@@ -178,9 +179,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
+	u_d,
+	u_q,
+	speed_rpm,
 	receive_field_4,
 	receive_field_5,
 	receive_field_6,
@@ -191,9 +192,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
+	V,
+	V,
+	rpm,
 	A,
 	V,
 	V,
@@ -205,9 +206,9 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
+	JSO_Speed_rpm_filtered,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Ld,

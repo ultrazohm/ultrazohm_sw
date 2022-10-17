@@ -40,6 +40,8 @@ DS_Data Global_Data = {
     }
 };
 
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+
 enum init_chain
 {
     init_assertions = 0,
@@ -52,9 +54,38 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+uz_CurrentControl_t* CC_instance = NULL;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    struct uz_PMSM_t config_PMSM = {
+       .Ld_Henry = 0.00113f,
+       .Lq_Henry = 0.00113f,
+       .Psi_PM_Vs = 0.0169f,
+	   .R_ph_Ohm=0.543f,
+	   .polePairs=3.0f,
+	   .I_max_Ampere=10.0f
+     };//these parameters are only needed if linear decoupling is selected
+     struct uz_PI_Controller_config config_id = {
+       .Kp = 4.5f,
+       .Ki = 1800.0f,
+       .samplingTime_sec = 0.0001f,
+    };
+    struct uz_PI_Controller_config config_iq = {
+       .Kp = 4.5f,
+       .Ki = 1800.0f,
+       .samplingTime_sec = 0.0001f,
+    };
+
+    struct uz_CurrentControl_config CC_config = {
+       .decoupling_select = linear_decoupling,
+       .config_PMSM = config_PMSM,
+       .config_id = config_id,
+       .config_iq = config_iq
+    };
+
     while (1)
     {
         switch (initialization_chain)
@@ -72,6 +103,7 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+            CC_instance=uz_CurrentControl_init(CC_config);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

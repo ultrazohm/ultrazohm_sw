@@ -53,6 +53,8 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+int N1N2 = 2;
+int ML = 0;
 
 uz_6ph_abc_t i_6phase = {0};
 uz_6ph_abc_t i_6phase_filtered = {0};
@@ -259,6 +261,7 @@ bool xy_n_PI = true;
 bool xy_n = true;
 bool xy_n_2 = true;
 bool xy_n_6 = true;
+bool y_off = false;
 bool z1z2_1H = true;
 bool z1z2_3H = true;
 bool z1z2_9H = true;
@@ -322,7 +325,7 @@ void ISR_Control(void *data)
 */
 
 	//crude over current protection
-	if(fabs(m_6ph_abc_currents.a1) > 25.0f || fabs(m_6ph_abc_currents.b1) > 25.0f || fabs(m_6ph_abc_currents.c1) > 25.0f || fabs(m_6ph_abc_currents.a2) > 25.0f || fabs(m_6ph_abc_currents.b2) > 25.0f || fabs(m_6ph_abc_currents.c2) > 25.0f){
+	if(fabs(m_6ph_abc_currents.a1) > 30.0f || fabs(m_6ph_abc_currents.b1) > 30.0f || fabs(m_6ph_abc_currents.c1) > 30.0f || fabs(m_6ph_abc_currents.a2) > 30.0f || fabs(m_6ph_abc_currents.b2) > 30.0f || fabs(m_6ph_abc_currents.c2) > 30.0f){
 
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -566,8 +569,8 @@ if(toggle == 0){
 
 
 	// Neutral Point configuration (N1N2 = 1 -> 1N with one neutral point, N1N2 = 2 -> 2N with two separate neutral points)
-	int N1N2 = 2;
-	int ML = 1;		//0 -> MT, 1 -> ML (selection of optimization)
+	N1N2 = 2;
+	ML = 0;		//0 -> MT, 1 -> ML (selection of optimization)
 
 
 	// get k-parameter from Look-up-table
@@ -582,20 +585,36 @@ if(toggle == 0){
 
 	// enable, disable Controllers depending on OPFs
 
-	/*
+// für 1N Konfiguration:
+
+
+dq_2 = true;
+dq_8 = false;
+dq_12 = true;
+xy_n_PI = true;
+xy_n = true;
+xy_n_2 = true;
+xy_n_6 = true;
+y_off = false;
+z1z2_1H = true;
+z1z2_3H = true;
+z1z2_9H = true;
+z1z2_control = true;
+
+if(N1N2 == 1){
 	if(num_OPF == 1){
 		// disable z1z2-Controller
 		//z1z2_control = false;
 		z1z2_1H = false;
-		dq_2 = false;
-		xy_n_2 = false;
+		//dq_2 = false;
+		//xy_n_2 = false;
 	}
 	else if(num_OPF == 2){
 		// disable z1z2-Controller
 		//z1z2_control = false;
 		z1z2_1H = false;
-		dq_2 = false;
-		xy_n_2 = false;
+		//dq_2 = false;
+		y_off = true;
 
 		// disable x or y-Controller
 		//z1z2_control = false;
@@ -605,10 +624,30 @@ if(toggle == 0){
 		//z1z2_control = false;
 		z1z2_1H = false;
 		// disable xy-Controller
-		dq_2 = false;
+		//dq_2 = false;
 		xy_n_2 = false;
+		xy_n_PI = false;
 	}
-*/
+}
+else{
+	if(num_OPF == 1){		// nur für 2N ML
+
+		z1z2_1H = false;
+		y_off = true;
+	}
+	else if(num_OPF > 1){
+		// disable z1z2-Controller
+		//z1z2_control = false;
+		z1z2_1H = false;
+
+		 xy_n_2 = false;
+		 xy_n_PI = false;
+		// y_off = true;
+
+		// disable x or y-Controller
+		//z1z2_control = false;
+	}
+}
 
 	// Temporaerer Sollwergenerator (Sprünge):
 
@@ -1080,27 +1119,7 @@ if(toggle == 0){
 		xy_error[0] = ref_xy_n_currents[0] - m_xy_n_currents[0];
 		xy_error[1] = ref_xy_n_currents[1] - m_xy_n_currents[1];
 
-		// R-Controller: 6H. x
-		rc_6H_x->input.lower_limit = -4.0;
-		rc_6H_x->input.upper_limit = 4.0;
 
-
-		uz_resonantController_step(rc_6H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
-		xy6Rout[0] = rc_6H_x->output.out;
-		if (xy_n_6){
-			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_6H_x->output.out;
-		}
-
-		// R-Controller: 6H. y
-		rc_6H_y->input.lower_limit = -4.0;
-		rc_6H_y->input.upper_limit = 4.0;
-
-
-		uz_resonantController_step(rc_6H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
-		xy6Rout[1] = rc_6H_y->output.out;
-		if (xy_n_6){
-			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_6H_y->output.out;
-		}
 
 
 
@@ -1126,13 +1145,37 @@ if(toggle == 0){
 			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_2H_y->output.out;
 		}
 
+		// R-Controller: 6H. x
+		rc_6H_x->input.lower_limit = -4.0;
+		rc_6H_x->input.upper_limit = 4.0;
 
+
+		uz_resonantController_step(rc_6H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
+		xy6Rout[0] = rc_6H_x->output.out;
+		if (xy_n_6){
+			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_6H_x->output.out;
+		}
+
+		if(y_off){
+			ref_xy_n_voltage[1] = 0.0f;
+		}
+
+		// R-Controller: 6H. y
+		rc_6H_y->input.lower_limit = -4.0;
+		rc_6H_y->input.upper_limit = 4.0;
+
+
+		uz_resonantController_step(rc_6H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
+		xy6Rout[1] = rc_6H_y->output.out;
+		if (xy_n_6){
+			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_6H_y->output.out;
+		}
 
 		//Transform reference voltage from inverse rotating to stationary frame
 		uz_park_transform(ref_xy_voltage_n, ref_xy_n_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 		// activate control in xy-subspace
-    	if(xy_n_PI){
+    	if(xy_n){
     		ref_xy_voltage[0] = ref_xy_voltage_n[0];
     		ref_xy_voltage[1] = ref_xy_voltage_n[1];
     	}

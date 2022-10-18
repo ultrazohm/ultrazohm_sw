@@ -53,7 +53,7 @@ DS_Data Global_Data = {
     		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
 	.av.U_ZK = 48.0f,
-	.av.theta_offset =  1.05, //-0.14608003 + 0.623,
+	.av.theta_offset =  0.85, //1.05, //-0.14608003 + 0.623,		// 0.85
 	.av.I_d_ref = 0,
 	.av.I_q_ref = 0,
 };
@@ -137,16 +137,16 @@ const struct uz_PI_Controller_config config_id = {
 	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
 	.Ki = 880, //770, //1/0.0008f *0.1,															 // Ki = 1/Tn *Kp ( * Kp da wir eine Parallelform haben)
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 20.0f,
+	.lower_limit = -20.0f
 };
 
 const struct uz_PI_Controller_config config_iq = {
 	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f, //1.1f,
 	.Ki = 880, //770, //1/0.0008f *0.1,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 20.0f,
+	.lower_limit = -20.0f
 };
 
 struct uz_FOC_config config_FOC = {
@@ -291,8 +291,8 @@ int main(void)
             struct uz_resonantController_config config_R_dq2H = config_R;
             config_R_dq2H.harmonic_order = 2.0f;
             config_R_dq2H.gain = 125.0f;
-            config_R_dq2H.upper_limit = 8.0f;
-            config_R_dq2H.lower_limit = -8.0f;
+            config_R_dq2H.upper_limit = 12.0f;
+            config_R_dq2H.lower_limit = -12.0f;
             struct uz_resonantController_config config_R_dq8H = config_R;
             config_R_dq8H.harmonic_order = 8.0f;
             struct uz_resonantController_config config_R_dq12H = config_R;

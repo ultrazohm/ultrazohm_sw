@@ -72,6 +72,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 			// xil_printf("OsziData_queue is full\r\n");
 		}
 	}
+	// queue is purged when new connection is established
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

@@ -64,6 +64,8 @@ void process_request_thread(void *p)
 	xil_printf("APU: Javascope connected 0x%x\n", clientfd);
 	js_connection_established = clientfd;
 
+	xQueueReset(js_queue); //purge queue once new connection is established
+
 	while (1) {
 
 		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){

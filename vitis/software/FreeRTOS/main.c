@@ -239,6 +239,8 @@ int main_thread()
 	int mscnt = 0;
 #endif
 
+	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+
 	// reset phy
 	uz_phy_reset();
 

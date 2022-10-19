@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\ultrazohm_sw\ip_cores\test_delay_compensation\ipcore\test2_parallel_delay_compensation_6Phase_v1_0\include\test2_parallel_delay_compensation_6Phase_addr.h
  * Description:       C Header File
- * Created:           2022-10-10 12:10:33
+ * Created:           2022-10-18 09:18:00
 */
 
 #ifndef TEST2_PARALLEL_DELAY_COMPENSATION_6PHASE_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_test2_parallel_delay_compensation_6Phase                 0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_test2_parallel_delay_compensation_6Phase                0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_test2_parallel_delay_compensation_6Phase             0x8  //contains unique IP timestamp (yymmddHHMM): 2210101210
+#define  IPCore_Timestamp_test2_parallel_delay_compensation_6Phase             0x8  //contains unique IP timestamp (yymmddHHMM): 2210180917
 #define  psiPM_AXI_Data_test2_parallel_delay_compensation_6Phase               0x100  //data register for Inport psiPM_AXI
 #define  Lq_AXI_Data_test2_parallel_delay_compensation_6Phase                  0x104  //data register for Inport Lq_AXI
 #define  Ld_AXI_Data_test2_parallel_delay_compensation_6Phase                  0x108  //data register for Inport Ld_AXI

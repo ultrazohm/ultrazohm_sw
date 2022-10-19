@@ -1,0 +1,1049 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level DUT Information Report for parallel_8_prediction_and_cost_function
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Code Interface Report for parallel_8_prediction_and_cost_function
+</font>
+<h3>
+Input ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+reset
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+clk_enable
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:452')" name="code2model" class="code2model">
+Lq_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:453')" name="code2model" class="code2model">
+Ld_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:454')" name="code2model" class="code2model">
+SampleTime_div_Ld_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:455')" name="code2model" class="code2model">
+SampleTime_div_Lq_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:456')" name="code2model" class="code2model">
+SampleTime_div_Lx_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:457')" name="code2model" class="code2model">
+SampleTime_div_Ly_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:458')" name="code2model" class="code2model">
+id_k_1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix18_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:459')" name="code2model" class="code2model">
+iq_k_1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix18_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:460')" name="code2model" class="code2model">
+ix_k_1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix18_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:461')" name="code2model" class="code2model">
+iy_k_1
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix18_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:462')" name="code2model" class="code2model">
+Rs_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:463')" name="code2model" class="code2model">
+omega_m_measured
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:464')" name="code2model" class="code2model">
+pole_pairs_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:465')" name="code2model" class="code2model">
+psiPM_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:466')" name="code2model" class="code2model">
+id_ref_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:467')" name="code2model" class="code2model">
+iq_ref_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:468')" name="code2model" class="code2model">
+ix_ref_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:469')" name="code2model" class="code2model">
+iy_ref_AXI
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+single
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:470')" name="code2model" class="code2model">
+valid_in
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Reset_1
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:472')" name="code2model" class="code2model">
+valid_in_ADC
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_0
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_1
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_2
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_3
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_4
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_5
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_6
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_7
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_8
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_9
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_10
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_11
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_12
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_13
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_14
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_15
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_16
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_17
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_18
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_19
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_20
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_21
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_22
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_23
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_24
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_25
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_26
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_27
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_28
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_29
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_30
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+dqxy_phase_voltage_per_switching_state_31
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix24_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+
+</table>
+<h3>
+Output ports
+</h3>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<b>Port Name</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Datatype</b>
+</td>
+<td align="center" valign="top" style="border-style: none">
+<b>Bits</b>
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+ce_out
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1190')" name="code2model" class="code2model">
+done
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+boolean
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1191')" name="code2model" class="code2model">
+Index
+</a>
+
+</td>
+<td align="center" valign="top" style="border-style: none">
+int32
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+J_0
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+J_1
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+J_2
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+J_3
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+J_4
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+J_5
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+J_6
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+J_7
+</td>
+<td align="center" valign="top" style="border-style: none">
+sfix20_En11
+</td>
+<td align="center" valign="top" style="border-style: none">
+20
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

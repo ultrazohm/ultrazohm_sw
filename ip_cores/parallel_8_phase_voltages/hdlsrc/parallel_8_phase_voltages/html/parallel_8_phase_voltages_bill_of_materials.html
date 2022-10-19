@@ -5,7 +5,7 @@ High-level Resource Utilization Report for parallel_8_phase_voltages
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-5716
+5150
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-96215
+78637
 </td>
 
 </tr>
@@ -312,22 +312,67 @@ Add5
 39-bit Subtractor 							: 32
 </span>
 <br /><h5>
-Registers (686)
+Registers (696)
 </h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
 <span style="font-family:monospace">
-1-bit Register 							: 304
+1-bit Register 							: 278
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:159')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:160')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:163')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:158')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 4
+32-bit Register 							: 6
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:161')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:55')" name="code2model" class="code2model">
 Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:162')" name="code2model" class="code2model">
+Delay9
 </a>
 
 </li>
@@ -353,8 +398,35 @@ Delay13
 </ul>
 
 </span>
-<br /><span style="font-family:monospace">
-24-bit Register 							: 100
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 134
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:156')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:157')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:164')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><span style="font-family:monospace">
 25-bit Register 							: 2
@@ -576,7 +648,7 @@ valid_in_ADC
 Number of Output Bits: 770
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="378cd1fc-5f6e-4b53-966f-73e2b1c27802" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="806f4ae9-e22c-4f6b-b59e-f4e50241a4fc" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -684,7 +756,7 @@ phase_voltages_per_switching_state_31: 24 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '378cd1fc-5f6e-4b53-966f-73e2b1c27802')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '806f4ae9-e22c-4f6b-b59e-f4e50241a4fc')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -747,10 +819,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -885,10 +957,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1023,10 +1095,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1161,10 +1233,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1299,10 +1371,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1437,10 +1509,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1575,10 +1647,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220
@@ -1713,10 +1785,10 @@ Adders/Subtractors (113)
 8x8-bit Subtractor 							: 2
 </span>
 <br /><h5>
-Registers (628)
+Registers (556)
 </h5>
 <span style="font-family:monospace">
-32-bit Register 							: 204
+32-bit Register 							: 132
 </span>
 <br /><span style="font-family:monospace">
 1-bit Register 							: 220

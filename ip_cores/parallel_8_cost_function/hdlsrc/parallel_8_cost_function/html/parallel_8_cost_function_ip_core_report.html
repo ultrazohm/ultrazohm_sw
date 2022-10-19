@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.1
+<td class="summaryTableSndColOddRow">1.7
 </td>
 </tr>
 <tr>
@@ -112,13 +112,13 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">17-Oct-2022 15:20:23
+<td class="summaryTableSndColOddRow">18-Oct-2022 09:53:47
 </td>
 </tr>
 <tr>
 <td>IP core generated for
 </td>
-<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:37')">HDL_DUT4</a>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:330')">HDL_DUT1</a>
 </td>
 </tr>
 </tbody>
@@ -154,7 +154,7 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:38')">valid_in</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:331')">valid_in</a>
 </td>
 <td>Inport
 </td>
@@ -168,7 +168,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:39')">Prediction</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:332')">Prediction</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -182,11 +182,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:40')">id_ref_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:333')">id_ref_AXI</a>
 </td>
 <td>Inport
 </td>
-<td>sfix18_En11
+<td>single
 </td>
 <td>AXI4-Lite
 </td>
@@ -196,11 +196,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:41')">iq_ref_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:334')">iq_ref_AXI</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">sfix18_En11
+<td class="distinctCellColor">single
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
@@ -210,11 +210,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:42')">ix_ref_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:335')">ix_ref_AXI</a>
 </td>
 <td>Inport
 </td>
-<td>sfix18_En11
+<td>single
 </td>
 <td>AXI4-Lite
 </td>
@@ -224,11 +224,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:43')">iy_ref_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:336')">iy_ref_AXI</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">sfix18_En11
+<td class="distinctCellColor">single
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
@@ -238,7 +238,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:207')">done</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:500')">done</a>
 </td>
 <td>Outport
 </td>
@@ -252,7 +252,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:208')">J</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('parallel_8_cost_function:501')">J</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -305,7 +305,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2210171520
+<td>contains unique IP timestamp (yymmddHHMM): 2210180953
 </td>
 </tr>
 <tr>
@@ -437,31 +437,27 @@ Following files are generated under this folder:
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_HDL_DUT4_pkg.vhd')">hdl\vhdl\parallel_8_cost_function_src_HDL_DUT4_pkg.vhd</a>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_HDL_DUT1_pkg.vhd')">hdl\vhdl\parallel_8_cost_function_src_HDL_DUT1_pkg.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Positive.vhd')">hdl\vhdl\parallel_8_cost_function_src_Positive.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Detect_Rise_Positive.vhd')">hdl\vhdl\parallel_8_cost_function_src_Detect_Rise_Positive.vhd</a>
 <br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_nfp_add_single.vhd')">hdl\vhdl\parallel_8_cost_function_src_nfp_add_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_nfp_mul_single.vhd')">hdl\vhdl\parallel_8_cost_function_src_nfp_mul_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_nfp_sub_single.vhd')">hdl\vhdl\parallel_8_cost_function_src_nfp_sub_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_MATLAB_Function.vhd')">hdl\vhdl\parallel_8_cost_function_src_MATLAB_Function.vhd</a>
+<br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem.vhd</a>
 <br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem1.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem1.vhd</a>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd')">hdl\vhdl\parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem2.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem2.vhd</a>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd')">hdl\vhdl\parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd</a>
 <br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem3.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem3.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem4.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem4.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem5.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem5.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem6.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem6.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem7.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem7.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_Subsystem_block.vhd')">hdl\vhdl\parallel_8_cost_function_src_Subsystem_block.vhd</a>
-<br/>
-<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_HDL_DUT4.vhd')">hdl\vhdl\parallel_8_cost_function_src_HDL_DUT4.vhd</a>
+<a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_src_HDL_DUT1.vhd')">hdl\vhdl\parallel_8_cost_function_src_HDL_DUT1.vhd</a>
 <br/>
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_cost_function\ipcore\parallel_8_cost_function_v1_0\hdl\vhdl\parallel_8_cost_function_reset_sync.vhd')">hdl\vhdl\parallel_8_cost_function_reset_sync.vhd</a>
 <br/>

@@ -1,0 +1,16 @@
+open_system('parallel_8_switching_states');
+open_system('gm_parallel_8_switching_states');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_parallel_8_switching_states/HDL_DUT/MATLAB Function1/MATLAB Function1', 'user2');
+annotate_port('gm_parallel_8_switching_states/HDL_DUT/MATLAB Function1/MATLAB Function1', 1, 1, 'Block not characterized');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_parallel_8_switching_states/HDL_DUT/MATLAB Function1/MATLAB Function1', 'user2');
+annotate_port('gm_parallel_8_switching_states/HDL_DUT/MATLAB Function1/MATLAB Function1', 1, 1, 'Block not characterized');
+hilite_system('parallel_8_switching_states/HDL_DUT/MATLAB Function1', 'user2');
+annotate_port('parallel_8_switching_states/HDL_DUT/MATLAB Function1', 1, 1, 'Block not characterized');

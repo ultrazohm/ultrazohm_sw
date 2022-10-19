@@ -1,0 +1,1764 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for parallel_8_prediction_and_cost_function
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_9');hdlTableShrink(this, 'Register_1_17');hdlTableShrink(this, 'Multiplexer_1_7');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for parallel_8_prediction_and_cost_function
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+129
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+2955
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+16837
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+245599
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+26393
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+1480
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+341
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:451')" name="code2model" class="code2model">
+Prediction_and_cost_function
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (267)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 46
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Adder 							: 75
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 37
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+20x1-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+25-bit Subtractor 							: 33
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 45
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+35-bit Subtractor 							: 8
+</span>
+<br /><h5>
+Registers (1746)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 473
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:654')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:682')" name="code2model" class="code2model">
+Delay57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1282')" name="code2model" class="code2model">
+Delay22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:686')" name="code2model" class="code2model">
+Delay60
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 130
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="e66b20f2-7fbd-402f-a126-7839f364f669" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:719')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:684')" name="code2model" class="code2model">
+Delay59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:585')" name="code2model" class="code2model">
+Delay135
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:584')" name="code2model" class="code2model">
+Delay134
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:583')" name="code2model" class="code2model">
+Delay133
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:582')" name="code2model" class="code2model">
+Delay132
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:581')" name="code2model" class="code2model">
+Delay131
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:580')" name="code2model" class="code2model">
+Delay130
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:578')" name="code2model" class="code2model">
+Delay129
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:577')" name="code2model" class="code2model">
+Delay128
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:576')" name="code2model" class="code2model">
+Delay127
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:575')" name="code2model" class="code2model">
+Delay126
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:574')" name="code2model" class="code2model">
+Delay125
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:573')" name="code2model" class="code2model">
+Delay124
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:572')" name="code2model" class="code2model">
+Delay123
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:571')" name="code2model" class="code2model">
+Delay122
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:570')" name="code2model" class="code2model">
+Delay121
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:569')" name="code2model" class="code2model">
+Delay120
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:567')" name="code2model" class="code2model">
+Delay119
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:566')" name="code2model" class="code2model">
+Delay118
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:565')" name="code2model" class="code2model">
+Delay117
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:564')" name="code2model" class="code2model">
+Delay116
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:563')" name="code2model" class="code2model">
+Delay115
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:562')" name="code2model" class="code2model">
+Delay114
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:561')" name="code2model" class="code2model">
+Delay113
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:560')" name="code2model" class="code2model">
+Delay112
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:559')" name="code2model" class="code2model">
+Delay111
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:558')" name="code2model" class="code2model">
+Delay110
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:556')" name="code2model" class="code2model">
+Delay109
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:555')" name="code2model" class="code2model">
+Delay108
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:554')" name="code2model" class="code2model">
+Delay107
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:553')" name="code2model" class="code2model">
+Delay106
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:552')" name="code2model" class="code2model">
+Delay105
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:551')" name="code2model" class="code2model">
+Delay104
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:656')" name="code2model" class="code2model">
+Delay23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:653')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:657')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:645')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:658')" name="code2model" class="code2model">
+Delay25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:634')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:659')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:623')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:612')" name="code2model" class="code2model">
+Delay16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:601')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:590')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:579')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:665')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:568')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:668')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:557')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:667')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:546')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:669')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:704')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:670')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:693')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:676')" name="code2model" class="code2model">
+Delay42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:663')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:677')" name="code2model" class="code2model">
+Delay43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:652')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:678')" name="code2model" class="code2model">
+Delay44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:545')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:679')" name="code2model" class="code2model">
+Delay45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:666')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e66b20f2-7fbd-402f-a126-7839f364f669')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 82
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1284')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:681')" name="code2model" class="code2model">
+Delay51
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 752
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 53
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 111
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 37
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 49
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_9')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 8
+</span>
+<span name="Register_1_9" id="Register_1_9">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:660')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:661')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:662')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:664')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 24
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_17')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 16
+</span>
+<span name="Register_1_17" id="Register_1_17">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:687')" name="code2model" class="code2model">
+Delay68
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (6466)
+</h5>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 792
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 5376
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 106
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 78
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+real 2-to-1 Multiplexer 							: 49
+</span>
+<span name="Multiplexer_1_7" id="Multiplexer_1_7">
+<ul class="SystemdefinedCollapse" id="826f077a-e5a5-4bf0-b997-87b30b540a6d" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1189')" name="code2model" class="code2model">
+Switch_on90
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1187')" name="code2model" class="code2model">
+Switch_on89
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1186')" name="code2model" class="code2model">
+Switch_on88
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1185')" name="code2model" class="code2model">
+Switch_on87
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1184')" name="code2model" class="code2model">
+Switch_on86
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1183')" name="code2model" class="code2model">
+Switch_on85
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1182')" name="code2model" class="code2model">
+Switch_on84
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1181')" name="code2model" class="code2model">
+Switch_on83
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1180')" name="code2model" class="code2model">
+Switch_on82
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1179')" name="code2model" class="code2model">
+Switch_on81
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1178')" name="code2model" class="code2model">
+Switch_on80
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1176')" name="code2model" class="code2model">
+Switch_on79
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1175')" name="code2model" class="code2model">
+Switch_on78
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1174')" name="code2model" class="code2model">
+Switch_on77
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1173')" name="code2model" class="code2model">
+Switch_on76
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1172')" name="code2model" class="code2model">
+Switch_on75
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1171')" name="code2model" class="code2model">
+Switch_on74
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1170')" name="code2model" class="code2model">
+Switch_on73
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1169')" name="code2model" class="code2model">
+Switch_on72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1168')" name="code2model" class="code2model">
+Switch_on71
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1167')" name="code2model" class="code2model">
+Switch_on70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1165')" name="code2model" class="code2model">
+Switch_on69
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1164')" name="code2model" class="code2model">
+Switch_on68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1163')" name="code2model" class="code2model">
+Switch_on67
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1162')" name="code2model" class="code2model">
+Switch_on66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1161')" name="code2model" class="code2model">
+Switch_on65
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1160')" name="code2model" class="code2model">
+Switch_on64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1159')" name="code2model" class="code2model">
+Switch_on63
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1158')" name="code2model" class="code2model">
+Switch_on62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1157')" name="code2model" class="code2model">
+Switch_on61
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1156')" name="code2model" class="code2model">
+Switch_on60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1154')" name="code2model" class="code2model">
+Switch_on59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1122')" name="code2model" class="code2model">
+Switch_on21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1121')" name="code2model" class="code2model">
+Switch_on20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1119')" name="code2model" class="code2model">
+Switch_on19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1118')" name="code2model" class="code2model">
+Switch_on18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1117')" name="code2model" class="code2model">
+Switch_on17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1116')" name="code2model" class="code2model">
+Switch_on16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1115')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1113')" name="code2model" class="code2model">
+Switch_on13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1112')" name="code2model" class="code2model">
+Switch_on12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1111')" name="code2model" class="code2model">
+Switch_on11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1110')" name="code2model" class="code2model">
+Switch_on10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1188')" name="code2model" class="code2model">
+Switch_on9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1177')" name="code2model" class="code2model">
+Switch_on8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1123')" name="code2model" class="code2model">
+Switch_on3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1120')" name="code2model" class="code2model">
+Switch_on2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1109')" name="code2model" class="code2model">
+Switch_on1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1114')" name="code2model" class="code2model">
+Switch_on14
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '826f077a-e5a5-4bf0-b997-87b30b540a6d')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+34-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><h5>
+Number of Shift operators (53)
+</h5>
+<span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 37
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Left 							: 8
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Right 							: 8
+</span>
+<br /><h5>
+Number of I/O Bits (1480)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 1286
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="f5298a36-2560-44ad-8965-fd955a4dd0da" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:452')" name="code2model" class="code2model">
+Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:453')" name="code2model" class="code2model">
+Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:454')" name="code2model" class="code2model">
+SampleTime_div_Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:455')" name="code2model" class="code2model">
+SampleTime_div_Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:456')" name="code2model" class="code2model">
+SampleTime_div_Lx_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:457')" name="code2model" class="code2model">
+SampleTime_div_Ly_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:458')" name="code2model" class="code2model">
+id_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:459')" name="code2model" class="code2model">
+iq_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:460')" name="code2model" class="code2model">
+ix_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:461')" name="code2model" class="code2model">
+iy_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:462')" name="code2model" class="code2model">
+Rs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:463')" name="code2model" class="code2model">
+omega_m_measured
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:464')" name="code2model" class="code2model">
+pole_pairs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:465')" name="code2model" class="code2model">
+psiPM_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:466')" name="code2model" class="code2model">
+id_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:467')" name="code2model" class="code2model">
+iq_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:468')" name="code2model" class="code2model">
+ix_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:469')" name="code2model" class="code2model">
+iy_ref_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:470')" name="code2model" class="code2model">
+valid_in
+</a>
+: 1 bit
+</li>
+<li>
+Reset_1: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:472')" name="code2model" class="code2model">
+valid_in_ADC
+</a>
+: 1 bit
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_0: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_1: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_2: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_3: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_4: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_5: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_6: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_7: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_8: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_9: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_10: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_11: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_12: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_13: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_14: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_15: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_16: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_17: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_18: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_19: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_20: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_21: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_22: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_23: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_24: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_25: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_26: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_27: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_28: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_29: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_30: 24 bits
+</li>
+<li>
+dqxy_phase_voltage_per_switching_state_31: 24 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'f5298a36-2560-44ad-8965-fd955a4dd0da')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 194
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="e8a2c65c-c26d-4085-8e79-e32a331d39a4" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1190')" name="code2model" class="code2model">
+done
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1191')" name="code2model" class="code2model">
+Index
+</a>
+: 32 bits
+</li>
+<li>
+J_0: 20 bits
+</li>
+<li>
+J_1: 20 bits
+</li>
+<li>
+J_2: 20 bits
+</li>
+<li>
+J_3: 20 bits
+</li>
+<li>
+J_4: 20 bits
+</li>
+<li>
+J_5: 20 bits
+</li>
+<li>
+J_6: 20 bits
+</li>
+<li>
+J_7: 20 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e8a2c65c-c26d-4085-8e79-e32a331d39a4')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Multiply-instantiated Identical Subsystems  8 :   <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1092')" name="code2model" class="code2model">
+MATLAB Function9
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1091')" name="code2model" class="code2model">
+MATLAB Function8
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1084')" name="code2model" class="code2model">
+MATLAB Function15
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1083')" name="code2model" class="code2model">
+MATLAB Function14
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1082')" name="code2model" class="code2model">
+MATLAB Function13
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1081')" name="code2model" class="code2model">
+MATLAB Function12
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1080')" name="code2model" class="code2model">
+MATLAB Function11
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:1079')" name="code2model" class="code2model">
+MATLAB Function10
+</a>
+
+</h5>
+<h5>
+Multipliers (128)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 128
+</span>
+<br /><h5>
+Adders/Subtractors (2688)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 416
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 1168
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 128
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 128
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 144
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 272
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 144
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 144
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 144
+</span>
+<br /><h5>
+Registers (15088)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 2928
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 5984
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 2240
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 1520
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 128
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 384
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 128
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 128
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 128
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 512
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 576
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 288
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 144
+</span>
+<br /><h5>
+Multiplexers (19920)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 8960
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 528
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 384
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 384
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 128
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 1968
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 1088
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 288
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 144
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 5760
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 288
+</span>
+<br /><h5>
+Number of Shift operators (288)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 144
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 144
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:718')" name="code2model" class="code2model">
+Detect Rise
+Positive2
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:718:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:717')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:717:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:716')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:716:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_prediction_and_cost_function:474')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

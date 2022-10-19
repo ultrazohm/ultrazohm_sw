@@ -5,7 +5,7 @@ High-level Resource Utilization Report for parallel_8_cost_function
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_1');hdlTableShrink(this, 'Subtractor_2_1');hdlTableShrink(this, 'Multiply_3_1');hdlTableShrink(this, 'Subtractor_3_1');hdlTableShrink(this, 'Multiply_4_1');hdlTableShrink(this, 'Subtractor_4_1');hdlTableShrink(this, 'Multiply_5_1');hdlTableShrink(this, 'Subtractor_5_1');hdlTableShrink(this, 'Multiply_6_1');hdlTableShrink(this, 'Subtractor_6_1');hdlTableShrink(this, 'Multiply_7_1');hdlTableShrink(this, 'Subtractor_7_1');hdlTableShrink(this, 'Multiply_8_1');hdlTableShrink(this, 'Subtractor_8_1');hdlTableShrink(this, 'Multiply_9_1');hdlTableShrink(this, 'Subtractor_9_1');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_8');hdlTableShrink(this, 'Multiplexer_1_6');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-56
+1048
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-37
+5583
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-649
+69215
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-43
+12747
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-814
+870
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+160
 </td>
 
 </tr>
@@ -240,48 +240,147 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:37')" name="code2model" class="code2model">
-HDL_DUT4
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:330')" name="code2model" class="code2model">
+HDL_DUT1
 </a>
 
 </h5>
 <h5>
-Registers (36)
+Adders/Subtractors (216)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 64
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 32
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 32
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 32
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 40
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 8
+</span>
+<br /><span style="font-family:monospace">
+35-bit Subtractor 							: 8
+</span>
+<br /><h5>
+Registers (1414)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit Register 							: 36
+1-bit Register 							: 398
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:44')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:624')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 64
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:629')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 648
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 96
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 40
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_8')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 40
+</span>
+<span name="Register_1_8" id="Register_1_8">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:337')" name="code2model" class="code2model">
 Delay10
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:48')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:628')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:341')" name="code2model" class="code2model">
 Delay9
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:47')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:627')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:340')" name="code2model" class="code2model">
 Delay8
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:46')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:626')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:339')" name="code2model" class="code2model">
 Delay7
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:45')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:625')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:338')" name="code2model" class="code2model">
 Delay33
 </a>
 
@@ -290,46 +389,67 @@ Delay33
 </ul>
 
 </span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+20-bit Register 							: 8
+</span>
 <br /><h5>
-Multiplexers (41)
+Multiplexers (5585)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 5
+1-bit 2-to-1 Multiplexer 							: 653
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 32
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 4648
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 96
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 64
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_6')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit 2-to-1 Multiplexer 							: 36
+real 2-to-1 Multiplexer 							: 68
 </span>
-<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<span name="Multiplexer_1_6" id="Multiplexer_1_6">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:206')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:499')" name="code2model" class="code2model">
 Switch_on4
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:205')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:498')" name="code2model" class="code2model">
 Switch_on3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:204')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:497')" name="code2model" class="code2model">
 Switch_on2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:202')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:495')" name="code2model" class="code2model">
 Switch_on1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:203')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:496')" name="code2model" class="code2model">
 Switch_on14
 </a>
 
@@ -338,17 +458,35 @@ Switch_on14
 </ul>
 
 </span>
+<br /><span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 16
+</span>
+<br /><span style="font-family:monospace">
+34-bit 2-to-1 Multiplexer 							: 8
+</span>
 <br /><h5>
-Number of I/O Bits (814)
+Number of Shift operators (48)
+</h5>
+<span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 32
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Left 							: 8
+</span>
+<br /><span style="font-family:monospace">
+33-bit Dynamic Shift Right 							: 8
+</span>
+<br /><h5>
+Number of I/O Bits (870)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 652
+Number of Input Bits: 708
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="f40c9a11-f217-4766-9487-13ccb5fa7b52" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="cafcda2c-d7b9-4b58-91d8-188138599371" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -359,7 +497,7 @@ reset: 1 bit
 clk_enable: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:38')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:331')" name="code2model" class="code2model">
 valid_in
 </a>
 : 1 bit
@@ -461,32 +599,32 @@ Prediction_30: 18 bits
 Prediction_31: 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:40')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:333')" name="code2model" class="code2model">
 id_ref_AXI
 </a>
-: 18 bits
+: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:41')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:334')" name="code2model" class="code2model">
 iq_ref_AXI
 </a>
-: 18 bits
+: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:42')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:335')" name="code2model" class="code2model">
 ix_ref_AXI
 </a>
-: 18 bits
+: 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:43')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:336')" name="code2model" class="code2model">
 iy_ref_AXI
 </a>
-: 18 bits
+: 32 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'f40c9a11-f217-4766-9487-13ccb5fa7b52')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'cafcda2c-d7b9-4b58-91d8-188138599371')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -503,7 +641,7 @@ Number of Output Bits: 162
 ce_out: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:207')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('parallel_8_cost_function:500')" name="code2model" class="code2model">
 done
 </a>
 : 1 bit
@@ -537,727 +675,169 @@ J_7: 20 bits
 
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:177')" name="code2model" class="code2model">
-Subsystem7
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_2_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_2_1" id="Multiply_2_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:186')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:184')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:185')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:187')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_2_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_2_1" id="Subtractor_2_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:188')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:189')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:190')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:191')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:160')" name="code2model" class="code2model">
-Subsystem6
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_3_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_3_1" id="Multiply_3_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:169')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:167')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:168')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:170')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_3_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_3_1" id="Subtractor_3_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:171')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:172')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:173')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:174')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:143')" name="code2model" class="code2model">
-Subsystem5
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_4_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_4_1" id="Multiply_4_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:152')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:150')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:151')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:153')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_4_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_4_1" id="Subtractor_4_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:154')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:155')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:156')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:157')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:126')" name="code2model" class="code2model">
-Subsystem4
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_5_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_5_1" id="Multiply_5_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:135')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:133')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:134')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:136')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_5_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_5_1" id="Subtractor_5_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:137')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:138')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:139')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:140')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:109')" name="code2model" class="code2model">
-Subsystem3
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_6_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_6_1" id="Multiply_6_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:118')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:116')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:117')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:119')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_6_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_6_1" id="Subtractor_6_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:120')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:121')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:122')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:123')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:92')" name="code2model" class="code2model">
-Subsystem2
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_7_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_7_1" id="Multiply_7_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:101')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:99')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:100')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:102')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_7_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_7_1" id="Subtractor_7_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:103')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:104')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:105')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:106')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:75')" name="code2model" class="code2model">
-Subsystem1
-</a>
-
-</h5>
-<h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_8_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_8_1" id="Multiply_8_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:84')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:82')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:83')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:85')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
-</h5>
-<span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_8_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_8_1" id="Subtractor_8_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:86')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:87')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:88')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:89')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:58')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:344')" name="code2model" class="code2model">
 Subsystem
 </a>
 
 </h5>
 <h5>
-Multipliers (4)
-</h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_9_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-20x20-bit Multiply 							: 4
-</span>
-<span name="Multiply_9_1" id="Multiply_9_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:67')" name="code2model" class="code2model">
-Product3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:65')" name="code2model" class="code2model">
-Product1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:66')" name="code2model" class="code2model">
-Product2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:68')" name="code2model" class="code2model">
-Product4
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><h5>
-Adders/Subtractors (7)
+Registers (24)
 </h5>
 <span style="font-family:monospace">
-21x21-bit Adder 							: 1
-</span>
-<br /><span style="font-family:monospace">
-22x22-bit Adder 							: 2
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_9_1')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-19x19-bit Subtractor 							: 4
-</span>
-<span name="Subtractor_9_1" id="Subtractor_9_1">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:69')" name="code2model" class="code2model">
-Subtract4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:70')" name="code2model" class="code2model">
-Subtract5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:71')" name="code2model" class="code2model">
-Subtract6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('parallel_8_cost_function:72')" name="code2model" class="code2model">
-Subtract7
-</a>
-
-</li>
-
-</ul>
-
+32-bit Register 							: 24
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:49')" name="code2model" class="code2model">
+Report for Multiply-instantiated Identical Subsystems  8 :   <a href="matlab:coder.internal.code2model('parallel_8_cost_function:623')" name="code2model" class="code2model">
+MATLAB Function7
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:622')" name="code2model" class="code2model">
+MATLAB Function6
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:621')" name="code2model" class="code2model">
+MATLAB Function5
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:620')" name="code2model" class="code2model">
+MATLAB Function4
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:619')" name="code2model" class="code2model">
+MATLAB Function3
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:618')" name="code2model" class="code2model">
+MATLAB Function2
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:617')" name="code2model" class="code2model">
+MATLAB Function1
+</a>
+, <a href="matlab:coder.internal.code2model('parallel_8_cost_function:616')" name="code2model" class="code2model">
+MATLAB Function
+</a>
+
+</h5>
+<h5>
+Multipliers (32)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 32
+</span>
+<br /><h5>
+Adders/Subtractors (832)
+</h5>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 312
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 56
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Adder 							: 144
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 32
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 32
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 56
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 88
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 56
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 56
+</span>
+<br /><h5>
+Registers (4144)
+</h5>
+<span style="font-family:monospace">
+8-bit Register 							: 800
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 520
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 1936
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 224
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 112
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 56
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 96
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 128
+</span>
+<br /><span style="font-family:monospace">
+32-bit Register 							: 144
+</span>
+<br /><h5>
+Multiplexers (7160)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 3200
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 712
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 112
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 352
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 56
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 2240
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 112
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 152
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 96
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 96
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 32
+</span>
+<br /><h5>
+Number of Shift operators (112)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 56
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 56
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:342')" name="code2model" class="code2model">
 Detect Rise
 Positive
 </a>
@@ -1276,7 +856,7 @@ Multiplexers (1)
 1-bit 2-to-1 Multiplexer 							: 1
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:49:8')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_cost_function:342:8')" name="code2model" class="code2model">
 Positive
 </a>
 

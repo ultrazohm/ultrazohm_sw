@@ -2,19 +2,17 @@ create_project prj_ip {} -part xczu9eg-ffvc900-1L-i -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_dut.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_cost_function_addr_decoder.vhd}
@@ -40,13 +38,13 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112729440 [ipx::current_core]
+set_property core_revision 2112730553 [ipx::current_core]
 
 # Add HDL source files to IP
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -55,46 +53,38 @@ ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd} [
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_cost_function_reset_sync.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_cost_function_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

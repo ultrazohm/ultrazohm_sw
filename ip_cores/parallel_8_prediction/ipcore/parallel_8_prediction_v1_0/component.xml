@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8a70145a</spirit:value>
+            <spirit:value>7e0a35eb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8a70145a</spirit:value>
+            <spirit:value>7e0a35eb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -961,7 +961,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_prediction.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f91bdea5</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1da129bb</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1174,14 +1174,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_8_prediction</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112729431</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-10-17T13:12:15Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112730535</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-10-18T07:35:19Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="743ac20f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="811470eb"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3d045924"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="f6c0a853"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="afb40ba8"/>
     </xilinx:packagingInfo>

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>586e1358</spirit:value>
+            <spirit:value>a4332cf2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>586e1358</spirit:value>
+            <spirit:value>a4332cf2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -861,7 +861,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_min_cost_function.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_95ca2427</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_4f78c728</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1029,14 +1029,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_8_min_cost_function</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112729465</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-10-17T13:45:46Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112730759</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-10-18T11:19:25Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="38c6f84e"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="656979b9"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="926c1cb5"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="a7c35349"/>
     </xilinx:packagingInfo>

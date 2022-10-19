@@ -26,32 +26,28 @@ INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'A
 WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
 INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem2.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem3.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem5.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem6.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem7.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_Subsystem_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_src_HDL_DUT1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_reset_sync.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_dut.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -64,6 +60,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_axi_lit
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_cost_function.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Oct 17 15:20:39 2022...
+INFO: [Common 17-206] Exiting Vivado at Tue Oct 18 09:54:03 2022...
 
-Elapsed time is 12.3309 seconds.
+Elapsed time is 12.2376 seconds.

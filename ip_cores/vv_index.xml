@@ -941,9 +941,37 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112729440">
+		<CoreRevision value="2112730553">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_cost_function/ipcore/parallel_8_cost_function_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_delay_compensation:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_delay_compensation">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112730698">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_delay_compensation/ipcore/parallel_8_delay_compensation_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">
@@ -969,7 +997,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112729465">
+		<CoreRevision value="2112730759">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_min_cost_function/ipcore/parallel_8_min_cost_function_v1_0/component.xml">
 		</ComponentPath>
@@ -997,7 +1025,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112729419">
+		<CoreRevision value="2112730718">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_phase_voltages/ipcore/parallel_8_phase_voltages_v1_0/component.xml">
 		</ComponentPath>
@@ -1025,9 +1053,65 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112729431">
+		<CoreRevision value="2112730535">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_prediction/ipcore/parallel_8_prediction_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_prediction_and_cost_function:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_prediction_and_cost_function">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112730646">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_prediction_and_cost_function/ipcore/parallel_8_prediction_and_cost_function_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:parallel_8_switching_states:1.0">
+		</VLNV>
+		<DisplayName value="parallel_8_switching_states">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112730766">
+		</CoreRevision>
+		<ComponentPath value="parallel_8_switching_states/ipcore/parallel_8_switching_states_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">
@@ -1805,7 +1889,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112719170">
+		<CoreRevision value="2112730517">
 		</CoreRevision>
 		<ComponentPath value="test_delay_compensation/ipcore/test2_parallel_delay_compensation_6Phase_v1_0/component.xml">
 		</ComponentPath>

@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/parallel_8_phase_voltages/ipcore/parallel_8_phase_voltages_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="bdf82486b3d24f259f23b7293aee57cd"/>
+    <Option Name="Id" Val="3d1c5d968aed46edb9c98ada8d51767e"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -91,6 +91,12 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_phase_voltages_src_Phase_voltages_per_switching_state2_pkg.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/vhdl/parallel_8_phase_voltages_src_Positive_block.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -116,12 +122,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_phase_voltages_src_Phase_voltages_per_switching_state2_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

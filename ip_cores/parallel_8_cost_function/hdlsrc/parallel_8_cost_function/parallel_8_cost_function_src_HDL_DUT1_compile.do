@@ -1,0 +1,13 @@
+vlib work
+vmap -c
+vcom  parallel_8_cost_function_src_HDL_DUT1_pkg.vhd
+vcom  parallel_8_cost_function_src_Positive.vhd
+vcom  parallel_8_cost_function_src_Detect_Rise_Positive.vhd
+vcom  parallel_8_cost_function_src_nfp_add_single.vhd
+vcom  parallel_8_cost_function_src_nfp_mul_single.vhd
+vcom  parallel_8_cost_function_src_nfp_sub_single.vhd
+vcom  parallel_8_cost_function_src_MATLAB_Function.vhd
+vcom  parallel_8_cost_function_src_Subsystem.vhd
+vcom  parallel_8_cost_function_src_nfp_convert_sfix_18_En11_to_single.vhd
+vcom  parallel_8_cost_function_src_nfp_convert_single_to_sfix_20_En11.vhd
+vcom  parallel_8_cost_function_src_HDL_DUT1.vhd

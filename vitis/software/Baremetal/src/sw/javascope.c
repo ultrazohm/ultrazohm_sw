@@ -46,6 +46,12 @@ extern float theta_el_rad;
 extern struct uz_3ph_dq_t v_dq_Volts;
 extern float theta_offset;
 
+extern float value_filter_i_q;
+extern float value_filter_i_d;
+extern float value_filter_u_d;
+extern float value_filter_u_q;
+extern float value_filter_omega_el;
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -83,7 +89,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
+	js_ch_observable[JSO_filter_id]	= &value_filter_i_d;
+	js_ch_observable[JSO_filter_iq]	= &value_filter_i_q;
+	js_ch_observable[JSO_filter_ud]	= &value_filter_u_d;
+	js_ch_observable[JSO_filter_uq]	= &value_filter_u_q;
+	js_ch_observable[JSO_filter_omega_el]	= &value_filter_omega_el;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

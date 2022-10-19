@@ -87,23 +87,20 @@ enum encoderoffset_states
     encoderoffset_finished,
 };
 
-uz_filter_cumulativeavg_t filter_i_q=NULL;
-uz_filter_cumulativeavg_t filter_i_d=NULL;
-uz_filter_cumulativeavg_t filter_u_d=NULL;
-uz_filter_cumulativeavg_t filter_u_q=NULL;
-uz_filter_cumulativeavg_t filter_omega_el=NULL;
+uz_filter_cumulativeavg_t *filter_i_q = NULL;
+uz_filter_cumulativeavg_t *filter_i_d = NULL;
+uz_filter_cumulativeavg_t *filter_u_d = NULL;
+uz_filter_cumulativeavg_t *filter_u_q = NULL;
+uz_filter_cumulativeavg_t *filter_omega_el = NULL;
 
 enum encoderoffset_states encoderoffset_current_state;
 bool theta_offset_estimation = false;
 
-
-float value_filter_i_q=0.0f;
-float value_filter_i_d=0.0f;
-float value_filter_u_d=0.0f;
-float value_filter_u_q=0.0f;
-float value_filter_omega_el=0.0f;
-
-
+float value_filter_i_q = 0.0f;
+float value_filter_i_d = 0.0f;
+float value_filter_u_d = 0.0f;
+float value_filter_u_q = 0.0f;
+float value_filter_omega_el = 0.0f;
 
 void ISR_Control(void *data)
 {
@@ -119,51 +116,57 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * poles * 2.0f * M_PI / 60.0f;
 
     platform_state_t current_state = ultrazohm_state_machine_get_state();
+
     if (current_state == control_state)
     {
         if (theta_offset_estimation)
         {
-
-            float uz_encoderoffset_estimate_offset()
+            switch (encoderoffset_current_state)
             {
-
-                switch (encoderoffset_current_state)
+            case encoderoffset_init:
+                uz_filter_cumulativeavg_reset(filter_i_d);
+                uz_filter_cumulativeavg_reset(filter_i_q);
+                uz_filter_cumulativeavg_reset(filter_omega_el);
+                uz_filter_cumulativeavg_reset(filter_u_d);
+                uz_filter_cumulativeavg_reset(filter_u_q);
+                i_reference_Ampere.q = 0.0f;
+                i_reference_Ampere.d = 0.0f;
+                encoderoffset_current_state = encoderoffset_positive_accelerate;
+                break;
+            case encoderoffset_positive_accelerate:
+                if (abs(i_actual_Ampere.q) < 1.0f)
                 {
-                case encoderoffset_init:
+                    i_reference_Ampere.q = 1.0f;
+                }
+                else
+                {
                     i_reference_Ampere.q = 0.0f;
-                    i_reference_Ampere.d = 0.0f;
-                    encoderoffset_current_state = encoderoffset_positive_accelerate;
-                    break;
-                case encoderoffset_positive_accelerate:
-                    if (i_actual_Ampere.q < abs(1.0f))
+                    encoderoffset_current_state = encoderoffset_positive_i0;
+                }
+                break;
+            case encoderoffset_positive_i0:
+                if (abs(i_actual_Ampere.q) < 0.1f) // wait until current is actually zero
+                {
+                    if (abs(omega_el_rad_per_sec) > 5.0f) // measure as long as omega_el is not zero
                     {
-                        i_reference_Ampere.q = 1.0f;
+                        // measure
+                        value_filter_i_q = uz_filter_cumulativeavg_step(filter_i_q, i_actual_Ampere.q);
+                        value_filter_i_d = uz_filter_cumulativeavg_step(filter_i_d, i_actual_Ampere.d);
+                        value_filter_u_d = uz_filter_cumulativeavg_step(filter_u_d, v_dq_Volts.d);
+                        value_filter_u_q = uz_filter_cumulativeavg_step(filter_u_q, v_dq_Volts.q);
+                        value_filter_omega_el = uz_filter_cumulativeavg_step(filter_omega_el, omega_el_rad_per_sec);
                     }
                     else
                     {
-                        i_reference_Ampere.q = 0.0f;
-                        encoderoffset_current_state = encoderoffset_positive_i0;
+                        encoderoffset_current_state = encoderoffset_positive_measurement; // measurement is finished
                     }
-                    break;
-                case encoderoffset_positive_i0:
-                    if (i_actual_Ampere.q < abs(0.1f)) // wait until current is actually zero
-                    {
-                        if (omega_el_rad_per_sec > abs(5.0f)) // measure as long as omega_el is not zero
-                        {
-                            // measure
-                        }
-                        else
-                        {
-                            encoderoffset_current_state=encoderoffset_positive_measurement; // measurement is finished
-                        }
-                    }
-                    break;
-                case encoderoffset_positive_measurement:
-                    // nothing
-                default:
-                    break;
                 }
-            };
+                break;
+            case encoderoffset_positive_measurement:
+                // nothing
+            default:
+                break;
+            }
         }
 
         // Start: Control algorithm - only if ultrazohm is in control state
@@ -205,13 +208,11 @@ void ISR_Control(void *data)
 int Initialize_ISR()
 {
 
-
-    filter_i_q=uz_filter_cumulativeavg_init();
-    filter_i_d=uz_filter_cumulativeavg_init();
-    filter_u_d=uz_filter_cumulativeavg_init();
-    filter_u_q=uz_filter_cumulativeavg_init();
-    filter_omega_el=uz_filter_cumulativeavg_init();
-
+    filter_i_q = uz_filter_cumulativeavg_init();
+    filter_i_d = uz_filter_cumulativeavg_init();
+    filter_u_d = uz_filter_cumulativeavg_init();
+    filter_u_q = uz_filter_cumulativeavg_init();
+    filter_omega_el = uz_filter_cumulativeavg_init();
 
     int Status = 0;
 

@@ -65,12 +65,13 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
 }
 
 
-void uz_resonantController_step(uz_resonantController_t *self, float in_ref, float in_m, float omega_el) {
+float uz_resonantController_step(uz_resonantController_t *self, float in_ref, float in_m, float omega_el) {
 	uz_assert_not_NULL(self);
 	self->input.in_ref = in_ref;
 	self->input.in_m = in_m;
 	self->input.omega_el = omega_el;
 	Resonant_Controller_step(self->PtrToModelData);
+	return self->output.out;
 }
 
 

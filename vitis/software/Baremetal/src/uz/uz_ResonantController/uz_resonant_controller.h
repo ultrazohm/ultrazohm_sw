@@ -43,7 +43,6 @@ struct uz_resonantController_config {
 	float antiwindup_gain;			/**< Gain of anti-windup feedback*/
 	float in_reference_value;		/**< Input reference value*/
 	float in_measured_value;		/**< Input measured value*/
-	float reset;					/**< Reset input*/
 };
 
 
@@ -51,8 +50,8 @@ struct uz_resonantController_config {
 
 /**
  * @brief init function for the resonant controller
- * @param struct uz_resonantController_config config for the resonant controller
- * @return uz_resonant_controller* to the resonant controller
+ * @param struct uz_resonantController_config, config for the resonant controller
+ * @return uz_resonant_controller*, pointer to the resonant controller
  */
 uz_resonantController_t* uz_resonantController_init(struct uz_resonantController_config config);
 
@@ -62,9 +61,9 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
  * @param float in_reference_value, input reference value for the controller
  * @param float in_measured_value, input measured value for the controller
  * @param float fundamental_frequency, current angular velocity for the controller
- * @return void
+ * @return float outputvalue of the resonant controller
  */
-void uz_resonantController_step(uz_resonantController_t *self, float in_reference_value, float in_measured_value, float fundamental_frequency);
+float uz_resonantController_step(uz_resonantController_t *self, float in_reference_value, float in_measured_value, float fundamental_frequency);
 
 /**
  * @brief reset function of the resonant controller

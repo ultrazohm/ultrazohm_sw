@@ -21,7 +21,7 @@ The resonant frequency is specified by :math:`\omega_R = h \cdot \omega_{el}`, w
 Resonant-Controller
 -------------------
 
-.. doxygenstruct:: uz_resonantController_t
+.. doxygentypedef:: uz_resonantController_t
 
 
 Description
@@ -99,10 +99,8 @@ Example
   int main(void) {
 
     // step once
-    uz_resonantController_step(R_controller_instance, in_ref_value, in_measured_value, fundamental_fequency);
-    //read output
-    output = uz_resonantController_get_output(R_controller_instance);
-    
+    output = uz_resonantController_step(R_controller_instance, in_ref_value, in_measured_value, fundamental_fequency);
+ 
   }
 
 Description
@@ -110,7 +108,10 @@ Description
 
 Steps the resonant-controller. First the input values of the controller for the current time-step have to been set.
 With the step-function the new output value is calculated.
-The step-function has to be called with the same sample time as specified in the input-struct of the resonant controller.
+
+.. warning::
+
+   The step-function has to be called with the same sample time as specified in the input-struct of the resonant controller.
 
 Reset function
 --------------

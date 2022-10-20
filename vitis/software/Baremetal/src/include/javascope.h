@@ -25,22 +25,30 @@ enum JS_OberservableData {
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
 	JSO_theta_mech,
-	JSO_ua, // 5
+	JSO_ua,
 	JSO_ub,
 	JSO_uc,
 	JSO_ia,
 	JSO_ib,
-	JSO_ic, // 10
+	JSO_ic,
 	JSO_id,
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
-	JSO_Speed_rpm, // 15
+	JSO_Speed_rpm,
+	JSO_psi_d_neg,
+	JSO_psi_q_neg,
+	JSO_psi_d_pos,
+	JSO_psi_q_pos,
 	JSO_filter_id,
 	JSO_filter_iq,
 	JSO_filter_uq,
 	JSO_filter_ud,
 	JSO_filter_omega_el,
+	JSO_Theta_offset,
+	JSO_umin_old,
+	JSO_umin_new,
+	JSO_omega_el,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,
@@ -48,11 +56,7 @@ enum JS_OberservableData {
 	JSO_Theta_mech,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
-	JSO_Wtemp,
-	JSO_Rs_mOhm,
-	JSO_Ld_mH,
-	JSO_Lq_mH,
-	JSO_PsiPM_mVs,
+	JSO_gradient,
 	JSO_ENDMARKER
 };
 
@@ -117,7 +121,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
-	JSO_Speed_rpm_filtered,
 	JSSD_ENDMARKER
 };
 

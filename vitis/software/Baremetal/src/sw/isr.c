@@ -32,6 +32,8 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_filter_cumulativeavg/uz_filter_cumulativeavg.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "../uz/uz_signals/uz_signals.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -67,25 +69,13 @@ float V_dc_volts = 24.0f;
 float omega_el_rad_per_sec = 0.0f;
 float theta_el_rad = 0.0f;
 
-float theta_offset = -0.54f;          // 0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float theta_offset = -0.8; //0.3f; //-0.54f;          // 0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
 float adc_scaling = (20.0f / 2.084f); // 3.2f
 float poles = 3.0f;
 struct uz_3ph_dq_t v_dq_Volts = {0};
 extern uz_CurrentControl_t *CC_instance;
 
-enum encoderoffset_states
-{
-    encoderoffset_init = 0,
-    encoderoffset_positive_accelerate,
-    encoderoffset_positive_i0,
-    encoderoffset_positive_measurement,
-    encoderoffset_negative_accelerate,
-    encoderoffset_negative_i0,
-    encoderoffset_negative_measurement,
-    encoderoffset_calculate_offset,
-    encoderoffset_sgd,
-    encoderoffset_finished,
-};
+
 
 uz_filter_cumulativeavg_t *filter_i_q = NULL;
 uz_filter_cumulativeavg_t *filter_i_d = NULL;
@@ -93,14 +83,31 @@ uz_filter_cumulativeavg_t *filter_u_d = NULL;
 uz_filter_cumulativeavg_t *filter_u_q = NULL;
 uz_filter_cumulativeavg_t *filter_omega_el = NULL;
 
-enum encoderoffset_states encoderoffset_current_state;
-bool theta_offset_estimation = false;
+static bool get_uduq_thetaoffset(float end_current, uz_3ph_dq_t *psi_measured);
+
+bool theta_offset_estimation = true;
 
 float value_filter_i_q = 0.0f;
 float value_filter_i_d = 0.0f;
 float value_filter_u_d = 0.0f;
 float value_filter_u_q = 0.0f;
 float value_filter_omega_el = 0.0f;
+float time=0.0f;
+float new_time=0.0f;
+
+uz_3ph_dq_t psi_measured={0};
+uz_3ph_dq_t psi_measured_neg={0};
+uz_3ph_dq_t psi_measured_2={0};
+uz_3ph_dq_t psi_measured_neg_2={0};
+bool finished=false;
+
+int posneg=0;
+float u_min_old=0.0f;
+float u_min_new=0.0f;
+float u_min_3=0.0f;
+float theta_old=0.0f;
+float gradient=0.0f;
+float step_current=2.0f;
 
 void ISR_Control(void *data)
 {
@@ -119,54 +126,68 @@ void ISR_Control(void *data)
 
     if (current_state == control_state)
     {
+    	//theta_offset=uz_wavegen_triangle_with_offset(2*M_PI, 0.01, -M_PI);
         if (theta_offset_estimation)
         {
-            switch (encoderoffset_current_state)
-            {
-            case encoderoffset_init:
-                uz_filter_cumulativeavg_reset(filter_i_d);
-                uz_filter_cumulativeavg_reset(filter_i_q);
-                uz_filter_cumulativeavg_reset(filter_omega_el);
-                uz_filter_cumulativeavg_reset(filter_u_d);
-                uz_filter_cumulativeavg_reset(filter_u_q);
-                i_reference_Ampere.q = 0.0f;
-                i_reference_Ampere.d = 0.0f;
-                encoderoffset_current_state = encoderoffset_positive_accelerate;
-                break;
-            case encoderoffset_positive_accelerate:
-                if (abs(i_actual_Ampere.q) < 1.0f)
-                {
-                    i_reference_Ampere.q = 1.0f;
-                }
-                else
-                {
-                    i_reference_Ampere.q = 0.0f;
-                    encoderoffset_current_state = encoderoffset_positive_i0;
-                }
-                break;
-            case encoderoffset_positive_i0:
-                if (abs(i_actual_Ampere.q) < 0.1f) // wait until current is actually zero
-                {
-                    if (abs(omega_el_rad_per_sec) > 5.0f) // measure as long as omega_el is not zero
-                    {
-                        // measure
-                        value_filter_i_q = uz_filter_cumulativeavg_step(filter_i_q, i_actual_Ampere.q);
-                        value_filter_i_d = uz_filter_cumulativeavg_step(filter_i_d, i_actual_Ampere.d);
-                        value_filter_u_d = uz_filter_cumulativeavg_step(filter_u_d, v_dq_Volts.d);
-                        value_filter_u_q = uz_filter_cumulativeavg_step(filter_u_q, v_dq_Volts.q);
-                        value_filter_omega_el = uz_filter_cumulativeavg_step(filter_omega_el, omega_el_rad_per_sec);
-                    }
-                    else
-                    {
-                        encoderoffset_current_state = encoderoffset_positive_measurement; // measurement is finished
-                    }
-                }
-                break;
-            case encoderoffset_positive_measurement:
-                // nothing
-            default:
-                break;
-            }
+
+
+        	switch (posneg) {
+				case 0:
+		        	finished=get_uduq_thetaoffset(step_current, &psi_measured);
+		        	if(finished){
+		        		posneg=1;
+		        	}
+					break;
+				case 1:
+		        	finished=get_uduq_thetaoffset(-step_current, &psi_measured_neg);
+		        	if(finished){
+		        		posneg=2;
+		        	}
+					break;
+				case 2:
+	            	u_min_new=sqrtf(psi_measured.d*psi_measured.d + psi_measured_neg.d*psi_measured_neg.d );
+	            	theta_old=theta_offset;
+	            	theta_offset+=0.01f;
+	            	posneg=0;
+	            	break;
+				case 3:
+		        	finished=get_uduq_thetaoffset(step_current, &psi_measured);
+		        	if(finished){
+		        		posneg=4;
+		        	}
+					break;
+				case 4:
+		        	finished=get_uduq_thetaoffset(-step_current, &psi_measured_neg);
+		        	if(finished){
+		        		posneg=5;
+		        	}
+					break;
+				case 5:
+					u_min_old=u_min_new;
+					u_min_new=sqrtf(psi_measured.d*psi_measured.d + psi_measured_neg.d*psi_measured_neg.d );
+	            	float alpha=0.5f;
+	            	gradient= (u_min_old-u_min_new) / (theta_old-theta_offset);
+	            	gradient=uz_signals_saturation(gradient, 0.5f, -0.5f);
+	            	theta_old=theta_offset;
+	            	theta_offset=theta_offset-alpha*gradient;
+
+	            	posneg=6;
+	            	break;
+				case 6:
+		        	finished=get_uduq_thetaoffset(step_current, &psi_measured);
+		        	if(finished){
+		        		posneg=7;
+		        	}
+					break;
+				case 7:
+		        	finished=get_uduq_thetaoffset(-step_current, &psi_measured_neg);
+		        	if(finished){
+		        		posneg=5;
+		        	}
+					break;
+				default:
+					break;
+			}
         }
 
         // Start: Control algorithm - only if ultrazohm is in control state
@@ -356,3 +377,79 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+enum encoderoffset_states
+{
+    encoderoffset_init = 0,
+    encoderoffset_positive_accelerate,
+    encoderoffset_positive_i0,
+    encoderoffset_positive_measurement,
+    encoderoffset_negative_accelerate,
+    encoderoffset_negative_i0,
+    encoderoffset_negative_measurement,
+    encoderoffset_calculate_offset,
+    encoderoffset_sgd,
+    encoderoffset_finished,
+};
+static enum encoderoffset_states encoderoffset_current_state=encoderoffset_init;
+
+float speed_limitations=0.0f;
+static bool get_uduq_thetaoffset(float end_current, uz_3ph_dq_t *psi_measured){
+
+
+
+	static bool state_machine_finished=false;
+
+    switch (encoderoffset_current_state)
+    {
+    case encoderoffset_init:
+    	state_machine_finished=false;
+        uz_filter_cumulativeavg_reset(filter_i_d);
+        uz_filter_cumulativeavg_reset(filter_i_q);
+        uz_filter_cumulativeavg_reset(filter_omega_el);
+        uz_filter_cumulativeavg_reset(filter_u_d);
+        uz_filter_cumulativeavg_reset(filter_u_q);
+        i_reference_Ampere.q = 0.0f;
+        i_reference_Ampere.d = 0.0f;
+        time=uz_SystemTime_GetGlobalTimeInSec();
+        encoderoffset_current_state = encoderoffset_positive_accelerate;
+        break;
+    case encoderoffset_positive_accelerate:
+            i_reference_Ampere.q = end_current;
+       //     i_reference_Ampere.d = -1.0f*fabsf(end_current);
+            new_time=uz_SystemTime_GetGlobalTimeInSec();
+        	if( (new_time-time) > 1.0f && (fabsf(Global_Data.av.mechanicalRotorSpeed)>100.0f)){
+        		speed_limitations=fabsf(Global_Data.av.mechanicalRotorSpeed); // measure max speed;
+                encoderoffset_current_state = encoderoffset_positive_i0;
+        	}
+
+        break;
+    case encoderoffset_positive_i0:
+        i_reference_Ampere.q = 0.0f;
+        i_reference_Ampere.d = 0.0f;
+            if ( ( fabsf(Global_Data.av.mechanicalRotorSpeed) > 0.3f*speed_limitations) && ( fabsf(Global_Data.av.mechanicalRotorSpeed) < 0.8f*speed_limitations)  ) // measure as long as omega_el is not zero
+            {
+                // measure
+                value_filter_i_q = uz_filter_cumulativeavg_step(filter_i_q, i_actual_Ampere.q);
+                value_filter_i_d = uz_filter_cumulativeavg_step(filter_i_d, i_actual_Ampere.d);
+                value_filter_u_d = uz_filter_cumulativeavg_step(filter_u_d, v_dq_Volts.d);
+                value_filter_u_q = uz_filter_cumulativeavg_step(filter_u_q, v_dq_Volts.q);
+                value_filter_omega_el = uz_filter_cumulativeavg_step(filter_omega_el, omega_el_rad_per_sec);
+            }
+            if( fabsf(Global_Data.av.mechanicalRotorSpeed) < 0.15f*speed_limitations)
+            {
+                encoderoffset_current_state = encoderoffset_positive_measurement; // measurement is finished
+            }
+
+        break;
+    case encoderoffset_positive_measurement:
+        // nothing
+    	psi_measured->q=value_filter_u_q/value_filter_omega_el;
+    	psi_measured->d=value_filter_u_d/value_filter_omega_el;
+    	state_machine_finished=true;
+    	encoderoffset_current_state=encoderoffset_init;
+    default:
+        break;
+    }
+    	return state_machine_finished;
+}

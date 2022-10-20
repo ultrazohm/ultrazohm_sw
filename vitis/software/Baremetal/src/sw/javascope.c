@@ -51,6 +51,13 @@ extern float value_filter_i_d;
 extern float value_filter_u_d;
 extern float value_filter_u_q;
 extern float value_filter_omega_el;
+extern float theta_offset;
+extern float u_min_old;
+extern float u_min_new;
+extern float omega_el_rad_per_sec;
+extern float gradient;
+extern uz_3ph_dq_t psi_measured;
+extern uz_3ph_dq_t psi_measured_neg;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -73,7 +80,6 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_Speed_rpm_filtered]		= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_ia] 			= &i_actual_A_abc.a;
 	js_ch_observable[JSO_ib] 			= &i_actual_A_abc.b;
 	js_ch_observable[JSO_ic] 			= &i_actual_A_abc.c;
@@ -82,7 +88,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &i_actual_Ampere.q;
 	js_ch_observable[JSO_id] 			= &i_actual_Ampere.d;
+	js_ch_observable[JSO_psi_d_neg] 			= &psi_measured.d;
+	js_ch_observable[JSO_psi_q_neg] 			= &psi_measured.q;
+	js_ch_observable[JSO_psi_d_pos] 			= &psi_measured_neg.d;
+	js_ch_observable[JSO_psi_q_pos] 			= &psi_measured_neg.q;
 	js_ch_observable[JSO_Theta_el] 		= &theta_el_rad;
+	js_ch_observable[JSO_Theta_offset] 		= &theta_offset;
+	js_ch_observable[JSO_omega_el] = &omega_el_rad_per_sec;
+	js_ch_observable[JSO_umin_old] 		= &u_min_old;
+	js_ch_observable[JSO_umin_new] 		= &u_min_new;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &v_dq_Volts.d;
 	js_ch_observable[JSO_uq]			= &v_dq_Volts.q;
@@ -94,7 +108,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_filter_ud]	= &value_filter_u_d;
 	js_ch_observable[JSO_filter_uq]	= &value_filter_u_q;
 	js_ch_observable[JSO_filter_omega_el]	= &value_filter_omega_el;
-
+	js_ch_observable[JSO_gradient]	= &gradient;
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

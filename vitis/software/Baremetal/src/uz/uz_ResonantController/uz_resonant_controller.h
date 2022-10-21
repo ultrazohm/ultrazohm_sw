@@ -22,13 +22,7 @@
  * @brief Struct definition for uz_resonantController
  *
  */
-typedef struct uz_resonantController_t{
-	ExtU_Resonant_Controller_T input;	/**< Input struct of the resonant controller*/
-	ExtY_Resonant_Controller_T output;	/**< Output struct of the resonant controller*/
-	DW_Resonant_Controller_T dwork;
-	RT_MODEL_Resonant_Controller_T modelData;
-	RT_MODEL_Resonant_Controller_T *PtrToModelData;
-}uz_resonantController_t;
+typedef struct uz_resonantController_t uz_resonantController_t;
 
 /**
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user.

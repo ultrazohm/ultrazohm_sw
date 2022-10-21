@@ -22,7 +22,6 @@ void setUp(void)
 	config.antiwindup_gain = 1.0f;			/**< Gain of anti-windup feedback*/
 	config.in_reference_value = 3.0f;		/**< Input reference value*/
 	config.in_measured_value = 3.0f;		/**< Input measured value*/
-	config.reset = 0.0f;					/**< Reset input*/
 
 
 }
@@ -37,33 +36,15 @@ void test_uz_resonant_controller_Reset(void)
 	float in_ref = 3.0f;
 	float in_m = 3.5f;
 	float omega_el = 10.0f;
-	test_R_controller->input.in_m = 3.5f;
-	uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+	float output = 0.0f;
+	
+
+	output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+	TEST_ASSERT_EQUAL_FLOAT(-0.008f,output);
     uz_resonantController_reset(test_R_controller);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f,test_R_controller->input.in_m);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, test_R_controller->input.in_ref);
-	TEST_ASSERT_EQUAL_FLOAT(0.0f, test_R_controller->output.out);
+	output = uz_resonantController_get_output(test_R_controller);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f,output);
 }
-
-void test_uz_resonant_controller_Step(void)
-{
-	uz_resonantController_t* test_R_controller;
-	test_R_controller = uz_resonantController_init(config);
-
-	float in_ref = 3.0f;
-	float in_m = 3.0f;
-	float omega_el = 10.0f;
-
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
-
-	TEST_ASSERT_EQUAL_FLOAT(test_R_controller->input.in_ref, in_ref);
-	TEST_ASSERT_EQUAL_FLOAT(test_R_controller->input.in_m, in_m);
-	TEST_ASSERT_EQUAL_FLOAT(test_R_controller->input.omega_el, omega_el);
-
-    TEST_ASSERT_FLOAT_WITHIN (-1e-06, 1e-06, test_R_controller->output.out);
-}
-
-
 
 
 
@@ -79,62 +60,43 @@ void test_uz_resonant_controller_StepAndReset(void)
 	float in_ref = 3.0f;
 	float in_m = 2.0f;
 	float omega_el = 10.0f;
+	float output = 0.0f;
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.01f-1e-06f, 0.01f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.01f-1e-06f, 0.01f+ 1e-06f, output);
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.02f-1e-06f, 0.02f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.02f-1e-06f, 0.02f+ 1e-06f, output);
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.03f-1e-06f, 0.03f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.03f-1e-06f, 0.03f+ 1e-06f, output);
 
     uz_resonantController_reset(test_R_controller);
 
+	output = uz_resonantController_get_output(test_R_controller);
 	in_ref = 3.0f;
 	in_m = 2.0f;
 
-    TEST_ASSERT_FLOAT_WITHIN (-1e-06f,  1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (-1e-06f,  1e-06f, output);
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.01f-1e-06f, 0.01f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.01f-1e-06f, 0.01f+ 1e-06f, output);
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.02f-1e-06f, 0.02f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.02f-1e-06f, 0.02f+ 1e-06f, output);
 
-    uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
 
-    TEST_ASSERT_FLOAT_WITHIN (0.03f-1e-06f, 0.03f+ 1e-06f, test_R_controller->output.out);
+    TEST_ASSERT_FLOAT_WITHIN (0.03f-1e-06f, 0.03f+ 1e-06f, output);
 }
 
 
 
-void test_uz_resonantController_get_output(void)
-{
-	
-	uz_resonantController_t* test_R_controller_get_output;
-	test_R_controller_get_output = uz_resonantController_init(config);
-
-	float in_ref = 3.0f;
-	float in_m = 3.0f;
-	float omega_el = 10.0f;
-
-    uz_resonantController_step(test_R_controller_get_output, in_ref, in_m, omega_el);
-
-	float output_get;
-	float output_in;
-	output_get = uz_resonantController_get_output(test_R_controller_get_output);
-	output_in = test_R_controller_get_output->output.out;
-
-	TEST_ASSERT_EQUAL_FLOAT(output_get,output_in);
-
-	
-}
 
 void test_uz_resonantController_set_config(void)
 {

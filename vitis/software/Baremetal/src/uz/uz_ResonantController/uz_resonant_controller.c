@@ -23,6 +23,15 @@
 #include "../uz_HAL.h"
 
 
+struct uz_resonantController_t{
+	ExtU_Resonant_Controller_T input;	/**< Input struct of the resonant controller*/
+	ExtY_Resonant_Controller_T output;	/**< Output struct of the resonant controller*/
+	DW_Resonant_Controller_T dwork;
+	RT_MODEL_Resonant_Controller_T modelData;
+	RT_MODEL_Resonant_Controller_T *PtrToModelData;
+};
+
+
 static uint32_t instances_counter_ResonantController = 0;
 
 static uz_resonantController_t instances_ResonantController[UZ_RESONANT_CONTROLLER_MAX_INSTANCES] = { 0 };
@@ -60,7 +69,6 @@ uz_resonantController_t* uz_resonantController_init(struct uz_resonantController
 	self->input.Klim = config.antiwindup_gain;
 	self->input.in_ref = config.in_reference_value;
 	self->input.in_m = config.in_measured_value;
-	self->input.Reset = config.reset;
 	return (self);
 }
 
@@ -105,7 +113,6 @@ void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_r
 	self->input.Klim = config.antiwindup_gain;
 	self->input.in_ref = config.in_reference_value;
 	self->input.in_m = config.in_measured_value;
-	self->input.Reset = config.reset;
 }
 
 

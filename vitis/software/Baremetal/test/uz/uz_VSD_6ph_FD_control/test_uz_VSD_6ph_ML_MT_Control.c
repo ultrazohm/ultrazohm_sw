@@ -14,12 +14,11 @@ void test_get_k_parameter(void)
 {
     uz_6ph_MLMT_kparameter test_k_parameter = {0};
 
-    int N1N2 = 1;
-    int ML = 0;
+
     uz_6phFD_indices FD_indices = {0};
 
     // no phase faulted 1N MT:
-    test_k_parameter = get_k_parameter(FD_indices, N1N2, ML);
+    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.a, 1.0f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, 0.0f);
@@ -32,10 +31,8 @@ void test_get_k_parameter(void)
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k8, 0.0f);
 
     // 1 OPF 1N ML:
-    N1N2 = 1;
-    ML = 0;
     FD_indices.R1 = 1.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N1N2, ML);
+    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.a, 0.694444);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, -0.641110f);

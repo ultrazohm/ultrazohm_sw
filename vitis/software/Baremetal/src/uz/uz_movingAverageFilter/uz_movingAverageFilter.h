@@ -36,6 +36,16 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
  */
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample);
 
+
+/**
+ * @brief Calculates one sample of the moving average filter in a more efficient way, not suitable for dynamic change of filter-length during operation without reset
+ *
+ * @param self pointer to uz_movingAverageFilter_t instance
+ * @param foat sample input of the moving average filter
+ * @return float output of the filter
+ */
+float uz_movingAverageFilter_sample_efficient(uz_movingAverageFilter_t* self, float sample);
+
 /**
  * @brief Resets the moving average filter
  *

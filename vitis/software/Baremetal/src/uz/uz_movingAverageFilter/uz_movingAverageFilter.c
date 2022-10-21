@@ -24,6 +24,7 @@ typedef struct uz_movingAverageFilter_t{
 	float circularBuffer[MAX_FILTERLENGTH];	//array to save the last [MAX_FILTERLENGTH] input-samples of the filter
 	int bufferindex;						//index in circularBuffer where to put new samples
 	int filterLength;
+	float sum;
 }uz_movingAverageFilter_t;
 
 static uint32_t instance_movingAverageFilter_counter = 0U;
@@ -48,13 +49,13 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
 	uz_assert(config.filterLength <= MAX_FILTERLENGTH);
 	self->filterLength = config.filterLength;
 
-/*
-	self->sum = 0;
+
+	self->sum = 0.0f;
 	int i = 0;
 	for (i = 0; i<self->filterLength; i++){
 		self->circularBuffer[i] = 0;
 	}
-*/
+
 
     return(self);
 }
@@ -76,21 +77,31 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 
 	output = output/(float)self->filterLength;
 
+	//modulo-increment of buffer-index
+	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
 
-	/*
+	return output;
+}
+
+
+float uz_movingAverageFilter_sample_efficient(uz_movingAverageFilter_t* self, float sample){
+	uz_assert_not_NULL(self);
+	float output = 0.0f;
+	
 	// add sample to buffer
 	self->circularBuffer[self->bufferindex] = sample/((float)self->filterLength);
 
 	// find oldest sample in current sum
-	int firstsample = (self->bufferindex - filterLength +1);
+	int firstsample = (self->bufferindex - self->filterLength);
 	if (firstsample < 0){
-		firstsample = firstsample + MAX_FILTERLENGTH;
+		firstsample = firstsample + MAX_FILTERLENGTH - 1;
 	}
 
+	// add new input to sum, subtract oldest sample from sum
 	self->sum = self->sum + self->circularBuffer[self->bufferindex] - self->circularBuffer[firstsample];
 
 	output = self->sum;
-*/
+
 
 	//modulo-increment of buffer-index
 	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
@@ -99,12 +110,15 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 }
 
 
+
 void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 	uz_assert_not_NULL(self);
 	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
 	self->bufferindex = 0;
+
+	self->sum = 0.0f;
 
 }
 

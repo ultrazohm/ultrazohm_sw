@@ -45,11 +45,11 @@ Based on these parameters a fault tolerant control system for asymmetric six-pha
 
 .. _kparameter:
 
-kparameter
-----------
+k-Parameter
+-----------
 
 
-.. doxygenstruct:: kparameter
+.. doxygenstruct:: uz_6ph_MLMT_kparameter
    :members:
 
 Description
@@ -81,19 +81,24 @@ Example
 
     // fault indices from open phase fault detection
     uz_6phFD_indices FD_indices;
-    
-    // single neutral point configuration
-    int N1N2 = 1;
 
-    // Maximum Torque optimization
-    int ML = 0;
-
-	kparameter k_parameter;
+	uz_6ph_MLMT_kparameter k_parameter;
 
     // get k-parameters according to the fault indices
-	k_parameter = kparameter get_k_parameter(FD_indices, N1N2, ML);
+	k_parameter = get_k_parameter(FD_indices, N1, ML);
     
   }
+
+Enums
+^^^^^
+
+Enumerations for input parameters of the function ``get_k_parameter``.
+
+  .. doxygenenum:: neutral_point_configuration
+
+  .. doxygenenum:: ML_MT_optimization
+
+
 
 
 

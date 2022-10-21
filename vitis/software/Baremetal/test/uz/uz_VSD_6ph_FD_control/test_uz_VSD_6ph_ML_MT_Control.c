@@ -12,7 +12,7 @@ void setUp(void)
 
 void test_get_k_parameter(void)
 {
-    kparameter test_k_parameter = {0};
+    uz_6ph_MLMT_kparameter test_k_parameter = {0};
 
     int N1N2 = 1;
     int ML = 0;

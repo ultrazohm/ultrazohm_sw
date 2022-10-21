@@ -58,7 +58,7 @@ typedef struct uz_6phFD_opf{
 uz_6phFD_opf uz_num_opf(uz_6phFD_indices input);
 
 
-const kparameter k_1OPF_2N_ML[6] = { 
+const uz_6ph_MLMT_kparameter k_1OPF_2N_ML[6] = { 
 	{ -1.000000f , 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.554700f }, 
 	{ -0.250000f , 0.433010f, -0.433010f, 0.750000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.554700f }, 
 	{ -0.250000f , -0.433010f, 0.433010f, 0.750000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.554700f }, 
@@ -68,7 +68,7 @@ const kparameter k_1OPF_2N_ML[6] = {
 };
 
 
-const kparameter k_1OPF_2N_MT[6] = { 
+const uz_6ph_MLMT_kparameter k_1OPF_2N_MT[6] = { 
 	{ -1.000000f , 0.000000f, 0.000000f, -1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.577350f }, 
 	{ 0.500000f , 0.866030f, -0.866030f, 0.500000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.577350f }, 
 	{ 0.500000f , -0.866030f, 0.866030f, 0.500000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.577350f }, 
@@ -78,7 +78,7 @@ const kparameter k_1OPF_2N_MT[6] = {
 };
 
 
-const kparameter k_2OPF_2N[15] = { 
+const uz_6ph_MLMT_kparameter k_2OPF_2N[15] = { 
 	{ -1.000000f , 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.500000f }, 
 	{ -1.000000f , 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.500000f }, 
 	{ -1.000000f , 0.000000f, -3.464100f, -1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.288675f }, 
@@ -97,13 +97,13 @@ const kparameter k_2OPF_2N[15] = {
 };
 
 
-const kparameter k_3OPF_2N[2] = { 
+const uz_6ph_MLMT_kparameter k_3OPF_2N[2] = { 
 	{ -1.000000f , 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.500000f }, 
 	{ 0.999990f , 0.000000f, 0.000000f, -0.999990f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.500001f }
 };
 
 
-const kparameter k_1OPF_1N_ML[6] = { 
+const uz_6ph_MLMT_kparameter k_1OPF_1N_ML[6] = { 
 	{ -0.666820f , 0.000480f, -0.002870f, -0.001440f, -0.333180f, -0.000480f, 0.333180f, 0.000480f, 0.542257f }, 
 	{ -0.166450f , 0.289070f, -0.289170f, 0.499500f, 0.166350f, -0.288910f, -0.166350f, 0.288910f, 0.541780f }, 
 	{ -0.166580f , -0.288880f, 0.288640f, 0.500000f, 0.166740f, 0.288570f, -0.166740f, -0.288570f, 0.541819f }, 
@@ -113,7 +113,7 @@ const kparameter k_1OPF_1N_ML[6] = {
 };
 
 
-const kparameter k_2OPF_1N_ML[15] = { 
+const uz_6ph_MLMT_kparameter k_2OPF_1N_ML[15] = { 
 	{ -0.833480f , 0.288740f, -0.288420f, 0.499890f, -0.166520f, -0.288740f, 0.166520f, 0.288740f, 0.493160f }, 
 	{ -0.833420f , -0.288700f, 0.288520f, 0.499960f, -0.166580f, 0.288700f, 0.166580f, -0.288700f, 0.493219f }, 
 	{ -0.992460f , -0.090120f, -3.466120f, -0.975850f, -0.007540f, 0.090120f, 0.007540f, -0.090120f, 0.284537f }, 
@@ -132,7 +132,7 @@ const kparameter k_2OPF_1N_ML[15] = {
 };
 
 
-const kparameter k_1OPF_1N_MT[6] = { 
+const uz_6ph_MLMT_kparameter k_1OPF_1N_MT[6] = { 
 	{ -0.641110f , -0.208910f, -0.754240f, -0.295480f, -0.358890f, 0.208910f, 0.358890f, -0.208910f, 0.694444f }, 
 	{ 0.297470f , -0.212340f, -0.750800f, 0.643090f, -0.001470f, -0.415260f, 0.001470f, 0.415260f, 0.694443f }, 
 	{ -0.174810f , -1.023460f, 0.060320f, 0.170830f, 0.360360f, 0.206350f, -0.360360f, -0.206350f, 0.694444f }, 
@@ -142,7 +142,7 @@ const kparameter k_1OPF_1N_MT[6] = {
 };
 
 
-const kparameter k_2OPF_1N_MT[15] = { 
+const uz_6ph_MLMT_kparameter k_2OPF_1N_MT[15] = { 
 	{ -0.535290f , 0.268580f, -0.804910f, 0.534810f, -0.464710f, -0.268580f, 0.464720f, 0.268570f, 0.557675f }, 
 	{ -1.000200f , -0.534990f, -0.000340f, 0.073370f, 0.000200f, 0.534990f, -0.000200f, -0.534990f, 0.557664f }, 
 	{ -1.000000f , 0.000000f, -3.464100f, -1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.288675f }, 
@@ -161,7 +161,7 @@ const kparameter k_2OPF_1N_MT[15] = {
 };
 
 
-const kparameter k_3OPF_1N[20] = { 
+const uz_6ph_MLMT_kparameter k_3OPF_1N[20] = { 
 	{ -1.000000f , 0.000000f, 0.000000f, 1.000000f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.500000f }, 
 	{ 1.365510f , 1.365740f, -4.097200f, -1.365590f, -2.365420f, -1.365740f, 2.365220f, 1.365630f, 0.122035f }, 
 	{ 0.732050f , -1.000000f, -2.999990f, 2.732040f, -1.732050f, 0.999990f, 1.732050f, -1.000000f, 0.149430f }, 
@@ -185,8 +185,7 @@ const kparameter k_3OPF_1N[20] = {
 };
 
 
-
-kparameter get_k_parameter(uz_6phFD_indices input, int N1N2, int ML){
+uz_6ph_MLMT_kparameter get_k_parameter(uz_6phFD_indices input, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
 
 uz_6phFD_opf helpstruct;
 helpstruct = uz_num_opf(input);
@@ -197,10 +196,10 @@ int p3 = helpstruct.opf3;
 int num_OPF = helpstruct.num_opf;
 
 //check input values
-kparameter k = {0};
+uz_6ph_MLMT_kparameter k = {0};
 int i = 0;
 
-kparameter k_error = {0};
+uz_6ph_MLMT_kparameter k_error = {0};
 
 // check parameter:
 
@@ -209,9 +208,9 @@ if(num_OPF == 0){
 	return k;
 }
 
-if(N1N2 == 2){
+if(neutral_point_configuration == 2){
     if(num_OPF == 1){
-            if(ML){
+            if(ML == ML_MT_optimization){
                 k = k_1OPF_2N_ML[p1-1];
             }
             else{   //MT
@@ -236,9 +235,9 @@ if(N1N2 == 2){
     }
 
 }
-else if( N1N2 ==1){
+else if( neutral_point_configuration ==1){
     if( num_OPF == 1){
-            if(ML){
+            if(ML == ML_MT_optimization){
                 k = k_1OPF_1N_ML[p1-1];
             }
             else{   //MT
@@ -246,7 +245,7 @@ else if( N1N2 ==1){
             }
     }
     else if(num_OPF == 2){
-            if(ML){
+            if(ML == ML_MT_optimization){
             	i =get_index_OPF_2(p1, p2);
                 k = k_2OPF_1N_ML[i];
             }
@@ -267,7 +266,6 @@ else if( N1N2 ==1){
 }
 return k;
 }
-
 
 
 

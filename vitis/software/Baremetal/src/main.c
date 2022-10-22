@@ -34,15 +34,81 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.ref_halfBridge1DutyCycle = 0.0f,
+		.ref_halfBridge2DutyCycle = 0.0f,
+		.ref_halfBridge3DutyCycle = 0.0f,
+		.ref_halfBridge4DutyCycle = 0.0f,
+		.ref_halfBridge5DutyCycle = 0.0f,
+		.ref_halfBridge6DutyCycle = 0.0f,
+		.ref_halfBridge7DutyCycle = 0.0f,
+		.ref_halfBridge8DutyCycle = 0.0f,
+		.ref_halfBridge9DutyCycle = 0.0f,
+		.ref_halfBridge10DutyCycle = 0.0f,
+		.ref_halfBridge11DutyCycle = 0.0f,
+		.ref_halfBridge12DutyCycle= 0.0f
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+	.av.U_ZK = 48.0f,
+	.av.theta_offset =  0.83, //1.05, //-0.14608003 + 0.623,		// 0.85
+	.av.i_d_ref = 0,
+	.av.i_q_ref = 0
 };
+
+
+
+
+uz_resonantController_t* rc_2H_x;
+uz_resonantController_t* rc_2H_y;
+uz_resonantController_t* rc_6H_x;
+uz_resonantController_t* rc_6H_y;
+uz_resonantController_t* rc_2H_d;
+uz_resonantController_t* rc_2H_q;
+uz_resonantController_t* rc_12H_d;
+uz_resonantController_t* rc_12H_q;
+
+uz_resonantController_t* rc_1H_z1;
+uz_resonantController_t* rc_1H_z2;
+uz_resonantController_t* rc_3H_z1;
+uz_resonantController_t* rc_3H_z2;
+uz_resonantController_t* rc_9H_z1;
+uz_resonantController_t* rc_9H_z2;
+
+
+const struct uz_resonantController_config config_R = {
+		.sampling_time = 0.0001f,
+		.gain = 52.5f,
+		.harmonic_order = 2.0f,
+		.fundamental_frequency = 10.0f,
+		.lower_limit = -4.0f,
+		.upper_limit = 4.0f,
+		.antiwindup_gain = 10.0f,
+		.in_reference_value = 0.0f,
+		.in_measured_value = 0.0f,
+};
+
+
+struct uz_movingAverageFilter_config movAvF_config;
+
+uz_movingAverageFilter_t* movAvFilter_R1;
+uz_movingAverageFilter_t* movAvFilter_R2;
+uz_movingAverageFilter_t* movAvFilter_R3;
+uz_movingAverageFilter_t* movAvFilter_R4;
+uz_movingAverageFilter_t* movAvFilter_R5;
+uz_movingAverageFilter_t* movAvFilter_R6;
+
+
+
+
+
+
+
+
 
 struct uz_IIR_Filter_config iir_config_dc_volts = {
 		.selection = LowPass_first_order,
@@ -67,6 +133,8 @@ const struct uz_PMSM_t config_PMSM = {
    .polePairs = 5.0f,
    .I_max_Ampere = 10.0f
  };//these parameters are only needed if linear decoupling is selected
+
+
 const struct uz_PI_Controller_config config_id = {
    .Kp = 2.5f,
    .Ki = 200.0f,
@@ -96,6 +164,57 @@ struct uz_SpeedControl_config config_speed = {
    .config_controller.lower_limit = -8.0f,
    .enable_field_weakening = false
 };
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// alphabeta -> dq & reverse
+void uz_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = ( cos_coefficient * input[0]) + (sin_coefficient * input[1]);
+    output[1] =	(-sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = (cos_coefficient * input[0]) - (sin_coefficient * input[1]);
+    output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+struct uz_PI_Controller* PI_x_n;
+struct uz_PI_Controller* PI_y_n;
+struct uz_PI_Controller* PI_z1;
+struct uz_PI_Controller* PI_z2;
+
+const struct uz_PI_Controller_config config_ix = {
+	.Kp = 0.18f , //* 4.0f, //1.1f,
+	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+const struct uz_PI_Controller_config config_iy = {
+	.Kp = 0.14, //0.18f, //* 4.0f,//1.1f,
+	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+const struct uz_PI_Controller_config config_iz1z2 = {
+	.Kp = 0.14, //0.18f , //* 4.0f,//1.1f,
+	.Ki = 0,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 enum init_chain
 {
@@ -141,6 +260,57 @@ int main(void)
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             Global_Data.objects.foc_speed = uz_SpeedControl_init(config_speed);
+
+
+			movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
+
+            struct uz_resonantController_config config_R_dq2H = config_R;
+            config_R_dq2H.harmonic_order = 2.0f;
+            config_R_dq2H.gain = 125.0f;
+            config_R_dq2H.upper_limit = 12.0f;
+            config_R_dq2H.lower_limit = -12.0f;
+            struct uz_resonantController_config config_R_dq8H = config_R;
+            config_R_dq8H.harmonic_order = 8.0f;
+            struct uz_resonantController_config config_R_dq12H = config_R;
+            config_R_dq12H.harmonic_order = 12.0f;
+            struct uz_resonantController_config config_R_xy2H = config_R;
+            config_R_xy2H.harmonic_order = 2.0f;
+            struct uz_resonantController_config config_R_xy6H = config_R;
+            config_R_xy6H.harmonic_order = 6.0f;
+            struct uz_resonantController_config config_R_z1z2_1H = config_R;
+            config_R_z1z2_1H.harmonic_order = 1.0f;
+            struct uz_resonantController_config config_R_z1z2_3H = config_R;
+            config_R_z1z2_3H.harmonic_order = 3.0f;
+            struct uz_resonantController_config config_R_z1z2_9H = config_R;
+            config_R_z1z2_9H.harmonic_order = 9.0f;
+
+            rc_2H_x = uz_resonantController_init(config_R_xy2H);
+            rc_2H_y = uz_resonantController_init(config_R_xy2H);
+            rc_6H_x = uz_resonantController_init(config_R_xy6H);
+            rc_6H_y = uz_resonantController_init(config_R_xy6H);
+            rc_2H_d = uz_resonantController_init(config_R_dq2H);
+            rc_2H_q = uz_resonantController_init(config_R_dq2H);
+            rc_12H_d = uz_resonantController_init(config_R_dq12H);
+            rc_12H_q = uz_resonantController_init(config_R_dq12H);
+            rc_1H_z1 = uz_resonantController_init(config_R_z1z2_1H);
+            rc_1H_z2 = uz_resonantController_init(config_R_z1z2_1H);
+            rc_3H_z1 = uz_resonantController_init(config_R_z1z2_3H);
+            rc_3H_z2 = uz_resonantController_init(config_R_z1z2_3H);
+            rc_9H_z1 = uz_resonantController_init(config_R_z1z2_9H);
+            rc_9H_z2 = uz_resonantController_init(config_R_z1z2_9H);
+
+        	PI_x_n = uz_PI_Controller_init(config_ix);
+        	PI_y_n = uz_PI_Controller_init(config_iy);
+        	PI_z1 = uz_PI_Controller_init(config_iz1z2);
+        	PI_z2 = uz_PI_Controller_init(config_iz1z2);
+
+
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

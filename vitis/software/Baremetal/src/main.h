@@ -57,6 +57,11 @@
 #include "uz/uz_FOC/uz_FOC.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -104,6 +104,18 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float ref_halfBridge1DutyCycle;
+	float ref_halfBridge2DutyCycle;
+	float ref_halfBridge3DutyCycle;
+	float ref_halfBridge4DutyCycle;
+	float ref_halfBridge5DutyCycle;
+	float ref_halfBridge6DutyCycle;
+	float ref_halfBridge7DutyCycle;
+	float ref_halfBridge8DutyCycle;
+	float ref_halfBridge9DutyCycle;
+	float ref_halfBridge10DutyCycle;
+	float ref_halfBridge11DutyCycle;
+	float ref_halfBridge12DutyCycle;
 } referenceAndSetValues;
 
 typedef struct{

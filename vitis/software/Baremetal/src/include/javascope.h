@@ -80,6 +80,7 @@ enum JS_OberservableData {
 	JSO_FD_MOVAVG_a2,
 	JSO_FD_MOVAVG_b2,
 	JSO_FD_MOVAVG_c2,
+	JSO_Testvalue_0,
 	JSO_Testvalue_1,
 	JSO_Testvalue_2,
 	JSO_Testvalue_3,

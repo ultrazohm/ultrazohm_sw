@@ -194,17 +194,17 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_MOVAVG_c2] = &filteredFDIndices[5];
 
 
-	js_ch_observable[JSO_Testvalue_1] = &theta_;
+	js_ch_observable[JSO_Testvalue_0] = &theta_;
 
-	//js_ch_observable[JSO_Testvalue_1] = &ref_dq_voltage.d;
+	js_ch_observable[JSO_Testvalue_1] = &ref_dq_voltage.d;
 	js_ch_observable[JSO_Testvalue_2] = &ref_dq_voltage.q;
 //	js_ch_observable[JSO_Testvalue_3] = &dq_error[0];
 //	js_ch_observable[JSO_Testvalue_4] = &dq_error[1];
 	js_ch_observable[JSO_Testvalue_3] = &ref_xy_voltage[0];
 	js_ch_observable[JSO_Testvalue_4] = &ref_xy_voltage[1];
 
-//	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_voltage.alpha;
-//	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_voltage.beta;
+	//js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_voltage.alpha;
+	//js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_voltage.beta;
 
 	js_ch_observable[JSO_Testvalue_5] = &ref_alphabeta_currents.alpha;
 	js_ch_observable[JSO_Testvalue_6] = &ref_alphabeta_currents.beta;

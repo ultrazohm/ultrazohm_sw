@@ -569,8 +569,8 @@ if(toggle == 0){
 
 
 	// Neutral Point configuration (N1N2 = 1 -> 1N with one neutral point, N1N2 = 2 -> 2N with two separate neutral points)
-	N1N2 = 2;
-	ML = 0;		//0 -> MT, 1 -> ML (selection of optimization)
+	N1N2 = 1;
+	ML = 1;		//0 -> MT, 1 -> ML (selection of optimization)
 
 
 	// get k-parameter from Look-up-table
@@ -629,7 +629,7 @@ if(N1N2 == 1){
 		xy_n_PI = false;
 	}
 }
-else{
+else if((N1N2 ==2) && (ML == 1)){
 	if(num_OPF == 1){		// nur für 2N ML
 
 		z1z2_1H = false;
@@ -648,6 +648,13 @@ else{
 		//z1z2_control = false;
 	}
 }
+else{
+	if(num_OPF > 0){
+		z1z2_1H = false;
+	}
+}
+
+
 
 	// Temporaerer Sollwergenerator (Sprünge):
 

@@ -70,7 +70,7 @@ Additionally, :math:`L_d=L_q` is assumed.
              \draw (stator) -- (0,-2.5);
            \end{tikzpicture}
 
-      - .. tikz:: torque over current angle (right) based on [[#asym_pmsm]_, p. 7]
+      - .. tikz:: Torque components over current angle based on [[#asym_pmsm]_, p. 7]
            :align: left
          
              \begin{axis}[domain=-1*pi:1*pi,samples=100,legend pos=outer north east, grid,

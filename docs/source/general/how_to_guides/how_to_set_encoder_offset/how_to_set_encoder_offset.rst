@@ -3,7 +3,7 @@ How to set encoder offset
 =========================
 
 Motor control often relies on using the rotating dq-reference frame.
-The rotating dq-reference frame for synchronous machines is aligned with the d-axis and relies on the knowledge of the angle :math:`\vartheta` between d-axis and :math:`\alpha` axis.
+The rotating dq-reference frame for permanent magnet synchronous machines (PMSM) is aligned with the d-axis and relies on the knowledge of the angle :math:`\vartheta` between d-axis and :math:`\alpha` axis.
 The angle :math:`\vartheta` can be measured or estimated and is used in the transformation, e.g., using :ref:`uz_transformation`.
 Additionally, machine models in dq-frame assume this alignment.
 Several different encoder technologies exist, e.g., :ref:`ipCore_incremental_encoder`.
@@ -15,13 +15,13 @@ The encoder reference (the zero-point of the encoder) is not necessarily aligned
    :width: 400px
    :align: center
 
-   Alignment of encoder, :math:`alpha` and d-axis
+   Alignment of encoder with respect to the :math:`\alpha`-axis and d-axis
 
-This alignment is shown in fig. :numref:`encoder_alignment_picture` with the angle :math:`\vartheta_m` between the :math:`\alpha`-axis and the d-axis and the encoder offset :math:`\vartheta_{m,offset}` between the :math:`alpha`-axis of the machine and the encoder reference.
-The following methods for setting the offset are commonly used for permanent magnet synchronous machines:
+This alignment is shown in fig. :numref:`encoder_alignment_picture` with the angle :math:`\vartheta_m` between the :math:`\alpha`-axis and the d-axis and the encoder offset :math:`\vartheta_{m,offset}` between the :math:`\alpha`-axis of the machine and the encoder reference.
+The following methods for setting the offset are commonly used for PMSM:
 
 #. Duty cycle on the :math:`a` phase
-#. Control negative d-current
+#. No-torque by d-current
 #. Back-EMF
 #. Flux-based (open circuit)
 #. Flux-based (controlled)
@@ -30,8 +30,8 @@ The following methods for setting the offset are commonly used for permanent mag
 Duty cycle on the :math:`a`-phase 
 =================================
 
-The winding of the :math:`a`-phase is aligned with the :math:`\alpha`-axis of the machine.
-The main idea in this offset estimation is to drive a current  through the :math:`a`-phase of the machine, which in turn generates a linked magnetic flux leading the d-axis with the permanent magnet to mechanically turn and align with the :math:`alpha`-axis of the machine.
+The linked flux of the :math:`a`-phase winding is aligned with the :math:`\alpha`-axis of the machine.
+The main idea in this offset estimation is to drive a current through the :math:`a`-phase of the machine, which generates a linked magnetic flux leading the d-axis with the permanent magnet to mechanically turn and align with the :math:`alpha`-axis of the machine.
 This can be achieved by stepping the duty cycle of the :math:`a`-phase from zero to an arbitrary duty cycle.
 The duty cycle is kept on its value and the current angle :math:`\vartheta_m` is set as :math:`\vartheta_{m,offset}`.
 Since the method does not use a closed loop current control, a duty cycle has to be chosen that does not lead to a phase current above the rated current of the machine.
@@ -39,22 +39,101 @@ However, the duty cycle has to be sufficiently large to move the rotor reliably 
 This method is quick but results in sub-optimal alignment, requires manual tuning of the duty cycle and is often unreliable in the laboratory.
 Additionally, :math:`L_d=L_q` is assumed.
 
-.. _torque_over_angle:
+.. Using tables for side by side figure:
+.. list-table::
 
-.. figure:: asym_torque.png
-   :width: 400px
-   :align: center
+    * - .. tikz:: dq-reference frame in PMSM based on [[#asym_pmsm]_, p. 7]
+           :libs: shapes, arrows, positioning, calc, angles, quotes
+           
+           \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+             \coordinate (origo) at (0,0);
+             \coordinate (angle_start) at (0,3.5);
+           
+             \draw[color=black!60, very thick](0,0) circle (1.8);
+             \draw[color=black!60, very thick](0,0) circle (2);
+             \draw[color=black!60, very thick](0,0) circle (3);
+             \filldraw[black, fill=red!20] (1,1) rectangle (0.75,-1);
+             \filldraw[black, fill=green!20] (0.75,1) rectangle (0.5,-1);
+           
+             \filldraw[black, fill=green!20] (-1,1) rectangle (-0.75,-1);
+             \filldraw[black, fill=red!20] (-0.75,1) rectangle (-0.5,-1);
+           
+             \draw[->, black] (0,0) -- node(d_axis)[below, very near end]{d} (4,0);
+             \draw[->, black] (0,0) -- node(q_axis)[right, very near end]{q} (0,4);
+             \draw[->, red] (0,0) -- node(current)[right, very near end]{$\underline{i}$} (-2,4);
+             \pic [draw, ->,
+             angle radius=35mm, angle eccentricity=1.1,
+             "$\beta$"] {angle = angle_start--origo--current};
+             \draw (2,-3) node [name=stator]{Stator};
+             \draw (-3,-3) node [name=rotor]{Rotor};
+             \draw (rotor) -- (0,-1);
+             \draw (stator) -- (0,-2.5);
+           \end{tikzpicture}
 
-   dq-reference frame in PMSM (left) and torque over current angle (right) [[#asym_pmsm]_, p. 7]
+      - .. tikz:: torque over current angle (right) based on [[#asym_pmsm]_, p. 7]
+           :align: left
+         
+             \begin{axis}[domain=-1*pi:1*pi,samples=100,legend pos=outer north east, grid,
+                 xtick={-1*pi,-0.5*pi, 0,0.5*pi, 1*pi},
+                 xticklabels={$-\pi$,$-\frac{\pi}{2}$, 0,$\frac{\pi}{2}$, $\pi$},
+                 very thick,
+                 ytick={0},
+                 xlabel={$\beta$},
+                 ylabel={$T_I$}]
+                 \addplot[dashed,color=blue,mark=none] {cos(deg(x)) }; 
+                 \addplot[dashed,color=red,mark=none] {0.5*sin(deg(x*2)) }; 
+                 \addplot[color=black,mark=none] {0.5*sin(deg(x*2))+cos(deg(x)) }; 
+                 \legend{$T_{PM}$,$T_{Rel}$,$T_I$}
+             \end{axis}
 
-Fig. :numref:`torque_over_angle` showcases the relationship between current angle and machine torque with :math:`m_{Rel}` indicating the torque due to the reluctance effect, :math:`m_{syn}` indicating the torque due to the linked flux of the permanent magnet and :math:`m_{ges}` indicating the resulting sum of both torque components.
+The figure left showcases the relationship between current angle :math:`\beta` and machine torque with the torque generated by the reluctance effect :math:`T_{Rel}`, the torque generated by the linked flux of the permanent magnet :math:`T_{PM}` and the sum of both torque components :math:`T_{I}` (the inner torque of the machine).
+The current angle :math:`\beta` describes the angle between the q-axis and the space vector of the stator current :math:`\underline{i}=i_d + ji_q` (with the imaginary unit :math:`j`).
+Therefore, :math:`\beta=\arctan{\big( \frac{-i_d}{i_q} \big) }`.
 For machines with :math:`L_d=L_q` only the green torque curve applies.
 Therefore, current in the :math:`a`-phase prompts the rotor to move into the :math:`\alpha`-axis aligning the peak of the torque with the d-axis.
 If :math:`L_d \neq L_q`, the green curve is superimposed with the blue curve yielding the resulting torque (black line).
 Thus, current in the :math:`a`-phase does not align the :math:`\alpha`-axis with the d-axis but with an angle that is skewed depending on the specific values of the inductances :math:`L_d`, :math:`L_q`, and flux linkage of the permanent magnet :math:`\psi_{PM}`.
+The method for determining the encoder offset :math:`\vartheta_{m,offset}` must therefore not be used on machine with :math:`L_d \neq L_q`.
+
+Pro:
+
+- Quick & easy
+
+Con:
+
+- Assumes :math:`L_d = L_q`
+- Manual estimation of end-value for duty cycle step (high enough to move the rotor, not too high to damage machine)
+- No closed-loop control to prevent exceeding rated current of the machine
+
+No-torque by d-current
+======================
+
+A possible alternative to driving current through the :math:`a`-phase of the machine is to ensure that no torque is generated if :math:`i_q=0` and :math:`i_d \neq 0` since the PMSM does not generate torque in this case [#Schroeder_Regelung]_:
+
+.. math::
+
+    T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
+
+This alignment method uses a closed-loop current control and control the set-points :math:`i_q^*=0` and :math:`i_d^* \neq 0`.
+Using a torque sensor on the test bench (as described in [[#rahman_encoder_offset]_]), the encoder offset can manually be adjusted until the torque sensor measures zero torque.
+The set-point for the current :math:`i_d` depends on the machine under test.
+
+Pro:
+
+- Simple concept
+- Suitable for :math:`L_d \neq L_q`
+
+Con:
+
+- Manual
+- Requires torque sensor
+- Accuracy of torque sensor determines accuracy of encoder offset
 
 
 
+
+Sources
+=======
 
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#rahman_encoder_offset] K. M. Rahman and S. Hiti, "Identification of machine parameters of a synchronous motor," in IEEE Transactions on Industry Applications, vol. 41, no. 2, pp. 557-565, March-April 2005, doi: 10.1109/TIA.2005.844379.

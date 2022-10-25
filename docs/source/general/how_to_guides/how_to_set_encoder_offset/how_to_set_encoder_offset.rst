@@ -129,8 +129,85 @@ Con:
 - Requires torque sensor
 - Accuracy of torque sensor determines accuracy of encoder offset
 
+Back-EMF
+========
+
+Alignment of the encoder and the d-axis can be achieved if the zero-crossing of the back-EMF and the position signal is aligned as shown in :numref:`encoder_alignment_backemf` [[#rahman_encoder_offset]_].
+However, this method for determining the encoder offset :math:`\vartheta_{m,offset}` requires that the machine under test is driven by an external machine to a fixed rotational speed and the back-EMF as well as the encoder signal are measured by one oscilloscope or the controller.
+The machine under test is operated with open circuit, i.e., :math:`i_d=i_q=0`.
+If the back-EMF should be measured by the controller, a phase voltage measurement is required on the power electronics.
+Voltage measurement on the power electronics is not always available and if it is, usually a low pass filter is included which adds a phase lag to the measured voltage which has to be accounted for when aligning the encoder.
+Furthermore, the position alignment does not account for iron-losses.
+
+.. _encoder_alignment_backemf:
+
+.. tikz:: Alignment of zero-crossing of back-EMF with zero-crossing of encoder position  [[#rahman_encoder_offset]_]
+           :align: left
+         
+             \begin{axis}[domain=-pi/3:2*pi,samples=100,legend pos=outer north east, grid,
+                 xtick={0,pi, 2*pi},
+                 xticklabels={$0$,$\pi$, $2\pi$},
+                 very thick,
+                 ytick={0},
+                 xlabel={Position $\vartheta_m$},
+                 ylabel={Back-EMF, Position}]
+                 \addplot[color=blue,mark=none] {cos(deg(x + (0.7*pi)/2)) }; 
+                 \addplot[color=red,mark=none] { 0.2/pi*x }; 
+                 \addplot[mark=none,color=black] coordinates{ (0,-0.6) (0,0.6)};
+                 \addplot[mark=none,color=black,dashed] coordinates{ (0.47,-0.6) (0.47,0.6)};
+                 \legend{Back-EMF, Position $\vartheta_m$};
+                 \node[anchor=west] (source) at (30,180){Offset};
+             \end{axis}
 
 
+Flux-based (open circuit)
+=========================
+
+The flux based encoder alignment is based on the induced voltage (back-EMF) and uses the same operating condition as the back-EMF based method.
+The machine under test for which the encoder offset should be determined is driven by an test bench machine to a fixed speed (open circuit, thus :math:`I_d=I_q=0`).
+In steady state, the voltage equations of the PMSM are given by [[#kellner_diss]_,p. 16]:
+
+.. math::
+
+  \begin{align}
+  U_d &=R_1 I_d - \omega_{el} L_q I_q \\
+  U_q &=R_1 I_q + \omega_{el} L_d I_d + \omega_{el} \psi_{PM}
+  \end{align}
+
+With :math:`I_d=0` and :math:`I_q=0` due to open circuit, the equations simplify to:
+
+.. math::
+
+  \begin{align}
+  U_d &=0 \\
+  U_q &=0 + \omega_{el} \psi_{PM}
+  \end{align}
+
+Therefore, the encoder offset is changed manually until :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}`.
+However, this approach does not work due to iron losses in the machine and the alignment is skewed.
+
+.. _pmsm_esb_iron_losses:
+
+.. figure:: pmsm_esb.svg
+   :width: 800px
+   :align: center
+
+   Equivalent circuit of PMSM including iron losses of d-axis (left) and q-axis (right) [[#kellner_diss]_, p. 71, [#Schroeder_Regelung]_, p. 1102]. 
+
+:numref:`pmsm_esb_iron_losses` shows the equivalent circuit of the PMSM including iron losses.
+With the parallel iron resistance :math:`R_c`, the voltage equations of the PMSM in steady state can be written as:
+
+.. math::
+
+  \begin{align}
+  U_d &=R_1 I_d + R_c I_{d0} \\
+  U_q &=R_1 I_q + R_c I_{q0}
+  \end{align}  
+
+Therefore, the encoder offset to match :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}` does not lead to an alignment of the dq-frame to the d-axis the aforementioned operating conditions using open circuit with :math:`I_d=I_q=0` and :math:`\omega_{el}\neq 0`.
+This is the case since the induced voltage :math:`\omega_{el}\psi_d` leads to the iron loss current :math:`I_{q0}` and the current :math:`I_{q0}` generates the flux linkage :math:`-\omega_{el} \psi_q` [[#richter_diss]_, p. 44].
+Instead, the encoder offset :math:`\vartheta_m` is manually adjusted for positive and negative rotational speeds.
+The dq-frame is aligned with the d-axis if :math:`U_q` changes the sign for positive and negative rotational speed but not its magnitude and the value for :math:`U_d` does not change when changing the direction.
 
 Sources
 =======
@@ -138,3 +215,5 @@ Sources
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#rahman_encoder_offset] K. M. Rahman and S. Hiti, "Identification of machine parameters of a synchronous motor," in IEEE Transactions on Industry Applications, vol. 41, no. 2, pp. 557-565, March-April 2005, doi: 10.1109/TIA.2005.844379.
 .. [#asym_pmsm] Winzer, Patrick, 2017, Dissertation, "Steigerung von Drehmoment und Wirkungsgrad bei Synchronmaschinen durch Nutzung der magnetischen Asymmetrie", DOI: 10.5445/IR/1000071097, https://publikationen.bibliothek.kit.edu/1000071097
+.. [#kellner_diss] Sven Kellner, Dissertation, "Parameteridentifikation bei permanenterregten Synchronmaschinen", Verlag Dr. Hut, ISBN 978-3-8439-0845-0, https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwja6rLEx_v6AhUEX_EDHSrRAb4QFnoECBAQAQ&url=https%3A%2F%2Fopus4.kobv.de%2Fopus4-fau%2Ffiles%2F2738%2FSvenKellnerDissertation.pdf&usg=AOvVaw3h5c9Z0-2m8zLh30i5mtz1
+.. [#richter_diss] Jan Richter, Dissertation, "Modellbildung, Parameteridentifikation und Regelung hoch ausgenutzter Synchronmaschinen", https://www.ksp.kit.edu/site/books/m/10.5445/KSP/1000057097/

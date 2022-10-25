@@ -45,7 +45,7 @@ extern DS_Data Global_Data;
 
 uz_3ph_abc_t three_phase_output = {0};
 bool is_three_phase_active = false;
-float amplitude = 1.0f;
+float amplitude = 0.5f;
 float frequency = 1.0f;
 float offset = 0.5f;
 
@@ -67,13 +67,10 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	if (is_three_phase_active) {
-    		three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
-    		Global_Data.rasv.halfBridge1DutyCycle = three_phase_output.a;
-    		Global_Data.rasv.halfBridge2DutyCycle = three_phase_output.b;
-    		Global_Data.rasv.halfBridge3DutyCycle = three_phase_output.c;
-    	}
-    } else if (current_state!=control_state || !is_three_phase_active) {
+    	Global_Data.rasv.halfBridge1DutyCycle = three_phase_output.a;
+    	Global_Data.rasv.halfBridge2DutyCycle = three_phase_output.b;
+    	Global_Data.rasv.halfBridge3DutyCycle = three_phase_output.c;
+    } else {
         Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
         Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
         Global_Data.rasv.halfBridge3DutyCycle = 0.0f;

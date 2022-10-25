@@ -1,0 +1,9 @@
+vlib work
+vcom  parallel_8_VSD_and_Park_src_vsd_and_park_tra_pac.vhd
+vcom  parallel_8_VSD_and_Park_src_Compare_To_Constant.vhd
+vcom  parallel_8_VSD_and_Park_src_Compare_To_Constant1.vhd
+vcom  parallel_8_VSD_and_Park_src_Positive.vhd
+vcom  parallel_8_VSD_and_Park_src_Detect_Rise_Positive.vhd
+vcom  parallel_8_VSD_and_Park_src_Sine_HDL_Optimized.vhd
+vcom  parallel_8_VSD_and_Park_src_MATLAB_Function.vhd
+vcom  parallel_8_VSD_and_Park_src_vsd_and_park_tra.vhd

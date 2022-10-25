@@ -135,8 +135,6 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 		}
 	}
 
-
-	self->old_loopindex = index;
 	self->old_output = output;
 	self->old_filterLength = self->filterLength;
 	output = output/((float)self->filterLength);

@@ -60,4 +60,6 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
  */
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int new_filterLength);
 
+float uz_movingAverageFilter_test(uz_movingAverageFilter_t* self, float sample);
+
 #endif //UZ_MOVINGAVERAGE_H

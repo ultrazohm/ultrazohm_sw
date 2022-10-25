@@ -23,9 +23,9 @@
 typedef struct uz_movingAverageFilter_t{
 	bool is_ready;
 	float circularBuffer[MAX_FILTERLENGTH];	//array to save the last [MAX_FILTERLENGTH] input-samples of the filter
-	int bufferindex;						//index in circularBuffer where to put new samples
-	int filterLength;
-	int old_filterLength;
+	uint32_t bufferindex;						//index in circularBuffer where to put new samples
+	uint32_t filterLength;
+	uint32_t old_filterLength;
 	float sum;
 }uz_movingAverageFilter_t;
 
@@ -69,17 +69,12 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 
 	//add new sample to circular buffer
 	self->circularBuffer[self->bufferindex] = sample;
-	int index = 0;
-	int firstsample = 0;
-
+	uint32_t index = 0;
 	float output = 0.0f;
 
 	if(self->filterLength == self->old_filterLength){
 		//Only add newest value and delete oldest one
-		firstsample = (self->bufferindex - self->filterLength);
-		if (firstsample < 0){
-			firstsample = firstsample + MAX_FILTERLENGTH;
-		}
+		uint32_t firstsample = ((self->bufferindex - self->filterLength) + MAX_FILTERLENGTH ) % MAX_FILTERLENGTH;
 		output = self->sum + self->circularBuffer[self->bufferindex] - self->circularBuffer[firstsample];
 	//Only use different calculation, if it results in less loop-iterations
 	} else if(abs(self->filterLength - self->old_filterLength) <= self->filterLength) {
@@ -94,16 +89,16 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 				int end = (start - 2 + (self->filterLength - self->old_filterLength) + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 				if (start > end) {
 					//Because the for-loop would wrap around around the max_length, for loop has to be split up
-					for(int i = start; i < MAX_FILTERLENGTH; i++){
+					for(uint32_t i = start; i < MAX_FILTERLENGTH; i++){
 						index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 						output = output + self->circularBuffer[index];
 					}
-					for(int i = 0; i <= end; i++){
+					for(uint32_t i = 0; i <= end; i++){
 						index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 						output = output + self->circularBuffer[index];
 					}
 				} else {
-					for(int i = start; i <= end; i++){
+					for(uint32_t i = start; i <= end; i++){
 						index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 						output = output + self->circularBuffer[index];
 					}
@@ -119,16 +114,16 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 			int start = (end - (self->old_filterLength - self->filterLength) + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 			if (start > end) {
 				//Because the for-loop would wrap around the max_length, for loop has to be split up
-				for(int i = start; i < MAX_FILTERLENGTH; i++){
+				for(uint32_t i = start; i < MAX_FILTERLENGTH; i++){
 					index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 					output = output - self->circularBuffer[index];
 				}
-				for(int i = 0; i <= end; i++){
+				for(uint32_t i = 0; i <= end; i++){
 					index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 					output = output - self->circularBuffer[index];
 				}
 			} else {
-				for(int i = start; i <= end; i++){
+				for(uint32_t i = start; i <= end; i++){
 					index = (i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 					output = output - self->circularBuffer[index];
 				}
@@ -137,8 +132,8 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 	} else {
 		//Traditional looping, if the other cases result in no faster calculation
 		output = 0.0f;
-		for(int i = 0; i < self->filterLength; i++){
-			int index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
+		for(uint32_t i = 0; i < self->filterLength; i++){
+			index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
 			output = output + self->circularBuffer[index];
 		}
 	}
@@ -147,11 +142,32 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 	self->old_filterLength = self->filterLength;
 	output = output/((float)self->filterLength);
 	//modulo-increment of buffer-index
-	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
+	self->bufferindex = (self->bufferindex + 1U) % MAX_FILTERLENGTH;
 
 	return(output);
 
 }
+
+float uz_movingAverageFilter_test(uz_movingAverageFilter_t* self, float sample){
+	uz_assert_not_NULL(self);
+	//add new sample to circular buffer
+	self->circularBuffer[self->bufferindex] = sample;
+	float output = 0.0f;
+
+	//calculate filter output: sum of i samples in circular buffer, i = current length of the filter
+	for(int i = 0; i < self->filterLength; i++){
+		int index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
+		output = output + self->circularBuffer[index];
+	}
+	self->sum = output;
+	output = output/(float)self->filterLength;
+
+	//modulo-increment of buffer-index
+	self->bufferindex = (self->bufferindex + 1U) % MAX_FILTERLENGTH;
+	return output;
+}
+
+
 
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
 	uz_assert_not_NULL(self);
@@ -173,7 +189,7 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 
 
 	//modulo-increment of buffer-index
-	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
+	self->bufferindex = (self->bufferindex + 1U) % MAX_FILTERLENGTH;
 
 	return output;
 }
@@ -184,8 +200,8 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
-	self->bufferindex = 0;
-	self->old_filterLength = 0;
+	self->bufferindex = 0U;
+	self->old_filterLength = 0U;
 	self->sum = 0.0f;
 
 }

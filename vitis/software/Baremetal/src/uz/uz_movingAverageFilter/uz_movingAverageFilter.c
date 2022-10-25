@@ -27,7 +27,6 @@ typedef struct uz_movingAverageFilter_t{
 	int filterLength;
 	int old_filterLength;
 	float old_output;
-	int old_loopindex;
 }uz_movingAverageFilter_t;
 
 static uint32_t instance_movingAverageFilter_counter = 0U;
@@ -64,8 +63,9 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
 }
 
 
-float uz_movingAverageFilter_sample_new(uz_movingAverageFilter_t* self, float sample){
+float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
 	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 
 	//add new sample to circular buffer
 	self->circularBuffer[self->bufferindex] = sample;
@@ -147,47 +147,23 @@ float uz_movingAverageFilter_sample_new(uz_movingAverageFilter_t* self, float sa
 	return output;
 }
 
-float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
-	uz_assert_not_NULL(self);
-	//add new sample to circular buffer
-	self->circularBuffer[self->bufferindex] = sample;
-	float output = 0.0f;
-
-	//calculate filter output: sum of i samples in circular buffer, i = current length of the filter
-	for(int i = 0; i < self->filterLength; i++){
-		int index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
-		output = output + self->circularBuffer[index];
-	}
-	self->old_output = output;
-	output = output/(float)self->filterLength;
-
-	//modulo-increment of buffer-index
-	self->bufferindex = (self->bufferindex + 1) % MAX_FILTERLENGTH;
-	return output;
-}
-
 void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
 	self->bufferindex = 0;
 	self->old_filterLength = 0;
-	self->old_loopindex = 0;
 	self->old_output = 0.0f;
 
 }
 
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int new_filterLength){
 	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	if(new_filterLength > MAX_FILTERLENGTH){
 		new_filterLength = MAX_FILTERLENGTH;
 	}
 	self->filterLength = new_filterLength;
-}
-
-int uz_movingAverageFilter_get_bufferindex(uz_movingAverageFilter_t* self) {
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	return (self->bufferindex);
 }

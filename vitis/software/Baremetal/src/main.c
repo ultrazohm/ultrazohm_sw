@@ -51,7 +51,7 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-
+/*
 //IP-Cores for 6 Phase FSC-MPC
 static struct uz_vsd_and_park_transformation_6phase_config_t config_vsd_and_park_transformation={
    .base_address= XPAR_UZ_USER_VSD_AND_PARK_TRANSFO_0_BASEADDR,
@@ -113,7 +113,7 @@ static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_config_t config_
     .use_AXI =0
 };
 uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm;
-
+*/
 
 int main(void)
 {
@@ -139,14 +139,14 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
-
+/*
             // Includes IP-Cores driver for 6 Phase FSC-MPC
             instance_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_init(config_vsd_and_park_transformation);
             instance_delay_compensation_fcs_mpc_6phase_pmsm = uz_delay_compensation_fcs_mpc_6phase_init(config_delay_compensation_fcs_mpc_6phase_pmsm);
             instance_phase_voltages_per_switching_state_fcs_mpc_6phase = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_init(config_phase_voltages_per_switching_state_fcs_mpc_6phase);
             instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_init(config_prediction_and_cost_function_fcs_mpc_6phase_pmsm);
             instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_init(config_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm);
-
+*/
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

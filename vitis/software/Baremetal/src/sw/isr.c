@@ -48,7 +48,7 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
-
+/*
 //IP-Cores for 6 Phase FSC-MPC
 extern uz_vsd_and_park_transformation_6phase_t* instance_vsd_and_park_transformation;
 uz_3ph_dq_t dq_currents_vsd_and_park_transformation;
@@ -141,7 +141,7 @@ extern float last_applied_optimal_voltage_d;
 extern float last_applied_optimal_voltage_q;
 extern float last_applied_optimal_voltage_x;
 extern float last_applied_optimal_voltage_y;
-
+*/
 
 void ISR_Control(void *data)
 {
@@ -149,7 +149,7 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-
+/*
     //IP-Cores for 6 Phase FSC-MPC
     dq_currents_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_get_id_iq(instance_vsd_and_park_transformation);
     d_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.d;
@@ -168,13 +168,14 @@ void ISR_Control(void *data)
     a2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.a2;
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
+*/
 
-
-    //crude over current protection
+/*    //crude over current protection
     if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values_idref_iqref_ix_ref_iy_ref.id_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iq_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.ix_ref) > 15.0f || fabs(updated_values_idref_iqref_ix_ref_iy_ref.iy_ref) > 15.0f)) {
     	uz_assert(0);
     	}
-
+*/
+/*
     uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_idref_iqref_ixref_iyref_update(instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm, updated_values_idref_iqref_ix_ref_iy_ref);
 
 
@@ -206,7 +207,7 @@ void ISR_Control(void *data)
     last_applied_optimal_voltage_q = last_applied_optimal_voltages.q;
     last_applied_optimal_voltage_x = last_applied_optimal_voltages.x;
     last_applied_optimal_voltage_y = last_applied_optimal_voltages.y;
-
+*/
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

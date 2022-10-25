@@ -23,8 +23,8 @@ The following methods for setting the offset are commonly used for PMSM:
 #. Duty cycle on the :math:`a` phase
 #. No-torque by d-current
 #. Back-EMF
-#. Flux-based (open circuit)
-#. Flux-based (controlled)
+#. Flux-based (with test-bench machine)
+#. Flux-based (without test-bench machine)
 
 
 Duty cycle on the :math:`a`-phase 
@@ -160,8 +160,8 @@ Furthermore, the position alignment does not account for iron-losses.
              \end{axis}
 
 
-Flux-based (open circuit)
-=========================
+Flux-based (with test-bench machine)
+====================================
 
 The flux based encoder alignment is based on the induced voltage (back-EMF) and uses the same operating condition as the back-EMF based method.
 The machine under test for which the encoder offset should be determined is driven by an test bench machine to a fixed speed (open circuit, thus :math:`I_d=I_q=0`).
@@ -208,6 +208,36 @@ Therefore, the encoder offset to match :math:`U_d=0` and :math:`U_q=\omega_{el} 
 This is the case since the induced voltage :math:`\omega_{el}\psi_d` leads to the iron loss current :math:`I_{q0}` and the current :math:`I_{q0}` generates the flux linkage :math:`-\omega_{el} \psi_q` [[#richter_diss]_, p. 44].
 Instead, the encoder offset :math:`\vartheta_m` is manually adjusted for positive and negative rotational speeds.
 The dq-frame is aligned with the d-axis if :math:`U_q` changes the sign for positive and negative rotational speed but not its magnitude and the value for :math:`U_d` does not change when changing the direction.
+To simplify the setup, a closed-loop current control with set points :math:`I_q^*=0` and :math:`I_d^*=0` can be used instead of open circuit.
+The following steps have to be performed to align the encoder:
+
+#. Machine coupled with test bench machine
+#. Closed-loop current control with set points :math:`I_q^*=0` and :math:`I_d^*=0`
+#. Measure :math:`U_d` and :math:`U_q` or measure controller outputs :math:`U_d^*` and :math:`U_q^*`
+#. Set test bench machine to some :math:`\omega \neq 0` within the operating range and alternate between positive and negative rotation
+#. Adjust encoder offset :math:`\vartheta_{m,offset}` until :math:`U_{d,\omega > 0}=U_{d,\omega < 0}` and :math:`U_{q,\omega > 0}= - U_{q,\omega < 0}`
+
+This method yields good results for determining the encoder offset but requires a test-bench machine.
+
+Flux-based (without test-bench machine)
+=======================================
+
+The concept of the flux-based alignment can be extended to not require a test-bench with a load machine.
+The basic principle stays the same regarding the aim of the encoder offset, i.e., :math:`U_{d,\omega > 0}=U_{d,\omega < 0}` and :math:`U_{q,\omega > 0}= - U_{q,\omega < 0}`.
+However, instead of using a load machine to keep the machine for which the encoder offset should be determined at a constant rotational speed the machine itself is controlled to a rotational speed, then the currents in d- and q-axis are controlled to zero :math:`I_q^*=0` and :math:`I_d^*=0` and the measurement is automatically done during run out of the machine.
+
+
+.. tikz:: Principle measurement during run out of the machine
+           :align: left
+         
+             \begin{axis}[domain=0:100,samples=100,legend pos=outer north east, grid,
+                 very thick]
+                 \addplot[mark=none,color=black] coordinates{ (0,10) (10,10) (20,0) (25,0)};
+                 \addplot[mark=none,color=red] coordinates{ (0,5) (10,5) (20,0) (25,0)};
+                 \addplot[mark=none,color=blue] coordinates{ (0,2) (10,2) (11,0) (25,0)};
+                 \legend{$\omega$,$I_q$,$U_q$};
+             \end{axis}
+
 
 Sources
 =======

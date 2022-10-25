@@ -51,5 +51,6 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int new_filterLength);
 
 
-
+int uz_movingAverageFilter_get_bufferindex(uz_movingAverageFilter_t* self);
+float uz_movingAverageFilter_sample_new(uz_movingAverageFilter_t* self, float sample);
 #endif //UZ_MOVINGAVERAGE_H

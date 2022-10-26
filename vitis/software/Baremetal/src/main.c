@@ -115,6 +115,14 @@ static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_config_t config_
 uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm;
 */
 
+
+// IP-Cores for 6 Phase FCS-MPC parallel 8
+static struct uz_vsd_8_config_t config_vsd_8={
+   .base_address= XPAR_UZ_USER_PARALLEL_8_VSD_AND_P_0_BASEADDR,
+   .ip_clk_frequency_Hz=100000000,
+   .theta_offset = 0.14608003f
+};
+uz_vsd_8_t* test_instance_vsd_8;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -147,6 +155,9 @@ int main(void)
             instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_init(config_prediction_and_cost_function_fcs_mpc_6phase_pmsm);
             instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_init(config_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm);
 */
+            // Init IP-Cores 6 Phase FCS-MPC parallel 8
+            test_instance_vsd_8 = uz_vsd_8_init(config_vsd_8);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

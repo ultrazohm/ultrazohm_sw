@@ -53,13 +53,22 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+/*
 // Includes IP-Cores driver for 6 Phase FSC-MPC
 #include "IP_Cores/uz_vsd_and_park_transformation_6phase/uz_vsd_and_park_transformation_6phase.h"
 #include "IP_Cores/uz_delay_compensation_fcs_mpc_6phase_pmsm/uz_delay_compensation_fcs_mpc_6phase_pmsm.h"
 #include "IP_Cores/uz_phase_voltages_per_switching_state_fcs_mpc_6phase/uz_phase_voltages_per_switching_state_fcs_mpc_6phase.h"
 #include "IP_Cores/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm/uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm.h"
 #include "IP_Cores/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM.h"
+*/
+
+// Includes IP-Core drivers for 6 Phase FCS-MPC parallel 8
+#include "IP_Cores/uz_vsd_8/uz_vsd_8.h"
+#include "IP_Cores/uz_delay_compensation_8/uz_delay_compensation_8.h"
+#include "IP_Cores/uz_phase_voltages_8/uz_phase_voltages_8.h"
+#include "IP_Cores/uz_prediction_and_cost_function_8/uz_prediction_and_cost_function_8.h"
+#include "IP_Cores/uz_min_cost_function_8/uz_min_cost_function_8.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

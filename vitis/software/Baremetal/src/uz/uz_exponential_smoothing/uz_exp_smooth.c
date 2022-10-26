@@ -43,11 +43,10 @@ static UZ_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void){
     return (self);
 }
 
-UZ_EXP_SMOOTH_t* UZ_EXP_SMOOTH_init(float alpha) {
+UZ_EXP_SMOOTH_t* uz_EXP_SMOOTH_init(float alpha) {
     UZ_EXP_SMOOTH_t *self = UZ_EXP_SMOOTH_allocation();
     self->first_step = true;
     self->alpha = alpha;
-     // Call after the init is the first call
     return (self);
 }
 
@@ -56,7 +55,7 @@ float uz_EXP_SMOOTH_sample(UZ_EXP_SMOOTH_t *self, float input)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float output = 0.0f;
-    // There are no old steps if it's the first step, thus filter is not calculated but only "old" values are set
+    // The first return value of the filtered signal is set to the original signal
     if (self->first_step)
     {
         self->actual_sample = input;

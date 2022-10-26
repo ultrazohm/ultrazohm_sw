@@ -16,7 +16,7 @@ void test_uz_EXP_SMOOTH_output(void) {
     float expected_filtered_array[20] = {1.365f,0.44974f,-1.4949f,-0.35364f,0.77619f,-0.3041f,0.44752f,1.8223f,1.6204f,0.83224f,0.7078f,1.1591f,-0.41357f,-1.144f,-0.73148f,-0.50002f,-0.35579f,-1.7283f,-1.6067f,-0.39608f};
     float filtered_array[20] = {0};
     float alpha = 0.3f;
-    UZ_EXP_SMOOTH_t* test_instance = uz_EXP_SMOOTH_init(alpha);
+    uz_EXP_SMOOTH_t* test_instance = uz_EXP_SMOOTH_init(alpha);
     for(int i=0;i< (int)(sizeof(input_array) / sizeof(float));i++) {
         filtered_array[i] = uz_EXP_SMOOTH_sample(test_instance, input_array[i]);
         TEST_ASSERT_FLOAT_WITHIN(1e-04f, expected_filtered_array[i], filtered_array[i]);

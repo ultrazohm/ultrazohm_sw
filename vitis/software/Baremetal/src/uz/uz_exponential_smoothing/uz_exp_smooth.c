@@ -21,36 +21,36 @@
 #if UZ_EXP_SMOOTH_MAX_INSTANCES > 0U
 
 
-typedef struct UZ_EXP_SMOOTH_t {
+typedef struct uz_EXP_SMOOTH_t {
     bool is_ready;
     float alpha;
     float old_sample;
     float actual_sample;
     bool first_step;
-} UZ_EXP_SMOOTH_t;
+} uz_EXP_SMOOTH_t;
 
 static size_t instance_counter = 0U;
-static UZ_EXP_SMOOTH_t instances[UZ_EXP_SMOOTH_MAX_INSTANCES] = { 0 };
+static uz_EXP_SMOOTH_t instances[UZ_EXP_SMOOTH_MAX_INSTANCES] = { 0 };
 
-static UZ_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void);
+static uz_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void);
 
-static UZ_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void){
+static uz_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void){
     uz_assert(instance_counter < UZ_EXP_SMOOTH_MAX_INSTANCES);
-    UZ_EXP_SMOOTH_t* self = &instances[instance_counter];
+    uz_EXP_SMOOTH_t* self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
     return (self);
 }
 
-UZ_EXP_SMOOTH_t* uz_EXP_SMOOTH_init(float alpha) {
-    UZ_EXP_SMOOTH_t *self = UZ_EXP_SMOOTH_allocation();
+uz_EXP_SMOOTH_t* uz_EXP_SMOOTH_init(float alpha) {
+    uz_EXP_SMOOTH_t *self = UZ_EXP_SMOOTH_allocation();
     self->first_step = true;
     self->alpha = alpha;
     return (self);
 }
 
-float uz_EXP_SMOOTH_sample(UZ_EXP_SMOOTH_t *self, float input)
+float uz_EXP_SMOOTH_sample(uz_EXP_SMOOTH_t *self, float input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

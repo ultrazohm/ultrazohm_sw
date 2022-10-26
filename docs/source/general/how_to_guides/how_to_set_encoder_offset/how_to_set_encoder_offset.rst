@@ -219,6 +219,20 @@ The following steps have to be performed to align the encoder:
 
 This method yields good results for determining the encoder offset but requires a test-bench machine.
 
+.. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with constant speed :math:`n=1000 min^{-1}`
+   :include: external_driven_full.tex
+   :align: center
+   :xscale: 50
+
+
+.. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with constant speed :math:`n=1000 min^{-1}`
+   :include: external_driven_full_focus.tex
+   :align: center
+   :xscale: 50
+
+
+
+
 Flux-based (without test-bench machine)
 =======================================
 
@@ -257,14 +271,14 @@ Rearranged:
 
 .. math::
 
-    \frac{U_d}{\omega_{el}} &=  -\psi_q  \\
+    \frac{U_d}{-\omega_{el}} &=  \psi_q  \\
     \frac{U_q}{\omega_{el}} &=  \psi_d 
 
 
 .. _encoder_offset_measurement:
 
 .. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with run out starting at different rotational speed
-   :include: test.tex
+   :include: measurement_run_out.tex
    :align: center
    :xscale: 50
 

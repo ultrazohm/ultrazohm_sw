@@ -200,8 +200,8 @@ With the parallel iron resistance :math:`R_c`, the voltage equations of the PMSM
 .. math::
 
   \begin{align}
-  U_d &=R_1 I_d + R_c I_{d0} \\
-  U_q &=R_1 I_q + R_c I_{q0}
+  U_d &=R_1 I_d + R_c I_{dc} \\
+  U_q &=R_1 I_q + R_c I_{qc}
   \end{align}  
 
 Therefore, the encoder offset to match :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}` does not lead to an alignment of the dq-frame to the d-axis the aforementioned operating conditions using open circuit with :math:`I_d=I_q=0` and :math:`\omega_{el}\neq 0`.
@@ -226,17 +226,49 @@ The concept of the flux-based alignment can be extended to not require a test-be
 The basic principle stays the same regarding the aim of the encoder offset, i.e., :math:`U_{d,\omega > 0}=U_{d,\omega < 0}` and :math:`U_{q,\omega > 0}= - U_{q,\omega < 0}`.
 However, instead of using a load machine to keep the machine for which the encoder offset should be determined at a constant rotational speed the machine itself is controlled to a rotational speed, then the currents in d- and q-axis are controlled to zero :math:`I_q^*=0` and :math:`I_d^*=0` and the measurement is automatically done during run out of the machine.
 
+.. _encoder_offset_runout:
 
 .. tikz:: Principle measurement during run out of the machine
            :align: left
          
              \begin{axis}[domain=0:100,samples=100,legend pos=outer north east, grid,
-                 very thick]
+                 very thick,xlabel={Time}] 
                  \addplot[mark=none,color=black] coordinates{ (0,10) (10,10) (20,0) (25,0)};
-                 \addplot[mark=none,color=red] coordinates{ (0,5) (10,5) (20,0) (25,0)};
-                 \addplot[mark=none,color=blue] coordinates{ (0,2) (10,2) (11,0) (25,0)};
-                 \legend{$\omega$,$I_q$,$U_q$};
+                 \addplot[mark=none,color=blue] coordinates{ (0,5) (10,5) (20,0) (25,0)};
+                 \addplot[mark=none,color=red] coordinates{ (0,2) (10,2) (11,0) (25,0)};
+                 \addplot[mark=none,color=red,dashed] coordinates{ (0,0) (25,0)};
+                 \addplot[mark=none,color=blue,dashed] coordinates{ (0,-1) (10,-1) (20,0) (25,0)};
+                 \addplot[mark=none,color=black!50,dashed] coordinates{ (12,10) (12,-2)};
+                 \addplot[mark=none,color=black!50,dashed] coordinates{ (16,10) (16,-2)};
+                 \node[anchor=west,align=center] (source) at (160,100){Measurement\\window};
+                 \legend{$\omega$,$U_q$,$I_q$,$I_d$,$U_d$};
              \end{axis}
+
+:numref:`encoder_offset_runout` shows the basic principle of the measurement during run-out of the machine.
+
+.. math::
+
+    U_d &= -\omega_{el} \psi_q \\
+    U_q &= \omega_{el} \psi_d \\
+    \psi_q &=L_q I_{q0} \\
+    \psi_d &= L_d I_{d0} + \psi_{PM} 
+
+Rearranged:
+
+.. math::
+
+    \frac{U_d}{\omega_{el}} &=  -\psi_q  \\
+    \frac{U_q}{\omega_{el}} &=  \psi_d 
+
+
+.. _encoder_offset_measurement:
+
+.. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with run out starting at different rotational speed
+   :include: test.tex
+   :align: center
+   :xscale: 50
+
+
 
 
 Sources

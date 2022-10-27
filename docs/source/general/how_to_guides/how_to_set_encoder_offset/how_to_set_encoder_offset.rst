@@ -3,8 +3,8 @@ How to set encoder offset
 =========================
 
 Motor control often relies on using the rotating dq-reference frame.
-The rotating dq-reference frame for permanent magnet synchronous machines (PMSM) is aligned with the d-axis and relies on the knowledge of the angle :math:`\vartheta` between d-axis and :math:`\alpha` axis.
-The angle :math:`\vartheta` can be measured or estimated and is used in the transformation, e.g., using :ref:`uz_transformation`.
+The rotating dq-reference frame for permanent magnet synchronous machines (PMSM) is aligned with the d-axis and relies on the knowledge of the angle :math:`\vartheta_{el}` between d-axis and :math:`\alpha` axis.
+The angle :math:`\vartheta_{el}` can be measured or estimated and is used in the transformation, e.g., using :ref:`uz_transformation`.
 Additionally, machine models in dq-frame assume this alignment.
 Several different encoder technologies exist, e.g., :ref:`ipCore_incremental_encoder`.
 The encoder reference (the zero-point of the encoder) is not necessarily aligned with the d-axis of the machine.
@@ -15,10 +15,20 @@ The encoder reference (the zero-point of the encoder) is not necessarily aligned
    :width: 400px
    :align: center
 
-   Alignment of encoder with respect to the :math:`\alpha`-axis and d-axis
+   Mechanical alignment of the encoder with respect to the :math:`\alpha`-axis and d-axis
 
-This alignment is shown in fig. :numref:`encoder_alignment_picture` with the angle :math:`\vartheta_m` between the :math:`\alpha`-axis and the d-axis and the encoder offset :math:`\vartheta_{m,offset}` between the :math:`\alpha`-axis of the machine and the encoder reference.
-The following methods for setting the offset are commonly used for PMSM:
+This alignment is shown in fig. :numref:`encoder_alignment_picture` with the angle :math:`\vartheta_m` between the :math:`\alpha`-axis and the d-axis and the mechanical encoder offset :math:`\vartheta_{m,offset}` between the :math:`\alpha`-axis of the machine and the encoder reference.
+Note that a machine with :math:`p` pole pairs has :math:`p` different d-axis (each with a positive and negative pole).
+While the encoder measures the mechanical angle :math:`\vartheta_m` of the machine , the electrical angle :math:`\vartheta_{el}` is required for the dq-transformations.
+The electrical angle is calculated using the modulo operation:
+
+.. math::
+
+  \vartheta_{el} = (\vartheta_m \cdot p - \vartheta_{el,offset}) \bmod 2\pi
+
+With the encoder offset in the electrical radian :math:`\vartheta_{el,offset}` assuming :math:`\vartheta_m` is measured in radian and one mechanical rotation is equal to :math:`\vartheta_m=2\pi`.
+The usage of the offset :math:`\vartheta_{el,offset}` is assumed in the subsequent sections.
+The following methods for determining the offset are commonly used for PMSM:
 
 #. Duty cycle on the :math:`a` phase
 #. No-torque by d-current
@@ -33,10 +43,10 @@ Duty cycle on the :math:`a`-phase
 The linked flux of the :math:`a`-phase winding is aligned with the :math:`\alpha`-axis of the machine.
 The main idea in this offset estimation is to drive a current through the :math:`a`-phase of the machine, which generates a linked magnetic flux leading the d-axis with the permanent magnet to mechanically turn and align with the :math:`alpha`-axis of the machine.
 This can be achieved by stepping the duty cycle of the :math:`a`-phase from zero to an arbitrary duty cycle.
-The duty cycle is kept on its value and the current angle :math:`\vartheta_m` is set as :math:`\vartheta_{m,offset}`.
-Since the method does not use a closed loop current control, a duty cycle has to be chosen that does not lead to a phase current above the rated current of the machine.
+The duty cycle is kept on its value and the current angle :math:`\vartheta_{el}` is set as :math:`\vartheta_{el,offset}`.
+Since the method does not use a closed-loop current control, a duty cycle has to be chosen that does not lead to a phase current above the rated current of the machine.
 However, the duty cycle has to be sufficiently large to move the rotor reliably into the :math:`\alpha` axis.
-This method is quick but results in sub-optimal alignment, requires manual tuning of the duty cycle and is often unreliable in the laboratory.
+This method is quick but results in sub-optimal alignment, requires manual tuning of the duty cycle, and is often unreliable in the laboratory.
 Additionally, :math:`L_d=L_q` is assumed.
 
 .. Using tables for side by side figure:
@@ -44,6 +54,7 @@ Additionally, :math:`L_d=L_q` is assumed.
 
     * - .. tikz:: dq-reference frame in PMSM based on [[#asym_pmsm]_, p. 7]
            :libs: shapes, arrows, positioning, calc, angles, quotes
+           :xscale: 80
            
            \begin{tikzpicture}[auto, node distance=2cm,>=latex']
              \coordinate (origo) at (0,0);
@@ -86,29 +97,24 @@ Additionally, :math:`L_d=L_q` is assumed.
                  \legend{$T_{PM}$,$T_{Rel}$,$T_I$}
              \end{axis}
 
-The figure left showcases the relationship between current angle :math:`\beta` and machine torque with the torque generated by the reluctance effect :math:`T_{Rel}`, the torque generated by the linked flux of the permanent magnet :math:`T_{PM}` and the sum of both torque components :math:`T_{I}` (the inner torque of the machine).
+The figure left showcases the relationship between the current angle :math:`\beta` and machine torque with the torque generated by the reluctance effect :math:`T_{Rel}`, the torque generated by the linked flux of the permanent magnet :math:`T_{PM}` and the sum of both torque components :math:`T_{I}` (the inner torque of the machine).
 The current angle :math:`\beta` describes the angle between the q-axis and the space vector of the stator current :math:`\underline{i}=i_d + ji_q` (with the imaginary unit :math:`j`).
 Therefore, :math:`\beta=\arctan{\big( \frac{-i_d}{i_q} \big) }`.
 For machines with :math:`L_d=L_q` only the green torque curve applies.
 Therefore, current in the :math:`a`-phase prompts the rotor to move into the :math:`\alpha`-axis aligning the peak of the torque with the d-axis.
 If :math:`L_d \neq L_q`, the green curve is superimposed with the blue curve yielding the resulting torque (black line).
 Thus, current in the :math:`a`-phase does not align the :math:`\alpha`-axis with the d-axis but with an angle that is skewed depending on the specific values of the inductances :math:`L_d`, :math:`L_q`, and flux linkage of the permanent magnet :math:`\psi_{PM}`.
-The method for determining the encoder offset :math:`\vartheta_{m,offset}` must therefore not be used on machine with :math:`L_d \neq L_q`.
-
-Pro:
+The method for determining the encoder offset :math:`\vartheta_{el,offset}` must not be used on a machine with :math:`L_d \neq L_q`.
 
 - Quick & easy
-
-Con:
-
 - Assumes :math:`L_d = L_q`
 - Manual estimation of end-value for duty cycle step (high enough to move the rotor, not too high to damage machine)
-- No closed-loop control to prevent exceeding rated current of the machine
+- No closed-loop control to prevent exceeding the rated current of the machine
 
 No-torque by d-current
 ======================
 
-A possible alternative to driving current through the :math:`a`-phase of the machine is to ensure that no torque is generated if :math:`i_q=0` and :math:`i_d \neq 0` since the PMSM does not generate torque in this case [#Schroeder_Regelung]_:
+A possible alternative to driving current through the :math:`a`-phase of the machine is to ensure that no torque is generated if :math:`i_q=0` and :math:`i_d \neq 0` since the PMSM does not generate torque in this case [[#Schroeder_Regelung]_,p. 1092]:
 
 .. math::
 
@@ -118,31 +124,28 @@ This alignment method uses a closed-loop current control and control the set-poi
 Using a torque sensor on the test bench (as described in [[#rahman_encoder_offset]_]), the encoder offset can manually be adjusted until the torque sensor measures zero torque.
 The set-point for the current :math:`i_d` depends on the machine under test.
 
-Pro:
-
 - Simple concept
-- Suitable for :math:`L_d \neq L_q`
-
-Con:
-
-- Manual
+- Manual tuning
 - Requires torque sensor
-- Accuracy of torque sensor determines accuracy of encoder offset
+- Suitable for machines with :math:`L_d = L_q` and :math:`L_d \neq L_q`
+- Not suitable for synchronous reluctance machines with :math:`\psi_{PM}=0\,Vs` (since neither :math:`I_d` nor :math:`I_q` generates torque if the other current is zero)
+- The accuracy of the torque sensor determines the accuracy of the encoder alignment
 
 Back-EMF
 ========
 
 Alignment of the encoder and the d-axis can be achieved if the zero-crossing of the back-EMF and the position signal is aligned as shown in :numref:`encoder_alignment_backemf` [[#rahman_encoder_offset]_].
-However, this method for determining the encoder offset :math:`\vartheta_{m,offset}` requires that the machine under test is driven by an external machine to a fixed rotational speed and the back-EMF as well as the encoder signal are measured by one oscilloscope or the controller.
+However, this method for determining the encoder offset :math:`\vartheta_{el,offset}` requires that the machine under test is driven by an external machine to a fixed rotational speed and the back-EMF, as well as the encoder signal, are measured by one oscilloscope or the controller.
 The machine under test is operated with open circuit, i.e., :math:`i_d=i_q=0`.
 If the back-EMF should be measured by the controller, a phase voltage measurement is required on the power electronics.
 Voltage measurement on the power electronics is not always available and if it is, usually a low pass filter is included which adds a phase lag to the measured voltage which has to be accounted for when aligning the encoder.
-Furthermore, the position alignment does not account for iron-losses.
+Furthermore, the position alignment does not account for iron losses.
 
 .. _encoder_alignment_backemf:
 
 .. tikz:: Alignment of zero-crossing of back-EMF with zero-crossing of encoder position  [[#rahman_encoder_offset]_]
-           :align: left
+           :align: center
+           :xscale: 50
          
              \begin{axis}[domain=-pi/3:2*pi,samples=100,legend pos=outer north east, grid,
                  xtick={0,pi, 2*pi},
@@ -159,12 +162,14 @@ Furthermore, the position alignment does not account for iron-losses.
                  \node[anchor=west] (source) at (30,180){Offset};
              \end{axis}
 
+- Complex setup with encoder signal on external measurement device (e.g., oscilloscope) or voltage measurement on inverter
+- Does not account for iron losses, potentially leading to misalignment
 
 Flux-based (with test-bench machine)
 ====================================
 
-The flux based encoder alignment is based on the induced voltage (back-EMF) and uses the same operating condition as the back-EMF based method.
-The machine under test for which the encoder offset should be determined is driven by an test bench machine to a fixed speed (open circuit, thus :math:`I_d=I_q=0`).
+The flux-based encoder alignment is based on the induced voltage (back-EMF) and uses the same operating condition as the back-EMF-based method.
+The machine under test for which the encoder offset should be determined is driven by a test bench machine to a constant speed (open circuit, thus :math:`I_d=I_q=0`).
 In steady state, the voltage equations of the PMSM are given by [[#kellner_diss]_,p. 16]:
 
 .. math::
@@ -183,8 +188,8 @@ With :math:`I_d=0` and :math:`I_q=0` due to open circuit, the equations simplify
   U_q &=0 + \omega_{el} \psi_{PM}
   \end{align}
 
-Therefore, the encoder offset is changed manually until :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}`.
-However, this approach does not work due to iron losses in the machine and the alignment is skewed.
+Based on these equations, encoder alignment is reached for an offset :math:`\vartheta_{el,offset}` in which :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}` is measured.
+However, this approach does not work due to iron losses in the machine and the alignment is skewed if this method is used.
 
 .. _pmsm_esb_iron_losses:
 
@@ -195,34 +200,51 @@ However, this approach does not work due to iron losses in the machine and the a
    Equivalent circuit of PMSM including iron losses of d-axis (left) and q-axis (right) [[#kellner_diss]_, p. 71, [#Schroeder_Regelung]_, p. 1102]. 
 
 :numref:`pmsm_esb_iron_losses` shows the equivalent circuit of the PMSM including iron losses.
-With the parallel iron resistance :math:`R_c`, the voltage equations of the PMSM in steady state can be written as:
+With the parallel iron resistance :math:`R_c`, the equations of the PMSM in steady state can be written as:
 
 .. math::
 
-  \begin{align}
   U_d &=R_1 I_d + R_c I_{dc} \\
-  U_q &=R_1 I_q + R_c I_{qc}
-  \end{align}  
+  U_q &=R_1 I_q + R_c I_{qc} \\
+  I_d &=I_{dc}+I_{d0} \\
+  I_q &=I_{qc}+I_{q0} 
 
-Therefore, the encoder offset to match :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}` does not lead to an alignment of the dq-frame to the d-axis the aforementioned operating conditions using open circuit with :math:`I_d=I_q=0` and :math:`\omega_{el}\neq 0`.
-This is the case since the induced voltage :math:`\omega_{el}\psi_d` leads to the iron loss current :math:`I_{q0}` and the current :math:`I_{q0}` generates the flux linkage :math:`-\omega_{el} \psi_q` [[#richter_diss]_, p. 44].
-Instead, the encoder offset :math:`\vartheta_m` is manually adjusted for positive and negative rotational speeds.
+Simplifying the equations by using open circuit operation with :math:`I_d=I_q=0` and :math:`\omega_{el}\neq 0`:
+
+.. math::
+
+  U_d &=R_c I_{dc} =-\omega_{el} L_q I_{q0}\\
+  U_q &=R_c I_{qc} = \omega_{el} \psi_{PM} + \omega_{el} L_d I_{d0}\\
+  I_{dc} &= -I_{d0} \\
+  I_{qc} &= -I_{q0} 
+
+Following the equivalent circuit and the equations, the induced voltage :math:`\omega_{el}\psi_d` leads to the iron loss current :math:`I_{q0}` and the current :math:`I_{q0}` generates the flux linkage :math:`-\omega_{el} \psi_q` [[#richter_diss]_, p. 44].
+If the dq-frame is aligned with the d-axis, the induced voltage in the d-axis :math:`U_d \neq 0` according to :numref:`pmsm_esb_iron_losses`.
+Therefore, the encoder offset to match :math:`U_d=0` and :math:`U_q=\omega_{el} \psi_{PM}` does not lead to an alignment of the dq-frame to the d-axis in the aforementioned operating conditions.
+Instead, the encoder offset :math:`\vartheta_{el}` has to be determined for positive and negative rotational speeds accounting for the effect of the iron losses as discussed.
 The dq-frame is aligned with the d-axis if :math:`U_q` changes the sign for positive and negative rotational speed but not its magnitude and the value for :math:`U_d` does not change when changing the direction.
-To simplify the setup, a closed-loop current control with set points :math:`I_q^*=0` and :math:`I_d^*=0` can be used instead of open circuit.
-The following steps have to be performed to align the encoder:
+
+To simplify the method, a closed-loop current control with set points :math:`I_q^*=0` and :math:`I_d^*=0` can be used instead of open circuit.
+The following steps have to be performed to align the encoder and determine :math:`\vartheta_{el,offset}`:
 
 #. Machine coupled with test bench machine
 #. Closed-loop current control with set points :math:`I_q^*=0` and :math:`I_d^*=0`
 #. Measure :math:`U_d` and :math:`U_q` or measure controller outputs :math:`U_d^*` and :math:`U_q^*`
 #. Set test bench machine to some :math:`\omega \neq 0` within the operating range and alternate between positive and negative rotation
-#. Adjust encoder offset :math:`\vartheta_{m,offset}` until :math:`U_{d,\omega > 0}=U_{d,\omega < 0}` and :math:`U_{q,\omega > 0}= - U_{q,\omega < 0}`
+#. Adjust encoder offset :math:`\vartheta_{el,offset}` until :math:`U_{d,\omega > 0}=U_{d,\omega < 0}` and :math:`U_{q,\omega > 0}= - U_{q,\omega < 0}`
 
 This method yields good results for determining the encoder offset but requires a test-bench machine.
+
+.. _measurement_flux_external_driven_full:
 
 .. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with constant speed :math:`n=1000 min^{-1}`
    :include: external_driven_full.tex
    :align: center
    :xscale: 50
+
+:numref:`measurement_flux_external_driven_full` shows measurement results for the voltages (control value of the current controller) :math:`U_d^*`, :math:`U_q^*` and the calculated flux linkage :math:`\psi_d=\frac{U_q^*}{\omega_{el} }`, :math:`\psi_q=\frac{U_d^*}{-\omega_{el} }`.
+
+.. _measurement_flux_external_driven_focus:
 
 
 .. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with constant speed :math:`n=1000 min^{-1}`
@@ -277,7 +299,7 @@ Rearranged:
 
 .. _encoder_offset_measurement:
 
-.. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with run out starting at different rotational speed
+.. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with run out starting at different rotational speeds
    :include: measurement_run_out.tex
    :align: center
    :xscale: 50

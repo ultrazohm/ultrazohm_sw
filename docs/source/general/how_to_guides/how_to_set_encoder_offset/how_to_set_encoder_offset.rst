@@ -41,7 +41,7 @@ Duty cycle on the :math:`a`-phase
 =================================
 
 The linked flux of the :math:`a`-phase winding is aligned with the :math:`\alpha`-axis of the machine.
-The main idea in this offset estimation is to drive a current through the :math:`a`-phase of the machine, which generates a linked magnetic flux leading the d-axis with the permanent magnet to mechanically turn and align with the :math:`alpha`-axis of the machine.
+The main idea in this offset estimation is to drive a current through the :math:`a`-phase of the machine, which generates a linked magnetic flux leading the d-axis with the permanent magnet to mechanically turn and align with the :math:`\alpha`-axis of the machine.
 This can be achieved by stepping the duty cycle of the :math:`a`-phase from zero to an arbitrary duty cycle.
 The duty cycle is kept on its value and the current angle :math:`\vartheta_{el}` is set as :math:`\vartheta_{el,offset}`.
 Since the method does not use a closed-loop current control, a duty cycle has to be chosen that does not lead to a phase current above the rated current of the machine.
@@ -114,7 +114,7 @@ The method for determining the encoder offset :math:`\vartheta_{el,offset}` must
 No-torque by d-current
 ======================
 
-A possible alternative to driving current through the :math:`a`-phase of the machine is to ensure that no torque is generated if :math:`i_q=0` and :math:`i_d \neq 0` since the PMSM does not generate torque in this case [[#Schroeder_Regelung]_,p. 1092]:
+A possible alternative for driving current through the :math:`a`-phase of the machine is to ensure that no torque is generated if :math:`i_q=0` and :math:`i_d \neq 0` since the PMSM does not generate torque in this case [[#Schroeder_Regelung]_,p. 1092]:
 
 .. math::
 

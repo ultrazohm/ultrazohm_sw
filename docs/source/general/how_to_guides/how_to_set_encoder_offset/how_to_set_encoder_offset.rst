@@ -246,13 +246,12 @@ This method yields good results for determining the encoder offset but requires 
 
 .. _measurement_flux_external_driven_focus:
 
-
 .. tikz:: Measurement results of Heidrive HDM06-005 based on the control value of the d- and q-axis PI-controller with constant speed :math:`n=1000 min^{-1}`
    :include: external_driven_full_focus.tex
    :align: center
    :xscale: 50
 
-
+:numref:`measurement_flux_external_driven_focus` shows a section of the measurement to highlight the described point in which the dq-frame is aligned (dashed line). 
 
 
 Flux-based (without test-bench machine)
@@ -264,8 +263,9 @@ However, instead of using a load machine to keep the machine for which the encod
 
 .. _encoder_offset_runout:
 
-.. tikz:: Principle measurement during run out of the machine
-           :align: left
+.. tikz:: Principle of the measurement during run out of the machine
+           :align: center
+           :xscale: 50
          
              \begin{axis}[domain=0:100,samples=100,legend pos=outer north east, grid,
                  very thick,xlabel={Time}] 
@@ -281,13 +281,12 @@ However, instead of using a load machine to keep the machine for which the encod
              \end{axis}
 
 :numref:`encoder_offset_runout` shows the basic principle of the measurement during run-out of the machine.
+As described in the preceding section, the control value of the current controller are used for the calculation.
 
 .. math::
 
     U_d &= -\omega_{el} \psi_q \\
     U_q &= \omega_{el} \psi_d \\
-    \psi_q &=L_q I_{q0} \\
-    \psi_d &= L_d I_{d0} + \psi_{PM} 
 
 Rearranged:
 
@@ -304,7 +303,7 @@ Rearranged:
    :align: center
    :xscale: 50
 
-
+:numref:`encoder_offset_measurement` shows the measurement result for measuring in the run out of the machine with the run out starting at :math:`n=2300\,min^{-1}` and :math:`n=-2300\,min^{-1}`.
 
 
 Sources

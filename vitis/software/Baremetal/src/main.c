@@ -44,42 +44,29 @@ DS_Data Global_Data = {
     }
 };
 
-struct uz_IIR_Filter_config iir_config_dc_volts = {
-		.selection = LowPass_first_order,
-		.cutoff_frequency_Hz = 1.0f,
-		.sample_frequency_Hz = 10000.0f};
 
-struct uz_IIR_Filter_config iir_config_currents = {
-		.selection = LowPass_first_order,
-		.cutoff_frequency_Hz = 500.0f,
-		.sample_frequency_Hz = 10000.0f};
-
-struct uz_IIR_Filter_config iir_config_rpm_ref = {
-		.selection = LowPass_first_order,
-		.cutoff_frequency_Hz = 10.0f,
-		.sample_frequency_Hz = 10000.0f};
 
 const struct uz_PMSM_t config_PMSM = {
-	.R_ph_Ohm = 0.2f,
-   .Ld_Henry = 0.0001f,
-   .Lq_Henry = 0.0001f,
-   .Psi_PM_Vs = 0.008f,
-   .polePairs = 5.0f,
-   .I_max_Ampere = 10.0f
+		.R_ph_Ohm = 0.079f,
+	   .Ld_Henry = 0.00112f,
+	   .Lq_Henry = 0.00275f,
+	   .Psi_PM_Vs = 0.008f,
+	   .polePairs = 4.0f,
+	   .I_max_Ampere = 100.0f
  };//these parameters are only needed if linear decoupling is selected
 const struct uz_PI_Controller_config config_id = {
-   .Kp = 2.5f,
-   .Ki = 200.0f,
+   .Kp = 6.0f,
+   .Ki = 250.0f,
    .samplingTime_sec = 0.0001f,
-   .upper_limit = 326.0f,
-   .lower_limit = -326.0f
+   .upper_limit = 461.0f,
+   .lower_limit = -461.0f
 };
 const struct uz_PI_Controller_config config_iq = {
-   .Kp = 2.5f,
-   .Ki = 200.0f,
+   .Kp = 6.0f,
+   .Ki = 250.0f,
    .samplingTime_sec = 0.0001f,
-   .upper_limit = 326.0f,
-   .lower_limit = -326.0f
+   .upper_limit = 461.0f,
+   .lower_limit = -461.0f
 };
 struct uz_FOC_config config_FOC = {
    .decoupling_select = no_decoupling,
@@ -92,8 +79,8 @@ struct uz_SpeedControl_config config_speed = {
    .config_controller.Kp = 0.1f,
    .config_controller.Ki = 5.0f,
    .config_controller.samplingTime_sec = 0.0001f,
-   .config_controller.upper_limit = 8.0f,
-   .config_controller.lower_limit = -8.0f,
+   .config_controller.upper_limit = 40.0f,
+   .config_controller.lower_limit = -40.0f,
    .enable_field_weakening = false
 };
 
@@ -129,16 +116,9 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_dc_volts);
-            Global_Data.objects.iir_i_a1 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_b1 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_c1 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_a2 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
-            Global_Data.objects.iir_rpm_ref = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
-            Global_Data.av.theta_offset = 1.120014f;
-            Global_Data.av.polepairs = 5.0f;
+            Global_Data.av.theta_offset = 5.38; //5.358f;
+            Global_Data.av.polepairs = 4.0f;
+            Global_Data.av.U_ZK = 600.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             Global_Data.objects.foc_speed = uz_SpeedControl_init(config_speed);
             initialization_chain = init_ip_cores;

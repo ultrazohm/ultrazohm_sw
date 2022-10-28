@@ -167,10 +167,10 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	i_d_ref,
 	i_q_ref,
-	speed_ref,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	d_Kp,
+	d_Ki,
+	q_Kp,
+	q_Ki,
 	SND_FLD_ENDMARKER
 
 
@@ -180,7 +180,7 @@ enum gui_button_mapping {
 	SND_LABELS_ZEROVALUE=0,
 	A,
 	A,
-	rpm,
+	-,
 	-,
 	-,
 	-,
@@ -195,8 +195,8 @@ enum gui_button_mapping {
 	dc_link_volt_1,
 	i_d,
 	i_q,
-	ISR_ExecTime_us,
-	ISR_Period_us,
+	u_d_ref,
+	u_q_ref,
 	RCV_FLD_ENDMARKER
 
 
@@ -208,8 +208,8 @@ enum gui_button_mapping {
 	V,
 	A,
 	A,
-	µs,
-	µs,
+	V,
+	V,
 	RCV_LABELS_ENDMARKER
 
 
@@ -222,8 +222,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_u_dc1,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_Milliseconds,

@@ -32,7 +32,7 @@ static struct uz_resolverIP_config_t resolver_D5_config={
 		.freq_clockin = CRYSTAL_FREQUENCY,
 		.zero_position_mech = 0,
 		.pole_pairs_mach = 1,
-		.pole_pairs_res = 2
+		.pole_pairs_res = 4
 };
 
 uz_resolverIP_t* initialize_resolverIP_on_D5(void){

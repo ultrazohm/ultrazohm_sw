@@ -100,7 +100,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
+	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
 	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
 

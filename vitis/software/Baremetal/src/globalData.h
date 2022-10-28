@@ -89,6 +89,10 @@ typedef struct _actualValues_ {
 	float theta_m_offset_comp;
 	float polepairs;
 	uint32_t  heartbeatframe_content;
+	float d_Kp;
+	float d_Ki;
+	float q_Kp;
+	float q_Ki;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

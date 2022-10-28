@@ -32,7 +32,7 @@
 #include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 
-#define MAX_PHASE_CURRENT_AMP  13.0f
+#define MAX_PHASE_CURRENT_AMP  100.0f
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -54,37 +54,22 @@ float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 
-uz_6ph_abc_t six_ph_currents = {0.0f};
-uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
-uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
-uz_3ph_dq_t rotating_dq = {0};
+uz_3ph_abc_t three_ph_currents = {0.0f};
+uz_3ph_dq_t dq_currents = {0};
 
 uz_3ph_dq_t i_dq_ref = {0.0f};
-uz_3ph_dq_t i_dq_actual = {0.0f};
 uz_3ph_dq_t u_dq_ref = {0.0f};
-uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
-uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
-uz_6ph_abc_t phase_ref_volts = {0.0f};
+uz_3ph_abc_t phase_ref_volts = {0.0f};
 
 uz_3ph_abc_t input1 = {0.0f};
-uz_3ph_abc_t input2 = {0.0f};
-struct uz_DutyCycle_t output1 = {0};
-struct uz_DutyCycle_t output2 = {0};
+
+struct uz_DutyCycle_t dutycyc = {0};
+
 
 uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
 
-#define PHASE_CURRENT_CONV	37.735/7.0f/1.19f
-#define DC_VOLT_CONV		250
-#define DC_VOLT_OFF			250
+#define PHASE_CURRENT_CONV	42.6891f
 
-const struct uz_PMSM_t config_PMSM1 = {
-	.R_ph_Ohm = 0.2f,
-   .Ld_Henry = 0.0001f,
-   .Lq_Henry = 0.0001f,
-   .Psi_PM_Vs = 0.008f,
-   .polePairs = 5.0f,
-   .I_max_Ampere = 10.0f
- };//these parameters are only needed if linear decoupling is selected
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -104,55 +89,28 @@ void ISR_Control(void *data)
     //readRegister_of_resolverIP(&Global_Data);
 
     // convert ADC readings to currents in Amps
-    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c2 = -1.0f * Global_Data.aa.A2.me.ADC_B6 * PHASE_CURRENT_CONV;
-    // convert ADC readings to dc link voltages
-    Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
-    Global_Data.av.U_ZK2 = -1.0f * Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
+    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
 
-    // filter values
-    Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
-    Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
-    Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
-    Global_Data.av.i_a2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a2, Global_Data.av.i_a2);
-    Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
-    Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
-    Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
-    Global_Data.av.rpm_ref_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_rpm_ref, Global_Data.av.rpm_ref);
-    // theta offset and scaling to el. angle
-    Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
-    Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
+    // electrical angle and mechanical speed from resolver (correct positive orientation)
+    Global_Data.av.theta_elec = 6.2830f-Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    Global_Data.av.mechanicalRotorSpeed = -1.0f*Global_Data.av.mechanicalRotorSpeed;
 
-    // transform phase currents
-    six_ph_currents.a1 = Global_Data.av.i_a1_filt;
-    six_ph_currents.b1 = Global_Data.av.i_b1_filt;
-    six_ph_currents.c1 = Global_Data.av.i_c1_filt;
-    six_ph_currents.a2 = Global_Data.av.i_a2_filt;
-    six_ph_currents.b2 = Global_Data.av.i_b2_filt;
-    six_ph_currents.c2 = Global_Data.av.i_c2_filt;
-    six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
+    // transform phase currents to dq-frame
+    three_ph_currents.a = Global_Data.av.i_a1;
+    three_ph_currents.b = Global_Data.av.i_b1;
+    three_ph_currents.c = Global_Data.av.i_c1;
+    dq_currents = uz_transformation_3ph_abc_to_dq(three_ph_currents, Global_Data.av.theta_elec);
 
-
-    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
-    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
-    Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
-    Global_Data.av.i_beta = three_ph_alphabeta.beta;
-    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec);
-    Global_Data.av.i_d = rotating_dq.d;
-    Global_Data.av.i_q = rotating_dq.q;
-
-    i_dq_actual.d = Global_Data.av.i_d;
-    i_dq_actual.q = Global_Data.av.i_q;
+    // assign transformed dq-currents to Global_Data
+    Global_Data.av.i_d = dq_currents.d;
+    Global_Data.av.i_q = dq_currents.q;
 
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
-	if(fabs(six_ph_currents.a1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c1) > MAX_PHASE_CURRENT_AMP ||
-	   fabs(six_ph_currents.a2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c2) > MAX_PHASE_CURRENT_AMP) {
+	if(fabs(three_ph_currents.a) > MAX_PHASE_CURRENT_AMP || fabs(three_ph_currents.b) > MAX_PHASE_CURRENT_AMP || fabs(three_ph_currents.c) > MAX_PHASE_CURRENT_AMP) {
 		uz_assert(0);
 	}
 
@@ -162,30 +120,24 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 //    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
-//    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
-    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
-    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
-    	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
-    	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
-    	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
+//    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed);
+    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, dq_currents, Global_Data.av.U_ZK, Global_Data.av.mechanicalRotorSpeed);
 
-    	input1.a = phase_ref_volts.a1;
-    	input1.b = phase_ref_volts.b1;
-    	input1.c = phase_ref_volts.c1;
-    	input2.a = phase_ref_volts.a2;
-    	input2.b = phase_ref_volts.b2;
-    	input2.c = phase_ref_volts.c2;
+    	phase_ref_volts = uz_transformation_3ph_dq_to_abc(u_dq_ref, Global_Data.av.theta_elec);
 
-    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
-    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
+    	Global_Data.av.u_d = u_dq_ref.d;
+    	Global_Data.av.u_q = u_dq_ref.q;
 
-    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
-    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
+    	dutycyc = uz_FOC_generate_DutyCycles(phase_ref_volts, Global_Data.av.U_ZK);
 
+    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc.DutyCycle_W;
+
+    } else {
+
+    	uz_FOC_reset(Global_Data.objects.foc_current);
+    	uz_FOC_reset(Global_Data.objects.foc_speed);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -198,43 +150,48 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
 
-    // Determine mechanical angle of resolver
-    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
-    	cnt++;
-    	cnt_float=(float)cnt;
-    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
-    	cnt--;
-    	cnt_float=(float)cnt;
-    }
+    uz_FOC_set_Kp_id(Global_Data.objects.foc_current, Global_Data.av.d_Kp);
+    uz_FOC_set_Ki_id(Global_Data.objects.foc_current, Global_Data.av.d_Ki);
+    uz_FOC_set_Kp_iq(Global_Data.objects.foc_current, Global_Data.av.q_Kp);
+    uz_FOC_set_Ki_iq(Global_Data.objects.foc_current, Global_Data.av.q_Ki);
+//    // Determine mechanical angle of resolver
+//    if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
+//    	cnt++;
+//    	cnt_float=(float)cnt;
+//    } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
+//    	cnt--;
+//    	cnt_float=(float)cnt;
+//    }
+//
+//    if(cnt > 1 || cnt < -1) {
+//    	cnt = 0;
+//    	cnt_float = 0.0f;
+//    }
+//
+//    if(cnt_reset == 1) {
+//    	cnt = 0;
+//    	cnt_float = 0;
+//    	cnt_reset = 0;
+//    	cnt_reset_float=0;
+//    }
+//
+//
+//    if(cnt >= 0){
+//    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*3.14159265358979323846/2.0f;
+//    } else {
+//    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*3.14159265358979323846/2.0f;
+//    }
+//
+//    theta_mech_old = Global_Data.av.theta_mech;
+//
+//    if (Global_Data.av.theta_mech <= theta_m_min) {
+//    	theta_m_min = Global_Data.av.theta_mech;
+//    }
+//
+//    if (Global_Data.av.theta_mech >= theta_m_max) {
+//    	theta_m_max = Global_Data.av.theta_mech;
+//    }
 
-    if(cnt > 1 || cnt < -1) {
-    	cnt = 0;
-    	cnt_float = 0.0f;
-    }
-
-    if(cnt_reset == 1) {
-    	cnt = 0;
-    	cnt_float = 0;
-    	cnt_reset = 0;
-    	cnt_reset_float=0;
-    }
-
-
-    if(cnt >= 0){
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*3.14159265358979323846/2.0f;
-    } else {
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*3.14159265358979323846/2.0f;
-    }
-
-    theta_mech_old = Global_Data.av.theta_mech;
-
-    if (Global_Data.av.theta_mech <= theta_m_min) {
-    	theta_m_min = Global_Data.av.theta_mech;
-    }
-
-    if (Global_Data.av.theta_mech >= theta_m_max) {
-    	theta_m_max = Global_Data.av.theta_mech;
-    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

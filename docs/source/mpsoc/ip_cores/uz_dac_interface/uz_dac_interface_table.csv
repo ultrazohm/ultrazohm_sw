@@ -1,0 +1,20 @@
+Port Name, Port type, Data type, Target Platform Interfaces, Mapping, Function
+trigger_write,Inport,boolean, AXI4,x"100", Current values from data_out_1..8 are written output to SPI interface
+dac_data_1, Inport, int16, AXI4, x"104", Data that should be sent to DAC1
+dac_data_2, Inport, int16, AXI4, x"108", Data that should be sent to DAC2
+dac_data_3, Inport, int16, AXI4, x"10C", Data that should be sent to DAC3
+dac_data_4, Inport, int16, AXI4, x"110", Data that should be sent to DAC4
+dac_data_5, Inport, int16, AXI4, x"114", Data that should be sent to DAC5
+dac_data_6, Inport, int16, AXI4, x"118", Data that should be sent to DAC6
+dac_data_7, Inport, int16, AXI4, x"11C", Data that should be sent to DAC7
+dac_data_8, Inport, int16, AXI4, x"120", Data that should be sent to DAC8
+spi_clk_out,Outport, boolean, External Port, , CLK for SPI interface of all DAC - to be connected to Utitlity buffer (OBUFDS)
+cs_out     ,Outport, boolean,External Port,, CS for SPI interface of all DAC 
+data_out_1 ,Outport, boolean, External Port,, Connection to DAC1 - to be connected to Utitlity buffer (OBUFDS)
+data_out_2 ,Outport, boolean, External Port,, Connection to DAC2 - to be connected to Utitlity buffer (OBUFDS)
+data_out_3 ,Outport, boolean, External Port,, Connection to DAC3 - to be connected to Utitlity buffer (OBUFDS)
+data_out_4 ,Outport, boolean, External Port,, Connection to DAC4 - to be connected to Utitlity buffer (OBUFDS)
+data_out_5 ,Outport, boolean, External Port,, Connection to DAC5 - to be connected to Utitlity buffer (OBUFDS)
+data_out_6 ,Outport, boolean, External Port,, Connection to DAC6 - to be connected to Utitlity buffer (OBUFDS)
+data_out_7 ,Outport, boolean, External Port,, Connection to DAC7 - to be connected to Utitlity buffer (OBUFDS)
+data_out_8 ,Outport, boolean, External Port,, Connection to DAC8 - to be connected to Utitlity buffer (OBUFDS)

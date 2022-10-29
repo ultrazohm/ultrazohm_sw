@@ -5,7 +5,7 @@ High-level Resource Utilization Report for parallel_8_phase_voltages
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-5150
+5151
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-78637
+78661
 </td>
 
 </tr>
@@ -246,6 +246,27 @@ Phase_voltages_per_switching_state2
 
 </h5>
 <h5>
+Multipliers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x24-bit Multiply 							: 1
+</span>
+<span name="Multiply_1_1" id="Multiply_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:230')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
 Adders/Subtractors (111)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
@@ -312,7 +333,7 @@ Add5
 39-bit Subtractor 							: 32
 </span>
 <br /><h5>
-Registers (696)
+Registers (697)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -402,7 +423,7 @@ Delay13
 [+]
 </span>
 <span style="font-family:monospace">
-24-bit Register 							: 134
+24-bit Register 							: 135
 </span>
 <span name="Register_1_3" id="Register_1_3">
 <ul>
@@ -415,6 +436,12 @@ Delay3
 <li>
 <a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:157')" name="code2model" class="code2model">
 Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:231')" name="code2model" class="code2model">
+Delay48
 </a>
 
 </li>
@@ -648,7 +675,7 @@ valid_in_ADC
 Number of Output Bits: 770
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="806f4ae9-e22c-4f6b-b59e-f4e50241a4fc" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e8fc34ed-9381-478a-a575-4067d33468e1" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -756,22 +783,10 @@ phase_voltages_per_switching_state_31: 24 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '806f4ae9-e22c-4f6b-b59e-f4e50241a4fc')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e8fc34ed-9381-478a-a575-4067d33468e1')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
-</span>
-<br /><p><hr /></p><h5>
-Report for User-defined block:    <a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:150')" name="code2model" class="code2model">
-MATLAB Function1
-</a>
-
-</h5>
-<h5>
-Multipliers (1)
-</h5>
-<span style="font-family:monospace">
-24x24-bit Multiply 							: 1
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_phase_voltages:82')" name="code2model" class="code2model">

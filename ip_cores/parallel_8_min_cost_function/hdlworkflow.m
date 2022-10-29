@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 09:11:47 on 20/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 10:43:12 on 28/10/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_min_cost_function\hdlworkflow.m'
 %     Overwrite : true

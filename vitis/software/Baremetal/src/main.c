@@ -123,6 +123,52 @@ static struct uz_vsd_8_config_t config_vsd_8={
    .theta_offset = 0.14608003f
 };
 uz_vsd_8_t* test_instance_vsd_8;
+
+static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_cost_function_8={
+    .base_address = XPAR_UZ_USER_PARALLEL_8_PREDICTIO_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .psiPM = 0.0048f,//measurement needed
+    .Lq = 0.000147f,//[H]
+    .Ld = 0.000147f,//[H]
+    .Rs = 0.125f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+    .id_ref = 0.0f,//needs to be asked
+    .iq_ref = 0.0f,//needs to be asked
+    .ix_ref = 0.0f,//needs to be asked
+    .iy_ref = 0.0f,//needs to be asked
+};
+uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
+
+static struct uz_delay_compensation_8_config_t config_delay_compensation_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_DELAY_COM_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .psiPM = 0.0048f,
+    .Lq =0.000147f,//[H]
+    .Ld = 0.000147f,//[H]
+    .Rs = 0.125f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+};
+uz_delay_compensation_8_t* test_instance_delay_compensation_8;
+
+static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_PHASE_VOL_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .theta_el_offset=0.14608003f,//needs to be asked
+    .u_dc_link_voltage=36.0f,//needs to be asked
+};
+
+static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_MIN_COST_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+};
+uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -157,6 +203,10 @@ int main(void)
 */
             // Init IP-Cores 6 Phase FCS-MPC parallel 8
             test_instance_vsd_8 = uz_vsd_8_init(config_vsd_8);
+            test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
+            test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
+            uz_phase_voltages_8_init(config_phase_voltages_8);
+            test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

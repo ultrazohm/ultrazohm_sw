@@ -20,7 +20,6 @@ add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function8.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function9.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_Subsystem.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_nfp_convert_single_to_sfix_24_En11.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_nfp_convert_sfix_25_En20_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_phase_voltages_src_Phase_voltages_per_switching_state2.vhd}
@@ -49,7 +48,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112730718 [ipx::current_core]
+set_property core_revision 2112745012 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_Phase_voltages_per_switching_state2_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -124,10 +123,6 @@ ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_Subsystem.vhd} [ipx::get_f
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_phase_voltages_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_phase_voltages_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_nfp_convert_single_to_sfix_24_En11.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_phase_voltages_src_nfp_convert_single_to_sfix_24_En11.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_phase_voltages_src_nfp_convert_single_to_sfix_24_En11.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

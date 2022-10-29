@@ -997,7 +997,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112733391">
+		<CoreRevision value="2112745002">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_min_cost_function/ipcore/parallel_8_min_cost_function_v1_0/component.xml">
 		</ComponentPath>
@@ -1025,7 +1025,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112730718">
+		<CoreRevision value="2112745012">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_phase_voltages/ipcore/parallel_8_phase_voltages_v1_0/component.xml">
 		</ComponentPath>

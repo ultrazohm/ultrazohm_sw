@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>71c2f944</spirit:value>
+            <spirit:value>7c0b5436</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>71c2f944</spirit:value>
+            <spirit:value>7c0b5436</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -794,10 +794,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_phase_voltages_src_Sine_HDL_Optimized.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -868,7 +864,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_phase_voltages.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ae90ae67</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_0bf2386f</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -915,11 +911,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_phase_voltages_src_Detect_Rise_Positive.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/parallel_8_phase_voltages_src_MATLAB_Function1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1071,14 +1062,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_8_phase_voltages</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112730718</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-10-18T10:38:29Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112745012</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-10-28T08:52:16Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4cf7c2e3"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="39818bbc"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="923cf548"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d3731170"/>
     </xilinx:packagingInfo>

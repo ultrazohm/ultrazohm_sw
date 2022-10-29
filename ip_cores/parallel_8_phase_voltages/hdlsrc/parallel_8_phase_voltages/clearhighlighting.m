@@ -85,9 +85,6 @@ annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/
 annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Sine HDL Optimized/Saturation1', 0, 1, '');
 annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Sine HDL Optimized/Switch1', 0, 1, '');
 annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Sine HDL Optimized/PipelineRegister1', 1, 1, '');
-annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/MATLAB Function1/MATLAB Function1', 1, 1, '');
-annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/MATLAB Function1/MATLAB Function1', 1, 1, '');
-annotate_port('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/MATLAB Function1', 1, 1, '');
 annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Subsystem/MATLAB Function10/Assignment', 1, 1, '');
 annotate_port('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Subsystem/MATLAB Function10', 1, 1, '');
 annotate_port('gm_parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Subsystem/MATLAB Function10/Assignment1', 1, 1, '');

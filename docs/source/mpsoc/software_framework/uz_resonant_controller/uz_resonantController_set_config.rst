@@ -14,8 +14,7 @@ Example
     config.lower_limit = -10.0f;
     config.upper_limit = 10.0f;
     config.harmonic_order= 7.0f;
-
-	  uz_resonantController_set_config(R_controller_instance, config);
+    uz_resonantController_set_config(R_controller_instance, config);
   }
 
 Description

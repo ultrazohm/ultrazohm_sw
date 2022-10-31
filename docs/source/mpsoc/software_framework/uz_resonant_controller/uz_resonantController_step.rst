@@ -12,10 +12,8 @@ Example
   :caption: Example function call to step the resonant controller once
 
   int main(void) {
-
     // step once
     output = uz_resonantController_step(R_controller_instance, in_ref_value, in_measured_value, fundamental_fequency);
- 
   }
 
 Description

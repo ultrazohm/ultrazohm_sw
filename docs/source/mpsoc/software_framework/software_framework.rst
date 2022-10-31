@@ -16,7 +16,7 @@ Software Framework
     newton_raphson/newton_raphson
     linear_decoupling/linear_decoupling
     piController/piController
-    resonantController/resonantController
+    uz_resonant_controller/uz_resonant_controller
     PMSM_config/uz_PMSM_config
     signals/signals
     space_vector_limitation/space_vector_limitation

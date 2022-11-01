@@ -106,7 +106,7 @@ uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lower
 
 
 float uz_hysteresisband_filter(float input, float lowerlimit, float upperlimit){
-	if((input > upperlimit) | (input < lowerlimit)){
+	if((input > upperlimit) || (input < lowerlimit)){
 		input = 0.0f;
 	}
 	return input;

@@ -51,8 +51,10 @@ void test_uz_resonant_controller_Reset(void)
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output);
 }
 
-// Test multiple consecutive Steps with reset inbetween
-void test_uz_resonant_controller_StepAndReset(void)
+
+
+// Test multiple consecutive Steps, compares the results to results of simulink model
+void test_uz_resonant_controller_Step(void)
 {
     uz_resonantController_t *test_R_controller = uz_resonantController_init(config);
 
@@ -92,6 +94,7 @@ void test_uz_resonant_controller_StepAndReset(void)
 
     TEST_ASSERT_FLOAT_WITHIN(0.03f - 1e-06f, 0.03f + 1e-06f, output);
 }
+
 
 void test_uz_resonantController_set_config(void)
 {

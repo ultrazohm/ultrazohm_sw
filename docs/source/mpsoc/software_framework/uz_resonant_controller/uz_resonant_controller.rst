@@ -11,15 +11,17 @@ The ideal transfer function is:
 
   \frac{Y(s)}{E(s)}= K_R \cdot \frac{s}{s^2 + \omega_R^2}
 
-with the resonant frequency :math:`\omega_R`.
+with the resonant frequency :math:`\omega_R` [[#DiscPaper]_].
 
-The implemented discrete time transfer function is created by impulse invariant discretization with delay compensation [[#DiscPaper]_] and is:
+The implemented discrete time transfer function is created by impulse invariant discretization with delay compensation [[#DiscPaper]_ p. 1700] and is:
 
 .. math::
 
     G_R(s) = K_R T_{s} \frac{\cos(2\omega_R T_{s}) - z^{-1}\cos(\omega_R T_{s}) }{1-2 z^{-1} \cos(\omega_R T_{s} )+ z^{-2} }
 
 The resonant frequency is specified by :math:`\omega_R = h \cdot \omega_{el}`, with the order of the harmonic :math:`h` to be controlled and the fundamental frequency :math:`\omega_{el}`.
+This method of discretization is chosen, as it is the most optimal among the methods discussed in [[#DiscPaper]_ p. 1710 f.] with reduced phase lag, improved stability and accurate location of the resonant peaks even for high frequencies.
+
 
 Resonant-Controller
 -------------------

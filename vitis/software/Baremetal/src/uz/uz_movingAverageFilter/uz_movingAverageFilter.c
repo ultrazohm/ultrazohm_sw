@@ -26,6 +26,7 @@ typedef struct uz_movingAverageFilter_t{
 	uint32_t bufferindex;						//index in circularBuffer where to put new samples
 	uint32_t filterLength;
 	uint32_t old_filterLength;
+	float old_value;
 	float sum;
 }uz_movingAverageFilter_t;
 
@@ -73,9 +74,15 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 	float output = 0.0f;
 
 	if(self->filterLength == self->old_filterLength){
+		uint32_t firstsample = 0U;
 		//Only add newest value and delete oldest one
-		uint32_t firstsample = ((self->bufferindex - self->filterLength) + MAX_FILTERLENGTH ) % MAX_FILTERLENGTH;
-		output = self->sum + self->circularBuffer[self->bufferindex] - self->circularBuffer[firstsample];
+		if(self->filterLength == MAX_FILTERLENGTH) {
+			output = self->sum + self->circularBuffer[self->bufferindex] - self->old_value;
+		} else {
+			firstsample = ((self->bufferindex - self->filterLength) + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
+			output = self->sum + self->circularBuffer[self->bufferindex] - self->circularBuffer[firstsample];
+		}
+
 	//Only use different calculation, if it results in less loop-iterations
 	} else if(abs(self->filterLength - self->old_filterLength) <= self->filterLength) {
 		//Increasing filter length
@@ -143,6 +150,8 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 	output = output/((float)self->filterLength);
 	//modulo-increment of buffer-index
 	self->bufferindex = (self->bufferindex + 1U) % MAX_FILTERLENGTH;
+	//Safe "old" value at new bufferindex. Needed, when the filterlenght==MAX_FILTERLENGTH
+	self->old_value= self->circularBuffer[self->bufferindex];
 
 	return(output);
 

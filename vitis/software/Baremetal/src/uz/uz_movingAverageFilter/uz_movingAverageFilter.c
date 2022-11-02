@@ -157,26 +157,6 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 
 }
 
-float uz_movingAverageFilter_test(uz_movingAverageFilter_t* self, float sample){
-	uz_assert_not_NULL(self);
-	//add new sample to circular buffer
-	self->circularBuffer[self->bufferindex] = sample;
-	float output = 0.0f;
-
-	//calculate filter output: sum of i samples in circular buffer, i = current length of the filter
-	for(int i = 0; i < self->filterLength; i++){
-		int index = (self->bufferindex - i + MAX_FILTERLENGTH) % MAX_FILTERLENGTH;
-		output = output + self->circularBuffer[index];
-	}
-	self->sum = output;
-	output = output/(float)self->filterLength;
-
-	//modulo-increment of buffer-index
-	self->bufferindex = (self->bufferindex + 1U) % MAX_FILTERLENGTH;
-	return output;
-}
-
-
 
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
 	uz_assert_not_NULL(self);

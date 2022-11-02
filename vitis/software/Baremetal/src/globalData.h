@@ -6,6 +6,10 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "uz/uz_FOC/uz_FOC.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -81,6 +85,27 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	float omega_mech_d5_1;
+	float omega_mech_d5_2;
+	float omega_mech_d5_3;
+	uint32_t mech_position_d5_1;
+	uint32_t mech_position_d5_2;
+	uint32_t mech_position_d5_3;
+	float theta_el_d5_1;
+	float theta_el_d5_2;
+	float theta_el_d5_3;
+	float d_1_i_a1;
+	float d_1_i_b1;
+	float d_1_i_c1;
+	float d_2_i_a1;
+	float d_2_i_b1;
+	float d_2_i_c1;
+	float theta_offset_left;
+	float theta_offset_right;
+	float theta_el_left_motor;
+	float theta_el_right_motor;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -108,6 +133,13 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
+	uz_incrementalEncoder_t* increEncoder_d5_1;
+	uz_incrementalEncoder_t* increEncoder_d5_2;
+	uz_incrementalEncoder_t* increEncoder_d5_3;
+	uz_FOC* uz_FOC_left_motor;
+	uz_FOC* uz_FOC_right_motor;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

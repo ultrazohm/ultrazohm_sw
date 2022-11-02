@@ -41,6 +41,28 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+#define MAX_PHASE_CURRENT_AMPERE	12.0f
+
+// uz_transformation variables for uz_foc
+uz_3ph_abc_t ph_currents_left_motor = {0.0f};
+uz_3ph_abc_t ph_currents_right_motor = {0.0f};
+
+uz_3ph_dq_t dq_currents_left_motor = {0.0f};
+uz_3ph_dq_t dq_currents_right_motor = {0.0f};
+
+uz_3ph_dq_t dq_ref_currents_left_motor = {0.0f};
+uz_3ph_dq_t dq_ref_currents_right_motor = {0.0f};
+
+uz_3ph_dq_t dq_ref_voltages_left_motor = {0.0f};
+uz_3ph_dq_t dq_ref_voltages_right_motor = {0.0f};
+
+uz_3ph_abc_t ph_ref_voltages_left_motor = {0.0f};
+uz_3ph_abc_t ph_ref_voltages_right_motor = {0.0f};
+
+// uz_foc variables
+struct uz_DutyCycle_t dutycyc_left_motor = {0.0f};
+struct uz_DutyCycle_t dutycyc_right_motor = {0.0f};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -53,13 +75,90 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // convert adc readings of d1 to currents in ampere (former d4 card at my six-phase testbench)
+    Global_Data.av.d_1_i_a1 = -1.0f * Global_Data.aa.A1.me.ADC_A4 - 0.0338f * Global_Data.aa.A1.me.ADC_A4 + 0.0259f;
+    Global_Data.av.d_1_i_b1 = -1.0f * Global_Data.aa.A1.me.ADC_A3 - 0.0407f * Global_Data.aa.A1.me.ADC_A3 + 0.0280f;
+    Global_Data.av.d_1_i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_A2 - 0.0401f * Global_Data.aa.A1.me.ADC_A2 + 0.0220f;
+    // convert adc readings of d2 to currents in ampere (former d3 card at my six-phase testbench)
+    Global_Data.av.d_2_i_a1 = -1.0f * Global_Data.aa.A1.me.ADC_B8 - 0.0541f * Global_Data.aa.A1.me.ADC_B8 + 0.0352f;
+    Global_Data.av.d_2_i_b1 = -1.0f * Global_Data.aa.A1.me.ADC_B7 - 0.0516f * Global_Data.aa.A1.me.ADC_B7 + 0.0133f;
+    Global_Data.av.d_2_i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 - 0.0341f * Global_Data.aa.A1.me.ADC_B6 + 0.0383f;
+
+    // check for software over-current limit
+    if (fabsf(Global_Data.av.d_1_i_a1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_b1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_c1) > MAX_PHASE_CURRENT_AMPERE ||
+    	fabsf(Global_Data.av.d_2_i_a1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_2_i_b1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_2_i_c1) > MAX_PHASE_CURRENT_AMPERE)
+    {
+    	uz_assert(0); // fail hard and loudly
+    }
+
+    // read all omega_mechs in rad/s from d5
+    Global_Data.av.omega_mech_d5_1 = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.increEncoder_d5_1);
+    Global_Data.av.omega_mech_d5_2 = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.increEncoder_d5_2);
+    Global_Data.av.omega_mech_d5_3 = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.increEncoder_d5_3);
+
+    // read all mechanical positions in increments from d5
+    Global_Data.av.mech_position_d5_1 = uz_incrementalEncoder_get_position(Global_Data.objects.increEncoder_d5_1);
+    Global_Data.av.mech_position_d5_2 = uz_incrementalEncoder_get_position(Global_Data.objects.increEncoder_d5_2);
+    Global_Data.av.mech_position_d5_3 = uz_incrementalEncoder_get_position(Global_Data.objects.increEncoder_d5_3);
+
+    // read all electric thetas in rad from d5
+    Global_Data.av.theta_el_d5_1 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_1);
+    Global_Data.av.theta_el_d5_2 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_2);
+    Global_Data.av.theta_el_d5_3 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_3);
+
+    // respect el. theta offset
+    Global_Data.av.theta_el_left_motor = Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_offset_left;
+    Global_Data.av.theta_el_right_motor = Global_Data.av.theta_el_d5_2 - Global_Data.av.theta_offset_right;
+
+    // Read inverter adapter outputs
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	// enable inverter adapter hardware
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    	// calculate uz_FOC reference dq-voltages
+    	dq_ref_voltages_left_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_left_motor, dq_ref_currents_left_motor, dq_currents_left_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_left_motor);
+    	dq_ref_voltages_right_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_right_motor, dq_ref_currents_right_motor, dq_currents_right_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_right_motor);
+    	// transform reference voltages to abc frame
+    	ph_ref_voltages_left_motor = uz_transformation_3ph_dq_to_abc(dq_ref_voltages_left_motor, Global_Data.av.theta_el_left_motor);
+    	ph_ref_voltages_right_motor = uz_transformation_3ph_dq_to_abc(dq_ref_voltages_right_motor, Global_Data.av.theta_el_right_motor);
+    	// calculate duty-cycle from reference voltages
+    	dutycyc_left_motor = uz_FOC_generate_DutyCycles(ph_ref_voltages_left_motor, Global_Data.av.U_ZK);
+    	dutycyc_right_motor = uz_FOC_generate_DutyCycles(ph_ref_voltages_right_motor, Global_Data.av.U_ZK);
+    	// assign duty-cycles to global duty-cycle variables
+    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left_motor.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left_motor.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left_motor.DutyCycle_W;
+
+    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right_motor.DutyCycle_U;
+    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right_motor.DutyCycle_V;
+    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right_motor.DutyCycle_W;
+
+
+    } else {
+    	// disable inverter adapter hardware
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+    	// reset FOC instances (clear integrators)
+    	uz_FOC_reset(Global_Data.objects.uz_FOC_left_motor);
+    	uz_FOC_reset(Global_Data.objects.uz_FOC_right_motor);
+    	// set global duty-cycles to 0.5
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+
+    	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+    	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
     }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

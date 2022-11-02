@@ -72,6 +72,74 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+
+            struct uz_PMSM_t config_PMSM_left = {
+               .Ld_Henry = 0.0001f,
+               .Lq_Henry = 0.0002f,
+               .Psi_PM_Vs = 0.008f
+            };//these parameters are only needed if linear decoupling is selected
+
+            struct uz_PMSM_t config_PMSM_right = {
+               .Ld_Henry = 0.0001f,
+               .Lq_Henry = 0.0002f,
+               .Psi_PM_Vs = 0.008f
+            };//these parameters are only needed if linear decoupling is selected
+
+            struct uz_PI_Controller_config config_id_left = {
+               .Kp = 10.0f,
+               .Ki = 10.0f,
+               .samplingTime_sec = 0.00005f,
+               .upper_limit = 10.0f,
+               .lower_limit = -10.0f
+            };
+
+            struct uz_PI_Controller_config config_iq_left = {
+               .Kp = 10.0f,
+               .Ki = 10.0f,
+               .samplingTime_sec = 0.00005f,
+               .upper_limit = 10.0f,
+               .lower_limit = -10.0f
+            };
+
+            struct uz_PI_Controller_config config_id_right = {
+              .Kp = 10.0f,
+              .Ki = 10.0f,
+              .samplingTime_sec = 0.00005f,
+              .upper_limit = 10.0f,
+              .lower_limit = -10.0f
+            };
+
+            struct uz_PI_Controller_config config_iq_right = {
+              .Kp = 10.0f,
+              .Ki = 10.0f,
+              .samplingTime_sec = 0.00005f,
+              .upper_limit = 10.0f,
+              .lower_limit = -10.0f
+            };
+
+            struct uz_FOC_config config_FOC_left = {
+               .decoupling_select = linear_decoupling,
+               .config_PMSM = config_PMSM_left,
+               .config_id = config_id_left,
+               .config_iq = config_iq_left
+            };
+
+            struct uz_FOC_config config_FOC_right = {
+                 .decoupling_select = linear_decoupling,
+                 .config_PMSM = config_PMSM_right,
+                 .config_id = config_id_right,
+                 .config_iq = config_iq_right
+            };
+
+            // init FOC instances
+            Global_Data.objects.uz_FOC_left_motor = uz_FOC_init(config_FOC_left);
+            Global_Data.objects.uz_FOC_right_motor = uz_FOC_init(config_FOC_right);
+            // init theta_offset values
+            Global_Data.av.theta_offset_left = 0.0f;
+           	Global_Data.av.theta_offset_right = 0.0f;
+           	// init dc_link voltage
+           	Global_Data.av.U_ZK = 48.0f;
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -90,7 +158,11 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.increEncoder_d5_1 = initialize_incrementalEncoder_D5_1();
+            Global_Data.objects.increEncoder_d5_2 = initialize_incrementalEncoder_D5_2();
+            Global_Data.objects.increEncoder_d5_3 = initialize_incrementalEncoder_D5_3();
             initialization_chain = print_msg;
             break;
         case print_msg:

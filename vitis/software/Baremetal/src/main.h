@@ -51,8 +51,15 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
 #include "uz/uz_SystemTime/uz_SystemTime.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_FOC/uz_FOC.h"
 
 #include "include/pwm_init.h"
+
+// inverter_adapter
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+#include "include/uz_incremental_encoder_init.h"
 
 
 //----------------------------------------------------

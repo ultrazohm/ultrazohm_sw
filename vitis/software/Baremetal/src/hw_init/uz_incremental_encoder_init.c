@@ -8,7 +8,7 @@ static struct uz_incrementalEncoder_config incre_config_D5_1={
   .ip_core_frequency_Hz=50000000U,
   .line_number_per_turn_mech=2500U,
   .OmegaPerOverSample_in_rpm=500.0f,
-  .drive_pole_pair=4U
+  .drive_pole_pair=1U
 };
 
 static struct uz_incrementalEncoder_config incre_config_D5_2={
@@ -16,7 +16,7 @@ static struct uz_incrementalEncoder_config incre_config_D5_2={
   .ip_core_frequency_Hz=50000000U,
   .line_number_per_turn_mech=2500U,
   .OmegaPerOverSample_in_rpm=500.0f,
-  .drive_pole_pair=4U
+  .drive_pole_pair=1U
 };
 
 static struct uz_incrementalEncoder_config incre_config_D5_3={
@@ -24,7 +24,7 @@ static struct uz_incrementalEncoder_config incre_config_D5_3={
   .ip_core_frequency_Hz=50000000U,
   .line_number_per_turn_mech=2500U,
   .OmegaPerOverSample_in_rpm=500.0f,
-  .drive_pole_pair=4U
+  .drive_pole_pair=1U
 };
 
 

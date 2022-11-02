@@ -74,47 +74,53 @@ int main(void)
             JavaScope_initalize(&Global_Data);
 
             struct uz_PMSM_t config_PMSM_left = {
-               .Ld_Henry = 0.0001f,
-               .Lq_Henry = 0.0002f,
-               .Psi_PM_Vs = 0.008f
+               .R_ph_Ohm = 0.543f,
+               .Ld_Henry = 0.00113f,
+               .Lq_Henry = 0.00142f,
+               .Psi_PM_Vs = 0.0169f,
+			   .J_kg_m_squared = 0.0000148f,
+			   .I_max_Ampere = 10.8f
             };//these parameters are only needed if linear decoupling is selected
 
             struct uz_PMSM_t config_PMSM_right = {
-               .Ld_Henry = 0.0001f,
-               .Lq_Henry = 0.0002f,
-               .Psi_PM_Vs = 0.008f
+               .R_ph_Ohm = 0.543f,
+               .Ld_Henry = 0.00113f,
+               .Lq_Henry = 0.00142f,
+               .Psi_PM_Vs = 0.0169f,
+			   .J_kg_m_squared = 0.0000148f,
+			   .I_max_Ampere = 10.8f
             };//these parameters are only needed if linear decoupling is selected
 
             struct uz_PI_Controller_config config_id_left = {
-               .Kp = 10.0f,
-               .Ki = 10.0f,
+               .Kp = 3.0f,
+               .Ki = 600.0f,
                .samplingTime_sec = 0.00005f,
-               .upper_limit = 10.0f,
-               .lower_limit = -10.0f
+               .upper_limit = 48.0f,
+               .lower_limit = -48.0f
             };
 
             struct uz_PI_Controller_config config_iq_left = {
-               .Kp = 10.0f,
-               .Ki = 10.0f,
+               .Kp = 3.5f,
+               .Ki = 600.0f,
                .samplingTime_sec = 0.00005f,
-               .upper_limit = 10.0f,
-               .lower_limit = -10.0f
+               .upper_limit = 48.0f,
+               .lower_limit = -48.0f
             };
 
             struct uz_PI_Controller_config config_id_right = {
-              .Kp = 10.0f,
-              .Ki = 10.0f,
+              .Kp = 3.0f,
+              .Ki = 600.0f,
               .samplingTime_sec = 0.00005f,
-              .upper_limit = 10.0f,
-              .lower_limit = -10.0f
+              .upper_limit = 48.0f,
+              .lower_limit = -48.0f
             };
 
             struct uz_PI_Controller_config config_iq_right = {
-              .Kp = 10.0f,
-              .Ki = 10.0f,
+              .Kp = 3.5f,
+              .Ki = 600.0f,
               .samplingTime_sec = 0.00005f,
-              .upper_limit = 10.0f,
-              .lower_limit = -10.0f
+              .upper_limit = 48.0f,
+              .lower_limit = -48.0f
             };
 
             struct uz_FOC_config config_FOC_left = {
@@ -131,12 +137,46 @@ int main(void)
                  .config_iq = config_iq_right
             };
 
+            struct uz_PI_Controller_config speed_control_left = {
+            		.Kp = 0.01f,
+					.Ki = 7.0f,
+					.samplingTime_sec = 0.00005f,
+					.upper_limit = 8.0f,
+					.lower_limit = -8.0f
+            };
+
+            struct uz_PI_Controller_config speed_control_right = {
+            		.Kp = 0.01f,
+					.Ki = 7.0f,
+					.samplingTime_sec = 0.00005f,
+					.upper_limit = 8.0f,
+					.lower_limit = -8.0f
+            };
+
+            struct uz_SpeedControl_config config_speed_left = {
+               .is_field_weakening_active = false,
+			   .config_PMSM = config_PMSM_left,
+			   .config_controller = speed_control_left
+               };
+
+            struct uz_SpeedControl_config config_speed_right = {
+               .is_field_weakening_active = false,
+			   .config_PMSM = config_PMSM_right,
+			   .config_controller = speed_control_right
+               };
+
             // init FOC instances
             Global_Data.objects.uz_FOC_left_motor = uz_FOC_init(config_FOC_left);
             Global_Data.objects.uz_FOC_right_motor = uz_FOC_init(config_FOC_right);
+            // init speed control instances
+            Global_Data.objects.speed_ctrl_left_motor = uz_SpeedControl_init(config_speed_left);
+            Global_Data.objects.speed_ctrl_right_motor = uz_SpeedControl_init(config_speed_right);
             // init theta_offset values
-            Global_Data.av.theta_offset_left = 0.0f;
-           	Global_Data.av.theta_offset_right = 0.0f;
+            Global_Data.av.theta_el_offset_left = 0.0f;
+           	Global_Data.av.theta_el_offset_right = 0.0f;
+           	// init motor polepairs
+           	Global_Data.av.polepairs_left = 3.0f;
+           	Global_Data.av.polepairs_right = 3.0f;
            	// init dc_link voltage
            	Global_Data.av.U_ZK = 48.0f;
 

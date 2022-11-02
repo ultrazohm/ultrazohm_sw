@@ -9,6 +9,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -102,10 +103,12 @@ typedef struct _actualValues_ {
 	float d_2_i_a1;
 	float d_2_i_b1;
 	float d_2_i_c1;
-	float theta_offset_left;
-	float theta_offset_right;
+	float theta_el_offset_left;
+	float theta_el_offset_right;
 	float theta_el_left_motor;
 	float theta_el_right_motor;
+	float polepairs_left;
+	float polepairs_right;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -121,6 +124,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float n_rpm_ref_left;
+	float n_rpm_ref_right;
 } referenceAndSetValues;
 
 typedef struct{
@@ -140,6 +145,8 @@ typedef struct{
 	uz_incrementalEncoder_t* increEncoder_d5_3;
 	uz_FOC* uz_FOC_left_motor;
 	uz_FOC* uz_FOC_right_motor;
+	uz_SpeedControl_t* speed_ctrl_left_motor;
+	uz_SpeedControl_t* speed_ctrl_right_motor;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

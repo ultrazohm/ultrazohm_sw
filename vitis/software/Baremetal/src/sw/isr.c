@@ -103,13 +103,13 @@ void ISR_Control(void *data)
     Global_Data.av.mech_position_d5_3 = uz_incrementalEncoder_get_position(Global_Data.objects.increEncoder_d5_3);
 
     // read all electric thetas in rad from d5
-    Global_Data.av.theta_el_d5_1 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_1);
-    Global_Data.av.theta_el_d5_2 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_2);
+    Global_Data.av.theta_el_d5_1 = Global_Data.av.polepairs_left * uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_1);
+    Global_Data.av.theta_el_d5_2 = Global_Data.av.polepairs_right * uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_2);
     Global_Data.av.theta_el_d5_3 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_3);
 
     // respect el. theta offset
-    Global_Data.av.theta_el_left_motor = Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_offset_left;
-    Global_Data.av.theta_el_right_motor = Global_Data.av.theta_el_d5_2 - Global_Data.av.theta_offset_right;
+    Global_Data.av.theta_el_left_motor = fmodf(Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_el_offset_left,2.0f*UZ_PIf) ;
+    Global_Data.av.theta_el_right_motor = fmodf(Global_Data.av.theta_el_d5_2 - Global_Data.av.theta_el_offset_right,2.0f*UZ_PIf);
 
     // Read inverter adapter outputs
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
@@ -123,6 +123,9 @@ void ISR_Control(void *data)
     	// enable inverter adapter hardware
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    	// calculate uz_SpeedControl reference dq_currents
+    	dq_ref_currents_left_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left_motor, Global_Data.av.omega_mech_d5_1, Global_Data.rasv.n_rpm_ref_left, Global_Data.av.U_ZK, dq_ref_currents_left_motor.d);
+    	dq_ref_currents_right_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right_motor, Global_Data.av.omega_mech_d5_2, Global_Data.rasv.n_rpm_ref_right, Global_Data.av.U_ZK, dq_ref_currents_right_motor.d);
     	// calculate uz_FOC reference dq-voltages
     	dq_ref_voltages_left_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_left_motor, dq_ref_currents_left_motor, dq_currents_left_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_left_motor);
     	dq_ref_voltages_right_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_right_motor, dq_ref_currents_right_motor, dq_currents_right_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_right_motor);
@@ -149,6 +152,9 @@ void ISR_Control(void *data)
     	// reset FOC instances (clear integrators)
     	uz_FOC_reset(Global_Data.objects.uz_FOC_left_motor);
     	uz_FOC_reset(Global_Data.objects.uz_FOC_right_motor);
+    	// reset speed controllers (clear integrators)
+    	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left_motor);
+    	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_right_motor);
     	// set global duty-cycles to 0.5
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;

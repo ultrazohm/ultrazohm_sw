@@ -1,6 +1,6 @@
 #ifndef UZ_MOVINGAVERAGE_H
 #define UZ_MOVINGAVERAGE_H
-
+#include <stdint.h> 
 /**
  * @brief Maximum length of moving average filter
  */
@@ -17,7 +17,7 @@ typedef struct uz_movingAverageFilter_t uz_movingAverageFilter_t;
  * @brief Configuration struct for movingAverageFilter. Accessible by the user.
  */
 struct uz_movingAverageFilter_config{
-	int filterLength;
+	uint32_t filterLength;
 };
 
 /*
@@ -58,7 +58,6 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
  * @param self pointer to uz_movingAverageFilter_t instance
  * @param new_filterLength int for the new filter length
  */
-void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int new_filterLength);
-
+void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uint32_t new_filterLength);
 
 #endif //UZ_MOVINGAVERAGE_H

@@ -88,7 +88,7 @@ uz_resonantController_t* rc_9H_z2;
 
 const struct uz_resonantController_config config_R = {
 		.sampling_time = 0.0001f,
-		.gain = 52.5f,
+		.gain = 55f,
 		.harmonic_order = 2.0f,
 		.fundamental_frequency = 10.0f,
 		.lower_limit = -4.0f,
@@ -295,7 +295,7 @@ int main(void)
 
             struct uz_resonantController_config config_R_dq2H = config_R;
             config_R_dq2H.harmonic_order = 2.0f;
-            config_R_dq2H.gain = 125.0f;
+            config_R_dq2H.gain = 150.0f;
             config_R_dq2H.upper_limit = 12.0f;
             config_R_dq2H.lower_limit = -12.0f;
             struct uz_resonantController_config config_R_dq8H = config_R;
@@ -312,9 +312,12 @@ int main(void)
             config_R_xy6H.harmonic_order = 6.0f;
             struct uz_resonantController_config config_R_z1z2_1H = config_R;
             config_R_z1z2_1H.harmonic_order = 1.0f;
+            config_R_z1z2_1H.gain = 85.0f;
             struct uz_resonantController_config config_R_z1z2_3H = config_R;
             config_R_z1z2_3H.harmonic_order = 3.0f;
+            config_R_z1z2_3H.gain = 85.0f;
             struct uz_resonantController_config config_R_z1z2_9H = config_R;
+            config_R_z1z2_9H.gain = 85.0f;
             config_R_z1z2_9H.harmonic_order = 9.0f;
 
 

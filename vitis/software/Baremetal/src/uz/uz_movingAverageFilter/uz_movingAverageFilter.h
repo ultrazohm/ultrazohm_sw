@@ -1,6 +1,7 @@
 #ifndef UZ_MOVINGAVERAGE_H
 #define UZ_MOVINGAVERAGE_H
 #include <stdint.h> 
+#include "../uz_array/uz_array.h"
 /**
  * @brief Maximum length of moving average filter
  */
@@ -25,7 +26,7 @@ struct uz_movingAverageFilter_config{
  * @param config uz_movingAverageFilter_config configuration struct
  * @return pointer to uz_movingAverageFilter_t instance
  */
-uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFilter_config config);
+uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFilter_config config, uz_array_float_t circularBuffer);
 
 /**
  * @brief Calculates one sample of the moving average filter. The filter length can be changed dynamically during runtime

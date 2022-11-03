@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 struct uz_movingAverageFilter_config config = {0};
-
 void setUp(void){
     config.filterLength = 50;
 }
@@ -18,8 +17,13 @@ void tearDown(void)
 
 
 void test_uz_movingAverageFilter_sample(void){
+    float data [51] = {0};
+uz_array_float_t circularBuffer = {
+    .length = UZ_ARRAY_SIZE(data),
+    .data = &data[0]
+};
     uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config);
+    filter = uz_movingAverageFilter_init(config, circularBuffer);
     float input1 = 1.0f;
     float output;
 
@@ -37,9 +41,13 @@ void test_uz_movingAverageFilter_sample(void){
 }
 
 void test_uz_movingAverageFilter_efficient(void){
-    
+    float data [51] = {0};
+uz_array_float_t circularBuffer = {
+    .length = UZ_ARRAY_SIZE(data),
+    .data = &data[0]
+};
     uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config);
+    filter = uz_movingAverageFilter_init(config,circularBuffer);
     float input1 = 1.0f;
     float output;
 
@@ -73,8 +81,13 @@ void test_uz_movingAverageFilter_efficient(void){
 }
 
 void test_uz_movingAverageFilter_reset(){
+        float data [51] = {0};
+uz_array_float_t circularBuffer = {
+    .length = UZ_ARRAY_SIZE(data),
+    .data = &data[0]
+};
     uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config);
+    filter = uz_movingAverageFilter_init(config,circularBuffer);
     float input1 = 1.0f;
     float output;
 
@@ -91,8 +104,13 @@ void test_uz_movingAverageFilter_reset(){
 
 
 void test_uz_movingAverageFilter_set_filterLength(){
+        float data [51] = {0};
+uz_array_float_t circularBuffer = {
+    .length = UZ_ARRAY_SIZE(data),
+    .data = &data[0]
+};
     uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config);
+    filter = uz_movingAverageFilter_init(config,circularBuffer);
 
     uint32_t new_filterLength = 1;
     uz_movingAverageFilter_set_filterLength(filter, new_filterLength);

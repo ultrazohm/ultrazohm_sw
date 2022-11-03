@@ -53,8 +53,8 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-int N1N2 = 2;
-int ML = 0;
+int N1N2 = 1;
+int ML = 1;
 
 uz_6ph_abc_t i_6phase = {0};
 uz_6ph_abc_t i_6phase_filtered = {0};
@@ -90,6 +90,21 @@ extern uz_singleindex_faultdetection singleindex_FD;
 
 extern uz_resonantController_t* rc_2H_x;
 extern uz_resonantController_t* rc_2H_y;
+extern uz_resonantController_t* rc_5H_x;
+extern uz_resonantController_t* rc_5H_y;
+extern uz_resonantController_t* rc_7H_x;
+extern uz_resonantController_t* rc_7H_y;
+
+extern uz_resonantController_t* rc_3H_x;
+extern uz_resonantController_t* rc_3H_y;
+extern uz_resonantController_t* rc_3H_a;
+extern uz_resonantController_t* rc_3H_b;
+extern uz_resonantController_t* rc_5H_a;
+extern uz_resonantController_t* rc_5H_b;
+extern uz_resonantController_t* rc_7H_a;
+extern uz_resonantController_t* rc_7H_b;
+
+
 extern uz_resonantController_t* rc_6H_x;
 extern uz_resonantController_t* rc_6H_y;
 extern uz_resonantController_t* rc_2H_d;
@@ -238,7 +253,6 @@ uz_3ph_alphabeta_t ref_alphabeta_currents = {0};
 struct uz_DutyCycle_t dutyCycles_set1 = {0};
 struct uz_DutyCycle_t dutyCycles_set2 = {0};
 
-float theta_el_offset = 0.0f;
 
 float omega_el_rad_per_sec = 0.0f;
 int mov_average_filter_length = 0;
@@ -266,6 +280,7 @@ bool z1z2_1H = true;
 bool z1z2_3H = true;
 bool z1z2_9H = true;
 bool z1z2_control = true;
+bool xy_5_7 = false;
 
 
 int opf_phases[6] = {0};
@@ -587,7 +602,7 @@ if(toggle == 0){
 
 // für 1N Konfiguration:
 
-
+/*
 dq_2 = true;
 dq_8 = false;
 dq_12 = true;
@@ -600,6 +615,22 @@ z1z2_1H = true;
 z1z2_3H = true;
 z1z2_9H = true;
 z1z2_control = true;
+*/
+
+
+	dq_2 = true;
+	dq_8 = false;
+	dq_12 = true;
+	xy_n_PI = true;
+	xy_n = true;
+	xy_n_2 = true;
+	xy_n_6 = true;
+	y_off = false;
+	z1z2_1H = true;
+	z1z2_3H = true;
+	z1z2_9H = true;
+	z1z2_control = true;
+
 
 if(N1N2 == 1){
 	if(num_OPF == 1){
@@ -707,83 +738,6 @@ else{
 		Global_Data.av.I_d_ref = 0;
 	}
 
-
-	if(ref_counter == 150000){
-		Global_Data.av.I_q_ref = 0;
-	}
-	if(ref_counter >= 152000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter >= 154000){
-		Global_Data.av.I_q_ref = 4;
-	}
-	if(ref_counter >= 156000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter >= 158000){
-		Global_Data.av.I_q_ref = 8;
-	}
-	if(ref_counter >= 160000){
-		Global_Data.av.I_q_ref = 10;
-	}
-	if(ref_counter >= 162000){
-		Global_Data.av.I_q_ref = 0;
-	}
-
-	if(ref_counter == 170000){
-		Global_Data.av.I_q_ref = 0;
-	}
-	if(ref_counter >= 171000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter >= 172000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter >= 173000){
-		Global_Data.av.I_d_ref = 2;
-	}
-	if(ref_counter >= 174000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter >= 175000){
-		Global_Data.av.I_d_ref = 3;
-	}
-	if(ref_counter >= 176000){
-		Global_Data.av.I_q_ref = 10;
-	}
-	if(ref_counter >= 177000){
-		Global_Data.av.I_q_ref = 0;
-		Global_Data.av.I_d_ref = 0;
-	}
-
-	if(ref_counter == 180000){
-		Global_Data.av.I_q_ref = 0;
-	}
-	if(ref_counter >= 181000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter >= 182000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter >= 183000){
-		Global_Data.av.I_d_ref = 1;
-	}
-	if(ref_counter >= 184000){
-		Global_Data.av.I_d_ref = 3;
-	}
-	if(ref_counter >= 185000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter >= 186000){
-		Global_Data.av.I_d_ref = 1;
-	}
-	if(ref_counter >= 187000){
-		Global_Data.av.I_q_ref = 10;
-	}
-	if(ref_counter >= 188000){
-		Global_Data.av.I_q_ref = 0;
-		Global_Data.av.I_d_ref = 0;
-	}
 
 	ref_dq0_currents.d = Global_Data.av.I_d_ref;
 	ref_dq0_currents.q = Global_Data.av.I_q_ref;
@@ -934,6 +888,10 @@ else{
 	ref_dq0_currents.q = Global_Data.av.I_q_ref;
 
 */
+
+
+
+
 
 
 	// calculate reference values in alpha-beta-subspace
@@ -1187,7 +1145,18 @@ else{
     		ref_xy_voltage[1] = ref_xy_voltage_n[1];
     	}
 
+    	if(xy_5_7){
 
+    		uz_resonantController_step(rc_5H_x, ref_xy_currents[0], m_xy_currents[0], omega_el_rad_per_sec);
+    		uz_resonantController_step(rc_7H_x, ref_xy_currents[0], m_xy_currents[0], omega_el_rad_per_sec);
+			uz_resonantController_step(rc_5H_y, ref_xy_currents[1], m_xy_currents[1], omega_el_rad_per_sec);
+			uz_resonantController_step(rc_7H_y, ref_xy_currents[1], m_xy_currents[1], omega_el_rad_per_sec);
+
+    		ref_xy_voltage[0] += uz_resonantController_get_output(rc_5H_x);
+    		ref_xy_voltage[0] += uz_resonantController_get_output(rc_7H_x);
+			ref_xy_voltage[1] += uz_resonantController_get_output(rc_5H_y);
+			ref_xy_voltage[1] += uz_resonantController_get_output(rc_7H_y);
+    	}
 
 
 //------------------------------------z1z2-current-control----------------------------------//

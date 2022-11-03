@@ -53,7 +53,7 @@ DS_Data Global_Data = {
     		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
 	.av.U_ZK = 48.0f,
-	.av.theta_offset =  0.83, //1.05, //-0.14608003 + 0.623,		// 0.85
+	.av.theta_offset =  0.79, //0.83, //1.05, //-0.14608003 + 0.623,		// 0.85
 	.av.I_d_ref = 0,
 	.av.I_q_ref = 0,
 };
@@ -65,6 +65,11 @@ uz_vsd_opf_fd_v7 uz_FD_v7;
 
 uz_resonantController_t* rc_2H_x;
 uz_resonantController_t* rc_2H_y;
+uz_resonantController_t* rc_5H_x;
+uz_resonantController_t* rc_5H_y;
+uz_resonantController_t* rc_7H_x;
+uz_resonantController_t* rc_7H_y;
+
 uz_resonantController_t* rc_6H_x;
 uz_resonantController_t* rc_6H_y;
 uz_resonantController_t* rc_2H_d;
@@ -299,6 +304,10 @@ int main(void)
             config_R_dq12H.harmonic_order = 12.0f;
             struct uz_resonantController_config config_R_xy2H = config_R;
             config_R_xy2H.harmonic_order = 2.0f;
+            struct uz_resonantController_config config_R_xy5H = config_R;
+            config_R_xy5H.harmonic_order = 5.0f;
+            struct uz_resonantController_config config_R_xy7H = config_R;
+            config_R_xy7H.harmonic_order = 7.0f;
             struct uz_resonantController_config config_R_xy6H = config_R;
             config_R_xy6H.harmonic_order = 6.0f;
             struct uz_resonantController_config config_R_z1z2_1H = config_R;
@@ -312,10 +321,16 @@ int main(void)
 
             rc_2H_x = uz_resonantController_init(config_R_xy2H);
             rc_2H_y = uz_resonantController_init(config_R_xy2H);
+            rc_5H_x = uz_resonantController_init(config_R_xy5H);
+            rc_5H_y = uz_resonantController_init(config_R_xy5H);
+            rc_7H_x = uz_resonantController_init(config_R_xy7H);
+            rc_7H_y = uz_resonantController_init(config_R_xy7H);
             rc_6H_x = uz_resonantController_init(config_R_xy6H);
             rc_6H_y = uz_resonantController_init(config_R_xy6H);
             rc_2H_d = uz_resonantController_init(config_R_dq2H);
             rc_2H_q = uz_resonantController_init(config_R_dq2H);
+
+
             rc_8H_d = uz_resonantController_init(config_R_dq8H);
             rc_8H_q = uz_resonantController_init(config_R_dq8H);
             rc_12H_d = uz_resonantController_init(config_R_dq12H);

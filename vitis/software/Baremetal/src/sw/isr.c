@@ -722,8 +722,6 @@ void ISR_Control(void *data)
         uz_resonantController_reset(rc_6H_y);
         uz_resonantController_reset(rc_2H_d);
         uz_resonantController_reset(rc_2H_q);
-        uz_resonantController_reset(rc_8H_d);
-        uz_resonantController_reset(rc_8H_q);
         uz_resonantController_reset(rc_12H_d);
         uz_resonantController_reset(rc_12H_q);
 

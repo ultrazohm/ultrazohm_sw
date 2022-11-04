@@ -53,7 +53,7 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
 	self->MAX_LENGTH = circularBuffer.length;
 	uz_assert(config.filterLength <= self->MAX_LENGTH);
 	self->filterLength = config.filterLength;
- 	self->circularBuffer.data = circularBuffer.data;
+ 	self->circularBuffer = circularBuffer;
     return(self);
 }
 

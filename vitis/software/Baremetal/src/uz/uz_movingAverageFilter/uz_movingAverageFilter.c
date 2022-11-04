@@ -27,7 +27,7 @@ typedef struct uz_movingAverageFilter_t{
 	uint32_t filterLength;
 	uint32_t MAX_LENGTH;
 	uint32_t old_filterLength;
-	float old_value;
+	float old_value;							//previous value at bufferindex, before being overwritten
 	float sum;
 }uz_movingAverageFilter_t;
 
@@ -83,53 +83,41 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 		if(self->filterLength > self->old_filterLength) {
 			output = self->sum;
 			if((self->filterLength - self->old_filterLength) == 1) {
+				//If length increases by 1, only add the newest value
 				output = output + self->circularBuffer.data[self->bufferindex];
 			} else {
+				//Add newest value to average
 				output = output + self->circularBuffer.data[self->bufferindex];
+				//Determine the start and end indicies for the values, which will be added with the new filterlength
 				uint32_t start = (((self->bufferindex - self->filterLength)+1 + self->MAX_LENGTH) % self->MAX_LENGTH);
 				uint32_t end = (start - 2 + (self->filterLength - self->old_filterLength) + self->MAX_LENGTH) % self->MAX_LENGTH;
-				if (start > end) {
-					//Because the for-loop would wrap around around the max_length, for loop has to be split up
-					for(uint32_t i = start; i < self->MAX_LENGTH; i++){
-						index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-						output = output + self->circularBuffer.data[index];
+				//Additional break-conditions to include edge-case, when the filterlength wraps around the MAX_LENGTH
+				for(uint32_t i = start; (i <= self->MAX_LENGTH && i > (end + 1U)) || (i <= end); i++){
+					if(i == self->MAX_LENGTH) {
+						i = 0U;
 					}
-					for(uint32_t i = 0; i <= end; i++){
-						index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-						output = output + self->circularBuffer.data[index];
-					}
-				} else {
-					for(uint32_t i = start; i <= end; i++){
-						index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-						output = output + self->circularBuffer.data[index];
-					}
+					index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
+					output = output + self->circularBuffer.data[index];
 				}
 			}
 		//Decreasing filter length
 		} else if((self->filterLength < self->old_filterLength)) {
 			output = self->sum;
-			//Add newest value to avarage
+			//Add newest value to average
 			output = output + self->circularBuffer.data[self->bufferindex];
-			//Delete oldest values, which are not part of the average anymore
+			//Determine the start and end indicies for the values, which got dropped with the new filterlength
 			uint32_t end = (((self->bufferindex - self->filterLength) + self->MAX_LENGTH) % self->MAX_LENGTH);
 			uint32_t start = (end - (self->old_filterLength - self->filterLength) + self->MAX_LENGTH) % self->MAX_LENGTH;
-			if (start > end) {
-				//Because the for-loop would wrap around the max_length, for loop has to be split up
-				for(uint32_t i = start; i < self->MAX_LENGTH; i++){
-					index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-					output = output - self->circularBuffer.data[index];
+			//Additional break-conditions to include edge-case, when the filterlength wraps around the MAX_LENGTH
+			for(uint32_t i = start; (i <= self->MAX_LENGTH && i > (end + 1U)) || (i <= end); i++){
+				if(i == self->MAX_LENGTH) {
+					i = 0U;
 				}
-				for(uint32_t i = 0; i <= end; i++){
-					index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-					output = output - self->circularBuffer.data[index];
-				}
-			} else {
-				for(uint32_t i = start; i <= end; i++){
-					index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
-					output = output - self->circularBuffer.data[index];
-				}
+				index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
+				output = output - self->circularBuffer.data[index];
 			}
 		}
+
 	} else {
 		//Traditional looping, if the other cases result in no faster calculation
 		output = 0.0f;

@@ -37,11 +37,11 @@ typedef struct uz_SetPoint_t {
 
 //Declare arrays for newton_MTPA raphson
 static float derivate_poly_coefficients_MTPA[4] = {1.0f, 0.0f, 0.0f, 4.0f};
-static float coefficients_MTPA[5] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+static float coefficients_MTPA[5 * UZ_SETPOINT_MAX_INSTANCES] = {0};
 
 //Declare arrays for newton_FW raphson
 static float derivate_poly_coefficients_FW[4] = {1.0f, 2.0f, 0.0f, 4.0f};
-static float coefficients_FW[5] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+static float coefficients_FW[5 * UZ_SETPOINT_MAX_INSTANCES] = {0};
 
 static uint32_t instance_counter = 0U;
 static uz_SetPoint_t instances[UZ_SETPOINT_MAX_INSTANCES] = { 0 };
@@ -71,15 +71,17 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     uz_SetPoint_assert_motor_parameters(config.config_PMSM, config.motor_type);
 	self->newton_MTPA.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_MTPA);
 	self->newton_MTPA.derivate_poly_coefficients.data = &derivate_poly_coefficients_MTPA[0];
-	self->newton_MTPA.coefficients.length = UZ_ARRAY_SIZE(coefficients_MTPA);
-	self->newton_MTPA.coefficients.data = &coefficients_MTPA[0];
+	self->newton_MTPA.coefficients.length = UZ_ARRAY_SIZE(coefficients_MTPA) / UZ_SETPOINT_MAX_INSTANCES;
+	self->newton_MTPA.coefficients.data = &coefficients_MTPA[0U + (instance_counter * 5U)];
+    self->newton_MTPA.coefficients.data[4] = 1.0f;
 	self->newton_MTPA.initial_value = 0.0f;
 	self->newton_MTPA.root_absolute_tolerance = 0.25f;
 	self->newton_MTPA.iterations = 12U;
 	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_FW);
 	self->newton_FW.derivate_poly_coefficients.data = &derivate_poly_coefficients_FW[0];
-	self->newton_FW.coefficients.length = UZ_ARRAY_SIZE(coefficients_FW);
-	self->newton_FW.coefficients.data = &coefficients_FW[0];
+	self->newton_FW.coefficients.length = UZ_ARRAY_SIZE(coefficients_FW) / UZ_SETPOINT_MAX_INSTANCES;
+	self->newton_FW.coefficients.data = &coefficients_FW[0U + (instance_counter * 5U)];
+    self->newton_FW.coefficients.data[4] = 1.0f;
 	self->newton_FW.initial_value = 0.0f;
 	self->newton_FW.iterations = 12U;
 	self->newton_FW.root_absolute_tolerance = 0.25f;

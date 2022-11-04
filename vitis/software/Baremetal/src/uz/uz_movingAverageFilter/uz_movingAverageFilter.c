@@ -139,17 +139,23 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
 	uz_assert_not_NULL(self);
 	float output = 0.0f;
-	// add sample to buffer
-	
-	self->circularBuffer.data[self->bufferindex] = sample/((float)self->filterLength);
-	// find oldest sample in current sum
 
+	// add sample to buffer
+	self->circularBuffer.data[self->bufferindex] = sample/((float)self->filterLength);
+	
+	// find oldest sample in current sum
 	uint32_t firstsample = ((self->bufferindex - self->filterLength) + self->MAX_LENGTH) % self->MAX_LENGTH;
 	
-	self->sum = self->sum + self->circularBuffer.data[self->bufferindex] - self->circularBuffer.data[firstsample];
 	// add new input to sum, subtract oldest sample from sum
+	if(self->filterLength == self->MAX_LENGTH) {
+		self->sum = self->sum + self->circularBuffer.data[self->bufferindex] - self->old_value;
+	} else {
+		self->sum = self->sum + self->circularBuffer.data[self->bufferindex] - self->circularBuffer.data[firstsample];
+	}
+	
+	
 	output = self->sum;
-
+	self->old_value = self->circularBuffer.data[self->bufferindex];
 	//modulo-increment of buffer-index
 	self->bufferindex = (self->bufferindex + 1U) % self->MAX_LENGTH;
 

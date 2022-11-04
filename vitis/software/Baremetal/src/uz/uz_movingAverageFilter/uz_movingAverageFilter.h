@@ -3,11 +3,6 @@
 #include <stdint.h> 
 #include "../uz_array/uz_array.h"
 /**
- * @brief Maximum length of moving average filter
- */
-#define MAX_FILTERLENGTH 150
-
-/**
  * @brief Object definition for uz_movingAverageFilter_t
  *
  */

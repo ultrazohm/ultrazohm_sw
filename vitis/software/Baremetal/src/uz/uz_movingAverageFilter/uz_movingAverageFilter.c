@@ -116,7 +116,9 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 				index = (i + self->MAX_LENGTH) % self->MAX_LENGTH;
 				output = output - self->circularBuffer.data[index];
 			}
-		}
+		}else{
+            ; // do nothing
+        }
 
 	} else {
 		//Traditional looping, if the other cases result in no faster calculation
@@ -177,7 +179,9 @@ void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uin
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	if(new_filterLength > self->MAX_LENGTH){
-		new_filterLength = self->MAX_LENGTH;
-	}
+		self->filterLength = self->MAX_LENGTH;
+	}else{
 	self->filterLength = new_filterLength;
+
+    }
 }

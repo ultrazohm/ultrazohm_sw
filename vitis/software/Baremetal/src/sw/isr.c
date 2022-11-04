@@ -80,7 +80,8 @@ const uz_PMSM_6ph_t dengine={
 // 2x3ph PMSM rated values
 const rated_val_t rated_val={
 		.VR=400.0f,
-		.IR=7.071f,
+//		.IR=7.071f,
+		.IR=14.142f,
 		.nR=3000.0f
 };
 
@@ -118,8 +119,8 @@ float iy_ref = 0.0f;
 
 float lambda_d = 1.0f;
 float lambda_q = 1.0f;
-float lambda_x = 1.0f;
-float lambda_y = 1.0f;
+float lambda_x = 0.1f;
+float lambda_y = 0.1f;
 float lambda_u = 0.000f;
 
 uz_6ph_abc_t pmsm_ph_currents = {0};
@@ -191,7 +192,7 @@ void ISR_Control(void *data)
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(1.0f, 14));
 
     //write offset angle to park transform ip core
-    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104, uz_convert_float_to_sfixed(UZ_PIf, 14)); //PMSM ip has angle -pi to pi, i need 0 to 2pi
+    uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104, uz_convert_float_to_sfixed(0.0f, 14)); //no offset
 
 //    dac_input[0]=Global_Data.objects.three_phase1.a;
 //    dac_input[1]=Global_Data.objects.three_phase1.b;

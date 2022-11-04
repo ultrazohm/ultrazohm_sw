@@ -48,7 +48,7 @@ struct uz_dac_interface_config_t dac_config={
     .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
 };
 
-
+extern const base_val_t base_val;
 //upper code for inverter
 
 
@@ -168,12 +168,12 @@ int main(void)
 //            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x10C, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
 //            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x110, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
 //            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x114, 65536); //65536 = 0.25f = 1/4*2^18 (Q18)
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x100, 26215); //26215 = 0.10000095f = 1/9.999905*2^18 (Q18) values for IB
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x104, 26215);
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x108, 26215);
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x10C, 26215);
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x110, 26215);
-            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x114, 26215);
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x100, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x104, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x108, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x10C, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x110, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
+            uz_axi_write_uint32(XPAR_UZ_USER_UZ_PU_CON_IP_0_BASEADDR + 0x114, uz_convert_float_to_unsigned_fixed(1.0f/base_val.IB, 18));
 
 
             //debug for 6ph-VSD voltages ip-core

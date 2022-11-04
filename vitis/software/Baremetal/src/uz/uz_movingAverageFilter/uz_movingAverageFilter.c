@@ -172,10 +172,7 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uint32_t new_filterLength){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	if(new_filterLength > self->MAX_LENGTH){
-		self->filterLength = self->MAX_LENGTH;
-	}else{
+	uz_assert(new_filterLength <= self->MAX_LENGTH);
+	uz_assert(new_filterLength > 0U);
 	self->filterLength = new_filterLength;
-
-    }
 }

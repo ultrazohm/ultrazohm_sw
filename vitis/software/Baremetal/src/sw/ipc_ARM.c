@@ -189,15 +189,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			data->rasv.n_rpm_ref_left = value;
+			//data->rasv.n_rpm_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
-			dq_ref_currents_right_motor.d = value;
+			//dq_ref_currents_right_motor.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-			dq_ref_currents_right_motor.q = value;
+			//dq_ref_currents_right_motor.q = value;
 			break;
 
 		case (Set_Send_Field_4):

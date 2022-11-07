@@ -46,6 +46,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_left_temp_l1,
 	JSSD_FLOAT_right_temp_h1,
 	JSSD_FLOAT_right_temp_l1,
+	JSSD_FLOAT_left_speed_rpm,
+	JSSD_FLOAT_right_speed_rpm,
+	JSSD_FLOAT_right_id,
+	JSSD_FLOAT_right_iq,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -103,12 +107,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
-	A,
-	A,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
 	SND_LABELS_ENDMARKER
 
 
@@ -116,12 +120,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
-	receive_field_6,
+	speed_left_motor,
+	id_right_motor,
+	iq_right_motor,
+	temp_gan_h1_left,
+	temp_gan_h1_right,
+	speed_right_motor,
 	RCV_FLD_ENDMARKER
 
 
@@ -130,11 +134,11 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
 	A,
 	A,
-	V,
-	V,
+	°C,
+	°C,
+	RPM,
 	RCV_LABELS_ENDMARKER
 
 
@@ -143,13 +147,12 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_left_speed_rpm,
+	JSSD_FLOAT_right_id,
+	JSSD_FLOAT_right_iq,
+	JSSD_FLOAT_left_temp_h1,
+	JSSD_FLOAT_right_temp_h1,
+	JSSD_FLOAT_right_speed_rpm,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

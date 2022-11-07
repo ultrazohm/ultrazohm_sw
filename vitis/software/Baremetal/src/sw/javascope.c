@@ -36,7 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern uz_3ph_dq_t dq_currents_right_motor;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -83,6 +83,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_left_temp_l1] 			        = &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L1);
 	js_slowDataArray[JSSD_FLOAT_right_temp_h1] 			        = &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1);
 	js_slowDataArray[JSSD_FLOAT_right_temp_l1] 			        = &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L1);
+	js_slowDataArray[JSSD_FLOAT_left_speed_rpm]			= &(data->av.left_speed_rpm);
+	js_slowDataArray[JSSD_FLOAT_right_speed_rpm]			= &(data->av.right_speed_rpm);
+	js_slowDataArray[JSSD_FLOAT_right_id]				= &(dq_currents_right_motor.d);
+	js_slowDataArray[JSSD_FLOAT_right_iq]				= &(dq_currents_right_motor.q);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

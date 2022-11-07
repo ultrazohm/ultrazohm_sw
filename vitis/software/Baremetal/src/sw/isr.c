@@ -78,10 +78,10 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
-    uint64_t timestamp=uz_SystemTime_GetGlobalTimeuint64();
-	uint64_t timestamp_mod=timestamp % (uint64_t)(2*M_PI*n_sine_frq*TICK_DEFINE);
-	float time_with_timestamp_mod= (float)timestamp_mod * (1.0f / (float)TICK_DEFINE);
-    n_ref=uz_wavegen_sine_time(1000.0f, n_sine_frq,time_with_timestamp_mod);
+ //   uint64_t timestamp=uz_SystemTime_GetGlobalTimeuint64();
+//	uint64_t timestamp_mod=timestamp % (uint64_t)(2*M_PI*n_sine_frq*TICK_DEFINE);
+//	float time_with_timestamp_mod= (float)timestamp_mod * (1.0f / (float)TICK_DEFINE);
+    n_ref=uz_wavegen_sine(1000.0f, n_sine_frq);
 
     Global_Data.rasv.n_rpm_ref_left=n_ref;
     // convert adc readings of d1 to currents in ampere (former d4 card at my six-phase testbench) - pay attention to A1.cf in main.c !!!

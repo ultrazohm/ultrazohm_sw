@@ -79,12 +79,12 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_left_temp_h1] 			        = &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
-	js_slowDataArray[JSSD_FLOAT_left_temp_l1] 			        = &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L1);
-	js_slowDataArray[JSSD_FLOAT_right_temp_h1] 			        = &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1);
-	js_slowDataArray[JSSD_FLOAT_right_temp_l1] 			        = &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L1);
+	js_slowDataArray[JSSD_FLOAT_left_temp_h1] 			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_left_temp_l1] 			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L1);
+	js_slowDataArray[JSSD_FLOAT_right_temp_h1] 			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_right_temp_l1] 			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L1);
 	js_slowDataArray[JSSD_FLOAT_left_speed_rpm]			= &(data->av.left_speed_rpm);
-	js_slowDataArray[JSSD_FLOAT_right_speed_rpm]			= &(data->av.right_speed_rpm);
+	js_slowDataArray[JSSD_FLOAT_right_speed_rpm]		= &(data->av.right_speed_rpm);
 	js_slowDataArray[JSSD_FLOAT_right_id]				= &(dq_currents_right_motor.d);
 	js_slowDataArray[JSSD_FLOAT_right_iq]				= &(dq_currents_right_motor.q);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

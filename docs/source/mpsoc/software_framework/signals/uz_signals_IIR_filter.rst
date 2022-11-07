@@ -1,6 +1,8 @@
-==========
+.. _uz_IIR_filter:
+
+===========
 IIR filter
-==========
+===========
 
 .. doxygentypedef:: uz_IIR_Filter_t
 

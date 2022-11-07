@@ -1,8 +1,0 @@
- --> parallel_8_VSD_and_Park_src_vsd_and_park_tra_pac
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/Compare To Constant --> parallel_8_VSD_and_Park_src_Compare_To_Constant
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/Compare To Constant1 --> parallel_8_VSD_and_Park_src_Compare_To_Constant1
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/Detect Rise Positive/Positive --> parallel_8_VSD_and_Park_src_Positive
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/Detect Rise Positive --> parallel_8_VSD_and_Park_src_Detect_Rise_Positive
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/Sine HDL Optimized --> parallel_8_VSD_and_Park_src_Sine_HDL_Optimized
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra/MATLAB Function --> parallel_8_VSD_and_Park_src_MATLAB_Function
-VSD_and_Park_transformation_6Phase/vsd_and_park_tra --> parallel_8_VSD_and_Park_src_vsd_and_park_tra

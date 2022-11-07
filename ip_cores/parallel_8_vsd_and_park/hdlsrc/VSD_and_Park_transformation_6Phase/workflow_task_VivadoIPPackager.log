@@ -8,10 +8,10 @@ Generated logfile:
 
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'C:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_VSD_and_Park_v1_0/prj_ip'
+Current project path is 'C:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_sim_vsd_and_park_v1_0/prj_ip'
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_VSD_and_Park_v1_0/prj_ip'.)
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_sim_vsd_and_park_v1_0/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -26,34 +26,34 @@ INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'A
 WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
 INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_vsd_and_park_tra_pac.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_vsd_and_park_tra_pac.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Compare_To_Constant1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Compare_To_Constant1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Sine_HDL_Optimized.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_Sine_HDL_Optimized.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_vsd_and_park_tra.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_src_vsd_and_park_tra.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_reset_sync.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_dut.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_dut.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_addr_decoder.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_addr_decoder.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_axi_lite.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_VSD_and_Park.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Oct 24 09:27:24 2022...
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_vsd_and_park_tra1_pac.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_vsd_and_park_tra1_pac.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Compare_To_Constant.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Compare_To_Constant1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Compare_To_Constant1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Sine_HDL_Optimized1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_Sine_HDL_Optimized1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_MATLAB_Function.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_vsd_and_park_tra1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_src_vsd_and_park_tra1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_reset_sync.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_dut.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_dut.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_addr_decoder.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_addr_decoder.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_axi_lite.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_vsd_and_park.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+INFO: [Common 17-206] Exiting Vivado at Mon Nov  7 16:24:46 2022...
 
-Elapsed time is 12.3588 seconds.
+Elapsed time is 12.0729 seconds.

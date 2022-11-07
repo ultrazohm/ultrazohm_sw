@@ -62,7 +62,7 @@ uz_3ph_abc_t ph_ref_voltages_right_motor = {0.0f};
 // uz_foc variables
 struct uz_DutyCycle_t dutycyc_left_motor = {0.0f};
 struct uz_DutyCycle_t dutycyc_right_motor = {0.0f};
-
+#define TICK_DEFINE 99999985U
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -71,12 +71,18 @@ struct uz_DutyCycle_t dutycyc_right_motor = {0.0f};
 //----------------------------------------------------
 static void ReadAllADC();
 float n_ref=0.0f;
+float n_sine_frq=1.0f/5.0f;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    n_ref=uz_wavegen_sine(1000.0f, 1.0f/5.0f);
+
+    uint64_t timestamp=uz_SystemTime_GetGlobalTimeuint64();
+	uint64_t timestamp_mod=timestamp % (uint64_t)(2*M_PI*n_sine_frq*TICK_DEFINE);
+	float time_with_timestamp_mod= (float)timestamp_mod * (1.0f / (float)TICK_DEFINE);
+    n_ref=uz_wavegen_sine_time(1000.0f, n_sine_frq,time_with_timestamp_mod);
+
     Global_Data.rasv.n_rpm_ref_left=n_ref;
     // convert adc readings of d1 to currents in ampere (former d4 card at my six-phase testbench) - pay attention to A1.cf in main.c !!!
     Global_Data.av.d_1_i_a1 = -1.0f * Global_Data.aa.A1.me.ADC_A4 - 0.0338f * Global_Data.aa.A1.me.ADC_A4 + 0.0259f;

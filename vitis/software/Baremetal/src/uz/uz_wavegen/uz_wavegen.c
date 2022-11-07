@@ -30,6 +30,13 @@ float uz_wavegen_sine(float amplitude, float frequency_Hz) {
 	return (amplitude * sinf(angle));
 }
 
+float uz_wavegen_sine_time(float amplitude, float frequency_Hz, float t_Sec) {
+	uz_assert(frequency_Hz > 0.0f);
+	uz_assert(amplitude != 0.0f);
+	float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
+	return (amplitude * sinf(angle));
+}
+
 float uz_wavegen_sine_with_offset(float amplitude, float frequency_Hz, float offset) {
 	uz_assert(frequency_Hz > 0.0f);
 	uz_assert(amplitude != 0.0f);

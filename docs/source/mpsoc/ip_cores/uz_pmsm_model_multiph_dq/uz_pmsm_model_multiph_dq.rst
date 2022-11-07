@@ -41,8 +41,8 @@ Mechanical equations
 
   \begin{align}
     M_M &= \frac{9}{2}\cdot{p}\cdot{(\Psi_{PM}\cdot{i_q}+(L_d-L_q)\cdot{i_d}\cdot{i_q})}\\ 
-    \theta_{el}(k+1) &= T_s \big(\omega_{mech}(k)\cdot{p})\\
-    \omega_{mech}(k+1) &=  T_s \bigg( \frac{M_M(k)-M_L(k)}{J} \bigg)
+    \theta_{el}(k+1) &= T_s \big(\omega_{mech}(k)\cdot{p}) + \theta_{el}(k)\\
+    \omega_{mech}(k+1) &=  T_s \bigg( \frac{M_M(k)-M_L(k)}{J} \bigg) + \omega_{mech}(k)
   \end{align}
 
 Note that the integrator for :math:`\theta_{el}` is limited to :math:`\pm \pi` to avoid overflow (wrapping integrator).

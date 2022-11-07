@@ -11,7 +11,8 @@ Multi-phase VSD and Park tranformation IP-Core
 - Transformation can only be triggered by a PL signal, but not by the software driver
 - Output is supplied to PL-ports as well as AXI
 - Inputs and outputs are fixed point
-- The AXI values of ``theta_el_axi`` and ``x_abc_out_axi`` are updated to the current output values on every rising edge of the input ``trigger_new_values`` to allow synchronous sampling in combination with a PWM module
+- The AXI values of ``theta_el_axi`` and ``x_abc_out_axi`` are updated to the current output whenever the input ``trigger_new_values`` is high, to allow synchronous sampling in combination with a PWM module
+- Note that the pulse at ``trigger_new_values`` has to be longer than the sample time of :math:`T_s=\frac{1}{1\,MHz}` for it to be acknowledged (see Issue #255 for further details)
 
 .. csv-table:: Interface of Transformation IP-Core
    :file: ip-core_transformation_interfaces.csv

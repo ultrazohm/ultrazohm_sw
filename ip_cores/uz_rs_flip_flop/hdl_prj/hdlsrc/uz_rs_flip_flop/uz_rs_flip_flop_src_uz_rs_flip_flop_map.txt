@@ -1,0 +1,3 @@
+ --> uz_rs_flip_flop_src_uz_rs_flip_flop_pkg
+uz_rs_flip_flop/uz_rs_flip_flop/S-R Flip Flop --> uz_rs_flip_flop_src_S_R_Flip_Flop
+uz_rs_flip_flop/uz_rs_flip_flop --> uz_rs_flip_flop_src_uz_rs_flip_flop

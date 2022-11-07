@@ -12,6 +12,7 @@ uz_3ph_alphabeta_t alphabeta_system = {0};
 
 uz_6ph_abc_t sixphase_abc = {0};
 uz_6ph_alphabeta_t sixphase_alphabeta = {0};
+uz_6ph_dq_t sixphase_dq = {0};
 
 uz_9ph_abc_t ninephase_abc = {0};
 uz_9ph_alphabeta_t ninephase_alphabeta = {0};
@@ -147,7 +148,63 @@ void test_uz_6ph_clarke_inverse_transformation_output(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.0000f, output.c2);
 }
 
+void test_uz_6ph_abc_to_dq_transformation_output(void){
+    
+    sixphase_abc.a1 = 1.0f;
+    sixphase_abc.b1 = 2.0f;
+    sixphase_abc.c1 = 3.0f;
+    sixphase_abc.a2 = 4.0f;
+    sixphase_abc.b2 = 5.0f;
+    sixphase_abc.c2 = 6.0f;
+    float theta_el = 1/8.0f;
 
+    uz_6ph_alphabeta_t alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(sixphase_abc);
+    alphabeta_multiphase_test.alpha = alphabeta.alpha;
+    alphabeta_multiphase_test.beta  = alphabeta.beta;
+    alphabeta_multiphase_test.gamma = 0.0f;
+    uz_3ph_dq_t dq_calc = uz_transformation_3ph_alphabeta_to_dq(alphabeta_multiphase_test, theta_el);
+
+    uz_6ph_dq_t output = uz_transformation_asym30deg_6ph_abc_to_dq(sixphase_abc, theta_el);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, dq_calc.d, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, dq_calc.q, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2113f, output.x);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.2113f, output.y);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0000f, output.z1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 5.0000f, output.z2);
+}
+
+
+void test_uz_6ph_dq_to_abc_transformation_output(void){
+    sixphase_dq.d = -1.0f;
+    sixphase_dq.q = -2.0f;
+    sixphase_dq.x = -3.0f;
+    sixphase_dq.y = -4.0f;
+    sixphase_dq.z1 = -5.0f;
+    sixphase_dq.z2 = -6.0f;
+    float theta_el = 1/8.0f;
+
+    dq_multiphase_test.d = sixphase_dq.d;
+    dq_multiphase_test.q  = sixphase_dq.q;
+    dq_multiphase_test.zero = 0.0f;
+    uz_3ph_alphabeta_t alphabeta_calc = uz_transformation_3ph_dq_to_alphabeta(dq_multiphase_test, theta_el);
+
+    sixphase_alphabeta.alpha = alphabeta_calc.alpha;
+    sixphase_alphabeta.beta = alphabeta_calc.beta;
+    sixphase_alphabeta.x = sixphase_dq.x;
+    sixphase_alphabeta.y = sixphase_dq.y;
+    sixphase_alphabeta.z1 = sixphase_dq.z1;
+    sixphase_alphabeta.z2 = sixphase_dq.z2;
+
+    uz_6ph_abc_t abc_vgl = uz_transformation_asym30deg_6ph_alphabeta_to_abc(sixphase_alphabeta);
+
+    uz_6ph_abc_t output = uz_transformation_asym30deg_6ph_dq_to_abc(sixphase_dq, theta_el);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.a1, output.a1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.b1, output.b1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.c1, output.c1);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.a2, output.a2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.b2, output.b2);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.c2, output.c2);
+}
 
 // Testfunctions ninephase
 

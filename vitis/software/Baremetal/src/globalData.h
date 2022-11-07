@@ -109,6 +109,8 @@ typedef struct _actualValues_ {
 	float theta_el_right_motor;
 	float polepairs_left;
 	float polepairs_right;
+	float left_speed_rpm;
+	float right_speed_rpm;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

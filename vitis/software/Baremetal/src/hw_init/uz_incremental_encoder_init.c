@@ -6,7 +6,7 @@
 static struct uz_incrementalEncoder_config incre_config_D5_1={
   .base_address=XPAR_UZ_USER_INCREENCODER_V24_IP_0_BASEADDR,
   .ip_core_frequency_Hz=50000000U,
-  .line_number_per_turn_mech=2500U,
+  .line_number_per_turn_mech=256U,
   .OmegaPerOverSample_in_rpm=500.0f,
   .drive_pole_pair=1U
 };
@@ -14,7 +14,7 @@ static struct uz_incrementalEncoder_config incre_config_D5_1={
 static struct uz_incrementalEncoder_config incre_config_D5_2={
   .base_address=XPAR_UZ_USER_INCREENCODER_V24_IP_1_BASEADDR,
   .ip_core_frequency_Hz=50000000U,
-  .line_number_per_turn_mech=2500U,
+  .line_number_per_turn_mech=256U,
   .OmegaPerOverSample_in_rpm=500.0f,
   .drive_pole_pair=1U
 };
@@ -22,7 +22,7 @@ static struct uz_incrementalEncoder_config incre_config_D5_2={
 static struct uz_incrementalEncoder_config incre_config_D5_3={
   .base_address=XPAR_UZ_USER_INCREENCODER_V24_IP_2_BASEADDR,
   .ip_core_frequency_Hz=50000000U,
-  .line_number_per_turn_mech=2500U,
+  .line_number_per_turn_mech=256U,
   .OmegaPerOverSample_in_rpm=500.0f,
   .drive_pole_pair=1U
 };

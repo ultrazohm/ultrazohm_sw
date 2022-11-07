@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_wavegen/uz_wavegen.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -70,13 +70,15 @@ struct uz_DutyCycle_t dutycyc_right_motor = {0.0f};
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+float n_ref=0.0f;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-
-    // convert adc readings of d1 to currents in ampere (former d4 card at my six-phase testbench)
+    n_ref=uz_wavegen_sine(1000.0f, 1.0f/5.0f);
+    Global_Data.rasv.n_rpm_ref_left=n_ref;
+    // convert adc readings of d1 to currents in ampere (former d4 card at my six-phase testbench) - pay attention to A1.cf in main.c !!!
     Global_Data.av.d_1_i_a1 = -1.0f * Global_Data.aa.A1.me.ADC_A4 - 0.0338f * Global_Data.aa.A1.me.ADC_A4 + 0.0259f;
     Global_Data.av.d_1_i_b1 = -1.0f * Global_Data.aa.A1.me.ADC_A3 - 0.0407f * Global_Data.aa.A1.me.ADC_A3 + 0.0280f;
     Global_Data.av.d_1_i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_A2 - 0.0401f * Global_Data.aa.A1.me.ADC_A2 + 0.0220f;
@@ -84,6 +86,15 @@ void ISR_Control(void *data)
     Global_Data.av.d_2_i_a1 = -1.0f * Global_Data.aa.A1.me.ADC_B8 - 0.0541f * Global_Data.aa.A1.me.ADC_B8 + 0.0352f;
     Global_Data.av.d_2_i_b1 = -1.0f * Global_Data.aa.A1.me.ADC_B7 - 0.0516f * Global_Data.aa.A1.me.ADC_B7 + 0.0133f;
     Global_Data.av.d_2_i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 - 0.0341f * Global_Data.aa.A1.me.ADC_B6 + 0.0383f;
+
+    // assign measured currents to phase currents objects
+    ph_currents_left_motor.a = Global_Data.av.d_1_i_a1;
+    ph_currents_left_motor.b = Global_Data.av.d_1_i_b1;
+    ph_currents_left_motor.c = Global_Data.av.d_1_i_c1;
+
+    ph_currents_right_motor.a = Global_Data.av.d_2_i_a1;
+    ph_currents_right_motor.b = Global_Data.av.d_2_i_b1;
+    ph_currents_right_motor.c = Global_Data.av.d_2_i_c1;
 
     // check for software over-current limit
     if (fabsf(Global_Data.av.d_1_i_a1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_b1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_c1) > MAX_PHASE_CURRENT_AMPERE ||
@@ -108,24 +119,42 @@ void ISR_Control(void *data)
     Global_Data.av.theta_el_d5_3 = uz_incrementalEncoder_get_theta_el(Global_Data.objects.increEncoder_d5_3);
 
     // respect el. theta offset
-    Global_Data.av.theta_el_left_motor = fmodf(Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_el_offset_left,2.0f*UZ_PIf) ;
-    Global_Data.av.theta_el_right_motor = fmodf(Global_Data.av.theta_el_d5_2 - Global_Data.av.theta_el_offset_right,2.0f*UZ_PIf);
+    Global_Data.av.theta_el_left_motor = Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_el_offset_left;
+    Global_Data.av.theta_el_right_motor =Global_Data.av.polepairs_right*2.0f*UZ_PIf-(Global_Data.av.theta_el_d5_1 - Global_Data.av.theta_el_offset_right);
+
+    // speeds in rpm
+    Global_Data.av.left_speed_rpm = Global_Data.av.omega_mech_d5_1 * 30.0f * 0.3183; //0.3183 = 1/pi
+    Global_Data.av.right_speed_rpm = Global_Data.av.omega_mech_d5_2 * 30.0f * 0.3183;
 
     // Read inverter adapter outputs
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 
+    // transform measured currents to dq frame
+    dq_currents_left_motor = uz_transformation_3ph_abc_to_dq(ph_currents_left_motor, Global_Data.av.theta_el_left_motor);
+    dq_currents_right_motor = uz_transformation_3ph_abc_to_dq(ph_currents_right_motor, Global_Data.av.theta_el_right_motor);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    if (current_state==running_state || current_state==control_state) {
+    	// enable inverter adapter hardware
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    } else {
+    	// disable inverter adapter hardware
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+    }
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
-    	// enable inverter adapter hardware
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+
+
     	// calculate uz_SpeedControl reference dq_currents
     	dq_ref_currents_left_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left_motor, Global_Data.av.omega_mech_d5_1, Global_Data.rasv.n_rpm_ref_left, Global_Data.av.U_ZK, dq_ref_currents_left_motor.d);
-    	dq_ref_currents_right_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right_motor, Global_Data.av.omega_mech_d5_2, Global_Data.rasv.n_rpm_ref_right, Global_Data.av.U_ZK, dq_ref_currents_right_motor.d);
+    	//dq_ref_currents_right_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right_motor, Global_Data.av.omega_mech_d5_2, Global_Data.rasv.n_rpm_ref_right, Global_Data.av.U_ZK, dq_ref_currents_right_motor.d);
     	// calculate uz_FOC reference dq-voltages
     	dq_ref_voltages_left_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_left_motor, dq_ref_currents_left_motor, dq_currents_left_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_left_motor);
     	dq_ref_voltages_right_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_right_motor, dq_ref_currents_right_motor, dq_currents_right_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_right_motor);
@@ -146,9 +175,6 @@ void ISR_Control(void *data)
 
 
     } else {
-    	// disable inverter adapter hardware
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
     	// reset FOC instances (clear integrators)
     	uz_FOC_reset(Global_Data.objects.uz_FOC_left_motor);
     	uz_FOC_reset(Global_Data.objects.uz_FOC_right_motor);
@@ -156,13 +182,13 @@ void ISR_Control(void *data)
     	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left_motor);
     	uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_right_motor);
     	// set global duty-cycles to 0.5
-    	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
-    	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-    	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
-
-    	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
-    	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
-    	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
+//    	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+//    	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+//    	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
+//
+//    	Global_Data.rasv.halfBridge4DutyCycle = 0.5f;
+//    	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
+//    	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

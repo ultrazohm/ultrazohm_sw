@@ -34,7 +34,7 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = (5.93f*5.0f), .cf.ADC_A3 = (5.93f*5.0f), .cf.ADC_A4 = (5.93f*5.0f), .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = (5.93f*10.0f), .cf.ADC_B7 = (5.93f*10.0f), .cf.ADC_B8 = (5.93f*10.0f)},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
@@ -78,6 +78,7 @@ int main(void)
                .Ld_Henry = 0.00113f,
                .Lq_Henry = 0.00142f,
                .Psi_PM_Vs = 0.0169f,
+			   .polePairs = 3.0f,
 			   .J_kg_m_squared = 0.0000148f,
 			   .I_max_Ampere = 10.8f
             };//these parameters are only needed if linear decoupling is selected
@@ -87,40 +88,41 @@ int main(void)
                .Ld_Henry = 0.00113f,
                .Lq_Henry = 0.00142f,
                .Psi_PM_Vs = 0.0169f,
+			   .polePairs = 3.0f,
 			   .J_kg_m_squared = 0.0000148f,
 			   .I_max_Ampere = 10.8f
             };//these parameters are only needed if linear decoupling is selected
 
             struct uz_PI_Controller_config config_id_left = {
-               .Kp = 3.0f,
-               .Ki = 600.0f,
-               .samplingTime_sec = 0.00005f,
-               .upper_limit = 48.0f,
-               .lower_limit = -48.0f
+               .Kp = 3.767f,
+               .Ki = 1810.0f,
+               .samplingTime_sec = 0.0001f,
+               .upper_limit = 48.0f/2.0f,	//theoretical limit with carrier based pwm
+               .lower_limit = -48.0f/2.0f
             };
 
             struct uz_PI_Controller_config config_iq_left = {
-               .Kp = 3.5f,
-               .Ki = 600.0f,
-               .samplingTime_sec = 0.00005f,
-               .upper_limit = 48.0f,
-               .lower_limit = -48.0f
+               .Kp = 4.733f,
+               .Ki = 1810.0f,
+               .samplingTime_sec = 0.0001f,
+               .upper_limit = 48.0f/2.0f,
+               .lower_limit = -48.0f/2.0f
             };
 
             struct uz_PI_Controller_config config_id_right = {
-              .Kp = 3.0f,
-              .Ki = 600.0f,
-              .samplingTime_sec = 0.00005f,
-              .upper_limit = 48.0f,
-              .lower_limit = -48.0f
+              .Kp = 3.767f,
+              .Ki = 1810.0f,
+              .samplingTime_sec = 0.0001f,
+              .upper_limit = 48.0f/2.0f,
+              .lower_limit = -48.0f/2.0f
             };
 
             struct uz_PI_Controller_config config_iq_right = {
-              .Kp = 3.5f,
-              .Ki = 600.0f,
-              .samplingTime_sec = 0.00005f,
-              .upper_limit = 48.0f,
-              .lower_limit = -48.0f
+              .Kp = 4.733f,
+              .Ki = 1810.0f,
+              .samplingTime_sec = 0.0001f,
+              .upper_limit = 48.0f/2.0f,
+              .lower_limit = -48.0f/2.0f
             };
 
             struct uz_FOC_config config_FOC_left = {
@@ -139,16 +141,16 @@ int main(void)
 
             struct uz_PI_Controller_config speed_control_left = {
             		.Kp = 0.01f,
-					.Ki = 7.0f,
-					.samplingTime_sec = 0.00005f,
+					.Ki = 0.2f,//7.0f,
+					.samplingTime_sec = 0.0001f,
 					.upper_limit = 8.0f,
 					.lower_limit = -8.0f
             };
 
             struct uz_PI_Controller_config speed_control_right = {
-            		.Kp = 0.01f,
-					.Ki = 7.0f,
-					.samplingTime_sec = 0.00005f,
+            		.Kp = 0.0207f,
+					.Ki = 0.207f,
+					.samplingTime_sec = 0.0001f,
 					.upper_limit = 8.0f,
 					.lower_limit = -8.0f
             };
@@ -172,8 +174,8 @@ int main(void)
             Global_Data.objects.speed_ctrl_left_motor = uz_SpeedControl_init(config_speed_left);
             Global_Data.objects.speed_ctrl_right_motor = uz_SpeedControl_init(config_speed_right);
             // init theta_offset values
-            Global_Data.av.theta_el_offset_left = 0.0f;
-           	Global_Data.av.theta_el_offset_right = 0.0f;
+            Global_Data.av.theta_el_offset_left = 5.428654f;
+           	Global_Data.av.theta_el_offset_right = 2.540254f;
            	// init motor polepairs
            	Global_Data.av.polepairs_left = 3.0f;
            	Global_Data.av.polepairs_right = 3.0f;

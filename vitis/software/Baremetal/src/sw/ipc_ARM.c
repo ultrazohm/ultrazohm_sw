@@ -25,6 +25,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+extern uz_3ph_dq_t dq_ref_currents_right_motor;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -187,15 +189,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			data->rasv.n_rpm_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			dq_ref_currents_right_motor.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+			dq_ref_currents_right_motor.q = value;
 			break;
 
 		case (Set_Send_Field_4):

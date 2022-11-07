@@ -87,11 +87,11 @@ void uz_resonantController_reset(uz_resonantController_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->PtrToModelData->inputs->Reset = 1.0;
-    self->PtrToModelData->inputs->in_m = 0.0;
-    self->PtrToModelData->inputs->in_ref = 0.0;
+    self->PtrToModelData->inputs->Reset = 1.0f;
+    self->PtrToModelData->inputs->in_m = 0.0f;
+    self->PtrToModelData->inputs->in_ref = 0.0f;
     Resonant_Controller_step(self->PtrToModelData);
-    self->PtrToModelData->inputs->Reset = 0.0;
+    self->PtrToModelData->inputs->Reset = 0.0f;
 }
 
 float uz_resonantController_get_output(uz_resonantController_t *self)

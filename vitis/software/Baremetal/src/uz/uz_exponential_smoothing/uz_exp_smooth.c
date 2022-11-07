@@ -16,41 +16,39 @@
 #include "uz_exp_smooth.h"
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
-#include "../uz_math_constants.h"
 #include <stdbool.h> 
 #if UZ_EXP_SMOOTH_MAX_INSTANCES > 0U
 
 
-typedef struct uz_EXP_SMOOTH_t {
+typedef struct uz_exp_smooth_t {
     bool is_ready;
     float alpha;
     float old_sample;
     float actual_sample;
     bool first_step;
-} uz_EXP_SMOOTH_t;
+} uz_exp_smooth_t;
 
 static size_t instance_counter = 0U;
-static uz_EXP_SMOOTH_t instances[UZ_EXP_SMOOTH_MAX_INSTANCES] = { 0 };
+static uz_exp_smooth_t instances[UZ_EXP_SMOOTH_MAX_INSTANCES] = { 0 };
 
-static uz_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void);
+static uz_exp_smooth_t* uz_exp_smooth_allocation(void);
 
-static uz_EXP_SMOOTH_t* UZ_EXP_SMOOTH_allocation(void){
+static uz_exp_smooth_t* uz_exp_smooth_allocation(void){
     uz_assert(instance_counter < UZ_EXP_SMOOTH_MAX_INSTANCES);
-    uz_EXP_SMOOTH_t* self = &instances[instance_counter];
+    uz_exp_smooth_t* self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
     return (self);
 }
-
-uz_EXP_SMOOTH_t* uz_EXP_SMOOTH_init(float alpha) {
-    uz_EXP_SMOOTH_t *self = UZ_EXP_SMOOTH_allocation();
+ uz_exp_smooth_t* uz_exp_smooth_init(float alpha) {
+ uz_exp_smooth_t *self = uz_exp_smooth_allocation();
     self->first_step = true;
     self->alpha = alpha;
     return (self);
 }
 
-float uz_EXP_SMOOTH_sample(uz_EXP_SMOOTH_t *self, float input)
+float uz_exp_smooth_sample (uz_exp_smooth_t *self, float input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

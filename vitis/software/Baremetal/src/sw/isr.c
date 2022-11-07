@@ -154,6 +154,7 @@ void ISR_Control(void *data)
 
     	// calculate uz_SpeedControl reference dq_currents
     	dq_ref_currents_left_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left_motor, Global_Data.av.omega_mech_d5_1, Global_Data.rasv.n_rpm_ref_left, Global_Data.av.U_ZK, dq_ref_currents_left_motor.d);
+    	dq_ref_currents_right_motor.q = -2.0f;
     	//dq_ref_currents_right_motor = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right_motor, Global_Data.av.omega_mech_d5_2, Global_Data.rasv.n_rpm_ref_right, Global_Data.av.U_ZK, dq_ref_currents_right_motor.d);
     	// calculate uz_FOC reference dq-voltages
     	dq_ref_voltages_left_motor = uz_FOC_sample(Global_Data.objects.uz_FOC_left_motor, dq_ref_currents_left_motor, dq_currents_left_motor, Global_Data.av.U_ZK, Global_Data.av.theta_el_left_motor);

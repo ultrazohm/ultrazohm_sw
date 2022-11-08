@@ -1,26 +1,26 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:43:12 on 28/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 13:32:51 on 08/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_min_cost_function\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'parallel_8_min_cost_function/Min_cost_function_and_vopt2'
+%     DUT       : 'parallel_8_min_cost_function/Min_cost_function_and_vopt1'
 % To view changes after modifying the workflow, run the following command:
-% >> hWC.export('DUT','parallel_8_min_cost_function/Min_cost_function_and_vopt2');
+% >> hWC.export('DUT','parallel_8_min_cost_function/Min_cost_function_and_vopt1');
 %--------------------------------------------------------------------------
 
 %% Load the Model
 load_system('parallel_8_min_cost_function');
 
 %% Restore the Model to default HDL parameters
-%hdlrestoreparams('parallel_8_min_cost_function/Min_cost_function_and_vopt2');
+%hdlrestoreparams('parallel_8_min_cost_function/Min_cost_function_and_vopt1');
 
 %% Model HDL Parameters
 %% Set Model 'parallel_8_min_cost_function' HDL parameters
 hdlset_param('parallel_8_min_cost_function', 'CriticalPathEstimation', 'on');
-hdlset_param('parallel_8_min_cost_function', 'HDLSubsystem', 'parallel_8_min_cost_function/Min_cost_function_and_vopt2');
+hdlset_param('parallel_8_min_cost_function', 'HDLSubsystem', 'parallel_8_min_cost_function/Min_cost_function_and_vopt1');
 hdlset_param('parallel_8_min_cost_function', 'OptimizationReport', 'on');
 hdlset_param('parallel_8_min_cost_function', 'ResetType', 'Synchronous');
 hdlset_param('parallel_8_min_cost_function', 'ResourceReport', 'on');
@@ -36,48 +36,40 @@ hdlset_param('parallel_8_min_cost_function', 'TargetPlatform', 'Generic Xilinx P
 hdlset_param('parallel_8_min_cost_function', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2', 'IPCoreName', 'parallel_8_min_cost_function');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2', 'ProcessorFPGASynchronization', 'Free running');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1', 'IPCoreName', 'parallel_8_sim_min_cost_function');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/Index_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/Index_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/valid_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/valid_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_prediction_and_cost_function', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_prediction_and_cost_function', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/J_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/J_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/phase_voltages_per_switching_state_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/phase_voltages_per_switching_state_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/phase_voltages_per_switching_state_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/phase_voltages_per_switching_state_in', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/done', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/done', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_min_cost_function_and_vopt', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_min_cost_function_and_vopt', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/done_complete', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/done_complete', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/J_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/J_AXI', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/Index', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/Index', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/voltages', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/voltages', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt2/Index_AXI', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/voltages', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/voltages', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings
@@ -131,4 +123,4 @@ hWC.SSHPassword = '';
 hWC.validate;
 
 %% Run the workflow
-hdlcoder.runWorkflow('parallel_8_min_cost_function/Min_cost_function_and_vopt2', hWC);
+hdlcoder.runWorkflow('parallel_8_min_cost_function/Min_cost_function_and_vopt1', hWC);

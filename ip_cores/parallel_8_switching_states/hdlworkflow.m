@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 13:27:22 on 18/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 11:27:12 on 08/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_switching_states\hdlworkflow.m'
 %     Overwrite : true
@@ -35,16 +35,16 @@ hdlset_param('parallel_8_switching_states', 'TargetPlatform', 'Generic Xilinx Pl
 hdlset_param('parallel_8_switching_states', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_switching_states/HDL_DUT', 'IPCoreName', 'parallel_8_switching_states');
+hdlset_param('parallel_8_switching_states/HDL_DUT', 'IPCoreName', 'parallel_8_sim_switching_states');
 hdlset_param('parallel_8_switching_states/HDL_DUT', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_switching_states/HDL_DUT/I', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_switching_states/HDL_DUT/I', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_switching_states/HDL_DUT/min_Index', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_switching_states/HDL_DUT/min_Index', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_switching_states/HDL_DUT/valid_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_switching_states/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_switching_states/HDL_DUT/done_vsd_and_park', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_switching_states/HDL_DUT/done_vsd_and_park', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
 hdlset_param('parallel_8_switching_states/HDL_DUT/HB1T', 'IOInterface', 'External Port');
@@ -95,8 +95,8 @@ hdlset_param('parallel_8_switching_states/HDL_DUT/HB6B', 'IOInterface', 'Externa
 hdlset_param('parallel_8_switching_states/HDL_DUT/HB6B', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_switching_states/HDL_DUT/done', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_switching_states/HDL_DUT/done', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_switching_states/HDL_DUT/done_switching_states', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_switching_states/HDL_DUT/done_switching_states', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings

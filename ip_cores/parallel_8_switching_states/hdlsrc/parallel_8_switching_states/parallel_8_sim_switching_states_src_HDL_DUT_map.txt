@@ -1,0 +1,5 @@
+ --> parallel_8_sim_switching_states_src_HDL_DUT_pkg
+parallel_8_switching_states/HDL_DUT/Detect Rise Positive/Positive --> parallel_8_sim_switching_states_src_Positive
+parallel_8_switching_states/HDL_DUT/Detect Rise Positive --> parallel_8_sim_switching_states_src_Detect_Rise_Positive
+parallel_8_switching_states/HDL_DUT/MATLAB Function1 --> parallel_8_sim_switching_states_src_MATLAB_Function1
+parallel_8_switching_states/HDL_DUT --> parallel_8_sim_switching_states_src_HDL_DUT

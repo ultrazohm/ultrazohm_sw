@@ -1,6 +1,0 @@
-vlib work
-vcom  parallel_8_switching_states_src_HDL_DUT_pkg.vhd
-vcom  parallel_8_switching_states_src_Positive.vhd
-vcom  parallel_8_switching_states_src_Detect_Rise_Positive.vhd
-vcom  parallel_8_switching_states_src_MATLAB_Function1.vhd
-vcom  parallel_8_switching_states_src_HDL_DUT.vhd

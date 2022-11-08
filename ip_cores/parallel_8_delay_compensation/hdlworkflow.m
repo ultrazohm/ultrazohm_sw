@@ -1,21 +1,21 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 12:19:56 on 18/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 11:48:16 on 08/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_delay_compensation\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'parallel_8_delay_compensation/HDL_DUT'
+%     DUT       : 'parallel_8_delay_compensation/Delay_compensation'
 % To view changes after modifying the workflow, run the following command:
-% >> hWC.export('DUT','parallel_8_delay_compensation/HDL_DUT');
+% >> hWC.export('DUT','parallel_8_delay_compensation/Delay_compensation');
 %--------------------------------------------------------------------------
 
 %% Load the Model
 load_system('parallel_8_delay_compensation');
 
 %% Restore the Model to default HDL parameters
-%hdlrestoreparams('parallel_8_delay_compensation/HDL_DUT');
+%hdlrestoreparams('parallel_8_delay_compensation/Delay_compensation');
 
 %% Model HDL Parameters
 %% Set Model 'parallel_8_delay_compensation' HDL parameters
@@ -23,7 +23,7 @@ hdlset_param('parallel_8_delay_compensation', 'CriticalPathEstimation', 'on');
 hdlset_param('parallel_8_delay_compensation', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint' ...
 , 'LatencyStrategy', 'Min') ...
 );
-hdlset_param('parallel_8_delay_compensation', 'HDLSubsystem', 'parallel_8_delay_compensation/HDL_DUT');
+hdlset_param('parallel_8_delay_compensation', 'HDLSubsystem', 'parallel_8_delay_compensation/Delay_compensation');
 hdlset_param('parallel_8_delay_compensation', 'OptimizationReport', 'on');
 hdlset_param('parallel_8_delay_compensation', 'ResetType', 'Synchronous');
 hdlset_param('parallel_8_delay_compensation', 'ResourceReport', 'on');
@@ -39,112 +39,112 @@ hdlset_param('parallel_8_delay_compensation', 'TargetPlatform', 'Generic Xilinx 
 hdlset_param('parallel_8_delay_compensation', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT', 'IPCoreName', 'parallel_8_delay_compensation');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT', 'ProcessorFPGASynchronization', 'Free running');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation', 'IPCoreName', 'parallel_8_sim_delay_compensation');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_measured', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_measured', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_measured', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_measured', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/psiPM_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/psiPM_AXI', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/psiPM_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/psiPM_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Lq_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Lq_AXI', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Lq_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Lq_AXI', 'IOInterfaceMapping', 'x"104"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Ld_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Ld_AXI', 'IOInterfaceMapping', 'x"108"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Ld_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Ld_AXI', 'IOInterfaceMapping', 'x"108"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Rs_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/Rs_AXI', 'IOInterfaceMapping', 'x"10C"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Rs_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/Rs_AXI', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Ld_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Ld_AXI', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Ld_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Ld_AXI', 'IOInterfaceMapping', 'x"110"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Lq_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Lq_AXI', 'IOInterfaceMapping', 'x"118"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Lq_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Lq_AXI', 'IOInterfaceMapping', 'x"118"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Lx_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Lx_AXI', 'IOInterfaceMapping', 'x"11C"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Lx_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Lx_AXI', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Ly_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/SampleTime_div_Ly_AXI', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Ly_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/SampleTime_div_Ly_AXI', 'IOInterfaceMapping', 'x"120"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/last_applied_optimal_voltages_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/last_applied_optimal_voltages_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/last_applied_optimal_voltages_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/last_applied_optimal_voltages_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/pole_pairs_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/pole_pairs_AXI', 'IOInterfaceMapping', 'x"114"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/pole_pairs_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/pole_pairs_AXI', 'IOInterfaceMapping', 'x"114"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/omega_m_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/omega_m_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/valid_in_ADC', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/valid_in_ADC', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/current_valid_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/current_valid_in', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/valid_in', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/valid_in', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_switching_states', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_switching_states', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_k_1', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_k_1', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_k_1', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_k_1', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_k_1', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_k_1', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_k_1', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_k_1', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/done', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/done', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_delay_compensation', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_delay_compensation', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/id_k_1_AXI', 'IOInterfaceMapping', 'x"14C"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1_AXI', 'IOInterfaceMapping', 'x"14C"');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iq_k_1_AXI', 'IOInterfaceMapping', 'x"150"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1_AXI', 'IOInterfaceMapping', 'x"150"');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/ix_k_1_AXI', 'IOInterfaceMapping', 'x"154"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1_AXI', 'IOInterfaceMapping', 'x"154"');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/HDL_DUT/iy_k_1_AXI', 'IOInterfaceMapping', 'x"158"');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1_AXI', 'IOInterfaceMapping', 'x"158"');
 
 
 %% Workflow Configuration Settings
@@ -198,4 +198,4 @@ hWC.SSHPassword = '';
 hWC.validate;
 
 %% Run the workflow
-hdlcoder.runWorkflow('parallel_8_delay_compensation/HDL_DUT', hWC);
+hdlcoder.runWorkflow('parallel_8_delay_compensation/Delay_compensation', hWC);

@@ -1,21 +1,21 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:52:44 on 28/10/2022
+% Generated with MATLAB 9.12 (R2022a) at 12:06:03 on 08/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_phase_voltages\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'parallel_8_phase_voltages/Phase_voltages_per_switching_state2'
+%     DUT       : 'parallel_8_phase_voltages/Phase_voltages_per_switching_state1'
 % To view changes after modifying the workflow, run the following command:
-% >> hWC.export('DUT','parallel_8_phase_voltages/Phase_voltages_per_switching_state2');
+% >> hWC.export('DUT','parallel_8_phase_voltages/Phase_voltages_per_switching_state1');
 %--------------------------------------------------------------------------
 
 %% Load the Model
 load_system('parallel_8_phase_voltages');
 
 %% Restore the Model to default HDL parameters
-%hdlrestoreparams('parallel_8_phase_voltages/Phase_voltages_per_switching_state2');
+%hdlrestoreparams('parallel_8_phase_voltages/Phase_voltages_per_switching_state1');
 
 %% Model HDL Parameters
 %% Set Model 'parallel_8_phase_voltages' HDL parameters
@@ -23,7 +23,7 @@ hdlset_param('parallel_8_phase_voltages', 'CriticalPathEstimation', 'on');
 hdlset_param('parallel_8_phase_voltages', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint' ...
 , 'LatencyStrategy', 'Min') ...
 );
-hdlset_param('parallel_8_phase_voltages', 'HDLSubsystem', 'parallel_8_phase_voltages/Phase_voltages_per_switching_state2');
+hdlset_param('parallel_8_phase_voltages', 'HDLSubsystem', 'parallel_8_phase_voltages/Phase_voltages_per_switching_state1');
 hdlset_param('parallel_8_phase_voltages', 'OptimizationReport', 'on');
 hdlset_param('parallel_8_phase_voltages', 'ResetType', 'Synchronous');
 hdlset_param('parallel_8_phase_voltages', 'ResourceReport', 'on');
@@ -39,62 +39,62 @@ hdlset_param('parallel_8_phase_voltages', 'TargetPlatform', 'Generic Xilinx Plat
 hdlset_param('parallel_8_phase_voltages', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2', 'IPCoreName', 'parallel_8_phase_voltages');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2', 'ProcessorFPGASynchronization', 'Free running');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1', 'IPCoreName', 'parallel_8_sim_phase_voltages');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/theta_el', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/theta_el', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/theta_el', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/theta_el', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/theta_el_offset_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/theta_el_offset_AXI', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/theta_el_offset_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/theta_el_offset_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/u_dc_link_voltage_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/u_dc_link_voltage_AXI', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/u_dc_link_voltage_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/u_dc_link_voltage_AXI', 'IOInterfaceMapping', 'x"104"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Index', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Index', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Index', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Index', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_delay_compensation', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_delay_compensation', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_delay_compensation', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_delay_compensation', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_min_cost_function-and_vopt', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_min_cost_function-and_vopt', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_min_cost_function_and_vopt', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_min_cost_function_and_vopt', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_ADC', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/valid_in_ADC', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/current_valid_in', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/current_valid_in', 'IOInterfaceMapping', '');
 
 % Set Sum HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Add4', 'OutputPipeline', 1);
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Add4', 'OutputPipeline', 1);
 
 % Set Sum HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Add5', 'OutputPipeline', 1);
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Add5', 'OutputPipeline', 1);
 
 % Set Sum HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Add6', 'OutputPipeline', 1);
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Add6', 'OutputPipeline', 1);
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Compare Limit_High1', 'OutputPipeline', 1);
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Compare Limit_High1', 'OutputPipeline', 1);
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Compare Limit_Low1', 'OutputPipeline', 1);
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Compare Limit_Low1', 'OutputPipeline', 1);
 
 % Set SubSystem HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/Subsystem/MATLAB Function15', 'ConstMultiplierOptimization', 'auto');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Subsystem/MATLAB Function15', 'ConstMultiplierOptimization', 'auto');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/done', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/done', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_phase_voltages', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done_phase_voltages', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/phase_voltages_per_switching_state', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state2/phase_voltages_per_switching_state', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/phase_voltages_per_switching_state', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/phase_voltages_per_switching_state', 'IOInterfaceMapping', '');
 
 
 %% Workflow Configuration Settings
@@ -148,4 +148,4 @@ hWC.SSHPassword = '';
 hWC.validate;
 
 %% Run the workflow
-hdlcoder.runWorkflow('parallel_8_phase_voltages/Phase_voltages_per_switching_state2', hWC);
+hdlcoder.runWorkflow('parallel_8_phase_voltages/Phase_voltages_per_switching_state1', hWC);

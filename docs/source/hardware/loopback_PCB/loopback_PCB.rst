@@ -20,7 +20,7 @@ General description
 *******************
 This PCB is used for the :ref:`adc_loopback` tutorial. 
 The LEDs indicate the state of the signals from the digital voltage card (:ref:`digitalVoltage`). 
-Furthermore eight of the twelve gate signals are filtered and can be looped back to the ADC card (:ref:`Analog_LTC2311_16_v3`, :ref:`Analog_LTC2311_16_v2` ) via Ethernet connector. 
+Furthermore eight of the signals (as documented in the section *Signal description* below) are filtered and can be looped back to the ADC card (:ref:`Analog_LTC2311_16_v3`, :ref:`Analog_LTC2311_16_v2` ) via Ethernet connector. 
 
 .. figure:: sphx_glr_pcb_functional_areas.png
   :align: right
@@ -59,87 +59,11 @@ the following table gives an overview which signal from the Digital Voltage Card
 
   Summary of netnames on connectors
 
-  Test 
-
 .. csv-table:: table
   :file: IPL115.csv
   :widths: 5 15 15 15
   :header-rows: 1
 
-.. csv-table:: table
-  :file: IPL120.csv
-  :widths: 5 15 15 15
-  :header-rows: 1
-
-.. list-table::
-    :name: IPL1-115-01-L-D-K_table
-    :widths: 5 45 45 45 
-    :header-rows: 0
-
-    * - **Pin**
-      - **Digital voltage card**
-      - **Loopback PCB**
-      - **ADC card**
-    * - 1
-      - VIN
-      - 24V
-      - /
-    * - 2
-      - DIG_IO_P1
-      - PWM_G1
-      - AIN_A_P4
-    * - 3
-      - DIG_IO_P2
-      - PWM_G7
-      - AIN_B_P2
-    * - 4
-      - DIG_IO_P3
-      - PWM_G2
-      - AIN_A_P3
-    * - 5
-      - DIG_IO_P4
-      - PWM_G9
-      - /
-    * - 6
-      - DIG_IO_P5
-      - PWM_G3
-      - AIN_A_P2
-    * - 7
-      - DIG_IO_P6
-      - PWM_G10
-      - /
-    * - 8
-      - DIG_IO_P7
-      - IO_P1
-      - /
-    * - 9
-      - DIG_IO_P8
-      - IO_P2
-      - /
-    * - 10
-      - 15V
-      - 15V
-      - /
-    * - 11
-      - DIG_IO_P9
-      - IO_P3
-      - /
-    * - 12
-      - DIG_IO_P10
-      - IO_P4
-      - /
-    * - 13
-      - DIG_IO_P11
-      - IO_P5
-      - /
-    * - 14
-      - DIG_IO_P12
-      - IO_P6
-      - /
-    * - 15
-      - DIG_IO_P13
-      - IO_P7
-      - /
 
 **IPL1-120-01-L-D-K**
 
@@ -149,106 +73,18 @@ the following table gives an overview which signal from the Digital Voltage Card
 
   Summary of netnames on connectors
 
-.. list-table::
-    :name: IPL1-120-01-L-D-K_table
-    :widths: 5 45 45 45 
-    :header-rows: 0
-
-    * - **Pin**
-      - **Digital voltage card**
-      - **Loopback PCB**
-      - **ADC card**
-    * - 1
-      - VIN
-      - 24V
-      - /
-    * - 2
-      - DIG_IO_P14
-      - PWM_G4
-      - AIN_A_P1
-    * - 3
-      - DIG_IO_P15
-      - PWM_G8
-      - AIN_B_P1
-    * - 4
-      - DIG_IO_P16
-      - PWM_G5
-      - AIN_B_P4
-    * - 5
-      - DIG_IO_P17
-      - PWM_G11
-      - /
-    * - 6
-      - DIG_IO_P18
-      - PWM_G6
-      - AIN_B_P3
-    * - 7
-      - DIG_IO_P19
-      - PWM_G12
-      - /
-    * - 8
-      - DIG_IO_P20
-      - IO_P8
-      - /
-    * - 9
-      - DIG_IO_P21
-      - IO_P9
-      - /
-    * - 10
-      - 3V3
-      - 3V3
-      - /
-    * - 11
-      - DIG_IO_P22
-      - IO_P10
-      - /
-    * - 12
-      - DIG_IO_P23
-      - IO_P11
-      - /
-    * - 13
-      - DIG_IO_P24
-      - IO_P12
-      - /
-    * - 14
-      - DIG_IO_P25
-      - IO_P13
-      - /
-    * - 15
-      - DIG_IO_P26
-      - IO_P14
-      - /
-    * - 16
-      - DIG_IO_P27
-      - IO_P15
-      - /
-    * - 17
-      - DIG_IO_P28
-      - IO_P16
-      - /
-    * - 18
-      - DIG_IO_P29
-      - IO_P17
-      - /
-    * - 19
-      - DIG_IO_P30
-      - IO_P18
-      - /
-    * - 20
-      - 5V
-      - 5V
-      - /
-
+.. csv-table:: table
+  :file: IPL120.csv
+  :widths: 5 15 15 15
+  :header-rows: 1
 
 Documentation
 -------------
 
-A ZIP file with documentation can be downloaded :download:`here <docs.zip>`.
-It contains:
-
- * SCH
- * ASM
- * BOM
+Rev01
+ * :download:`Schematics <SCH_UZ_PER_loopback_tutorial_[No Variations]_Rev01.PDF>`
+ * :download:`Bill of Material <BOM_JLC_UZ_PER_loopback_tutorial_[No Variations]_Rev01.xlsx>`
+ * :download:`Assembly Drawing <ASM_UZ_PER_loopback_tutorial_[No Variations]_Rev01.PDF>`
 
 
 

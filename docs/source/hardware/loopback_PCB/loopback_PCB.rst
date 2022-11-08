@@ -57,7 +57,19 @@ the following table gives an overview which signal from the Digital Voltage Card
   :align: right
   :width: 350
 
-  Summary of netnames on connecotrs
+  Summary of netnames on connectors
+
+  Test 
+
+.. csv-table:: table
+  :file: IPL115.csv
+  :widths: 5 15 15 15
+  :header-rows: 1
+
+.. csv-table:: table
+  :file: IPL120.csv
+  :widths: 5 15 15 15
+  :header-rows: 1
 
 .. list-table::
     :name: IPL1-115-01-L-D-K_table
@@ -135,7 +147,7 @@ the following table gives an overview which signal from the Digital Voltage Card
   :align: right
   :width: 350
 
-  Summary of netnames on connecotrs
+  Summary of netnames on connectors
 
 .. list-table::
     :name: IPL1-120-01-L-D-K_table

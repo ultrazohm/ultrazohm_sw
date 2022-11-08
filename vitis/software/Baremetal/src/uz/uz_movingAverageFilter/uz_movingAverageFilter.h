@@ -25,19 +25,19 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
 
 /**
  * @brief Calculates one sample of the moving average filter. The filter length can be changed dynamically during runtime
- *
+ * 
  * @param self pointer to uz_movingAverageFilter_t instance
- * @param foat sample input of the moving average filter
+ * @param sample sample input of the moving average filter
  * @return float output of the filter
  */
 float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* self, float sample);
 
-
 /**
- * @brief Calculates one sample of the moving average filter a efficient way. The filter length is fixed and can't be changed
+ * @brief Calculates one sample of the moving average filter with fixed filter length
  *
+ * 
  * @param self pointer to uz_movingAverageFilter_t instance
- * @param foat sample input of the moving average filter
+ * @param sample sample input of the moving average filter
  * @return float output of the filter
  */
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample);
@@ -49,7 +49,7 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
  */
 void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
 
-/*
+/**
  * @brief Sets a new filter length
  * @param self pointer to uz_movingAverageFilter_t instance
  * @param new_filterLength int for the new filter length

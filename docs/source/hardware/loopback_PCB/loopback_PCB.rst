@@ -7,12 +7,10 @@ Loopback PCB
 	   
 Designed by Nina Diringer (TH Nürnberg), 07/2022
 
-.. figure:: sphx_glr_loopback_pcb.png
-   :width: 45%
+.. figure:: Loopback_PCB.png
+   :width: 37%
 
    Loopback PCB
-
-*change picture*
 
 Revisions
 *********
@@ -46,42 +44,50 @@ The PCB is structured by functional areas as shown in the figure on the right.
 
 Signal description
 ------------------
-As the matching of the signal names between the PCBs used in the Loopback Tutorial is not intuitive, 
-the following table matches the signal names of the Digital Voltage Card to the signal names on the Loopback PCB and the ADC card. Additionally, the name of the corresponding LED as found on the Loopback PCB is given. 
+Since the matching of the signal names between the PCBs used in the Loopback Tutorial is not intuitive, 
+the following table matches the signal names of the Digital Voltage Card to the signal names on the Loopback PCB and the ADC card. Additionally, the name of the corresponding LED as marked on the Loopback PCB is given. 
 
-.. note::
+IPL1-115-01-L-D-K
+_________________
 
-    The signals on Pin 2 to Pin 7 on both connectors (IPL1-115-01-L-D-K & IPL1-120-01-L-D-K) are used for the gate signals in the Loopback tutorial. P2 being the gate signal for the first high side switch, P3 for the corresponding low side switch, P4 for the second high side switch and so on.
-    All Gate signals for the high side switches (Pin 2, Pin 4, Pin 6) and the first for the low side switches (Pin 3) are filtered and can be read back by the ADC card. 
-
-**IPL1-115-01-L-D-K**
-
-.. figure:: summary_netnames_IPL115.png
-  :align: right
-  :width: 350
-
-  Summary of netnames on connectors
-
-.. csv-table:: Signal matching IPL1-115-01-L-D-K
+.. csv-table:: Signal matching of connector IPL1-115-01-L-D-K
   :file: IPL115.csv
   :widths: 5 15 15 15 15
   :header-rows: 1
 
-**IPL1-120-01-L-D-K**
+.. figure:: net_names_dvc_IPL115.png
+  :align: left
+  :width: 325
 
-.. figure:: summary_netnames_IPL120.png
+  Netnames DVC IPL1-115
+
+.. figure:: net_names_PCB_IPL115.png
+  :align: left
+  :width: 340
+
+  Netnames Loopback PCB IPL1-115
+
+.. figure:: net_names_dac.png
   :align: right
-  :width: 350
+  :width: 200
 
-  Summary of netnames on connectors
+  Netnames ADC RJHSE 
 
-.. csv-table:: Signal matching IPL1-120-01-L-D-K
+IPL1-120-01-L-D-K
+_________________
+
+.. csv-table:: Signal matching of connector IPL1-120-01-L-D-K
   :file: IPL120.csv
   :widths: 5 15 15 15 15
   :header-rows: 1
 
+.. hint::
+
+    To sum this up: The signals on Pin 2 to Pin 7 on both connectors (IPL1-115-01-L-D-K & IPL1-120-01-L-D-K) are used for the gate signals in the Loopback tutorial. P2 being the gate signal for the first high side switch, P3 for the corresponding low side switch, P4 for the second high side switch and so on.
+    All Gate signals for the high side switches (Pin 2, Pin 4, Pin 6) and the first for the low side switches (Pin 3) are filtered and can be read back by the ADC card. 
+
 Documentation
--------------
+*************
 
 Rev01
  * :download:`Schematics <SCH_UZ_PER_loopback_tutorial_[No Variations]_Rev01.PDF>`

@@ -13,7 +13,7 @@ typedef struct uz_movingAverageFilter_t uz_movingAverageFilter_t;
  * @brief Configuration struct for movingAverageFilter. Accessible by the user.
  */
 struct uz_movingAverageFilter_config{
-	uint32_t filterLength; /**<Length of the filter. Must larger than 0 and smaller or equal to the length of the cirucularBuffer array*/
+	uint32_t filterLength; /**<Length of the filter. Must be larger than 0 and smaller or equal to the length of the cirucularBuffer array*/
 };
 
 /**
@@ -26,7 +26,7 @@ struct uz_movingAverageFilter_config{
 uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFilter_config config, uz_array_float_t circularBuffer);
 
 /**
- * @brief Calculates one sample of the moving average filter. The filter length can be changed dynamically during runtime
+ * @brief Calculates one sample of the moving average filter. The filter length can be changed dynamically during runtime. It uses different approaches to calculate the result with the least amount of loop-iterations possible.
  * 
  * @param self pointer to uz_movingAverageFilter_t instance
  * @param sample sample input of the moving average filter

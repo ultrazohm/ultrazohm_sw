@@ -254,4 +254,9 @@ void test_uz_PI_Controller_update_limits_assert_limits(void){
     float lower_limit = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(variables, lower_limit, upper_limit));
 }
+
+void test_uz_PI_Controller_assert_type_selection(void){
+    config.type = 3U;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
+}
 #endif // TEST

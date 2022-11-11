@@ -17,7 +17,7 @@ void tearDown(void)
 
 
 void test_uz_movingAverageFilter_sample(void){
-    float data [51] = {0};
+    float data [50] = {0};
     uz_array_float_t circularBuffer = {
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
@@ -41,7 +41,7 @@ void test_uz_movingAverageFilter_sample(void){
 }
 
 void test_uz_movingAverageFilter_efficient(void){
-    float data [51] = {0};
+    float data [50] = {0};
     uz_array_float_t circularBuffer = {
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
@@ -81,7 +81,7 @@ void test_uz_movingAverageFilter_efficient(void){
 }
 
 void test_uz_movingAverageFilter_reset(){
-    float data [51] = {0};
+    float data [50] = {0};
     uz_array_float_t circularBuffer = {
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
@@ -104,7 +104,7 @@ void test_uz_movingAverageFilter_reset(){
 
 
 void test_uz_movingAverageFilter_set_filterLength(){
-    float data [51] = {0};
+    float data [50] = {0};
     uz_array_float_t circularBuffer = {
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
@@ -138,6 +138,19 @@ void test_uz_movingAverageFilter_set_filterLength(){
     output = uz_movingAverageFilter_sample(filter,input2);
     TEST_ASSERT_EQUAL_FLOAT(output, (input1+input2)/(float)new_filterLength);
 
+}
+
+void test_uz_movingAverageFilter_assert_change_filterLength(){
+    float data [50] = {0};
+    uz_array_float_t circularBuffer = {
+        .length = UZ_ARRAY_SIZE(data),
+        .data = &data[0]
+    };
+    uz_movingAverageFilter_t* filter;
+    filter = uz_movingAverageFilter_init(config,circularBuffer);
+    uz_movingAverageFilter_sample(filter,2.0f);
+    uz_movingAverageFilter_set_filterLength(filter, 20U);
+    TEST_ASSERT_FAIL_ASSERT(uz_movingAverageFilter_sample(filter,2.5f));
 }
 
 void test_uz_movingAverageFilter_test_max_Filterlength(){

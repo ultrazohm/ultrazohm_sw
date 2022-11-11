@@ -1,6 +1,6 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
-* Copyright 2022 Josef Knoblach
+* Copyright 2022 Josef Knoblach, Dennis Hufnagel
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

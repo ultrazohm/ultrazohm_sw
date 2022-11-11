@@ -53,7 +53,7 @@ uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
     uz_assert(config.samplingTime_sec > 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
-	uz_assert(config.type <= 1);//Asserts if either parallel=0 or ideal=1 has been selected
+	uz_assert(config.type <= 1);//Asserts if neither parallel=0 nor ideal=1 has been selected
 	self->config = config;
 	return (self);
 }

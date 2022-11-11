@@ -28,3 +28,4 @@ IP Cores
     uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
     uz_pmsm_model_9ph_dq/uz_pmsm_model_9ph_dq
     uz_rs_flip_flop/uz_rs_flip_flop
+    uz_inverter_adapter/uz_inverter_adapter

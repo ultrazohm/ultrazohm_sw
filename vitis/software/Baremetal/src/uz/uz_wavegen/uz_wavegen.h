@@ -142,3 +142,5 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self);
  * @return uz_3ph_abc_t 
  */
 uz_3ph_abc_t uz_wavegen_three_phase_sample(float amplitude, float frequency_Hz, float offset);
+float uz_wavegen_sine_time(float amplitude, float frequency_Hz, float t_Sec);
+float uz_wavegen_sine_time_double(float amplitude, float frequency_Hz, double t_Sec);

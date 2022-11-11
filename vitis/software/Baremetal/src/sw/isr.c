@@ -31,6 +31,11 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "../uz/uz_wavegen/uz_wavegen.h"
+
+float wavegen_sine=0.0f;
+float wavegen_sine_float=0.0f;
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,7 +45,17 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+#define TICK_DEFINE 99999985U
 
+float current_global_time_current_version=0.0f;
+float current_global_time_fixed_float_calculations=0.0f;
+
+
+float wavegen_sine_current_version=0.0f;
+float wavegen_sine_double=0.0f;
+float wavegen_sine_float_mod=0.0f;
+float wavegen_sine_uint_mod=0.0f;
+float time_with_timestamp_mod=0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -54,6 +69,19 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    float frq=200.0f;
+    uint64_t timestamp=uz_SystemTime_GetGlobalTimeuint64();
+	uint64_t timestamp_mod=timestamp % (uint64_t)(frq*TICK_DEFINE);
+	time_with_timestamp_mod= (float)timestamp_mod * (1.0f / (float)TICK_DEFINE);
+
+    double time_touble=uz_SystemTime_GetGlobalTimeInSec_double();
+    wavegen_sine_uint_mod= uz_wavegen_sine_time(1.0f, frq,time_with_timestamp_mod);
+    wavegen_sine_current_version=uz_wavegen_sine(1.0f, frq);
+
+    wavegen_sine_double= uz_wavegen_sine_time_double(1.0f, frq,time_touble);
+
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

@@ -22,6 +22,21 @@
 #include "../uz_math_constants.h"
 #include "../uz_SystemTime/uz_SystemTime.h"
 
+
+float uz_wavegen_sine_time(float amplitude, float frequency_Hz, float t_Sec) {
+	uz_assert(frequency_Hz > 0.0f);
+	uz_assert(amplitude != 0.0f);
+	float angle = 2.0f * UZ_PIf * t_Sec * frequency_Hz;
+	return (amplitude * sinf(angle));
+}
+
+float uz_wavegen_sine_time_double(float amplitude, float frequency_Hz, double t_Sec) {
+	uz_assert(frequency_Hz > 0.0f);
+	uz_assert(amplitude != 0.0f);
+	double angle = 2.0f * M_PI * t_Sec * frequency_Hz;
+	return ( (float)amplitude * sin(angle));
+}
+
 float uz_wavegen_sine(float amplitude, float frequency_Hz) {
 	uz_assert(frequency_Hz > 0.0f);
 	uz_assert(amplitude != 0.0f);

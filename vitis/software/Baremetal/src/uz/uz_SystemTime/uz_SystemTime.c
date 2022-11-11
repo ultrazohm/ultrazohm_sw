@@ -109,3 +109,14 @@ float uz_SystemTime_GetGlobalTimeInSec() {
 	float current_global_time = timestamp * (1.0 / UZ_AXI_TIMER_CLOCK_FREQ);
 	return (current_global_time);
 }
+
+double uz_SystemTime_GetGlobalTimeInSec_double() {
+	uint64_t timestamp = uz_AxiTimer64Bit_ReadValue64Bit();
+	double current_global_time = timestamp * (1.0 / UZ_AXI_TIMER_CLOCK_FREQ);
+	return (current_global_time);
+}
+
+uint64_t uz_SystemTime_GetGlobalTimeuint64() {
+	uint64_t timestamp = uz_AxiTimer64Bit_ReadValue64Bit();
+	return (timestamp);
+}

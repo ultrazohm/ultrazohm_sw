@@ -33,6 +33,11 @@ static float System_UpTime_ms;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
+extern float wavegen_sine_current_version;
+extern float wavegen_sine_double;
+extern float wavegen_sine_float_mod;
+extern float wavegen_sine_uint_mod;
+extern float time_with_timestamp_mod;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -58,7 +63,10 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_wavegen_sine_org]		= &wavegen_sine_current_version;
+	js_ch_observable[JSO_wavegen_double]		= &wavegen_sine_double;
+	js_ch_observable[JSO_wavegen_uint_mod]		= &wavegen_sine_uint_mod;
+	js_ch_observable[JSO_timestamp_mod]		= &time_with_timestamp_mod;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;

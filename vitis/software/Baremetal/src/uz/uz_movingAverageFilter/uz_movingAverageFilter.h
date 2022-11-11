@@ -13,13 +13,15 @@ typedef struct uz_movingAverageFilter_t uz_movingAverageFilter_t;
  * @brief Configuration struct for movingAverageFilter. Accessible by the user.
  */
 struct uz_movingAverageFilter_config{
-	uint32_t filterLength;
+	uint32_t filterLength; /**<Length of the filter. Must larger than 0 and smaller or equal to the length of the cirucularBuffer array*/
 };
 
-/*
+/**
  * @brief Initialization of the moving Average Filter object
+ * 
  * @param config uz_movingAverageFilter_config configuration struct
- * @return pointer to uz_movingAverageFilter_t instance
+ * @param circularBuffer circularBuffer array. The length of the array will be the MAX_LENGTH of the filter
+ * @return uz_movingAverageFilter_t* pointer to uz_movingAverageFilter_t instance
  */
 uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFilter_config config, uz_array_float_t circularBuffer);
 
@@ -35,7 +37,6 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 /**
  * @brief Calculates one sample of the moving average filter with fixed filter length
  *
- * 
  * @param self pointer to uz_movingAverageFilter_t instance
  * @param sample sample input of the moving average filter
  * @return float output of the filter
@@ -51,8 +52,9 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
 
 /**
  * @brief Sets a new filter length
+ * 
  * @param self pointer to uz_movingAverageFilter_t instance
- * @param new_filterLength int for the new filter length
+ * @param new_filterLength new value for the filter length
  */
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uint32_t new_filterLength);
 

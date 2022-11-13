@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 16:25:02 on 07/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 15:43:31 on 11/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_vsd_and_park\hdlworkflow.m'
 %     Overwrite : true
@@ -90,64 +90,32 @@ hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_alpha', 'IO
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_alpha', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_alpha_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_alpha_axi', 'IOInterfaceMapping', 'x"104"');
-
-% Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_beta', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_beta', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_beta_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_beta_axi', 'IOInterfaceMapping', 'x"108"');
 
 % Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d_axi', 'IOInterfaceMapping', 'x"10C"');
-
-% Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q_axi', 'IOInterfaceMapping', 'x"110"');
 
 % Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x_axi', 'IOInterfaceMapping', 'x"114"');
-
-% Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y_axi', 'IOInterfaceMapping', 'x"118"');
 
 % Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_plus', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_plus', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_plus_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_plus_axi', 'IOInterfaceMapping', 'x"11C"');
-
-% Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_minus', 'IOInterface', 'External Port');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_minus', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_minus_axi', 'IOInterface', 'AXI4-Lite');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_0_minus_axi', 'IOInterfaceMapping', 'x"120"');
 
 % Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/done_vsd_and_park', 'IOInterface', 'External Port');

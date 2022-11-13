@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 13:32:51 on 08/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 12:42:20 on 13/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_min_cost_function\hdlworkflow.m'
 %     Overwrite : true
@@ -58,10 +58,6 @@ hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/phase_vol
 % Set Outport HDL parameters
 hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_min_cost_function_and_vopt', 'IOInterface', 'External Port');
 hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/done_min_cost_function_and_vopt', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/J_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Outport HDL parameters
 hdlset_param('parallel_8_min_cost_function/Min_cost_function_and_vopt1/Index', 'IOInterface', 'External Port');

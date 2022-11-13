@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 11:48:16 on 08/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 13:13:00 on 10/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_delay_compensation\hdlworkflow.m'
 %     Overwrite : true
@@ -129,22 +129,6 @@ hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1', 'IOInter
 % Set Outport HDL parameters
 hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_delay_compensation', 'IOInterface', 'External Port');
 hdlset_param('parallel_8_delay_compensation/Delay_compensation/done_delay_compensation', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_k_1_AXI', 'IOInterfaceMapping', 'x"14C"');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_k_1_AXI', 'IOInterfaceMapping', 'x"150"');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_k_1_AXI', 'IOInterfaceMapping', 'x"154"');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_k_1_AXI', 'IOInterfaceMapping', 'x"158"');
 
 
 %% Workflow Configuration Settings

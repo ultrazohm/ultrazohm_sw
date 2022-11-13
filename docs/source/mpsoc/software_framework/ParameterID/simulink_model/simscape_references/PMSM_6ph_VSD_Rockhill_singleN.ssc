@@ -1,0 +1,123 @@
+component PMSM_6ph_VSD_Rockhill_singleN
+    
+    nodes
+        a1 = foundation.electrical.electrical;              % a1:left
+        b1 = foundation.electrical.electrical;              % b1:left
+        c1 = foundation.electrical.electrical;              % c1:left
+        a2 = foundation.electrical.electrical;              % a2:left
+        b2 = foundation.electrical.electrical;              % b2:left
+        c2 = foundation.electrical.electrical;              % c2:left
+        neutral = foundation.electrical.electrical;         % neutral:left
+        Rot = foundation.mechanical.rotational.rotational;  % Rot:right
+        Case = foundation.mechanical.rotational.rotational; % Case:right
+    end
+    
+    parameters
+        psi_pm = { 1, 'Wb' };
+        L_d = { 1, 'H' };
+        L_q = { 1, 'H' };
+        L_ls = { 0.00016, 'H' };
+        Rs = { 1, 'Ohm' };
+        p = { 1, '1' };
+        n = { 9, '1' };
+    end
+    
+    variables
+        %Natural Currents
+        i_a1 = { 0, 'A' };
+        i_b1 = { 0, 'A' };
+        i_c1 = { 0, 'A' };
+        i_a2 = { 0, 'A' };
+        i_b2 = { 0, 'A' };
+        i_c2 = { 0, 'A' };
+        
+        %Transformed Currents
+        i_d = { 0, 'A' };
+        i_q = { 0, 'A' };
+        i_a = { 0, 'A' };
+        i_b = { 0, 'A' };
+        i_x = { 0, 'A' };
+        i_y = { 0, 'A' };
+        i_zp = { 0, 'A' };
+        i_zm = { 0, 'A' };
+        
+        %Transformed Voltages
+        u_d = { 0, 'V' };
+        u_q = { 0, 'V' };
+        u_a = { 0, 'V' };
+        u_b = { 0, 'V' }
+        u_x = { 0, 'V' };
+        u_y = { 0, 'V' };
+        u_zp = { 0, 'V' };
+        u_zm = { 0, 'V' };
+        
+        %Mechanical and others
+        m_m = { 0, 'N*m' };
+        theta = { 0, 'rad' };
+    end
+    
+    branches
+        i_a1: a1.i -> neutral.i;
+        i_b1: b1.i -> neutral.i;
+        i_c1: c1.i -> neutral.i;
+        
+        i_a2: a2.i -> neutral.i;
+        i_b2: b2.i -> neutral.i;
+        i_c2: c2.i -> neutral.i;
+        
+        m_m: Case.t -> Rot.t;
+    end
+    
+    equations
+        let
+            %Reference Voltages to GND
+            u_a1 = a1.v-neutral.v;
+            u_b1 = b1.v-neutral.v;
+            u_c1 = c1.v-neutral.v;
+            u_a2 = a2.v-neutral.v;
+            u_b2 = b2.v-neutral.v;
+            u_c2 = c2.v-neutral.v;
+            
+            %Rotation and Torque
+            w_mech = Rot.w - Case.w;
+            w_el = p * w_mech;
+            
+            %Calculate flux
+            psi_d  = L_d * i_d + psi_pm;
+            psi_q  = L_q * i_q;
+            psi_x = L_ls * i_x;
+            psi_y = L_ls * i_y;
+            psi_zp = L_ls * i_zp;
+            psi_zm = L_ls * i_zm;
+            
+            %Transformation Matrix
+            gamma = pi/n;
+            tl1 = [1  cos(4*gamma) cos(8*gamma)   cos(1*gamma)  cos(5*gamma) cos(9*gamma)];
+            tl2 = [0  sin(4*gamma) sin(8*gamma)   sin(1*gamma)  sin(5*gamma) sin(9*gamma)];
+            tl3 = [1  cos(5*4*gamma) cos(5*8*gamma)   cos(5*1*gamma)  cos(5*5*gamma) cos(5*9*gamma)];
+            tl4 = [0  sin(5*4*gamma) sin(5*8*gamma)   sin(5*1*gamma)  sin(5*5*gamma) sin(5*9*gamma)];
+            tl5 = [1  cos(3*4*gamma) cos(3*8*gamma)   cos(3*1*gamma)  cos(3*5*gamma) cos(3*9*gamma)];
+            tl6 = [0  sin(3*4*gamma) sin(3*8*gamma)   sin(3*1*gamma)  sin(3*5*gamma) sin(3*9*gamma)];
+            c = 2/6*cat(1,tl1,tl2,tl3,tl4,tl5,tl6);
+            
+        in
+            %Park Transformations [1, eq. 17]
+            [u_a; u_b; u_x; u_y; u_zp; u_zm] == c*[u_a1; u_b1; u_c1; u_a2; u_b2; u_c2];
+            [i_a; i_b; i_x; i_y; i_zp; i_zm] == c*[i_a1; i_b1; i_c1; i_a2; i_b2; i_c2];
+            [u_d; u_q] == [cos(theta) sin(theta);-sin(theta) cos(theta)]*[u_a;u_b];
+            [i_d; i_q] == [cos(theta) sin(theta);-sin(theta) cos(theta)]*[i_a;i_b];
+            
+            %Differential Equations (derived from [2])
+            u_d  == Rs*i_d  + psi_d.der - w_el*psi_q;
+            u_q  == Rs*i_q  + psi_q.der + w_el*psi_d;
+            u_x == Rs*i_x + psi_x.der;
+            u_y == Rs*i_y + psi_y.der;
+            u_zp == Rs*i_zp + psi_zp.der;
+            u_zm == Rs*i_zm + psi_zm.der;
+            
+            %Mechanical
+            theta.der == w_el;
+            m_m == p*6/2*(psi_pm*i_q+(L_d-L_q)*i_d*i_q);  
+        end
+    end
+end

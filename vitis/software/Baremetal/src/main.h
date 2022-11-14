@@ -69,6 +69,8 @@
 #include "IP_Cores/uz_prediction_and_cost_function_8/uz_prediction_and_cost_function_8.h"
 #include "IP_Cores/uz_min_cost_function_8/uz_min_cost_function_8.h"
 
+#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

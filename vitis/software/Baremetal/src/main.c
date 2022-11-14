@@ -118,14 +118,14 @@ uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* instance_min_cost_function_
 
 // IP-Cores for 6 Phase FCS-MPC parallel 8
 static struct uz_vsd_8_config_t config_vsd_8={
-   .base_address= XPAR_UZ_USER_PARALLEL_8_VSD_AND_P_0_BASEADDR,
+   .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_VSD_A_0_BASEADDR,
    .ip_clk_frequency_Hz=100000000,
    .theta_offset = 0.14608003f
 };
 uz_vsd_8_t* test_instance_vsd_8;
 
 static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_cost_function_8={
-    .base_address = XPAR_UZ_USER_PARALLEL_8_PREDICTIO_0_BASEADDR,
+    .base_address = XPAR_UZ_USER_PARALLEL_8_SIM_PREDI_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000000,
     .psiPM = 0.0048f,//measurement needed
     .Lq = 0.000147f,//[H]
@@ -143,7 +143,7 @@ static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_c
 uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
 
 static struct uz_delay_compensation_8_config_t config_delay_compensation_8={
-    .base_address= XPAR_UZ_USER_PARALLEL_8_DELAY_COM_0_BASEADDR,
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_DELAY_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
     .psiPM = 0.0048f,
     .Lq =0.000147f,//[H]
@@ -157,17 +157,27 @@ static struct uz_delay_compensation_8_config_t config_delay_compensation_8={
 uz_delay_compensation_8_t* test_instance_delay_compensation_8;
 
 static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
-    .base_address= XPAR_UZ_USER_PARALLEL_8_PHASE_VOL_0_BASEADDR,
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_PHASE_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
     .theta_el_offset=0.14608003f,//needs to be asked
     .u_dc_link_voltage=36.0f,//needs to be asked
 };
-
+/*
 static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
-    .base_address= XPAR_UZ_USER_PARALLEL_8_MIN_COST_0_BASEADDR,
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_MIN_C_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
 };
 uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+*/
+
+struct uz_incrementalEncoder_config testconfig={
+  .base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
+  .ip_core_frequency_Hz=50000000U,
+  .line_number_per_turn_mech=5000U,
+  .OmegaPerOverSample_in_rpm=500.0f,
+  .drive_pole_pair=5U
+};
+uz_incrementalEncoder_t* test_instance_Encoder;
 
 int main(void)
 {
@@ -206,7 +216,8 @@ int main(void)
             test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
             test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
             uz_phase_voltages_8_init(config_phase_voltages_8);
-            test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
+            //test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
+            test_instance_Encoder=uz_incrementalEncoder_init(testconfig);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

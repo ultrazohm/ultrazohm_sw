@@ -21,6 +21,7 @@ component PMSM_6ph_VSD_Rockhill_isolatedN
         Rs = { 1, 'Ohm' };
         p = { 1, '1' };
         n = { 6, '1' };
+        theta_offset = {0, 'rad'};
     end
     
     variables
@@ -117,7 +118,7 @@ component PMSM_6ph_VSD_Rockhill_isolatedN
             u_zm == Rs*i_zm + psi_zm.der;
             
             %Mechanical
-            theta.der == w_el;
+            theta.der == w_el + theta_offset*{1,'1/s'};
             m_m == p*6/2*(psi_pm*i_q+(L_d-L_q)*i_d*i_q);  
         end
     end

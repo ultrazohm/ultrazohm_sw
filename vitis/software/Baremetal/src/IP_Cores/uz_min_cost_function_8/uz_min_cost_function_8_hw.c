@@ -3,6 +3,7 @@
 #include "uz_min_cost_function_8_hwAddresses.h"
 #include "../../uz/uz_fixedpoint/uz_fixedpoint.h"
 
+/*
 int32_t uz_min_cost_function_8_hw_get_Index_out_AXI(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
@@ -20,3 +21,4 @@ float uz_min_cost_function_8_hw_get_J_out_AXI(uint32_t base_address)
         .is_signed = true};
     return uz_fixedpoint_axi_read(base_address + J_AXI_Data_parallel_8_min_cost_function, fixedpoint_definition);
 }
+*/

@@ -57,6 +57,7 @@ void test_uz_delay_compensation_8_init_test(void)
     uz_delay_compensation_8_init(config);
 }
 
+/*
 void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_test(void)
 {
     uz_delay_compensation_8_set_psiPM_Expect(config.base_address, config.psiPM);
@@ -96,4 +97,6 @@ void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_pointer(void)
     uz_delay_compensation_8_t* testpointer = NULL;
     TEST_ASSERT_FAIL_ASSERT(uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(testpointer));
 }
+*/
+
 #endif // TEST

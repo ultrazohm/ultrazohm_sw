@@ -31,7 +31,7 @@ uz_min_cost_function_8_t* uz_min_cost_function_8_init(struct uz_min_cost_functio
     self->config = config;
    return (self);
 }
-
+/*
 int32_t uz_min_cost_function_8_read_Index_out(uz_min_cost_function_8_t* self){
     
     uz_assert_not_NULL(self);
@@ -53,5 +53,5 @@ float uz_min_cost_function_8_get_J_out_AXI(uz_min_cost_function_8_t* self){
 
     return J_out_AXI;
 }
-
+*/
 #endif

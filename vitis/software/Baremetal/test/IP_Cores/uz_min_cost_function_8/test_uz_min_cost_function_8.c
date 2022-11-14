@@ -31,6 +31,7 @@ void test_uz_min_cost_function_8_init_test(void)
     uz_min_cost_function_8_init(config);
 }
 
+/*
 void test_uz_min_cost_function_8_read_Index_out_test(void)
 {
    
@@ -68,4 +69,5 @@ void test_uz_min_cost_function_8_get_J_AXI_test_pointer(void)
     uz_min_cost_function_8_t* testpointer = NULL;
     TEST_ASSERT_FAIL_ASSERT(uz_min_cost_function_8_get_J_out_AXI(testpointer));
 }
+*/
 #endif // TEST

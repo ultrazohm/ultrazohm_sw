@@ -3,16 +3,6 @@
 #include <stdint.h>
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
-/**
- * @brief Object data type definitions of the output AXI_values for the delay_compensation_8 IP-Core driver
- * 
- */
-typedef struct uz_6ph_idk1_iqk1_ixk1_iyk1_t{
-    float id_k_1;    /**< Amplitude of the predicted id component */
-    float iq_k_1;     /**< Amplitude of the predicted iq component */
-    float ix_k_1;        /**< Amplitude of the predicted ix component */
-    float iy_k_1;        /**< Amplitude of the predicted iy component */
-}uz_6ph_idk1_iqk1_ixk1_iyk1_t;
 
 /**
  * @brief Object data type definition of the delay_compensation_8 IP-Core driver
@@ -40,13 +30,5 @@ struct uz_delay_compensation_8_config_t{
  * @return uz_delay_compensation_8_t* Pointer to an initialized instance of the driver
  */
 uz_delay_compensation_8_t* uz_delay_compensation_8_init(struct uz_delay_compensation_8_config_t config);
-
-/**
- * @brief Read the predicted output currents id_k_1, iq_k_1, ix_k_1 and iy_k_1 from the IP-Core and return them
- *
- * @param self Pointer to driver instance
- * @return uz_6ph_idk1_iqk1_ixk1_iyk1_t
- */
-uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_8_t* self);
 
 #endif // UZ_DELAY_COMPENSATION_8_H

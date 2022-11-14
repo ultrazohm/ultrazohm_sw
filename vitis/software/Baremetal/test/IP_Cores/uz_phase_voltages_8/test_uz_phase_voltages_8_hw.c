@@ -18,8 +18,13 @@ void tearDown(void)
 }
 
 void test_uz_phase_voltages_8_set_theta_el_offset(void){
+        struct uz_fixedpoint_definition_t def={
+        .is_signed=true,
+        .fractional_bits=20,
+        .integer_bits=4
+    };
     float theta_el_offset = 1.35f;
-    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+theta_el_offset_AXI_Data_parallel_8_phase_voltages,theta_el_offset);
+    uz_fixedpoint_axi_write_Expect(TEST_BASE_ADDRESS+theta_el_offset_AXI_Data_parallel_8_sim_phase_voltages,theta_el_offset,def);
     uz_phase_voltages_8_set_theta_el_offset(TEST_BASE_ADDRESS,theta_el_offset);
 }
 
@@ -30,7 +35,7 @@ void test_uz_phase_voltages_8_set_theta_el_offset_fail_due_to_zero_base_address(
 
 void test_uz_phase_voltages_8_set_u_dc_link_voltage(void){
     float u_dc_link_voltage = 560.0f;
-    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+u_dc_link_voltage_AXI_Data_parallel_8_phase_voltages,u_dc_link_voltage);
+    uz_axi_write_float_Expect(TEST_BASE_ADDRESS+u_dc_link_voltage_AXI_Data_parallel_8_sim_phase_voltages,u_dc_link_voltage);
     uz_phase_voltages_8_set_u_dc_link_voltage(TEST_BASE_ADDRESS,u_dc_link_voltage);
 }
 

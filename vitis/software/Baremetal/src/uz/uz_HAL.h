@@ -11,7 +11,6 @@
 #include "xil_printf.h"
 #include "sleep.h"
 
-//#define __FILENAME__ strrchr(__FILE__, '/') + 1
 #define __FILENAME__ strstr(__FILE__, "src")
 
 /**

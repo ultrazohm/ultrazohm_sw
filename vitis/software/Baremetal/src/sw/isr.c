@@ -172,13 +172,13 @@ extern float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
 
 //extern uz_min_cost_function_8_t* test_instance_min_cost_function_8;
 
-/*
+
 float theta_el_measured;
 float theta_el_offset;
 float theta_el;
 
 uz_6ph_dq_t d_q_x_y_0p_0n_currents;
-*/
+
 
 extern uz_incrementalEncoder_t* test_instance_Encoder;
 
@@ -259,12 +259,12 @@ void ISR_Control(void *data)
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
 
-    /*
+
     theta_el_measured=uz_incrementalEncoder_get_theta_el(test_instance_Encoder);
     theta_el=theta_el_measured-theta_el_offset;
 
     d_q_x_y_0p_0n_currents=uz_transformation_asym30deg_6ph_abc_to_dq(a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation, theta_el);
-*/
+
 
     //crude over current protection
       if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values.id_ref) > 15.0f || fabs(updated_values.iq_ref) > 15.0f || fabs(updated_values.ix_ref) > 15.0f || fabs(updated_values.iy_ref) > 15.0f)) {

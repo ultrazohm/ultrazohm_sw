@@ -64,7 +64,7 @@ float uz_exp_smooth_sample (uz_exp_smooth_t *self, float input)
     else
     {
         self->actual_sample = input;
-        output = self->alpha * self->actual_sample + (1.0f - self->alpha) * self->old_sample;
+        output = (self->alpha * self->actual_sample) + ((1.0f - self->alpha) * self->old_sample);
         self->old_sample = self->actual_sample;
     }
     return (output);

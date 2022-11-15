@@ -104,7 +104,7 @@ The current angle :math:`\beta` describes the angle between the q-axis and the s
 Therefore, :math:`\beta=\arctan{\big( \frac{-i_d}{i_q} \big) }`.
 For machines with :math:`L_d=L_q` only the blue torque curve applies.
 Therefore, current in the :math:`a`-phase prompts the rotor to move into the :math:`\alpha`-axis aligning the peak of the torque with the d-axis.
-If :math:`L_d \neq L_q`, the blue curve is superimposed with the blue curve yielding the resulting torque (black line).
+If :math:`L_d \neq L_q`, the blue curve is superimposed with the red curve yielding the resulting torque (black line).
 Thus, current in the :math:`a`-phase does not align the :math:`\alpha`-axis with the d-axis but with an angle that is skewed depending on the specific values of the inductances :math:`L_d`, :math:`L_q`, and flux linkage of the permanent magnet :math:`\psi_{PM}`.
 The method for determining the encoder offset :math:`\vartheta_{el,offset}` must not be used on a machine with :math:`L_d \neq L_q`.
 

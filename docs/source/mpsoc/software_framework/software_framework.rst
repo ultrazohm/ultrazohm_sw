@@ -14,6 +14,7 @@ Software Framework
     uz_Transformation/uz_Transformation
     FOC/FOC
     newton_raphson/newton_raphson
+    movingAverage/movingAverage
     linear_decoupling/linear_decoupling
     piController/piController
     PMSM_config/uz_PMSM_config

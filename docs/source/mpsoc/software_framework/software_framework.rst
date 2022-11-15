@@ -19,6 +19,7 @@ Software Framework
     piController/piController
     PMSM_config/uz_PMSM_config
     signals/signals
+    exponential_smoothing/uz_exp_smooth
     space_vector_limitation/space_vector_limitation
     SpeedControl/SpeedControl
     wavegen/wavegen

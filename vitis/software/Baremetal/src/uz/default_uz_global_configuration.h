@@ -76,4 +76,5 @@
     #define UZ_SUM_MAX_INSTANCES                            5U
     #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            50U
     #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
+    #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
 #endif

@@ -5,14 +5,14 @@ Exponential smoothing filter
 ==============================
 
 Implemented is a simple exponential smoothing filter, which has a infinite impulse response.
-The implementation is equivalent to the existing IIR-Filter (see :ref:`IIR filter <uz_IIR_filter>`). The IIR-Filter calculate the smoothing factor with a cutoff frequency and a RC-element.
+The implementation is equivalent to the IIR-Filter (see :ref:`IIR filter <uz_IIR_filter>`).
+The IIR-Filter calculates the smoothing factor with a cutoff frequency and a RC-element.
 The exponential smoothing filter uses a fixed smoothing factor, the basic implementation is given by the formula[[#exponentialsmooth]_]:
 
 .. math::    
-    y_0 = x_0
 
-.. math::  
-    y[i] = \alpha \cdot y[i] + (1-\alpha) \cdot (y[i-1]^*)
+    y_0 &= x_0 \\
+    y[i] &= \alpha \cdot y[i] + (1-\alpha) \cdot y[i-1]
 
 Example
 =======
@@ -30,7 +30,7 @@ Example
      filtered_signal = uz_exp_smooth_sample(test_instance, unfiltered_signal);
   }
 
-.. note :: The current implementation of the filter uses the first value from the unfiltered signal as the first output.
+.. note :: The implementation of the filter uses the first value from the unfiltered signal as the first output (first sample).
 
 Reference
 =========

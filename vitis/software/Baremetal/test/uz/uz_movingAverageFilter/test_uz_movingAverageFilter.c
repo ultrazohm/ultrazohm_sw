@@ -14,20 +14,15 @@ void tearDown(void)
 {
 }
 
-
-
 void test_uz_movingAverageFilter_sample(void){
     float data [50] = {0};
     uz_array_float_t circularBuffer = {
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
     };
-    uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config, circularBuffer);
+    uz_movingAverageFilter_t* filter = uz_movingAverageFilter_init(config, circularBuffer);
     float input1 = 1.0f;
-    float output;
-
-    output = uz_movingAverageFilter_sample(filter,input1);
+    float output = uz_movingAverageFilter_sample(filter,input1);
     TEST_ASSERT_EQUAL_FLOAT(output, input1/(float)config.filterLength);
 
     float input2 = 6.0f;
@@ -46,12 +41,9 @@ void test_uz_movingAverageFilter_efficient(void){
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
     };
-    uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config,circularBuffer);
+    uz_movingAverageFilter_t* filter = uz_movingAverageFilter_init(config,circularBuffer);
     float input1 = 1.0f;
-    float output;
-
-    output = uz_movingAverageFilter_sample(filter,input1);
+    float output = uz_movingAverageFilter_sample(filter,input1);
     TEST_ASSERT_EQUAL_FLOAT(output, input1/(float)config.filterLength);
 
     float input2 = 6.0f;
@@ -62,17 +54,13 @@ void test_uz_movingAverageFilter_efficient(void){
     output = uz_movingAverageFilter_sample(filter,input3);
     TEST_ASSERT_EQUAL_FLOAT(output, (input1+input2+input3)/(float)config.filterLength);
     
-    
-
     uz_movingAverageFilter_reset(filter);
-    uz_movingAverageFilter_set_filterLength(filter, 2);
+    uz_movingAverageFilter_set_filterLength(filter, 2U);
     output = uz_movingAverageFilter_sample(filter,input1);
     TEST_ASSERT_EQUAL_FLOAT(output, (input1)/2.0f);
 
-
     output = uz_movingAverageFilter_sample(filter,input2);
     TEST_ASSERT_EQUAL_FLOAT(output, (input1)/2.0f + (input2)/2.0f);
-
 
     output = uz_movingAverageFilter_sample(filter,input3);
     TEST_ASSERT_EQUAL_FLOAT(output, (input2)/2.0f + (input3)/2.0f);
@@ -86,20 +74,15 @@ void test_uz_movingAverageFilter_reset(){
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
     };
-    uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config,circularBuffer);
+    uz_movingAverageFilter_t* filter = uz_movingAverageFilter_init(config,circularBuffer);
     float input1 = 1.0f;
-    float output;
-
-    output = uz_movingAverageFilter_sample(filter,input1);
+    float output = uz_movingAverageFilter_sample(filter,input1);
 
     uz_movingAverageFilter_reset(filter);
 
     float input2 = 0.0f;
     output = uz_movingAverageFilter_sample(filter, input2);
     TEST_ASSERT_EQUAL_FLOAT(output, 0.0f);
-
-
 }
 
 
@@ -109,25 +92,21 @@ void test_uz_movingAverageFilter_set_filterLength(){
         .length = UZ_ARRAY_SIZE(data),
         .data = &data[0]
     };
-    uz_movingAverageFilter_t* filter;
-    filter = uz_movingAverageFilter_init(config,circularBuffer);
+    uz_movingAverageFilter_t* filter = uz_movingAverageFilter_init(config,circularBuffer);
 
-    uint32_t new_filterLength = 1;
+    uint32_t new_filterLength = 1U;
     uz_movingAverageFilter_set_filterLength(filter, new_filterLength);
 
     float input1 = 1.0f;
-    float output;
-
-    output = uz_movingAverageFilter_sample(filter,input1);
+    float output = uz_movingAverageFilter_sample(filter,input1);
     TEST_ASSERT_EQUAL_FLOAT(output, input1);
 
     float input2 = 1.5f;
     output = uz_movingAverageFilter_sample(filter,input2);
     TEST_ASSERT_EQUAL_FLOAT(output, input2);
 
-
     uz_movingAverageFilter_reset(filter);
-    new_filterLength = 10;
+    new_filterLength = 10U;
     uz_movingAverageFilter_set_filterLength(filter, new_filterLength);
     
     input1 = 1.0f;
@@ -137,7 +116,6 @@ void test_uz_movingAverageFilter_set_filterLength(){
     input2 = 1.5f;
     output = uz_movingAverageFilter_sample(filter,input2);
     TEST_ASSERT_EQUAL_FLOAT(output, (input1+input2)/(float)new_filterLength);
-
 }
 
 void test_uz_movingAverageFilter_assert_change_filterLength(){
@@ -167,9 +145,8 @@ void test_uz_movingAverageFilter_test_max_Filterlength(){
         result[i] = result[i-1U] + (input[i] / (float)config.filterLength);
     } 
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
     for (uint32_t i = 0; i < config.filterLength; i++) {
-        output = uz_movingAverageFilter_sample(filter,input[i]);
+       float output = uz_movingAverageFilter_sample(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
     }
 
@@ -204,9 +181,8 @@ void test_uz_movingAverageFilter_variable_length_test_max_Filterlength(){
         result[i] = result[i-1U] + (input[i] / (float)config.filterLength);
     } 
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
     for (uint32_t i = 0; i < config.filterLength; i++) {
-        output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
+       float output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
     }
 }
@@ -225,9 +201,8 @@ void test_uz_movingAverageFilter_variable_length_test_filterlength_half_of_max_l
         result[i] = result[i-1U] + (input[i] / (float)config.filterLength);
     } 
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
     for (uint32_t i = 0; i < config.filterLength; i++) {
-        output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
+        float output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
     }
 }
@@ -243,9 +218,8 @@ void test_uz_movingAverageFilter_variable_length_test_filterlength_quarter_of_ma
     };
     config.filterLength = 5U;
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
     for (uint32_t i = 0; i < 20U; i++) {
-        output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
+        float output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
     }
 }
@@ -261,9 +235,9 @@ void test_uz_movingAverageFilter_variable_length_test_increase_filter_length(){
     };
     config.filterLength = 5U;
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
+    float output=0.0f;
     for (uint32_t i = 0; i < 10U; i++) {
-        output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
+       float output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
     }
     config.filterLength = 15U;
@@ -284,7 +258,7 @@ void test_uz_movingAverageFilter_variable_length_test_decrease_filter_length(){
     };
     config.filterLength = 15U;
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
+    float output=0.0f;
     for (uint32_t i = 0; i < 5U; i++) {
         output = uz_movingAverageFilter_sample_variable_length(filter,input[i]);
         TEST_ASSERT_EQUAL_FLOAT(result[i], output);
@@ -307,7 +281,7 @@ void test_uz_movingAverageFilter_variable_length_test_increase_filter_length_by_
     };
     config.filterLength = 1U;
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
+    float output=0.0f;
     //Increase filter length by 1 each loop
     for (uint32_t i = 0; i < 20U; i++) {
         uz_movingAverageFilter_set_filterLength(filter, (i + 1U));
@@ -327,7 +301,7 @@ void test_uz_movingAverageFilter_variable_length_test_decrease_filter_length_by_
     };
     config.filterLength = 20U;
     uz_movingAverageFilter_t*  filter = uz_movingAverageFilter_init(config,circularBuffer);
-    float output;
+    float output=0.0f;
     //Fill ringbuffer with values
     for (uint32_t i = 0; i < 20U; i++) {
         uz_movingAverageFilter_sample_variable_length(filter,input[i]);

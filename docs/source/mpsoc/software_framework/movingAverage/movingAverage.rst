@@ -99,7 +99,7 @@ Example of initialization for two independent moving average filters:
      };
 
      uz_movingAverageFilter_t* SMA_instance_1 = uz_movingAverageFilter_init(config_SMA_1, circularBuffer_1);
-     uz_movingAverageFilter_t* SMA_instance_2 = uz_movingAverageFilter_init(config_SMA_2, circularBuffer)_2;
+     uz_movingAverageFilter_t* SMA_instance_2 = uz_movingAverageFilter_init(config_SMA_2, circularBuffer_2);
   }
 
 

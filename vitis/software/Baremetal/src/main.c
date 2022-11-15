@@ -169,7 +169,7 @@ static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
 };
 uz_min_cost_function_8_t* test_instance_min_cost_function_8;
 */
-
+/*
 struct uz_incrementalEncoder_config testconfig={
   .base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
   .ip_core_frequency_Hz=50000000U,
@@ -178,7 +178,7 @@ struct uz_incrementalEncoder_config testconfig={
   .drive_pole_pair=5U
 };
 uz_incrementalEncoder_t* test_instance_Encoder;
-
+*/
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -217,7 +217,7 @@ int main(void)
             test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
             uz_phase_voltages_8_init(config_phase_voltages_8);
             //test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
-            test_instance_Encoder=uz_incrementalEncoder_init(testconfig);
+            //test_instance_Encoder=uz_incrementalEncoder_init(testconfig);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

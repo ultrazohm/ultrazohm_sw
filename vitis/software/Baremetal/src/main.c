@@ -88,7 +88,7 @@ uz_resonantController_t* rc_9H_z2;
 
 const struct uz_resonantController_config config_R = {
 		.sampling_time = 0.0001f,
-		.gain = 55f,
+		.gain = 55.0f,
 		.harmonic_order = 2.0f,
 		.fundamental_frequency = 10.0f,
 		.lower_limit = -4.0f,

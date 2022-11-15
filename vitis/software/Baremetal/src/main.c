@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "Codegen/uz_codegen.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -39,6 +40,11 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+
+//Define uz_codegen codegenInstance as a global variable in main.c of the Baremetal project
+uz_codegen codegenInstance;
+
+
 
 enum init_chain
 {
@@ -72,6 +78,8 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+            //Call the init function (uz_codegen_init(&codegenInstance)) inside the main
+            uz_codegen_init(&codegenInstance);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

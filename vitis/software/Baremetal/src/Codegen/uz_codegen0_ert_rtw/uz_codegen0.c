@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 4.3
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Nov 10 13:53:07 2022
+ * C/C++ source code generated on : Fri Nov 11 16:27:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -27,7 +27,7 @@
 static void SwitchCaseActionSubsystem3(real32_T *rty_Out1);
 static void MATLABFunction(real32_T rtu_i_im, real32_T rtu_w, boolean_T
   *rty_Betrieb);
-static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
+static void MATLABFunction_i(creal32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
   creal32_T rtu_Psi_PM_W, real32_T rtu_I_re, real32_T rtu_I_im, real32_T
   rtu_omega_el, uint8_T rtu_enable, real32_T *rty_I_re_mit, real32_T
   *rty_I_im_mit, real32_T *rty_I_re_gegen, real32_T *rty_I_im_gegen, real32_T
@@ -43,7 +43,7 @@ static void Strangstromregler_asymetr_Reset(DW_Strangstromregler_asymetrisc
 static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   real32_T rtu_I_S, real32_T rtu_w1, real32_T rtu_U_ZK1, uint8_T
   rtu_enable_compensation_current, real32_T rtu_Theta_u, real32_T
-  rtu_Theta_u_back, real32_T rtu_I_im_CT, real32_T rtu_Psi_PM, creal32_T
+  rtu_Theta_u_back, real32_T rtu_I_im_CT, creal32_T rtu_Psi_PM, creal32_T
   rtu_Psi_PM_n, creal32_T rtu_Psi_PM_k, real32_T *rty_a, real32_T *rty_I_ref1,
   real32_T rtp_Offset_S, real32_T rtp_Offset_gegen, real32_T rtp_Offset_null,
   DW_Strangstromregler_asymetrisc *localDW);
@@ -108,7 +108,7 @@ static void MATLABFunction(real32_T rtu_i_im, real32_T rtu_w, boolean_T
  *    '<S43>/MATLAB Function'
  *    '<S56>/MATLAB Function'
  */
-static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
+static void MATLABFunction_i(creal32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
   creal32_T rtu_Psi_PM_W, real32_T rtu_I_re, real32_T rtu_I_im, real32_T
   rtu_omega_el, uint8_T rtu_enable, real32_T *rty_I_re_mit, real32_T
   *rty_I_im_mit, real32_T *rty_I_re_gegen, real32_T *rty_I_im_gegen, real32_T
@@ -145,16 +145,16 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
     real32_T I_V_re_tmp_0;
     real32_T I_W_im;
     real32_T U_sym_komp_hilf_tmp;
+    real32_T U_sym_komp_hilf_tmp_0;
     real32_T U_sym_komp_idx_4_im;
     real32_T U_sym_komp_idx_4_re;
     real32_T U_sym_komp_idx_7_im;
     real32_T U_sym_komp_idx_7_re;
-    real32_T bi;
     real32_T bi_tmp;
     real32_T bim;
     real32_T brm;
+    real32_T rtu_Psi_PM_U_idx_0_im;
     real32_T rtu_Psi_PM_U_idx_0_re;
-    real32_T rtu_Psi_PM_U_idx_1_re;
 
     /* '<S36>:1:5' p=18; */
     /*  Polpaarzahl */
@@ -178,26 +178,31 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
     /*  Phase 1,2,3 */
     /*  */
     /* '<S36>:1:20' U_sym_komp_hilf=single((inv(T)*U)); */
-    rtu_Psi_PM_U_idx_0_re = rtu_omega_el * rtu_Psi_PM_U;
-    rtu_Psi_PM_U_idx_1_re = rtu_omega_el * rtu_Psi_PM_V.re;
-    U_sym_komp_idx_4_im = rtu_omega_el * rtu_Psi_PM_V.im;
-    U_sym_komp_idx_7_re = rtu_omega_el * rtu_Psi_PM_W.re;
-    U_sym_komp_idx_7_im = rtu_omega_el * rtu_Psi_PM_W.im;
+    rtu_Psi_PM_U_idx_0_re = rtu_omega_el * rtu_Psi_PM_U.re;
+    rtu_Psi_PM_U_idx_0_im = rtu_omega_el * rtu_Psi_PM_U.im;
+    U_sym_komp_idx_4_im = rtu_omega_el * rtu_Psi_PM_V.re;
+    U_sym_komp_idx_7_re = rtu_omega_el * rtu_Psi_PM_V.im;
+    U_sym_komp_idx_7_im = rtu_omega_el * rtu_Psi_PM_W.re;
+    U_sym_komp_idx_4_re = rtu_omega_el * rtu_Psi_PM_W.im;
     for (localDW->i = 0; localDW->i < 3; localDW->i++) {
-      localDW->U_sym_komp_hilf_m.re = a[localDW->i].re * rtu_Psi_PM_U_idx_0_re;
-      localDW->U_sym_komp_hilf_m.im = a[localDW->i].im * rtu_Psi_PM_U_idx_0_re;
-      U_sym_komp_idx_4_re = a[localDW->i + 3].re;
-      U_sym_komp_hilf_tmp = a[localDW->i + 3].im;
-      localDW->U_sym_komp_hilf_m.re += U_sym_komp_idx_4_re *
-        rtu_Psi_PM_U_idx_1_re - U_sym_komp_hilf_tmp * U_sym_komp_idx_4_im;
-      localDW->U_sym_komp_hilf_m.im += U_sym_komp_idx_4_re * U_sym_komp_idx_4_im
-        + U_sym_komp_hilf_tmp * rtu_Psi_PM_U_idx_1_re;
-      U_sym_komp_idx_4_re = a[localDW->i + 6].re;
-      U_sym_komp_hilf_tmp = a[localDW->i + 6].im;
-      localDW->U_sym_komp_hilf_m.re += U_sym_komp_idx_4_re * U_sym_komp_idx_7_re
-        - U_sym_komp_hilf_tmp * U_sym_komp_idx_7_im;
-      localDW->U_sym_komp_hilf_m.im += U_sym_komp_idx_4_re * U_sym_komp_idx_7_im
-        + U_sym_komp_hilf_tmp * U_sym_komp_idx_7_re;
+      U_sym_komp_hilf_tmp = a[localDW->i].re;
+      U_sym_komp_hilf_tmp_0 = a[localDW->i].im;
+      localDW->U_sym_komp_hilf_m.re = U_sym_komp_hilf_tmp *
+        rtu_Psi_PM_U_idx_0_re - U_sym_komp_hilf_tmp_0 * rtu_Psi_PM_U_idx_0_im;
+      localDW->U_sym_komp_hilf_m.im = U_sym_komp_hilf_tmp *
+        rtu_Psi_PM_U_idx_0_im + U_sym_komp_hilf_tmp_0 * rtu_Psi_PM_U_idx_0_re;
+      U_sym_komp_hilf_tmp = a[localDW->i + 3].re;
+      U_sym_komp_hilf_tmp_0 = a[localDW->i + 3].im;
+      localDW->U_sym_komp_hilf_m.re += U_sym_komp_hilf_tmp * U_sym_komp_idx_4_im
+        - U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_7_re;
+      localDW->U_sym_komp_hilf_m.im += U_sym_komp_hilf_tmp * U_sym_komp_idx_7_re
+        + U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_4_im;
+      U_sym_komp_hilf_tmp = a[localDW->i + 6].re;
+      U_sym_komp_hilf_tmp_0 = a[localDW->i + 6].im;
+      localDW->U_sym_komp_hilf_m.re += U_sym_komp_hilf_tmp * U_sym_komp_idx_7_im
+        - U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_4_re;
+      localDW->U_sym_komp_hilf_m.im += U_sym_komp_hilf_tmp * U_sym_komp_idx_4_re
+        + U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_7_im;
       localDW->U_sym_komp_hilf[localDW->i] = localDW->U_sym_komp_hilf_m;
     }
 
@@ -210,15 +215,15 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
     /*  Gegenkomponente */
     /* '<S36>:1:27' U_sym_komp(2,1)=single(U_sym_komp_hilf(2)*1); */
     /* '<S36>:1:28' U_sym_komp(2,2)=single(U_sym_komp_hilf(2)*a); */
-    rtu_Psi_PM_U_idx_1_re = localDW->U_sym_komp_hilf[1].re * -0.5F;
-    U_sym_komp_idx_4_re = rtu_Psi_PM_U_idx_1_re - localDW->U_sym_komp_hilf[1].im
+    rtu_Psi_PM_U_idx_0_im = localDW->U_sym_komp_hilf[1].re * -0.5F;
+    U_sym_komp_idx_4_re = rtu_Psi_PM_U_idx_0_im - localDW->U_sym_komp_hilf[1].im
       * 0.866025388F;
     rtu_Psi_PM_U_idx_0_re = localDW->U_sym_komp_hilf[1].im * -0.5F;
     U_sym_komp_idx_4_im = localDW->U_sym_komp_hilf[1].re * 0.866025388F +
       rtu_Psi_PM_U_idx_0_re;
 
     /* '<S36>:1:29' U_sym_komp(2,3)=single(U_sym_komp_hilf(2)*a^2); */
-    U_sym_komp_idx_7_re = rtu_Psi_PM_U_idx_1_re - localDW->U_sym_komp_hilf[1].im
+    U_sym_komp_idx_7_re = rtu_Psi_PM_U_idx_0_im - localDW->U_sym_komp_hilf[1].im
       * -0.866025388F;
     U_sym_komp_idx_7_im = localDW->U_sym_komp_hilf[1].re * -0.866025388F +
       rtu_Psi_PM_U_idx_0_re;
@@ -238,75 +243,77 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
     /* '<S36>:1:42' I_compensation_sym_components=single((inv(T)*I_compensation)); */
     /* .*[1 a^2 a; 1 a a^2;1 1 1])); */
     /* '<S36>:1:43' I_compensation_sym_components=single(I_compensation_sym_components.*exp(1i*(pi/2))); */
-    rtu_Psi_PM_U_idx_1_re = (localDW->U_sym_komp_hilf[1].re +
+    rtu_Psi_PM_U_idx_0_im = (localDW->U_sym_komp_hilf[1].re +
       localDW->U_sym_komp_hilf[2].re) * rtu_I_im;
     U_sym_komp_hilf_tmp = (localDW->U_sym_komp_hilf[1].im +
       localDW->U_sym_komp_hilf[2].im) * rtu_I_im;
     localDW->br = (localDW->U_sym_komp_hilf[0].re + localDW->U_sym_komp_hilf[1].
                    re) + localDW->U_sym_komp_hilf[2].re;
-    bi = (localDW->U_sym_komp_hilf[0].im + localDW->U_sym_komp_hilf[1].im) +
-      localDW->U_sym_komp_hilf[2].im;
-    if (bi == 0.0F) {
+    U_sym_komp_hilf_tmp_0 = (localDW->U_sym_komp_hilf[0].im +
+      localDW->U_sym_komp_hilf[1].im) + localDW->U_sym_komp_hilf[2].im;
+    if (U_sym_komp_hilf_tmp_0 == 0.0F) {
       if (-U_sym_komp_hilf_tmp == 0.0F) {
-        rtu_Psi_PM_U_idx_0_re = -rtu_Psi_PM_U_idx_1_re / localDW->br;
-        rtu_Psi_PM_U_idx_1_re = 0.0F;
-      } else if (-rtu_Psi_PM_U_idx_1_re == 0.0F) {
+        rtu_Psi_PM_U_idx_0_re = -rtu_Psi_PM_U_idx_0_im / localDW->br;
+        rtu_Psi_PM_U_idx_0_im = 0.0F;
+      } else if (-rtu_Psi_PM_U_idx_0_im == 0.0F) {
         rtu_Psi_PM_U_idx_0_re = 0.0F;
-        rtu_Psi_PM_U_idx_1_re = -U_sym_komp_hilf_tmp / localDW->br;
+        rtu_Psi_PM_U_idx_0_im = -U_sym_komp_hilf_tmp / localDW->br;
       } else {
-        rtu_Psi_PM_U_idx_0_re = -rtu_Psi_PM_U_idx_1_re / localDW->br;
-        rtu_Psi_PM_U_idx_1_re = -U_sym_komp_hilf_tmp / localDW->br;
+        rtu_Psi_PM_U_idx_0_re = -rtu_Psi_PM_U_idx_0_im / localDW->br;
+        rtu_Psi_PM_U_idx_0_im = -U_sym_komp_hilf_tmp / localDW->br;
       }
     } else if (localDW->br == 0.0F) {
-      if (-rtu_Psi_PM_U_idx_1_re == 0.0F) {
-        rtu_Psi_PM_U_idx_0_re = -U_sym_komp_hilf_tmp / bi;
-        rtu_Psi_PM_U_idx_1_re = 0.0F;
+      if (-rtu_Psi_PM_U_idx_0_im == 0.0F) {
+        rtu_Psi_PM_U_idx_0_re = -U_sym_komp_hilf_tmp / U_sym_komp_hilf_tmp_0;
+        rtu_Psi_PM_U_idx_0_im = 0.0F;
       } else if (-U_sym_komp_hilf_tmp == 0.0F) {
         rtu_Psi_PM_U_idx_0_re = 0.0F;
-        rtu_Psi_PM_U_idx_1_re = -(-rtu_Psi_PM_U_idx_1_re / bi);
+        rtu_Psi_PM_U_idx_0_im = -(-rtu_Psi_PM_U_idx_0_im / U_sym_komp_hilf_tmp_0);
       } else {
-        rtu_Psi_PM_U_idx_0_re = -U_sym_komp_hilf_tmp / bi;
-        rtu_Psi_PM_U_idx_1_re = -(-rtu_Psi_PM_U_idx_1_re / bi);
+        rtu_Psi_PM_U_idx_0_re = -U_sym_komp_hilf_tmp / U_sym_komp_hilf_tmp_0;
+        rtu_Psi_PM_U_idx_0_im = -(-rtu_Psi_PM_U_idx_0_im / U_sym_komp_hilf_tmp_0);
       }
     } else {
       brm = fabsf(localDW->br);
-      bim = fabsf(bi);
+      bim = fabsf(U_sym_komp_hilf_tmp_0);
       if (brm > bim) {
-        brm = bi / localDW->br;
-        bi = brm * bi + localDW->br;
+        brm = U_sym_komp_hilf_tmp_0 / localDW->br;
+        U_sym_komp_hilf_tmp_0 = brm * U_sym_komp_hilf_tmp_0 + localDW->br;
         rtu_Psi_PM_U_idx_0_re = (brm * -U_sym_komp_hilf_tmp +
-          -rtu_Psi_PM_U_idx_1_re) / bi;
-        rtu_Psi_PM_U_idx_1_re = (-U_sym_komp_hilf_tmp - brm *
-          -rtu_Psi_PM_U_idx_1_re) / bi;
+          -rtu_Psi_PM_U_idx_0_im) / U_sym_komp_hilf_tmp_0;
+        rtu_Psi_PM_U_idx_0_im = (-U_sym_komp_hilf_tmp - brm *
+          -rtu_Psi_PM_U_idx_0_im) / U_sym_komp_hilf_tmp_0;
       } else if (bim == brm) {
         localDW->br = localDW->br > 0.0F ? 0.5F : -0.5F;
-        bi = bi > 0.0F ? 0.5F : -0.5F;
-        rtu_Psi_PM_U_idx_0_re = (-rtu_Psi_PM_U_idx_1_re * localDW->br +
-          -U_sym_komp_hilf_tmp * bi) / brm;
-        rtu_Psi_PM_U_idx_1_re = (-U_sym_komp_hilf_tmp * localDW->br -
-          -rtu_Psi_PM_U_idx_1_re * bi) / brm;
+        U_sym_komp_hilf_tmp_0 = U_sym_komp_hilf_tmp_0 > 0.0F ? 0.5F : -0.5F;
+        rtu_Psi_PM_U_idx_0_re = (-rtu_Psi_PM_U_idx_0_im * localDW->br +
+          -U_sym_komp_hilf_tmp * U_sym_komp_hilf_tmp_0) / brm;
+        rtu_Psi_PM_U_idx_0_im = (-U_sym_komp_hilf_tmp * localDW->br -
+          -rtu_Psi_PM_U_idx_0_im * U_sym_komp_hilf_tmp_0) / brm;
       } else {
-        brm = localDW->br / bi;
-        bi += brm * localDW->br;
-        rtu_Psi_PM_U_idx_0_re = (brm * -rtu_Psi_PM_U_idx_1_re +
-          -U_sym_komp_hilf_tmp) / bi;
-        rtu_Psi_PM_U_idx_1_re = (brm * -U_sym_komp_hilf_tmp -
-          (-rtu_Psi_PM_U_idx_1_re)) / bi;
+        brm = localDW->br / U_sym_komp_hilf_tmp_0;
+        U_sym_komp_hilf_tmp_0 += brm * localDW->br;
+        rtu_Psi_PM_U_idx_0_re = (brm * -rtu_Psi_PM_U_idx_0_im +
+          -U_sym_komp_hilf_tmp) / U_sym_komp_hilf_tmp_0;
+        rtu_Psi_PM_U_idx_0_im = (brm * -U_sym_komp_hilf_tmp -
+          (-rtu_Psi_PM_U_idx_0_im)) / U_sym_komp_hilf_tmp_0;
       }
     }
 
     U_sym_komp_hilf_tmp = U_sym_komp_idx_4_re + localDW->U_sym_komp_hilf[2].re;
-    bi = U_sym_komp_idx_4_im + localDW->U_sym_komp_hilf[2].im;
-    I_V_re_tmp_0 = I_V_re_tmp * U_sym_komp_hilf_tmp - I_V_im * bi;
-    I_V_im_tmp = I_V_re_tmp * bi + I_V_im * U_sym_komp_hilf_tmp;
+    U_sym_komp_hilf_tmp_0 = U_sym_komp_idx_4_im + localDW->U_sym_komp_hilf[2].im;
+    I_V_re_tmp_0 = I_V_re_tmp * U_sym_komp_hilf_tmp - I_V_im *
+      U_sym_komp_hilf_tmp_0;
+    I_V_im_tmp = I_V_re_tmp * U_sym_komp_hilf_tmp_0 + I_V_im *
+      U_sym_komp_hilf_tmp;
     U_sym_komp_hilf_tmp = localDW->U_sym_komp_hilf[0].re * -0.5F;
     localDW->br = ((U_sym_komp_hilf_tmp - localDW->U_sym_komp_hilf[0].im *
                     -0.866025388F) + U_sym_komp_idx_4_re) +
       localDW->U_sym_komp_hilf[2].re;
     bi_tmp = localDW->U_sym_komp_hilf[0].im * -0.5F;
-    bi = ((localDW->U_sym_komp_hilf[0].re * -0.866025388F + bi_tmp) +
-          U_sym_komp_idx_4_im) + localDW->U_sym_komp_hilf[2].im;
-    if (bi == 0.0F) {
+    U_sym_komp_hilf_tmp_0 = ((localDW->U_sym_komp_hilf[0].re * -0.866025388F +
+      bi_tmp) + U_sym_komp_idx_4_im) + localDW->U_sym_komp_hilf[2].im;
+    if (U_sym_komp_hilf_tmp_0 == 0.0F) {
       if (-I_V_im_tmp == 0.0F) {
         U_sym_komp_idx_4_im = -I_V_re_tmp_0 / localDW->br;
         U_sym_komp_idx_4_re = 0.0F;
@@ -319,48 +326,52 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
       }
     } else if (localDW->br == 0.0F) {
       if (-I_V_re_tmp_0 == 0.0F) {
-        U_sym_komp_idx_4_im = -I_V_im_tmp / bi;
+        U_sym_komp_idx_4_im = -I_V_im_tmp / U_sym_komp_hilf_tmp_0;
         U_sym_komp_idx_4_re = 0.0F;
       } else if (-I_V_im_tmp == 0.0F) {
         U_sym_komp_idx_4_im = 0.0F;
-        U_sym_komp_idx_4_re = -(-I_V_re_tmp_0 / bi);
+        U_sym_komp_idx_4_re = -(-I_V_re_tmp_0 / U_sym_komp_hilf_tmp_0);
       } else {
-        U_sym_komp_idx_4_im = -I_V_im_tmp / bi;
-        U_sym_komp_idx_4_re = -(-I_V_re_tmp_0 / bi);
+        U_sym_komp_idx_4_im = -I_V_im_tmp / U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_4_re = -(-I_V_re_tmp_0 / U_sym_komp_hilf_tmp_0);
       }
     } else {
       brm = fabsf(localDW->br);
-      bim = fabsf(bi);
+      bim = fabsf(U_sym_komp_hilf_tmp_0);
       if (brm > bim) {
-        brm = bi / localDW->br;
-        bi = brm * bi + localDW->br;
-        U_sym_komp_idx_4_im = (brm * -I_V_im_tmp + -I_V_re_tmp_0) / bi;
-        U_sym_komp_idx_4_re = (-I_V_im_tmp - brm * -I_V_re_tmp_0) / bi;
+        brm = U_sym_komp_hilf_tmp_0 / localDW->br;
+        U_sym_komp_hilf_tmp_0 = brm * U_sym_komp_hilf_tmp_0 + localDW->br;
+        U_sym_komp_idx_4_im = (brm * -I_V_im_tmp + -I_V_re_tmp_0) /
+          U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_4_re = (-I_V_im_tmp - brm * -I_V_re_tmp_0) /
+          U_sym_komp_hilf_tmp_0;
       } else if (bim == brm) {
         localDW->br = localDW->br > 0.0F ? 0.5F : -0.5F;
-        bi = bi > 0.0F ? 0.5F : -0.5F;
-        U_sym_komp_idx_4_im = (-I_V_re_tmp_0 * localDW->br + -I_V_im_tmp * bi) /
-          brm;
-        U_sym_komp_idx_4_re = (-I_V_im_tmp * localDW->br - -I_V_re_tmp_0 * bi) /
-          brm;
+        U_sym_komp_hilf_tmp_0 = U_sym_komp_hilf_tmp_0 > 0.0F ? 0.5F : -0.5F;
+        U_sym_komp_idx_4_im = (-I_V_re_tmp_0 * localDW->br + -I_V_im_tmp *
+          U_sym_komp_hilf_tmp_0) / brm;
+        U_sym_komp_idx_4_re = (-I_V_im_tmp * localDW->br - -I_V_re_tmp_0 *
+          U_sym_komp_hilf_tmp_0) / brm;
       } else {
-        brm = localDW->br / bi;
-        bi += brm * localDW->br;
-        U_sym_komp_idx_4_im = (brm * -I_V_re_tmp_0 + -I_V_im_tmp) / bi;
-        U_sym_komp_idx_4_re = (brm * -I_V_im_tmp - (-I_V_re_tmp_0)) / bi;
+        brm = localDW->br / U_sym_komp_hilf_tmp_0;
+        U_sym_komp_hilf_tmp_0 += brm * localDW->br;
+        U_sym_komp_idx_4_im = (brm * -I_V_re_tmp_0 + -I_V_im_tmp) /
+          U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_4_re = (brm * -I_V_im_tmp - (-I_V_re_tmp_0)) /
+          U_sym_komp_hilf_tmp_0;
       }
     }
 
-    bi = U_sym_komp_idx_7_re + localDW->U_sym_komp_hilf[2].re;
+    U_sym_komp_hilf_tmp_0 = U_sym_komp_idx_7_re + localDW->U_sym_komp_hilf[2].re;
     brm = U_sym_komp_idx_7_im + localDW->U_sym_komp_hilf[2].im;
-    I_V_re_tmp_0 = I_V_re_tmp * bi - I_W_im * brm;
-    I_V_im_tmp = I_V_re_tmp * brm + I_W_im * bi;
+    I_V_re_tmp_0 = I_V_re_tmp * U_sym_komp_hilf_tmp_0 - I_W_im * brm;
+    I_V_im_tmp = I_V_re_tmp * brm + I_W_im * U_sym_komp_hilf_tmp_0;
     localDW->br = ((U_sym_komp_hilf_tmp - localDW->U_sym_komp_hilf[0].im *
                     0.866025388F) + U_sym_komp_idx_7_re) +
       localDW->U_sym_komp_hilf[2].re;
-    bi = ((localDW->U_sym_komp_hilf[0].re * 0.866025388F + bi_tmp) +
-          U_sym_komp_idx_7_im) + localDW->U_sym_komp_hilf[2].im;
-    if (bi == 0.0F) {
+    U_sym_komp_hilf_tmp_0 = ((localDW->U_sym_komp_hilf[0].re * 0.866025388F +
+      bi_tmp) + U_sym_komp_idx_7_im) + localDW->U_sym_komp_hilf[2].im;
+    if (U_sym_komp_hilf_tmp_0 == 0.0F) {
       if (-I_V_im_tmp == 0.0F) {
         U_sym_komp_idx_7_re = -I_V_re_tmp_0 / localDW->br;
         U_sym_komp_idx_7_im = 0.0F;
@@ -373,35 +384,39 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
       }
     } else if (localDW->br == 0.0F) {
       if (-I_V_re_tmp_0 == 0.0F) {
-        U_sym_komp_idx_7_re = -I_V_im_tmp / bi;
+        U_sym_komp_idx_7_re = -I_V_im_tmp / U_sym_komp_hilf_tmp_0;
         U_sym_komp_idx_7_im = 0.0F;
       } else if (-I_V_im_tmp == 0.0F) {
         U_sym_komp_idx_7_re = 0.0F;
-        U_sym_komp_idx_7_im = -(-I_V_re_tmp_0 / bi);
+        U_sym_komp_idx_7_im = -(-I_V_re_tmp_0 / U_sym_komp_hilf_tmp_0);
       } else {
-        U_sym_komp_idx_7_re = -I_V_im_tmp / bi;
-        U_sym_komp_idx_7_im = -(-I_V_re_tmp_0 / bi);
+        U_sym_komp_idx_7_re = -I_V_im_tmp / U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_7_im = -(-I_V_re_tmp_0 / U_sym_komp_hilf_tmp_0);
       }
     } else {
       brm = fabsf(localDW->br);
-      bim = fabsf(bi);
+      bim = fabsf(U_sym_komp_hilf_tmp_0);
       if (brm > bim) {
-        brm = bi / localDW->br;
-        bi = brm * bi + localDW->br;
-        U_sym_komp_idx_7_re = (brm * -I_V_im_tmp + -I_V_re_tmp_0) / bi;
-        U_sym_komp_idx_7_im = (-I_V_im_tmp - brm * -I_V_re_tmp_0) / bi;
+        brm = U_sym_komp_hilf_tmp_0 / localDW->br;
+        U_sym_komp_hilf_tmp_0 = brm * U_sym_komp_hilf_tmp_0 + localDW->br;
+        U_sym_komp_idx_7_re = (brm * -I_V_im_tmp + -I_V_re_tmp_0) /
+          U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_7_im = (-I_V_im_tmp - brm * -I_V_re_tmp_0) /
+          U_sym_komp_hilf_tmp_0;
       } else if (bim == brm) {
         localDW->br = localDW->br > 0.0F ? 0.5F : -0.5F;
-        bi = bi > 0.0F ? 0.5F : -0.5F;
-        U_sym_komp_idx_7_re = (-I_V_re_tmp_0 * localDW->br + -I_V_im_tmp * bi) /
-          brm;
-        U_sym_komp_idx_7_im = (-I_V_im_tmp * localDW->br - -I_V_re_tmp_0 * bi) /
-          brm;
+        U_sym_komp_hilf_tmp_0 = U_sym_komp_hilf_tmp_0 > 0.0F ? 0.5F : -0.5F;
+        U_sym_komp_idx_7_re = (-I_V_re_tmp_0 * localDW->br + -I_V_im_tmp *
+          U_sym_komp_hilf_tmp_0) / brm;
+        U_sym_komp_idx_7_im = (-I_V_im_tmp * localDW->br - -I_V_re_tmp_0 *
+          U_sym_komp_hilf_tmp_0) / brm;
       } else {
-        brm = localDW->br / bi;
-        bi += brm * localDW->br;
-        U_sym_komp_idx_7_re = (brm * -I_V_re_tmp_0 + -I_V_im_tmp) / bi;
-        U_sym_komp_idx_7_im = (brm * -I_V_im_tmp - (-I_V_re_tmp_0)) / bi;
+        brm = localDW->br / U_sym_komp_hilf_tmp_0;
+        U_sym_komp_hilf_tmp_0 += brm * localDW->br;
+        U_sym_komp_idx_7_re = (brm * -I_V_re_tmp_0 + -I_V_im_tmp) /
+          U_sym_komp_hilf_tmp_0;
+        U_sym_komp_idx_7_im = (brm * -I_V_im_tmp - (-I_V_re_tmp_0)) /
+          U_sym_komp_hilf_tmp_0;
       }
     }
 
@@ -415,16 +430,16 @@ static void MATLABFunction_i(real32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
       I_V_im = a[localDW->i].im;
       I_W_im = a[localDW->i + 3].re;
       U_sym_komp_hilf_tmp = a[localDW->i + 3].im;
-      bi = a[localDW->i + 6].re;
+      U_sym_komp_hilf_tmp_0 = a[localDW->i + 6].re;
       brm = a[localDW->i + 6].im;
       localDW->a.re = ((I_W_im * U_sym_komp_idx_4_im - U_sym_komp_hilf_tmp *
                         U_sym_komp_idx_4_re) + (I_V_re_tmp *
-        rtu_Psi_PM_U_idx_0_re - I_V_im * rtu_Psi_PM_U_idx_1_re)) + (bi *
-        U_sym_komp_idx_7_re - brm * U_sym_komp_idx_7_im);
+        rtu_Psi_PM_U_idx_0_re - I_V_im * rtu_Psi_PM_U_idx_0_im)) +
+        (U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_7_re - brm * U_sym_komp_idx_7_im);
       localDW->a.im = ((I_W_im * U_sym_komp_idx_4_re + U_sym_komp_hilf_tmp *
                         U_sym_komp_idx_4_im) + (I_V_re_tmp *
-        rtu_Psi_PM_U_idx_1_re + I_V_im * rtu_Psi_PM_U_idx_0_re)) + (bi *
-        U_sym_komp_idx_7_im + brm * U_sym_komp_idx_7_re);
+        rtu_Psi_PM_U_idx_0_im + I_V_im * rtu_Psi_PM_U_idx_0_re)) +
+        (U_sym_komp_hilf_tmp_0 * U_sym_komp_idx_7_im + brm * U_sym_komp_idx_7_re);
       localDW->U_sym_komp_hilf[localDW->i].re = localDW->a.re * 6.12323426E-17F
         - localDW->a.im;
       localDW->U_sym_komp_hilf[localDW->i].im = localDW->a.im * 6.12323426E-17F
@@ -745,7 +760,7 @@ static void Strangstromregler_asymetr_Reset(DW_Strangstromregler_asymetrisc
 static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   real32_T rtu_I_S, real32_T rtu_w1, real32_T rtu_U_ZK1, uint8_T
   rtu_enable_compensation_current, real32_T rtu_Theta_u, real32_T
-  rtu_Theta_u_back, real32_T rtu_I_im_CT, real32_T rtu_Psi_PM, creal32_T
+  rtu_Theta_u_back, real32_T rtu_I_im_CT, creal32_T rtu_Psi_PM, creal32_T
   rtu_Psi_PM_n, creal32_T rtu_Psi_PM_k, real32_T *rty_a, real32_T *rty_I_ref1,
   real32_T rtp_Offset_S, real32_T rtp_Offset_gegen, real32_T rtp_Offset_null,
   DW_Strangstromregler_asymetrisc *localDW)
@@ -827,7 +842,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain6'
    *  Gain: '<S35>/Gain6'
    */
-  localDW->DiscreteTimeIntegrator1_h = 10.0530977F * localDW->Product_am;
+  localDW->DiscreteTimeIntegrator1_h = rtP.Kp * localDW->Product_am;
 
   /* Product: '<S32>/Product1' incorporates:
    *  Gain: '<S32>/Gain6'
@@ -838,8 +853,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S32>/Delay1'
    *  Sum: '<S32>/Sum4'
    */
-  localDW->Gain1_h = (localDW->Delay1_DSTATE + localDW->Gain1_p4) *
-    0.0138333309F;
+  localDW->Gain1_h = 2.5E-5F * rtP.K1 * (localDW->Delay1_DSTATE +
+    localDW->Gain1_p4);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator = 0.5F * localDW->Gain1_h +
@@ -860,7 +875,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S32>/Delay'
    *  Sum: '<S32>/Sum2'
    */
-  localDW->Gain2_nl = (localDW->Cos2_k + localDW->Delay_DSTATE) * 0.0138333309F;
+  localDW->Gain2_nl = 2.5E-5F * rtP.K1 * (localDW->Cos2_k +
+    localDW->Delay_DSTATE);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1 = 0.5F * localDW->Gain2_nl +
@@ -896,8 +912,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S33>/Delay1'
    *  Sum: '<S33>/Sum4'
    */
-  localDW->Gain1_g = (localDW->Delay1_DSTATE_m + localDW->im_lim_k) *
-    0.00138333312F;
+  localDW->Gain1_g = 2.5E-5F * rtP.K2 * (localDW->Delay1_DSTATE_m +
+    localDW->im_lim_k);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_o = 0.5F * localDW->Gain1_g +
@@ -916,8 +932,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S33>/Delay'
    *  Sum: '<S33>/Sum2'
    */
-  localDW->Gain2_d = (localDW->Cos2_k + localDW->Delay_DSTATE_a) *
-    0.00138333312F;
+  localDW->Gain2_d = 2.5E-5F * rtP.K2 * (localDW->Cos2_k +
+    localDW->Delay_DSTATE_a);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_f = 0.5F * localDW->Gain2_d +
@@ -955,7 +971,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   localDW->Cos2_k = localDW->Product5_h * 3.0F;
 
   /* Gain: '<S31>/Gain4' */
-  localDW->im_lim_k = 55.3333244F * localDW->Product_am;
+  localDW->im_lim_k = rtP.K3 * localDW->Product_am;
 
   /* Gain: '<S31>/Gain1' incorporates:
    *  Delay: '<S31>/Delay1'
@@ -1022,8 +1038,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S34>/Delay1'
    *  Sum: '<S34>/Sum4'
    */
-  localDW->Gain1_n = (localDW->Delay1_DSTATE_g + localDW->im_lim_k) *
-    0.00138333312F;
+  localDW->Gain1_n = 2.5E-5F * rtP.K4 * (localDW->Delay1_DSTATE_g +
+    localDW->im_lim_k);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_j = 0.5F * localDW->Gain1_n +
@@ -1042,8 +1058,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S34>/Delay'
    *  Sum: '<S34>/Sum2'
    */
-  localDW->Gain2_e = (localDW->Cos2_k + localDW->Delay_DSTATE_bz) *
-    0.00138333312F;
+  localDW->Gain2_e = 2.5E-5F * rtP.K4 * (localDW->Cos2_k +
+    localDW->Delay_DSTATE_bz);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_e = 0.5F * localDW->Gain2_e +
@@ -1093,8 +1109,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S35>/Delay1'
    *  Sum: '<S35>/Sum4'
    */
-  localDW->Gain1_a = (localDW->Delay1_DSTATE_i + localDW->re_lim_gw) *
-    0.00138333312F;
+  localDW->Gain1_a = 2.5E-5F * rtP.K6 * (localDW->Delay1_DSTATE_i +
+    localDW->re_lim_gw);
 
   /* DiscreteIntegrator: '<S35>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_h = 0.5F * localDW->Gain1_a +
@@ -1117,8 +1133,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S35>/Delay'
    *  Sum: '<S35>/Sum2'
    */
-  localDW->Product5_h = (localDW->Product_am + localDW->Delay_DSTATE_h) *
-    0.00138333312F;
+  localDW->Product5_h = 2.5E-5F * rtP.K6 * (localDW->Product_am +
+    localDW->Delay_DSTATE_h);
 
   /* DiscreteIntegrator: '<S35>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_h = 0.5F * localDW->Product5_h +
@@ -1366,15 +1382,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->c = 0.95F * rtDW->DiscreteTimeIntegrator / 2.0F;
 
       /* '<S17>:1:5' a = Psi_PM^2 + (L*i_ref_max)^2; */
+      rtDW->a = 0.0012F * rtP.i_ref_max;
+      rtDW->a = rtDW->a * rtDW->a + 0.000292410026F;
+
       /* '<S17>:1:6' b = 2*Psi_PM*R*i_ref_max; */
+      rtDW->b = 0.0028386F * rtP.i_ref_max;
+
       /* '<S17>:1:7' c = (R*i_ref_max)^2 - U_FA^2; */
-      rtDW->c = 17.222496F - rtDW->c * rtDW->c;
+      rtDW->Gain1 = 0.083F * rtP.i_ref_max;
+      rtDW->c = rtDW->Gain1 * rtDW->Gain1 - rtDW->c * rtDW->c;
 
       /* '<S17>:1:8' if -4*a*c >= single(0) */
-      if (-0.0155696403F * rtDW->c >= 0.0F) {
+      if (-4.0F * rtDW->a * rtDW->c >= 0.0F) {
         /* '<S17>:1:9' n_eck = single(30)/(p*pi) * (-b+sqrt(b^2 -4*a*c))/(2*a); */
-        rtDW->c = (sqrtf(0.0201441254F - 0.0155696403F * rtDW->c) + -0.14193F) *
-          0.530516505F / 0.00778482F;
+        rtDW->c = (sqrtf(rtDW->b * rtDW->b - 4.0F * rtDW->a * rtDW->c) +
+                   -rtDW->b) * 0.530516505F / (2.0F * rtDW->a);
 
         /* '<S17>:1:10' error_speed_limit = uint8(0); */
         rtDW->error_speed_limit = 0U;
@@ -1390,11 +1412,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* '<S17>:1:15' if (flag_id == 1) && (error_speed_limit == 0) */
       if ((rtU->fl_field_weakening == 1) && (rtDW->error_speed_limit == 0)) {
         /* '<S17>:1:16' n_sat = min(3*n_eck, n_ref_max); */
-        rtDW->a = fminf(3.0F * rtDW->c, 400.0F);
+        rtDW->a = fminf(3.0F * rtDW->c, rtP.n_ref_max);
       } else {
         /* '<S17>:1:17' else */
         /* '<S17>:1:18' n_sat = min(n_eck, n_ref_max); */
-        rtDW->a = fminf(rtDW->c, 400.0F);
+        rtDW->a = fminf(rtDW->c, rtP.n_ref_max);
       }
 
       /* Outport: '<Root>/error_speed_limit' incorporates:
@@ -1429,7 +1451,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       }
 
       /* '<S12>:1:15' if abs(I_re_soll)>= 0.95*I_ref_max */
-      if (fabsf(rtDW->b) >= 47.5F) {
+      if (fabsf(rtDW->b) >= 0.95F * rtP.i_ref_max) {
         /* '<S12>:1:16' I_re_soll = sign(I_re_soll)*0.95*I_ref_max; */
         if (rtDW->b < 0.0F) {
           rtDW->b = -1.0F;
@@ -1437,11 +1459,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
           rtDW->b = (real32_T)(rtDW->b > 0.0F);
         }
 
-        rtDW->b = rtDW->b * 0.95F * 50.0F;
+        rtDW->b = rtDW->b * 0.95F * rtP.i_ref_max;
       }
 
       /* '<S12>:1:19' I_im_max = sqrt(I_ref_max^2-I_re_soll^2); */
-      rtDW->c = sqrtf(2500.0F - rtDW->b * rtDW->b);
+      rtDW->c = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtDW->b * rtDW->b);
 
       /* Merge: '<S4>/Merge3' incorporates:
        *  MATLAB Function: '<S7>/Function_Feldschwaeche'
@@ -1559,9 +1581,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* '<S22>:1:4' I_abs_ext = sqrt(I_re_soll_ext^2+I_im_soll_ext^2); */
       /* '<S22>:1:5' if I_abs_ext > I_ref_max */
       if (sqrtf(rtU->Ref_I_re_ext_mit * rtU->Ref_I_re_ext_mit +
-                rtU->Ref_I_im_ext_mit * rtU->Ref_I_im_ext_mit) > 50.0F) {
+                rtU->Ref_I_im_ext_mit * rtU->Ref_I_im_ext_mit) > rtP.i_ref_max)
+      {
         /* '<S22>:1:6' if abs(I_re_soll_ext)>= 0.95*I_ref_max */
-        if (fabsf(rtU->Ref_I_re_ext_mit) >= 47.5F) {
+        if (fabsf(rtU->Ref_I_re_ext_mit) >= 0.95F * rtP.i_ref_max) {
           /* '<S22>:1:7' I_re_soll = sign(I_re_soll_ext)*0.95*I_ref_max; */
           if (rtU->Ref_I_re_ext_mit < 0.0F) {
             rtDW->c = -1.0F;
@@ -1569,7 +1592,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
             rtDW->c = (real32_T)(rtU->Ref_I_re_ext_mit > 0.0F);
           }
 
-          rtDW->b = rtDW->c * 0.95F * 50.0F;
+          rtDW->b = rtDW->c * 0.95F * rtP.i_ref_max;
         } else {
           /* '<S22>:1:8' else */
           /* '<S22>:1:9' I_re_soll = I_re_soll_ext; */
@@ -1584,7 +1607,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         }
 
         /* Merge: '<S4>/Merge4' */
-        rtDW->I_im = sqrtf(2500.0F - rtDW->b * rtDW->b) * rtDW->c;
+        rtDW->I_im = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtDW->b * rtDW->b) *
+          rtDW->c;
       } else {
         /* '<S22>:1:12' else */
         /* '<S22>:1:13' I_re_soll = I_re_soll_ext; */
@@ -1782,7 +1806,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
      *  Inport: '<Root>/Act_w_el'
      *  Product: '<S10>/Product'
      */
-    rtDW->c = rtU->Act_w_el * 3.74999981E-5F + rtU->Act_theta_u_el;
+    rtDW->c = rtU->Act_w_el * rtConstB.Gain + rtU->Act_theta_u_el;
 
     /* SwitchCase: '<S10>/Switch Case' */
     rtDW->rtPrevAction = rtDW->SwitchCase_ActiveSubsystem_o;
@@ -2037,7 +2061,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S60>/Gain6'
        *  Gain: '<S61>/Gain6'
        */
-      rtDW->DiscreteTimeIntegrator1_g = 10.0530977F * rtDW->Product_d;
+      rtDW->DiscreteTimeIntegrator1_g = rtP.Kp * rtDW->Product_d;
 
       /* Product: '<S58>/Product1' incorporates:
        *  Gain: '<S58>/Gain6'
@@ -2048,7 +2072,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S58>/Delay1'
        *  Sum: '<S58>/Sum4'
        */
-      rtDW->Gain1_k = (rtDW->Delay1_DSTATE + rtDW->Gain1_p) * 0.0138333309F;
+      rtDW->Gain1_k = 2.5E-5F * rtP.K1 * (rtDW->Delay1_DSTATE + rtDW->Gain1_p);
 
       /* DiscreteIntegrator: '<S58>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_o = 0.5F * rtDW->Gain1_k +
@@ -2071,7 +2095,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S58>/Delay'
        *  Sum: '<S58>/Sum2'
        */
-      rtDW->a = (rtDW->Cos2 + rtDW->Delay_DSTATE_l) * 0.0138333309F;
+      rtDW->a = 2.5E-5F * rtP.K1 * (rtDW->Cos2 + rtDW->Delay_DSTATE_l);
 
       /* DiscreteIntegrator: '<S58>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1 = 0.5F * rtDW->a +
@@ -2111,7 +2135,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S59>/Delay1'
        *  Sum: '<S59>/Sum4'
        */
-      rtDW->Gain1_e = (rtDW->Delay1_DSTATE_o + rtDW->b) * 0.00138333312F;
+      rtDW->Gain1_e = 2.5E-5F * rtP.K2 * (rtDW->Delay1_DSTATE_o + rtDW->b);
 
       /* DiscreteIntegrator: '<S59>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_k = 0.5F * rtDW->Gain1_e +
@@ -2130,7 +2154,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S59>/Delay'
        *  Sum: '<S59>/Sum2'
        */
-      rtDW->Gain2_n = (rtDW->Cos2 + rtDW->Delay_DSTATE_nv) * 0.00138333312F;
+      rtDW->Gain2_n = 2.5E-5F * rtP.K2 * (rtDW->Cos2 + rtDW->Delay_DSTATE_nv);
 
       /* DiscreteIntegrator: '<S59>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_e = 0.5F * rtDW->Gain2_n +
@@ -2173,7 +2197,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->Cos2 = (rtU->Act_theta_u_el + -4.18879032F) * 3.0F;
 
       /* Gain: '<S57>/Gain4' */
-      rtDW->b = 55.3333244F * rtDW->Product_d;
+      rtDW->b = rtP.K3 * rtDW->Product_d;
 
       /* Gain: '<S57>/Gain1' incorporates:
        *  Delay: '<S57>/Delay1'
@@ -2244,7 +2268,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S60>/Delay1'
        *  Sum: '<S60>/Sum4'
        */
-      rtDW->Gain1_m = (rtDW->Delay1_DSTATE_g + rtDW->b) * 0.00138333312F;
+      rtDW->Gain1_m = 2.5E-5F * rtP.K4 * (rtDW->Delay1_DSTATE_g + rtDW->b);
 
       /* DiscreteIntegrator: '<S60>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_a = 0.5F * rtDW->Gain1_m +
@@ -2263,7 +2287,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S60>/Delay'
        *  Sum: '<S60>/Sum2'
        */
-      rtDW->Gain2_h = (rtDW->Cos2 + rtDW->Delay_DSTATE_a) * 0.00138333312F;
+      rtDW->Gain2_h = 2.5E-5F * rtP.K4 * (rtDW->Cos2 + rtDW->Delay_DSTATE_a);
 
       /* DiscreteIntegrator: '<S60>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_a = 0.5F * rtDW->Gain2_h +
@@ -2317,7 +2341,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S61>/Delay1'
        *  Sum: '<S61>/Sum4'
        */
-      rtDW->Gain1_j = (rtDW->Delay1_DSTATE_oi + rtDW->re_lim_e) * 0.00138333312F;
+      rtDW->Gain1_j = 2.5E-5F * rtP.K6 * (rtDW->Delay1_DSTATE_oi +
+        rtDW->re_lim_e);
 
       /* DiscreteIntegrator: '<S61>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_n = 0.5F * rtDW->Gain1_j +
@@ -2340,8 +2365,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S61>/Delay'
        *  Sum: '<S61>/Sum2'
        */
-      rtDW->Product5_ju = (rtDW->Product_d + rtDW->Delay_DSTATE_nm) *
-        0.00138333312F;
+      rtDW->Product5_ju = 2.5E-5F * rtP.K6 * (rtDW->Product_d +
+        rtDW->Delay_DSTATE_nm);
 
       /* DiscreteIntegrator: '<S61>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_g = 0.5F * rtDW->Product5_ju +
@@ -2542,7 +2567,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iu'
    *  RelationalOperator: '<S5>/Smaller'
    */
-  rtY->fault_peak_current_u = (fabsf(rtU->Act_Iu) >= 50.0F);
+  rtY->fault_peak_current_u = (rtP.i_max_peak <= fabsf(rtU->Act_Iu));
 
   /* Math: '<S5>/Square' incorporates:
    *  Inport: '<Root>/Act_Iu'
@@ -2561,14 +2586,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller1'
    *  Sqrt: '<S5>/Square Root'
    */
-  rtY->fault_rms_current_u = (sqrtf(0.05F * rtDW->a) >= 50.0F);
+  rtY->fault_rms_current_u = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->a));
 
   /* Outport: '<Root>/fault_peak_speed' incorporates:
    *  Constant: '<S5>/Constant2'
    *  Inport: '<Root>/Act_n'
    *  RelationalOperator: '<S5>/Smaller2'
    */
-  rtY->fault_peak_speed = (rtU->Act_n >= 1500.0F);
+  rtY->fault_peak_speed = (rtP.n_max_peak <= rtU->Act_n);
 
   /* DiscreteIntegrator: '<S71>/Accumulator' incorporates:
    *  Delay: '<S71>/Delay'
@@ -2582,7 +2607,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Gain: '<S71>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
-  rtY->fault_max_speed = (0.00833333377F * rtDW->b >= 600.0F);
+  rtY->fault_max_speed = (rtP.n_max <= 0.00833333377F * rtDW->b);
 
   /* Math: '<S5>/Square1' incorporates:
    *  Inport: '<Root>/Act_Iv'
@@ -2602,7 +2627,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller5'
    *  Sqrt: '<S5>/Square Root1'
    */
-  rtY->fault_rms_current_v = (sqrtf(0.05F * rtDW->y_i) >= 50.0F);
+  rtY->fault_rms_current_v = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->y_i));
 
   /* Math: '<S5>/Square2' incorporates:
    *  Inport: '<Root>/Act_Iw'
@@ -2622,7 +2647,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller7'
    *  Sqrt: '<S5>/Square Root2'
    */
-  rtY->fault_rms_current_w = (sqrtf(0.05F * rtDW->Switch2) >= 50.0F);
+  rtY->fault_rms_current_w = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->Switch2));
 
   /* Outport: '<Root>/fault_peak_current_v' incorporates:
    *  Abs: '<S5>/Abs1'
@@ -2630,7 +2655,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iv'
    *  RelationalOperator: '<S5>/Smaller4'
    */
-  rtY->fault_peak_current_v = (fabsf(rtU->Act_Iv) >= 50.0F);
+  rtY->fault_peak_current_v = (rtP.i_max_peak <= fabsf(rtU->Act_Iv));
 
   /* Outport: '<Root>/fault_peak_current_w' incorporates:
    *  Abs: '<S5>/Abs2'
@@ -2638,7 +2663,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iw'
    *  RelationalOperator: '<S5>/Smaller6'
    */
-  rtY->fault_peak_current_w = (fabsf(rtU->Act_Iw) >= 50.0F);
+  rtY->fault_peak_current_w = (rtP.i_max_peak <= fabsf(rtU->Act_Iw));
 
   /* Update for Delay: '<S3>/Delay' */
   rtDW->Delay_DSTATE = rtDW->DiscreteTimeIntegrator;

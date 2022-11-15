@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 4.3
+ * Model version                  : 4.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Nov 10 13:53:07 2022
+ * C/C++ source code generated on : Fri Nov 11 16:27:55 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -252,6 +252,11 @@ typedef struct {
   boolean_T Betrieb;                   /* '<S25>/MATLAB Function' */
 } DW;
 
+/* Invariant block signals (default storage) */
+typedef struct {
+  const real32_T Gain;                 /* '<S10>/Gain' */
+} ConstB;
+
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T Act_U_ZK;                   /* '<Root>/Act_U_ZK' */
@@ -288,7 +293,7 @@ typedef struct {
   real32_T amplitude_d;                /* '<Root>/amplitude_d' */
   real32_T ordnung_d;                  /* '<Root>/ordnung_d' */
   real32_T phase_d;                    /* '<Root>/phase_d' */
-  real32_T Psi_PM_U;                   /* '<Root>/Psi_PM_U' */
+  creal32_T Psi_PM_U;                  /* '<Root>/Psi_PM_U' */
   creal32_T Psi_PM_V;                  /* '<Root>/Psi_PM_V' */
   creal32_T Psi_PM_W;                  /* '<Root>/Psi_PM_W' */
 } ExtU;
@@ -314,12 +319,107 @@ typedef struct {
   real32_T Iw_ref;                     /* '<Root>/Iw_ref' */
 } ExtY;
 
+/* Parameters (default storage) */
+struct P_ {
+  real32_T K1;                         /* Variable: K1
+                                        * Referenced by:
+                                        *   '<S32>/Gain1'
+                                        *   '<S32>/Gain2'
+                                        *   '<S45>/Gain1'
+                                        *   '<S45>/Gain2'
+                                        *   '<S58>/Gain1'
+                                        *   '<S58>/Gain2'
+                                        */
+  real32_T K2;                         /* Variable: K2
+                                        * Referenced by:
+                                        *   '<S33>/Gain1'
+                                        *   '<S33>/Gain2'
+                                        *   '<S46>/Gain1'
+                                        *   '<S46>/Gain2'
+                                        *   '<S59>/Gain1'
+                                        *   '<S59>/Gain2'
+                                        */
+  real32_T K3;                         /* Variable: K3
+                                        * Referenced by:
+                                        *   '<S31>/Gain4'
+                                        *   '<S44>/Gain4'
+                                        *   '<S57>/Gain4'
+                                        */
+  real32_T K4;                         /* Variable: K4
+                                        * Referenced by:
+                                        *   '<S34>/Gain1'
+                                        *   '<S34>/Gain2'
+                                        *   '<S47>/Gain1'
+                                        *   '<S47>/Gain2'
+                                        *   '<S60>/Gain1'
+                                        *   '<S60>/Gain2'
+                                        */
+  real32_T K6;                         /* Variable: K6
+                                        * Referenced by:
+                                        *   '<S35>/Gain1'
+                                        *   '<S35>/Gain2'
+                                        *   '<S48>/Gain1'
+                                        *   '<S48>/Gain2'
+                                        *   '<S61>/Gain1'
+                                        *   '<S61>/Gain2'
+                                        */
+  real32_T Kp;                         /* Variable: Kp
+                                        * Referenced by:
+                                        *   '<S32>/Gain6'
+                                        *   '<S33>/Gain6'
+                                        *   '<S34>/Gain6'
+                                        *   '<S35>/Gain6'
+                                        *   '<S45>/Gain6'
+                                        *   '<S46>/Gain6'
+                                        *   '<S47>/Gain6'
+                                        *   '<S48>/Gain6'
+                                        *   '<S58>/Gain6'
+                                        *   '<S59>/Gain6'
+                                        *   '<S60>/Gain6'
+                                        *   '<S61>/Gain6'
+                                        */
+  real32_T i_max_peak;                 /* Variable: i_max_peak
+                                        * Referenced by:
+                                        *   '<S5>/Constant'
+                                        *   '<S5>/Constant4'
+                                        *   '<S5>/Constant6'
+                                        */
+  real32_T i_max_rms;                  /* Variable: i_max_rms
+                                        * Referenced by:
+                                        *   '<S5>/Constant1'
+                                        *   '<S5>/Constant5'
+                                        *   '<S5>/Constant7'
+                                        */
+  real32_T i_ref_max;                  /* Variable: i_ref_max
+                                        * Referenced by:
+                                        *   '<S7>/function_Eckdrehzahl'
+                                        *   '<S7>/Constant'
+                                        *   '<S9>/Constant'
+                                        */
+  real32_T n_max;                      /* Variable: n_max
+                                        * Referenced by: '<S5>/Constant3'
+                                        */
+  real32_T n_max_peak;                 /* Variable: n_max_peak
+                                        * Referenced by: '<S5>/Constant2'
+                                        */
+  real32_T n_ref_max;                  /* Variable: n_ref_max
+                                        * Referenced by: '<S7>/function_Eckdrehzahl'
+                                        */
+};
+
+/* Parameters (default storage) */
+typedef struct P_ P;
+
 /* Real-time Model Data Structure */
 struct tag_RTM {
   ExtU *inputs;
   ExtY *outputs;
   DW *dwork;
 };
+
+/* Block parameters (default storage) */
+extern P rtP;
+extern const ConstB rtConstB;          /* constant block i/o */
 
 /* Model entry point functions */
 extern void uz_codegen0_initialize(RT_MODEL *const rtM);

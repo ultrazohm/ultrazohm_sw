@@ -11,6 +11,8 @@
 #include "xil_printf.h"
 #include "sleep.h"
 
+#define __FILENAME__ strstr(__FILE__, "src")
+
 /**
  * @brief Asserts that the condition is true. If false, the assertion callback executes (program is stopped).
  * 
@@ -18,7 +20,7 @@
 #define uz_assert(Expression)                 \
   do {                                        \
       if(!(Expression)){                      \
-      Xil_Assert(__FILE__, __LINE__);         \
+      Xil_Assert(__FILENAME__, __LINE__);         \
     }                                         \
   } while (0)
 

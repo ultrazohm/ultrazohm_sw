@@ -17,6 +17,7 @@ Software Framework
     movingAverage/movingAverage
     linear_decoupling/linear_decoupling
     piController/piController
+    uz_resonant_controller/uz_resonant_controller
     PMSM_config/uz_PMSM_config
     signals/signals
     exponential_smoothing/uz_exp_smooth

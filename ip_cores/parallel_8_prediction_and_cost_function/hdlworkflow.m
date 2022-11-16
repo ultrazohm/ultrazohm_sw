@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 16:08:32 on 09/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:37:12 on 16/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_prediction_and_cost_function\hdlworkflow.m'
 %     Overwrite : true
@@ -141,6 +141,10 @@ hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_functi
 % Set Outport HDL parameters
 hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/J', 'IOInterface', 'External Port');
 hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/J', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Index_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Index_AXI', 'IOInterfaceMapping', 'x"134"');
 
 
 %% Workflow Configuration Settings

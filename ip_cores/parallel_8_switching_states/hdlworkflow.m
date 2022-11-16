@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 11:27:12 on 08/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:43:28 on 16/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_switching_states\hdlworkflow.m'
 %     Overwrite : true
@@ -97,6 +97,10 @@ hdlset_param('parallel_8_switching_states/HDL_DUT/HB6B', 'IOInterfaceMapping', '
 % Set Outport HDL parameters
 hdlset_param('parallel_8_switching_states/HDL_DUT/done_switching_states', 'IOInterface', 'External Port');
 hdlset_param('parallel_8_switching_states/HDL_DUT/done_switching_states', 'IOInterfaceMapping', '');
+
+% Set Outport HDL parameters
+hdlset_param('parallel_8_switching_states/HDL_DUT/min_Index_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_switching_states/HDL_DUT/min_Index_AXI', 'IOInterfaceMapping', 'x"100"');
 
 
 %% Workflow Configuration Settings

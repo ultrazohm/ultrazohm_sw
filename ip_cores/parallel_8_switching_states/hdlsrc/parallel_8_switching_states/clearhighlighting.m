@@ -2,7 +2,7 @@ SLStudio.Utils.RemoveHighlighting(get_param('parallel_8_switching_states', 'hand
 SLStudio.Utils.RemoveHighlighting(get_param('gm_parallel_8_switching_states', 'handle'));
 annotate_port('gm_parallel_8_switching_states/HDL_DUT/Detect Rise Positive', 0, 1, '');
 annotate_port('gm_parallel_8_switching_states/HDL_DUT/Delay', 0, 1, '');
-annotate_port('gm_parallel_8_switching_states/HDL_DUT/Delay2', 1, 1, '');
+annotate_port('gm_parallel_8_switching_states/HDL_DUT/Delay16', 1, 1, '');
 annotate_port('gm_parallel_8_switching_states/HDL_DUT/Switch_on2', 0, 1, '');
 annotate_port('gm_parallel_8_switching_states/HDL_DUT/Detect Rise Positive/Positive', 0, 1, '');
 annotate_port('gm_parallel_8_switching_states/HDL_DUT/Detect Rise Positive/FixPt Relational Operator', 0, 1, '');

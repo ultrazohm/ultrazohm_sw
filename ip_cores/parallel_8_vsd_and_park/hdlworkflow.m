@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 15:43:31 on 11/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 09:18:33 on 16/11/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_vsd_and_park\hdlworkflow.m'
 %     Overwrite : true
@@ -144,6 +144,22 @@ hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_b2_axi', 'I
 % Set Outport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c2_axi', 'IOInterface', 'AXI4-Lite');
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c2_axi', 'IOInterfaceMapping', 'x"138"');
+
+% Set Outport HDL parameters
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_d_AXI', 'IOInterfaceMapping', 'x"104"');
+
+% Set Outport HDL parameters
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_q_AXI', 'IOInterfaceMapping', 'x"108"');
+
+% Set Outport HDL parameters
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_x_AXI', 'IOInterfaceMapping', 'x"10C"');
+
+% Set Outport HDL parameters
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_y_AXI', 'IOInterfaceMapping', 'x"110"');
 
 
 %% Workflow Configuration Settings

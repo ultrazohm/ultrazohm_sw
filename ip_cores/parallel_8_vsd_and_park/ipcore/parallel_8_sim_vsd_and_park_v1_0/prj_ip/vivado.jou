@@ -2,8 +2,8 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Fri Nov 11 15:40:35 2022
-# Process ID: 152
+# Start of session at: Wed Nov 16 09:17:57 2022
+# Process ID: 8008
 # Current directory: C:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_sim_vsd_and_park_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/ultrazohm_sw/ip_cores/parallel_8_vsd_and_park/ipcore/parallel_8_sim_vsd_and_park_v1_0/prj_ip/vivado.log

@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-17
+18
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-79
+111
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-50
+82
 </td>
 
 </tr>
@@ -246,7 +246,7 @@ HDL_DUT
 
 </h5>
 <h5>
-Registers (16)
+Registers (17)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -255,7 +255,7 @@ Registers (16)
 1-bit Register 							: 14
 </span>
 <span name="Register_1_1" id="Register_1_1">
-<ul class="SystemdefinedCollapse" id="c0fa0785-81a1-48c8-b5f2-40ce987d4abc" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="9180c7d9-f26b-453c-8d23-b41e4388498c" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('parallel_8_switching_states:47')" name="code2model" class="code2model">
 Delay
@@ -342,7 +342,7 @@ Delay3
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'c0fa0785-81a1-48c8-b5f2-40ce987d4abc')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '9180c7d9-f26b-453c-8d23-b41e4388498c')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -351,7 +351,7 @@ Delay3
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 2
+32-bit Register 							: 3
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
@@ -364,6 +364,12 @@ Delay1
 <li>
 <a href="matlab:coder.internal.code2model('parallel_8_switching_states:55')" name="code2model" class="code2model">
 Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_switching_states:121')" name="code2model" class="code2model">
+Delay16
 </a>
 
 </li>
@@ -396,7 +402,7 @@ Switch_on2
 
 </span>
 <br /><h5>
-Number of I/O Bits (50)
+Number of I/O Bits (82)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -435,10 +441,10 @@ done_vsd_and_park
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 14
+Number of Output Bits: 46
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="99b87cd6-4c11-4c54-98ff-8db51ae1583d" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="7d655c29-2836-4dde-8eef-c466da113eab" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -520,9 +526,15 @@ done_switching_states
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_switching_states:120')" name="code2model" class="code2model">
+min_Index_AXI
+</a>
+: 32 bits
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '99b87cd6-4c11-4c54-98ff-8db51ae1583d')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '7d655c29-2836-4dde-8eef-c466da113eab')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

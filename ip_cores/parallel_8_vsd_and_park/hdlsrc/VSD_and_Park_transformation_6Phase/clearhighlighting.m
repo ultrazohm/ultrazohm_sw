@@ -1,14 +1,6 @@
 SLStudio.Utils.RemoveHighlighting(get_param('VSD_and_Park_transformation_6Phase', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_VSD_and_Park_transformation_6Phase', 'handle'));
-annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Compare To Constant', 1, 1, '');
-annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Compare To Constant', 1, 1, '');
-annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Compare To Constant1', 1, 1, '');
-annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Compare To Constant1', 1, 1, '');
-annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Detect Rise Positive', 1, 1, '');
-annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Detect Rise Positive', 1, 1, '');
 annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1', 0, 1, '');
-annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Detect Rise Positive/Positive', 1, 1, '');
-annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Detect Rise Positive/Positive', 1, 1, '');
 annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl', 0, 1, '');
 annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/sin_hdl', 0, 1, '');
 annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 0, 1, '');

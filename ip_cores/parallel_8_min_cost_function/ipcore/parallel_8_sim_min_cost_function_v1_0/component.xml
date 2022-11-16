@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>de8926ed</spirit:value>
+            <spirit:value>9825f474</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>de8926ed</spirit:value>
+            <spirit:value>9825f474</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -848,7 +848,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_sim_min_cost_function.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_26fc8474</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1d912432</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1016,14 +1016,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_8_sim_min_cost_function</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112771177</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-11-15T13:57:54Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112772266</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-11-16T08:07:23Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="058e7a8a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f5af8352"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="f0605ee5"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="6cb45cea"/>
     </xilinx:packagingInfo>

@@ -22,18 +22,19 @@ General setup
 The "X" for the transfromation and pmsm IP-Core serves as placeholder and the respective IP-Cores for the amount of phases should be used.
 Individual documentation of the IP-Cores is linked below.
 
-Machine model: :ref:`uz_pmsm_model_9ph_dq`
-
-Transformation: :ref:`uz_pmsm9ph_transformation`
-
-Inverter: :ref:`uz_inverter_3ph`
-
-Flip Flop: :ref:`uz_rs_flip_flop`
+..  toctree::
+    :maxdepth: 1
+    :glob:
+    
+    uz_pmsm_model_9ph_dq/uz_pmsm_model_9ph_dq
+    uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
+    ../uz_inverter_3ph/uz_inverter_3ph
+    ../uz_rs_flip_flop/uz_rs_flip_flop
 
 Examples
 ========
 
-Insert Links to extra docs pages, for example:
+Insert Links to extra docs pages with examples including vivado screenshots and vitis code, for example:
 
 threephase CIL
 

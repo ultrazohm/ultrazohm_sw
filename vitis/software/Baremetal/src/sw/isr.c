@@ -106,7 +106,7 @@ void ISR_Control(void *data)
     if (fabsf(Global_Data.av.d_1_i_a1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_b1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_1_i_c1) > MAX_PHASE_CURRENT_AMPERE ||
     	fabsf(Global_Data.av.d_2_i_a1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_2_i_b1) > MAX_PHASE_CURRENT_AMPERE || fabsf(Global_Data.av.d_2_i_c1) > MAX_PHASE_CURRENT_AMPERE)
     {
-    	uz_assert(0); // fail hard and loudly
+    	//uz_assert(0); // fail hard and loudly
     }
 
     // read all omega_mechs in rad/s from d5
@@ -172,13 +172,13 @@ void ISR_Control(void *data)
     	dutycyc_left_motor = uz_FOC_generate_DutyCycles(ph_ref_voltages_left_motor, Global_Data.av.U_ZK);
     	dutycyc_right_motor = uz_FOC_generate_DutyCycles(ph_ref_voltages_right_motor, Global_Data.av.U_ZK);
     	// assign duty-cycles to global duty-cycle variables
-    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left_motor.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left_motor.DutyCycle_V;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left_motor.DutyCycle_W;
-
-    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right_motor.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right_motor.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right_motor.DutyCycle_W;
+//    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left_motor.DutyCycle_U;
+//    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left_motor.DutyCycle_V;
+//    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left_motor.DutyCycle_W;
+//
+//    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right_motor.DutyCycle_U;
+//    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right_motor.DutyCycle_V;
+//    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right_motor.DutyCycle_W;
 
 
     } else {

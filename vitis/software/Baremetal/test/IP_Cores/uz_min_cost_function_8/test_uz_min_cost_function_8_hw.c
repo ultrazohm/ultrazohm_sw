@@ -35,4 +35,11 @@ void test_uz_min_cost_function_8_hw_get_J_out_AXI(void){
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
 */
+
+void test_min_cost_function_8_hw_get_Index_in(void){
+     int32_t expected_return_value = 3;
+     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+Index_in_AXI_Data_parallel_8_sim_min_cost_function,expected_return_value);
+     int32_t actual_return_value = uz_min_cost_function_8_hw_get_Index_in(TEST_BASE_ADDRESS);
+     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
 #endif // TEST

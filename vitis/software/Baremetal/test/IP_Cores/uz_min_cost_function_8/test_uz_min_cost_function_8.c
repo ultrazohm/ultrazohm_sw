@@ -70,4 +70,14 @@ void test_uz_min_cost_function_8_get_J_AXI_test_pointer(void)
     TEST_ASSERT_FAIL_ASSERT(uz_min_cost_function_8_get_J_out_AXI(testpointer));
 }
 */
+
+void test_uz_min_cost_function_8_read_Index_in(void){
+
+    uz_min_cost_function_8_t* test_instance = uz_min_cost_function_8_init(config);
+
+    int32_t Index_in_expect = 3;
+    uz_min_cost_function_8_hw_get_Index_in_ExpectAndReturn(config.base_address, Index_in_expect);
+    int32_t Index_in = uz_min_cost_function_8_read_Index_in(test_instance);
+    TEST_ASSERT_EQUAL_INT(Index_in, Index_in_expect);
+}
 #endif // TEST

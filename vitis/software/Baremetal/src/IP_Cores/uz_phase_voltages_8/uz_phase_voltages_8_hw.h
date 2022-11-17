@@ -5,5 +5,6 @@
 
 void uz_phase_voltages_8_set_theta_el_offset(uint32_t base_address, float theta_el_offset);
 void uz_phase_voltages_8_set_u_dc_link_voltage(uint32_t base_address, float u_dc_link_voltage);
+int32_t uz_phase_voltages_8_get_Index_in(uint32_t base_address);
 
 #endif // UZ_PHASE_VOLTAGES_8.HW_H

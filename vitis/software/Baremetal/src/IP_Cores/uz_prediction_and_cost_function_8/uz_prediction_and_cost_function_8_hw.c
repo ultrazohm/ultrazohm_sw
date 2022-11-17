@@ -97,3 +97,9 @@ void uz_prediction_and_cost_function_8_hw_set_iy_ref(uint32_t base_address, floa
     //single
     uz_axi_write_float(base_address + iy_ref_AXI_Data_parallel_8_sim_prediction_and_cost_function, iy_ref);
 }
+
+int32_t uz_prediction_and_cost_function_8_hw_get_Index(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    //int32
+    return  uz_axi_read_int32(base_address + Index_AXI_Data_parallel_8_sim_prediction_and_cost_function);
+}

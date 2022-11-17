@@ -36,4 +36,13 @@ uz_phase_voltages_8_t* uz_phase_voltages_8_init(struct uz_phase_voltages_8_confi
     return (self);
 }
 
+int32_t uz_phase_voltages_8_read_Index_in (uz_phase_voltages_8_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    int32_t Index = 0;
+    Index = uz_phase_voltages_8_get_Index_in(self->config.base_address);
+
+    return Index;
+}
+
 #endif

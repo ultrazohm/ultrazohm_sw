@@ -73,4 +73,27 @@ void test_uz_vsd_8_get_ia1_ib1_ic1_ia2_ib2_ic2_pointer(void)
    TEST_ASSERT_FAIL_ASSERT(uz_vsd_8_get_ia1_ib1_ic1_ia2_ib2_ic2(testpointer));
 }
 
+void test_uz_vsd_and_park_transformation_6phase_read_idq(void)
+{
+   uz_vsd_8_hw_set_thetaOffset_Expect(config.base_address, config.theta_offset);
+   uz_vsd_8_t* test_instance = uz_vsd_8_init(config);
+
+   float id_expected = -2.25f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_d_ExpectAndReturn(config.base_address, id_expected);
+
+   float iq_expected = 12.125f; 
+   uz_vsd_and_park_transformation_6phase_hw_get_i_q_ExpectAndReturn(config.base_address, iq_expected);
+
+   uz_3ph_dq_t currents = uz_vsd_and_park_transformation_6phase_get_id_iq(test_instance);
+   
+   TEST_ASSERT_EQUAL_FLOAT(currents.d, id_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.q, iq_expected);
+}
+
+void test_uz_vsd_and_park_transformation_6phase_read_idq_pointer(void)
+{
+   uz_vsd_8_t* testpointer = NULL;
+   TEST_ASSERT_FAIL_ASSERT(uz_vsd_and_park_transformation_6phase_get_id_iq(testpointer));
+}
+
 #endif // TEST

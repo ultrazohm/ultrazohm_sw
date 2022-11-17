@@ -24,5 +24,12 @@ struct uz_phase_voltages_8_config_t{
  */
 uz_phase_voltages_8_t* uz_phase_voltages_8_init(struct uz_phase_voltages_8_config_t config);
 
+/**
+ * @brief Read the value of Index_in from the PHASE_VOLTAGES_8 IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @return Value of Index_in
+ */
+int32_t uz_phase_voltages_8_read_Index_in(uz_phase_voltages_8_t* self);
 
 #endif // UZ_PHASE_VOLTAGES_8_H

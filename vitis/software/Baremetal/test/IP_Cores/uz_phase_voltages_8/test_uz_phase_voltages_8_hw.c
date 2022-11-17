@@ -44,4 +44,10 @@ void test_uz_phase_voltages_8_set_u_dc_link_voltage_fail_due_to_zero_base_addres
     TEST_ASSERT_FAIL_ASSERT(uz_phase_voltages_8_set_u_dc_link_voltage(0,u_dc_link_voltage));
 }
 
+void test_uz_phase_voltages_8_get_Index_in(void){
+     int32_t expected_return_value = 3;
+     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+Index_in_AXI_Data_parallel_8_sim_phase_voltages,expected_return_value);
+     int32_t actual_return_value = uz_phase_voltages_8_get_Index_in(TEST_BASE_ADDRESS);
+     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
 #endif // TEST

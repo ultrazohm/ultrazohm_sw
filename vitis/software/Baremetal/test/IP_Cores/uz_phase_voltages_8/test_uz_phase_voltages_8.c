@@ -37,4 +37,17 @@ void test_uz_phase_voltages_8_init_test(void)
 
     uz_phase_voltages_8_init(config);
 }
+
+void test_uz_phase_voltages_8_read_Index_in(void){
+
+    uz_phase_voltages_8_set_theta_el_offset_Expect(config.base_address, config.theta_el_offset);
+    uz_phase_voltages_8_set_u_dc_link_voltage_Expect(config.base_address, config.u_dc_link_voltage);
+
+    uz_phase_voltages_8_t* test_instance = uz_phase_voltages_8_init(config);
+
+    int32_t Index_in_expect = 3;
+    uz_phase_voltages_8_get_Index_in_ExpectAndReturn(config.base_address, Index_in_expect);
+    int32_t Index_in = uz_phase_voltages_8_read_Index_in(test_instance);
+    TEST_ASSERT_EQUAL_INT(Index_in, Index_in_expect);
+}
 #endif // TEST

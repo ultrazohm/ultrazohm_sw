@@ -22,3 +22,9 @@ float uz_min_cost_function_8_hw_get_J_out_AXI(uint32_t base_address)
     return uz_fixedpoint_axi_read(base_address + J_AXI_Data_parallel_8_min_cost_function, fixedpoint_definition);
 }
 */
+
+int32_t uz_min_cost_function_8_hw_get_Index_in(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    //int32
+    return  uz_axi_read_int32(base_address + Index_in_AXI_Data_parallel_8_sim_min_cost_function);
+}

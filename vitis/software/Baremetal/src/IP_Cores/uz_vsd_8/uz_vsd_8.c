@@ -48,5 +48,16 @@ uz_6ph_abc_t uz_vsd_8_get_ia1_ib1_ic1_ia2_ib2_ic2(uz_vsd_8_t* self) {
     return currents;
 }
 
+uz_3ph_dq_t uz_vsd_and_park_transformation_6phase_get_id_iq(uz_vsd_8_t* self) {
+
+    uz_assert_not_NULL(self);
+    uz_3ph_dq_t currents = { 0 };
+
+    currents.d = uz_vsd_and_park_transformation_6phase_hw_get_i_d(self->config.base_address);
+    currents.q = uz_vsd_and_park_transformation_6phase_hw_get_i_q(self->config.base_address);
+
+    return currents;
+}
+
 
 #endif

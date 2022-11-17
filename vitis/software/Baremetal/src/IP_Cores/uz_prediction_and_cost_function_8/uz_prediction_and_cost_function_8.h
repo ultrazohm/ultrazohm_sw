@@ -52,4 +52,12 @@ uz_prediction_and_cost_function_8_t* uz_prediction_and_cost_function_8_init(stru
 */
 void uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(uz_prediction_and_cost_function_8_t* self, uz_6ph_idref_iqref_ixref_iyref_t updated_values);
 
+/**
+ * @brief Read the value of Index_in from the Prediction_and_cost_function IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @return Value of Index
+ */
+int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self);
+
 #endif // UZ_PREDICTION_AND_COST_FUNCTION_8_H

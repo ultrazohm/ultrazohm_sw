@@ -172,4 +172,11 @@ void test_uz_prediction_and_cost_function_8_hw_set_iy_ref_fail_due_to_zero_base_
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_iy_ref(0,iy_ref));
 }
 
+void test_uz_prediction_and_cost_function_8_hw_get_Index(void){
+     int32_t expected_return_value = 3;
+     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+Index_AXI_Data_parallel_8_sim_prediction_and_cost_function,expected_return_value);
+     int32_t actual_return_value = uz_prediction_and_cost_function_8_hw_get_Index(TEST_BASE_ADDRESS);
+     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
+}
+
 #endif // TEST

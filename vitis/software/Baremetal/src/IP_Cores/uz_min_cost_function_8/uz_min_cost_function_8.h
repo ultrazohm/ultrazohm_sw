@@ -22,4 +22,12 @@ struct uz_min_cost_function_8_config_t{
  */
 uz_min_cost_function_8_t* uz_min_cost_function_8_init(struct uz_min_cost_function_8_config_t config);
 
+/**
+ * @brief Read the value of Index_in from the min_cost_function_8 IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @return Value of Index_in
+ */
+int32_t uz_min_cost_function_8_read_Index_in(uz_min_cost_function_8_t* self);
+
 #endif // UZ_MIN_COST_FUNCTION_8_H

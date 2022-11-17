@@ -56,4 +56,13 @@ void uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(uz_predict
     uz_prediction_and_cost_function_8_hw_set_ix_ref(self->config.base_address, updated_values.ix_ref);
     uz_prediction_and_cost_function_8_hw_set_iy_ref(self->config.base_address, updated_values.iy_ref);
 }
+
+int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    int32_t Index = 0;
+    Index = uz_prediction_and_cost_function_8_hw_get_Index(self->config.base_address);
+
+    return Index;
+}
 #endif

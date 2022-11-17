@@ -106,4 +106,28 @@ void test_uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update_test(
    uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(test_instance,updated_values);
    }
 
+   void test_uz_prediction_and_cost_function_8_read_Index(void){
+
+    uz_prediction_and_cost_function_8_hw_set_Lq_Expect(config.base_address, config.Lq);
+    uz_prediction_and_cost_function_8_hw_set_Ld_Expect(config.base_address, config.Ld);
+    uz_prediction_and_cost_function_8_hw_set_SampleTime_div_Ld_Expect(config.base_address, config.SampleTime, config.Ld);
+    uz_prediction_and_cost_function_8_hw_set_SampleTime_div_Lq_Expect(config.base_address, config.SampleTime, config.Lq);
+    uz_prediction_and_cost_function_8_hw_set_SampleTime_div_Lx_Expect(config.base_address, config.SampleTime, config.Lx);
+    uz_prediction_and_cost_function_8_hw_set_pole_pairs_Expect(config.base_address, config.pole_pairs);
+    uz_prediction_and_cost_function_8_hw_set_SampleTime_div_Ly_Expect(config.base_address, config.SampleTime, config.Ly);
+    uz_prediction_and_cost_function_8_hw_set_Rs_Expect(config.base_address, config.Rs);
+    uz_prediction_and_cost_function_8_hw_set_psiPM_Expect(config.base_address, config.psiPM);
+    uz_prediction_and_cost_function_8_hw_set_id_ref_Expect(config.base_address, config.id_ref);
+    uz_prediction_and_cost_function_8_hw_set_iq_ref_Expect(config.base_address, config.iq_ref);
+    uz_prediction_and_cost_function_8_hw_set_ix_ref_Expect(config.base_address, config.ix_ref);
+    uz_prediction_and_cost_function_8_hw_set_iy_ref_Expect(config.base_address, config.iy_ref);
+        
+    uz_prediction_and_cost_function_8_t* test_instance = uz_prediction_and_cost_function_8_init(config);
+
+    int32_t Index_in_expect = 3;
+    uz_prediction_and_cost_function_8_hw_get_Index_ExpectAndReturn(config.base_address, Index_in_expect);
+    int32_t Index_in = uz_prediction_and_cost_function_8_read_Index(test_instance);
+    TEST_ASSERT_EQUAL_INT(Index_in, Index_in_expect);
+}
+
 #endif // TEST

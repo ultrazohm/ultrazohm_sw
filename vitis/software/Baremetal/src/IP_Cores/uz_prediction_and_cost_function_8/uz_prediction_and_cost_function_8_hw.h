@@ -15,5 +15,6 @@ void uz_prediction_and_cost_function_8_hw_set_id_ref(uint32_t base_address, floa
 void uz_prediction_and_cost_function_8_hw_set_iq_ref(uint32_t base_address, float iq_ref);
 void uz_prediction_and_cost_function_8_hw_set_ix_ref(uint32_t base_address, float ix_ref);
 void uz_prediction_and_cost_function_8_hw_set_iy_ref(uint32_t base_address, float iy_ref);
+int32_t uz_prediction_and_cost_function_8_hw_get_Index(uint32_t base_address);
 
 #endif // UZ_PREDICTION_AND_COST_FUNCTION_8_HW_H

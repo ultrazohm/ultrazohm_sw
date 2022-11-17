@@ -68,6 +68,14 @@ float last_applied_optimal_voltage_q;
 float last_applied_optimal_voltage_x;
 float last_applied_optimal_voltage_y;
 
+int32_t Index_phase_voltages_8;
+
+int32_t Index_prediction_and_cost_function_8;
+
+int32_t Index_min_cost_function_8;
+
+int32_t Index_switching_states_8;
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -129,6 +137,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_last_applied_optimal_voltage_q] = &last_applied_optimal_voltage_q;
 	js_ch_observable[JSO_last_applied_optimal_voltage_x] = &last_applied_optimal_voltage_x;
 	js_ch_observable[JSO_last_applied_optimal_voltage_y] = &last_applied_optimal_voltage_y;
+	js_ch_observable[JSO_Index_phase_voltages_8] = &Index_phase_voltages_8;
+	js_ch_observable[JSO_Index_prediction_and_cost_function_8] = &Index_prediction_and_cost_function_8;
+	js_ch_observable[JSO_Index_min_cost_function_8] = &Index_min_cost_function_8;
+	js_ch_observable[JSO_Index_switching_states_8] = &Index_switching_states_8;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

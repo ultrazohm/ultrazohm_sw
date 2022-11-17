@@ -80,7 +80,7 @@ float uz_vsd_8_hw_get_i_c2(uint32_t base_address)
     return uz_fixedpoint_axi_read(base_address + i_c2_axi_Data_parallel_8_sim_vsd_and_park, fixedpoint_definition);
 }
 
-float uz_vsd_and_park_transformation_6phase_hw_get_i_d(uint32_t base_address)
+float uz_vsd_and_park_8_transformation_6phase_hw_get_i_d(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
     // sfix18_En11
@@ -91,7 +91,7 @@ float uz_vsd_and_park_transformation_6phase_hw_get_i_d(uint32_t base_address)
     return uz_fixedpoint_axi_read(base_address + i_d_AXI_Data_parallel_8_sim_vsd_and_park, fixedpoint_definition);
 }
 
-float uz_vsd_and_park_transformation_6phase_hw_get_i_q(uint32_t base_address)
+float uz_vsd_and_park_8_transformation_6phase_hw_get_i_q(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
     // sfix18_En11
@@ -102,7 +102,7 @@ float uz_vsd_and_park_transformation_6phase_hw_get_i_q(uint32_t base_address)
     return uz_fixedpoint_axi_read(base_address + i_q_AXI_Data_parallel_8_sim_vsd_and_park, fixedpoint_definition);
 }
 
-float uz_vsd_and_park_transformation_6phase_hw_get_i_x(uint32_t base_address)
+float uz_vsd_and_park_8_transformation_6phase_hw_get_i_x(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
     // sfix18_En11
@@ -113,7 +113,7 @@ float uz_vsd_and_park_transformation_6phase_hw_get_i_x(uint32_t base_address)
     return uz_fixedpoint_axi_read(base_address + i_x_AXI_Data_parallel_8_sim_vsd_and_park, fixedpoint_definition);
 }
 
-float uz_vsd_and_park_transformation_6phase_hw_get_i_y(uint32_t base_address)
+float uz_vsd_and_park_8_transformation_6phase_hw_get_i_y(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
     // sfix18_En11

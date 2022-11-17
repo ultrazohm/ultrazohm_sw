@@ -73,6 +73,10 @@ enum JS_OberservableData {
 	JSO_last_applied_optimal_voltage_q,
 	JSO_last_applied_optimal_voltage_x,
 	JSO_last_applied_optimal_voltage_y,
+	JSO_Index_phase_voltages_8,
+	JSO_Index_prediction_and_cost_function_8,
+	JSO_Index_min_cost_function_8,
+	JSO_Index_switching_states_8,
 	JSO_ENDMARKER
 };
 

@@ -152,6 +152,12 @@ extern float c1_current_vsd_and_park_transformation;
 extern float a2_current_vsd_and_park_transformation;
 extern float b2_current_vsd_and_park_transformation;
 extern float c2_current_vsd_and_park_transformation;
+uz_3ph_dq_t dq_currents_vsd_and_park_transformation;
+extern float d_current_vsd_and_park_transformation;
+extern float q_current_vsd_and_park_transformation;
+
+extern uz_phase_voltages_8_t* test_instance_phase_voltages_8;
+extern int32_t Index_phase_voltages_8;
 
 extern uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
 uz_6ph_idref_iqref_ixref_iyref_t updated_values={
@@ -160,6 +166,7 @@ uz_6ph_idref_iqref_ixref_iyref_t updated_values={
 	.ix_ref=0.0f,
 	.iy_ref=0.0f
  };
+extern int32_t Index_prediction_and_cost_function_8;
 
 extern uz_delay_compensation_8_t* test_instance_delay_compensation_8;
 /*
@@ -170,7 +177,12 @@ extern float ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
 extern float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
 */
 
-//extern uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+extern uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+extern int32_t Index_min_cost_function_8;
+
+
+extern uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
+extern int32_t Index_switching_states_8;
 
 /*
 float theta_el_measured;
@@ -259,7 +271,19 @@ void ISR_Control(void *data)
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
 
-/*
+    dq_currents_vsd_and_park_transformation = uz_vsd_and_park_8_transformation_6phase_get_id_iq(test_instance_vsd_8);
+    d_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.d;
+    q_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.q;
+
+    Index_phase_voltages_8=uz_phase_voltages_8_read_Index_in(test_instance_phase_voltages_8);
+
+    Index_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_read_Index(test_instance_prediction_and_cost_function_8);
+
+    Index_min_cost_function_8=uz_min_cost_function_8_read_Index_in(test_instance_min_cost_function_8);
+
+    Index_switching_states_8=uz_switching_states_6Phase_8_read_Index_in(test_instance_switching_states_6Phase_8);
+
+    /*
     theta_el_measured=uz_incrementalEncoder_get_theta_el(test_instance_Encoder);
     theta_el=theta_el_measured-theta_el_offset;
 

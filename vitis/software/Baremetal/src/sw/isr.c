@@ -90,6 +90,8 @@ void ISR_Control(void *data)
     	// Control for TFM with asymetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
     }
+    //ultrazohm_state_machine_set_error(codegenInstance.output.fault_peak_current_u);
+
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -150,9 +152,9 @@ int Initialize_ISR()
 	codegenInstance.input.fl_voltage_limitation = 2U; // in field weakening: 1 prio U_d; 2 Quang
 	codegenInstance.input.fl_decoupling = 1U;
 	codegenInstance.input.fl_angle_prediction = 1U;
-	codegenInstance.input.fl_compensat_CT_current= 1U; // 1 the cogging torque compensation gets through the compensation of the asymmetry; 0 direct cogging torque compensation
-	codegenInstance.input.fl_enable_compensation_cogging_ = 0U; // 1 enables the compensation of the asymmetriy
+	codegenInstance.input.fl_enable_compensation_current = 0U;  // 1 enables the compensation of the asymmetriy
 	codegenInstance.input.fl_enable_compensation_cogging_ = 0U; // 1 enables the compensation of the cogging torque
+	codegenInstance.input.fl_compensat_CT_current= 1U; // 1 the cogging torque compensation gets through the compensation of the asymmetry; 0 direct cogging torque compensation
 	// Initialize reference values (real32_T)
 	codegenInstance.input.Ref_n = 0.0F;
 	codegenInstance.input.Ref_I_re_ext_mit = 0.0F;

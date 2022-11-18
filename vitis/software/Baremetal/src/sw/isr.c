@@ -157,7 +157,7 @@ extern float d_current_vsd_and_park_transformation;
 extern float q_current_vsd_and_park_transformation;
 
 extern uz_phase_voltages_8_t* test_instance_phase_voltages_8;
-extern int32_t Index_phase_voltages_8;
+extern float Index_phase_voltages_8;
 
 extern uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
 uz_6ph_idref_iqref_ixref_iyref_t updated_values={
@@ -166,7 +166,7 @@ uz_6ph_idref_iqref_ixref_iyref_t updated_values={
 	.ix_ref=0.0f,
 	.iy_ref=0.0f
  };
-extern int32_t Index_prediction_and_cost_function_8;
+extern float Index_prediction_and_cost_function_8;
 
 extern uz_delay_compensation_8_t* test_instance_delay_compensation_8;
 /*
@@ -178,11 +178,11 @@ extern float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
 */
 
 extern uz_min_cost_function_8_t* test_instance_min_cost_function_8;
-extern int32_t Index_min_cost_function_8;
+extern float Index_min_cost_function_8;
 
 
 extern uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
-extern int32_t Index_switching_states_8;
+extern float Index_switching_states_8;
 
 /*
 float theta_el_measured;

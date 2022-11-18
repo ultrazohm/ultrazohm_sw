@@ -68,13 +68,13 @@ float last_applied_optimal_voltage_q;
 float last_applied_optimal_voltage_x;
 float last_applied_optimal_voltage_y;
 
-int32_t Index_phase_voltages_8;
+float Index_phase_voltages_8;
 
-int32_t Index_prediction_and_cost_function_8;
+float Index_prediction_and_cost_function_8;
 
-int32_t Index_min_cost_function_8;
+float Index_min_cost_function_8;
 
-int32_t Index_switching_states_8;
+float Index_switching_states_8;
 
 int JavaScope_initalize(DS_Data* data)
 {

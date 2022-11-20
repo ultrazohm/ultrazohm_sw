@@ -1,0 +1,14 @@
+﻿Port Name,Port Type,Data Type,Interface,Range,Description
+theta_el,Input,sfix18_En14,External Signal,-8 to +7,electric rotor angle
+theta_el_axi,Output,sfix18_En14,AXI 0x100,-8 to +7,electric rotor angle
+trigger_new_values,Input,boolean,External Signal,,trigger to update outputs
+x_abc1_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 1 for transformation as line-to-line
+x_abc2_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 2 for transformation as line-to-line
+x_abc3_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 3 for transformation as line-to-line (only nine-phase)
+x_out_dq,Output,sfix27_En16 (6/9),External Signal,-1024 to +1023,output transfomed values
+x_in_dq,Input,sfix27_En18 (6/9),External Signal,-256 to +255,input dq values for inverse transformation
+x_abc_out_axi,Output,sfix27_En18 (6/9),AXI 0x140,-256 to +255,output inverse transformed abc values to AXI
+x_abc_1,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 1 values
+x_abc_2,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 2 values
+x_abc_3,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 3 values (only nine-phase)
+refresh_values,Output,boolean,External Signal,,feedback signal that trigger_new_values input has been acknowledged and outputs are updated

@@ -27,8 +27,8 @@ Compatibility
 
 See also
 """""""""""""""
-* :download:`Assembly 1v00 <uz_per_adc_to_bnc/ASM_UZ_Per_ADC_to_BNC_Manufacturing_Rev01.PDF>`
-* :download:`Schematic 1v00 <uz_per_adc_to_bnc/SCH_UZ_Per_ADC_to_BNC_Manufacturing_Rev01.PDF>`
+* :download:`Assembly 1v00 <uz_per_adc_to_bnc/ASM_UZ_Per_ADC_to_BNC_Manufacturing_Rev01.pdf>`
+* :download:`Schematic 1v00 <uz_per_adc_to_bnc/SCH_UZ_Per_ADC_to_BNC_Manufacturing_Rev01.pdf>`
 
 
 Designed by

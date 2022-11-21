@@ -85,6 +85,25 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_i_a1]   	= &data->av.i_a1;
+	js_ch_observable[JSO_i_b1]   	= &data->av.i_b1;
+	js_ch_observable[JSO_i_c1]   	= &data->av.i_c1;
+	js_ch_observable[JSO_i_a2]   	= &data->av.i_a2;
+	js_ch_observable[JSO_i_b2]   	= &data->av.i_b2;
+	js_ch_observable[JSO_i_c2]   	= &data->av.i_c2;
+	js_ch_observable[JSO_i_alpha]   	= &data->av.i_alpha;
+	js_ch_observable[JSO_i_beta]   	= &data->av.i_beta;
+	js_ch_observable[JSO_i_x]   	= &data->av.i_x;
+	js_ch_observable[JSO_i_y]   	= &data->av.i_y;
+	js_ch_observable[JSO_i_z1]   	= &data->av.i_z1;
+	js_ch_observable[JSO_i_z2]   	= &data->av.i_z2;
+	js_ch_observable[JSO_FD_a1]   	= &data->av.FD_a1;
+	js_ch_observable[JSO_FD_b1]   	= &data->av.FD_b1;
+	js_ch_observable[JSO_FD_c1]   	= &data->av.FD_c1;
+	js_ch_observable[JSO_FD_a2]   	= &data->av.FD_a2;
+	js_ch_observable[JSO_FD_b2]   	= &data->av.FD_b2;
+	js_ch_observable[JSO_FD_c2]   	= &data->av.FD_c2;
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

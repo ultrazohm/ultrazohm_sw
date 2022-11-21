@@ -79,6 +79,10 @@ typedef struct _actualValues_ {
 	float rpm_ref_filt;
 	float i_alpha;
 	float i_beta;
+	float i_x;
+	float i_y;
+	float i_z1;
+	float i_z2;
 	float u_d;
 	float u_q;
 	float u_d_ref;
@@ -88,6 +92,12 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float theta_m_offset_comp;
 	float polepairs;
+	float FD_a1;
+	float FD_b1;
+	float FD_c1;
+	float FD_a2;
+	float FD_b2;
+	float FD_c2;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 

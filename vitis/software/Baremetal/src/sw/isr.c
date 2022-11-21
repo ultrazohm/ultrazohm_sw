@@ -210,18 +210,18 @@ int mov_average_filter_length3 = 0;
 int mov_average_filter_length4 = 0;
 int mov_average_filter_length5 = 0;
 
-bool dq_2 = true;
+bool dq_2 = false;
 bool dq_8 = false;
-bool dq_12 = true;
-bool xy_n_PI = true;
-bool xy_n = true;
-bool xy_n_2 = true;
-bool xy_n_6 = true;
+bool dq_12 = false;
+bool xy_n_PI = false;
+bool xy_n = false;
+bool xy_n_2 = false;
+bool xy_n_6 = false;
 bool y_off = false;
-bool z1z2_1H = true;
-bool z1z2_3H = true;
-bool z1z2_9H = true;
-bool z1z2_control = true;
+bool z1z2_1H = false;
+bool z1z2_3H = false;
+bool z1z2_9H = false;
+bool z1z2_control = false;
 bool z2_control_off = false;
 
 int opf_phases[6] = {0};
@@ -478,6 +478,13 @@ void ISR_Control(void *data)
 		FD_indices.R5 = OPF_b2;
 		FD_indices.R6 = OPF_c2;
 
+		Global_Data.av.FD_a1 = FD_indices.R1;
+		Global_Data.av.FD_b1 = FD_indices.R2;
+		Global_Data.av.FD_c1 = FD_indices.R3;
+		Global_Data.av.FD_a2 = FD_indices.R4;
+		Global_Data.av.FD_b2 = FD_indices.R5;
+		Global_Data.av.FD_c2 = FD_indices.R6;
+
 
 		// Neutral Point configuration (N1N2 = 1 -> 1N with one neutral point, N1N2 = 2 -> 2N with two separate neutral points)
 
@@ -493,18 +500,17 @@ void ISR_Control(void *data)
 
 
 		// enable, disable Controllers depending on OPFs
-	dq_2 = true;
-	dq_8 = false;
-	dq_12 = true;
-	xy_n_PI = true;
-	xy_n = true;
-	xy_n_2 = true;
-	xy_n_6 = true;
+	dq_2 = false;
+	dq_12 = false;
+	xy_n_PI = false;
+	xy_n = false;
+	xy_n_2 = false;
+	xy_n_6 = false;
 	y_off = false;
-	z1z2_1H = true;
-	z1z2_3H = true;
-	z1z2_9H = true;
-	z1z2_control = true;
+	z1z2_1H = false;
+	z1z2_3H = false;
+	z1z2_9H = false;
+	z1z2_control = false;
 
 	if(N1N2 == 1){
 		if(num_OPF == 1){

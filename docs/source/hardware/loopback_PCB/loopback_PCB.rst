@@ -18,37 +18,42 @@ Rev01
 
 General description
 *******************
-This PCB is used for the :ref:`adc_loopback` tutorial. 
+This PCB is part of the :ref:`adc_loopback` tutorial. 
 
 The LEDs indicate the state of the signals from the digital voltage card (:ref:`digitalVoltage`). 
 Furthermore eight of the signals (as documented in the section *Signal description* below) are first filtered and then output via the Ethernet connector to the ADC card (:ref:`Analog_LTC2311_16_v3`, :ref:`Analog_LTC2311_16_v2` ). 
 
-.. figure:: sphx_glr_pcb_functional_areas.png
-  :align: right
-  :width: 350
+.. _ADC_Loopback_Layout:
 
-  Functional areas
+.. figure:: loopback_pcb_functional_areas.png
+  :align: right
+  :width: 355
+
+  Functional areas of the Loopback PCB
 
 Layout
 ------
 
-The PCB is structured by functional areas as shown in the figure on the right.
+The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_Layout` on the right.
 
-#. Connectors to the Digital Voltage Card
-#. Pin header for measuring all signals
-#. Supply voltage state indicated by LEDs (3V3, 5V, 15V, 24V)
-#. State of gate signals indicated by LEDs
-#. State of remaining IOs indicated by LEDs
-#. Low pass filter for filtering the gate signals
-#. Ethernet connector to ADC Card
+1. Connectors to the Digital Voltage Card
+ * Connector 1: IPL1-115-01-L-D-K, top (green)
+ * Connector 2: IPL1-120-01-L-D-K, left (blue)
+2. Pin header for measuring all signals
+3. Supply voltage state indicated by LEDs (3V3, 5V, 15V, 24V)
+4. State of gate signals indicated by LEDs
+5. State of remaining IOs indicated by LEDs
+6. Low pass filter for filtering the gate signals
+7. Ethernet connector to ADC Card
+   
 
 Signal description
 ------------------
 Since the matching of the signal names between the PCBs used in the Loopback Tutorial is not intuitive, 
 the following table matches the signal names of the Digital Voltage Card to the signal names on the Loopback PCB and the ADC card. Additionally, the name of the corresponding LED as marked on the Loopback PCB is given. 
 
-IPL1-115-01-L-D-K
-_________________
+Connector 1: IPL1-115-01-L-D-K
+______________________________
 
 .. csv-table:: Signal matching of connector IPL1-115-01-L-D-K
   :file: IPL115.csv
@@ -56,30 +61,42 @@ _________________
   :header-rows: 1
 
 .. figure:: net_names_dvc_IPL115.png
-  :align: left
   :width: 325
 
-  Netnames DVC IPL1-115
+  Netnames of connector 1 (IPL1-115-01-L-D-K) on Digital voltage card
 
 .. figure:: net_names_PCB_IPL115.png
-  :align: left
-  :width: 340
+  :width: 325
 
-  Netnames Loopback PCB IPL1-115
+  Netnames of connector 1 (IPL1-115-01-L-D-K) on Loopback PCB 
 
 .. figure:: net_names_dac.png
-  :align: right
-  :width: 200
+  :width: 325
 
-  Netnames ADC RJHSE 
+  Netnames of Ethernet connector on ADC card
 
-IPL1-120-01-L-D-K
-_________________
+Connector 2: IPL1-120-01-L-D-K
+______________________________
 
 .. csv-table:: Signal matching of connector IPL1-120-01-L-D-K
   :file: IPL120.csv
   :widths: 5 15 15 15 15
   :header-rows: 1
+
+.. figure:: net_names_dvc_IPL120.png
+  :width: 325
+
+  Netnames of connector 2 (IPL1-120-01-L-D-K) on Digital voltage card
+
+.. figure:: net_names_PCB_IPL120.png
+  :width: 325
+
+  Netnames of connector 2 (IPL1-120-01-L-D-K) on Loopback PCB 
+
+.. figure:: net_names_dac.png
+  :width: 325
+
+  Netnames of Ethernet connector on ADC card
 
 .. hint::
 

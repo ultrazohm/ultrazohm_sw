@@ -30,8 +30,6 @@ The following tutorial requires:
 - Digital voltage card in slot D1 (:ref:`digitalVoltage`)
 - Analog adapter card ADC :ref:`Analog_LTC2311_16_v3` in slot A2 or A3 or :ref:`Analog_LTC2311_16_v2` in slot A1
 - If the analog adapter card is used in a different slot, change the variables accordingly
-- The loopback PCB connected to the digital voltage card and the analog adapter card
-
 
 UltraZohm Setup
 ***************

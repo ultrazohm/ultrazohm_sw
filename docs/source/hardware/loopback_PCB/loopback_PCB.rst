@@ -37,8 +37,10 @@ Layout
 The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_Layout` on the right.
 
 1. Connectors to the Digital Voltage Card
- * Connector 1: IPL1-115-01-L-D-K, top (green)
- * Connector 2: IPL1-120-01-L-D-K, left (blue)
+   
+   * Connector 1: IPL1-115-01-L-D-K, top (green)
+   * Connector 2: IPL1-120-01-L-D-K, left (blue)
+  
 2. Pin header for measuring all signals
 3. Supply voltage state indicated by LEDs (3V3, 5V, 15V, 24V)
 4. State of gate signals indicated by LEDs

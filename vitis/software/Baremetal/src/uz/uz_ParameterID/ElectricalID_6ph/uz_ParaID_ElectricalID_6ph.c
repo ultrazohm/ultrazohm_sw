@@ -15,7 +15,7 @@
 ******************************************************************************/
 #include "../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
-#include "ElectricalID_6ph.h"
+#include "uz_ParaID_ElectricalID_6ph.h"
 #include "ElectricalID_6ph_codegen.h"
 
 #include <stdbool.h>

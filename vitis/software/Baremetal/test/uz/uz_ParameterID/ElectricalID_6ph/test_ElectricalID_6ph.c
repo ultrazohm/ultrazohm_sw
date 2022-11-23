@@ -15,7 +15,7 @@ void tearDown(void)
 
 void test_ElectricalID_6ph_NeedToImplement(void)
 {
-    uz_ParaID_ElectricalID_6ph_init();
+    uz_ElectricalID_6ph_init();
 }
 
 #endif // TEST

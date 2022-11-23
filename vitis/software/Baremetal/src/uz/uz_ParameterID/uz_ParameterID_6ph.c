@@ -60,27 +60,20 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 	uz_ParameterID_6ph_initialize_data_structs(self, Data);
 	return (self);
 }
-/*
+
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	//Update State-Inputs
-	self->ElectricalID->input.ActualValues = Data->ActualValues;
-	self->ElectricalID->input.ElectricalIDConfig = Data->ElectricalID_Config;
-	self->ElectricalID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-	self->ElectricalID->input.ControlFlags = self->ControlState->output.ControlFlags;
-
 	//Step the function
-	uz_ElectricalID_step(self->ElectricalID);
+	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config,Data->ActualValues,Data->GlobalConfig,Data->ControlFlags);
 
 	//Update Control-State-inputs
-	self->ControlState->input.ElectricalID_FOC_output = self->ElectricalID->output.ElectricalID_FOC_output;
-	self->ControlState->input.ElectricalID_output = self->ElectricalID->output.ElectricalID_output;
-	self->ControlState->input.enteredElectricalID = self->ElectricalID->output.enteredElectricalID;
-	self->ControlState->input.finishedElectricalID = self->ElectricalID->output.finishedElectricalID;
+	self->ControlState->input.ElectricalID_FOC_output = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
+	self->ControlState->input.ElectricalID_output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
+	self->ControlState->input.enteredElectricalID = uz_get_ElectricalID_6ph_entered(self->ElectricalID);
+	self->ControlState->input.finishedElectricalID = uz_get_ElectricalID_6ph_finished(self->ElectricalID);
+}
 
-}*/
-/*
 static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
@@ -123,7 +116,7 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	//Update Control-State-inputs
 	self->ControlState->input.enteredTwoMassID = self->TwoMassID->output.enteredTwoMassID;
 	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
-}*/
+}
 
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {

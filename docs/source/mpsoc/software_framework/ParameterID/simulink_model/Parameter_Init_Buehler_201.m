@@ -12,7 +12,7 @@ addpath('subsystem_references','simscape_references','function_references');
 
 %Busses needed for connections---------------------------------------------
 load('Busses.mat');
-load('Busses_6ph.mat');
+%load('Busses_6ph.mat');
 
 % Simulation parameters----------------------------------------------------
 d_f_hardware= 200000;               % [Hz] simluation freq of hardware

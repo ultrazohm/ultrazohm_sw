@@ -37,6 +37,10 @@ typedef struct {
   uz_3ph_abc_t I_abc; /**< measured three-phase currents */
   uz_3ph_dq_t i_dq; /**< measured dq voltages */
   uz_3ph_dq_t v_dq; /**< measured dq currents */
+  uz_6ph_abc_t v_abc_6ph; /**< measured six-phase voltages */
+  uz_6ph_abc_t i_abc_6ph; /**< measured six-phase currents */
+  uz_6ph_dq_t i_dq_6ph; /**< measured dq voltages */
+  uz_6ph_dq_t v_dq_6ph; /**< measured dq currents */
   real32_T omega_m; /**< measured mechanical omega */
   real32_T omega_el; /**< measured electrical omega */
   real32_T theta_m; /**< measured mechanical theta */
@@ -136,6 +140,9 @@ typedef struct {
   real32_T PWM_Switch_0; /**< DutyCycle for PWM Switch 0 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
   real32_T PWM_Switch_2; /**< DutyCycle for PWM Switch 2 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
   real32_T PWM_Switch_4; /**< DutyCycle for PWM Switch 4 (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  real32_T PWM_Switch_a2;
+  real32_T PWM_Switch_b2;
+  real32_T PWM_Switch_c2;
   boolean_T enable_TriState[3]; /**< array to signal which halfbridge of the inverter should be in tristate mode. true signals, that the halfbridge should be in tristate mode. (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
   real32_T thetaOffset; /**< determined offset of theta in rad */
   uz_PMSM_t PMSM_parameters; /**< identified motor parameters */

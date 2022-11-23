@@ -18,12 +18,19 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../Codegen/uz_codegen.h"
+
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+
+// Add extern uz_codegen codegenInstance to ipc_ARM.c
+extern uz_codegen codegenInstance;
+// Global variable structure
+extern DS_Data Global_Data;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -183,15 +190,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Enable_Control): // ControlEnable
 			ultrazohm_state_machine_set_enable_control(true);
-
 			break;
 
 		case (Set_Send_Field_1):
-
+			codegenInstance.input.Ref_I_im_ext_mit = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			codegenInstance.input.Ref_I_re_ext_mit= value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -211,15 +217,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			//ultrazohm_state_machine_set_error(true);
+			codegenInstance.input.fl_enable_compensation_current=1.0;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			//ultrazohm_state_machine_set_userLED(true);
+			codegenInstance.input.fl_enable_compensation_cogging_=1.0;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			//ultrazohm_state_machine_set_userLED(false);
+			codegenInstance.input.fl_enable_compensation_current=0.0;
+			codegenInstance.input.fl_enable_compensation_cogging_=0.0;
 			break;
 
 		case (My_Button_4):
@@ -244,8 +254,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Error_Reset):
 
-			break;
-
+					break;
 		case (0xFFFF):
 			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
 			break;
@@ -287,15 +296,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	if ( codegenInstance.input.fl_enable_compensation_current == 1.0) {
+	js_status_BareToRTOS |= (1 << 4);
+	} else {
+	js_status_BareToRTOS &= ~(1 << 4);
+	}
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
-
+	if ( codegenInstance.input.fl_enable_compensation_cogging_ == 1.0) {
+	js_status_BareToRTOS |= (1 << 5);
+	} else {
+	js_status_BareToRTOS &= ~(1 << 5);
+	}
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
 

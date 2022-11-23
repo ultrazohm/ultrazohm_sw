@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include <complex.h>
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -52,6 +53,8 @@ extern uz_codegen codegenInstance;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+static void CheckForErrors();
+static void CalcCompensatingHarmonics();
 
 void ISR_Control(void *data)
 {
@@ -60,49 +63,64 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-
-
+    //----------------------------------------------------
+    CheckForErrors();
     //----------------------------------------------------
     // write values for control
     // LR
     // Actual Values
     // currents
-	codegenInstance.input.Act_Iu = (Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
-	codegenInstance.input.Act_Iv = (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.15F;		//A
-	codegenInstance.input.Act_Iw = (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
-	// dc-link voltage
-	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
-	// mechanical values
-	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-	codegenInstance.input.Act_w_el = 0.0F; //codegenInstance.input.Act_n * Global_Data.mrp.motorPolePairNumber*M_PI/30.0F; //[rad/s]
-	codegenInstance.input.Act_theta_u_el = 0.0F; //Global_Data.av.theta_elec + Global_Data.mrp.incrementalEncoderOffset; 	//[rad] Definition in main.c
-	//
-	// Reference values
-	codegenInstance.input.Ref_n = 0.0F; //Global_Data.rasv.referenceSpeed;
-	codegenInstance.input.Ref_I_re_ext_mit = 0.0F; // Global_Data.rasv.referenceCurrent_id;
-	codegenInstance.input.Ref_I_im_ext_mit = 0.0F; //Global_Data.rasv.referenceCurrent_iq;
+    codegenInstance.input.Act_Iu = 0.0F;//(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
+    codegenInstance.input.Act_Iv = 0.0F;// (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.15F;		//A
+   	codegenInstance.input.Act_Iw = 0.0F;// (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
+   	// dc-link voltage
+   	codegenInstance.input.Act_U_ZK = 0.0F;// Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
+   	// mechanical values
+   	codegenInstance.input.Act_n = 0.0F;// Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+   	codegenInstance.input.Act_w_el = 0.0F;// Global_Data.av.mechanicalRotorSpeed;
+   	codegenInstance.input.Act_theta_u_el = 0.0F;//(Global_Data.av.theta_mech/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
     //
+	// Global_Data.vLR
+	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
 	//----------------------------------------------------
-
-    if (current_state==control_state)
+	if ((codegenInstance.input.Ref_I_im_ext_mit != Global_Data.vLR.set_imag_current_old) || (codegenInstance.input.fl_enable_compensation_cogging_ != Global_Data.vLR.fl_enable_compensation_cogging_old))
+	{ 	// calculate new harmonics with every new reference imag current or enabled cogging torque compensation
+	CalcCompensatingHarmonics();
+	}
+	//
+	//----------------------------------------------------
+	if (current_state==control_state)
     {
     	// Start: Control algorithm - only if ultrazohm is in control state
-    	// Control for TFM with asymetric phase shift (LR)
+    	// Control for TFM with asymmetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
     }
-    //ultrazohm_state_machine_set_error(codegenInstance.output.fault_peak_current_u);
-
-
+	//----------------------------------------------------
+	// assign duty cycle to PWM-Module
+	//
+	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
+	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.a_V;
+	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.a_W;
+	//
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
+    //
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+	//
+	//----------------------------------------------------
+	// assign actual values to old values (LR)
+	Global_Data.vLR.set_imag_current_old = codegenInstance.input.Ref_I_im_ext_mit;
+	Global_Data.vLR.set_real_current_old = codegenInstance.input.Ref_I_re_ext_mit;
+	Global_Data.vLR.theta_el_old = codegenInstance.input.Act_theta_u_el;
+	Global_Data.vLR.fl_enable_compensation_cogging_old = codegenInstance.input.fl_enable_compensation_cogging_;
+	//----------------------------------------------------
+	//
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
@@ -172,20 +190,21 @@ int Initialize_ISR()
 	codegenInstance.input.amplitude_d = 0.0F;
 	codegenInstance.input.ordnung_d = 0.0F;
 	codegenInstance.input.phase_d = 0.0F;
-	// Initialize parameters of the asymmetrie (for compensation, creal32_T)
-	codegenInstance.input.Psi_PM_U.re = 0.0F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_U.im = 0.0F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_V.re = 0.0F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_V.im = 0.0F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_W.re = 0.0F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
-	codegenInstance.input.Psi_PM_W.im = 0.0F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	// Initialize parameters of the asymmetry (for compensation, creal32_T)
+	codegenInstance.input.Psi_PM_U.re =  0.0185800F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_U.im =  0.0F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_V.re = -0.0131380F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_V.im = -0.0131380F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_W.re = -0.0091492F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	codegenInstance.input.Psi_PM_W.im =  0.0161712F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	//
+	// Reference values
+	codegenInstance.input.Ref_n = 0.0F; //Global_Data.rasv.referenceSpeed;
+	codegenInstance.input.Ref_I_re_ext_mit = 0.0F; // Global_Data.rasv.referenceCurrent_id;
+	codegenInstance.input.Ref_I_im_ext_mit = 0.0F; //Global_Data.rasv.referenceCurrent_iq;
 	//
 	//
     //----------------------------------------------------
-
-
-
-
     return Status;
 }
 
@@ -305,4 +324,92 @@ static void ReadAllADC()
     ADC_readCardALL(&Global_Data);
 };
 
+static void CheckForErrors()
+{
+	// over current (fast, peak)
+	if (codegenInstance.output.fault_peak_current_u==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=101;
+	}
+	if (codegenInstance.output.fault_peak_current_v==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=102;
+	}
+	if (codegenInstance.output.fault_peak_current_w==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=103;
+	}
+	// over current (slow, rms)
+	if (codegenInstance.output.fault_rms_current_u==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=111;
+	}
+	if (codegenInstance.output.fault_rms_current_v==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=112;
+	}
+	if (codegenInstance.output.fault_rms_current_w==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=113;
+	}
+	// speed limit
+	if (codegenInstance.output.fault_peak_speed==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=201;
+	}
+	if (codegenInstance.output.fault_max_speed==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=202;
+	}
+	if (codegenInstance.output.error_speed_limit==1)
+	{
+	ultrazohm_state_machine_set_error(true);
+	Global_Data.vLR.error_code_LR=203;
+	}
+};
+
+static void CalcCompensatingHarmonics()
+{
+	// Calculation of the harmonics for the cogging torque compensation
+	//
+	//----------------------------------------------------
+	// second harmonic -> harmonic_a
+	//
+	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
+	//
+	float complex second_a = 1.629350987730637*cexpf(I*3.398380412400018);
+	float complex second_b = 0.055649462412890*cexpf(-1.071752469500930*I);
+	float complex second_c = second_a + second_b;
+	float ampl_second_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00844669*codegenInstance.input.Ref_I_im_ext_mit+0.02053428); // load depend amplitude for cogging torque compensation
+	float phase_second_ld = 0.2573*cexpf(-0.5571*codegenInstance.input.Ref_I_im_ext_mit)+1.705*cexpf(-0.002585*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
+	//
+	codegenInstance.input.ordnung_a = 2.0;
+	codegenInstance.input.amplitude_a = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c) + ampl_second_ld;
+	codegenInstance.input.phase_a = cargf(second_c) + phase_second_ld;
+	//
+	//----------------------------------------------------
+	// fourth harmonic -> harmonic_a
+	//
+	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
+	//
+	float complex fourth_a = 0.243851304483111*cexpf(-1.172847844166133*I);
+	float complex fourth_b = 0.047123962358310*cexpf(0.382933643522585*I);
+	float complex fourth_c = fourth_a + fourth_b;
+	float ampl_fourth_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
+	float phase_fourth_ld = 2.464*cexpf(-0.8573*codegenInstance.input.Ref_I_im_ext_mit)+0.9313*cexpf(-0.01067*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
+	//
+	codegenInstance.input.ordnung_b = 4.0;
+	codegenInstance.input.amplitude_b = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c) + ampl_fourth_ld;
+	codegenInstance.input.phase_b = cargf(fourth_c) + phase_fourth_ld;
+	//
+	return codegenInstance;
+}
 

@@ -111,7 +111,17 @@ typedef struct{
 }object_pointers_t;
 
 
-
+typedef struct _variableLukasRabenstein {
+	float status_control;
+	float error_code_LR;
+	float set_imag_current_old;
+	float set_real_current_old;
+	float theta_el_old;
+	float fl_enable_compensation_cogging_old;
+	// Torque constant
+	float ke_idle; // torque constant of the machine (T/ampl_i)
+	float fkt_ke_asym; // factor which represents the reduced torque constant due to the asymmetry
+} variableLukasRabenstein;
 
 
 
@@ -120,6 +130,7 @@ typedef struct _DS_Data_ {
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	variableLukasRabenstein vLR;
 } DS_Data;
 
 #endif

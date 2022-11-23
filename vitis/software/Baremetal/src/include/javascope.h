@@ -55,6 +55,9 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
+	JSSD_FLOAT_Set_imag_current,
+	JSSD_FLOAT_Set_real_current,
+	JSSD_FLOAT_Control_Status,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -152,12 +155,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	i_imag. (Torque),
+	i_real (Field),
+	n.c.,
+	n.c.,
+	n.c.,
+	n.c.,
 	SND_FLD_ENDMARKER
 
 
@@ -165,12 +168,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
-	A,
-	A,
+	,
+	,
+	,
+	,
 	SND_LABELS_ENDMARKER
 
 
@@ -178,12 +181,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
-	receive_field_6,
+	pseudo_iq,
+	pseudo_id,
+	set_imag_current,
+	set_real_current,
+	act._speed,
+	control_status,
 	RCV_FLD_ENDMARKER
 
 
@@ -191,12 +194,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
-	V,
-	V,
+	,
+	,
+	,
+	,
 	RCV_LABELS_ENDMARKER
 
 
@@ -205,12 +208,12 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_Set_imag_current,
+	JSSD_FLOAT_Set_real_current,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_Control_Status,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

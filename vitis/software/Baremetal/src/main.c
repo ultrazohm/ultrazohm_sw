@@ -38,12 +38,24 @@ DS_Data Global_Data = {
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+	.vLR = {// variables added by LR
+			.status_control = 0.0f,
+			.error_code_LR  = 0.0f,
+			.set_imag_current_old = 0.0f,
+			.set_real_current_old = 0.0f,
+			.theta_el_old = 0.0f,
+			.fl_enable_compensation_cogging_old = 0.0f,
+			.ke_idle = 0.4923f, // torque constant (for real machine use 0.4445)
+			.fkt_ke_asym = 1.0f// factor to respect asymmetry (for real machine use 0.9571)}
+    		}
 };
+
 
 //Define uz_codegen codegenInstance as a global variable in main.c of the Baremetal project
 uz_codegen codegenInstance;
-
+// Tunable Variables from Codegen
+extern P rtP;
 
 
 enum init_chain
@@ -80,6 +92,29 @@ int main(void)
             JavaScope_initalize(&Global_Data);
             //Call the init function (uz_codegen_init(&codegenInstance)) inside the main
             uz_codegen_init(&codegenInstance);
+            //
+            // Initial the tunable variables from codegen (LR)
+            // Globa_Data
+            Global_Data.av.theta_offset=0.0F; // [Theta]= rad; electrical encoder offset angle
+            //
+            //Control Parameters
+            rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders
+            rtP.K1 = 553.33325; // integral parameter for resonant PI-controller first order
+            rtP.K2 = 0.1* rtP.K1;// integral parameter for resonant PI-controller second order
+            rtP.K3 = 0.1* rtP.K1;// integral parameter for resonant PI-controller third order
+            rtP.K4 = 0.1* rtP.K1;// integral parameter for resonant PI-controller fourth order
+            rtP.K6 = 0.1* rtP.K1;// integral parameter for resonant PI-controller sixth order
+            // Limits
+            rtP.i_max_rms = 35.0; // rms current limit in A
+            rtP.i_max_peak = rtP.i_max_rms * 1.41 * 1.2;//rtP.i_max_rms * 1.41 * 1.2; // short time current limit in A
+            rtP.i_ref_max = 30; // max. permissible reference current in A
+            rtP.n_max = 605.0; // max. continuous speed limit in rpm
+            rtP.n_max_peak = rtP.n_max * 1.2; //max. short time speed limit
+            rtP.n_ref_max = 600.0; // max. permissible reference speed in rmp
+            //Constants
+            rtP.p = 18.0; // definition of the motor
+
+            //
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

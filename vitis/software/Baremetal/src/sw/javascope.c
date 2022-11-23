@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../Codegen/uz_codegen.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -36,7 +37,9 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+// Add extern uz_codegen codegenInstance to javascope.c
+extern uz_codegen codegenInstance;
+extern Global_Data;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -90,6 +93,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	// SlowData LR
+	js_slowDataArray[JSSD_FLOAT_Set_imag_current]		= &codegenInstance.input.Ref_I_im_ext_mit;
+	js_slowDataArray[JSSD_FLOAT_Set_real_current]		= &codegenInstance.input.Ref_I_re_ext_mit;
+	js_slowDataArray[JSSD_FLOAT_Control_Status]		= &(data->vLR.status_control);
+	js_slowDataArray[JSSD_FLOAT_Error_Code]		= &(data->vLR.error_code_LR);
+
+
 
 	return Status;
 }

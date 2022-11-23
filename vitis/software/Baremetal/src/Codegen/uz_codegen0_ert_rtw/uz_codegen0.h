@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.5
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Fri Nov 18 14:14:24 2022
+ * C/C++ source code generated on : Mon Nov 21 10:43:21 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -138,13 +138,14 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_j;
   real32_T DiscreteTimeIntegrator1_e;
   real32_T DiscreteTimeIntegrator1_h;
-  int32_T SignCorrected_h;             /* '<S74>/SignCorrected' */
-  int32_T SignCorrected_cw;            /* '<S117>/SignCorrected' */
-  int32_T SignCorrected_o;             /* '<S119>/SignCorrected' */
-  uint32_T rtb_CastU16En16_jv_m;
-  uint32_T rtb_CastU16En16_jv_tmp;
-  uint32_T rtb_CastU16En16_jv_tmp_c;
-  uint32_T rtb_CastU16En16_jv_tmp_tmp;
+  uint32_T bpIdx;
+  int16_T SignCorrected_h;             /* '<S74>/SignCorrected' */
+  int16_T SignCorrected_cw;            /* '<S117>/SignCorrected' */
+  int16_T SignCorrected_o;             /* '<S119>/SignCorrected' */
+  uint16_T CastU16En16_jv;             /* '<S74>/CastU16En16' */
+  uint16_T rtb_CastU16En16_jv_m;
+  uint16_T rtb_CastU16En16_jv_tmp;
+  uint16_T rtb_CastU16En16_jv_tmp_tmp;
   boolean_T LTEp25_my;                 /* '<S74>/LTEp25' */
   boolean_T GTEp75_cz;                 /* '<S74>/GTEp75' */
   boolean_T GTEp75_o;                  /* '<S87>/GTEp75' */
@@ -245,12 +246,14 @@ typedef struct {
   real32_T DiscreteTimeIntegrator_a;
   real32_T DiscreteTimeIntegrator1_a;
   real32_T DiscreteTimeIntegrator1_g;
-  int32_T SignCorrected_a;             /* '<S315>/SignCorrected' */
-  int32_T SignCorrected_c;             /* '<S299>/SignCorrected' */
-  int32_T SignCorrected_d;             /* '<S301>/SignCorrected' */
-  uint32_T CastU16En16_h;              /* '<S315>/CastU16En16' */
-  uint32_T rtb_CastU16En16_h_tmp;
-  uint32_T rtb_CastU16En16_h_tmp_tmp;
+  int_T idxDelay;
+  uint32_T bpIdx;
+  int16_T SignCorrected_a;             /* '<S315>/SignCorrected' */
+  int16_T SignCorrected_c;             /* '<S299>/SignCorrected' */
+  int16_T SignCorrected_d;             /* '<S301>/SignCorrected' */
+  uint16_T CastU16En16_h;              /* '<S315>/CastU16En16' */
+  uint16_T rtb_CastU16En16_h_k;
+  uint16_T rtb_CastU16En16_h_tmp_tmp;
   int8_T switch_case_power_ActiveSubsyst;/* '<S2>/switch_case_power' */
   int8_T SwitchCase_ActiveSubsystem;   /* '<S4>/Switch Case' */
   int8_T SwitchCase_ActiveSubsystem_o; /* '<S10>/Switch Case' */
@@ -356,7 +359,7 @@ typedef struct {
    *   '<S298>/Look-Up Table'
    *   '<S300>/Look-Up Table'
    */
-  int32_T pooled3[1025];
+  int16_T pooled21[16385];
 } ConstP;
 
 /* External inputs (root inport signals with default storage) */
@@ -421,6 +424,100 @@ typedef struct {
   real32_T Iw_ref;                     /* '<Root>/Iw_ref' */
 } ExtY;
 
+/* Parameters (default storage) */
+struct P_ {
+  real32_T K1;                         /* Variable: K1
+                                        * Referenced by:
+                                        *   '<S32>/Gain1'
+                                        *   '<S32>/Gain2'
+                                        *   '<S123>/Gain1'
+                                        *   '<S123>/Gain2'
+                                        *   '<S214>/Gain1'
+                                        *   '<S214>/Gain2'
+                                        */
+  real32_T K2;                         /* Variable: K2
+                                        * Referenced by:
+                                        *   '<S33>/Gain1'
+                                        *   '<S33>/Gain2'
+                                        *   '<S124>/Gain1'
+                                        *   '<S124>/Gain2'
+                                        *   '<S215>/Gain1'
+                                        *   '<S215>/Gain2'
+                                        */
+  real32_T K3;                         /* Variable: K3
+                                        * Referenced by:
+                                        *   '<S31>/Gain4'
+                                        *   '<S122>/Gain4'
+                                        *   '<S213>/Gain4'
+                                        */
+  real32_T K4;                         /* Variable: K4
+                                        * Referenced by:
+                                        *   '<S34>/Gain1'
+                                        *   '<S34>/Gain2'
+                                        *   '<S125>/Gain1'
+                                        *   '<S125>/Gain2'
+                                        *   '<S216>/Gain1'
+                                        *   '<S216>/Gain2'
+                                        */
+  real32_T K6;                         /* Variable: K6
+                                        * Referenced by:
+                                        *   '<S35>/Gain1'
+                                        *   '<S35>/Gain2'
+                                        *   '<S126>/Gain1'
+                                        *   '<S126>/Gain2'
+                                        *   '<S217>/Gain1'
+                                        *   '<S217>/Gain2'
+                                        */
+  real32_T Kp;                         /* Variable: Kp
+                                        * Referenced by:
+                                        *   '<S32>/Gain6'
+                                        *   '<S33>/Gain6'
+                                        *   '<S34>/Gain6'
+                                        *   '<S35>/Gain6'
+                                        *   '<S123>/Gain6'
+                                        *   '<S124>/Gain6'
+                                        *   '<S125>/Gain6'
+                                        *   '<S126>/Gain6'
+                                        *   '<S214>/Gain6'
+                                        *   '<S215>/Gain6'
+                                        *   '<S216>/Gain6'
+                                        *   '<S217>/Gain6'
+                                        */
+  real32_T i_max_peak;                 /* Variable: i_max_peak
+                                        * Referenced by:
+                                        *   '<S5>/Constant'
+                                        *   '<S5>/Constant4'
+                                        *   '<S5>/Constant6'
+                                        */
+  real32_T i_max_rms;                  /* Variable: i_max_rms
+                                        * Referenced by:
+                                        *   '<S5>/Constant1'
+                                        *   '<S5>/Constant5'
+                                        *   '<S5>/Constant7'
+                                        */
+  real32_T i_ref_max;                  /* Variable: i_ref_max
+                                        * Referenced by:
+                                        *   '<S7>/function_Eckdrehzahl'
+                                        *   '<S7>/Constant'
+                                        *   '<S9>/Constant'
+                                        */
+  real32_T n_max;                      /* Variable: n_max
+                                        * Referenced by: '<S5>/Constant3'
+                                        */
+  real32_T n_max_peak;                 /* Variable: n_max_peak
+                                        * Referenced by: '<S5>/Constant2'
+                                        */
+  real32_T n_ref_max;                  /* Variable: n_ref_max
+                                        * Referenced by: '<S7>/function_Eckdrehzahl'
+                                        */
+  real32_T p;                          /* Variable: p
+                                        * Referenced by: '<S7>/function_Eckdrehzahl'
+                                        */
+};
+
+/* Parameters (default storage) */
+typedef struct P_ P;
+
 /* Real-time Model Data Structure */
 struct tag_RTM {
   ExtU *inputs;
@@ -428,6 +525,8 @@ struct tag_RTM {
   DW *dwork;
 };
 
+/* Block parameters (default storage) */
+extern P rtP;
 extern const ConstB rtConstB;          /* constant block i/o */
 
 /* Constant parameters (default storage) */

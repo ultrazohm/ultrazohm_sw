@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.5
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Fri Nov 18 14:14:24 2022
+ * C/C++ source code generated on : Mon Nov 21 10:43:21 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -72,10 +72,10 @@ preprocessor word size checks.
 #endif
 
 /* Skipping ulong_long/long_long check: insufficient preprocessor integer range. */
-static uint32_T plook_u32u32u64n32_even20c_gf(uint32_T u, uint32_T bp0, uint32_T
+static uint32_T plook_u32u16u64n48_even0c_gf(uint16_T u, uint16_T bp0, uint32_T
   maxIndex, uint64_T *fraction);
-static int32_T intrp1d_s32s64s64u32u64n32l_f(uint32_T bpIndex, uint64_T frac,
-  const int32_T table[]);
+static int16_T intrp1d_s16s32s32u32u64n48l_f(uint32_T bpIndex, uint64_T frac,
+  const int16_T table[]);
 static void SwitchCaseActionSubsystem3(real32_T *rty_Out1);
 static void MATLABFunction(real32_T rtu_i_im, real32_T rtu_w, boolean_T
   *rty_Betrieb);
@@ -100,11 +100,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   real32_T rtp_Offset_S, real32_T rtp_Offset_gegen, real32_T rtp_Offset_null,
   DW_Strangstromregler_asymetrisc *localDW);
 static void SwitchCaseActionSubsystem(real32_T *rty_a, real32_T *rty_Iref);
-static uint32_T plook_u32u32u64n32_even20c_gf(uint32_T u, uint32_T bp0, uint32_T
+static uint32_T plook_u32u16u64n48_even0c_gf(uint16_T u, uint16_T bp0, uint32_T
   maxIndex, uint64_T *fraction)
 {
   uint32_T bpIndex;
-  uint32_T uAdjust;
+  uint16_T uAdjust;
 
   /* Prelookup - Index and Fraction
      Index Search method: 'even'
@@ -113,22 +113,22 @@ static uint32_T plook_u32u32u64n32_even20c_gf(uint32_T u, uint32_T bp0, uint32_T
      Remove protection against out-of-range input in generated code: 'on'
      Rounding mode: 'floor'
    */
-  uAdjust = u - bp0;
-  bpIndex = uAdjust >> 20U;
-  if (bpIndex < maxIndex) {
-    *fraction = (uint64_T)(uAdjust & 1048575U) << 12;
+  uAdjust = (uint16_T)((uint32_T)u - bp0);
+  if (uAdjust < maxIndex) {
+    bpIndex = uAdjust;
+    *fraction = 0ULL;
   } else {
     bpIndex = maxIndex - 1U;
-    *fraction = 4294967296ULL;
+    *fraction = 281474976710656ULL;
   }
 
   return bpIndex;
 }
 
-static int32_T intrp1d_s32s64s64u32u64n32l_f(uint32_T bpIndex, uint64_T frac,
-  const int32_T table[])
+static int16_T intrp1d_s16s32s32u32u64n48l_f(uint32_T bpIndex, uint64_T frac,
+  const int16_T table[])
 {
-  int32_T yL_0d0;
+  int16_T yL_0d0;
 
   /* Column-major Interpolation 1-D
      Interpolation method: 'Linear point-slope'
@@ -137,8 +137,8 @@ static int32_T intrp1d_s32s64s64u32u64n32l_f(uint32_T bpIndex, uint64_T frac,
      Overflow mode: 'wrapping'
    */
   yL_0d0 = table[bpIndex];
-  return (int32_T)((((int64_T)table[bpIndex + 1U] - yL_0d0) * (int64_T)frac) >>
-                   32) + yL_0d0;
+  return (int16_T)((int16_T)(((table[bpIndex + 1U] - yL_0d0) * (int64_T)frac) >>
+    48) + yL_0d0);
 }
 
 /*
@@ -867,18 +867,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S32>/Gain5'
    *  Product: '<S32>/Product4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_c = (uint32_T)(0.159154937F * localDW->theta_e
-    * 4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp = (uint16_T)(0.159154937F * localDW->theta_e *
+    65536.0F);
 
   /* RelationalOperator: '<S74>/LTEp25' incorporates:
    *  DataTypeConversion: '<S74>/CastU16En16'
    */
-  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp_c <= 1073741824U);
+  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp <= 16384);
 
   /* RelationalOperator: '<S74>/GTEp75' incorporates:
    *  DataTypeConversion: '<S74>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c >= 3221225472U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp >= 49152);
 
   /* Switch: '<S74>/QuadHandle2' incorporates:
    *  Constant: '<S74>/Point75'
@@ -887,18 +887,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S74>/p75mA'
    *  Switch: '<S74>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp <= 32768) {
     /* Switch: '<S74>/QuadHandle1a' incorporates:
      *  Constant: '<S74>/Point25'
      *  Sum: '<S74>/Amp25'
      *  Sum: '<S74>/p25mA'
      */
     if (localDW->LTEp25_my) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_c;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp
+        - 16384);
     }
 
     /* End of Switch: '<S74>/QuadHandle1a' */
@@ -907,18 +907,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S74>/Point75'
      *  Sum: '<S74>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp -
+      49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_c;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp);
   }
 
   /* End of Switch: '<S74>/QuadHandle2' */
 
   /* Lookup_n-D: '<S73>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S74>/SignCorrected' incorporates:
    *  Logic: '<S74>/1st or 4th Quad'
@@ -926,11 +926,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S74>/Negate'
    */
   if (localDW->LTEp25_my || localDW->GTEp75_cz) {
-    localDW->SignCorrected_h = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_h = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_h = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_h = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S74>/SignCorrected' */
@@ -950,18 +950,17 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  DataTypeConversion: '<S44>/CastU16En16'
    *  Gain: '<S32>/Gain4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_tmp = (uint32_T)(localDW->im_lim_k *
-    4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp_tmp = (uint16_T)(localDW->im_lim_k * 65536.0F);
 
   /* RelationalOperator: '<S76>/LTEp25' incorporates:
    *  DataTypeConversion: '<S76>/CastU16En16'
    */
-  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 1073741824U);
+  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 16384);
 
   /* RelationalOperator: '<S76>/GTEp75' incorporates:
    *  DataTypeConversion: '<S76>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp >= 3221225472U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp >= 49152);
 
   /* Switch: '<S76>/QuadHandle2' incorporates:
    *  Constant: '<S76>/Point75'
@@ -970,18 +969,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S76>/p75mA'
    *  Switch: '<S76>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_tmp <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp_tmp <= 32768) {
     /* Switch: '<S76>/QuadHandle1a' incorporates:
      *  Constant: '<S76>/Point25'
      *  Sum: '<S76>/Amp25'
      *  Sum: '<S76>/p25mA'
      */
     if (localDW->LTEp25_my) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)
+        (localDW->rtb_CastU16En16_jv_tmp_tmp - 16384);
     }
 
     /* End of Switch: '<S76>/QuadHandle1a' */
@@ -990,18 +989,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S76>/Point75'
      *  Sum: '<S76>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)
+      (localDW->rtb_CastU16En16_jv_tmp_tmp - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp_tmp);
   }
 
   /* End of Switch: '<S76>/QuadHandle2' */
 
   /* Lookup_n-D: '<S75>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S76>/SignCorrected' incorporates:
    *  Logic: '<S76>/1st or 4th Quad'
@@ -1010,11 +1009,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S76>/Negate'
    */
   if (localDW->LTEp25_my || localDW->GTEp75_cz) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S76>/SignCorrected' */
@@ -1026,11 +1025,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
                    &localDW->im_lim_lb, &localDW->re_lim_i,
                    &localDW->sf_MATLABFunction_i);
 
+  /* DataTypeConversion: '<S44>/CastU16En16' incorporates:
+   *  DataTypeConversion: '<S50>/CastU16En16'
+   */
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp_tmp;
+
   /* RelationalOperator: '<S44>/LTEp25' */
-  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 1073741824U);
+  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 16384);
 
   /* RelationalOperator: '<S44>/GTEp75' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp >= 3221225472U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp >= 49152);
 
   /* Switch: '<S44>/QuadHandle2' incorporates:
    *  Constant: '<S44>/Point75'
@@ -1038,18 +1042,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S44>/p75mA'
    *  Switch: '<S44>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_tmp <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp_tmp <= 32768) {
     /* Switch: '<S44>/QuadHandle1a' incorporates:
      *  Constant: '<S44>/Point25'
      *  Sum: '<S44>/Amp25'
      *  Sum: '<S44>/p25mA'
      */
     if (localDW->LTEp25_my) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)
+        (localDW->rtb_CastU16En16_jv_tmp_tmp - 16384);
     }
 
     /* End of Switch: '<S44>/QuadHandle1a' */
@@ -1058,18 +1062,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S44>/Point75'
      *  Sum: '<S44>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)
+      (localDW->rtb_CastU16En16_jv_tmp_tmp - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp_tmp);
   }
 
   /* End of Switch: '<S44>/QuadHandle2' */
 
   /* Lookup_n-D: '<S43>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S44>/SignCorrected' incorporates:
    *  Logic: '<S44>/1st or 4th Quad'
@@ -1078,11 +1082,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S44>/Negate'
    */
   if (localDW->LTEp25_my || localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S44>/SignCorrected' */
@@ -1091,21 +1095,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/SignCorrected'
    */
   localDW->Strom_kompensiert_l = (real32_T)localDW->SignCorrected_o *
-    9.31322575E-10F * localDW->im_lim_d;
-
-  /* DataTypeConversion: '<S50>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp;
+    6.10351562E-5F * localDW->im_lim_d;
 
   /* RelationalOperator: '<S50>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 32768);
 
   /* Switch: '<S50>/QuadHandle1' incorporates:
    *  Constant: '<S50>/Point50'
    *  Sum: '<S50>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp_tmp -
+      32768);
   }
 
   /* End of Switch: '<S50>/QuadHandle1' */
@@ -1117,8 +1118,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S50>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S50>/QuadHandle2' */
@@ -1126,8 +1127,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S49>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S50>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S49>/Look-Up Table'
@@ -1135,11 +1136,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S50>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S50>/SignCorrected' */
@@ -1149,8 +1150,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S30>/Add'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Delay1_m = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * (rtu_I_im_CT + localDW->re_lim_g);
+  localDW->Delay1_m = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * (rtu_I_im_CT + localDW->re_lim_g);
 
   /* DataTypeConversion: '<S46>/CastU16En16' incorporates:
    *  Constant: '<S23>/Constant2'
@@ -1158,18 +1159,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S30>/Gain4'
    *  Sum: '<S23>/Add2'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)((localDW->theta_ep +
-    rtp_Offset_gegen) * 0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)((localDW->theta_ep + rtp_Offset_gegen) *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S46>/LTEp25' incorporates:
    *  DataTypeConversion: '<S46>/CastU16En16'
    */
-  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->LTEp25_my = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S46>/GTEp75' incorporates:
    *  DataTypeConversion: '<S46>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S46>/QuadHandle2' incorporates:
    *  Constant: '<S46>/Point75'
@@ -1178,18 +1179,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S46>/p75mA'
    *  Switch: '<S46>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S46>/QuadHandle1a' incorporates:
      *  Constant: '<S46>/Point25'
      *  Sum: '<S46>/Amp25'
      *  Sum: '<S46>/p25mA'
      */
     if (localDW->LTEp25_my) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S46>/QuadHandle1a' */
@@ -1198,18 +1197,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S46>/Point75'
      *  Sum: '<S46>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S46>/QuadHandle2' */
 
   /* Lookup_n-D: '<S45>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S46>/SignCorrected' incorporates:
    *  Logic: '<S46>/1st or 4th Quad'
@@ -1218,11 +1215,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S46>/Negate'
    */
   if (localDW->LTEp25_my || localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S46>/SignCorrected' */
@@ -1230,22 +1227,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S30>/Product2' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->im_lim_mv;
 
-  /* DataTypeConversion: '<S52>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S52>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S52>/QuadHandle1' incorporates:
    *  Constant: '<S52>/Point50'
    *  Sum: '<S52>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S52>/QuadHandle1' */
@@ -1257,8 +1250,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S52>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S52>/QuadHandle2' */
@@ -1266,8 +1259,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S51>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S52>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S51>/Look-Up Table'
@@ -1275,11 +1268,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S52>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S52>/SignCorrected' */
@@ -1288,8 +1281,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S30>/Gain1'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->im_lim_o4 = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->re_lim_l4;
+  localDW->im_lim_o4 = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->re_lim_l4;
 
   /* DataTypeConversion: '<S48>/CastU16En16' incorporates:
    *  Constant: '<S23>/Constant3'
@@ -1297,18 +1290,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S30>/Gain5'
    *  Sum: '<S23>/Add3'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)((localDW->theta_ep +
-    rtp_Offset_null) * 0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)((localDW->theta_ep + rtp_Offset_null) *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S48>/LTEp25' incorporates:
    *  DataTypeConversion: '<S48>/CastU16En16'
    */
-  localDW->LTEp25_my = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->LTEp25_my = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S48>/GTEp75' incorporates:
    *  DataTypeConversion: '<S48>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S48>/QuadHandle2' incorporates:
    *  Constant: '<S48>/Point75'
@@ -1317,18 +1310,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S48>/p75mA'
    *  Switch: '<S48>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S48>/QuadHandle1a' incorporates:
      *  Constant: '<S48>/Point25'
      *  Sum: '<S48>/Amp25'
      *  Sum: '<S48>/p25mA'
      */
     if (localDW->LTEp25_my) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S48>/QuadHandle1a' */
@@ -1337,18 +1328,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S48>/Point75'
      *  Sum: '<S48>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S48>/QuadHandle2' */
 
   /* Lookup_n-D: '<S47>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S48>/SignCorrected' incorporates:
    *  Logic: '<S48>/1st or 4th Quad'
@@ -1357,11 +1346,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S48>/Negate'
    */
   if (localDW->LTEp25_my || localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S48>/SignCorrected' */
@@ -1369,22 +1358,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S30>/Product4' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Product3_a = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->Product3_a = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->im_lim_lb;
 
-  /* DataTypeConversion: '<S54>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S54>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S54>/QuadHandle1' incorporates:
    *  Constant: '<S54>/Point50'
    *  Sum: '<S54>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S54>/QuadHandle1' */
@@ -1396,8 +1381,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S54>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S54>/QuadHandle2' */
@@ -1405,8 +1390,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S53>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S54>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S53>/Look-Up Table'
@@ -1414,11 +1399,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S54>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S54>/SignCorrected' */
@@ -1430,8 +1415,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    */
   localDW->Strom_kompensiert_l = ((((localDW->Strom_kompensiert_l +
     localDW->Delay1_m) + localDW->re_lim_gw) + localDW->im_lim_o4) +
-    localDW->Product3_a) + (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->re_lim_i;
+    localDW->Product3_a) + (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->re_lim_i;
 
   /* Sum: '<S23>/Sum2' */
   localDW->Product3_a = localDW->Strom_kompensiert_l - rtu_I_S;
@@ -1441,21 +1426,21 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain6'
    *  Gain: '<S35>/Gain6'
    */
-  localDW->Gain2_m = 10.0530977F * localDW->Product3_a;
+  localDW->Gain2_m = rtP.Kp * localDW->Product3_a;
 
   /* Product: '<S32>/Product1' incorporates:
    *  Gain: '<S32>/Gain6'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_cw * 9.31322575E-10F *
+  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_cw * 6.10351562E-5F *
     localDW->Gain2_m;
 
   /* Gain: '<S32>/Gain1' incorporates:
    *  Delay: '<S32>/Delay1'
    *  Sum: '<S32>/Sum4'
    */
-  localDW->Gain1_h = (localDW->Delay1_DSTATE + localDW->re_lim_gw) *
-    0.0138333309F;
+  localDW->Gain1_h = 2.5E-5F * rtP.K1 * (localDW->Delay1_DSTATE +
+    localDW->re_lim_gw);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator = 0.5F * localDW->Gain1_h +
@@ -1470,12 +1455,12 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* DataTypeConversion: '<S78>/CastU16En16' incorporates:
    *  DataTypeConversion: '<S76>/CastU16En16'
    */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp_tmp;
 
   /* RelationalOperator: '<S78>/LTEp50' incorporates:
    *  DataTypeConversion: '<S76>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_tmp <= 32768);
 
   /* Switch: '<S78>/QuadHandle1' incorporates:
    *  Constant: '<S78>/Point50'
@@ -1483,8 +1468,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S78>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp_tmp -
+      32768);
   }
 
   /* End of Switch: '<S78>/QuadHandle1' */
@@ -1496,8 +1481,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S78>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S78>/QuadHandle2' */
@@ -1505,8 +1490,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S77>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S78>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S77>/Look-Up Table'
@@ -1514,11 +1499,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S78>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S78>/SignCorrected' */
@@ -1528,15 +1513,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S32>/Gain6'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->Gain2_m;
+  localDW->re_lim_gw = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->Gain2_m;
 
   /* Gain: '<S32>/Gain2' incorporates:
    *  Delay: '<S32>/Delay'
    *  Sum: '<S32>/Sum2'
    */
-  localDW->Gain2_nl = (localDW->re_lim_gw + localDW->Delay_DSTATE) *
-    0.0138333309F;
+  localDW->Gain2_nl = 2.5E-5F * rtP.K1 * (localDW->re_lim_gw +
+    localDW->Delay_DSTATE);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1 = 0.5F * localDW->Gain2_nl +
@@ -1553,18 +1538,17 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
                    localDW->U_im_i, &localDW->re_lim_l4, &localDW->im_lim_mv);
 
   /* DataTypeConversion: '<S80>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp;
 
   /* RelationalOperator: '<S80>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 32768);
 
   /* Switch: '<S80>/QuadHandle1' incorporates:
    *  Constant: '<S80>/Point50'
    *  Sum: '<S80>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp - 32768);
   }
 
   /* End of Switch: '<S80>/QuadHandle1' */
@@ -1576,8 +1560,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S80>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S80>/QuadHandle2' */
@@ -1585,8 +1569,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S79>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S80>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S79>/Look-Up Table'
@@ -1594,11 +1578,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S80>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S80>/SignCorrected' */
@@ -1610,9 +1594,9 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/SignCorrected'
    *  Switch: '<S74>/SignCorrected'
    */
-  localDW->Sum_pr = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->im_lim_mv + (real32_T)localDW->SignCorrected_h *
-    9.31322575E-10F * localDW->re_lim_l4;
+  localDW->Sum_pr = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->im_lim_mv + (real32_T)localDW->SignCorrected_h *
+    6.10351562E-5F * localDW->re_lim_l4;
 
   /* DataTypeConversion: '<S87>/CastU16En16' incorporates:
    *  Constant: '<S33>/Constant1'
@@ -1620,18 +1604,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S33>/Gain5'
    *  Product: '<S33>/Product4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_c = (uint32_T)(localDW->theta_e * 2.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp = (uint16_T)(localDW->theta_e * 2.0F *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S87>/LTEp25' incorporates:
    *  DataTypeConversion: '<S87>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 16384);
 
   /* RelationalOperator: '<S87>/GTEp75' incorporates:
    *  DataTypeConversion: '<S87>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp_c >= 3221225472U);
+  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 49152);
 
   /* Switch: '<S87>/QuadHandle2' incorporates:
    *  Constant: '<S87>/Point75'
@@ -1640,18 +1624,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S87>/p75mA'
    *  Switch: '<S87>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp <= 32768) {
     /* Switch: '<S87>/QuadHandle1a' incorporates:
      *  Constant: '<S87>/Point25'
      *  Sum: '<S87>/Amp25'
      *  Sum: '<S87>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_c;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp
+        - 16384);
     }
 
     /* End of Switch: '<S87>/QuadHandle1a' */
@@ -1660,18 +1644,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S87>/Point75'
      *  Sum: '<S87>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp -
+      49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_c;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp);
   }
 
   /* End of Switch: '<S87>/QuadHandle2' */
 
   /* Lookup_n-D: '<S86>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S87>/SignCorrected' incorporates:
    *  Logic: '<S87>/1st or 4th Quad'
@@ -1680,11 +1664,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S87>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S87>/SignCorrected' */
@@ -1695,18 +1679,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S33>/Gain4'
    *  Product: '<S33>/Product5'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)(localDW->theta_ep * 2.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)(localDW->theta_ep * 2.0F * 0.159154937F *
+    65536.0F);
 
   /* RelationalOperator: '<S89>/LTEp25' incorporates:
    *  DataTypeConversion: '<S89>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S89>/GTEp75' incorporates:
    *  DataTypeConversion: '<S89>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_o = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S89>/QuadHandle2' incorporates:
    *  Constant: '<S89>/Point75'
@@ -1715,18 +1699,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S89>/p75mA'
    *  Switch: '<S89>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S89>/QuadHandle1a' incorporates:
      *  Constant: '<S89>/Point25'
      *  Sum: '<S89>/Amp25'
      *  Sum: '<S89>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S89>/QuadHandle1a' */
@@ -1735,18 +1717,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S89>/Point75'
      *  Sum: '<S89>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S89>/QuadHandle2' */
 
   /* Lookup_n-D: '<S88>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S89>/SignCorrected' incorporates:
    *  Logic: '<S89>/1st or 4th Quad'
@@ -1755,11 +1735,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S89>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S89>/SignCorrected' */
@@ -1767,15 +1747,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S33>/Product1' incorporates:
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->Delay1_m = (real32_T)localDW->SignCorrected_cw * 9.31322575E-10F *
+  localDW->Delay1_m = (real32_T)localDW->SignCorrected_cw * 6.10351562E-5F *
     localDW->Gain2_m;
 
   /* Gain: '<S33>/Gain1' incorporates:
    *  Delay: '<S33>/Delay1'
    *  Sum: '<S33>/Sum4'
    */
-  localDW->Gain1_g = (localDW->Delay1_DSTATE_m + localDW->Delay1_m) *
-    0.00138333312F;
+  localDW->Gain1_g = 2.5E-5F * rtP.K2 * (localDW->Delay1_DSTATE_m +
+    localDW->Delay1_m);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_o = 0.5F * localDW->Gain1_g +
@@ -1784,19 +1764,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Sum: '<S33>/Sum5' */
   localDW->U_re_h = localDW->DiscreteTimeIntegrator_o + localDW->Delay1_m;
 
-  /* DataTypeConversion: '<S91>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S91>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S91>/QuadHandle1' incorporates:
    *  Constant: '<S91>/Point50'
    *  Sum: '<S91>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S91>/QuadHandle1' */
@@ -1808,8 +1784,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S91>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S91>/QuadHandle2' */
@@ -1817,8 +1793,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S90>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S91>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S90>/Look-Up Table'
@@ -1826,11 +1802,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S91>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S91>/SignCorrected' */
@@ -1839,15 +1815,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S33>/Gain'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)(-2147483648LL * localDW->SignCorrected_cw) *
-    4.33680869E-19F * localDW->Gain2_m;
+  localDW->re_lim_gw = (real32_T)(-32768 * localDW->SignCorrected_cw) *
+    1.86264515E-9F * localDW->Gain2_m;
 
   /* Gain: '<S33>/Gain2' incorporates:
    *  Delay: '<S33>/Delay'
    *  Sum: '<S33>/Sum2'
    */
-  localDW->Gain2_d = (localDW->re_lim_gw + localDW->Delay_DSTATE_a) *
-    0.00138333312F;
+  localDW->Gain2_d = 2.5E-5F * rtP.K2 * (localDW->re_lim_gw +
+    localDW->Delay_DSTATE_a);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_f = 0.5F * localDW->Gain2_d +
@@ -1866,22 +1842,21 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S33>/Product3' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->re_lim_i;
 
   /* DataTypeConversion: '<S93>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp;
 
   /* RelationalOperator: '<S93>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 32768);
 
   /* Switch: '<S93>/QuadHandle1' incorporates:
    *  Constant: '<S93>/Point50'
    *  Sum: '<S93>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp - 32768);
   }
 
   /* End of Switch: '<S93>/QuadHandle1' */
@@ -1893,8 +1868,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S93>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S93>/QuadHandle2' */
@@ -1902,8 +1877,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S92>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S93>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S92>/Look-Up Table'
@@ -1911,11 +1886,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S93>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S93>/SignCorrected' */
@@ -1925,8 +1900,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S33>/Product2'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Sum_j = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->im_lim_lb + localDW->re_lim_gw;
+  localDW->Sum_j = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->im_lim_lb + localDW->re_lim_gw;
 
   /* DataTypeConversion: '<S61>/CastU16En16' incorporates:
    *  Constant: '<S31>/Constant1'
@@ -1934,18 +1909,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S31>/Gain6'
    *  Product: '<S31>/Product4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_c = (uint32_T)(localDW->theta_e * 3.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp = (uint16_T)(localDW->theta_e * 3.0F *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S61>/LTEp25' incorporates:
    *  DataTypeConversion: '<S61>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 16384);
 
   /* RelationalOperator: '<S61>/GTEp75' incorporates:
    *  DataTypeConversion: '<S61>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp_c >= 3221225472U);
+  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 49152);
 
   /* Switch: '<S61>/QuadHandle2' incorporates:
    *  Constant: '<S61>/Point75'
@@ -1954,18 +1929,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S61>/p75mA'
    *  Switch: '<S61>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp <= 32768) {
     /* Switch: '<S61>/QuadHandle1a' incorporates:
      *  Constant: '<S61>/Point25'
      *  Sum: '<S61>/Amp25'
      *  Sum: '<S61>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_c;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp
+        - 16384);
     }
 
     /* End of Switch: '<S61>/QuadHandle1a' */
@@ -1974,18 +1949,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S61>/Point75'
      *  Sum: '<S61>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp -
+      49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_c;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp);
   }
 
   /* End of Switch: '<S61>/QuadHandle2' */
 
   /* Lookup_n-D: '<S60>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S61>/SignCorrected' incorporates:
    *  Logic: '<S61>/1st or 4th Quad'
@@ -1994,11 +1969,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S61>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S61>/SignCorrected' */
@@ -2009,18 +1984,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S31>/Gain5'
    *  Product: '<S31>/Product5'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)(localDW->theta_ep * 3.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)(localDW->theta_ep * 3.0F * 0.159154937F *
+    65536.0F);
 
   /* RelationalOperator: '<S63>/LTEp25' incorporates:
    *  DataTypeConversion: '<S63>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S63>/GTEp75' incorporates:
    *  DataTypeConversion: '<S63>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_o = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S63>/QuadHandle2' incorporates:
    *  Constant: '<S63>/Point75'
@@ -2029,18 +2004,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S63>/p75mA'
    *  Switch: '<S63>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S63>/QuadHandle1a' incorporates:
      *  Constant: '<S63>/Point25'
      *  Sum: '<S63>/Amp25'
      *  Sum: '<S63>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S63>/QuadHandle1a' */
@@ -2049,18 +2022,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S63>/Point75'
      *  Sum: '<S63>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S63>/QuadHandle2' */
 
   /* Lookup_n-D: '<S62>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S63>/SignCorrected' incorporates:
    *  Logic: '<S63>/1st or 4th Quad'
@@ -2069,17 +2040,17 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S63>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S63>/SignCorrected' */
 
   /* Gain: '<S31>/Gain4' */
-  localDW->Delay1_m = 55.3333244F * localDW->Product3_a;
+  localDW->Delay1_m = rtP.K3 * localDW->Product3_a;
 
   /* Gain: '<S31>/Gain1' incorporates:
    *  Delay: '<S31>/Delay1'
@@ -2087,26 +2058,22 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S31>/Sum4'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->Gain1_i = ((real32_T)localDW->SignCorrected_cw * 9.31322575E-10F *
+  localDW->Gain1_i = ((real32_T)localDW->SignCorrected_cw * 6.10351562E-5F *
                       localDW->Delay1_m + localDW->Delay1_DSTATE_l) * 2.5E-5F;
 
   /* DiscreteIntegrator: '<S31>/Discrete-Time Integrator' */
   localDW->U_re = 0.5F * localDW->Gain1_i +
     localDW->DiscreteTimeIntegrator_DSTATE_m;
 
-  /* DataTypeConversion: '<S65>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S65>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S65>/QuadHandle1' incorporates:
    *  Constant: '<S65>/Point50'
    *  Sum: '<S65>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S65>/QuadHandle1' */
@@ -2118,8 +2085,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S65>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S65>/QuadHandle2' */
@@ -2127,8 +2094,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S64>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S65>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S64>/Look-Up Table'
@@ -2136,11 +2103,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S65>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S65>/SignCorrected' */
@@ -2152,8 +2119,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S31>/Sum2'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->Gain2_io = ((real32_T)(-2147483648LL * localDW->SignCorrected_cw) *
-                       4.33680869E-19F * localDW->Delay1_m +
+  localDW->Gain2_io = ((real32_T)(-32768 * localDW->SignCorrected_cw) *
+                       1.86264515E-9F * localDW->Delay1_m +
                        localDW->Delay_DSTATE_b) * 2.5E-5F;
 
   /* DiscreteIntegrator: '<S31>/Discrete-Time Integrator1' */
@@ -2170,22 +2137,21 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S31>/Product3' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->re_lim_g;
 
   /* DataTypeConversion: '<S67>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp;
 
   /* RelationalOperator: '<S67>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 32768);
 
   /* Switch: '<S67>/QuadHandle1' incorporates:
    *  Constant: '<S67>/Point50'
    *  Sum: '<S67>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp - 32768);
   }
 
   /* End of Switch: '<S67>/QuadHandle1' */
@@ -2197,8 +2163,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S119>/QuadHandle2'
    *  Switch: '<S67>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S67>/QuadHandle2' */
@@ -2206,8 +2172,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S66>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S67>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S66>/Look-Up Table'
@@ -2215,11 +2181,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S67>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S67>/SignCorrected' */
@@ -2229,8 +2195,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S31>/Product2'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Sum_i = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->im_lim_d + localDW->re_lim_gw;
+  localDW->Sum_i = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->im_lim_d + localDW->re_lim_gw;
 
   /* DataTypeConversion: '<S100>/CastU16En16' incorporates:
    *  Constant: '<S34>/Constant1'
@@ -2238,18 +2204,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain5'
    *  Product: '<S34>/Product4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_c = (uint32_T)(localDW->theta_e * 4.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp = (uint16_T)(localDW->theta_e * 4.0F *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S100>/LTEp25' incorporates:
    *  DataTypeConversion: '<S100>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 16384);
 
   /* RelationalOperator: '<S100>/GTEp75' incorporates:
    *  DataTypeConversion: '<S100>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp_c >= 3221225472U);
+  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 49152);
 
   /* Switch: '<S100>/QuadHandle2' incorporates:
    *  Constant: '<S100>/Point75'
@@ -2258,18 +2224,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S100>/p75mA'
    *  Switch: '<S100>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp <= 32768) {
     /* Switch: '<S100>/QuadHandle1a' incorporates:
      *  Constant: '<S100>/Point25'
      *  Sum: '<S100>/Amp25'
      *  Sum: '<S100>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_c;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp
+        - 16384);
     }
 
     /* End of Switch: '<S100>/QuadHandle1a' */
@@ -2278,18 +2244,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S100>/Point75'
      *  Sum: '<S100>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp -
+      49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_c;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp);
   }
 
   /* End of Switch: '<S100>/QuadHandle2' */
 
   /* Lookup_n-D: '<S99>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S100>/SignCorrected' incorporates:
    *  Logic: '<S100>/1st or 4th Quad'
@@ -2298,11 +2264,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S100>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S100>/SignCorrected' */
@@ -2313,18 +2279,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain4'
    *  Product: '<S34>/Product5'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)(localDW->theta_ep * 4.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)(localDW->theta_ep * 4.0F * 0.159154937F *
+    65536.0F);
 
   /* RelationalOperator: '<S102>/LTEp25' incorporates:
    *  DataTypeConversion: '<S102>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S102>/GTEp75' incorporates:
    *  DataTypeConversion: '<S102>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_o = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S102>/QuadHandle2' incorporates:
    *  Constant: '<S102>/Point75'
@@ -2333,18 +2299,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S102>/p75mA'
    *  Switch: '<S102>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S102>/QuadHandle1a' incorporates:
      *  Constant: '<S102>/Point25'
      *  Sum: '<S102>/Amp25'
      *  Sum: '<S102>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S102>/QuadHandle1a' */
@@ -2353,18 +2317,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S102>/Point75'
      *  Sum: '<S102>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S102>/QuadHandle2' */
 
   /* Lookup_n-D: '<S101>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S102>/SignCorrected' incorporates:
    *  Logic: '<S102>/1st or 4th Quad'
@@ -2373,11 +2335,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S102>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S102>/SignCorrected' */
@@ -2385,7 +2347,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S34>/Product1' incorporates:
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->Delay1_m = (real32_T)localDW->SignCorrected_cw * 9.31322575E-10F *
+  localDW->Delay1_m = (real32_T)localDW->SignCorrected_cw * 6.10351562E-5F *
     localDW->Gain2_m;
 
   /* Delay: '<S34>/Delay1' */
@@ -2395,8 +2357,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S34>/Delay1'
    *  Sum: '<S34>/Sum4'
    */
-  localDW->Gain1_n = (localDW->Delay1_DSTATE_g + localDW->Delay1_m) *
-    0.00138333312F;
+  localDW->Gain1_n = 2.5E-5F * rtP.K4 * (localDW->Delay1_DSTATE_g +
+    localDW->Delay1_m);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_j = 0.5F * localDW->Gain1_n +
@@ -2405,19 +2367,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Sum: '<S34>/Sum5' */
   localDW->Delay1_m += localDW->DiscreteTimeIntegrator_j;
 
-  /* DataTypeConversion: '<S104>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S104>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S104>/QuadHandle1' incorporates:
    *  Constant: '<S104>/Point50'
    *  Sum: '<S104>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S104>/QuadHandle1' */
@@ -2429,8 +2387,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S104>/QuadHandle1'
    *  Switch: '<S119>/QuadHandle2'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S104>/QuadHandle2' */
@@ -2438,8 +2396,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S103>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S104>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S103>/Look-Up Table'
@@ -2447,11 +2405,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S104>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S104>/SignCorrected' */
@@ -2460,15 +2418,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)(-2147483648LL * localDW->SignCorrected_cw) *
-    4.33680869E-19F * localDW->Gain2_m;
+  localDW->re_lim_gw = (real32_T)(-32768 * localDW->SignCorrected_cw) *
+    1.86264515E-9F * localDW->Gain2_m;
 
   /* Gain: '<S34>/Gain2' incorporates:
    *  Delay: '<S34>/Delay'
    *  Sum: '<S34>/Sum2'
    */
-  localDW->Gain2_e = (localDW->re_lim_gw + localDW->Delay_DSTATE_bz) *
-    0.00138333312F;
+  localDW->Gain2_e = 2.5E-5F * rtP.K4 * (localDW->re_lim_gw +
+    localDW->Delay_DSTATE_bz);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_e = 0.5F * localDW->Gain2_e +
@@ -2487,22 +2445,21 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S34>/Product3' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->re_lim_gw = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->re_lim_b;
 
   /* DataTypeConversion: '<S106>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp;
 
   /* RelationalOperator: '<S106>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 32768);
 
   /* Switch: '<S106>/QuadHandle1' incorporates:
    *  Constant: '<S106>/Point50'
    *  Sum: '<S106>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp - 32768);
   }
 
   /* End of Switch: '<S106>/QuadHandle1' */
@@ -2514,8 +2471,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S106>/QuadHandle1'
    *  Switch: '<S119>/QuadHandle2'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S106>/QuadHandle2' */
@@ -2523,8 +2480,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S105>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S106>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S105>/Look-Up Table'
@@ -2532,11 +2489,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S106>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S106>/SignCorrected' */
@@ -2546,8 +2503,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S34>/Product2'
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Sum_o = (real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-    4.33680869E-19F * localDW->im_lim_k + localDW->re_lim_gw;
+  localDW->Sum_o = (real32_T)(-32768 * localDW->SignCorrected_o) *
+    1.86264515E-9F * localDW->im_lim_k + localDW->re_lim_gw;
 
   /* DataTypeConversion: '<S113>/CastU16En16' incorporates:
    *  Constant: '<S35>/Constant1'
@@ -2555,18 +2512,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S35>/Gain5'
    *  Product: '<S35>/Product4'
    */
-  localDW->rtb_CastU16En16_jv_tmp_c = (uint32_T)(localDW->theta_e * 6.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->rtb_CastU16En16_jv_tmp = (uint16_T)(localDW->theta_e * 6.0F *
+    0.159154937F * 65536.0F);
 
   /* RelationalOperator: '<S113>/LTEp25' incorporates:
    *  DataTypeConversion: '<S113>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 16384);
 
   /* RelationalOperator: '<S113>/GTEp75' incorporates:
    *  DataTypeConversion: '<S113>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp_c >= 3221225472U);
+  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 49152);
 
   /* Switch: '<S113>/QuadHandle2' incorporates:
    *  Constant: '<S113>/Point75'
@@ -2575,18 +2532,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S113>/p75mA'
    *  Switch: '<S113>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U) {
+  if (localDW->rtb_CastU16En16_jv_tmp <= 32768) {
     /* Switch: '<S113>/QuadHandle1a' incorporates:
      *  Constant: '<S113>/Point25'
      *  Sum: '<S113>/Amp25'
      *  Sum: '<S113>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp_c;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 -
+        localDW->rtb_CastU16En16_jv_tmp);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp
+        - 16384);
     }
 
     /* End of Switch: '<S113>/QuadHandle1a' */
@@ -2595,18 +2552,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S113>/Point75'
      *  Sum: '<S113>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp -
+      49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp_c;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 -
+      localDW->rtb_CastU16En16_jv_tmp);
   }
 
   /* End of Switch: '<S113>/QuadHandle2' */
 
   /* Lookup_n-D: '<S112>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S113>/SignCorrected' incorporates:
    *  Logic: '<S113>/1st or 4th Quad'
@@ -2615,11 +2572,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S113>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S113>/SignCorrected' */
@@ -2630,18 +2587,18 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S35>/Gain4'
    *  Product: '<S35>/Product5'
    */
-  localDW->rtb_CastU16En16_jv_tmp = (uint32_T)(localDW->theta_ep * 6.0F *
-    0.159154937F * 4.2949673E+9F);
+  localDW->CastU16En16_jv = (uint16_T)(localDW->theta_ep * 6.0F * 0.159154937F *
+    65536.0F);
 
   /* RelationalOperator: '<S115>/LTEp25' incorporates:
    *  DataTypeConversion: '<S115>/CastU16En16'
    */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 1073741824U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 16384);
 
   /* RelationalOperator: '<S115>/GTEp75' incorporates:
    *  DataTypeConversion: '<S115>/CastU16En16'
    */
-  localDW->GTEp75_o = (localDW->rtb_CastU16En16_jv_tmp >= 3221225472U);
+  localDW->GTEp75_o = (localDW->CastU16En16_jv >= 49152);
 
   /* Switch: '<S115>/QuadHandle2' incorporates:
    *  Constant: '<S115>/Point75'
@@ -2650,18 +2607,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S115>/p75mA'
    *  Switch: '<S115>/QuadHandle1b'
    */
-  if (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U) {
+  if (localDW->CastU16En16_jv <= 32768) {
     /* Switch: '<S115>/QuadHandle1a' incorporates:
      *  Constant: '<S115>/Point25'
      *  Sum: '<S115>/Amp25'
      *  Sum: '<S115>/p25mA'
      */
     if (localDW->GTEp75_cz) {
-      localDW->rtb_CastU16En16_jv_m = 1073741824U -
-        localDW->rtb_CastU16En16_jv_tmp;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(16384 - localDW->CastU16En16_jv);
     } else {
-      localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-        1073741824U;
+      localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 16384);
     }
 
     /* End of Switch: '<S115>/QuadHandle1a' */
@@ -2670,18 +2625,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
      *  Constant: '<S115>/Point75'
      *  Sum: '<S115>/Amp75'
      */
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      3221225472U;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(localDW->CastU16En16_jv - 49152);
   } else {
-    localDW->rtb_CastU16En16_jv_m = 3221225472U -
-      localDW->rtb_CastU16En16_jv_tmp;
+    localDW->rtb_CastU16En16_jv_m = (uint16_T)(49152 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S115>/QuadHandle2' */
 
   /* Lookup_n-D: '<S114>/Look-Up Table' */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->rtb_CastU16En16_jv_m,
+    0U, 16384U, &localDW->frac);
 
   /* Switch: '<S115>/SignCorrected' incorporates:
    *  Logic: '<S115>/1st or 4th Quad'
@@ -2690,11 +2643,11 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  UnaryMinus: '<S115>/Negate'
    */
   if (localDW->GTEp75_cz || localDW->GTEp75_o) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S115>/SignCorrected' */
@@ -2702,15 +2655,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S35>/Product1' incorporates:
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->im_lim_o4 = (real32_T)localDW->SignCorrected_cw * 9.31322575E-10F *
+  localDW->im_lim_o4 = (real32_T)localDW->SignCorrected_cw * 6.10351562E-5F *
     localDW->Gain2_m;
 
   /* Gain: '<S35>/Gain1' incorporates:
    *  Delay: '<S35>/Delay1'
    *  Sum: '<S35>/Sum4'
    */
-  localDW->theta_e = (localDW->Delay1_DSTATE_i + localDW->im_lim_o4) *
-    0.00138333312F;
+  localDW->theta_e = 2.5E-5F * rtP.K6 * (localDW->Delay1_DSTATE_i +
+    localDW->im_lim_o4);
 
   /* DiscreteIntegrator: '<S35>/Discrete-Time Integrator' */
   localDW->theta_ep = 0.5F * localDW->theta_e +
@@ -2719,19 +2672,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Sum: '<S35>/Sum5' */
   localDW->U_re_b = localDW->theta_ep + localDW->im_lim_o4;
 
-  /* DataTypeConversion: '<S117>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp;
-
   /* RelationalOperator: '<S117>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->CastU16En16_jv <= 32768);
 
   /* Switch: '<S117>/QuadHandle1' incorporates:
    *  Constant: '<S117>/Point50'
    *  Sum: '<S117>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->CastU16En16_jv - 32768);
   }
 
   /* End of Switch: '<S117>/QuadHandle1' */
@@ -2743,8 +2692,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Switch: '<S117>/QuadHandle1'
    *  Switch: '<S119>/QuadHandle2'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S117>/QuadHandle2' */
@@ -2752,19 +2701,19 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S116>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S117>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S116>/Look-Up Table'
    *  UnaryMinus: '<S117>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_cw = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_cw = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_cw = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S117>/SignCorrected' */
@@ -2773,15 +2722,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S35>/Gain'
    *  Switch: '<S117>/SignCorrected'
    */
-  localDW->re_lim_gw = (real32_T)(-2147483648LL * localDW->SignCorrected_cw) *
-    4.33680869E-19F * localDW->Gain2_m;
+  localDW->re_lim_gw = (real32_T)(-32768 * localDW->SignCorrected_cw) *
+    1.86264515E-9F * localDW->Gain2_m;
 
   /* Gain: '<S35>/Gain2' incorporates:
    *  Delay: '<S35>/Delay'
    *  Sum: '<S35>/Sum2'
    */
-  localDW->Gain2_m = (localDW->re_lim_gw + localDW->Delay_DSTATE_h) *
-    0.00138333312F;
+  localDW->Gain2_m = 2.5E-5F * rtP.K6 * (localDW->re_lim_gw +
+    localDW->Delay_DSTATE_h);
 
   /* DiscreteIntegrator: '<S35>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_h = 0.5F * localDW->Gain2_m +
@@ -2800,22 +2749,21 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S35>/Product3' incorporates:
    *  Switch: '<S119>/SignCorrected'
    */
-  localDW->Product3_a = (real32_T)localDW->SignCorrected_o * 9.31322575E-10F *
+  localDW->Product3_a = (real32_T)localDW->SignCorrected_o * 6.10351562E-5F *
     localDW->re_lim_gw;
 
   /* DataTypeConversion: '<S119>/CastU16En16' */
-  localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c;
+  localDW->CastU16En16_jv = localDW->rtb_CastU16En16_jv_tmp;
 
   /* RelationalOperator: '<S119>/LTEp50' */
-  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp_c <= 2147483648U);
+  localDW->GTEp75_cz = (localDW->rtb_CastU16En16_jv_tmp <= 32768);
 
   /* Switch: '<S119>/QuadHandle1' incorporates:
    *  Constant: '<S119>/Point50'
    *  Sum: '<S119>/Amp50'
    */
   if (!localDW->GTEp75_cz) {
-    localDW->rtb_CastU16En16_jv_m = localDW->rtb_CastU16En16_jv_tmp_c -
-      2147483648U;
+    localDW->CastU16En16_jv = (uint16_T)(localDW->rtb_CastU16En16_jv_tmp - 32768);
   }
 
   /* End of Switch: '<S119>/QuadHandle1' */
@@ -2826,8 +2774,8 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S119>/p50mA'
    *  Switch: '<S119>/QuadHandle1'
    */
-  if (localDW->rtb_CastU16En16_jv_m > 1073741824U) {
-    localDW->rtb_CastU16En16_jv_m = 2147483648U - localDW->rtb_CastU16En16_jv_m;
+  if (localDW->CastU16En16_jv > 16384) {
+    localDW->CastU16En16_jv = (uint16_T)(32768 - localDW->CastU16En16_jv);
   }
 
   /* End of Switch: '<S119>/QuadHandle2' */
@@ -2835,19 +2783,19 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Lookup_n-D: '<S118>/Look-Up Table' incorporates:
    *  Switch: '<S119>/QuadHandle2'
    */
-  localDW->rtb_CastU16En16_jv_m = plook_u32u32u64n32_even20c_gf
-    (localDW->rtb_CastU16En16_jv_m, 0U, 1024U, &localDW->frac);
+  localDW->bpIdx = plook_u32u16u64n48_even0c_gf(localDW->CastU16En16_jv, 0U,
+    16384U, &localDW->frac);
 
   /* Switch: '<S119>/SignCorrected' incorporates:
    *  Lookup_n-D: '<S118>/Look-Up Table'
    *  UnaryMinus: '<S119>/Negate'
    */
   if (localDW->GTEp75_cz) {
-    localDW->SignCorrected_o = intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = intrp1d_s16s32s32u32u64n48l_f(localDW->bpIdx,
+      localDW->frac, rtConstP.pooled21);
   } else {
-    localDW->SignCorrected_o = -intrp1d_s32s64s64u32u64n32l_f
-      (localDW->rtb_CastU16En16_jv_m, localDW->frac, rtConstP.pooled3);
+    localDW->SignCorrected_o = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+      (localDW->bpIdx, localDW->frac, rtConstP.pooled21);
   }
 
   /* End of Switch: '<S119>/SignCorrected' */
@@ -2861,10 +2809,9 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S35>/Sum'
    *  Switch: '<S119>/SignCorrected'
    */
-  *rty_a = (((real32_T)(-2147483648LL * localDW->SignCorrected_o) *
-             4.33680869E-19F * localDW->im_lim_o4 + localDW->Product3_a) +
-            (((localDW->Sum_pr + localDW->Sum_j) + localDW->Sum_i) +
-             localDW->Sum_o)) / rtu_U_ZK1 + 0.5F;
+  *rty_a = (((real32_T)(-32768 * localDW->SignCorrected_o) * 1.86264515E-9F *
+             localDW->im_lim_o4 + localDW->Product3_a) + (((localDW->Sum_pr +
+    localDW->Sum_j) + localDW->Sum_i) + localDW->Sum_o)) / rtu_U_ZK1 + 0.5F;
 
   /* SignalConversion generated from: '<S23>/I_ref1' */
   *rty_I_ref1 = localDW->Strom_kompensiert_l;
@@ -3071,15 +3018,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->c = 0.95F * rtDW->DiscreteTimeIntegrator / 2.0F;
 
       /* '<S17>:1:5' a = Psi_PM^2 + (L*i_ref_max)^2; */
+      rtDW->a = 0.0012F * rtP.i_ref_max;
+      rtDW->a = rtDW->a * rtDW->a + 0.000292410026F;
+
       /* '<S17>:1:6' b = 2*Psi_PM*R*i_ref_max; */
+      rtDW->b = 0.0028386F * rtP.i_ref_max;
+
       /* '<S17>:1:7' c = (R*i_ref_max)^2 - U_FA^2; */
-      rtDW->c = 17.222496F - rtDW->c * rtDW->c;
+      rtDW->Gain1 = 0.083F * rtP.i_ref_max;
+      rtDW->c = rtDW->Gain1 * rtDW->Gain1 - rtDW->c * rtDW->c;
 
       /* '<S17>:1:8' if -4*a*c >= single(0) */
-      if (-0.0155696403F * rtDW->c >= 0.0F) {
+      if (-4.0F * rtDW->a * rtDW->c >= 0.0F) {
         /* '<S17>:1:9' n_eck = single(30)/(p*pi) * (-b+sqrt(b^2 -4*a*c))/(2*a); */
-        rtDW->c = (sqrtf(0.0201441254F - 0.0155696403F * rtDW->c) + -0.14193F) *
-          0.530516505F / 0.00778482F;
+        rtDW->c = (sqrtf(rtDW->b * rtDW->b - 4.0F * rtDW->a * rtDW->c) +
+                   -rtDW->b) * (30.0F / (rtP.p * 3.14159274F)) / (2.0F * rtDW->a);
 
         /* '<S17>:1:10' error_speed_limit = uint8(0); */
         rtDW->error_speed_limit = 0U;
@@ -3095,11 +3048,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* '<S17>:1:15' if (flag_id == 1) && (error_speed_limit == 0) */
       if ((rtU->fl_field_weakening == 1) && (rtDW->error_speed_limit == 0)) {
         /* '<S17>:1:16' n_sat = min(3*n_eck, n_ref_max); */
-        rtDW->a = fminf(3.0F * rtDW->c, 400.0F);
+        rtDW->a = fminf(3.0F * rtDW->c, rtP.n_ref_max);
       } else {
         /* '<S17>:1:17' else */
         /* '<S17>:1:18' n_sat = min(n_eck, n_ref_max); */
-        rtDW->a = fminf(rtDW->c, 400.0F);
+        rtDW->a = fminf(rtDW->c, rtP.n_ref_max);
       }
 
       /* Outport: '<Root>/error_speed_limit' incorporates:
@@ -3134,7 +3087,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       }
 
       /* '<S12>:1:15' if abs(I_re_soll)>= 0.95*I_ref_max */
-      if (fabsf(rtDW->b) >= 47.5F) {
+      if (fabsf(rtDW->b) >= 0.95F * rtP.i_ref_max) {
         /* '<S12>:1:16' I_re_soll = sign(I_re_soll)*0.95*I_ref_max; */
         if (rtDW->b < 0.0F) {
           rtDW->b = -1.0F;
@@ -3142,11 +3095,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
           rtDW->b = (real32_T)(rtDW->b > 0.0F);
         }
 
-        rtDW->b = rtDW->b * 0.95F * 50.0F;
+        rtDW->b = rtDW->b * 0.95F * rtP.i_ref_max;
       }
 
       /* '<S12>:1:19' I_im_max = sqrt(I_ref_max^2-I_re_soll^2); */
-      rtDW->c = sqrtf(2500.0F - rtDW->b * rtDW->b);
+      rtDW->c = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtDW->b * rtDW->b);
 
       /* Merge: '<S4>/Merge3' incorporates:
        *  MATLAB Function: '<S7>/Function_Feldschwaeche'
@@ -3264,9 +3217,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* '<S22>:1:4' I_abs_ext = sqrt(I_re_soll_ext^2+I_im_soll_ext^2); */
       /* '<S22>:1:5' if I_abs_ext > I_ref_max */
       if (sqrtf(rtU->Ref_I_re_ext_mit * rtU->Ref_I_re_ext_mit +
-                rtU->Ref_I_im_ext_mit * rtU->Ref_I_im_ext_mit) > 50.0F) {
+                rtU->Ref_I_im_ext_mit * rtU->Ref_I_im_ext_mit) > rtP.i_ref_max)
+      {
         /* '<S22>:1:6' if abs(I_re_soll_ext)>= 0.95*I_ref_max */
-        if (fabsf(rtU->Ref_I_re_ext_mit) >= 47.5F) {
+        if (fabsf(rtU->Ref_I_re_ext_mit) >= 0.95F * rtP.i_ref_max) {
           /* '<S22>:1:7' I_re_soll = sign(I_re_soll_ext)*0.95*I_ref_max; */
           if (rtU->Ref_I_re_ext_mit < 0.0F) {
             rtDW->c = -1.0F;
@@ -3274,7 +3228,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
             rtDW->c = (real32_T)(rtU->Ref_I_re_ext_mit > 0.0F);
           }
 
-          rtDW->b = rtDW->c * 0.95F * 50.0F;
+          rtDW->b = rtDW->c * 0.95F * rtP.i_ref_max;
         } else {
           /* '<S22>:1:8' else */
           /* '<S22>:1:9' I_re_soll = I_re_soll_ext; */
@@ -3289,7 +3243,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         }
 
         /* Merge: '<S4>/Merge4' */
-        rtDW->I_im = sqrtf(2500.0F - rtDW->b * rtDW->b) * rtDW->c;
+        rtDW->I_im = sqrtf(rtP.i_ref_max * rtP.i_ref_max - rtDW->b * rtDW->b) *
+          rtDW->c;
       } else {
         /* '<S22>:1:12' else */
         /* '<S22>:1:13' I_re_soll = I_re_soll_ext; */
@@ -3326,13 +3281,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S302>/Product8'
        *  Sum: '<S302>/Add9'
        */
-      rtDW->CastU16En16_h = (uint32_T)((rtU->ordnung_a * rtU->Act_theta_u_el +
-        rtU->phase_a) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->ordnung_a * rtU->Act_theta_u_el +
+        rtU->phase_a) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S311>/LTEp50' incorporates:
        *  DataTypeConversion: '<S311>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 2147483648U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S311>/QuadHandle1' incorporates:
        *  Constant: '<S311>/Point50'
@@ -3340,7 +3295,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S311>/Amp50'
        */
       if (!rtDW->LTEp50_j) {
-        rtDW->CastU16En16_h -= 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S311>/QuadHandle1' */
@@ -3352,8 +3307,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S311>/QuadHandle1'
        *  Switch: '<S315>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S311>/QuadHandle2' */
@@ -3361,8 +3316,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S310>/Look-Up Table' incorporates:
        *  Switch: '<S315>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S311>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S310>/Look-Up Table'
@@ -3370,11 +3325,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S311>/Negate'
        */
       if (rtDW->LTEp50_j) {
-        rtDW->SignCorrected_a = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_a = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S311>/SignCorrected' */
@@ -3383,7 +3338,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Inport: '<Root>/amplitude_a'
        *  Switch: '<S315>/SignCorrected'
        */
-      rtDW->c = (real32_T)rtDW->SignCorrected_a * 9.31322575E-10F *
+      rtDW->c = (real32_T)rtDW->SignCorrected_a * 6.10351562E-5F *
         rtU->amplitude_a;
 
       /* DataTypeConversion: '<S309>/CastU16En16' incorporates:
@@ -3394,13 +3349,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S302>/Product9'
        *  Sum: '<S302>/Add7'
        */
-      rtDW->CastU16En16_h = (uint32_T)((rtU->ordnung_b * rtU->Act_theta_u_el +
-        rtU->phase_b) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->ordnung_b * rtU->Act_theta_u_el +
+        rtU->phase_b) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S309>/LTEp50' incorporates:
        *  DataTypeConversion: '<S309>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 2147483648U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S309>/QuadHandle1' incorporates:
        *  Constant: '<S309>/Point50'
@@ -3408,7 +3363,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S309>/Amp50'
        */
       if (!rtDW->LTEp50_j) {
-        rtDW->CastU16En16_h -= 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S309>/QuadHandle1' */
@@ -3420,8 +3375,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S309>/QuadHandle1'
        *  Switch: '<S315>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S309>/QuadHandle2' */
@@ -3429,8 +3384,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S308>/Look-Up Table' incorporates:
        *  Switch: '<S315>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S309>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S308>/Look-Up Table'
@@ -3438,11 +3393,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S309>/Negate'
        */
       if (rtDW->LTEp50_j) {
-        rtDW->SignCorrected_a = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_a = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S309>/SignCorrected' */
@@ -3451,7 +3406,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Inport: '<Root>/amplitude_b'
        *  Switch: '<S315>/SignCorrected'
        */
-      rtDW->a = (real32_T)rtDW->SignCorrected_a * 9.31322575E-10F *
+      rtDW->a = (real32_T)rtDW->SignCorrected_a * 6.10351562E-5F *
         rtU->amplitude_b;
 
       /* DataTypeConversion: '<S313>/CastU16En16' incorporates:
@@ -3462,13 +3417,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S302>/Product10'
        *  Sum: '<S302>/Add8'
        */
-      rtDW->CastU16En16_h = (uint32_T)((rtU->ordnung_c * rtU->Act_theta_u_el +
-        rtU->phase_c) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->ordnung_c * rtU->Act_theta_u_el +
+        rtU->phase_c) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S313>/LTEp50' incorporates:
        *  DataTypeConversion: '<S313>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 2147483648U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S313>/QuadHandle1' incorporates:
        *  Constant: '<S313>/Point50'
@@ -3476,7 +3431,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S313>/Amp50'
        */
       if (!rtDW->LTEp50_j) {
-        rtDW->CastU16En16_h -= 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S313>/QuadHandle1' */
@@ -3488,8 +3443,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S313>/QuadHandle1'
        *  Switch: '<S315>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S313>/QuadHandle2' */
@@ -3497,8 +3452,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S312>/Look-Up Table' incorporates:
        *  Switch: '<S315>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S313>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S312>/Look-Up Table'
@@ -3506,11 +3461,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S313>/Negate'
        */
       if (rtDW->LTEp50_j) {
-        rtDW->SignCorrected_a = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_a = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S313>/SignCorrected' */
@@ -3519,7 +3474,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Inport: '<Root>/amplitude_c'
        *  Switch: '<S315>/SignCorrected'
        */
-      rtDW->b = (real32_T)rtDW->SignCorrected_a * 9.31322575E-10F *
+      rtDW->b = (real32_T)rtDW->SignCorrected_a * 6.10351562E-5F *
         rtU->amplitude_c;
 
       /* DataTypeConversion: '<S315>/CastU16En16' incorporates:
@@ -3530,13 +3485,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S302>/Product11'
        *  Sum: '<S302>/Add6'
        */
-      rtDW->CastU16En16_h = (uint32_T)((rtU->ordnung_d * rtU->Act_theta_u_el +
-        rtU->phase_d) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->ordnung_d * rtU->Act_theta_u_el +
+        rtU->phase_d) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S315>/LTEp50' incorporates:
        *  DataTypeConversion: '<S315>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 2147483648U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S315>/QuadHandle1' incorporates:
        *  Constant: '<S315>/Point50'
@@ -3544,7 +3499,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S315>/Amp50'
        */
       if (!rtDW->LTEp50_j) {
-        rtDW->CastU16En16_h -= 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S315>/QuadHandle1' */
@@ -3555,8 +3510,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S315>/p50mA'
        *  Switch: '<S315>/QuadHandle1'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S315>/QuadHandle2' */
@@ -3564,19 +3519,19 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S314>/Look-Up Table' incorporates:
        *  Switch: '<S315>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S315>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S314>/Look-Up Table'
        *  UnaryMinus: '<S315>/Negate'
        */
       if (rtDW->LTEp50_j) {
-        rtDW->SignCorrected_a = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_a = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S315>/SignCorrected' */
@@ -3587,7 +3542,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S315>/SignCorrected'
        */
       rtDW->c = ((rtDW->c + rtDW->a) + rtDW->b) + (real32_T)
-        rtDW->SignCorrected_a * 9.31322575E-10F * rtU->amplitude_d;
+        rtDW->SignCorrected_a * 6.10351562E-5F * rtU->amplitude_d;
 
       /* End of Outputs for SubSystem: '<S11>/Rastmomentkompensation' */
     } else {
@@ -3851,17 +3806,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->c = (rtDW->c + -4.18879032F) * 0.159154937F;
 
       /* DataTypeConversion: '<S256>/CastU16En16' */
-      rtDW->CastU16En16_h = (uint32_T)(rtDW->c * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)(rtDW->c * 65536.0F);
 
       /* RelationalOperator: '<S256>/LTEp25' incorporates:
        *  DataTypeConversion: '<S256>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 1073741824U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S256>/GTEp75' incorporates:
        *  DataTypeConversion: '<S256>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->CastU16En16_h >= 3221225472U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S256>/QuadHandle2' incorporates:
        *  Constant: '<S256>/Point75'
@@ -3870,16 +3825,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S256>/p75mA'
        *  Switch: '<S256>/QuadHandle1b'
        */
-      if (rtDW->CastU16En16_h <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S256>/QuadHandle1a' incorporates:
          *  Constant: '<S256>/Point25'
          *  Sum: '<S256>/Amp25'
          *  Sum: '<S256>/p25mA'
          */
         if (rtDW->LTEp50_j) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->CastU16En16_h;
+          rtDW->CastU16En16_h = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h -= 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S256>/QuadHandle1a' */
@@ -3888,16 +3843,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S256>/Point75'
          *  Sum: '<S256>/Amp75'
          */
-        rtDW->CastU16En16_h -= 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->CastU16En16_h;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S256>/QuadHandle2' */
 
       /* Lookup_n-D: '<S255>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S256>/SignCorrected' incorporates:
        *  Logic: '<S256>/1st or 4th Quad'
@@ -3905,11 +3860,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S256>/Negate'
        */
       if (rtDW->LTEp50_j || rtDW->GTEp75) {
-        rtDW->SignCorrected_a = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_a = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_a = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S256>/SignCorrected' */
@@ -3921,18 +3876,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Inport: '<Root>/Act_theta_u_el'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint32_T)((rtU->Act_theta_u_el +
-        -4.18879032F) * 0.159154937F * 4.2949673E+9F);
+      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint16_T)((rtU->Act_theta_u_el +
+        -4.18879032F) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S258>/LTEp25' incorporates:
        *  DataTypeConversion: '<S258>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S258>/GTEp75' incorporates:
        *  DataTypeConversion: '<S258>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S258>/QuadHandle2' incorporates:
        *  Constant: '<S258>/Point75'
@@ -3941,16 +3896,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S258>/p75mA'
        *  Switch: '<S258>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S258>/QuadHandle1a' incorporates:
          *  Constant: '<S258>/Point25'
          *  Sum: '<S258>/Amp25'
          *  Sum: '<S258>/p25mA'
          */
         if (rtDW->LTEp50_j) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->CastU16En16_h = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+            16384);
         }
 
         /* End of Switch: '<S258>/QuadHandle1a' */
@@ -3959,16 +3916,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S258>/Point75'
          *  Sum: '<S258>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S258>/QuadHandle2' */
 
       /* Lookup_n-D: '<S257>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S258>/SignCorrected' incorporates:
        *  Logic: '<S258>/1st or 4th Quad'
@@ -3977,11 +3934,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S258>/Negate'
        */
       if (rtDW->LTEp50_j || rtDW->GTEp75) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S258>/SignCorrected' */
@@ -3999,11 +3956,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
                        &rtDW->Gain1, &rtDW->y_i, &rtDW->y, &rtDW->Switch2,
                        &rtDW->re_lim, &rtDW->sf_MATLABFunction_e);
 
+      /* DataTypeConversion: '<S226>/CastU16En16' incorporates:
+       *  DataTypeConversion: '<S232>/CastU16En16'
+       */
+      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
+
       /* RelationalOperator: '<S226>/LTEp25' */
-      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S226>/GTEp75' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S226>/QuadHandle2' incorporates:
        *  Constant: '<S226>/Point75'
@@ -4011,16 +3973,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S226>/p75mA'
        *  Switch: '<S226>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S226>/QuadHandle1a' incorporates:
          *  Constant: '<S226>/Point25'
          *  Sum: '<S226>/Amp25'
          *  Sum: '<S226>/p25mA'
          */
         if (rtDW->LTEp50_j) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp
+            - 16384);
         }
 
         /* End of Switch: '<S226>/QuadHandle1a' */
@@ -4029,16 +3993,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S226>/Point75'
          *  Sum: '<S226>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+          49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 -
+          rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S226>/QuadHandle2' */
 
       /* Lookup_n-D: '<S225>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S226>/SignCorrected' incorporates:
        *  Logic: '<S226>/1st or 4th Quad'
@@ -4047,11 +4013,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S226>/Negate'
        */
       if (rtDW->LTEp50_j || rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S226>/SignCorrected' */
@@ -4059,21 +4025,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S212>/Product' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Strom_kompensiert = (real32_T)rtDW->SignCorrected_d *
-        9.31322575E-10F * rtDW->b;
-
-      /* DataTypeConversion: '<S232>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
+      rtDW->Strom_kompensiert = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F
+        * rtDW->b;
 
       /* RelationalOperator: '<S232>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S232>/QuadHandle1' incorporates:
        *  Constant: '<S232>/Point50'
        *  Sum: '<S232>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S232>/QuadHandle1' */
@@ -4085,8 +4048,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S232>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S232>/QuadHandle2' */
@@ -4094,8 +4057,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S231>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S232>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S231>/Look-Up Table'
@@ -4103,11 +4066,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S232>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S232>/SignCorrected' */
@@ -4117,8 +4080,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S212>/Add'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Delay1 = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * (rtDW->Merge + rtDW->Gain1);
+      rtDW->Delay1 = (real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F
+        * (rtDW->Merge + rtDW->Gain1);
 
       /* DataTypeConversion: '<S228>/CastU16En16' incorporates:
        *  Constant: '<S25>/Constant'
@@ -4129,18 +4092,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S25>/Add2'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)(((rtU->Act_theta_u_el +
-        -4.18879032F) + -4.18879032F) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)(((rtU->Act_theta_u_el + -4.18879032F) +
+        -4.18879032F) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S228>/LTEp25' incorporates:
        *  DataTypeConversion: '<S228>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S228>/GTEp75' incorporates:
        *  DataTypeConversion: '<S228>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S228>/QuadHandle2' incorporates:
        *  Constant: '<S228>/Point75'
@@ -4149,16 +4112,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S228>/p75mA'
        *  Switch: '<S228>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S228>/QuadHandle1a' incorporates:
          *  Constant: '<S228>/Point25'
          *  Sum: '<S228>/Amp25'
          *  Sum: '<S228>/p25mA'
          */
         if (rtDW->LTEp50_j) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S228>/QuadHandle1a' */
@@ -4167,16 +4130,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S228>/Point75'
          *  Sum: '<S228>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S228>/QuadHandle2' */
 
       /* Lookup_n-D: '<S227>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S228>/SignCorrected' incorporates:
        *  Logic: '<S228>/1st or 4th Quad'
@@ -4185,11 +4148,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S228>/Negate'
        */
       if (rtDW->LTEp50_j || rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S228>/SignCorrected' */
@@ -4197,21 +4160,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S212>/Product2' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->y_i;
 
-      /* DataTypeConversion: '<S234>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S234>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S234>/QuadHandle1' incorporates:
        *  Constant: '<S234>/Point50'
        *  Sum: '<S234>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S234>/QuadHandle1' */
@@ -4223,8 +4183,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S234>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S234>/QuadHandle2' */
@@ -4232,8 +4192,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S233>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S234>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S233>/Look-Up Table'
@@ -4241,11 +4201,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S234>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S234>/SignCorrected' */
@@ -4254,8 +4214,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S212>/Gain1'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->im_lim_f = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->y;
+      rtDW->im_lim_f = (real32_T)(-32768 * rtDW->SignCorrected_d) *
+        1.86264515E-9F * rtDW->y;
 
       /* DataTypeConversion: '<S230>/CastU16En16' incorporates:
        *  Constant: '<S25>/Constant'
@@ -4266,18 +4226,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S25>/Add3'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)(((rtU->Act_theta_u_el +
-        -4.18879032F) + 4.18879032F) * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)(((rtU->Act_theta_u_el + -4.18879032F) +
+        4.18879032F) * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S230>/LTEp25' incorporates:
        *  DataTypeConversion: '<S230>/CastU16En16'
        */
-      rtDW->LTEp50_j = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->LTEp50_j = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S230>/GTEp75' incorporates:
        *  DataTypeConversion: '<S230>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S230>/QuadHandle2' incorporates:
        *  Constant: '<S230>/Point75'
@@ -4286,16 +4246,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S230>/p75mA'
        *  Switch: '<S230>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S230>/QuadHandle1a' incorporates:
          *  Constant: '<S230>/Point25'
          *  Sum: '<S230>/Amp25'
          *  Sum: '<S230>/p25mA'
          */
         if (rtDW->LTEp50_j) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S230>/QuadHandle1a' */
@@ -4304,16 +4264,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S230>/Point75'
          *  Sum: '<S230>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S230>/QuadHandle2' */
 
       /* Lookup_n-D: '<S229>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S230>/SignCorrected' incorporates:
        *  Logic: '<S230>/1st or 4th Quad'
@@ -4322,11 +4282,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S230>/Negate'
        */
       if (rtDW->LTEp50_j || rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S230>/SignCorrected' */
@@ -4334,21 +4294,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S212>/Product4' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Product3 = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->Product3 = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->Switch2;
 
-      /* DataTypeConversion: '<S236>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S236>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S236>/QuadHandle1' incorporates:
        *  Constant: '<S236>/Point50'
        *  Sum: '<S236>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S236>/QuadHandle1' */
@@ -4360,8 +4317,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S236>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S236>/QuadHandle2' */
@@ -4369,8 +4326,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S235>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S236>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S235>/Look-Up Table'
@@ -4378,11 +4335,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S236>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S236>/SignCorrected' */
@@ -4393,8 +4350,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S301>/SignCorrected'
        */
       rtDW->Strom_kompensiert = ((((rtDW->Strom_kompensiert + rtDW->Delay1) +
-        rtDW->re_lim_e) + rtDW->im_lim_f) + rtDW->Product3) + (real32_T)
-        (-2147483648LL * rtDW->SignCorrected_d) * 4.33680869E-19F * rtDW->re_lim;
+        rtDW->re_lim_e) + rtDW->im_lim_f) + rtDW->Product3) + (real32_T)(-32768 *
+        rtDW->SignCorrected_d) * 1.86264515E-9F * rtDW->re_lim;
 
       /* Sum: '<S25>/Sum2' incorporates:
        *  Inport: '<Root>/Act_Iw'
@@ -4406,20 +4363,20 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S216>/Gain6'
        *  Gain: '<S217>/Gain6'
        */
-      rtDW->Gain2_i = 10.0530977F * rtDW->Product3;
+      rtDW->Gain2_i = rtP.Kp * rtDW->Product3;
 
       /* Product: '<S214>/Product1' incorporates:
        *  Gain: '<S214>/Gain6'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_c * 9.31322575E-10F *
+      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_c * 6.10351562E-5F *
         rtDW->Gain2_i;
 
       /* Gain: '<S214>/Gain1' incorporates:
        *  Delay: '<S214>/Delay1'
        *  Sum: '<S214>/Sum4'
        */
-      rtDW->Gain1_k = (rtDW->Delay1_DSTATE + rtDW->re_lim_e) * 0.0138333309F;
+      rtDW->Gain1_k = 2.5E-5F * rtP.K1 * (rtDW->Delay1_DSTATE + rtDW->re_lim_e);
 
       /* DiscreteIntegrator: '<S214>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_o = 0.5F * rtDW->Gain1_k +
@@ -4441,7 +4398,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* RelationalOperator: '<S260>/LTEp50' incorporates:
        *  DataTypeConversion: '<S258>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S260>/QuadHandle1' incorporates:
        *  Constant: '<S260>/Point50'
@@ -4449,7 +4406,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S260>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S260>/QuadHandle1' */
@@ -4461,8 +4418,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S260>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S260>/QuadHandle2' */
@@ -4470,8 +4427,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S259>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S260>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S259>/Look-Up Table'
@@ -4479,11 +4436,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S260>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S260>/SignCorrected' */
@@ -4493,14 +4450,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S214>/Gain6'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->Gain2_i;
+      rtDW->re_lim_e = (real32_T)(-32768 * rtDW->SignCorrected_d) *
+        1.86264515E-9F * rtDW->Gain2_i;
 
       /* Gain: '<S214>/Gain2' incorporates:
        *  Delay: '<S214>/Delay'
        *  Sum: '<S214>/Sum2'
        */
-      rtDW->Add = (rtDW->re_lim_e + rtDW->Delay_DSTATE_l) * 0.0138333309F;
+      rtDW->Add = 2.5E-5F * rtP.K1 * (rtDW->re_lim_e + rtDW->Delay_DSTATE_l);
 
       /* DiscreteIntegrator: '<S214>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1 = 0.5F * rtDW->Add +
@@ -4517,12 +4474,12 @@ void uz_codegen0_step(RT_MODEL *const rtM)
                        rtDW->LTEp50_j, rtDW->U_im, &rtDW->y, &rtDW->y_i);
 
       /* DataTypeConversion: '<S262>/CastU16En16' */
-      rtDW->CastU16En16_h = (uint32_T)(rtDW->c * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)(rtDW->c * 65536.0F);
 
       /* RelationalOperator: '<S262>/LTEp50' incorporates:
        *  DataTypeConversion: '<S262>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S262>/QuadHandle1' incorporates:
        *  Constant: '<S262>/Point50'
@@ -4530,7 +4487,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S262>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h -= 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S262>/QuadHandle1' */
@@ -4542,8 +4499,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S262>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S262>/QuadHandle2' */
@@ -4551,8 +4508,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S261>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S262>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S261>/Look-Up Table'
@@ -4560,11 +4517,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S262>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S262>/SignCorrected' */
@@ -4576,9 +4533,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S256>/SignCorrected'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Sum_cz = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->y_i + (real32_T)rtDW->SignCorrected_a *
-        9.31322575E-10F * rtDW->y;
+      rtDW->Sum_cz = (real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F
+        * rtDW->y_i + (real32_T)rtDW->SignCorrected_a * 6.10351562E-5F * rtDW->y;
 
       /* DataTypeConversion: '<S269>/CastU16En16' incorporates:
        *  Constant: '<S215>/Constant1'
@@ -4586,18 +4542,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S215>/Gain5'
        *  Product: '<S215>/Product4'
        */
-      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint32_T)(rtDW->theta_b * 2.0F *
-        0.159154937F * 4.2949673E+9F);
+      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint16_T)(rtDW->theta_b * 2.0F *
+        0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S269>/LTEp25' incorporates:
        *  DataTypeConversion: '<S269>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S269>/GTEp75' incorporates:
        *  DataTypeConversion: '<S269>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S269>/QuadHandle2' incorporates:
        *  Constant: '<S269>/Point75'
@@ -4606,16 +4562,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S269>/p75mA'
        *  Switch: '<S269>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S269>/QuadHandle1a' incorporates:
          *  Constant: '<S269>/Point25'
          *  Sum: '<S269>/Amp25'
          *  Sum: '<S269>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->CastU16En16_h = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+            16384);
         }
 
         /* End of Switch: '<S269>/QuadHandle1a' */
@@ -4624,16 +4582,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S269>/Point75'
          *  Sum: '<S269>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S269>/QuadHandle2' */
 
       /* Lookup_n-D: '<S268>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S269>/SignCorrected' incorporates:
        *  Logic: '<S269>/1st or 4th Quad'
@@ -4642,11 +4600,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S269>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S269>/SignCorrected' */
@@ -4660,18 +4618,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S215>/Product5'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)((rtU->Act_theta_u_el +
-        -4.18879032F) * 2.0F * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->Act_theta_u_el + -4.18879032F) *
+        2.0F * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S271>/LTEp25' incorporates:
        *  DataTypeConversion: '<S271>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S271>/GTEp75' incorporates:
        *  DataTypeConversion: '<S271>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S271>/QuadHandle2' incorporates:
        *  Constant: '<S271>/Point75'
@@ -4680,16 +4638,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S271>/p75mA'
        *  Switch: '<S271>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S271>/QuadHandle1a' incorporates:
          *  Constant: '<S271>/Point25'
          *  Sum: '<S271>/Amp25'
          *  Sum: '<S271>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S271>/QuadHandle1a' */
@@ -4698,16 +4656,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S271>/Point75'
          *  Sum: '<S271>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S271>/QuadHandle2' */
 
       /* Lookup_n-D: '<S270>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S271>/SignCorrected' incorporates:
        *  Logic: '<S271>/1st or 4th Quad'
@@ -4716,11 +4674,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S271>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S271>/SignCorrected' */
@@ -4728,14 +4686,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S215>/Product1' incorporates:
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->Delay1 = (real32_T)rtDW->SignCorrected_c * 9.31322575E-10F *
+      rtDW->Delay1 = (real32_T)rtDW->SignCorrected_c * 6.10351562E-5F *
         rtDW->Gain2_i;
 
       /* Gain: '<S215>/Gain1' incorporates:
        *  Delay: '<S215>/Delay1'
        *  Sum: '<S215>/Sum4'
        */
-      rtDW->Gain1_e = (rtDW->Delay1_DSTATE_o + rtDW->Delay1) * 0.00138333312F;
+      rtDW->Gain1_e = 2.5E-5F * rtP.K2 * (rtDW->Delay1_DSTATE_o + rtDW->Delay1);
 
       /* DiscreteIntegrator: '<S215>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_k = 0.5F * rtDW->Gain1_e +
@@ -4744,18 +4702,15 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Sum: '<S215>/Sum5' */
       rtDW->U_re_c = rtDW->DiscreteTimeIntegrator_k + rtDW->Delay1;
 
-      /* DataTypeConversion: '<S273>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S273>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S273>/QuadHandle1' incorporates:
        *  Constant: '<S273>/Point50'
        *  Sum: '<S273>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S273>/QuadHandle1' */
@@ -4767,8 +4722,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S273>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S273>/QuadHandle2' */
@@ -4776,8 +4731,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S272>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S273>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S272>/Look-Up Table'
@@ -4785,11 +4740,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S273>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S273>/SignCorrected' */
@@ -4798,14 +4753,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S215>/Gain'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)(-2147483648LL * rtDW->SignCorrected_c) *
-        4.33680869E-19F * rtDW->Gain2_i;
+      rtDW->re_lim_e = (real32_T)(-32768 * rtDW->SignCorrected_c) *
+        1.86264515E-9F * rtDW->Gain2_i;
 
       /* Gain: '<S215>/Gain2' incorporates:
        *  Delay: '<S215>/Delay'
        *  Sum: '<S215>/Sum2'
        */
-      rtDW->Gain2_n = (rtDW->re_lim_e + rtDW->Delay_DSTATE_nv) * 0.00138333312F;
+      rtDW->Gain2_n = 2.5E-5F * rtP.K2 * (rtDW->re_lim_e + rtDW->Delay_DSTATE_nv);
 
       /* DiscreteIntegrator: '<S215>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_e = 0.5F * rtDW->Gain2_n +
@@ -4825,21 +4780,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S215>/Product3' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->re_lim;
 
       /* DataTypeConversion: '<S275>/CastU16En16' */
       rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
 
       /* RelationalOperator: '<S275>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S275>/QuadHandle1' incorporates:
        *  Constant: '<S275>/Point50'
        *  Sum: '<S275>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S275>/QuadHandle1' */
@@ -4851,8 +4806,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S275>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S275>/QuadHandle2' */
@@ -4860,8 +4815,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S274>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S275>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S274>/Look-Up Table'
@@ -4869,11 +4824,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S275>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S275>/SignCorrected' */
@@ -4883,8 +4838,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S215>/Product2'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Sum_a = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->Switch2 + rtDW->re_lim_e;
+      rtDW->Sum_a = (real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F *
+        rtDW->Switch2 + rtDW->re_lim_e;
 
       /* DataTypeConversion: '<S243>/CastU16En16' incorporates:
        *  Constant: '<S213>/Constant1'
@@ -4892,18 +4847,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S213>/Gain6'
        *  Product: '<S213>/Product4'
        */
-      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint32_T)(rtDW->theta_b * 3.0F *
-        0.159154937F * 4.2949673E+9F);
+      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint16_T)(rtDW->theta_b * 3.0F *
+        0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S243>/LTEp25' incorporates:
        *  DataTypeConversion: '<S243>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S243>/GTEp75' incorporates:
        *  DataTypeConversion: '<S243>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S243>/QuadHandle2' incorporates:
        *  Constant: '<S243>/Point75'
@@ -4912,16 +4867,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S243>/p75mA'
        *  Switch: '<S243>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S243>/QuadHandle1a' incorporates:
          *  Constant: '<S243>/Point25'
          *  Sum: '<S243>/Amp25'
          *  Sum: '<S243>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->CastU16En16_h = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+            16384);
         }
 
         /* End of Switch: '<S243>/QuadHandle1a' */
@@ -4930,16 +4887,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S243>/Point75'
          *  Sum: '<S243>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S243>/QuadHandle2' */
 
       /* Lookup_n-D: '<S242>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S243>/SignCorrected' incorporates:
        *  Logic: '<S243>/1st or 4th Quad'
@@ -4948,11 +4905,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S243>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S243>/SignCorrected' */
@@ -4966,18 +4923,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S213>/Product5'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)((rtU->Act_theta_u_el +
-        -4.18879032F) * 3.0F * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->Act_theta_u_el + -4.18879032F) *
+        3.0F * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S245>/LTEp25' incorporates:
        *  DataTypeConversion: '<S245>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S245>/GTEp75' incorporates:
        *  DataTypeConversion: '<S245>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S245>/QuadHandle2' incorporates:
        *  Constant: '<S245>/Point75'
@@ -4986,16 +4943,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S245>/p75mA'
        *  Switch: '<S245>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S245>/QuadHandle1a' incorporates:
          *  Constant: '<S245>/Point25'
          *  Sum: '<S245>/Amp25'
          *  Sum: '<S245>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S245>/QuadHandle1a' */
@@ -5004,16 +4961,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S245>/Point75'
          *  Sum: '<S245>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S245>/QuadHandle2' */
 
       /* Lookup_n-D: '<S244>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S245>/SignCorrected' incorporates:
        *  Logic: '<S245>/1st or 4th Quad'
@@ -5022,17 +4979,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S245>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S245>/SignCorrected' */
 
       /* Gain: '<S213>/Gain4' */
-      rtDW->Delay1 = 55.3333244F * rtDW->Product3;
+      rtDW->Delay1 = rtP.K3 * rtDW->Product3;
 
       /* Gain: '<S213>/Gain1' incorporates:
        *  Delay: '<S213>/Delay1'
@@ -5040,25 +4997,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S213>/Sum4'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->Gain1_d = ((real32_T)rtDW->SignCorrected_c * 9.31322575E-10F *
+      rtDW->Gain1_d = ((real32_T)rtDW->SignCorrected_c * 6.10351562E-5F *
                        rtDW->Delay1 + rtDW->Delay1_DSTATE_d) * 2.5E-5F;
 
       /* DiscreteIntegrator: '<S213>/Discrete-Time Integrator' */
       rtDW->U_re_m = 0.5F * rtDW->Gain1_d +
         rtDW->DiscreteTimeIntegrator_DSTAT_om;
 
-      /* DataTypeConversion: '<S247>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S247>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S247>/QuadHandle1' incorporates:
        *  Constant: '<S247>/Point50'
        *  Sum: '<S247>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S247>/QuadHandle1' */
@@ -5070,8 +5024,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S247>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S247>/QuadHandle2' */
@@ -5079,8 +5033,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S246>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S247>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S246>/Look-Up Table'
@@ -5088,11 +5042,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S247>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S247>/SignCorrected' */
@@ -5104,8 +5058,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S213>/Sum2'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->Gain2_c = ((real32_T)(-2147483648LL * rtDW->SignCorrected_c) *
-                       4.33680869E-19F * rtDW->Delay1 + rtDW->Delay_DSTATE_j) *
+      rtDW->Gain2_c = ((real32_T)(-32768 * rtDW->SignCorrected_c) *
+                       1.86264515E-9F * rtDW->Delay1 + rtDW->Delay_DSTATE_j) *
         2.5E-5F;
 
       /* DiscreteIntegrator: '<S213>/Discrete-Time Integrator1' */
@@ -5122,21 +5076,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S213>/Product3' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->Gain1;
 
       /* DataTypeConversion: '<S249>/CastU16En16' */
       rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
 
       /* RelationalOperator: '<S249>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S249>/QuadHandle1' incorporates:
        *  Constant: '<S249>/Point50'
        *  Sum: '<S249>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S249>/QuadHandle1' */
@@ -5148,8 +5102,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S249>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S249>/QuadHandle2' */
@@ -5157,8 +5111,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S248>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S249>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S248>/Look-Up Table'
@@ -5166,11 +5120,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S249>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S249>/SignCorrected' */
@@ -5180,8 +5134,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S213>/Product2'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Sum_pq = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->b + rtDW->re_lim_e;
+      rtDW->Sum_pq = (real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F
+        * rtDW->b + rtDW->re_lim_e;
 
       /* DataTypeConversion: '<S282>/CastU16En16' incorporates:
        *  Constant: '<S216>/Constant1'
@@ -5189,18 +5143,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S216>/Gain5'
        *  Product: '<S216>/Product4'
        */
-      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint32_T)(rtDW->theta_b * 4.0F *
-        0.159154937F * 4.2949673E+9F);
+      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint16_T)(rtDW->theta_b * 4.0F *
+        0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S282>/LTEp25' incorporates:
        *  DataTypeConversion: '<S282>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S282>/GTEp75' incorporates:
        *  DataTypeConversion: '<S282>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S282>/QuadHandle2' incorporates:
        *  Constant: '<S282>/Point75'
@@ -5209,16 +5163,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S282>/p75mA'
        *  Switch: '<S282>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S282>/QuadHandle1a' incorporates:
          *  Constant: '<S282>/Point25'
          *  Sum: '<S282>/Amp25'
          *  Sum: '<S282>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->CastU16En16_h = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+            16384);
         }
 
         /* End of Switch: '<S282>/QuadHandle1a' */
@@ -5227,16 +5183,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S282>/Point75'
          *  Sum: '<S282>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S282>/QuadHandle2' */
 
       /* Lookup_n-D: '<S281>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S282>/SignCorrected' incorporates:
        *  Logic: '<S282>/1st or 4th Quad'
@@ -5245,11 +5201,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S282>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S282>/SignCorrected' */
@@ -5263,18 +5219,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S216>/Product5'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)((rtU->Act_theta_u_el +
-        -4.18879032F) * 4.0F * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->Act_theta_u_el + -4.18879032F) *
+        4.0F * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S284>/LTEp25' incorporates:
        *  DataTypeConversion: '<S284>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S284>/GTEp75' incorporates:
        *  DataTypeConversion: '<S284>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S284>/QuadHandle2' incorporates:
        *  Constant: '<S284>/Point75'
@@ -5283,16 +5239,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S284>/p75mA'
        *  Switch: '<S284>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S284>/QuadHandle1a' incorporates:
          *  Constant: '<S284>/Point25'
          *  Sum: '<S284>/Amp25'
          *  Sum: '<S284>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S284>/QuadHandle1a' */
@@ -5301,16 +5257,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S284>/Point75'
          *  Sum: '<S284>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S284>/QuadHandle2' */
 
       /* Lookup_n-D: '<S283>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S284>/SignCorrected' incorporates:
        *  Logic: '<S284>/1st or 4th Quad'
@@ -5319,11 +5275,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S284>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S284>/SignCorrected' */
@@ -5331,7 +5287,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S216>/Product1' incorporates:
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->Delay1 = (real32_T)rtDW->SignCorrected_c * 9.31322575E-10F *
+      rtDW->Delay1 = (real32_T)rtDW->SignCorrected_c * 6.10351562E-5F *
         rtDW->Gain2_i;
 
       /* Delay: '<S216>/Delay1' */
@@ -5341,7 +5297,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Delay: '<S216>/Delay1'
        *  Sum: '<S216>/Sum4'
        */
-      rtDW->Gain1_m = (rtDW->Delay1_DSTATE_g + rtDW->Delay1) * 0.00138333312F;
+      rtDW->Gain1_m = 2.5E-5F * rtP.K4 * (rtDW->Delay1_DSTATE_g + rtDW->Delay1);
 
       /* DiscreteIntegrator: '<S216>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_a = 0.5F * rtDW->Gain1_m +
@@ -5350,18 +5306,15 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Sum: '<S216>/Sum5' */
       rtDW->Delay1 += rtDW->DiscreteTimeIntegrator_a;
 
-      /* DataTypeConversion: '<S286>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S286>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S286>/QuadHandle1' incorporates:
        *  Constant: '<S286>/Point50'
        *  Sum: '<S286>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S286>/QuadHandle1' */
@@ -5373,8 +5326,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S286>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S286>/QuadHandle2' */
@@ -5382,8 +5335,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S285>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S286>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S285>/Look-Up Table'
@@ -5391,11 +5344,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S286>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S286>/SignCorrected' */
@@ -5404,14 +5357,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S216>/Gain'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)(-2147483648LL * rtDW->SignCorrected_c) *
-        4.33680869E-19F * rtDW->Gain2_i;
+      rtDW->re_lim_e = (real32_T)(-32768 * rtDW->SignCorrected_c) *
+        1.86264515E-9F * rtDW->Gain2_i;
 
       /* Gain: '<S216>/Gain2' incorporates:
        *  Delay: '<S216>/Delay'
        *  Sum: '<S216>/Sum2'
        */
-      rtDW->Gain2_h = (rtDW->re_lim_e + rtDW->Delay_DSTATE_a) * 0.00138333312F;
+      rtDW->Gain2_h = 2.5E-5F * rtP.K4 * (rtDW->re_lim_e + rtDW->Delay_DSTATE_a);
 
       /* DiscreteIntegrator: '<S216>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_a = 0.5F * rtDW->Gain2_h +
@@ -5430,21 +5383,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S216>/Product3' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->re_lim_e = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->a;
 
       /* DataTypeConversion: '<S288>/CastU16En16' */
       rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
 
       /* RelationalOperator: '<S288>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S288>/QuadHandle1' incorporates:
        *  Constant: '<S288>/Point50'
        *  Sum: '<S288>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S288>/QuadHandle1' */
@@ -5456,8 +5409,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S288>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S288>/QuadHandle2' */
@@ -5465,8 +5418,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S287>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S288>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S287>/Look-Up Table'
@@ -5474,11 +5427,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S288>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S288>/SignCorrected' */
@@ -5488,8 +5441,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S216>/Product2'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Sum_cr = (real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-        4.33680869E-19F * rtDW->c + rtDW->re_lim_e;
+      rtDW->Sum_cr = (real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F
+        * rtDW->c + rtDW->re_lim_e;
 
       /* DataTypeConversion: '<S295>/CastU16En16' incorporates:
        *  Constant: '<S217>/Constant1'
@@ -5497,18 +5450,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S217>/Gain5'
        *  Product: '<S217>/Product4'
        */
-      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint32_T)(rtDW->theta_b * 6.0F *
-        0.159154937F * 4.2949673E+9F);
+      rtDW->rtb_CastU16En16_h_tmp_tmp = (uint16_T)(rtDW->theta_b * 6.0F *
+        0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S295>/LTEp25' incorporates:
        *  DataTypeConversion: '<S295>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 16384);
 
       /* RelationalOperator: '<S295>/GTEp75' incorporates:
        *  DataTypeConversion: '<S295>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp_tmp >= 49152);
 
       /* Switch: '<S295>/QuadHandle2' incorporates:
        *  Constant: '<S295>/Point75'
@@ -5517,16 +5470,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S295>/p75mA'
        *  Switch: '<S295>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U) {
+      if (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768) {
         /* Switch: '<S295>/QuadHandle1a' incorporates:
          *  Constant: '<S295>/Point25'
          *  Sum: '<S295>/Amp25'
          *  Sum: '<S295>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+          rtDW->CastU16En16_h = (uint16_T)(16384 -
+            rtDW->rtb_CastU16En16_h_tmp_tmp);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 1073741824U;
+          rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp -
+            16384);
         }
 
         /* End of Switch: '<S295>/QuadHandle1a' */
@@ -5535,16 +5490,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S295>/Point75'
          *  Sum: '<S295>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 3221225472U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp_tmp;
+        rtDW->CastU16En16_h = (uint16_T)(49152 - rtDW->rtb_CastU16En16_h_tmp_tmp);
       }
 
       /* End of Switch: '<S295>/QuadHandle2' */
 
       /* Lookup_n-D: '<S294>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S295>/SignCorrected' incorporates:
        *  Logic: '<S295>/1st or 4th Quad'
@@ -5553,11 +5508,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S295>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S295>/SignCorrected' */
@@ -5571,18 +5526,18 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S217>/Product5'
        *  Sum: '<S25>/Sum'
        */
-      rtDW->rtb_CastU16En16_h_tmp = (uint32_T)((rtU->Act_theta_u_el +
-        -4.18879032F) * 6.0F * 0.159154937F * 4.2949673E+9F);
+      rtDW->CastU16En16_h = (uint16_T)((rtU->Act_theta_u_el + -4.18879032F) *
+        6.0F * 0.159154937F * 65536.0F);
 
       /* RelationalOperator: '<S297>/LTEp25' incorporates:
        *  DataTypeConversion: '<S297>/CastU16En16'
        */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 1073741824U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 16384);
 
       /* RelationalOperator: '<S297>/GTEp75' incorporates:
        *  DataTypeConversion: '<S297>/CastU16En16'
        */
-      rtDW->GTEp75_b = (rtDW->rtb_CastU16En16_h_tmp >= 3221225472U);
+      rtDW->GTEp75_b = (rtDW->CastU16En16_h >= 49152);
 
       /* Switch: '<S297>/QuadHandle2' incorporates:
        *  Constant: '<S297>/Point75'
@@ -5591,16 +5546,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S297>/p75mA'
        *  Switch: '<S297>/QuadHandle1b'
        */
-      if (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U) {
+      if (rtDW->CastU16En16_h <= 32768) {
         /* Switch: '<S297>/QuadHandle1a' incorporates:
          *  Constant: '<S297>/Point25'
          *  Sum: '<S297>/Amp25'
          *  Sum: '<S297>/p25mA'
          */
         if (rtDW->GTEp75) {
-          rtDW->CastU16En16_h = 1073741824U - rtDW->rtb_CastU16En16_h_tmp;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(16384 - rtDW->CastU16En16_h);
         } else {
-          rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 1073741824U;
+          rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 16384);
         }
 
         /* End of Switch: '<S297>/QuadHandle1a' */
@@ -5609,16 +5564,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  Constant: '<S297>/Point75'
          *  Sum: '<S297>/Amp75'
          */
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 3221225472U;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(rtDW->CastU16En16_h - 49152);
       } else {
-        rtDW->CastU16En16_h = 3221225472U - rtDW->rtb_CastU16En16_h_tmp;
+        rtDW->rtb_CastU16En16_h_k = (uint16_T)(49152 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S297>/QuadHandle2' */
 
       /* Lookup_n-D: '<S296>/Look-Up Table' */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->rtb_CastU16En16_h_k, 0U,
+        16384U, &rtDW->frac);
 
       /* Switch: '<S297>/SignCorrected' incorporates:
        *  Logic: '<S297>/1st or 4th Quad'
@@ -5627,11 +5582,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  UnaryMinus: '<S297>/Negate'
        */
       if (rtDW->GTEp75 || rtDW->GTEp75_b) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S297>/SignCorrected' */
@@ -5639,14 +5594,15 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S217>/Product1' incorporates:
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->im_lim_f = (real32_T)rtDW->SignCorrected_c * 9.31322575E-10F *
+      rtDW->im_lim_f = (real32_T)rtDW->SignCorrected_c * 6.10351562E-5F *
         rtDW->Gain2_i;
 
       /* Gain: '<S217>/Gain1' incorporates:
        *  Delay: '<S217>/Delay1'
        *  Sum: '<S217>/Sum4'
        */
-      rtDW->theta_b = (rtDW->Delay1_DSTATE_oi + rtDW->im_lim_f) * 0.00138333312F;
+      rtDW->theta_b = 2.5E-5F * rtP.K6 * (rtDW->Delay1_DSTATE_oi +
+        rtDW->im_lim_f);
 
       /* DiscreteIntegrator: '<S217>/Discrete-Time Integrator' */
       rtDW->theta_m = 0.5F * rtDW->theta_b +
@@ -5655,18 +5611,15 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Sum: '<S217>/Sum5' */
       rtDW->U_re_d = rtDW->theta_m + rtDW->im_lim_f;
 
-      /* DataTypeConversion: '<S299>/CastU16En16' */
-      rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp;
-
       /* RelationalOperator: '<S299>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->CastU16En16_h <= 32768);
 
       /* Switch: '<S299>/QuadHandle1' incorporates:
        *  Constant: '<S299>/Point50'
        *  Sum: '<S299>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->CastU16En16_h - 32768);
       }
 
       /* End of Switch: '<S299>/QuadHandle1' */
@@ -5678,8 +5631,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Switch: '<S299>/QuadHandle1'
        *  Switch: '<S301>/QuadHandle2'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S299>/QuadHandle2' */
@@ -5687,19 +5640,19 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S298>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S299>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S298>/Look-Up Table'
        *  UnaryMinus: '<S299>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_c = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_c = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_c = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S299>/SignCorrected' */
@@ -5708,14 +5661,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Gain: '<S217>/Gain'
        *  Switch: '<S299>/SignCorrected'
        */
-      rtDW->re_lim_e = (real32_T)(-2147483648LL * rtDW->SignCorrected_c) *
-        4.33680869E-19F * rtDW->Gain2_i;
+      rtDW->re_lim_e = (real32_T)(-32768 * rtDW->SignCorrected_c) *
+        1.86264515E-9F * rtDW->Gain2_i;
 
       /* Gain: '<S217>/Gain2' incorporates:
        *  Delay: '<S217>/Delay'
        *  Sum: '<S217>/Sum2'
        */
-      rtDW->Gain2_i = (rtDW->re_lim_e + rtDW->Delay_DSTATE_nm) * 0.00138333312F;
+      rtDW->Gain2_i = 2.5E-5F * rtP.K6 * (rtDW->re_lim_e + rtDW->Delay_DSTATE_nm);
 
       /* DiscreteIntegrator: '<S217>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_g = 0.5F * rtDW->Gain2_i +
@@ -5735,21 +5688,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Product: '<S217>/Product3' incorporates:
        *  Switch: '<S301>/SignCorrected'
        */
-      rtDW->Product3 = (real32_T)rtDW->SignCorrected_d * 9.31322575E-10F *
+      rtDW->Product3 = (real32_T)rtDW->SignCorrected_d * 6.10351562E-5F *
         rtDW->re_lim_e;
 
       /* DataTypeConversion: '<S301>/CastU16En16' */
       rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp;
 
       /* RelationalOperator: '<S301>/LTEp50' */
-      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 2147483648U);
+      rtDW->GTEp75 = (rtDW->rtb_CastU16En16_h_tmp_tmp <= 32768);
 
       /* Switch: '<S301>/QuadHandle1' incorporates:
        *  Constant: '<S301>/Point50'
        *  Sum: '<S301>/Amp50'
        */
       if (!rtDW->GTEp75) {
-        rtDW->CastU16En16_h = rtDW->rtb_CastU16En16_h_tmp_tmp - 2147483648U;
+        rtDW->CastU16En16_h = (uint16_T)(rtDW->rtb_CastU16En16_h_tmp_tmp - 32768);
       }
 
       /* End of Switch: '<S301>/QuadHandle1' */
@@ -5760,8 +5713,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S301>/p50mA'
        *  Switch: '<S301>/QuadHandle1'
        */
-      if (rtDW->CastU16En16_h > 1073741824U) {
-        rtDW->CastU16En16_h = 2147483648U - rtDW->CastU16En16_h;
+      if (rtDW->CastU16En16_h > 16384) {
+        rtDW->CastU16En16_h = (uint16_T)(32768 - rtDW->CastU16En16_h);
       }
 
       /* End of Switch: '<S301>/QuadHandle2' */
@@ -5769,19 +5722,19 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Lookup_n-D: '<S300>/Look-Up Table' incorporates:
        *  Switch: '<S301>/QuadHandle2'
        */
-      rtDW->CastU16En16_h = plook_u32u32u64n32_even20c_gf(rtDW->CastU16En16_h,
-        0U, 1024U, &rtDW->frac);
+      rtDW->bpIdx = plook_u32u16u64n48_even0c_gf(rtDW->CastU16En16_h, 0U, 16384U,
+        &rtDW->frac);
 
       /* Switch: '<S301>/SignCorrected' incorporates:
        *  Lookup_n-D: '<S300>/Look-Up Table'
        *  UnaryMinus: '<S301>/Negate'
        */
       if (rtDW->GTEp75) {
-        rtDW->SignCorrected_d = intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = intrp1d_s16s32s32u32u64n48l_f(rtDW->bpIdx,
+          rtDW->frac, rtConstP.pooled21);
       } else {
-        rtDW->SignCorrected_d = -intrp1d_s32s64s64u32u64n32l_f
-          (rtDW->CastU16En16_h, rtDW->frac, rtConstP.pooled3);
+        rtDW->SignCorrected_d = (int16_T)-intrp1d_s16s32s32u32u64n48l_f
+          (rtDW->bpIdx, rtDW->frac, rtConstP.pooled21);
       }
 
       /* End of Switch: '<S301>/SignCorrected' */
@@ -5796,10 +5749,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S25>/Add1'
        *  Switch: '<S301>/SignCorrected'
        */
-      rtY->a_W = (((real32_T)(-2147483648LL * rtDW->SignCorrected_d) *
-                   4.33680869E-19F * rtDW->im_lim_f + rtDW->Product3) +
-                  (((rtDW->Sum_cz + rtDW->Sum_a) + rtDW->Sum_pq) + rtDW->Sum_cr))
-        / rtDW->DiscreteTimeIntegrator + 0.5F;
+      rtY->a_W = (((real32_T)(-32768 * rtDW->SignCorrected_d) * 1.86264515E-9F *
+                   rtDW->im_lim_f + rtDW->Product3) + (((rtDW->Sum_cz +
+        rtDW->Sum_a) + rtDW->Sum_pq) + rtDW->Sum_cr)) /
+        rtDW->DiscreteTimeIntegrator + 0.5F;
 
       /* Merge: '<S10>/Merge5' incorporates:
        *  SignalConversion generated from: '<S25>/I_ref1'
@@ -5957,7 +5910,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iu'
    *  RelationalOperator: '<S5>/Smaller'
    */
-  rtY->fault_peak_current_u = (fabsf(rtU->Act_Iu) >= 50.0F);
+  rtY->fault_peak_current_u = (rtP.i_max_peak <= fabsf(rtU->Act_Iu));
 
   /* Math: '<S5>/Square' incorporates:
    *  Inport: '<Root>/Act_Iu'
@@ -5976,14 +5929,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller1'
    *  Sqrt: '<S5>/Square Root'
    */
-  rtY->fault_rms_current_u = (sqrtf(0.05F * rtDW->a) >= 50.0F);
+  rtY->fault_rms_current_u = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->a));
 
   /* Outport: '<Root>/fault_peak_speed' incorporates:
    *  Constant: '<S5>/Constant2'
    *  Inport: '<Root>/Act_n'
    *  RelationalOperator: '<S5>/Smaller2'
    */
-  rtY->fault_peak_speed = (rtU->Act_n >= 1500.0F);
+  rtY->fault_peak_speed = (rtP.n_max_peak <= rtU->Act_n);
 
   /* DiscreteIntegrator: '<S317>/Accumulator' incorporates:
    *  Delay: '<S317>/Delay'
@@ -5997,7 +5950,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Gain: '<S317>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
-  rtY->fault_max_speed = (0.00833333377F * rtDW->b >= 600.0F);
+  rtY->fault_max_speed = (rtP.n_max <= 0.00833333377F * rtDW->b);
 
   /* Math: '<S5>/Square1' incorporates:
    *  Inport: '<Root>/Act_Iv'
@@ -6017,7 +5970,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller5'
    *  Sqrt: '<S5>/Square Root1'
    */
-  rtY->fault_rms_current_v = (sqrtf(0.05F * rtDW->y_i) >= 50.0F);
+  rtY->fault_rms_current_v = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->y_i));
 
   /* Math: '<S5>/Square2' incorporates:
    *  Inport: '<Root>/Act_Iw'
@@ -6037,7 +5990,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  RelationalOperator: '<S5>/Smaller7'
    *  Sqrt: '<S5>/Square Root2'
    */
-  rtY->fault_rms_current_w = (sqrtf(0.05F * rtDW->Switch2) >= 50.0F);
+  rtY->fault_rms_current_w = (rtP.i_max_rms <= sqrtf(0.05F * rtDW->Switch2));
 
   /* Outport: '<Root>/fault_peak_current_v' incorporates:
    *  Abs: '<S5>/Abs1'
@@ -6045,7 +5998,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iv'
    *  RelationalOperator: '<S5>/Smaller4'
    */
-  rtY->fault_peak_current_v = (fabsf(rtU->Act_Iv) >= 50.0F);
+  rtY->fault_peak_current_v = (rtP.i_max_peak <= fabsf(rtU->Act_Iv));
 
   /* Outport: '<Root>/fault_peak_current_w' incorporates:
    *  Abs: '<S5>/Abs2'
@@ -6053,7 +6006,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_Iw'
    *  RelationalOperator: '<S5>/Smaller6'
    */
-  rtY->fault_peak_current_w = (fabsf(rtU->Act_Iw) >= 50.0F);
+  rtY->fault_peak_current_w = (rtP.i_max_peak <= fabsf(rtU->Act_Iw));
 
   /* Update for Delay: '<S3>/Delay' */
   rtDW->Delay_DSTATE = rtDW->DiscreteTimeIntegrator;
@@ -6063,10 +6016,9 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->DiscreteTimeIntegrator;
 
   /* Update for Delay: '<S316>/Delay' */
-  for (rtDW->SignCorrected_a = 0; rtDW->SignCorrected_a < 19;
-       rtDW->SignCorrected_a++) {
-    rtDW->Delay_DSTATE_k[rtDW->SignCorrected_a] = rtDW->Delay_DSTATE_k
-      [rtDW->SignCorrected_a + 1];
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 19; rtDW->idxDelay++) {
+    rtDW->Delay_DSTATE_k[rtDW->idxDelay] = rtDW->Delay_DSTATE_k[rtDW->idxDelay +
+      1];
   }
 
   rtDW->Delay_DSTATE_k[19] = rtDW->c;
@@ -6079,10 +6031,9 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* Update for Delay: '<S317>/Delay' incorporates:
    *  Inport: '<Root>/Act_n'
    */
-  for (rtDW->SignCorrected_a = 0; rtDW->SignCorrected_a < 119;
-       rtDW->SignCorrected_a++) {
-    rtDW->Delay_DSTATE_ki[rtDW->SignCorrected_a] = rtDW->Delay_DSTATE_ki
-      [rtDW->SignCorrected_a + 1];
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 119; rtDW->idxDelay++) {
+    rtDW->Delay_DSTATE_ki[rtDW->idxDelay] = rtDW->Delay_DSTATE_ki[rtDW->idxDelay
+      + 1];
   }
 
   rtDW->Delay_DSTATE_ki[119] = rtU->Act_n;
@@ -6094,15 +6045,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   /* Update for DiscreteIntegrator: '<S318>/Accumulator' */
   rtDW->Accumulator_DSTATE_f = rtDW->y_i;
-  for (rtDW->SignCorrected_a = 0; rtDW->SignCorrected_a < 19;
-       rtDW->SignCorrected_a++) {
+  for (rtDW->idxDelay = 0; rtDW->idxDelay < 19; rtDW->idxDelay++) {
     /* Update for Delay: '<S318>/Delay' */
-    rtDW->Delay_DSTATE_kl[rtDW->SignCorrected_a] = rtDW->Delay_DSTATE_kl
-      [rtDW->SignCorrected_a + 1];
+    rtDW->Delay_DSTATE_kl[rtDW->idxDelay] = rtDW->Delay_DSTATE_kl[rtDW->idxDelay
+      + 1];
 
     /* Update for Delay: '<S319>/Delay' */
-    rtDW->Delay_DSTATE_b[rtDW->SignCorrected_a] = rtDW->Delay_DSTATE_b
-      [rtDW->SignCorrected_a + 1];
+    rtDW->Delay_DSTATE_b[rtDW->idxDelay] = rtDW->Delay_DSTATE_b[rtDW->idxDelay +
+      1];
   }
 
   /* Update for Delay: '<S318>/Delay' */

@@ -6,6 +6,9 @@
 #include "../uz/uz_PushButton/uz_PushButton_facade.h"
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
+// includes (LR)
+#include "../Codegen/uz_codegen.h"
+
 
 typedef struct
 {
@@ -47,6 +50,9 @@ static void idle_during(void);
 static void running_during(void);
 static void control_during(void);
 static void error_during(void);
+
+// Add extern uz_codegen codegenInstance
+extern uz_codegen codegenInstance;
 
 void ultrazohm_state_machine_step(void)
 {
@@ -140,6 +146,13 @@ static void idle_entry(void)
         uz_led_set_runningLED_off();
         ultrazohm_state.uz_led_states.runningLED = false;
         ultrazohm_state_machine_event_handled();
+        // codegen flags in idle state
+    	codegenInstance.input.fl_power=0;
+    	codegenInstance.input.fl_enable_compensation_current=0.0;
+    	codegenInstance.input.fl_enable_compensation_cogging_=0.0;
+    	codegenInstance.input.Ref_I_im_ext_mit=0;
+    	codegenInstance.input.Ref_I_re_ext_mit=0;
+    	codegenInstance.input.fl_integrator_reset=1;
     }
 }
 
@@ -165,6 +178,9 @@ static void control_entry(void)
         uz_led_set_runningLED_on();
         ultrazohm_state.uz_led_states.runningLED = true;
         ultrazohm_state_machine_event_handled();
+        // codegen enable flags for control state (LR)
+        codegenInstance.input.fl_integrator_reset=0;// no integrator reset during control_state
+        codegenInstance.input.fl_power= 3.0; // enables the single phase control for all three phases
     }
 }
 
@@ -182,6 +198,13 @@ static void error_entry(void)
         uz_led_set_readyLED_off();
         ultrazohm_state.uz_led_states.readyLED = false;
         ultrazohm_state_machine_event_handled();
+        // codegen flags in idle state
+    	codegenInstance.input.fl_power=0;
+    	codegenInstance.input.fl_enable_compensation_current=0.0;
+    	codegenInstance.input.fl_enable_compensation_cogging_=0.0;
+    	codegenInstance.input.Ref_I_im_ext_mit=0;
+    	codegenInstance.input.Ref_I_re_ext_mit=0;
+    	codegenInstance.input.fl_integrator_reset=1;
     }
 }
 
@@ -234,7 +257,7 @@ static void control_during(void)
     {
         ultrazohm_state_machine_switch_to_state(idle_state);
     }
-}
+    }
 
 static void ready_LED_blink_fast(void)
 {
@@ -296,6 +319,7 @@ static void ultrazohm_state_machine_switch_to_state(platform_state_t new_state)
     ultrazohm_state.event_handled = false;
     ultrazohm_state.entry = true;
     ultrazohm_state.current_state = new_state;
+
 }
 
 platform_state_t ultrazohm_state_machine_get_state(void)

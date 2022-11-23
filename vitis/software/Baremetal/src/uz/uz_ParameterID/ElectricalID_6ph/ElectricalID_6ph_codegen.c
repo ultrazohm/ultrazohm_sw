@@ -21,7 +21,7 @@
 
 #include "ElectricalID_6ph_codegen.h"
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID6PH_MAX_INSTANCES > 0U
+#if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
 
 /* Named constants for Chart: '<Root>/ElectricalID_6ph_codegen' */
 #define IN_ElectricalID                ((uint8_T)1U)

@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#if (UZ_PARAMETERID_MAX_INSTANCES > 0U) || (UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U)
 #include "uz_ParaID_TwoMassID.h"
 #include "../../uz_HAL.h"
 

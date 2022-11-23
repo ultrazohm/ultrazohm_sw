@@ -21,7 +21,7 @@
 
 #include "TwoMassID_codegen.h"
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#if (UZ_PARAMETERID_MAX_INSTANCES > 0U) || (UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U)
 
 /* Named constants for Chart: '<Root>/TwoMassID' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)

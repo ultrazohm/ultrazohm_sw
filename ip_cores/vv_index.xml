@@ -969,7 +969,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112763872">
+		<CoreRevision value="2112782580">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_delay_compensation/ipcore/parallel_8_sim_delay_compensation_v1_0/component.xml">
 		</ComponentPath>
@@ -997,7 +997,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112772266">
+		<CoreRevision value="2112782553">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_min_cost_function/ipcore/parallel_8_sim_min_cost_function_v1_0/component.xml">
 		</ComponentPath>
@@ -1025,7 +1025,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112772287">
+		<CoreRevision value="2112782546">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_phase_voltages/ipcore/parallel_8_sim_phase_voltages_v1_0/component.xml">
 		</ComponentPath>
@@ -1081,7 +1081,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112772296">
+		<CoreRevision value="2112782569">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_prediction_and_cost_function/ipcore/parallel_8_sim_prediction_and_cost_function_v1_0/component.xml">
 		</ComponentPath>

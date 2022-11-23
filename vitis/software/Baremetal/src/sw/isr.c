@@ -41,6 +41,12 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+#include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+extern uz_pmsm6ph_transformation_t* transformation;
+uz_6ph_abc_t abc_currents = {0};
+float theta_el = 0.0f;
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -54,6 +60,10 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    abc_currents = uz_pmsm6ph_transformation_get_currents(transformation);
+    theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

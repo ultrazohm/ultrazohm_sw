@@ -52,6 +52,13 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+#include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+uz_pmsm6ph_transformation_t* transformation = NULL;
+struct uz_pmsm6ph_config_t transformation_config = {
+		.base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
+		.ip_core_frequency_Hz = 100000000.0f
+};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -75,6 +82,7 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
+        	transformation = uz_pmsm6ph_transformation_init(transformation_config);
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

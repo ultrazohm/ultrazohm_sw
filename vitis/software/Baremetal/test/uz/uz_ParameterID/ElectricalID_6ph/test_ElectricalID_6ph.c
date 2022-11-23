@@ -3,6 +3,7 @@
 #include "unity.h"
 
 #include "ElectricalID_6ph.h"
+#include "ElectricalID_6ph_codegen.h"
 
 void setUp(void)
 {

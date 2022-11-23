@@ -13,16 +13,21 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-
-#include "ElectricalID_6ph.h"
 #include "../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
+#include "ElectricalID_6ph.h"
+#include "ElectricalID_6ph_codegen.h"
 
 #include <stdbool.h>
 #include "../../uz_HAL.h"
 
 struct uz_ParaID_ElectricalID_6ph_t {
     bool is_ready;
+    ExtY_ElectricalID_6ph_codegen_t output;
+    ExtU_ElectricalID_6ph_codegen_t input;
+    DW_ElectricalID_6ph_codegen_t rtDW;                        /* Observable states */
+    RT_MODEL_ElectricalID_6ph_cod_t modelData;
+    RT_MODEL_ElectricalID_6ph_cod_t *PtrToModelData;
 };
 
 static uint32_t instance_counter = 0U;
@@ -41,7 +46,37 @@ static uz_ParaID_ElectricalID_6ph_t* uz_ParaID_ElectricalID_6ph_allocation(void)
 
 uz_ParaID_ElectricalID_6ph_t* uz_ParaID_ElectricalID_6ph_init(void) {
     uz_ParaID_ElectricalID_6ph_t* self = uz_ParaID_ElectricalID_6ph_allocation();
+    self->PtrToModelData=&self->modelData;
+    self->PtrToModelData->dwork=&self->rtDW;
+    self->PtrToModelData->inputs=&self->input;
+    self->PtrToModelData->outputs=&self->output;
     return (self);
+}
+
+void uz_ParaID_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config,uz_ParaID_ActualValues_t actual,uz_ParaID_GlobalConfig_t global_config,uz_ParaID_ControlFlags_t flags)
+{
+    self->input.ElectricalIDConfig=ID_config;
+    self->input.ActualValues=actual;
+    self->input.GlobalConfig_out=global_config;
+    self->input.ControlFlags=flags;
+    ElectricalID_6ph_codegen_step(self->PtrToModelData);
+}
+
+bool get_uz_ParaID_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.enteredElectricalID;
+}
+bool get_uz_ParaID_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.finishedElectricalID;
+}
+uz_ParaID_Controller_Parameters_output_t get_uz_ParaID_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.ElectricalID_FOC_output;
+}
+uz_ParaID_ElectricalID_output_t get_uz_ParaID_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.ElectricalID_output;
 }
 
 #endif

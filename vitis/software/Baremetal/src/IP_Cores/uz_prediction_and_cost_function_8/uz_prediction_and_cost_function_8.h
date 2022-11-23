@@ -60,4 +60,38 @@ void uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(uz_predict
  */
 int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self);
 
+/**
+ * @brief Set the value of done_phase_voltages from the Prediction_and_cost_function IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @param done_phase_voltages_AXI Value
+ */
+//void uz_prediction_and_cost_function_8_set_done_phase_voltages_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_phase_voltages_AXI);
+
+
+/**
+ * @brief Set the value of done_vsd_and_park from the Prediction_and_cost_function IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @param done_vsd_and_park_AXI Value
+ */
+void uz_prediction_and_cost_function_8_set_done_vsd_and_park_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_vsd_and_park_AXI);
+
+
+/**
+ * @brief Set the value of current_valid_in from the Prediction_and_cost_function IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @param current_valid_in_AXI Value
+ */
+void uz_prediction_and_cost_function_8_set_current_valid_in_AXI(uz_prediction_and_cost_function_8_t* self, _Bool current_valid_in_AXI);
+
+
+/**
+ * @brief Read the value of done_prediction_and_cost_function from the Prediction_and_cost_function IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @return Value of done_prediction_and_cost_function
+ */
+_Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(uz_prediction_and_cost_function_8_t* self);
 #endif // UZ_PREDICTION_AND_COST_FUNCTION_8_H

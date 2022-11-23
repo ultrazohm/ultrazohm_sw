@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/parallel_8_phase_voltages/ipcore/parallel_8_sim_phase_voltages_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="87370e15a8d248f59dd55c37788a9818"/>
+    <Option Name="Id" Val="ae2614950b4c460480c91a3496a01aba"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -103,7 +103,19 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_phase_voltages_src_Detect_Rise_Positive1.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_phase_voltages_src_Detect_Rise_Positive2.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_phase_voltages_src_Positive_block1.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_phase_voltages_src_Detect_Rise_Positive3.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

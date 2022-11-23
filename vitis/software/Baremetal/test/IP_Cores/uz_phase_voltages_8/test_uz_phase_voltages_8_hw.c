@@ -50,4 +50,15 @@ void test_uz_phase_voltages_8_get_Index_in(void){
      int32_t actual_return_value = uz_phase_voltages_8_get_Index_in(TEST_BASE_ADDRESS);
      TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
+
+void test_uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(void){
+    _Bool done_delay_compensation_AXI = 1;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+done_delay_compensation_Data_parallel_8_sim_phase_voltages,done_delay_compensation_AXI);
+    uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(TEST_BASE_ADDRESS,done_delay_compensation_AXI);
+}
+
+void test_uz_phase_voltages_8_hw_set_done_delay_compensation_AXI_due_to_zero_base_address(void){
+    _Bool done_delay_compensation_AXI = 1;
+    TEST_ASSERT_FAIL_ASSERT(uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(0,done_delay_compensation_AXI));
+}
 #endif // TEST

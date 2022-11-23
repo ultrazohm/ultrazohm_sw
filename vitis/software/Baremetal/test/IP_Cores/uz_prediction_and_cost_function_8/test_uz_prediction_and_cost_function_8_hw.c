@@ -178,5 +178,45 @@ void test_uz_prediction_and_cost_function_8_hw_get_Index(void){
      int32_t actual_return_value = uz_prediction_and_cost_function_8_hw_get_Index(TEST_BASE_ADDRESS);
      TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
+/*
+void test_uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(void){
+    _Bool done_phase_voltages = 1;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+done_phase_voltages_Data_parallel_8_sim_prediction_and_cost_function,done_phase_voltages);
+    uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(TEST_BASE_ADDRESS,done_phase_voltages);
+}
+
+void test_uz_prediction_and_cost_function_8_hw_set_done_phase_voltages_fail_due_to_zero_base_address(void){
+    _Bool done_phase_voltages = 1;
+    TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(0,done_phase_voltages));
+}
+*/
+void test_uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park(void){
+    _Bool done_vsd_and_park = 1;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+done_vsd_and_park_Data_parallel_8_sim_prediction_and_cost_function,done_vsd_and_park);
+    uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park(TEST_BASE_ADDRESS,done_vsd_and_park);
+}
+
+void test_uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park_due_to_zero_base_address(void){
+    _Bool done_vsd_and_park = 1;
+    TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park(0,done_vsd_and_park));
+}
+
+void test_uz_prediction_and_cost_function_8_hw_set_current_valid_in(void){
+    _Bool current_valid_in = 1;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+current_valid_in_Data_parallel_8_sim_prediction_and_cost_function,current_valid_in);
+    uz_prediction_and_cost_function_8_hw_set_current_valid_in(TEST_BASE_ADDRESS,current_valid_in);
+}
+
+void test_uz_prediction_and_cost_function_8_hw_set_current_valid_in_due_to_zero_base_address(void){
+    _Bool current_valid_in = 1;
+    TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_current_valid_in(0,current_valid_in));
+}
+
+void test_uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(void){
+     _Bool expected_return_value = 1;
+     uz_axi_read_bool_ExpectAndReturn(TEST_BASE_ADDRESS+done_prediction_and_cost_function_AXI_Data_parallel_8_sim_prediction_and_cost_function,expected_return_value);
+     _Bool actual_return_value = uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(TEST_BASE_ADDRESS);
+     TEST_ASSERT_EQUAL(expected_return_value,actual_return_value);
+}
 
 #endif // TEST

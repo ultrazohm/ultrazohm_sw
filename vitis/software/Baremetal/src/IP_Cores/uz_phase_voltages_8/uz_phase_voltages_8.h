@@ -32,4 +32,13 @@ uz_phase_voltages_8_t* uz_phase_voltages_8_init(struct uz_phase_voltages_8_confi
  */
 int32_t uz_phase_voltages_8_read_Index_in(uz_phase_voltages_8_t* self);
 
+/**
+ * @brief Set the value of done_delay_compensation_AXI from the Phase_voltages_8 IP-Core
+ *
+ * @param self Pointer to driver instance
+ * @param done_delay_compensation_AXI Value
+ */
+void uz_phase_voltages_8_set_set_done_delay_compensation_AXI(uz_phase_voltages_8_t* self, _Bool done_delay_compensation_AXI);
+
+
 #endif // UZ_PHASE_VOLTAGES_8_H

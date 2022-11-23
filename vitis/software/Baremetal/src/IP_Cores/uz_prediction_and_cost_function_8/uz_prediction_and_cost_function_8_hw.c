@@ -103,3 +103,30 @@ int32_t uz_prediction_and_cost_function_8_hw_get_Index(uint32_t base_address){
     //int32
     return  uz_axi_read_int32(base_address + Index_AXI_Data_parallel_8_sim_prediction_and_cost_function);
 }
+/*
+void uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(uint32_t base_address, _Bool done_phase_voltages)
+{
+    uz_assert_not_zero_uint32(base_address);
+    // bool
+     uz_axi_write_bool(base_address + done_phase_voltages_Data_parallel_8_sim_prediction_and_cost_function, done_phase_voltages);
+}
+*/
+void uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park(uint32_t base_address, _Bool done_vsd_and_park)
+{
+    uz_assert_not_zero_uint32(base_address);
+    // bool
+     uz_axi_write_bool(base_address + done_vsd_and_park_Data_parallel_8_sim_prediction_and_cost_function, done_vsd_and_park);
+}
+
+void uz_prediction_and_cost_function_8_hw_set_current_valid_in(uint32_t base_address, _Bool current_valid_in)
+{
+    uz_assert_not_zero_uint32(base_address);
+    // bool
+     uz_axi_write_bool(base_address + current_valid_in_Data_parallel_8_sim_prediction_and_cost_function, current_valid_in);
+}
+
+_Bool uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(uint32_t base_address){
+    uz_assert_not_zero_uint32(base_address);
+    //_Bool
+    return  uz_axi_read_bool(base_address + done_prediction_and_cost_function_AXI_Data_parallel_8_sim_prediction_and_cost_function);
+}

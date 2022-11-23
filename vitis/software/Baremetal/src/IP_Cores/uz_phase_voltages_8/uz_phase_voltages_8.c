@@ -45,4 +45,11 @@ int32_t uz_phase_voltages_8_read_Index_in (uz_phase_voltages_8_t* self){
     return Index;
 }
 
+void uz_phase_voltages_8_set_set_done_delay_compensation_AXI(uz_phase_voltages_8_t* self, _Bool done_delay_compensation_AXI){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(self->config.base_address, done_delay_compensation_AXI);
+}
+
 #endif

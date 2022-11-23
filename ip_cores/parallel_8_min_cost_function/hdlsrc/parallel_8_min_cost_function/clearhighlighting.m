@@ -4,7 +4,7 @@ annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Detec
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Detect Rise Positive1', 0, 1, '');
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Delay23', 1, 1, '');
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Delay6', 0, 1, '');
-annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Relational Operator1', 0, 1, '');
+annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Relational Operator9', 0, 1, '');
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Switch_on1', 0, 1, '');
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Switch_on51', 0, 1, '');
 annotate_port('gm_parallel_8_min_cost_function/Min_cost_function_and_vopt1/Switch_on98', 0, 1, '');

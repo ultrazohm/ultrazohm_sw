@@ -17,7 +17,7 @@ System description
 ==================
 
 The modelling of the nine-phase machine is based on [[#Slunjski_Diss]_].
-The general idea in this work and also the common approach to model multiphase machines is to transform the phase variables with the VSD and Park transformations as shown and done in :ref:`uz_pmsm9ph_transformation` and :ref:`uz_transformation`.
+The general idea in this work and also the common approach to model multiphase machines is to transform the phase variables with the VSD and Park transformations as shown and done in :ref:`uz_VSD_transformation` and :ref:`uz_transformation`.
 Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
 This IP-core contains the electric differential equations and the mechanical part where the torque is calculated.
 Additionally, either a torque load or a fixed speed can be set to test the machine model.
@@ -120,7 +120,7 @@ Example usage
 
 The IP-core has two intended use cases:
 The model can be used in the dq domain only and the inputs are set from the PS.
-It is also possible to combine the model with the IP-cores :ref:`uz_pmsm9ph_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
+It is also possible to combine the model with the IP-cores :ref:`uz_VSD_transformation` and :ref:`uz_pwm_ss_2l` to simulate a complete nine-phase drive system.
 
 Usage in PS only
 ****************

@@ -19,6 +19,13 @@ General setup
 
    Necessary IP-Cores for CIL
 
+.. tikz:: Block diagram of IP-Core
+  \begin{tikzpicture}
+  \tikzstyle{big} = [rectangle, rounded corners, minimum width=2.5cm, minimum height=5cm,text centered, draw=black, fill=gray!30, align=center]
+  \tikzstyle{small} = [rectangle, rounded corners, minimum width=2.5cm, minimum height=1cm,text centered, draw=black, fill=gray!30, align=center]
+  \node (inverter1) [small, yshift=2cm] {Three-phase\\inverter};
+  \end{tikzpicture}
+
 The "X" for the transfromation and pmsm IP-Core serves as placeholder and the respective IP-Cores for the amount of phases should be used.
 Individual documentation of the IP-Cores is linked below.
 
@@ -27,7 +34,7 @@ Individual documentation of the IP-Cores is linked below.
     :glob:
     
     uz_pmsm_model_9ph_dq/uz_pmsm_model_9ph_dq
-    uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
+    uz_vsd_transformation/uz_vsd_transformation
     ../uz_inverter_3ph/uz_inverter_3ph
     ../uz_rs_flip_flop/uz_rs_flip_flop
 
@@ -39,6 +46,8 @@ Insert Links to extra docs pages with examples including vivado screenshots and 
 threephase CIL
 
 Multiphase CIL
+
+incl. init files
 
 References
 ==========

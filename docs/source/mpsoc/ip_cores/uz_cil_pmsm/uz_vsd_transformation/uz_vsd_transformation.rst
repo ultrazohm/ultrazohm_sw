@@ -1,4 +1,4 @@
-.. _uz_pmsm9ph_transformation:
+.. _uz_vsd_transformation:
 
 ==============================================
 Multi-phase VSD and Park tranformation IP-Core
@@ -16,7 +16,7 @@ Multi-phase VSD and Park tranformation IP-Core
 
 .. csv-table:: Interface of Transformation IP-Core
    :file: ip-core_transformation_interfaces.csv
-   :widths: 50 40 60 50 60 210
+   :widths: 50 40 60 50 60 170 30 30
    :header-rows: 1
 
 VSD and Park tranformation
@@ -25,7 +25,7 @@ The IP-Core applies the transformations to the inputs ``x_abc1_ll_pl``, ``x_abc2
 The values must be supplied as line-to-line values because a transformation to star values is applied in the IP-Core before applying the VSD transformation.
 The line-to-line to star value transformation is realized by applying the Clarke transformation to each three-phase subset, dividing the amplitudes by :math:`\sqrt{3}` and rotating the pointers by -30° before applying the inverse Clarke transformation.
 Although the naming "x" suggests, any values can be used as input, the intention is to use line-to-line voltages as input.
-After the transformation to the stationary reference frame, the Park transformation is applied to the alpha and beta values only, yielding the following output vector (see below).
+After the transformation to the stationary reference frame by application of the VSD transformation, the Park transformation is applied to the alpha and beta values only, yielding the following output vector (see below).
 Note that the min and max values of the output vector (defined by the fixedpoint datatype) are significantly smaller than the ones of the input values and must be taken into account when using the IP-core.
 
 Six-phase transformation
@@ -33,7 +33,7 @@ Six-phase transformation
 .. math::
 
   \textrm{x_out_dq}=
-  \begin{bmatrix} X_{d} & X_{q} & X_{x} & X_{y} & X_{z_1} & X_{z_2} \end{bmatrix} ^T
+  \begin{bmatrix} x_{d} & x_{q} & x_{x} & x_{y} & x_{z1} & x_{z2} \end{bmatrix} ^T
 
 
 The IP-core uses the following VSD matrix according to [[#Eldeeb_Diss]_] to transform the phase variables to the stationary reference frame: 
@@ -56,7 +56,7 @@ Nine-phase transformation
 .. math::
 
   \textrm{x_out_dq}=
-  \begin{bmatrix} X_{d} & X_{q} & X_{x_1} & X_{y_1} & X_{x_2} & X_{y_2} & X_{x_3} & X_{y_3} & X_{zero} \end{bmatrix} ^T
+  \begin{bmatrix} x_{d} & x_{q} & x_{x1} & x_{y1} & x_{x2} & x_{y2} & x_{x3} & x_{y3} & x_{zero} \end{bmatrix} ^T
 
 The IP-core uses the following VSD matrix according to [[#Rockhill_gerneral]_][[#Rockhill_ninephase]_] to transform the phase variables to the stationary reference frame: 
 
@@ -112,9 +112,71 @@ Nine-phase tranformation
 Vivado
 ======
 
-Example usage
--------------
-The following setup is used to test the IP-cores's functionality (example for nine-phase IP-core):
+Example usage in CIL
+--------------------
+As this IP-core's intended use is in combination with the other CIL IP-cores, an example is given here of how to use it in the CIL application.
+The example is given with the six-phase IP-core, but it is applicable also to the other available phases.
+
+.. figure:: connection_with_flipflop.jpg
+
+   Connection with Flip Flop
+
+While most Ports of the IP-core should be used for the general application (as shown in :ref:`uz_cil_pmsm`), special attention has to be paid to the ``trigger_new_values`` and ``refresh_values`` ports.
+The first of the two makes the IP-core give its current values to the PS and should be triggered by the ``trigger_conversions`` signal of the ``uz_system block``, as it would be done for real ADC readouts.
+Since there are frequency differences in all those signals, it could be observed, that in some cases the ``trigger_conversions`` signal's high time is too short to be detected by the IP-core (compare the following two figuers).
+
+.. figure:: correct_trigger.jpg
+
+   Correct timing for trigger signal (IP-core works)
+
+.. figure:: incorrect_trigger.jpg
+
+   Incorrect timing for trigger signal (outputs are never updated)
+
+To avoid this behavior, the :ref:`uz_rs_flip_flop` needs to be used.
+The flip-flop will be set by the ``trigger_conversions`` signal and as soon as the IP-core receives the high signal, it outputs an acknowledgement at the ``refresh_values`` port, which can be used to reset the flip-flop again.
+
+.. code-block:: c
+  :caption: Changes in ``main.c`` (R5)
+
+  ...
+  #include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+  uz_pmsm6ph_transformation_t* transformation = NULL;                           //pointer to transformation object
+  struct uz_pmsm6ph_config_t transformation_config = {                          //config to init transformation object
+    .base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
+	 .ip_core_frequency_Hz = 100000000.0f
+  };
+  ...
+  int main(void)
+  {
+    ...
+    case init_ip_cores:
+      transformation = uz_pmsm6ph_transformation_init(transformation_config);   //init transformation object
+    ...
+
+
+.. code-block:: c
+  :caption: Changes in ``isr.c`` (R5)
+  
+  ...
+  #include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+  extern uz_pmsm6ph_transformation_t* transformation;                           //pointer to transformation object
+  uz_6ph_abc_t abc_currents = {0};                                              //variable to save currents
+  float theta_el = 0.0f;                                                        //variable to save theta_el
+  ...
+  void ISR_Control(void *data)
+  {
+    ...
+    abc_currents = uz_pmsm6ph_transformation_get_currents(transformation);     //readout currents
+    theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);         //readout theta_el
+    ...
+
+
+Standalone function test
+------------------------
+
+The following setup is used to test the IP-core's functionality (example for nine-phase IP-core).
+It is not recommended to copy this setup, instead the above explanation should be used.
 
 .. figure:: vivado_setup_testing.jpg
 
@@ -136,26 +198,6 @@ The output values from UZ and Simulink match and are shown in the following tabl
    :file: ip-core_transformation_test_result.csv
    :widths: 50 50
    :header-rows: 1
-
-Timing issue with trigger signal
---------------------------------
-As reported in Issue #255, there can be problems with the timing of the ``trigger_new_values`` signal.
-While this signal is in the :math:`f=100\,MHz` domain, the IP-core only uses a sampling frequency of :math:`f_{s}=1\,MHz`.
-Therefore the trigger signal can be too short to be recognized and so the output values are never updated, as shown in the following figures.
-
-.. figure:: correct_trigger.jpg
-
-   Correct timing for trigger signal (IP-core works)
-
-.. figure:: incorrect_trigger.jpg
-
-   Incorrect timing for trigger signal (outputs are never updated)
-
-To fix this randomly occuring problem, an SR-Flip-Flop IP-core is used to make sure, the trigger signal is high until it is acknowledged by the transformation IP-core, which will then reset the Flip-Flop with the ``refresh_values`` feedback signal.
-
-.. figure:: flip-flop-fix.jpg
-
-   Suggested fix for timing issue with Flip-Flop IP-core
 
 Sources
 =======

@@ -70,15 +70,15 @@ void ISR_Control(void *data)
     // LR
     // Actual Values
     // currents
-    codegenInstance.input.Act_Iu = 0.0F;//(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
-    codegenInstance.input.Act_Iv = 0.0F;// (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.15F;		//A
-   	codegenInstance.input.Act_Iw = 0.0F;// (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
+    codegenInstance.input.Act_Iu = -2.0F;//(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
+    codegenInstance.input.Act_Iv = -2.0F;// (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.15F;		//A
+   	codegenInstance.input.Act_Iw = 4.0F;// (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
    	// dc-link voltage
-   	codegenInstance.input.Act_U_ZK = 0.0F;// Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
+   	codegenInstance.input.Act_U_ZK = 40.0F;// Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
    	// mechanical values
-   	codegenInstance.input.Act_n = 0.0F;// Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-   	codegenInstance.input.Act_w_el = 0.0F;// Global_Data.av.mechanicalRotorSpeed;
-   	codegenInstance.input.Act_theta_u_el = 0.0F;//(Global_Data.av.theta_mech/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
+   	codegenInstance.input.Act_n = 5.0F;// Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+   	codegenInstance.input.Act_w_el = 90.0F;// Global_Data.av.mechanicalRotorSpeed;
+   	codegenInstance.input.Act_theta_u_el = 4.19F;//(Global_Data.av.theta_mech/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
     //
 	// Global_Data.vLR
 	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
@@ -86,6 +86,10 @@ void ISR_Control(void *data)
 	if ((codegenInstance.input.Ref_I_im_ext_mit != Global_Data.vLR.set_imag_current_old) || (codegenInstance.input.fl_enable_compensation_cogging_ != Global_Data.vLR.fl_enable_compensation_cogging_old))
 	{ 	// calculate new harmonics with every new reference imag current or enabled cogging torque compensation
 	CalcCompensatingHarmonics();
+	// set actuel current values to "old" values
+	Global_Data.vLR.set_imag_current_old = codegenInstance.input.Ref_I_im_ext_mit;
+	Global_Data.vLR.set_real_current_old = codegenInstance.input.Ref_I_re_ext_mit;
+	Global_Data.vLR.fl_enable_compensation_cogging_old = codegenInstance.input.fl_enable_compensation_cogging_;
 	}
 	//
 	//----------------------------------------------------
@@ -95,6 +99,13 @@ void ISR_Control(void *data)
     	// Control for TFM with asymmetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
     }
+	// duty cycle limitation (LR)
+	if(codegenInstance.output.a_U < 0.0){codegenInstance.output.a_U = 0.0;}
+	if(codegenInstance.output.a_U > 1.0){codegenInstance.output.a_U = 1.0;}
+	if(codegenInstance.output.a_V < 0.0){codegenInstance.output.a_V = 0.0;}
+	if(codegenInstance.output.a_V > 1.0){codegenInstance.output.a_V = 1.0;}
+	if(codegenInstance.output.a_W < 0.0){codegenInstance.output.a_W = 0.0;}
+	if(codegenInstance.output.a_W > 1.0){codegenInstance.output.a_W = 1.0;}
 	//----------------------------------------------------
 	// assign duty cycle to PWM-Module
 	//
@@ -111,14 +122,20 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+	//
+	//----------------------------------------------------
+    // update values for java scope
+    Global_Data.vLR.JS_theta_el = codegenInstance.input.Act_theta_u_el;
+    Global_Data.vLR.JS_au = codegenInstance.output.a_U;
+    Global_Data.vLR.JS_av = codegenInstance.output.a_V;
+    Global_Data.vLR.JS_aw = codegenInstance.output.a_W;
+    Global_Data.vLR.JS_i_imag = codegenInstance.input.Ref_I_im_ext_mit;
+    Global_Data.vLR.JS_i_real = codegenInstance.input.Ref_I_re_ext_mit;
     JavaScope_update(&Global_Data);
 	//
 	//----------------------------------------------------
 	// assign actual values to old values (LR)
-	Global_Data.vLR.set_imag_current_old = codegenInstance.input.Ref_I_im_ext_mit;
-	Global_Data.vLR.set_real_current_old = codegenInstance.input.Ref_I_re_ext_mit;
 	Global_Data.vLR.theta_el_old = codegenInstance.input.Act_theta_u_el;
-	Global_Data.vLR.fl_enable_compensation_cogging_old = codegenInstance.input.fl_enable_compensation_cogging_;
 	//----------------------------------------------------
 	//
     // Read the timer value at the very end of the ISR to minimize measurement error
@@ -375,7 +392,7 @@ static void CheckForErrors()
 	Global_Data.vLR.error_code_LR=203;
 	}
 };
-
+//
 static void CalcCompensatingHarmonics()
 {
 	// Calculation of the harmonics for the cogging torque compensation
@@ -385,7 +402,7 @@ static void CalcCompensatingHarmonics()
 	//
 	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
 	//
-	float complex second_a = 1.629350987730637*cexpf(I*3.398380412400018);
+	float complex second_a = 1.629350987730637*cexpf(3.398380412400018*I);
 	float complex second_b = 0.055649462412890*cexpf(-1.071752469500930*I);
 	float complex second_c = second_a + second_b;
 	float ampl_second_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00844669*codegenInstance.input.Ref_I_im_ext_mit+0.02053428); // load depend amplitude for cogging torque compensation

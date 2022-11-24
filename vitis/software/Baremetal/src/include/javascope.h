@@ -48,6 +48,13 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	// LR
+	JSO_i_imag,
+	JSO_i_real,
+	JSO_au,
+	JSO_av,
+	JSO_aw,
+	JSO_U_ZK,
 	JSO_ENDMARKER
 };
 

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 4.5
+ * Model version                  : 4.6
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Nov 21 10:43:21 2022
+ * C/C++ source code generated on : Thu Nov 24 11:37:38 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -74,63 +74,52 @@ typedef struct {
 typedef struct {
   DW_MATLABFunction_m sf_MATLABFunction_i;/* '<S30>/MATLAB Function' */
   uint64_T frac;
-  real32_T U_re;                       /* '<S31>/Discrete-Time Integrator' */
-  real32_T U_im;                       /* '<S31>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE;              /* '<S32>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S32>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE;               /* '<S32>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S32>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_m;            /* '<S33>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_d;/* '<S33>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_a;             /* '<S33>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_m;/* '<S33>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_l;            /* '<S31>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_m;/* '<S31>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_b;             /* '<S31>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_l;/* '<S31>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_g;            /* '<S34>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_i;/* '<S34>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_bz;            /* '<S34>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_k;/* '<S34>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_i;            /* '<S35>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTAT_if;/* '<S35>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_h;             /* '<S35>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_a;/* '<S35>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE;              /* '<S31>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S31>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE;               /* '<S31>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S31>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_m;            /* '<S32>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_d;/* '<S32>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_a;             /* '<S32>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_m;/* '<S32>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_g;            /* '<S33>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_i;/* '<S33>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_b;             /* '<S33>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_k;/* '<S33>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_i;            /* '<S34>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTAT_if;/* '<S34>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_h;             /* '<S34>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_a;/* '<S34>/Discrete-Time Integrator1' */
   real32_T theta_e;                    /* '<S23>/Sum1' */
-  real32_T im_lim_k;                   /* '<S34>/MATLAB Function' */
-  real32_T theta_ep;                   /* '<S23>/Sum' */
-  real32_T re_lim_b;                   /* '<S34>/MATLAB Function' */
-  real32_T im_lim_d;                   /* '<S31>/MATLAB Function' */
-  real32_T re_lim_g;                   /* '<S31>/MATLAB Function' */
-  real32_T im_lim_mv;                  /* '<S32>/MATLAB Function' */
-  real32_T re_lim_l4;                  /* '<S32>/MATLAB Function' */
-  real32_T im_lim_lb;                  /* '<S33>/MATLAB Function' */
-  real32_T re_lim_i;                   /* '<S33>/MATLAB Function' */
-  real32_T Delay1_m;                   /* '<S35>/Delay1' */
+  real32_T re_lim_b;                   /* '<S33>/MATLAB Function' */
+  real32_T Delay1_m;                   /* '<S34>/Delay1' */
+  real32_T im_lim_o4;                  /* '<S34>/MATLAB Function' */
+  real32_T im_lim_mv;                  /* '<S31>/MATLAB Function' */
+  real32_T re_lim_l;                   /* '<S31>/MATLAB Function' */
+  real32_T im_lim_l;                   /* '<S32>/MATLAB Function' */
+  real32_T re_lim_i;                   /* '<S32>/MATLAB Function' */
+  real32_T im_lim_k;                   /* '<S33>/MATLAB Function' */
+  real32_T Sum_o;                      /* '<S33>/Sum' */
+  real32_T re_lim_g;                   /* '<S34>/MATLAB Function' */
   real32_T Strom_kompensiert_l;        /* '<S30>/Strom_kompensiert' */
-  real32_T im_lim_o4;                  /* '<S35>/MATLAB Function' */
-  real32_T re_lim_gw;                  /* '<S35>/MATLAB Function' */
-  real32_T Product3_a;                 /* '<S35>/Product3' */
-  real32_T Gain1_h;                    /* '<S32>/Gain1' */
-  real32_T U_re_o;                     /* '<S32>/Sum5' */
-  real32_T Gain2_nl;                   /* '<S32>/Gain2' */
-  real32_T U_im_i;                     /* '<S32>/Sum6' */
-  real32_T Sum_pr;                     /* '<S32>/Sum' */
-  real32_T Gain1_g;                    /* '<S33>/Gain1' */
-  real32_T U_re_h;                     /* '<S33>/Sum5' */
-  real32_T Gain2_d;                    /* '<S33>/Gain2' */
-  real32_T U_im_pl;                    /* '<S33>/Sum6' */
-  real32_T Sum_j;                      /* '<S33>/Sum' */
-  real32_T Gain1_i;                    /* '<S31>/Gain1' */
-  real32_T Gain2_io;                   /* '<S31>/Gain2' */
-  real32_T Sum_i;                      /* '<S31>/Sum' */
-  real32_T Gain1_n;                    /* '<S34>/Gain1' */
-  real32_T Gain2_e;                    /* '<S34>/Gain2' */
-  real32_T U_im_pt;                    /* '<S34>/Sum6' */
-  real32_T Sum_o;                      /* '<S34>/Sum' */
-  real32_T U_re_b;                     /* '<S35>/Sum5' */
-  real32_T Gain2_m;                    /* '<S35>/Gain2' */
-  real32_T U_im_f;                     /* '<S35>/Sum6' */
+  real32_T Sum_j;                      /* '<S32>/Sum' */
+  real32_T Add1_l;                     /* '<S23>/Add1' */
+  real32_T Sum_d;                      /* '<S34>/Sum' */
+  real32_T Gain1_h;                    /* '<S31>/Gain1' */
+  real32_T U_re_o;                     /* '<S31>/Sum5' */
+  real32_T Gain2_nl;                   /* '<S31>/Gain2' */
+  real32_T U_im_i;                     /* '<S31>/Sum6' */
+  real32_T Gain1_g;                    /* '<S32>/Gain1' */
+  real32_T U_re_h;                     /* '<S32>/Sum5' */
+  real32_T Gain2_d;                    /* '<S32>/Gain2' */
+  real32_T U_im_pl;                    /* '<S32>/Sum6' */
+  real32_T Gain1_n;                    /* '<S33>/Gain1' */
+  real32_T U_re_j;                     /* '<S33>/Sum5' */
+  real32_T Gain2_e;                    /* '<S33>/Gain2' */
+  real32_T U_im_pt;                    /* '<S33>/Sum6' */
+  real32_T U_re_b;                     /* '<S34>/Sum5' */
+  real32_T Gain2_m;                    /* '<S34>/Gain2' */
+  real32_T U_im_f;                     /* '<S34>/Sum6' */
   real32_T DiscreteTimeIntegrator;
   real32_T DiscreteTimeIntegrator1;
   real32_T DiscreteTimeIntegrator_o;
@@ -139,30 +128,30 @@ typedef struct {
   real32_T DiscreteTimeIntegrator1_e;
   real32_T DiscreteTimeIntegrator1_h;
   uint32_T bpIdx;
-  int16_T SignCorrected_h;             /* '<S74>/SignCorrected' */
-  int16_T SignCorrected_cw;            /* '<S117>/SignCorrected' */
-  int16_T SignCorrected_o;             /* '<S119>/SignCorrected' */
-  uint16_T CastU16En16_jv;             /* '<S74>/CastU16En16' */
+  int16_T SignCorrected_h;             /* '<S60>/SignCorrected' */
+  int16_T SignCorrected_cw;            /* '<S103>/SignCorrected' */
+  int16_T SignCorrected_o;             /* '<S105>/SignCorrected' */
+  uint16_T CastU16En16_jv;             /* '<S60>/CastU16En16' */
   uint16_T rtb_CastU16En16_jv_m;
   uint16_T rtb_CastU16En16_jv_tmp;
   uint16_T rtb_CastU16En16_jv_tmp_tmp;
-  boolean_T LTEp25_my;                 /* '<S74>/LTEp25' */
-  boolean_T GTEp75_cz;                 /* '<S74>/GTEp75' */
-  boolean_T GTEp75_o;                  /* '<S87>/GTEp75' */
+  boolean_T LTEp25_my;                 /* '<S60>/LTEp25' */
+  boolean_T GTEp75_cz;                 /* '<S60>/GTEp75' */
+  boolean_T GTEp75_o;                  /* '<S73>/GTEp75' */
 } DW_Strangstromregler_asymetrisc;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  DW_MATLABFunction_m sf_MATLABFunction_e;/* '<S212>/MATLAB Function' */
+  DW_MATLABFunction_m sf_MATLABFunction_e;/* '<S184>/MATLAB Function' */
   DW_Strangstromregler_asymetrisc Strangstromregler_asymetrisch1;
                                     /* '<S10>/Strangstromregler_asymetrisch1' */
   DW_Strangstromregler_asymetrisc Strangstromregler_asymetrisch_h;
                                      /* '<S10>/Strangstromregler_asymetrisch' */
   uint64_T frac;
-  real32_T Delay_DSTATE_k[20];         /* '<S316>/Delay' */
-  real32_T Delay_DSTATE_ki[120];       /* '<S317>/Delay' */
-  real32_T Delay_DSTATE_kl[20];        /* '<S318>/Delay' */
-  real32_T Delay_DSTATE_b[20];         /* '<S319>/Delay' */
+  real32_T Delay_DSTATE_k[20];         /* '<S274>/Delay' */
+  real32_T Delay_DSTATE_ki[120];       /* '<S275>/Delay' */
+  real32_T Delay_DSTATE_kl[20];        /* '<S276>/Delay' */
+  real32_T Delay_DSTATE_b[20];         /* '<S277>/Delay' */
   real32_T I_im;                       /* '<S4>/Merge4' */
   real32_T Merge1;                     /* '<S8>/Merge1' */
   real32_T I_re;                       /* '<S4>/Merge3' */
@@ -172,34 +161,30 @@ typedef struct {
   real32_T Merge3;                     /* '<S10>/Merge3' */
   real32_T Delay_DSTATE;               /* '<S3>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S3>/Discrete-Time Integrator' */
-  real32_T Accumulator_DSTATE;         /* '<S316>/Accumulator' */
-  real32_T Accumulator_DSTATE_d;       /* '<S317>/Accumulator' */
-  real32_T Accumulator_DSTATE_f;       /* '<S318>/Accumulator' */
-  real32_T Accumulator_DSTATE_n;       /* '<S319>/Accumulator' */
+  real32_T Accumulator_DSTATE;         /* '<S274>/Accumulator' */
+  real32_T Accumulator_DSTATE_d;       /* '<S275>/Accumulator' */
+  real32_T Accumulator_DSTATE_f;       /* '<S276>/Accumulator' */
+  real32_T Accumulator_DSTATE_n;       /* '<S277>/Accumulator' */
   real32_T Delay_DSTATE_n;             /* '<S14>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE_n;/* '<S14>/Discrete-Time Integrator' */
   real32_T Delay_DSTATE_h;             /* '<S7>/Delay' */
   real32_T DiscreteTimeIntegrator_DSTATE_f;/* '<S13>/Discrete-Time Integrator' */
-  real32_T Delay1_DSTATE;              /* '<S214>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_o;/* '<S214>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_l;             /* '<S214>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S214>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_o;            /* '<S215>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_m;/* '<S215>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_nv;            /* '<S215>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_f;/* '<S215>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_d;            /* '<S213>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTAT_om;/* '<S213>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_j;             /* '<S213>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_a;/* '<S213>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_g;            /* '<S216>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_c;/* '<S216>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_a;             /* '<S216>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTAT_o;/* '<S216>/Discrete-Time Integrator1' */
-  real32_T Delay1_DSTATE_oi;           /* '<S217>/Delay1' */
-  real32_T DiscreteTimeIntegrator_DSTATE_g;/* '<S217>/Discrete-Time Integrator' */
-  real32_T Delay_DSTATE_nm;            /* '<S217>/Delay' */
-  real32_T DiscreteTimeIntegrator1_DSTA_os;/* '<S217>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE;              /* '<S185>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_o;/* '<S185>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_l;             /* '<S185>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S185>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_o;            /* '<S186>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_m;/* '<S186>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_nv;            /* '<S186>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_f;/* '<S186>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_g;            /* '<S187>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_c;/* '<S187>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_a;             /* '<S187>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTAT_o;/* '<S187>/Discrete-Time Integrator1' */
+  real32_T Delay1_DSTATE_oi;           /* '<S188>/Delay1' */
+  real32_T DiscreteTimeIntegrator_DSTATE_g;/* '<S188>/Discrete-Time Integrator' */
+  real32_T Delay_DSTATE_nm;            /* '<S188>/Delay' */
+  real32_T DiscreteTimeIntegrator1_DSTA_os;/* '<S188>/Discrete-Time Integrator1' */
   real32_T a;
   real32_T b;
   real32_T c;
@@ -208,51 +193,44 @@ typedef struct {
   real32_T theta_b;                    /* '<S25>/Sum1' */
   real32_T Switch2;                    /* '<S15>/Switch2' */
   real32_T Gain1;                      /* '<S13>/Gain1' */
-  real32_T theta_m;                    /* '<S25>/Sum' */
+  real32_T Delay1;                     /* '<S188>/Delay1' */
   real32_T y;                          /* '<S13>/Sum' */
-  real32_T re_lim;                     /* '<S215>/MATLAB Function' */
-  real32_T Delay1;                     /* '<S217>/Delay1' */
-  real32_T Strom_kompensiert;          /* '<S212>/Strom_kompensiert' */
-  real32_T im_lim_f;                   /* '<S217>/MATLAB Function' */
-  real32_T re_lim_e;                   /* '<S217>/MATLAB Function' */
-  real32_T Product3;                   /* '<S217>/Product3' */
-  real32_T Gain1_k;                    /* '<S214>/Gain1' */
-  real32_T U_re;                       /* '<S214>/Sum5' */
-  real32_T U_im;                       /* '<S214>/Sum6' */
-  real32_T Sum_cz;                     /* '<S214>/Sum' */
-  real32_T Gain1_e;                    /* '<S215>/Gain1' */
-  real32_T U_re_c;                     /* '<S215>/Sum5' */
-  real32_T Gain2_n;                    /* '<S215>/Gain2' */
-  real32_T U_im_k;                     /* '<S215>/Sum6' */
-  real32_T Sum_a;                      /* '<S215>/Sum' */
-  real32_T Gain1_d;                    /* '<S213>/Gain1' */
-  real32_T Gain2_c;                    /* '<S213>/Gain2' */
-  real32_T Sum_pq;                     /* '<S213>/Sum' */
-  real32_T Gain1_m;                    /* '<S216>/Gain1' */
-  real32_T Gain2_h;                    /* '<S216>/Gain2' */
-  real32_T U_im_p;                     /* '<S216>/Sum6' */
-  real32_T Sum_cr;                     /* '<S216>/Sum' */
-  real32_T U_re_d;                     /* '<S217>/Sum5' */
-  real32_T Gain2_i;                    /* '<S217>/Gain2' */
-  real32_T U_im_c;                     /* '<S217>/Sum6' */
+  real32_T Sum_cr;                     /* '<S187>/Sum' */
+  real32_T re_lim_e;                   /* '<S188>/MATLAB Function' */
+  real32_T Strom_kompensiert;          /* '<S184>/Strom_kompensiert' */
+  real32_T Sum_a5;                     /* '<S186>/Sum' */
+  real32_T Add1;                       /* '<S25>/Add1' */
+  real32_T Sum_a;                      /* '<S188>/Sum' */
+  real32_T Gain1_k;                    /* '<S185>/Gain1' */
+  real32_T U_re;                       /* '<S185>/Sum5' */
+  real32_T U_im;                       /* '<S185>/Sum6' */
+  real32_T Gain1_e;                    /* '<S186>/Gain1' */
+  real32_T U_re_c;                     /* '<S186>/Sum5' */
+  real32_T Gain2_n;                    /* '<S186>/Gain2' */
+  real32_T U_im_k;                     /* '<S186>/Sum6' */
+  real32_T Gain1_m;                    /* '<S187>/Gain1' */
+  real32_T U_re_n;                     /* '<S187>/Sum5' */
+  real32_T Gain2_h;                    /* '<S187>/Gain2' */
+  real32_T U_im_p;                     /* '<S187>/Sum6' */
+  real32_T U_re_d;                     /* '<S188>/Sum5' */
+  real32_T Gain2_i;                    /* '<S188>/Gain2' */
+  real32_T U_im_c;                     /* '<S188>/Sum6' */
   real32_T DiscreteTimeIntegrator;
   real32_T y_i;
   real32_T DiscreteTimeIntegrator_o;
   real32_T DiscreteTimeIntegrator1;
   real32_T DiscreteTimeIntegrator_k;
   real32_T DiscreteTimeIntegrator1_e;
-  real32_T U_re_m;
-  real32_T U_im_cl;
   real32_T DiscreteTimeIntegrator_a;
   real32_T DiscreteTimeIntegrator1_a;
   real32_T DiscreteTimeIntegrator1_g;
   int_T idxDelay;
   uint32_T bpIdx;
-  int16_T SignCorrected_a;             /* '<S315>/SignCorrected' */
-  int16_T SignCorrected_c;             /* '<S299>/SignCorrected' */
-  int16_T SignCorrected_d;             /* '<S301>/SignCorrected' */
-  uint16_T CastU16En16_h;              /* '<S315>/CastU16En16' */
-  uint16_T rtb_CastU16En16_h_k;
+  int16_T SignCorrected_a;             /* '<S273>/SignCorrected' */
+  int16_T SignCorrected_c;             /* '<S257>/SignCorrected' */
+  int16_T SignCorrected_d;             /* '<S259>/SignCorrected' */
+  uint16_T CastU16En16_h;              /* '<S273>/CastU16En16' */
+  uint16_T rtb_CastU16En16_h_m;
   uint16_T rtb_CastU16En16_h_tmp_tmp;
   int8_T switch_case_power_ActiveSubsyst;/* '<S2>/switch_case_power' */
   int8_T SwitchCase_ActiveSubsystem;   /* '<S4>/Switch Case' */
@@ -262,9 +240,9 @@ typedef struct {
   int8_T rtPrevAction;
   int8_T rtAction;
   uint8_T error_speed_limit;
-  boolean_T LTEp50_j;                  /* '<S315>/LTEp50' */
-  boolean_T GTEp75;                    /* '<S256>/GTEp75' */
-  boolean_T GTEp75_b;                  /* '<S269>/GTEp75' */
+  boolean_T LTEp50_j;                  /* '<S273>/LTEp50' */
+  boolean_T GTEp75;                    /* '<S214>/GTEp75' */
+  boolean_T GTEp75_b;                  /* '<S227>/GTEp75' */
 } DW;
 
 /* Invariant block signals (default storage) */
@@ -276,90 +254,78 @@ typedef struct {
 typedef struct {
   /* Pooled Parameter (Expression: YData)
    * Referenced by:
-   *   '<S308>/Look-Up Table'
-   *   '<S310>/Look-Up Table'
-   *   '<S312>/Look-Up Table'
-   *   '<S314>/Look-Up Table'
-   *   '<S43>/Look-Up Table'
-   *   '<S45>/Look-Up Table'
-   *   '<S47>/Look-Up Table'
-   *   '<S49>/Look-Up Table'
-   *   '<S51>/Look-Up Table'
-   *   '<S53>/Look-Up Table'
-   *   '<S60>/Look-Up Table'
-   *   '<S62>/Look-Up Table'
-   *   '<S64>/Look-Up Table'
-   *   '<S66>/Look-Up Table'
-   *   '<S73>/Look-Up Table'
-   *   '<S75>/Look-Up Table'
-   *   '<S77>/Look-Up Table'
-   *   '<S79>/Look-Up Table'
-   *   '<S86>/Look-Up Table'
-   *   '<S88>/Look-Up Table'
-   *   '<S90>/Look-Up Table'
-   *   '<S92>/Look-Up Table'
-   *   '<S99>/Look-Up Table'
-   *   '<S101>/Look-Up Table'
-   *   '<S103>/Look-Up Table'
-   *   '<S105>/Look-Up Table'
-   *   '<S112>/Look-Up Table'
-   *   '<S114>/Look-Up Table'
-   *   '<S116>/Look-Up Table'
-   *   '<S118>/Look-Up Table'
-   *   '<S134>/Look-Up Table'
+   *   '<S266>/Look-Up Table'
+   *   '<S268>/Look-Up Table'
+   *   '<S270>/Look-Up Table'
+   *   '<S272>/Look-Up Table'
+   *   '<S42>/Look-Up Table'
+   *   '<S44>/Look-Up Table'
+   *   '<S46>/Look-Up Table'
+   *   '<S48>/Look-Up Table'
+   *   '<S50>/Look-Up Table'
+   *   '<S52>/Look-Up Table'
+   *   '<S59>/Look-Up Table'
+   *   '<S61>/Look-Up Table'
+   *   '<S63>/Look-Up Table'
+   *   '<S65>/Look-Up Table'
+   *   '<S72>/Look-Up Table'
+   *   '<S74>/Look-Up Table'
+   *   '<S76>/Look-Up Table'
+   *   '<S78>/Look-Up Table'
+   *   '<S85>/Look-Up Table'
+   *   '<S87>/Look-Up Table'
+   *   '<S89>/Look-Up Table'
+   *   '<S91>/Look-Up Table'
+   *   '<S98>/Look-Up Table'
+   *   '<S100>/Look-Up Table'
+   *   '<S102>/Look-Up Table'
+   *   '<S104>/Look-Up Table'
+   *   '<S119>/Look-Up Table'
+   *   '<S121>/Look-Up Table'
+   *   '<S123>/Look-Up Table'
+   *   '<S125>/Look-Up Table'
+   *   '<S127>/Look-Up Table'
+   *   '<S129>/Look-Up Table'
    *   '<S136>/Look-Up Table'
    *   '<S138>/Look-Up Table'
    *   '<S140>/Look-Up Table'
    *   '<S142>/Look-Up Table'
-   *   '<S144>/Look-Up Table'
+   *   '<S149>/Look-Up Table'
    *   '<S151>/Look-Up Table'
    *   '<S153>/Look-Up Table'
    *   '<S155>/Look-Up Table'
-   *   '<S157>/Look-Up Table'
+   *   '<S162>/Look-Up Table'
    *   '<S164>/Look-Up Table'
    *   '<S166>/Look-Up Table'
    *   '<S168>/Look-Up Table'
-   *   '<S170>/Look-Up Table'
+   *   '<S175>/Look-Up Table'
    *   '<S177>/Look-Up Table'
    *   '<S179>/Look-Up Table'
    *   '<S181>/Look-Up Table'
-   *   '<S183>/Look-Up Table'
-   *   '<S190>/Look-Up Table'
-   *   '<S192>/Look-Up Table'
-   *   '<S194>/Look-Up Table'
    *   '<S196>/Look-Up Table'
-   *   '<S203>/Look-Up Table'
-   *   '<S205>/Look-Up Table'
-   *   '<S207>/Look-Up Table'
-   *   '<S209>/Look-Up Table'
-   *   '<S225>/Look-Up Table'
-   *   '<S227>/Look-Up Table'
-   *   '<S229>/Look-Up Table'
-   *   '<S231>/Look-Up Table'
-   *   '<S233>/Look-Up Table'
-   *   '<S235>/Look-Up Table'
-   *   '<S242>/Look-Up Table'
-   *   '<S244>/Look-Up Table'
-   *   '<S246>/Look-Up Table'
-   *   '<S248>/Look-Up Table'
-   *   '<S255>/Look-Up Table'
-   *   '<S257>/Look-Up Table'
-   *   '<S259>/Look-Up Table'
-   *   '<S261>/Look-Up Table'
-   *   '<S268>/Look-Up Table'
-   *   '<S270>/Look-Up Table'
-   *   '<S272>/Look-Up Table'
-   *   '<S274>/Look-Up Table'
-   *   '<S281>/Look-Up Table'
-   *   '<S283>/Look-Up Table'
-   *   '<S285>/Look-Up Table'
-   *   '<S287>/Look-Up Table'
-   *   '<S294>/Look-Up Table'
-   *   '<S296>/Look-Up Table'
-   *   '<S298>/Look-Up Table'
-   *   '<S300>/Look-Up Table'
+   *   '<S198>/Look-Up Table'
+   *   '<S200>/Look-Up Table'
+   *   '<S202>/Look-Up Table'
+   *   '<S204>/Look-Up Table'
+   *   '<S206>/Look-Up Table'
+   *   '<S213>/Look-Up Table'
+   *   '<S215>/Look-Up Table'
+   *   '<S217>/Look-Up Table'
+   *   '<S219>/Look-Up Table'
+   *   '<S226>/Look-Up Table'
+   *   '<S228>/Look-Up Table'
+   *   '<S230>/Look-Up Table'
+   *   '<S232>/Look-Up Table'
+   *   '<S239>/Look-Up Table'
+   *   '<S241>/Look-Up Table'
+   *   '<S243>/Look-Up Table'
+   *   '<S245>/Look-Up Table'
+   *   '<S252>/Look-Up Table'
+   *   '<S254>/Look-Up Table'
+   *   '<S256>/Look-Up Table'
+   *   '<S258>/Look-Up Table'
    */
-  int16_T pooled21[16385];
+  int16_T pooled18[16385];
 } ConstP;
 
 /* External inputs (root inport signals with default storage) */
@@ -428,60 +394,54 @@ typedef struct {
 struct P_ {
   real32_T K1;                         /* Variable: K1
                                         * Referenced by:
-                                        *   '<S32>/Gain1'
-                                        *   '<S32>/Gain2'
-                                        *   '<S123>/Gain1'
-                                        *   '<S123>/Gain2'
-                                        *   '<S214>/Gain1'
-                                        *   '<S214>/Gain2'
+                                        *   '<S31>/Gain1'
+                                        *   '<S31>/Gain2'
+                                        *   '<S108>/Gain1'
+                                        *   '<S108>/Gain2'
+                                        *   '<S185>/Gain1'
+                                        *   '<S185>/Gain2'
                                         */
   real32_T K2;                         /* Variable: K2
                                         * Referenced by:
-                                        *   '<S33>/Gain1'
-                                        *   '<S33>/Gain2'
-                                        *   '<S124>/Gain1'
-                                        *   '<S124>/Gain2'
-                                        *   '<S215>/Gain1'
-                                        *   '<S215>/Gain2'
-                                        */
-  real32_T K3;                         /* Variable: K3
-                                        * Referenced by:
-                                        *   '<S31>/Gain4'
-                                        *   '<S122>/Gain4'
-                                        *   '<S213>/Gain4'
+                                        *   '<S32>/Gain1'
+                                        *   '<S32>/Gain2'
+                                        *   '<S109>/Gain1'
+                                        *   '<S109>/Gain2'
+                                        *   '<S186>/Gain1'
+                                        *   '<S186>/Gain2'
                                         */
   real32_T K4;                         /* Variable: K4
                                         * Referenced by:
-                                        *   '<S34>/Gain1'
-                                        *   '<S34>/Gain2'
-                                        *   '<S125>/Gain1'
-                                        *   '<S125>/Gain2'
-                                        *   '<S216>/Gain1'
-                                        *   '<S216>/Gain2'
+                                        *   '<S33>/Gain1'
+                                        *   '<S33>/Gain2'
+                                        *   '<S110>/Gain1'
+                                        *   '<S110>/Gain2'
+                                        *   '<S187>/Gain1'
+                                        *   '<S187>/Gain2'
                                         */
   real32_T K6;                         /* Variable: K6
                                         * Referenced by:
-                                        *   '<S35>/Gain1'
-                                        *   '<S35>/Gain2'
-                                        *   '<S126>/Gain1'
-                                        *   '<S126>/Gain2'
-                                        *   '<S217>/Gain1'
-                                        *   '<S217>/Gain2'
+                                        *   '<S34>/Gain1'
+                                        *   '<S34>/Gain2'
+                                        *   '<S111>/Gain1'
+                                        *   '<S111>/Gain2'
+                                        *   '<S188>/Gain1'
+                                        *   '<S188>/Gain2'
                                         */
   real32_T Kp;                         /* Variable: Kp
                                         * Referenced by:
+                                        *   '<S31>/Gain6'
                                         *   '<S32>/Gain6'
                                         *   '<S33>/Gain6'
                                         *   '<S34>/Gain6'
-                                        *   '<S35>/Gain6'
-                                        *   '<S123>/Gain6'
-                                        *   '<S124>/Gain6'
-                                        *   '<S125>/Gain6'
-                                        *   '<S126>/Gain6'
-                                        *   '<S214>/Gain6'
-                                        *   '<S215>/Gain6'
-                                        *   '<S216>/Gain6'
-                                        *   '<S217>/Gain6'
+                                        *   '<S108>/Gain6'
+                                        *   '<S109>/Gain6'
+                                        *   '<S110>/Gain6'
+                                        *   '<S111>/Gain6'
+                                        *   '<S185>/Gain6'
+                                        *   '<S186>/Gain6'
+                                        *   '<S187>/Gain6'
+                                        *   '<S188>/Gain6'
                                         */
   real32_T i_max_peak;                 /* Variable: i_max_peak
                                         * Referenced by:
@@ -548,17 +508,14 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * Block '<S32>/Scope' : Unused code path elimination
  * Block '<S33>/Scope' : Unused code path elimination
  * Block '<S34>/Scope' : Unused code path elimination
- * Block '<S35>/Scope' : Unused code path elimination
- * Block '<S122>/Scope' : Unused code path elimination
- * Block '<S123>/Scope' : Unused code path elimination
- * Block '<S124>/Scope' : Unused code path elimination
- * Block '<S125>/Scope' : Unused code path elimination
- * Block '<S126>/Scope' : Unused code path elimination
- * Block '<S213>/Scope' : Unused code path elimination
- * Block '<S214>/Scope' : Unused code path elimination
- * Block '<S215>/Scope' : Unused code path elimination
- * Block '<S216>/Scope' : Unused code path elimination
- * Block '<S217>/Scope' : Unused code path elimination
+ * Block '<S108>/Scope' : Unused code path elimination
+ * Block '<S109>/Scope' : Unused code path elimination
+ * Block '<S110>/Scope' : Unused code path elimination
+ * Block '<S111>/Scope' : Unused code path elimination
+ * Block '<S185>/Scope' : Unused code path elimination
+ * Block '<S186>/Scope' : Unused code path elimination
+ * Block '<S187>/Scope' : Unused code path elimination
+ * Block '<S188>/Scope' : Unused code path elimination
  */
 
 /*-
@@ -609,295 +566,253 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * '<S28>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Switch Case Action Subsystem2'
  * '<S29>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/MATLAB Function'
  * '<S30>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch'
- * '<S31>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler'
- * '<S32>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler'
- * '<S33>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1'
- * '<S34>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2'
- * '<S35>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3'
- * '<S36>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
- * '<S37>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
- * '<S38>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
- * '<S39>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/MATLAB Function'
- * '<S40>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup'
- * '<S41>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
- * '<S42>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
- * '<S43>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
- * '<S44>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S45>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
- * '<S46>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S47>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
- * '<S48>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
- * '<S49>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
- * '<S50>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S51>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
- * '<S52>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S53>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
- * '<S54>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
- * '<S55>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup'
- * '<S56>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup1'
- * '<S57>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/MATLAB Function'
- * '<S58>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup'
- * '<S59>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup1'
- * '<S60>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup/Cosine'
- * '<S61>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S62>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup1/Cosine'
- * '<S63>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S64>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup/Sine'
- * '<S65>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S66>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup1/Sine'
- * '<S67>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-I-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S68>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup'
- * '<S69>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1'
- * '<S70>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/MATLAB Function'
- * '<S71>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup'
- * '<S72>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1'
- * '<S73>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup/Cosine'
- * '<S74>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S75>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1/Cosine'
- * '<S76>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S77>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup/Sine'
- * '<S78>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S79>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1/Sine'
- * '<S80>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S81>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup'
- * '<S82>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1'
- * '<S83>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/MATLAB Function'
- * '<S84>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup'
- * '<S85>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1'
- * '<S86>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup/Cosine'
- * '<S87>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S88>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1/Cosine'
- * '<S89>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S90>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup/Sine'
- * '<S91>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S92>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1/Sine'
- * '<S93>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S94>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup'
- * '<S95>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1'
- * '<S96>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/MATLAB Function'
- * '<S97>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup'
- * '<S98>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1'
- * '<S99>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup/Cosine'
- * '<S100>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S101>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1/Cosine'
- * '<S102>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S103>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup/Sine'
- * '<S104>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S105>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1/Sine'
- * '<S106>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S107>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup'
- * '<S108>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1'
- * '<S109>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/MATLAB Function'
- * '<S110>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup'
- * '<S111>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1'
- * '<S112>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup/Cosine'
- * '<S113>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S114>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1/Cosine'
- * '<S115>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S116>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup/Sine'
- * '<S117>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S118>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1/Sine'
- * '<S119>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S120>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/MATLAB Function'
- * '<S121>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch'
- * '<S122>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler'
- * '<S123>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler'
- * '<S124>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1'
- * '<S125>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2'
- * '<S126>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3'
- * '<S127>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
- * '<S128>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
- * '<S129>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
- * '<S130>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/MATLAB Function'
- * '<S131>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup'
- * '<S132>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
- * '<S133>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
- * '<S134>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
- * '<S135>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S136>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
- * '<S137>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S138>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
- * '<S139>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
- * '<S140>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
- * '<S141>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S142>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
- * '<S143>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S144>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
- * '<S145>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
- * '<S146>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup'
- * '<S147>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup1'
- * '<S148>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/MATLAB Function'
- * '<S149>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup'
- * '<S150>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup1'
- * '<S151>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup/Cosine'
- * '<S152>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S153>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup1/Cosine'
- * '<S154>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S155>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup/Sine'
- * '<S156>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S157>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup1/Sine'
- * '<S158>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-I-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S159>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup'
- * '<S160>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1'
- * '<S161>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/MATLAB Function'
- * '<S162>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup'
- * '<S163>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1'
- * '<S164>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup/Cosine'
- * '<S165>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S166>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1/Cosine'
- * '<S167>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S168>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup/Sine'
- * '<S169>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S170>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1/Sine'
- * '<S171>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S172>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup'
- * '<S173>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1'
- * '<S174>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/MATLAB Function'
- * '<S175>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup'
- * '<S176>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1'
- * '<S177>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup/Cosine'
- * '<S178>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S179>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1/Cosine'
- * '<S180>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S181>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup/Sine'
- * '<S182>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S183>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1/Sine'
- * '<S184>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S185>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup'
- * '<S186>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1'
- * '<S187>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/MATLAB Function'
- * '<S188>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup'
- * '<S189>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1'
- * '<S190>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup/Cosine'
- * '<S191>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S192>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1/Cosine'
- * '<S193>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S194>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup/Sine'
- * '<S195>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S196>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1/Sine'
- * '<S197>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S198>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup'
- * '<S199>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1'
- * '<S200>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/MATLAB Function'
- * '<S201>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup'
- * '<S202>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1'
- * '<S203>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup/Cosine'
- * '<S204>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S205>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1/Cosine'
- * '<S206>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S207>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup/Sine'
- * '<S208>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S209>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1/Sine'
- * '<S210>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S211>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/MATLAB Function'
- * '<S212>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch'
- * '<S213>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler'
- * '<S214>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler'
- * '<S215>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1'
- * '<S216>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2'
- * '<S217>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3'
- * '<S218>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
- * '<S219>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
- * '<S220>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
- * '<S221>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/MATLAB Function'
- * '<S222>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup'
- * '<S223>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
- * '<S224>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
- * '<S225>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
- * '<S226>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S227>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
- * '<S228>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S229>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
- * '<S230>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
- * '<S231>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
- * '<S232>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S233>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
- * '<S234>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S235>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
- * '<S236>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
- * '<S237>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup'
- * '<S238>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup1'
- * '<S239>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/MATLAB Function'
- * '<S240>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup'
- * '<S241>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup1'
- * '<S242>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup/Cosine'
- * '<S243>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S244>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup1/Cosine'
- * '<S245>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S246>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup/Sine'
- * '<S247>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S248>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup1/Sine'
- * '<S249>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-I-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S250>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup'
- * '<S251>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1'
- * '<S252>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/MATLAB Function'
- * '<S253>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup'
- * '<S254>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1'
- * '<S255>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup/Cosine'
- * '<S256>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S257>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1/Cosine'
- * '<S258>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S259>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup/Sine'
- * '<S260>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S261>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1/Sine'
- * '<S262>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S263>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup'
- * '<S264>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1'
- * '<S265>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/MATLAB Function'
- * '<S266>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup'
- * '<S267>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1'
- * '<S268>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup/Cosine'
- * '<S269>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S270>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1/Cosine'
- * '<S271>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S272>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup/Sine'
- * '<S273>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S274>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1/Sine'
- * '<S275>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S276>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup'
- * '<S277>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1'
- * '<S278>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/MATLAB Function'
- * '<S279>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup'
- * '<S280>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1'
- * '<S281>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup/Cosine'
- * '<S282>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S283>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1/Cosine'
- * '<S284>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S285>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup/Sine'
- * '<S286>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S287>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1/Sine'
- * '<S288>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S289>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup'
- * '<S290>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1'
- * '<S291>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/MATLAB Function'
- * '<S292>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup'
- * '<S293>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1'
- * '<S294>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup/Cosine'
- * '<S295>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
- * '<S296>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1/Cosine'
- * '<S297>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
- * '<S298>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup/Sine'
- * '<S299>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S300>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1/Sine'
- * '<S301>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S302>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation'
- * '<S303>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Switch Case Action Subsystem'
- * '<S304>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup'
- * '<S305>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1'
- * '<S306>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2'
- * '<S307>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3'
- * '<S308>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup/Sine'
- * '<S309>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
- * '<S310>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1/Sine'
- * '<S311>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
- * '<S312>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2/Sine'
- * '<S313>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
- * '<S314>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3/Sine'
- * '<S315>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3/Sine/Handle Quarter Symmetry Sine'
- * '<S316>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean'
- * '<S317>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean1'
- * '<S318>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean2'
- * '<S319>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean3'
+ * '<S31>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler'
+ * '<S32>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1'
+ * '<S33>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2'
+ * '<S34>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3'
+ * '<S35>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
+ * '<S36>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
+ * '<S37>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
+ * '<S38>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/MATLAB Function'
+ * '<S39>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup'
+ * '<S40>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
+ * '<S41>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
+ * '<S42>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
+ * '<S43>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S44>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
+ * '<S45>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S46>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
+ * '<S47>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S48>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
+ * '<S49>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S50>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
+ * '<S51>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S52>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
+ * '<S53>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
+ * '<S54>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup'
+ * '<S55>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1'
+ * '<S56>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/MATLAB Function'
+ * '<S57>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup'
+ * '<S58>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1'
+ * '<S59>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup/Cosine'
+ * '<S60>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S61>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1/Cosine'
+ * '<S62>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S63>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup/Sine'
+ * '<S64>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S65>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1/Sine'
+ * '<S66>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S67>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup'
+ * '<S68>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1'
+ * '<S69>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/MATLAB Function'
+ * '<S70>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup'
+ * '<S71>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1'
+ * '<S72>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup/Cosine'
+ * '<S73>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S74>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1/Cosine'
+ * '<S75>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S76>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup/Sine'
+ * '<S77>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S78>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1/Sine'
+ * '<S79>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S80>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup'
+ * '<S81>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1'
+ * '<S82>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/MATLAB Function'
+ * '<S83>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup'
+ * '<S84>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1'
+ * '<S85>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup/Cosine'
+ * '<S86>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S87>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1/Cosine'
+ * '<S88>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S89>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup/Sine'
+ * '<S90>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S91>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1/Sine'
+ * '<S92>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S93>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup'
+ * '<S94>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1'
+ * '<S95>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/MATLAB Function'
+ * '<S96>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup'
+ * '<S97>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1'
+ * '<S98>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup/Cosine'
+ * '<S99>'  : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S100>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1/Cosine'
+ * '<S101>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S102>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup/Sine'
+ * '<S103>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S104>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1/Sine'
+ * '<S105>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S106>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/MATLAB Function'
+ * '<S107>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch'
+ * '<S108>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler'
+ * '<S109>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1'
+ * '<S110>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2'
+ * '<S111>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3'
+ * '<S112>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
+ * '<S113>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
+ * '<S114>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
+ * '<S115>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/MATLAB Function'
+ * '<S116>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup'
+ * '<S117>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
+ * '<S118>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
+ * '<S119>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
+ * '<S120>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S121>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
+ * '<S122>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S123>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
+ * '<S124>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S125>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
+ * '<S126>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S127>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
+ * '<S128>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S129>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
+ * '<S130>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
+ * '<S131>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup'
+ * '<S132>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1'
+ * '<S133>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/MATLAB Function'
+ * '<S134>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup'
+ * '<S135>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1'
+ * '<S136>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup/Cosine'
+ * '<S137>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S138>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1/Cosine'
+ * '<S139>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S140>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup/Sine'
+ * '<S141>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S142>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1/Sine'
+ * '<S143>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S144>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup'
+ * '<S145>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1'
+ * '<S146>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/MATLAB Function'
+ * '<S147>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup'
+ * '<S148>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1'
+ * '<S149>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup/Cosine'
+ * '<S150>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S151>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1/Cosine'
+ * '<S152>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S153>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup/Sine'
+ * '<S154>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S155>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1/Sine'
+ * '<S156>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S157>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup'
+ * '<S158>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1'
+ * '<S159>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/MATLAB Function'
+ * '<S160>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup'
+ * '<S161>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1'
+ * '<S162>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup/Cosine'
+ * '<S163>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S164>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1/Cosine'
+ * '<S165>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S166>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup/Sine'
+ * '<S167>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S168>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1/Sine'
+ * '<S169>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S170>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup'
+ * '<S171>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1'
+ * '<S172>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/MATLAB Function'
+ * '<S173>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup'
+ * '<S174>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1'
+ * '<S175>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup/Cosine'
+ * '<S176>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S177>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1/Cosine'
+ * '<S178>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S179>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup/Sine'
+ * '<S180>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S181>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1/Sine'
+ * '<S182>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch1/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S183>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/MATLAB Function'
+ * '<S184>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch'
+ * '<S185>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler'
+ * '<S186>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1'
+ * '<S187>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2'
+ * '<S188>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3'
+ * '<S189>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup'
+ * '<S190>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1'
+ * '<S191>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2'
+ * '<S192>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/MATLAB Function'
+ * '<S193>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup'
+ * '<S194>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1'
+ * '<S195>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2'
+ * '<S196>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine'
+ * '<S197>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S198>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine'
+ * '<S199>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S200>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine'
+ * '<S201>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Cosine Lookup2/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S202>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine'
+ * '<S203>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S204>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine'
+ * '<S205>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S206>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine'
+ * '<S207>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/Referenzstromerzeugung_asymetrisch/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
+ * '<S208>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup'
+ * '<S209>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1'
+ * '<S210>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/MATLAB Function'
+ * '<S211>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup'
+ * '<S212>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1'
+ * '<S213>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup/Cosine'
+ * '<S214>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S215>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1/Cosine'
+ * '<S216>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S217>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup/Sine'
+ * '<S218>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S219>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1/Sine'
+ * '<S220>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S221>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup'
+ * '<S222>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1'
+ * '<S223>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/MATLAB Function'
+ * '<S224>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup'
+ * '<S225>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1'
+ * '<S226>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup/Cosine'
+ * '<S227>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S228>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1/Cosine'
+ * '<S229>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S230>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup/Sine'
+ * '<S231>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S232>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1/Sine'
+ * '<S233>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler1/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S234>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup'
+ * '<S235>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1'
+ * '<S236>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/MATLAB Function'
+ * '<S237>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup'
+ * '<S238>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1'
+ * '<S239>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup/Cosine'
+ * '<S240>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S241>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1/Cosine'
+ * '<S242>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S243>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup/Sine'
+ * '<S244>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S245>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1/Sine'
+ * '<S246>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler2/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S247>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup'
+ * '<S248>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1'
+ * '<S249>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/MATLAB Function'
+ * '<S250>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup'
+ * '<S251>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1'
+ * '<S252>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup/Cosine'
+ * '<S253>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S254>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1/Cosine'
+ * '<S255>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Cosine Lookup1/Cosine/Handle Quarter Symmetry Cosine'
+ * '<S256>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup/Sine'
+ * '<S257>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S258>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1/Sine'
+ * '<S259>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Subsystem/Strangstromregler_asymetrisch2/resonater-PI-Regler3/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S260>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation'
+ * '<S261>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Switch Case Action Subsystem'
+ * '<S262>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup'
+ * '<S263>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1'
+ * '<S264>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2'
+ * '<S265>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3'
+ * '<S266>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup/Sine'
+ * '<S267>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup/Sine/Handle Quarter Symmetry Sine'
+ * '<S268>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1/Sine'
+ * '<S269>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup1/Sine/Handle Quarter Symmetry Sine'
+ * '<S270>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2/Sine'
+ * '<S271>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup2/Sine/Handle Quarter Symmetry Sine'
+ * '<S272>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3/Sine'
+ * '<S273>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Regelung_asymetrisch/Vorsteuerung_Rastmomentkompensation/Rastmomentkompensation/Sine Lookup3/Sine/Handle Quarter Symmetry Sine'
+ * '<S274>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean'
+ * '<S275>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean1'
+ * '<S276>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean2'
+ * '<S277>' : 'uz_codegen/uz_codegen/Regelung_Einzelstrang_asymetrisch/Sicherheitsabschaltung/moving mean3'
  */
 
 /*-

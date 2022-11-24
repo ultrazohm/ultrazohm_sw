@@ -42,12 +42,16 @@ DS_Data Global_Data = {
 	.vLR = {// variables added by LR
 			.status_control = 0.0f,
 			.error_code_LR  = 0.0f,
-			.set_imag_current_old = 0.0f,
-			.set_real_current_old = 0.0f,
+			.set_imag_current_old = 666.666f,
+			.set_real_current_old = 666.666f,
 			.theta_el_old = 0.0f,
 			.fl_enable_compensation_cogging_old = 0.0f,
 			.ke_idle = 0.4923f, // torque constant (for real machine use 0.4445)
-			.fkt_ke_asym = 1.0f// factor to respect asymmetry (for real machine use 0.9571)}
+			.fkt_ke_asym = 1.0f,// factor to respect asymmetry (for real machine use 0.9571)}
+			.JS_theta_el= 0.0f,
+			.JS_au = 0.0f,
+			.JS_av = 0.0f,
+			.JS_aw = 0.0f
     		}
 };
 
@@ -101,7 +105,7 @@ int main(void)
             rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders
             rtP.K1 = 553.33325; // integral parameter for resonant PI-controller first order
             rtP.K2 = 0.1* rtP.K1;// integral parameter for resonant PI-controller second order
-            rtP.K3 = 0.1* rtP.K1;// integral parameter for resonant PI-controller third order
+            //rtP.K3 = 0.1* rtP.K1;// integral parameter for resonant PI-controller third order
             rtP.K4 = 0.1* rtP.K1;// integral parameter for resonant PI-controller fourth order
             rtP.K6 = 0.1* rtP.K1;// integral parameter for resonant PI-controller sixth order
             // Limits

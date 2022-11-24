@@ -20,12 +20,12 @@
 
 static uint32_t instances_counter_ParaID_TwoMassID = 0;
 
-static uz_ParaID_TwoMassID_t instances_ParaID_TwoMassID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_TwoMassID_t instances_ParaID_TwoMassID[UZ_PARAMETERID_MAX_INSTANCES + UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_TwoMassID_t* uz_ParaID_TwoMassID_allocation(void);
 
 static uz_ParaID_TwoMassID_t* uz_ParaID_TwoMassID_allocation(void) {
-	uz_assert(instances_counter_ParaID_TwoMassID < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_assert(instances_counter_ParaID_TwoMassID < (UZ_PARAMETERID_MAX_INSTANCES + UZ_PARAMETERID_6PH_MAX_INSTANCES));
 	uz_ParaID_TwoMassID_t* self = &instances_ParaID_TwoMassID[instances_counter_ParaID_TwoMassID];
 	instances_counter_ParaID_TwoMassID++;
 	return (self);

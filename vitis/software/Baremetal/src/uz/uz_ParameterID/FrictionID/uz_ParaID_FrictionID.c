@@ -20,12 +20,12 @@
 
 static uint32_t instances_counter_ParaID_FrictionID = 0;
 
-static uz_ParaID_FrictionID_t instances_ParaID_FrictionID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_FrictionID_t instances_ParaID_FrictionID[UZ_PARAMETERID_MAX_INSTANCES + UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_FrictionID_t* uz_ParaID_FrictionID_allocation(void);
 
 static uz_ParaID_FrictionID_t* uz_ParaID_FrictionID_allocation(void) {
-	uz_assert(instances_counter_ParaID_FrictionID < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_assert(instances_counter_ParaID_FrictionID < (UZ_PARAMETERID_MAX_INSTANCES + UZ_PARAMETERID_6PH_MAX_INSTANCES));
 	uz_ParaID_FrictionID_t* self = &instances_ParaID_FrictionID[instances_counter_ParaID_FrictionID];
 	instances_counter_ParaID_FrictionID++;
 	return (self);

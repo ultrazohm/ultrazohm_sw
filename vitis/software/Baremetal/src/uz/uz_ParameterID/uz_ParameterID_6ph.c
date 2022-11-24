@@ -50,11 +50,85 @@ static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void) {
 	return (self);
 }
 
+void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
+	uz_assert(self->is_ready);
+	uz_ParaID_6ph_ControlState_step(self, Data);
+
+	//All Offline states
+	if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
+
+		//ElectricalID
+		if (self->ControlState->output.ControlFlags.transNr == 1U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+			uz_ParaID_6ph_ElectricalID_step(self, Data);
+		} else if (self->ControlState->output.GlobalConfig_out.ElectricalID == false && self->ControlState->input.enteredElectricalID == true) {
+			uz_ParaID_6ph_ElectricalID_step(self, Data);
+		}
+
+		//TwoMassID
+		if (self->ControlState->output.ControlFlags.transNr == 2U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+			uz_ParaID_6ph_TwoMassID_step(self, Data);
+		} else if (self->ControlState->output.GlobalConfig_out.TwoMassID == false && self->TwoMassID->output.enteredTwoMassID == true) {
+			uz_ParaID_6ph_TwoMassID_step(self, Data);
+		}
+
+		//FrictionID
+		if (self->ControlState->output.ControlFlags.transNr == 3U || self->ControlState->output.GlobalConfig_out.Reset == true) {
+			uz_ParaID_6ph_FrictionID_step(self, Data);
+			if (Data->Array_counter < 256 && (Data->Array_counter == Data->Array_Control_counter)) {
+				Data->Array_counter += 1;
+			} else if (Data->Array_counter == 256){
+				Data->Array_counter = 0;
+			}
+		} else if (self->ControlState->output.GlobalConfig_out.FrictionID == false && self->FrictionID->output.enteredFrictionID == true) {
+			uz_ParaID_6ph_FrictionID_step(self, Data);
+		}
+
+	}
+
+	//FOC output
+	switch (self->ControlState->output.ControlFlags.transNr) {
+	case 1U:
+		Data->Controller_Parameters = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
+		break;
+	case 2U:
+		Data->Controller_Parameters = self->TwoMassID->output.TwoMassID_FOC_output;
+		break;
+	case 3U:
+		Data->Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
+		break;
+	default:
+		break;
+	}
+
+
+	//RESET
+	if (Data->GlobalConfig.Reset == true) {
+
+		//reset the Reset-button
+		self->ControlState->output.GlobalConfig_out.Reset = false;
+		Data->GlobalConfig.Reset = false;
+		self->OnlineID->AutoRefCurrents->input.AutoRefCurrentsConfig.Reset = false;
+		Data->AutoRefCurrents_Config.Reset = false;
+	}
+	if (Data->OnlineID_Config.OnlineID_Reset) {
+		Data->OnlineID_Config.OnlineID_Reset = false;
+		Data->AutoRefCurrents_Config.Reset = false;
+	}
+
+	// reset ACCEPT
+	if (self->ControlState->output.GlobalConfig_out.ACCEPT == true) {
+		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
+		Data->GlobalConfig.ACCEPT = false;
+	}
+}
+
 uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(Data);
 	uz_ParameterID_6ph_t* self = uz_ParameterID_6ph_allocation();
 	self->ControlState = uz_ControlState_init();
-	self->ElectricalID = uz_ParaID_ElectricalID_6ph_init();
+	self->ElectricalID = uz_ElectricalID_6ph_init();
 	self->TwoMassID = uz_TwoMassID_init();
 	self->FrictionID = uz_FrictionID_init();
 	uz_ParameterID_6ph_initialize_data_structs(self, Data);
@@ -65,7 +139,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config,Data->ActualValues,Data->GlobalConfig,Data->ControlFlags);
+	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config,Data->ActualValues,Data->GlobalConfig,*Data->ControlFlags);
 
 	//Update Control-State-inputs
 	self->ControlState->input.ElectricalID_FOC_output = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);

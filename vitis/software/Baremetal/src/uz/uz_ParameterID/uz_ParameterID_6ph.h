@@ -47,15 +47,4 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data);
  */
 void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 
-/**
- * @brief updates transmit values/Converts some int-values from the ParameterID_6ph to float and helps to sync the array transmission
- * 
- * @param Data pointer to uz_ParameterID_6ph_Data_t struct
- * @param activeState pointer to float variable of activeState
- * @param FluxMapCounter pointer to float variable of FluxMapCounter
- * @param ArrayCounter pointer to float variable of ArrayCounter
- */
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
-
-
 #endif // UZ_PARAMETERID_6PH_H

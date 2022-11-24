@@ -70,11 +70,11 @@ bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.finishedElectricalID;
 }
-uz_ParaID_Controller_Parameters_output_t uz_get_uz_ParaID_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_Controller_Parameters_output_t uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.ElectricalID_FOC_output;
 }
-uz_ParaID_ElectricalID_output_t uz_get_uz_ParaID_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.ElectricalID_output;
 }

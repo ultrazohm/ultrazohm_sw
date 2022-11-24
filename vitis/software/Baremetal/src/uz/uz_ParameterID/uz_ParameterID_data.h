@@ -357,7 +357,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
 	uz_ParaID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
 	uz_ParaID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
-	uz_ParaID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
+	uz_ParaID_ElectricalID_output_t ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
 	uz_ParaID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
 	uz_ParaID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
 	uz_ParaID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */

@@ -23,13 +23,13 @@
 typedef struct uz_ParameterID_6ph_t {
 	bool is_ready;
 	uz_ParaID_ControlState_t* ControlState;
-	uz_ParaID_ElectricalID_6ph_t *ElectricalID;
+	uz_ParaID_ElectricalID_6ph_t* ElectricalID;
 	uz_ParaID_TwoMassID_t* TwoMassID;
 	uz_ParaID_FrictionID_t* FrictionID;
 	uz_ParaID_FluxMapID_t* FluxMapID;
 	uz_ParaID_OnlineID_t* OnlineID;
-
 } uz_ParameterID_6ph_t;
+
 static uint32_t instances_counter_ParameterID_6ph = 0;
 static uz_ParameterID_6ph_t instances_ParameterID_6ph[UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
@@ -47,6 +47,17 @@ static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void) {
 	uz_assert(self->is_ready == false);
 	instances_counter_ParameterID_6ph++;
 	self->is_ready = true;
+	return (self);
+}
+
+uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
+	uz_assert_not_NULL(Data);
+	uz_ParameterID_6ph_t* self = uz_ParameterID_6ph_allocation();
+	self->ControlState = uz_ControlState_init();
+	self->ElectricalID = uz_ElectricalID_6ph_init();
+	self->TwoMassID = uz_TwoMassID_init();
+	self->FrictionID = uz_FrictionID_init();
+	uz_ParameterID_6ph_initialize_data_structs(self, Data);
 	return (self);
 }
 
@@ -122,17 +133,6 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		self->ControlState->output.GlobalConfig_out.ACCEPT = false;
 		Data->GlobalConfig.ACCEPT = false;
 	}
-}
-
-uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
-	uz_assert_not_NULL(Data);
-	uz_ParameterID_6ph_t* self = uz_ParameterID_6ph_allocation();
-	self->ControlState = uz_ControlState_init();
-	self->ElectricalID = uz_ElectricalID_6ph_init();
-	self->TwoMassID = uz_TwoMassID_init();
-	self->FrictionID = uz_FrictionID_init();
-	uz_ParameterID_6ph_initialize_data_structs(self, Data);
-	return (self);
 }
 
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
@@ -271,13 +271,13 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->OnlineID_Config.array_cleaned = false;
 
 	//Initialize Output data structs
-	//Data->ElectricalID_Output = &self->ElectricalID->output.ElectricalID_output;
+	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	Data->FrictionID_Output = &self->FrictionID->output.FrictionID_output;
-	Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;
+	//Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;
 	Data->TwoMassID_Output = &self->TwoMassID->output.TwoMassID_output;
-	Data->OnlineID_Output = &self->OnlineID->output.OnlineID_output;
+	//Data->OnlineID_Output = &self->OnlineID->output.OnlineID_output;
 	Data->ControlFlags = &self->ControlState->output.ControlFlags;
-	Data->FluxMap_Data = &self->OnlineID->InterpMeshGrid->output.FluxMapData;
+	//Data->FluxMap_Data = &self->OnlineID->InterpMeshGrid->output.FluxMapData;
 
 	Data->calculate_flux_maps = false;
 	Data->FluxMap_counter = 0.0f;

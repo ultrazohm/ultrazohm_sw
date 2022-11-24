@@ -82,11 +82,11 @@ uz_resonantController_t* rc_9H_z2;
 
 const struct uz_resonantController_config config_R = {
 		.sampling_time = 0.0001f,
-		.gain = 52.5f,
+		.gain = 1000.0f,
 		.harmonic_order = 2.0f,
 		.fundamental_frequency = 10.0f,
-		.lower_limit = -4.0f,
-		.upper_limit = 4.0f,
+		.lower_limit = -40.0f,
+		.upper_limit = 40.0f,
 		.antiwindup_gain = 10.0f,
 		.in_reference_value = 0.0f,
 		.in_measured_value = 0.0f,
@@ -136,15 +136,15 @@ const struct uz_PMSM_t config_PMSM = {
 
 
 const struct uz_PI_Controller_config config_id = {
-   .Kp = 2.5f,
-   .Ki = 200.0f,
+   .Kp = 6.0f, //4.0f, //6.0f, //2.5f,
+   .Ki = 20.0f, //20.0f, //200.0f,
    .samplingTime_sec = 0.0001f,
    .upper_limit = 326.0f,
    .lower_limit = -326.0f
 };
 const struct uz_PI_Controller_config config_iq = {
-   .Kp = 2.5f,
-   .Ki = 200.0f,
+   .Kp = 6.0f, //4.0f, //6.0f, //2.5f,
+   .Ki = 20.0f, //20.0f, //200.0f,
    .samplingTime_sec = 0.0001f,
    .upper_limit = 326.0f,
    .lower_limit = -326.0f
@@ -191,27 +191,27 @@ struct uz_PI_Controller* PI_z1;
 struct uz_PI_Controller* PI_z2;
 
 const struct uz_PI_Controller_config config_ix = {
-	.Kp = 0.18f , //* 4.0f, //1.1f,
-	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.Kp = 5.0f, //0.18f ,
+	.Ki = 15, //880, //1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 50.0f,
+	.lower_limit = -50.0f
 };
 
 const struct uz_PI_Controller_config config_iy = {
-	.Kp = 0.14, //0.18f, //* 4.0f,//1.1f,
-	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.Kp = 5.0f, //0.14, //0.18f, //* 4.0f,//1.1f,
+	.Ki = 15, //880, //1/0.0008f *0.005f,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 50.0f,
+	.lower_limit = -50.0f
 };
 
 const struct uz_PI_Controller_config config_iz1z2 = {
-	.Kp = 0.14, //0.18f , //* 4.0f,//1.1f,
+	.Kp = 2.0f, //0.14, //0.18f , //* 4.0f,//1.1f,
 	.Ki = 0,
 	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
+	.upper_limit = 50.0f,
+	.lower_limit = -50.0f
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,9 +271,8 @@ int main(void)
 
             struct uz_resonantController_config config_R_dq2H = config_R;
             config_R_dq2H.harmonic_order = 2.0f;
-            config_R_dq2H.gain = 125.0f;
-            config_R_dq2H.upper_limit = 12.0f;
-            config_R_dq2H.lower_limit = -12.0f;
+            config_R_dq2H.upper_limit = 50.0f;
+            config_R_dq2H.lower_limit = -50.0f;
             struct uz_resonantController_config config_R_dq8H = config_R;
             config_R_dq8H.harmonic_order = 8.0f;
             struct uz_resonantController_config config_R_dq12H = config_R;

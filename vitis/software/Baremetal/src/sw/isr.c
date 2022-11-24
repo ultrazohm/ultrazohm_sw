@@ -70,7 +70,7 @@ uz_3ph_dq_t rotating_dq = {0};
 uz_3ph_dq_t i_dq_ref = {0.0f};
 uz_3ph_dq_t i_dq_actual = {0.0f};
 uz_3ph_dq_t u_dq_ref = {0.0f};
-
+uz_3ph_dq_t u_dq_ref_dq = {0.0f};
 
 
 
@@ -310,6 +310,10 @@ void ISR_Control(void *data)
     three_ph_alphabeta.beta = six_ph_alphabeta.beta;
     Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
     Global_Data.av.i_beta = three_ph_alphabeta.beta;
+    Global_Data.av.i_x = six_ph_alphabeta.x;
+    Global_Data.av.i_y = six_ph_alphabeta.y;
+    Global_Data.av.i_z1 = six_ph_alphabeta.z1;
+    Global_Data.av.i_z2 = six_ph_alphabeta.z2;
     rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec);
     Global_Data.av.i_d = rotating_dq.d;
     Global_Data.av.i_q = rotating_dq.q;
@@ -500,18 +504,19 @@ void ISR_Control(void *data)
 
 
 		// enable, disable Controllers depending on OPFs
-	dq_2 = false;
-	dq_12 = false;
-	xy_n_PI = false;
-	xy_n = false;
-	xy_n_2 = false;
-	xy_n_6 = false;
+		/*
+	dq_2 = true;
+	dq_12 = true;
+	xy_n_PI = true;
+	xy_n = true;
+	xy_n_2 = true;
+	xy_n_6 = true;
 	y_off = false;
-	z1z2_1H = false;
-	z1z2_3H = false;
-	z1z2_9H = false;
+	z1z2_1H = true;
+	z1z2_3H = true;
+	z1z2_9H = true;
 	z1z2_control = false;
-
+*/
 	if(N1N2 == 1){
 		if(num_OPF == 1){
 			z1z2_1H = false;
@@ -579,7 +584,9 @@ void ISR_Control(void *data)
 // dq-control: --------------------------------------------------------------------------------------------------------
 
     	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
-
+    	u_dq_ref_dq = u_dq_ref;
+    	Global_Data.av.u_d_ref = u_dq_ref.d;
+    	Global_Data.av.u_q_ref = u_dq_ref.q;
 
 
 		if (dq_2){
@@ -737,6 +744,17 @@ void ISR_Control(void *data)
         uz_resonantController_reset(rc_3H_z2);
         uz_resonantController_reset(rc_9H_z1);
         uz_resonantController_reset(rc_9H_z2);
+
+
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
 
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

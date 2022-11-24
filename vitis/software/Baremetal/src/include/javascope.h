@@ -50,6 +50,8 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
+	JSO_u_d_ref,
+	JSO_u_q_ref,
 	JSO_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
@@ -69,6 +71,8 @@ enum JS_OberservableData {
 	JSO_FD_a2,
 	JSO_FD_b2,
 	JSO_FD_c2,
+	JSO_Testvalue1,
+	JSO_Testvalue2,
 	JSO_ENDMARKER
 };
 

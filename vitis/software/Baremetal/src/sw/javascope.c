@@ -31,6 +31,8 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+extern uz_3ph_dq_t u_dq_ref_dq;
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -82,6 +84,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;
 	js_ch_observable[JSO_uq]			= &data->av.u_q;
+	js_slowDataArray[JSO_u_d_ref] 		= &data->av.u_d_ref;
+	js_slowDataArray[JSO_u_q_ref] 		= &data->av.u_q_ref;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -103,6 +107,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_a2]   	= &data->av.FD_a2;
 	js_ch_observable[JSO_FD_b2]   	= &data->av.FD_b2;
 	js_ch_observable[JSO_FD_c2]   	= &data->av.FD_c2;
+	js_ch_observable[JSO_Testvalue1]   	= &u_dq_ref_dq.d;
+	js_ch_observable[JSO_Testvalue2]   	= &u_dq_ref_dq.q;
 
 
 
@@ -112,6 +118,8 @@ int JavaScope_initalize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.u_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.u_q);
+	js_slowDataArray[JSSD_FLOAT_u_d_ref] 			        = &(data->av.u_d_ref);
+	js_slowDataArray[JSSD_FLOAT_u_q_ref] 			        = &(data->av.u_q_ref);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);

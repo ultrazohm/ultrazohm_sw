@@ -1,9 +1,6 @@
 =============
 Loopback PCB
 =============
-
-..	toctree::
-	:maxdepth: 2
 	   
 Designed by Nina Diringer (TH Nürnberg), 07/2022
 
@@ -14,10 +11,12 @@ Designed by Nina Diringer (TH Nürnberg), 07/2022
 
 Revisions
 *********
+
 Rev01
 
 General description
 *******************
+
 This PCB is part of the :ref:`adc_loopback` tutorial. 
 
 The LEDs indicate the state of the signals from the digital voltage card (:ref:`digitalVoltage`). 
@@ -51,8 +50,9 @@ The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_
 
 Signal description
 ------------------
-Since the matching of the signal names between the PCBs used in the Loopback Tutorial is not intuitive, 
-the following table matches the signal names of the Digital Voltage Card to the signal names on the Loopback PCB and the ADC card. Additionally, the name of the corresponding LED as marked on the Loopback PCB is given. 
+
+Since the matching of the signal names between the PCBs used in the Loopback Tutorial is not intuitive, the following table matches the signal names of the Digital Voltage Card to the signal names on the Loopback PCB and the ADC card.
+Additionally, the name of the corresponding LED as marked on the Loopback PCB is given. 
 
 Connector 1: IPL1-115-01-L-D-K
 ______________________________
@@ -105,10 +105,11 @@ ______________________________
     To sum this up: The signals on Pin 2 to Pin 7 on both connectors (IPL1-115-01-L-D-K & IPL1-120-01-L-D-K) are used for the gate signals in the Loopback tutorial. P2 being the gate signal for the first high side switch, P3 for the corresponding low side switch, P4 for the second high side switch and so on.
     All Gate signals for the high side switches (Pin 2, Pin 4, Pin 6) and the first for the low side switches (Pin 3) are filtered and can be read back by the ADC card. 
 
-Documentation
-*************
+Downloads
+*********
 
 Rev01
- * :download:`Schematics <SCH_UZ_PER_loopback_tutorial_[No Variations]_Rev01.PDF>`
- * :download:`Bill of Material <BOM_JLC_UZ_PER_loopback_tutorial_[No Variations]_Rev01.xlsx>`
- * :download:`Assembly Drawing <ASM_UZ_PER_loopback_tutorial_[No Variations]_Rev01.PDF>`
+
+ * :download:`Schematics <SCH_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.pdf>`
+ * :download:`Bill of Material <BOM_JLC_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.xlsx>`
+ * :download:`Assembly Drawing <ASM_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.pdf>`

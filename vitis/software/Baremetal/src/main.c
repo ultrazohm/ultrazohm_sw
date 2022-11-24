@@ -15,6 +15,19 @@
 
 // Includes from own files
 #include "main.h"
+#include "include/uz_CIL_6ph.h"
+extern uz_CIL_objects_t cil_objects;
+
+#include "uz/uz_piController/uz_piController.h"
+struct uz_PI_Controller_config config = {
+              .Kp = 1250.0f,
+              .Ki = 78250.0f,
+              .samplingTime_sec = 0.0001f,
+              .upper_limit = 100.0f,
+              .lower_limit = -100.0f};
+uz_PI_Controller *PI_d_current=NULL;
+uz_PI_Controller *PI_q_current=NULL;
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -52,13 +65,6 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
-#include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
-uz_pmsm6ph_transformation_t* transformation = NULL;
-struct uz_pmsm6ph_config_t transformation_config = {
-		.base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
-		.ip_core_frequency_Hz = 100000000.0f
-};
-
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -82,7 +88,10 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
-        	transformation = uz_pmsm6ph_transformation_init(transformation_config);
+        	init_CIL_6phase(&cil_objects);
+        	init_PWM_CIL_6phase(&cil_objects);
+        	PI_d_current = uz_PI_Controller_init(config);
+        	PI_q_current = uz_PI_Controller_init(config);
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

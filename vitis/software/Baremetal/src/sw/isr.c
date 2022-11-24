@@ -31,6 +31,35 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "../include/uz_CIL_6ph.h"
+extern uz_CIL_objects_t cil_objects;
+
+// Data for PMSM
+float omega_mech = 100.0f;
+float load_torque = 0.0f;
+struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_output = {0};
+
+// Data for Transformation
+uz_6ph_abc_t transformation_currents_abc = {0};
+float theta_el = 0.0f;
+
+// Data for PI
+#include "../uz/uz_piController/uz_piController.h"
+extern uz_PI_Controller *PI_d_current;
+extern uz_PI_Controller *PI_q_current;
+uz_6ph_dq_t transformed_currents = {0};
+uz_3ph_dq_t setp_currents = {0};
+uz_6ph_dq_t output_voltage_dq = {0};
+uz_6ph_abc_t out_voltage_abc = {0};
+uz_3ph_abc_t out_voltage_abc1 = {0};
+uz_3ph_abc_t out_voltage_abc2 = {0};
+
+// Data for PWM
+#include "../uz/uz_FOC/uz_FOC.h"
+float V_dc_volts = 500.0f;
+struct uz_DutyCycle_t duty_cycle_sys1 = {0};
+struct uz_DutyCycle_t duty_cycle_sys2 = {0};
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,11 +69,6 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-
-#include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
-extern uz_pmsm6ph_transformation_t* transformation;
-uz_6ph_abc_t abc_currents = {0};
-float theta_el = 0.0f;
 
 
 //==============================================================================================================================================================
@@ -61,9 +85,32 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // CIL
+    uz_pmsm_model6ph_dq_set_inputs_general(cil_objects.cil_pmsm,omega_mech,load_torque);
+    pmsm_output = uz_pmsm_model6ph_dq_get_outputs_general(cil_objects.cil_pmsm);
+    transformation_currents_abc = uz_pmsm6ph_transformation_get_currents(cil_objects.cil_transformation);
+    theta_el = uz_pmsm6ph_transformation_get_theta_el(cil_objects.cil_transformation);
 
-    abc_currents = uz_pmsm6ph_transformation_get_currents(transformation);
-    theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);
+    // Controller
+    transformed_currents = uz_transformation_asym30deg_6ph_abc_to_dq(transformation_currents_abc, theta_el);
+    output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, setp_currents.d, transformed_currents.d, false);
+    output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, setp_currents.q, transformed_currents.q, false);
+    out_voltage_abc = uz_transformation_asym30deg_6ph_dq_to_abc(output_voltage_dq, theta_el);
+    out_voltage_abc1.a = out_voltage_abc.a1;
+    out_voltage_abc1.b = out_voltage_abc.b1;
+    out_voltage_abc1.c = out_voltage_abc.c1;
+    out_voltage_abc2.a = out_voltage_abc.a2;
+    out_voltage_abc2.b = out_voltage_abc.b2;
+    out_voltage_abc2.c = out_voltage_abc.c2;
+
+    // Duty Cycles
+    duty_cycle_sys1 = uz_FOC_generate_DutyCycles(out_voltage_abc1, V_dc_volts);
+    duty_cycle_sys2 = uz_FOC_generate_DutyCycles(out_voltage_abc2, V_dc_volts);
+    uz_PWM_SS_2L_set_duty_cycle(cil_objects.cil_pwm1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
+    uz_PWM_SS_2L_set_duty_cycle(cil_objects.cil_pwm2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
+
+
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

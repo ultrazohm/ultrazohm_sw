@@ -51,70 +51,6 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-/*
-//IP-Cores for 6 Phase FSC-MPC
-static struct uz_vsd_and_park_transformation_6phase_config_t config_vsd_and_park_transformation={
-   .base_address= XPAR_UZ_USER_VSD_AND_PARK_TRANSFO_0_BASEADDR,
-   .ip_clk_frequency_Hz=100000000,
-   .theta_offset = 0.14608003f
-};
-uz_vsd_and_park_transformation_6phase_t* instance_vsd_and_park_transformation;
-
-
-static struct uz_delay_compensation_fcs_mpc_6phase_config_t config_delay_compensation_fcs_mpc_6phase_pmsm={
-    .base_address= XPAR_UZ_USER_DELAY_COMPENSATION_F_0_BASEADDR,
-    .ip_clk_frequency_Hz=100000000,
-    .psiPM = 0.0048f,
-    .Lq =0.000147f,//[H]
-    .Ld = 0.000147f,//[H]
-    .Rs = 0.125f,//[Ohm]
-    .SampleTime = 0.00001f,
-    .pole_pairs = 5.0f,//needs to be asked
-    .Lx = 0.00005566f,//maybe this value needs to be half of the size
-    .Ly = 0.0000554f,//maybe this value needs to be half of the size
-    .use_AXI =0
-};
-uz_delay_compensation_fcs_mpc_6phase_t* instance_delay_compensation_fcs_mpc_6phase_pmsm;
-
-
-static struct uz_phase_voltages_per_switching_state_fcs_mpc_6phase_config_t config_phase_voltages_per_switching_state_fcs_mpc_6phase={
-    .base_address= XPAR_UZ_USER_PHASE_VOLTAGES_PER_S_0_BASEADDR,
-    .ip_clk_frequency_Hz=100000000,
-    .theta_el_offset=0.14608003f,//needs to be asked
-    .u_dc_link_voltage=36.0f,//needs to be asked
-    .use_AXI=0
-};
-uz_phase_voltages_per_switching_state_fcs_mpc_6phase_t* instance_phase_voltages_per_switching_state_fcs_mpc_6phase;
-
-
-static struct uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_config_t config_prediction_and_cost_function_fcs_mpc_6phase_pmsm={
-    .base_address = XPAR_UZ_USER_PREDICTION_AND_COST_0_BASEADDR,
-    .ip_clk_frequency_Hz = 100000000,
-    .psiPM = 0.0048f,//measurement needed
-    .Lq = 0.000147f,//[H]
-    .Ld = 0.000147f,//[H]
-    .Rs = 0.125f,//[Ohm]
-    .SampleTime = 0.00001f,
-    .pole_pairs = 5.0f,//needs to be asked
-    .Lx = 0.00005566f,//maybe this value needs to be half of the size
-    .Ly = 0.0000554f,//maybe this value needs to be half of the size
-    .id_ref = 0.0f,//needs to be asked
-    .iq_ref = 0.0f,//needs to be asked
-    .ix_ref = 0.0f,//needs to be asked
-    .iy_ref = 0.0f,//needs to be asked
-    .use_AXI = 0
-};
-uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_t* instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm;
-
-
-static struct uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_config_t config_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm={
-    .base_address= XPAR_UZ_USER_MIN_COST_FUNCTION_AN_0_BASEADDR,
-    .ip_clk_frequency_Hz=100000000,
-    .use_AXI =0
-};
-uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_t* instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm;
-*/
-
 
 // IP-Cores for 6 Phase FCS-MPC parallel 8
 static struct uz_vsd_8_config_t config_vsd_8={
@@ -176,16 +112,6 @@ static struct uz_switching_states_6Phase_8_config_t config_switching_states_6Pha
 };
 uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
 
-/*
-struct uz_incrementalEncoder_config testconfig={
-  .base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
-  .ip_core_frequency_Hz=50000000U,
-  .line_number_per_turn_mech=5000U,
-  .OmegaPerOverSample_in_rpm=500.0f,
-  .drive_pole_pair=5U
-};
-uz_incrementalEncoder_t* test_instance_Encoder;
-*/
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -210,14 +136,7 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
-/*
-            // Includes IP-Cores driver for 6 Phase FSC-MPC
-            instance_vsd_and_park_transformation = uz_vsd_and_park_transformation_6phase_init(config_vsd_and_park_transformation);
-            instance_delay_compensation_fcs_mpc_6phase_pmsm = uz_delay_compensation_fcs_mpc_6phase_init(config_delay_compensation_fcs_mpc_6phase_pmsm);
-            instance_phase_voltages_per_switching_state_fcs_mpc_6phase = uz_phase_voltages_per_switching_state_fcs_mpc_6phase_init(config_phase_voltages_per_switching_state_fcs_mpc_6phase);
-            instance_prediction_and_cost_function_fcs_mpc_6phase_pmsm = uz_prediction_and_cost_function_fcs_mpc_6phase_pmsm_init(config_prediction_and_cost_function_fcs_mpc_6phase_pmsm);
-            instance_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm = uz_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM_init(config_min_cost_function_and_vopt_fcs_mpc_6phase_pmsm);
-*/
+
             // Init IP-Cores 6 Phase FCS-MPC parallel 8
             test_instance_vsd_8 = uz_vsd_8_init(config_vsd_8);
             test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
@@ -225,7 +144,6 @@ int main(void)
             test_instance_phase_voltages_8 = uz_phase_voltages_8_init(config_phase_voltages_8);
             test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
             test_instance_switching_states_6Phase_8=uz_switching_states_6Phase_8_init(config_switching_states_6Phase_8);
-            //test_instance_Encoder=uz_incrementalEncoder_init(testconfig);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

@@ -61,7 +61,6 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     //----------------------------------------------------
     CheckForErrors();
@@ -70,15 +69,15 @@ void ISR_Control(void *data)
     // LR
     // Actual Values
     // currents
-    codegenInstance.input.Act_Iu = -2.0F;//(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
-    codegenInstance.input.Act_Iv = -2.0F;// (Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.15F;		//A
-   	codegenInstance.input.Act_Iw = 4.0F;// (Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
+    codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
+    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 1.15F;		//A
+   	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
    	// dc-link voltage
-   	codegenInstance.input.Act_U_ZK = 40.0F;// Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
+   	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
    	// mechanical values
-   	codegenInstance.input.Act_n = 5.0F;// Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-   	codegenInstance.input.Act_w_el = 90.0F;// Global_Data.av.mechanicalRotorSpeed;
-   	codegenInstance.input.Act_theta_u_el = 4.19F;//(Global_Data.av.theta_mech/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
+   	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
+   	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed;
+   	codegenInstance.input.Act_theta_u_el = (Global_Data.av.theta_elec/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
     //
 	// Global_Data.vLR
 	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
@@ -124,13 +123,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
 	//
 	//----------------------------------------------------
-    // update values for java scope
-    Global_Data.vLR.JS_theta_el = codegenInstance.input.Act_theta_u_el;
-    Global_Data.vLR.JS_au = codegenInstance.output.a_U;
-    Global_Data.vLR.JS_av = codegenInstance.output.a_V;
-    Global_Data.vLR.JS_aw = codegenInstance.output.a_W;
-    Global_Data.vLR.JS_i_imag = codegenInstance.input.Ref_I_im_ext_mit;
-    Global_Data.vLR.JS_i_real = codegenInstance.input.Ref_I_re_ext_mit;
+    //
     JavaScope_update(&Global_Data);
 	//
 	//----------------------------------------------------

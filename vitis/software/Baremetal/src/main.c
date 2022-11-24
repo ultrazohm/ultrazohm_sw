@@ -48,10 +48,6 @@ DS_Data Global_Data = {
 			.fl_enable_compensation_cogging_old = 0.0f,
 			.ke_idle = 0.4923f, // torque constant (for real machine use 0.4445)
 			.fkt_ke_asym = 1.0f,// factor to respect asymmetry (for real machine use 0.9571)}
-			.JS_theta_el= 0.0f,
-			.JS_au = 0.0f,
-			.JS_av = 0.0f,
-			.JS_aw = 0.0f
     		}
 };
 

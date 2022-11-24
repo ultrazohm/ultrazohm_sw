@@ -121,13 +121,6 @@ typedef struct _variableLukasRabenstein {
 	// Torque constant
 	float ke_idle; // torque constant of the machine (T/ampl_i)
 	float fkt_ke_asym; // factor which represents the reduced torque constant due to the asymmetry
-	// variables for java scope
-	float JS_theta_el;
-	float JS_au;
-	float JS_av;
-	float JS_aw;
-	float JS_i_imag;
-	float JS_i_real;
 } variableLukasRabenstein;
 
 

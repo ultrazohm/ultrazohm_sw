@@ -189,7 +189,7 @@ void test_uz_prediction_and_cost_function_8_hw_set_done_phase_voltages_fail_due_
     _Bool done_phase_voltages = 1;
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(0,done_phase_voltages));
 }
-*/
+
 void test_uz_prediction_and_cost_function_8_hw_set_done_vsd_and_park(void){
     _Bool done_vsd_and_park = 1;
     uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+done_vsd_and_park_Data_parallel_8_sim_prediction_and_cost_function,done_vsd_and_park);
@@ -211,7 +211,7 @@ void test_uz_prediction_and_cost_function_8_hw_set_current_valid_in_due_to_zero_
     _Bool current_valid_in = 1;
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_current_valid_in(0,current_valid_in));
 }
-
+*/
 void test_uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(void){
      _Bool expected_return_value = 1;
      uz_axi_read_bool_ExpectAndReturn(TEST_BASE_ADDRESS+done_prediction_and_cost_function_AXI_Data_parallel_8_sim_prediction_and_cost_function,expected_return_value);

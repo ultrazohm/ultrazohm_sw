@@ -271,6 +271,11 @@ void ISR_Control(void *data)
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
 
+    //crude over current protection
+      if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values.id_ref) > 15.0f || fabs(updated_values.iq_ref) > 15.0f || fabs(updated_values.ix_ref) > 15.0f || fabs(updated_values.iy_ref) > 15.0f)) {
+      	uz_assert(0);
+      	}
+
     dq_currents_vsd_and_park_transformation = uz_vsd_and_park_8_transformation_6phase_get_id_iq(test_instance_vsd_8);
     d_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.d;
     q_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.q;
@@ -290,10 +295,6 @@ void ISR_Control(void *data)
     d_q_x_y_0p_0n_currents=uz_transformation_asym30deg_6ph_abc_to_dq(a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation, theta_el);
 */
 
-    //crude over current protection
-      if((fabs(a1_current_vsd_and_park_transformation) > 15.0f || fabs(b1_current_vsd_and_park_transformation) > 15.0f || fabs(c1_current_vsd_and_park_transformation) > 15.0f || fabs(a2_current_vsd_and_park_transformation) > 15.0f || fabs(b2_current_vsd_and_park_transformation) > 15.0f || fabs(c2_current_vsd_and_park_transformation) > 15.0f) && (fabs(updated_values.id_ref) > 15.0f || fabs(updated_values.iq_ref) > 15.0f || fabs(updated_values.ix_ref) > 15.0f || fabs(updated_values.iy_ref) > 15.0f)) {
-      	uz_assert(0);
-      	}
 /*
       idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm=uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(test_instance_delay_compensation_8);
       idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm = idk1_iqk1_ixk1_iyk1_currents_delay_compensation_fcs_mpc_6phase_pmsm.id_k_1;

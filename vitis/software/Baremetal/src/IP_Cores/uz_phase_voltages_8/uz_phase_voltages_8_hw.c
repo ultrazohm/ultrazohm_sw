@@ -26,10 +26,11 @@ int32_t uz_phase_voltages_8_get_Index_in(uint32_t base_address){
     //int32
     return  uz_axi_read_int32(base_address + Index_in_AXI_Data_parallel_8_sim_phase_voltages);
 }
-
+/*
 void uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(uint32_t base_address, _Bool done_delay_compensation_AXI)
 {
     uz_assert_not_zero_uint32(base_address);
     // bool
      uz_axi_write_bool(base_address + done_delay_compensation_Data_parallel_8_sim_phase_voltages, done_delay_compensation_AXI);
 }
+*/

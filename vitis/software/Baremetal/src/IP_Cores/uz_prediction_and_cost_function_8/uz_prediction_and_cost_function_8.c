@@ -72,7 +72,7 @@ void uz_prediction_and_cost_function_8_set_done_phase_voltages_AXI(uz_prediction
 
     uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(self->config.base_address, done_phase_voltages_AXI);
 }
-*/
+
 void uz_prediction_and_cost_function_8_set_done_vsd_and_park_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_vsd_and_park_AXI){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -86,7 +86,7 @@ void uz_prediction_and_cost_function_8_set_current_valid_in_AXI(uz_prediction_an
 
     uz_prediction_and_cost_function_8_hw_set_current_valid_in(self->config.base_address, current_valid_in_AXI);
 }
-
+*/
 _Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(uz_prediction_and_cost_function_8_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

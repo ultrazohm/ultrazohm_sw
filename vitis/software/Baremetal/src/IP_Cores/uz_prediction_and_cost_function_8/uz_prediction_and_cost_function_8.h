@@ -75,7 +75,7 @@ int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_func
  * @param self Pointer to driver instance
  * @param done_vsd_and_park_AXI Value
  */
-void uz_prediction_and_cost_function_8_set_done_vsd_and_park_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_vsd_and_park_AXI);
+//void uz_prediction_and_cost_function_8_set_done_vsd_and_park_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_vsd_and_park_AXI);
 
 
 /**
@@ -84,7 +84,7 @@ void uz_prediction_and_cost_function_8_set_done_vsd_and_park_AXI(uz_prediction_a
  * @param self Pointer to driver instance
  * @param current_valid_in_AXI Value
  */
-void uz_prediction_and_cost_function_8_set_current_valid_in_AXI(uz_prediction_and_cost_function_8_t* self, _Bool current_valid_in_AXI);
+//void uz_prediction_and_cost_function_8_set_current_valid_in_AXI(uz_prediction_and_cost_function_8_t* self, _Bool current_valid_in_AXI);
 
 
 /**

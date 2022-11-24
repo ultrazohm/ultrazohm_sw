@@ -63,9 +63,9 @@ void setUp(void)
 
     
 }
-_Bool done_phase_voltages_AXI=0;
-_Bool done_vas_and_park_AXI=1;
-_Bool current_valid_in_AXI=0;
+//_Bool done_phase_voltages_AXI=0;
+//_Bool done_vas_and_park_AXI=1;
+//_Bool current_valid_in_AXI=0;
 
 
 void tearDown(void)
@@ -186,7 +186,7 @@ void test_uz_prediction_and_cost_function_8_set_done_phase_voltages_test(void)
 
    uz_prediction_and_cost_function_8_set_done_phase_voltages_AXI(test_instance, done_phase_voltages_AXI);
    }
-*/
+
 void test_uz_prediction_and_cost_function_8_set_done_vsd_and_park_test(void)
 {
     uz_prediction_and_cost_function_8_hw_set_Lq_Expect(config.base_address, config.Lq);
@@ -232,4 +232,5 @@ void test_uz_prediction_and_cost_function_8_set_current_valid_in_test(void)
 
    uz_prediction_and_cost_function_8_set_current_valid_in_AXI(test_instance, current_valid_in_AXI);
    }
+   */
 #endif // TEST

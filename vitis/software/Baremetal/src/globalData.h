@@ -92,6 +92,24 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float theta_m_offset_comp;
 	float polepairs;
+	float R_a1;
+	float R_b1;
+	float R_c1;
+	float R_a2;
+	float R_b2;
+	float R_c2;
+	float R_h_a1;
+	float R_h_b1;
+	float R_h_c1;
+	float R_h_a2;
+	float R_h_b2;
+	float R_h_c2;
+	float R_avg_a1;
+	float R_avg_b1;
+	float R_avg_c1;
+	float R_avg_a2;
+	float R_avg_b2;
+	float R_avg_c2;
 	float FD_a1;
 	float FD_b1;
 	float FD_c1;
@@ -147,6 +165,7 @@ typedef struct{
 	uz_IIR_Filter_t* iir_i_b2;
 	uz_IIR_Filter_t* iir_i_c2;
 	uz_IIR_Filter_t* iir_rpm_ref;
+	uz_IIR_Filter_t* iir_multipurpose;
 	uz_FOC* foc_current;
 	uz_SpeedControl_t* foc_speed;
 }object_pointers_t;

@@ -82,7 +82,7 @@ uz_resonantController_t* rc_9H_z2;
 
 const struct uz_resonantController_config config_R = {
 		.sampling_time = 0.0001f,
-		.gain = 1000.0f,
+		.gain = 500.0f,
 		.harmonic_order = 2.0f,
 		.fundamental_frequency = 10.0f,
 		.lower_limit = -40.0f,
@@ -101,8 +101,6 @@ uz_movingAverageFilter_t* movAvFilter_R3;
 uz_movingAverageFilter_t* movAvFilter_R4;
 uz_movingAverageFilter_t* movAvFilter_R5;
 uz_movingAverageFilter_t* movAvFilter_R6;
-
-
 
 
 
@@ -256,18 +254,20 @@ int main(void)
             Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_rpm_ref = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
-            Global_Data.av.theta_offset = 1.120014f;
+            Global_Data.objects.iir_multipurpose = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
+            Global_Data.av.theta_offset = 1.115f; //original: 1.120014f;
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             Global_Data.objects.foc_speed = uz_SpeedControl_init(config_speed);
 
-
+            movAvF_config.filterLength = 150;
 			movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
 			movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config);
 			movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config);
 			movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config);
 			movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
 			movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
+
 
             struct uz_resonantController_config config_R_dq2H = config_R;
             config_R_dq2H.harmonic_order = 2.0f;

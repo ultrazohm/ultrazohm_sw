@@ -107,6 +107,26 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_FD_a2]   	= &data->av.FD_a2;
 	js_ch_observable[JSO_FD_b2]   	= &data->av.FD_b2;
 	js_ch_observable[JSO_FD_c2]   	= &data->av.FD_c2;
+	js_ch_observable[JSO_R_a1]   	= &data->av.R_a1;
+	js_ch_observable[JSO_R_b1]   	= &data->av.R_b1;
+	js_ch_observable[JSO_R_c1]   	= &data->av.R_c1;
+	js_ch_observable[JSO_R_a2]   	= &data->av.R_a2;
+	js_ch_observable[JSO_R_b2]   	= &data->av.R_b2;
+	js_ch_observable[JSO_R_c2]   	= &data->av.R_c2;
+	js_ch_observable[JSO_R_h_a1]   	= &data->av.R_h_a1;
+	js_ch_observable[JSO_R_h_b1]   	= &data->av.R_h_b1;
+	js_ch_observable[JSO_R_h_c1]   	= &data->av.R_h_c1;
+	js_ch_observable[JSO_R_h_a2]   	= &data->av.R_h_a2;
+	js_ch_observable[JSO_R_h_b2]   	= &data->av.R_h_b2;
+	js_ch_observable[JSO_R_h_c2]   	= &data->av.R_h_c2;
+	js_ch_observable[JSO_R_avg_a1]   	= &data->av.R_avg_a1;
+	js_ch_observable[JSO_R_avg_b1]   	= &data->av.R_avg_b1;
+	js_ch_observable[JSO_R_avg_c1]   	= &data->av.R_avg_c1;
+	js_ch_observable[JSO_R_avg_a2]   	= &data->av.R_avg_a2;
+	js_ch_observable[JSO_R_avg_b2]   	= &data->av.R_avg_b2;
+	js_ch_observable[JSO_R_avg_c2]   	= &data->av.R_avg_c2;
+
+
 	js_ch_observable[JSO_Testvalue1]   	= &u_dq_ref_dq.d;
 	js_ch_observable[JSO_Testvalue2]   	= &u_dq_ref_dq.q;
 

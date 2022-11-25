@@ -210,7 +210,7 @@ int mov_average_filter_length3 = 0;
 int mov_average_filter_length4 = 0;
 int mov_average_filter_length5 = 0;
 
-bool dq_2 = false;
+bool dq_2 = true;
 bool dq_8 = false;
 bool dq_12 = false;
 bool xy_n_PI = false;
@@ -357,8 +357,23 @@ void ISR_Control(void *data)
 	   //VSD-fault-detection
 			// calculation of fault indices
 	    R_FD = uz_vsd_opf_6ph_faultdetection(six_ph_alphabeta);
+
+	    Global_Data.av.R_a1 = R_FD.R1;
+	    Global_Data.av.R_b1 = R_FD.R2;
+	    Global_Data.av.R_c1 = R_FD.R3;
+	    Global_Data.av.R_a2 = R_FD.R4;
+	    Global_Data.av.R_b2 = R_FD.R5;
+	    Global_Data.av.R_c2 = R_FD.R6;
+
 	    	// hysteresis filter
 	    R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.9, 1.1);
+
+	    Global_Data.av.R_h_a1 = R_FD_Filt.R1;
+	    Global_Data.av.R_h_b1 = R_FD_Filt.R2;
+	    Global_Data.av.R_h_c1 = R_FD_Filt.R3;
+	    Global_Data.av.R_h_a2 = R_FD_Filt.R4;
+	    Global_Data.av.R_h_b2 = R_FD_Filt.R5;
+	    Global_Data.av.R_h_c2 = R_FD_Filt.R6;
 
 	    // moving average filter for fault indices:
 
@@ -394,6 +409,13 @@ void ISR_Control(void *data)
 		R_FD_Filt.R6 = uz_movingAverageFilter_sample(movAvFilter_R6, R_FD_Filt.R6);
 		    toggle = 0;
 	}
+
+	Global_Data.av.R_avg_a1 = R_FD_Filt.R1;
+	Global_Data.av.R_avg_b1 = R_FD_Filt.R2;
+	Global_Data.av.R_avg_c1 = R_FD_Filt.R3;
+	Global_Data.av.R_avg_a2 = R_FD_Filt.R4;
+	Global_Data.av.R_avg_b2 = R_FD_Filt.R5;
+	Global_Data.av.R_avg_c2 = R_FD_Filt.R6;
 
 		R_FD_eval = uz_vsd_fd_evaluation(R_FD_Filt, 0.4f);
 
@@ -517,6 +539,7 @@ void ISR_Control(void *data)
 	z1z2_9H = true;
 	z1z2_control = false;
 */
+		/*
 	if(N1N2 == 1){
 		if(num_OPF == 1){
 			z1z2_1H = false;
@@ -548,7 +571,7 @@ void ISR_Control(void *data)
 		}
 	}
 
-
+*/
 
 		ref_dq0_currents.d = i_dq_ref.d;
 		ref_dq0_currents.q = i_dq_ref.q;
@@ -585,6 +608,8 @@ void ISR_Control(void *data)
 
     	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
     	u_dq_ref_dq = u_dq_ref;
+    	u_dq_ref_dq.d = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_multipurpose, u_dq_ref.d);
+
     	Global_Data.av.u_d_ref = u_dq_ref.d;
     	Global_Data.av.u_q_ref = u_dq_ref.q;
 

@@ -4,7 +4,7 @@
 /**
  * @brief Maximum length of moving average filter
  */
-#define MAX_FILTERLENGTH 150
+#define MAX_FILTERLENGTH 450
 
 /**
  * @brief Object definition for uz_movingAverageFilter_t

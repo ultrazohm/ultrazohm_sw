@@ -78,8 +78,8 @@ omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;
 lambda_q = 1.0;
-lambda_x = 1.0;
-lambda_y = 1.0;
+lambda_x = 0.1;
+lambda_y = 0.1;
 lambda_u = 0.0;
 
 % parameters for sine waves

@@ -100,7 +100,6 @@ Syllabus
    hardware/adapter_cards/adapter_cards
    hardware/interface_powerelectronics/interface_powerelectronics
    hardware/altium/altium
-   hardware/loopback_PCB/loopback_PCB
 
 Indices and tables
 ==================

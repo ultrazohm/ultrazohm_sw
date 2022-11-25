@@ -8,3 +8,4 @@ External peripheral cards
    :maxdepth: 2
    
    uz_per_adc_to_bnc_rev01
+   loopback_PCB/loopback_PCB

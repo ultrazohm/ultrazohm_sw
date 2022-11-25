@@ -90,7 +90,7 @@ Syllabus
 
    code_generation/hdl_coder/hdl_coder
    code_generation/vivado_hls/index
-   code_generation/embedded_coder/index
+   code_generation/embedded_coder/embedded_coder
 
 .. toctree::
    :maxdepth: 2

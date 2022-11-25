@@ -13,7 +13,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-#include "../uz_global_configuration.h"
+#include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
 #include "uz_ParaID_ElectricalID_6ph.h"
 #include "ElectricalID_6ph_codegen.h"

@@ -112,6 +112,19 @@ static struct uz_switching_states_6Phase_8_config_t config_switching_states_6Pha
 };
 uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
 
+struct uz_d_gan_inverter_t* gan_inverter_D3;
+struct uz_d_gan_inverter_t* gan_inverter_D4;
+
+struct uz_d_gan_inverter_config_t config_gan_inverter_D3 = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000
+};
+
+struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_1_BASEADDR,
+    .ip_clk_frequency_Hz = 100000
+};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -144,6 +157,9 @@ int main(void)
             test_instance_phase_voltages_8 = uz_phase_voltages_8_init(config_phase_voltages_8);
             test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
             test_instance_switching_states_6Phase_8=uz_switching_states_6Phase_8_init(config_switching_states_6Phase_8);
+
+            gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);
+            gan_inverter_D4 = uz_d_gan_inverter_init(config_gan_inverter_D4, Global_Data.objects.gan_inverter_outputs_D4);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

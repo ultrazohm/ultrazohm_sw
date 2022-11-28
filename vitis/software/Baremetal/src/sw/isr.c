@@ -83,6 +83,9 @@ extern float Index_min_cost_function_8;
 extern uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
 extern float Index_switching_states_8;
 
+extern struct uz_d_gan_inverter_t* gan_inverter_D3;
+extern struct uz_d_gan_inverter_t* gan_inverter_D4;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -117,11 +120,26 @@ void ISR_Control(void *data)
 
     Index_switching_states_8=uz_switching_states_6Phase_8_read_Index_in(test_instance_switching_states_6Phase_8);
 
+	// read data from gan inverters:
+	uz_d_gan_inverter_update_states(gan_inverter_D3);
+	uz_d_gan_inverter_update_states(gan_inverter_D4);
+
+	Global_Data.objects.gan_inverter_outputs_D3 = uz_d_gan_inverter_get_outputs(gan_inverter_D3);
+	Global_Data.objects.gan_inverter_outputs_D4 = uz_d_gan_inverter_get_outputs(gan_inverter_D4);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
+	//enable gan inverters if system enable
+	if (current_state == idle_state || current_state == error_state) {
+		//Set Data To UZ_D_GaN_Inverter
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_1_BASEADDR, false);
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_0_BASEADDR, false);
+	} else if (current_state == running_state || current_state == control_state) { //Call this function only once. If there was an error, "enableSystem " must be reseted!
+		//Set Data To UZ_D_GaN_Inverter
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_1_BASEADDR, true);
+		uz_d_gan_inverter_hw_set_PWM_EN(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_0_BASEADDR, true);
+	}
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

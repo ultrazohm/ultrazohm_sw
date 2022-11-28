@@ -143,7 +143,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 
 	//Update Control-State-inputs
 	self->ControlState->input.ElectricalID_FOC_output = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
-	self->ControlState->input.ElectricalID_output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
+	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	self->ControlState->input.enteredElectricalID = uz_get_ElectricalID_6ph_entered(self->ElectricalID);
 	self->ControlState->input.finishedElectricalID = uz_get_ElectricalID_6ph_finished(self->ElectricalID);
 }
@@ -152,6 +152,7 @@ static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Update Control-State inputs, which are not depended on other states
+	self->ControlState->input.ElectricalID_output = Data->ElectricalID_Output;
 	self->ControlState->input.GlobalConfig_in = Data->GlobalConfig;
 
 	//Control-State will always be stepped

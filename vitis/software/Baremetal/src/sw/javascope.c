@@ -45,6 +45,7 @@ extern struct uz_3ph_dq_t i_reference_Ampere;
 extern float theta_el_rad;
 extern struct uz_3ph_dq_t v_dq_Volts;
 extern float theta_offset;
+extern uz_3ph_abc_t induced_voltage;
 
 extern float value_filter_i_q;
 extern float value_filter_i_d;
@@ -83,9 +84,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia] 			= &i_actual_A_abc.a;
 	js_ch_observable[JSO_ib] 			= &i_actual_A_abc.b;
 	js_ch_observable[JSO_ic] 			= &i_actual_A_abc.c;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_ua] 			= &induced_voltage.a;
+	js_ch_observable[JSO_ub] 			= &induced_voltage.b;
+	js_ch_observable[JSO_uc] 			= &induced_voltage.c;
 	js_ch_observable[JSO_iq] 			= &i_actual_Ampere.q;
 	js_ch_observable[JSO_id] 			= &i_actual_Ampere.d;
 	js_ch_observable[JSO_psi_d_neg] 			= &psi_measured.d;

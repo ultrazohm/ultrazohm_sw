@@ -69,7 +69,7 @@ float V_dc_volts = 24.0f;
 float omega_el_rad_per_sec = 0.0f;
 float theta_el_rad = 0.0f;
 
-float theta_offset = -0.8; //0.3f; //-0.54f;          // 0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
+float theta_offset = -0.54f; //-0.8; //0.3f; //-0.54f;          // 0.0f; // 6.07759f; // zum Bestimmen eine Phase bestromen, dadurch Ausrichtung d-Achse auf bestromte, theta_elec muss 0 oder 2pi sein mit offset
 float adc_scaling = (20.0f / 2.084f); // 3.2f
 float poles = 3.0f;
 struct uz_3ph_dq_t v_dq_Volts = {0};
@@ -85,7 +85,7 @@ uz_filter_cumulativeavg_t *filter_omega_el = NULL;
 
 static bool get_uduq_thetaoffset(float end_current, uz_3ph_dq_t *psi_measured);
 
-bool theta_offset_estimation = true;
+bool theta_offset_estimation = false;
 
 float value_filter_i_q = 0.0f;
 float value_filter_i_d = 0.0f;
@@ -99,6 +99,8 @@ uz_3ph_dq_t psi_measured={0};
 uz_3ph_dq_t psi_measured_neg={0};
 uz_3ph_dq_t psi_measured_2={0};
 uz_3ph_dq_t psi_measured_neg_2={0};
+uz_3ph_abc_t induced_voltage={0};
+
 bool finished=false;
 
 int posneg=0;
@@ -107,7 +109,8 @@ float u_min_new=0.0f;
 float u_min_3=0.0f;
 float theta_old=0.0f;
 float gradient=0.0f;
-float step_current=2.0f;
+float step_current=2.5f;
+float voltage_scale=1.0f;
 
 void ISR_Control(void *data)
 {
@@ -119,6 +122,11 @@ void ISR_Control(void *data)
     i_actual_A_abc.a = (Global_Data.aa.A1.me.ADC_A2 - 2.425f) * adc_scaling;          // zeigt 2.5 bei 0 an
     i_actual_A_abc.b = (Global_Data.aa.A1.me.ADC_A4 - 2.425f) * adc_scaling;
     i_actual_A_abc.c = (Global_Data.aa.A1.me.ADC_A3 - 2.425f) * adc_scaling;
+
+    induced_voltage.a = (Global_Data.aa.A1.me.ADC_B6 ) * voltage_scale;          //
+    induced_voltage.b = (Global_Data.aa.A1.me.ADC_B8 ) * voltage_scale;
+    induced_voltage.c = (Global_Data.aa.A1.me.ADC_B7 ) * voltage_scale;
+
     i_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_actual_A_abc, theta_el_rad);
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * poles * 2.0f * M_PI / 60.0f;
 
@@ -127,6 +135,7 @@ void ISR_Control(void *data)
     if (current_state == control_state)
     {
     	//theta_offset=uz_wavegen_triangle_with_offset(2*M_PI, 0.01, -M_PI);
+    	//theta_offset+=1.0f/20000.0f*0.05f;
         if (theta_offset_estimation)
         {
 
@@ -147,7 +156,7 @@ void ISR_Control(void *data)
 				case 2:
 	            	u_min_new=sqrtf(psi_measured.d*psi_measured.d + psi_measured_neg.d*psi_measured_neg.d );
 	            	theta_old=theta_offset;
-	            	theta_offset+=0.01f;
+	            	//theta_offset+=0.01f;
 	            	posneg=0;
 	            	break;
 				case 3:

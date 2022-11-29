@@ -1249,6 +1249,102 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:user:uz_inverter_adapter_mapping:1.0">
+		</VLNV>
+		<DisplayName value="uz_inverter_adapter_mapping_v1_0">
+		</DisplayName>
+		<Description value="uz_inverter_adapter_mapping_v1_0">
+		</Description>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<ComponentPath value="uz_d_inverter_adapter/mapping_ip_core/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Beta" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/UserIP">
+			</Taxonomy>
+		</Taxonomies>
+		<SubcoreVLNVs>
+			<SubcoreVLNV value="xilinx.com:ip:xlslice:1.0">
+			</SubcoreVLNV>
+			<SubcoreVLNV value="xilinx.com:ip:xlconcat:2.1">
+			</SubcoreVLNV>
+		</SubcoreVLNVs>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:uz_d_inverter_adapter:1.0">
+		</VLNV>
+		<DisplayName value="uz_d_inverter_adapter">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112529435">
+		</CoreRevision>
+		<ComponentPath value="uz_d_inverter_adapter/driver_ip_core/hdl_prj/ipcore/uz_d_inverter_adapter_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="TUM:user:AXI2TCM:1.1">
 		</VLNV>
 		<DisplayName value="AXI2TCM">
@@ -2019,58 +2115,6 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_ninephase_VSD_transformation:1.1">
-		</VLNV>
-		<DisplayName value="uz_ninephase_VSD_transformation">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112661726">
-		</CoreRevision>
-		<ComponentPath value="uz_ninephase_VSD_transformation/hdlsrc/ipcore/uz_ninephase_VSD_transformation_v1_1/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
 		<VLNV value="xilinx.com:ip:uz_ninephase_VSD_transformation:1.0">
 		</VLNV>
 		<DisplayName value="uz_ninephase_VSD_transformation">
@@ -2079,9 +2123,9 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112572499">
+		<CoreRevision value="2112729185">
 		</CoreRevision>
-		<ComponentPath value="uz_ninephase_VSD_transformation/ipcore/uz_ninephase_VSD_transformation_v1_0/component.xml">
+		<ComponentPath value="uz_ninephase_VSD_transformation/hdl_proj/ipcore/uz_ninephase_VSD_transformation_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="azynq">
@@ -2468,6 +2512,22 @@
 			</Interface>
 		</Interfaces>
 	</IP>
+	<BUSDEF>
+		<VLNV value="th-nuernberg.de:user:uz_inverter_adapter:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="uz_d_inverter_adapter/interface_definition/uz_inverter_adapter.xml">
+		</XMLFile>
+	</BUSDEF>
+	<BUSABS>
+		<VLNV value="th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="uz_d_inverter_adapter/interface_definition/uz_inverter_adapter_rtl.xml">
+		</XMLFile>
+	</BUSABS>
 	<IPInst>
 		<VLNV value="xilinx.com:xci:unknown:1.0">
 		</VLNV>

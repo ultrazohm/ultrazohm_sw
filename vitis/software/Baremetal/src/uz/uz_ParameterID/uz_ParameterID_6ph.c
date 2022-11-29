@@ -157,6 +157,8 @@ static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_Param
 
 	//Control-State will always be stepped
 	uz_ControlState_step(self->ControlState);
+
+	*Data->ControlFlags = self->ControlState->output.ControlFlags;
 }
 
 static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
@@ -193,6 +195,20 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
 }
 
+void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(activeState);
+	uz_assert_not_NULL(FluxMapCounter);
+	uz_assert_not_NULL(ArrayCounter);
+	*activeState = (float) Data->Controller_Parameters.activeState;
+	*FluxMapCounter = (float) Data->FluxMap_counter;
+	*ArrayCounter = (float) Data->Array_counter;
+    Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
+	Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
+	Data->MeasArraySpeed_pointer = Data->FrictionID_Output->measArraySpeed[Data->Array_counter];
+	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
+
+}
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);

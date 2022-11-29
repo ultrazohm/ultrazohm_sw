@@ -11,7 +11,7 @@ clear
 addpath('subsystem_references','simscape_references','function_references'); 
 
 %Busses needed for connections---------------------------------------------
-load('Busses_6ph.mat');
+load('Busses.mat');
 
 % VSD Matrix --------------------------------------------------------------
 gamma = pi/6;

@@ -52,10 +52,10 @@ This function is already included in the :ref:`uz_FOC`.
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval2.east)+(7,-3)$)(Eval3right){$|v_q| > 0.95 \cdot V_{SV,max}$};
   \draw[-latex](Eval2.east) -| (Eval3right.north);
   \draw[-latex](Eval2.west) -| (Eval3left.north);
-  \node[font=\Large] at($(Eval2.west)+(-2,0.3)$){Yes};
-  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){generator mode};
-  \node[font=\Large] at($(Eval2.east)+(2,0.3)$){No};
-  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){motor mode};
+  \node[font=\Large] at($(Eval2.west)+(-2,0.3)$){No};
+  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){motor mode};
+  \node[font=\Large] at($(Eval2.east)+(2,0.3)$){Yes};
+  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){generator mode};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.west)+(-2.2,-3)$)(End1){$v_{d,lim} = 0.95 \cdot sign(v_d) \cdot V_{SV,max}$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.east)+(2.2,-3)$)(End2){$v_{d,lim} = v_d$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{q,lim} = 0.95 \cdot sign(v_q) \cdot V_{SV,max}$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_{SV,max}^2 - v_{q,lim}^2}$};

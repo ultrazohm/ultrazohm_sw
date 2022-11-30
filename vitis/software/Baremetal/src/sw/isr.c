@@ -78,7 +78,7 @@ void ISR_Control(void *data)
    	// mechanical values
    	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
    	codegenInstance.input.Act_w_el = (Global_Data.av.mechanicalRotorSpeed/60.0F)*2.0F*M_PI*rtP.p; // rad/s
-    codegenInstance.input.Act_theta_u_el = fmodf( (Global_Data.av.theta_elec  ) *(float)rtP.p,2.0F*M_PI) + (Global_Data.av.theta_offset);
+    codegenInstance.input.Act_theta_u_el = fmodf( (Global_Data.av.theta_elec) *(float)rtP.p + (Global_Data.av.theta_offset),2.0F*M_PI) ;
    	//
 	// Global_Data.vLR
 	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
@@ -416,12 +416,15 @@ static void CalcCompensatingHarmonics()
 	float complex second_a = 1.629350987730637*cexpf(3.398380412400018*I);
 	float complex second_b = 0.055649462412890*cexpf(-1.071752469500930*I);
 	float complex second_c = second_a + second_b;
+	codegenInstance.input.ordnung_a = 2.0;
+	codegenInstance.input.amplitude_a = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c);
+	codegenInstance.input.phase_a = cargf(second_c);
+	//
 	float ampl_second_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00844669*codegenInstance.input.Ref_I_im_ext_mit+0.02053428); // load depend amplitude for cogging torque compensation
 	float phase_second_ld = 0.2573*cexpf(-0.5571*codegenInstance.input.Ref_I_im_ext_mit)+1.705*cexpf(-0.002585*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
-	//
-	codegenInstance.input.ordnung_a = 2.0;
-	codegenInstance.input.amplitude_a = -(-1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c) + ampl_second_ld);
-	codegenInstance.input.phase_a = cargf(second_c) + phase_second_ld;
+	codegenInstance.input.ordnung_b=2.0;
+	codegenInstance.input.amplitude_b = ampl_second_ld;
+	codegenInstance.input.phase_b = phase_second_ld;
 	//
 	//----------------------------------------------------
 	// fourth harmonic -> harmonic_a
@@ -431,12 +434,16 @@ static void CalcCompensatingHarmonics()
 	float complex fourth_a = 0.243851304483111*cexpf(-1.172847844166133*I);
 	float complex fourth_b = 0.047123962358310*cexpf(0.382933643522585*I);
 	float complex fourth_c = fourth_a + fourth_b;
-	float ampl_fourth_ld =  1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
+	codegenInstance.input.ordnung_c = 4.0;
+	codegenInstance.input.amplitude_c = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c);
+	codegenInstance.input.phase_c = cargf(fourth_c);
+	//
+	float ampl_fourth_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
 	float phase_fourth_ld = 2.464*cexpf(-0.8573*codegenInstance.input.Ref_I_im_ext_mit)+0.9313*cexpf(-0.01067*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
 	//
-	codegenInstance.input.ordnung_b = 4.0;
-	codegenInstance.input.amplitude_b = (-1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c) + ampl_fourth_ld);
-	codegenInstance.input.phase_b = cargf(fourth_c) + phase_fourth_ld;
+	codegenInstance.input.ordnung_d = 4.0;
+	codegenInstance.input.amplitude_d = ampl_fourth_ld;
+	codegenInstance.input.phase_d = phase_fourth_ld;
 	//
 	return codegenInstance;
 }

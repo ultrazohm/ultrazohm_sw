@@ -95,7 +95,7 @@ int main(void)
             //
             // Initial the tunable variables from codegen (LR)
             // Globa_Data
-            Global_Data.av.theta_offset= -5.659824F; // [Theta]= rad; electrical encoder offset angle
+            Global_Data.av.theta_offset= 4*M_PI -5.659824F; // [Theta]= rad; electrical encoder offset angle
             //
             //Control Parameters
             rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders

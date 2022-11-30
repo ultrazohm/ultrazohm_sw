@@ -31,6 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include <complex.h>
+#include "../uz/uz_signals/uz_signals.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -69,16 +70,16 @@ void ISR_Control(void *data)
     // LR
     // Actual Values
     // currents
-    codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.20F;		//A
-    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 1.15F;		//A
-   	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.15F;		//A
+    codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.15F;		//A * 80.0F/4.0F
+    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.10F;		//A * 80.0F/4.0F
+   	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
    	// dc-link voltage
    	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
    	// mechanical values
    	codegenInstance.input.Act_n = Global_Data.av.mechanicalRotorSpeed; 				//[RPM]
-   	codegenInstance.input.Act_w_el = Global_Data.av.mechanicalRotorSpeed;
-   	codegenInstance.input.Act_theta_u_el = (Global_Data.av.theta_elec/rtP.p) + Global_Data.av.theta_offset; 	//[rad] Definition in main.c
-    //
+   	codegenInstance.input.Act_w_el = (Global_Data.av.mechanicalRotorSpeed/60.0F)*2.0F*M_PI*rtP.p; // rad/s
+    codegenInstance.input.Act_theta_u_el = fmodf( (Global_Data.av.theta_elec  ) *(float)rtP.p,2.0F*M_PI) + (Global_Data.av.theta_offset);
+   	//
 	// Global_Data.vLR
 	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
 	//----------------------------------------------------
@@ -94,17 +95,20 @@ void ISR_Control(void *data)
 	//----------------------------------------------------
 	if (current_state==control_state)
     {
+		if(codegenInstance.input.Act_w_el == 0.0F){codegenInstance.input.Act_w_el=0.00001F;}
     	// Start: Control algorithm - only if ultrazohm is in control state
     	// Control for TFM with asymmetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
-    }
-	// duty cycle limitation (LR)
-	if(codegenInstance.output.a_U < 0.0){codegenInstance.output.a_U = 0.0;}
-	if(codegenInstance.output.a_U > 1.0){codegenInstance.output.a_U = 1.0;}
-	if(codegenInstance.output.a_V < 0.0){codegenInstance.output.a_V = 0.0;}
-	if(codegenInstance.output.a_V > 1.0){codegenInstance.output.a_V = 1.0;}
-	if(codegenInstance.output.a_W < 0.0){codegenInstance.output.a_W = 0.0;}
-	if(codegenInstance.output.a_W > 1.0){codegenInstance.output.a_W = 1.0;}
+		// duty cycle limitation (LR)
+		codegenInstance.output.a_U = uz_signals_saturation(codegenInstance.output.a_U,1.0,0.0);
+		codegenInstance.output.a_V = uz_signals_saturation(codegenInstance.output.a_V,1.0,0.0);
+		codegenInstance.output.a_W = uz_signals_saturation(codegenInstance.output.a_W,1.0,0.0);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,false,false,false);
+    	}
+		else{
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,true,true,true);
+    	}
+
 	//----------------------------------------------------
 	// assign duty cycle to PWM-Module
 	//
@@ -113,16 +117,28 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.a_W;
 	//
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
     //
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+     //                   Global_Data.rasv.halfBridge2DutyCycle,
+      //                  Global_Data.rasv.halfBridge3DutyCycle);
 	//
 	//----------------------------------------------------
+    //
+    // assign JavaScope variables
+    Global_Data.av.I_U = codegenInstance.input.Act_Iu;
+    Global_Data.av.I_V = codegenInstance.input.Act_Iv;
+    Global_Data.av.I_W = codegenInstance.input.Act_Iw;
+    Global_Data.av.I_q = codegenInstance.output.I_im_Ref;
+    Global_Data.av.I_d = codegenInstance.output.I_re_Ref;
+    Global_Data.av.a_u = codegenInstance.output.a_U;
+    Global_Data.av.a_v = codegenInstance.output.a_V;
+    Global_Data.av.a_w = codegenInstance.output.a_W;
+    Global_Data.av.U_ZK = codegenInstance.input.Act_U_ZK;
+    Global_Data.av.theta_elec_LR = codegenInstance.input.Act_theta_u_el;
     //
     JavaScope_update(&Global_Data);
 	//
@@ -179,10 +195,12 @@ int Initialize_ISR()
 	codegenInstance.input.fl_field_weakening = 1U; // 1 simple field weakening
 	codegenInstance.input.fl_voltage_limitation = 2U; // in field weakening: 1 prio U_d; 2 Quang
 	codegenInstance.input.fl_decoupling = 1U;
-	codegenInstance.input.fl_angle_prediction = 1U;
+	codegenInstance.input.fl_angle_prediction = 0U;
 	codegenInstance.input.fl_enable_compensation_current = 0U;  // 1 enables the compensation of the asymmetriy
 	codegenInstance.input.fl_enable_compensation_cogging_ = 0U; // 1 enables the compensation of the cogging torque
 	codegenInstance.input.fl_compensat_CT_current= 1U; // 1 the cogging torque compensation gets through the compensation of the asymmetry; 0 direct cogging torque compensation
+	codegenInstance.input.fl_lookup_table= 0U; // 1 use lookup tables for sin/cos; 0: use sin/cos function
+
 	// Initialize reference values (real32_T)
 	codegenInstance.input.Ref_n = 0.0F;
 	codegenInstance.input.Ref_I_re_ext_mit = 0.0F;
@@ -402,7 +420,7 @@ static void CalcCompensatingHarmonics()
 	float phase_second_ld = 0.2573*cexpf(-0.5571*codegenInstance.input.Ref_I_im_ext_mit)+1.705*cexpf(-0.002585*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
 	//
 	codegenInstance.input.ordnung_a = 2.0;
-	codegenInstance.input.amplitude_a = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c) + ampl_second_ld;
+	codegenInstance.input.amplitude_a = -(-1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c) + ampl_second_ld);
 	codegenInstance.input.phase_a = cargf(second_c) + phase_second_ld;
 	//
 	//----------------------------------------------------
@@ -413,11 +431,11 @@ static void CalcCompensatingHarmonics()
 	float complex fourth_a = 0.243851304483111*cexpf(-1.172847844166133*I);
 	float complex fourth_b = 0.047123962358310*cexpf(0.382933643522585*I);
 	float complex fourth_c = fourth_a + fourth_b;
-	float ampl_fourth_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
+	float ampl_fourth_ld =  1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
 	float phase_fourth_ld = 2.464*cexpf(-0.8573*codegenInstance.input.Ref_I_im_ext_mit)+0.9313*cexpf(-0.01067*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
 	//
 	codegenInstance.input.ordnung_b = 4.0;
-	codegenInstance.input.amplitude_b = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c) + ampl_fourth_ld;
+	codegenInstance.input.amplitude_b = (-1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c) + ampl_fourth_ld);
 	codegenInstance.input.phase_b = cargf(fourth_c) + phase_fourth_ld;
 	//
 	return codegenInstance;

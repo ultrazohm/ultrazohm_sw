@@ -77,9 +77,13 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec_LR;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float a_u;
+	float a_v;
+	float a_w;
 	uint32_t  heartbeatframe_content;
 } actualValues;
 

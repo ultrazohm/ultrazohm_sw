@@ -95,7 +95,7 @@ int main(void)
             //
             // Initial the tunable variables from codegen (LR)
             // Globa_Data
-            Global_Data.av.theta_offset=0.0F; // [Theta]= rad; electrical encoder offset angle
+            Global_Data.av.theta_offset= -5.659824F; // [Theta]= rad; electrical encoder offset angle
             //
             //Control Parameters
             rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders
@@ -105,9 +105,9 @@ int main(void)
             rtP.K4 = 0.1* rtP.K1;// integral parameter for resonant PI-controller fourth order
             rtP.K6 = 0.1* rtP.K1;// integral parameter for resonant PI-controller sixth order
             // Limits
-            rtP.i_max_rms = 35.0; // rms current limit in A
+            rtP.i_max_rms = 30.0; // rms current limit in A
             rtP.i_max_peak = rtP.i_max_rms * 1.41 * 1.2;//rtP.i_max_rms * 1.41 * 1.2; // short time current limit in A
-            rtP.i_ref_max = 30; // max. permissible reference current in A
+            rtP.i_ref_max =25; // max. permissible reference current in A
             rtP.n_max = 605.0; // max. continuous speed limit in rpm
             rtP.n_max_peak = rtP.n_max * 1.2; //max. short time speed limit
             rtP.n_ref_max = 600.0; // max. permissible reference speed in rmp

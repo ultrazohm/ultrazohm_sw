@@ -48,13 +48,13 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-	// LR
 	JSO_i_imag,
 	JSO_i_real,
 	JSO_au,
 	JSO_av,
 	JSO_aw,
 	JSO_U_ZK,
+	JSO_Control_Status,
 	JSO_ENDMARKER
 };
 
@@ -62,12 +62,12 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
-	JSSD_FLOAT_Set_imag_current,
-	JSSD_FLOAT_Set_real_current,
-	JSSD_FLOAT_Control_Status,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_Set_imag_current,
+	JSSD_FLOAT_Set_real_current,
+	JSSD_FLOAT_Control_Status,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,

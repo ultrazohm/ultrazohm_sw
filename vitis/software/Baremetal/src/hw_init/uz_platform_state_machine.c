@@ -147,12 +147,12 @@ static void idle_entry(void)
         ultrazohm_state.uz_led_states.runningLED = false;
         ultrazohm_state_machine_event_handled();
         // codegen flags in idle state
-    	codegenInstance.input.fl_power=0;
-    	codegenInstance.input.fl_enable_compensation_current=0.0;
-    	codegenInstance.input.fl_enable_compensation_cogging_=0.0;
-    	codegenInstance.input.Ref_I_im_ext_mit=0;
-    	codegenInstance.input.Ref_I_re_ext_mit=0;
-    	codegenInstance.input.fl_integrator_reset=1;
+    	codegenInstance.input.fl_power=0U;
+    	codegenInstance.input.fl_enable_compensation_current=0U;
+    	codegenInstance.input.fl_enable_compensation_cogging_=0U;
+    	codegenInstance.input.Ref_I_im_ext_mit=0.0F;
+    	codegenInstance.input.Ref_I_re_ext_mit=0.0F;
+    	codegenInstance.input.fl_integrator_reset=0U;
     }
 }
 
@@ -179,8 +179,8 @@ static void control_entry(void)
         ultrazohm_state.uz_led_states.runningLED = true;
         ultrazohm_state_machine_event_handled();
         // codegen enable flags for control state (LR)
-        codegenInstance.input.fl_integrator_reset=0;// no integrator reset during control_state
-        codegenInstance.input.fl_power= 3.0; // enables the single phase control for all three phases
+        codegenInstance.input.fl_integrator_reset=0U;// no integrator reset during control_state
+        codegenInstance.input.fl_power= 3U; // enables the single phase control for all three phases
     }
 }
 
@@ -199,12 +199,12 @@ static void error_entry(void)
         ultrazohm_state.uz_led_states.readyLED = false;
         ultrazohm_state_machine_event_handled();
         // codegen flags in idle state
-    	codegenInstance.input.fl_power=0;
-    	codegenInstance.input.fl_enable_compensation_current=0.0;
-    	codegenInstance.input.fl_enable_compensation_cogging_=0.0;
+    	codegenInstance.input.fl_power=0U;
+    	codegenInstance.input.fl_enable_compensation_current=0U;
+    	codegenInstance.input.fl_enable_compensation_cogging_=0U;
     	codegenInstance.input.Ref_I_im_ext_mit=0;
     	codegenInstance.input.Ref_I_re_ext_mit=0;
-    	codegenInstance.input.fl_integrator_reset=1;
+    	codegenInstance.input.fl_integrator_reset=1U;
     }
 }
 

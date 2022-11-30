@@ -15,7 +15,7 @@
 #define Nout	2	// number of outputs, size of Y
 #define Nx		2	// number of states, size of X
 #define Nopt    (Nh*Nin)	// size of the optimal solution
-#define Nref 	(1*Nout) 	// horizon of reference vector reference, the IP core might be designed for longer horizons
+#define Nref 	Nout	//Nout*Nh 	// horizon of reference vector reference, the IP core might be designed for longer horizons
 
 #define Nsw_combs 8 // 2^3 - number of switching candidates
 

@@ -63,7 +63,7 @@ void fcsmpc_n1(
 	// add loop over all switch positions!
 	// performing B_mul_Pab*Uopt
 	static float B_u[Nout][Nsw_combs] = {};
-//	#pragma HLS ARRAY_PARTITION variable=B_u complete dim=0
+	#pragma HLS ARRAY_PARTITION variable=B_u complete dim=0
 	if(matrices_updated == true) {
 		calc_Bu_Nsw:for (uint3 i = 0; i < Nout; i++){
 			for (uint2 j = 0; j < Nin; j++){

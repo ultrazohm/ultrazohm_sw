@@ -31,7 +31,8 @@ int main()
 			   0.090063875432491,   1.001364858063869
 	};
 
-	int U_opt_golden[3] = {1, 1, 0};
+	int U_opt_golden[3] = {0, 1, 0};
+	int U_opt_golden2[3] = { 0, 1, 0 };
 
 	int U_OPT_out[3] = { 3,3,3 };
 
@@ -90,7 +91,7 @@ int main()
 	// check optimal solution
 	for (int row = 0; row < 3; row++)
 	{
-		if (U_OPT_out[row] != U_opt_golden[row])
+		if (U_OPT_out[row] != U_opt_golden2[row])
 		{
 			bool result_correct = false;
 			mismatches++;

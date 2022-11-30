@@ -13,12 +13,11 @@ add_files controller_wrapper.cpp
 add_files -tb tb_fcsmpc_n1.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas" -csimflags "-Wno-unknown-pragmas"
 open_solution "uz_9eg" -flow_target vivado
 set_part {xczu9eg-ffvc900-1-e}
-create_clock -period 10 -name default
-config_interface -m_axi_latency 0 -register_io scalar_all
+create_clock -period 5 -name default
 config_compile -no_signed_zeros -unsafe_math_optimizations
-config_export -description fcsmpc_n1 -format ip_catalog -rtl vhdl -vendor ultrazohm
+config_export -description fcsmpc_n1 -rtl vhdl -vendor ultrazohm
 source "./fcs_mpc/uz_9eg/directives.tcl"
 csim_design -O
 csynth_design
-cosim_design -rtl vhdl
-export_design -format ip_catalog
+cosim_design -trace_level all
+export_design -rtl vhdl -format ip_catalog

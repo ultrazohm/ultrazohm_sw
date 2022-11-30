@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 2.701
+ * Model version                  : 3.5
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Nov 29 12:04:45 2022
+ * C/C++ source code generated on : Wed Nov 30 10:13:44 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -18,6 +18,7 @@
  *    2. Traceability
  * Validation result: Passed (11), Warning (1), Error (0)
  */
+
 #include "../uz_ParameterID_data.h"
 
 #ifndef RTW_HEADER_ElectricalID_6ph_codegen_h_
@@ -63,20 +64,22 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
-
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
   uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_6ph_codegen' */
   real32_T omega_register[5];          /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T H[4];                       /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T J[4096];                    /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T Vstep[205];                 /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T inv_VSD_c[36];              /* '<S1>/ElectricalID.Test' */
-  real32_T current_meas_array[1024];   /* '<S1>/ElectricalID.Test' */
+  real32_T H[4];                /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T d_a[2048];           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T i_est_e[2048];       /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T J[4096];             /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T Vstep[205];          /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T inv_VSD_l[36];       /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T current_meas_array[1024];
+                                /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T setp_vector[6];
   real32_T fv[6];
   real32_T y[5];
@@ -87,32 +90,32 @@ typedef struct {
   real32_T omega_sum;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T e;                          /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T lambda;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ref_amplitude;              /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T R_corr;                     /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T V0;                         /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T e;                   /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T lambda;              /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T V0;                  /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T R_est;
   real32_T L_est;
-  real32_T R_est_m;
-  real32_T L_est_c;
   int32_T i;
-  int32_T i_k;
+  int32_T i_m;
   int32_T i_c;
+  uint32_T counter;                    /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T sineCounter;                /* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T counter;                    /* '<Root>/ElectricalID_6ph_codegen' */
-  uint16_T n_iters;                    /* '<Root>/ElectricalID_6ph_codegen' */
-  uint16_T z;                          /* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T counter_e;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  uint16_T n_iters;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  uint16_T z;                   /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c13_ElectricalID_6ph_codegen;/* '<S1>/ElectricalID.Test' */
+  uint8_T is_c14_Subchart_Step_Response;
+                                /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T om_con;                    /* '<Root>/ElectricalID_6ph_codegen' */
   boolean_T ia_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
   boolean_T DC_manual;                 /* '<Root>/ElectricalID_6ph_codegen' */
-  boolean_T updateJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
+  boolean_T updateJ;            /* '<S1>/ElectricalID.Subchart_Step_Response' */
 } DW_ElectricalID_6ph_codegen_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -163,7 +166,7 @@ extern void ElectricalID_6ph_codegen_step(RT_MODEL_ElectricalID_6ph_cod_t *const
  *
  * '<Root>' : 'uz_ParameterID6ph/ElectricalID6ph'
  * '<S1>'   : 'uz_ParameterID6ph/ElectricalID6ph/ElectricalID_6ph_codegen'
- * '<S2>'   : 'uz_ParameterID6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Test'
+ * '<S2>'   : 'uz_ParameterID6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response'
  */
 
 /*-

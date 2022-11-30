@@ -1,3 +1,5 @@
+#include "ap_fixed.h"
+
 typedef struct uz_3ph_dq_t{
     float d;        /**< Amplitude of the direct axis component */
     float q;        /**< Amplitude of the quadrature axis component */

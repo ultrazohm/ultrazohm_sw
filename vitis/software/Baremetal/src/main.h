@@ -54,19 +54,27 @@
 
 #include "include/pwm_init.h"
 
+#include "Codegen/uz_singleindex_faultdetection.h"
+#include "Codegen/uz_vsd_opf_fd_v7.h"
+
+#include "uz/uz_filter/uz_filter.h"
+
+#include "uz/uz_FOC/uz_FOC.h"
+
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+
 // Includes IP-Core drivers for 6 Phase FCS-MPC parallel 8
 #include "IP_Cores/uz_vsd_8/uz_vsd_8.h"
-#include "IP_Cores/uz_delay_compensation_8/uz_delay_compensation_8.h"
-#include "IP_Cores/uz_phase_voltages_8/uz_phase_voltages_8.h"
-#include "IP_Cores/uz_prediction_and_cost_function_8/uz_prediction_and_cost_function_8.h"
-#include "IP_Cores/uz_min_cost_function_8/uz_min_cost_function_8.h"
-#include "IP_Cores/uz_switching_states_6Phase_8/uz_switching_states_6Phase_8.h"
-
 
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+
+void uz_park_transform(float* output, float* input, float theta_el_rad);
+void uz_inv_park_transform(float* output, float* input, float theta_el_rad);
 
 #endif /* main_H_ */

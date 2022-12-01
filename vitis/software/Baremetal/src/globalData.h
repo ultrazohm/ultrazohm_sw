@@ -60,9 +60,21 @@ typedef struct _actualValues_ {
 	float I_U; 		// Machine side current in A
 	float I_V; 		// Machine side current in A
 	float I_W; 		// Machine side current in A
+	float I_X;		// Machine side current in A
+	float I_Y;		// Machine side current in A
+	float I_Z;		// Machine side current in A
+	float I_U_Filtered; 	// Machine side current in A
+	float I_V_Filtered; 	// Machine side current in A
+	float I_W_Filtered; 	// Machine side current in A
+	float I_X_Filtered;		// Machine side current in A
+	float I_Y_Filtered;		// Machine side current in A
+	float I_Z_Filtered;		// Machine side current in A
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
+	float U_X;		// Machine side voltage in V
+	float U_Y;		// Machine side voltage in V
+	float U_Z;		// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -75,13 +87,31 @@ typedef struct _actualValues_ {
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
 	float I_d;
 	float I_q;
+	float I_alpha;
+	float I_beta;
+	float I_x;
+	float I_y;
+	float I_z1;
+	float I_z2;
 	float U_d;
 	float U_q;
+	float U_alpha;
+	float U_beta;
+	float U_x;
+	float U_y;
+	float U_z1;
+	float U_z2;
+	float I_d_ref;
+	float I_q_ref;
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
-	uint32_t  heartbeatframe_content;
+	float kp_d;
+	float kp_q;
+	float ki_d;
+	float ki_q;
+	uint32_t heartbeatframe_content;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -97,6 +127,19 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+
+	float ref_halfBridge1DutyCycle;
+	float ref_halfBridge2DutyCycle;
+	float ref_halfBridge3DutyCycle;
+	float ref_halfBridge4DutyCycle;
+	float ref_halfBridge5DutyCycle;
+	float ref_halfBridge6DutyCycle;
+	float ref_halfBridge7DutyCycle;
+	float ref_halfBridge8DutyCycle;
+	float ref_halfBridge9DutyCycle;
+	float ref_halfBridge10DutyCycle;
+	float ref_halfBridge11DutyCycle;
+	float ref_halfBridge12DutyCycle;
 } referenceAndSetValues;
 
 typedef struct{

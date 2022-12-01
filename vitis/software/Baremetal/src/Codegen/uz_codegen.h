@@ -13,6 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
+#ifndef UZ_DOCEGEN_H
+#define UZ_DOCEGEN_H
+
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 
 typedef struct{
@@ -25,3 +28,5 @@ typedef struct{
 
 void uz_codegen_init(uz_codegen *self);
 void uz_codegen_step(uz_codegen *self);
+
+#endif //UZ_DOCEGEN_H

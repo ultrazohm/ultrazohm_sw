@@ -61,6 +61,14 @@ Multiphase CIL
 
 incl. init files
 
+..  toctree::
+    :maxdepth: 1
+    :glob:
+    
+    uz_cil_examples/uz_6ph_cil_example
+
+
+
 References
 ==========
 

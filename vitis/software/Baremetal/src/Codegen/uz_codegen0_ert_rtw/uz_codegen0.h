@@ -7,21 +7,23 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.28
- * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 18:26:20 2021
+ * Model version                  : 3.5
+ * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
+ * C/C++ source code generated on : Fri Dec  2 15:28:40 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: All passed
+ * Validation result: Passed (8), Warning (1), Error (0)
  */
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
 #include <math.h>
+#include <string.h>
+#include <stddef.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
@@ -61,27 +63,71 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  real32_T DiscreteTimeIntegrator_DSTATE;/* '<S1>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S1>/Discrete-Time Integrator1' */
-  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
+  real_T iLrange_NL[8];
+  real_T iRrange_NL[8];
+  real_T iLrange_NR[8];
+  real_T iLrange_NL_m;
+  real_T iRrange_NL_c;
+  real_T iLrange_NR_k;
+  real_T iRrange_NR;
+  real32_T correctionCurve_d[3150];    /* '<S1>/Data Store Memory1' */
+  real32_T correctionCurve_q[3150];    /* '<S1>/Data Store Memory2' */
+  real32_T varargin_1[9];
+  real32_T b_iLrange_NL[8];
+  real32_T b_iRrange_NL[8];
+  real32_T b_iLrange_NR[8];
+  real32_T b_iRrange_NR[8];
+  real32_T fv[8];
+  real32_T fv1[8];
+  real32_T step;                       /* '<S1>/Read Memory Function' */
+  real32_T wait;                       /* '<S1>/Read Memory Function' */
+  real32_T step_p;                     /* '<S1>/MATLAB Function' */
+  real32_T NL;
+  real32_T NR;
+  real32_T factorNL;
+  real32_T factorNR;
+  real32_T index_NL;
+  real32_T iL_NL;
+  int32_T iL_NVec;
+  int32_T iR_NVec;
 } DW;
+
+/* Constant parameters (default storage) */
+typedef struct {
+  /* Computed Parameter: InvImp_d_Value
+   * Referenced by: '<S1>/InvImp_d'
+   */
+  real32_T InvImp_d_Value[8];
+
+  /* Computed Parameter: InvImp_d1_Value
+   * Referenced by: '<S1>/InvImp_d1'
+   */
+  real32_T InvImp_d1_Value[8];
+
+  /* Computed Parameter: NVec_Value
+   * Referenced by: '<S1>/NVec'
+   */
+  real32_T NVec_Value[9];
+} ConstP;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T Sum1;                       /* '<Root>/Sum1' */
-  real32_T Sum2;                       /* '<Root>/Sum2' */
-  real32_T reset_integrator;           /* '<Root>/reset_integrator' */
-  real32_T time;                       /* '<Root>/time' */
-  real32_T Sum4;                       /* '<Root>/Sum4' */
+  real32_T angle;                      /* '<Root>/angle' */
+  real32_T Id_act;                     /* '<Root>/Id_act' */
+  real32_T Id_ref;                     /* '<Root>/Id_ref' */
+  real32_T omega_el;                   /* '<Root>/omega_el' */
+  real32_T Iq_act;                     /* '<Root>/Iq_act' */
+  real32_T Iq_ref;                     /* '<Root>/Iq_ref' */
+  boolean_T FOC_ENABLE_HC;             /* '<Root>/FOC_ENABLE_HC' */
+  boolean_T FOC_READ_ILR_MEMORY;       /* '<Root>/FOC_READ_ILR_MEMORY' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T SumOut;                     /* '<Root>/SumOut' */
-  real32_T integrator;                 /* '<Root>/integrator' */
-  real32_T sineOut;                    /* '<Root>/sineOut' */
-  real32_T SumOut1;                    /* '<Root>/SumOut1' */
-  real32_T timeFeedback;               /* '<Root>/timeFeedback' */
+  real32_T Idq_ref_ILR[2];             /* '<Root>/Idq_ref_ILR' */
+  real32_T memoryd;                    /* '<Root>/memoryd' */
+  real32_T memoryq;                    /* '<Root>/memoryq' */
+  real32_T step_out;                   /* '<Root>/step_out' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -91,17 +137,12 @@ struct tag_RTM {
   DW *dwork;
 };
 
+/* Constant parameters (default storage) */
+extern const ConstP rtConstP;
+
 /* Model entry point functions */
 extern void uz_codegen0_initialize(RT_MODEL *const rtM);
 extern void uz_codegen0_step(RT_MODEL *const rtM);
-
-/*-
- * These blocks were eliminated from the model due to optimizations:
- *
- * Block '<S1>/Constant1' : Unused code path elimination
- * Block '<S1>/Product' : Unused code path elimination
- * Block '<S1>/Product1' : Unused code path elimination
- */
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -122,6 +163,8 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  *
  * '<Root>' : 'uz_codegen'
  * '<S1>'   : 'uz_codegen/uz_codegen'
+ * '<S2>'   : 'uz_codegen/uz_codegen/MATLAB Function'
+ * '<S3>'   : 'uz_codegen/uz_codegen/Read Memory Function'
  */
 
 /*-

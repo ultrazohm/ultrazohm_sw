@@ -15,10 +15,12 @@
 
 // Includes from own files
 #include "main.h"
+#include "Codegen/uz_codegen.h"
 
 XGpio output;
 int axi_gpio_data = 0xFFFFFFFF;
 int axi_gpio_init_ok = 0U;
+uz_codegen codegenInstance;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -121,6 +123,7 @@ int main(void)
             Global_Data.av.U_ZK = 600.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             Global_Data.objects.foc_speed = uz_SpeedControl_init(config_speed);
+            uz_codegen_init(&codegenInstance);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

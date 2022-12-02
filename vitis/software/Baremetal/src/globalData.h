@@ -93,6 +93,9 @@ typedef struct _actualValues_ {
 	float d_Ki;
 	float q_Kp;
 	float q_Ki;
+	float memoryd;
+	float memoryq;
+	float step;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -108,6 +111,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	bool FOC_ENABLE_HC_onoff;
+	bool FOC_READ_ILR_MEMORY_onoff;
 } referenceAndSetValues;
 
 typedef struct{

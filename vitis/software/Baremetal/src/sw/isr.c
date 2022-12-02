@@ -68,6 +68,9 @@ struct uz_DutyCycle_t dutycyc = {0};
 
 uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
 
+extern uz_codegen codegenInstance;
+extern struct uz_PMSM_t config_PMSM;
+
 #define PHASE_CURRENT_CONV	42.6891f
 
 
@@ -109,6 +112,29 @@ void ISR_Control(void *data)
 
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
+
+	codegenInstance.input.Id_act = dq_currents.d;
+	codegenInstance.input.Iq_act = dq_currents.q;
+	codegenInstance.input.Id_ref = i_dq_ref.d;
+	codegenInstance.input.Iq_ref = i_dq_ref.q;
+	codegenInstance.input.angle = Global_Data.av.theta_elec;
+	codegenInstance.input.omega_el = Global_Data.av.mechanicalRotorSpeed*3.1415/30*config_PMSM.polePairs;
+	codegenInstance.input.FOC_ENABLE_HC = Global_Data.rasv.FOC_ENABLE_HC_onoff;
+	codegenInstance.input.FOC_READ_ILR_MEMORY = Global_Data.rasv.FOC_READ_ILR_MEMORY_onoff;
+	uz_codegen_step(&codegenInstance);
+
+
+	if (Global_Data.rasv.FOC_ENABLE_HC_onoff == true) {
+	i_dq_ref.d = codegenInstance.output.Idq_ref_ILR[0];
+	i_dq_ref.q = codegenInstance.output.Idq_ref_ILR[1];
+	} else {
+		i_dq_ref.d = Global_Data.av.i_d_ref;
+		i_dq_ref.q = Global_Data.av.i_q_ref;
+	}
+
+	Global_Data.av.memoryd = codegenInstance.output.memoryd;
+	Global_Data.av.memoryq = codegenInstance.output.memoryq;
+	Global_Data.av.step = codegenInstance.output.step_out;
 
 	if(fabs(three_ph_currents.a) > MAX_PHASE_CURRENT_AMP || fabs(three_ph_currents.b) > MAX_PHASE_CURRENT_AMP || fabs(three_ph_currents.c) > MAX_PHASE_CURRENT_AMP) {
 		uz_assert(0);

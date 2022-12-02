@@ -239,20 +239,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.FOC_ENABLE_HC_onoff = true;
 			break;
 
 		case (My_Button_6):
-
+		data->rasv.FOC_ENABLE_HC_onoff = false;
 			break;
 
 		case (My_Button_7):
-
+		data->rasv.FOC_READ_ILR_MEMORY_onoff = true;
 
 			break;
 
 		case (My_Button_8):
-
+		data->rasv.FOC_READ_ILR_MEMORY_onoff = false;
 			break;
 
 		case (Error_Reset):

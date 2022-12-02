@@ -92,6 +92,18 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float theta_m_offset_comp;
 	float polepairs;
+	float i_alpha_ref;
+	float i_beta_ref;
+	float i_x_ref;
+	float i_y_ref;
+	float i_z1_ref;
+	float i_z2_ref;
+	float u_alpha_ref;
+	float u_beta_ref;
+	float u_x_ref;
+	float u_y_ref;
+	float u_z1_ref;
+	float u_z2_ref;
 	float R_a1;
 	float R_b1;
 	float R_c1;

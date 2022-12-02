@@ -91,6 +91,22 @@ enum JS_OberservableData {
 	JSO_R_avg_c2,
 	JSO_Testvalue1,
 	JSO_Testvalue2,
+	JSO_i_alpha_ref,
+	JSO_i_beta_ref,
+	JSO_i_x_ref,
+	JSO_i_y_ref,
+	JSO_i_z1_ref,
+	JSO_i_z2_ref,
+	JSO_u_alpha_ref,
+	JSO_u_beta_ref,
+	JSO_u_x_ref,
+	JSO_u_y_ref,
+	JSO_u_z1_ref,
+	JSO_u_z2_ref,
+	JSO_x_error,
+	JSO_y_error,
+	JSO_ref_x_n_voltage,
+	JSO_ref_y_n_voltage,
 	JSO_ENDMARKER
 };
 
@@ -157,6 +173,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSSD_FLOAT_display_OPF,
 	JSSD_ENDMARKER
 };
 
@@ -202,7 +219,7 @@ enum gui_button_mapping {
 	speed_ref,
 	theta_offset,
 	send_field_5,
-	send_field_6,
+	display_OPF,
 	SND_FLD_ENDMARKER
 
 
@@ -228,7 +245,7 @@ enum gui_button_mapping {
 	i_d,
 	i_q,
 	ISR_ExecTime_us,
-	ISR_Period_us,
+	display_OPF,
 	RCV_FLD_ENDMARKER
 
 
@@ -241,7 +258,7 @@ enum gui_button_mapping {
 	A,
 	A,
 	µs,
-	µs,
+	-,
 	RCV_LABELS_ENDMARKER
 
 
@@ -255,12 +272,13 @@ enum gui_button_mapping {
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_display_OPF,
 	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

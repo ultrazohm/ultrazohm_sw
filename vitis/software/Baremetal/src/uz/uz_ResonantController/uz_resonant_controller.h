@@ -16,7 +16,6 @@
 #ifndef UZ_RESONANTCONTROLLER_H
 #define UZ_RESONANTCONTROLLER_H
 
-#include "Resonant_Controller_ert_rtw/Resonant_Controller.h"
 
 /**
  * @brief Struct definition for uz_resonantController
@@ -27,27 +26,25 @@ typedef struct uz_resonantController_t uz_resonantController_t;
 /**
  * @brief Configuration struct for PI-Controller. Pass to init function. Accessible by the user.
  */
-struct uz_resonantController_config {
-	float sampling_time;			/**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
-	float gain;						/**< Gain of the resonant Controller*/
-	float harmonic_order;			/**< Order of harmonic to be controlled*/
-	float fundamental_frequency;	/**< Fundamental Frequency in rad/s */
-	float lower_limit;				/**< Lower limit for the output limitation */
-	float upper_limit;				/**< Upper limit for the output limitation. Must be greater than lower limit */
-	float antiwindup_gain;			/**< Gain of anti-windup feedback*/
-	float in_reference_value;		/**< Input reference value*/
-	float in_measured_value;		/**< Input measured value*/
+struct uz_resonantController_config
+{
+    float sampling_time;         /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
+    float gain;                  /**< Gain of the resonant Controller*/
+    float harmonic_order;        /**< Order of harmonic to be controlled*/
+    float fundamental_frequency; /**< Fundamental Frequency in rad/s */
+    float lower_limit;           /**< Lower limit for the output limitation */
+    float upper_limit;           /**< Upper limit for the output limitation. Must be greater than lower limit */
+    float antiwindup_gain;       /**< Gain of anti-windup feedback*/
+    float in_reference_value;    /**< Input reference value*/
+    float in_measured_value;     /**< Input measured value*/
 };
-
-
-
 
 /**
  * @brief init function for the resonant controller
  * @param struct uz_resonantController_config, config for the resonant controller
  * @return uz_resonant_controller*, pointer to the resonant controller
  */
-uz_resonantController_t* uz_resonantController_init(struct uz_resonantController_config config);
+uz_resonantController_t *uz_resonantController_init(struct uz_resonantController_config config);
 
 /**
  * @brief step function of the resonant controller, steps the controller once
@@ -66,14 +63,12 @@ float uz_resonantController_step(uz_resonantController_t *self, float in_referen
  */
 void uz_resonantController_reset(uz_resonantController_t *self);
 
-
 /**
  * @brief returns output of the resonant controller
  * @param self pointer to uz_resonantController_t* object
  * @return float output value
  */
 float uz_resonantController_get_output(uz_resonantController_t *self);
-
 
 /**
  * @brief sets config of resonant controller
@@ -83,5 +78,4 @@ float uz_resonantController_get_output(uz_resonantController_t *self);
  */
 void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config);
 
-
-#endif //UZ_RESONANTCONTROLLER_H
+#endif // UZ_RESONANTCONTROLLER_H

@@ -39,6 +39,9 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float theta_mech_calc_from_resolver;
+extern float xy_error[2];
+extern float ref_xy_n_voltage[2];
+extern float display_OPF_f;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -126,10 +129,25 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_R_avg_b2]   	= &data->av.R_avg_b2;
 	js_ch_observable[JSO_R_avg_c2]   	= &data->av.R_avg_c2;
 
+	js_ch_observable[JSO_i_alpha_ref]   = &data->av.i_alpha_ref;
+	js_ch_observable[JSO_i_beta_ref]   		= &data->av.i_beta_ref;
+	js_ch_observable[JSO_i_x_ref]   		= &data->av.i_x_ref;
+	js_ch_observable[JSO_i_y_ref]   		= &data->av.i_y_ref;
+	js_ch_observable[JSO_i_z1_ref]   		= &data->av.i_z1_ref;
+	js_ch_observable[JSO_i_z2_ref]   		= &data->av.i_z2_ref;
+	js_ch_observable[JSO_u_alpha_ref]   	= &data->av.u_alpha_ref;
+	js_ch_observable[JSO_u_beta_ref]   		= &data->av.u_beta_ref;
+	js_ch_observable[JSO_u_x_ref]   		= &data->av.u_x_ref;
+	js_ch_observable[JSO_u_y_ref]   		= &data->av.u_y_ref;
+	js_ch_observable[JSO_u_z1_ref]   		= &data->av.u_z1_ref;
+	js_ch_observable[JSO_u_z2_ref]   		= &data->av.u_z2_ref;
 
-	js_ch_observable[JSO_Testvalue1]   	= &u_dq_ref_dq.d;
-	js_ch_observable[JSO_Testvalue2]   	= &u_dq_ref_dq.q;
-
+	js_ch_observable[JSO_Testvalue1]   		= &u_dq_ref_dq.d;
+	js_ch_observable[JSO_Testvalue2]   		= &u_dq_ref_dq.q;
+	js_ch_observable[JSO_x_error]   		= &xy_error[0];
+	js_ch_observable[JSO_y_error]   		= &xy_error[1];
+	js_ch_observable[JSO_ref_x_n_voltage]   	= &ref_xy_n_voltage[0];
+	js_ch_observable[JSO_ref_y_n_voltage]   	= &ref_xy_n_voltage[1];
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -150,6 +168,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
 	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
+	js_slowDataArray[JSSD_FLOAT_display_OPF] 			= &(display_OPF_f);
 
 	return Status;
 }

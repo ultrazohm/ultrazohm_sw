@@ -1,14 +1,14 @@
 #include "../include/uz_CIL_6ph.h"
 
 
-uz_pmsm_model6ph_dq_t* cil_pmsm = NULL; 
+//uz_pmsm_model6ph_dq_t* cil_pmsm = NULL; 
 uz_pmsm6ph_transformation_t* cil_transformation = NULL;
 uz_inverter_3ph_t* cil_inverter1 = NULL;
 uz_inverter_3ph_t* cil_inverter2 = NULL;
 uz_PWM_SS_2L_t* cil_pwm1 = NULL;
 uz_PWM_SS_2L_t* cil_pwm2 = NULL;
 uz_CIL_objects_t cil_objects = {0};
-
+/*
 struct uz_pmsm_model6ph_dq_config_t cil_pmsm_comfig = {
     .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f,
@@ -25,7 +25,7 @@ struct uz_pmsm_model6ph_dq_config_t cil_pmsm_comfig = {
     .coulomb_friction_constant = 0.001f,
     .inertia = 0.001f,
     .simulate_mechanical_system = true,
-    .switch_pspl = false};
+    .switch_pspl = false};*/
 
 struct uz_pmsm6ph_config_t cil_transformation_config = {
     .base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
@@ -73,7 +73,7 @@ struct uz_PWM_SS_2L_config_t cil_pwm2_config = {
 
 void init_CIL_6phase(uz_CIL_objects_t* cil_objects)
 {
-    cil_objects->cil_pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
+    //cil_objects->cil_pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
     cil_objects->cil_transformation = uz_pmsm6ph_transformation_init(cil_transformation_config);
     cil_objects->cil_inverter1 = uz_inverter_3ph_init(cil_inverter1_config);
     cil_objects->cil_inverter2 = uz_inverter_3ph_init(cil_inverter2_config);

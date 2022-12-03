@@ -16,14 +16,14 @@
 #ifndef CIL_INIT_
 #define CIL_INIT_
 #include "xparameters.h"
-#include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+//#include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
 #include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include <stddef.h>
 
 typedef struct uz_CIL_objects_t{
-    uz_pmsm_model6ph_dq_t* cil_pmsm; 
+    //uz_pmsm_model6ph_dq_t* cil_pmsm; 
     uz_pmsm6ph_transformation_t* cil_transformation;
     uz_inverter_3ph_t* cil_inverter1;
     uz_inverter_3ph_t* cil_inverter2;

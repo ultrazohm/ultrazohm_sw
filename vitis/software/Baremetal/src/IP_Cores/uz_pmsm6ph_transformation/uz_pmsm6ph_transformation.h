@@ -1,5 +1,8 @@
-#pragma once
+#ifndef UZ_CIL6PH_TRAFO_H
+#define UZ_CIL6PH_TRAFO_H
 
+#include <stdint.h>
+#include <stdbool.h>
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
 typedef struct uz_pmsm6ph_transformation_t uz_pmsm6ph_transformation_t;
@@ -36,3 +39,4 @@ uz_6ph_abc_t uz_pmsm6ph_transformation_get_currents(uz_pmsm6ph_transformation_t*
  * @return float theta electric
  */
 float uz_pmsm6ph_transformation_get_theta_el(uz_pmsm6ph_transformation_t* self);
+#endif

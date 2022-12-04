@@ -21,17 +21,18 @@
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include <stddef.h>
+#include <stdint.h>
 
-typedef struct uz_CIL_objects_t{
+typedef struct uz_CIL_6ph_objects_t{
     //uz_pmsm_model6ph_dq_t* cil_pmsm; 
     uz_pmsm6ph_transformation_t* cil_transformation;
     uz_inverter_3ph_t* cil_inverter1;
     uz_inverter_3ph_t* cil_inverter2;
     uz_PWM_SS_2L_t* cil_pwm1;
     uz_PWM_SS_2L_t* cil_pwm2;
-}uz_CIL_objects_t;
+}uz_CIL_6ph_objects_t;
 
-void init_CIL_6phase(uz_CIL_objects_t* cil_objects);
-void init_PWM_CIL_6phase(uz_CIL_objects_t* cil_objects);
+void init_CIL_6ph(uz_CIL_6ph_objects_t* cil_objects);
+void init_PWM_CIL_6ph(uz_CIL_6ph_objects_t* cil_objects);
 
 #endif

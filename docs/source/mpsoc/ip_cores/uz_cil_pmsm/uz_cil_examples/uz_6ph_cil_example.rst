@@ -33,7 +33,7 @@ Values of an imaginary six-phase machine have been used, but they can be exchang
   ...
   // include init file and create reference the struct that holds al pointers
   #include "include/uz_CIL_6ph.h"
-  extern uz_CIL_objects_t cil_objects;
+  uz_CIL_6ph_objects_t cil_objects;
   // create PI controllers
   #include "uz/uz_piController/uz_piController.h"
   const struct uz_PI_Controller_config PI_config = {
@@ -50,9 +50,9 @@ Values of an imaginary six-phase machine have been used, but they can be exchang
     ...
     case init_ip_cores:
       // init transfromation, pmsm and inverters
-      init_CIL_6phase(&cil_objects);
+      init_CIL_6ph(&cil_objects);
       // init pwm ip-cores, only if own ip-cores are used
-      init_PWM_CIL_6phase(&cil_objects);
+      init_PWM_CIL_6ph(&cil_objects);
       // init PI-controllers
       PI_d_current = uz_PI_Controller_init(PI_config);
       PI_q_current = uz_PI_Controller_init(PI_config);
@@ -64,7 +64,7 @@ Values of an imaginary six-phase machine have been used, but they can be exchang
   ...
   // include necessary files and reference struct that holds pointers to IP-cores
   #include "../include/uz_CIL_6ph.h"
-  extern uz_CIL_objects_t cil_objects;
+  extern uz_CIL_6ph_objects_t cil_objects;
 
   // Data for PMSM
   float omega_mech = 100.0f;

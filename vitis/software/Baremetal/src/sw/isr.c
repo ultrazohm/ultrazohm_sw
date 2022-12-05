@@ -53,64 +53,24 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+
+
+// general variables:
+
 int N1N2 = 1;
 int ML = 1;
-
-uz_6ph_abc_t i_6phase = {0};
-uz_6ph_abc_t i_6phase_filtered = {0};
-uz_6ph_alphabeta_t i_abxyz1z2 = {0};
-uz_6ph_alphabeta_t i_abxyz1z2_filtered = {0};
-
 float theta_ = 0;
 
-float vsd_output[6] = {0};
-float vsd_output_hyst[6] = {0};
-float vsd_output_filtered[6] = {0};
 
-float vsd_output_V4[6] = {0};
-float vsd_output_hyst_V4[6] = {0};
-float vsd_output_filtered_V4[6] = {0};
-
-
-int toggle = 0;
-float Rb1[5] = {0};
-float Rb1_filtered[5] = {0};
-
-float singleIndex_FD_R = 0.0f;
-
-uz_6phFD_indices R_FD = {0};
-uz_6phFD_indices R_FD_Filt = {0};
-uz_6phFD_indices R_FD_Filt_hyst = {0};
-uz_6phFD_indices R_FD_eval = {0};
-
-uz_6phFD_indices FD_indices = {0};
-
-extern uz_singleindex_faultdetection singleindex_FD;
-
+// control --------------------------------------
 
 extern uz_resonantController_t* rc_2H_x;
 extern uz_resonantController_t* rc_2H_y;
-extern uz_resonantController_t* rc_5H_x;
-extern uz_resonantController_t* rc_5H_y;
-extern uz_resonantController_t* rc_7H_x;
-extern uz_resonantController_t* rc_7H_y;
-
-extern uz_resonantController_t* rc_3H_x;
-extern uz_resonantController_t* rc_3H_y;
-extern uz_resonantController_t* rc_3H_a;
-extern uz_resonantController_t* rc_3H_b;
-extern uz_resonantController_t* rc_5H_a;
-extern uz_resonantController_t* rc_5H_b;
-extern uz_resonantController_t* rc_7H_a;
-extern uz_resonantController_t* rc_7H_b;
-
-
 extern uz_resonantController_t* rc_6H_x;
 extern uz_resonantController_t* rc_6H_y;
+
 extern uz_resonantController_t* rc_2H_d;
 extern uz_resonantController_t* rc_2H_q;
-extern uz_resonantController_t* rc_8H_d;
-extern uz_resonantController_t* rc_8H_q;
 extern uz_resonantController_t* rc_12H_d;
 extern uz_resonantController_t* rc_12H_q;
 
@@ -123,11 +83,10 @@ extern uz_resonantController_t* rc_9H_z2;
 
 
 
-float r_c_VR;
-float r_c_Tsw;
-float r_c_omega_r;
 
+// moving average filter --------------------------------------
 
+int toggle = 0;
 extern uz_movingAverageFilter_t* movAvFilter_R1;
 extern uz_movingAverageFilter_t* movAvFilter_R2;
 extern uz_movingAverageFilter_t* movAvFilter_R3;
@@ -135,17 +94,44 @@ extern uz_movingAverageFilter_t* movAvFilter_R4;
 extern uz_movingAverageFilter_t* movAvFilter_R5;
 extern uz_movingAverageFilter_t* movAvFilter_R6;
 
-extern uz_movingAverageFilter_t* movAvFilter_temp1;
-extern uz_movingAverageFilter_t* movAvFilter_temp2;
-extern uz_movingAverageFilter_t* movAvFilter_temp3;
-extern uz_movingAverageFilter_t* movAvFilter_temp4;
-extern uz_movingAverageFilter_t* movAvFilter_temp5;
+float omega_el_rad_per_sec = 0.0f;
+int mov_average_filter_length = 0;
+int mov_average_filter_length1 = 0;
+int mov_average_filter_length2 = 0;
+int mov_average_filter_length3 = 0;
+int mov_average_filter_length4 = 0;
+int mov_average_filter_length5 = 0;
+
+float movave_length = 0.0f;
+
+
+
+// open-phase-fault detection --------------------------------------
+
+uz_6phFD_indices R_FD = {0};
+uz_6phFD_indices R_FD_Filt = {0};
+uz_6phFD_indices R_FD_Filt_hyst = {0};
+uz_6phFD_indices R_FD_eval = {0};
+
+uz_6phFD_indices FD_indices = {0};
 
 float filteredFDIndices[6] = {0};
 
-float tempfilteredFDIndices[5] = {0};
+int opf_phases[6] = {0};
+int num_OPF = 0;
 
-float testvalue = 0.0f;
+bool no_reset = false;
+int OPF_a1;
+int OPF_b1;
+int OPF_c1;
+int OPF_a2;
+int OPF_b2;
+int OPF_c2;
+int display_OPF;
+float display_OPF_f;
+
+
+
 
 
 //parameters for 6ph FOC:
@@ -154,8 +140,7 @@ extern uz_FOC* FOC_dq;
 extern struct uz_FOC_config config_FOC;
 
 
-float error_z1z2_s[2];
-float error_z1z2_n[2];
+
 
 float dq_error[2];
 
@@ -163,11 +148,10 @@ float xy2Rout[2];
 float xy6Rout[2];
 float dq2Rout[2];
 float dq12Rout[2];
-float dq8Rout[2];
 float z1z2_1Rout[2];
 float z1z2_3Rout[2];
 float z1z2_9Rout[2];
-int ref_counter = 0;
+
 
 
 uz_6ph_abc_t m_6ph_abc_currents = {0};
@@ -191,78 +175,36 @@ extern uz_PI_Controller* PI_y_n;
 extern uz_PI_Controller* PI_z1;
 extern uz_PI_Controller* PI_z2;
 
-float m_xy_currents[2];
-float ref_xy_currents[2];
 
-float m_xy_s_currents[2];
-float ref_xy_s_currents[2];
-
-float m_xy_n_currents[2];
-float ref_xy_n_currents[2];
-
-float xy_error[2];
-
-float m_z1z2_currents[2];
-float ref_z1z2_currents[2];
-
-float m_z1z2_s_currents[2];
-float ref_z1z2_s_currents[2];
-
-float m_z1z2_n_currents[2];
-float ref_z1z2_n_currents[2];
-
-float ref_xy_voltage[2];
-float ref_xy_voltage_n[2];
-float ref_xy_voltage_s[2];
-
-float ref_xy_s_voltage[2];
-float ref_xy_n_voltage[2];
-
-float ref_z1z2_voltage[2];
-float ref_z1z2_voltage_n[2];
-float ref_z1z2_voltage_s[2];
-
-float z1z2_error[2];
-
-float ref_z1z2_s_voltage[2];
-float ref_z1z2_n_voltage[2];
-
-float m_ab_currents[2];
-float ref_ab_currents[2];
-float ref_ab_n_currents[2];
-float m_ab_n_currents[2];
-float ref_ab_n_voltage[2];
-float ref_ab_voltage_n[2];
-float ref_dq_currents[2];
-
-float m_ab_n_currents_testvariable[2];
-float m_ab_n_currents_testvariable2[2];
-float m_ab_n_currents_testvariable3[2];
-
-
-uz_6ph_abc_t ref_6ph_abc_voltage = {0};
-uz_6ph_alphabeta_t ref_6ph_alphabeta_voltage = {0};
-
-uz_3ph_abc_t ref_volage_phase_set1 = {0};
-uz_3ph_abc_t ref_volage_phase_set2 = {0};
 
 uz_3ph_dq_t ref_dq0_currents = {0};
 uz_3ph_dq_t ref_dq0_n_currents = {0};
 uz_3ph_alphabeta_t ref_alphabeta_currents = {0};
+float m_xy_currents[2];
+float ref_xy_currents[2];
+float m_xy_n_currents[2];
+float ref_xy_n_currents[2];
+float m_z1z2_currents[2];
+float ref_z1z2_currents[2];
+
+
+float xy_error[2];
+float z1z2_error[2];
+
+
+
+
+float ref_xy_voltage[2];
+float ref_xy_voltage_n[2];
+float ref_xy_n_voltage[2];
+float ref_z1z2_voltage[2];
+uz_6ph_abc_t ref_6ph_abc_voltage = {0};
+uz_6ph_alphabeta_t ref_6ph_alphabeta_voltage = {0};
+uz_3ph_abc_t ref_volage_phase_set1 = {0};
+uz_3ph_abc_t ref_volage_phase_set2 = {0};
 
 struct uz_DutyCycle_t dutyCycles_set1 = {0};
 struct uz_DutyCycle_t dutyCycles_set2 = {0};
-
-
-float omega_el_rad_per_sec = 0.0f;
-int mov_average_filter_length = 0;
-int mov_average_filter_length1 = 0;
-int mov_average_filter_length2 = 0;
-int mov_average_filter_length3 = 0;
-int mov_average_filter_length4 = 0;
-int mov_average_filter_length5 = 0;
-
-float movave_length = 0.0f;
 
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;
 extern struct uz_d_gan_inverter_t* gan_inverter_D4;
@@ -280,21 +222,9 @@ bool z1z2_1H = true;
 bool z1z2_3H = true;
 bool z1z2_9H = true;
 bool z1z2_control = true;
-bool xy_5_7 = false;
 
 
-int opf_phases[6] = {0};
-int num_OPF = 0;
 
-bool no_reset = false;
-int OPF_a1;
-int OPF_b1;
-int OPF_c1;
-int OPF_a2;
-int OPF_b2;
-int OPF_c2;
-int display_OPF;
-float display_OPF_f;
 
 
 //==============================================================================================================================================================
@@ -330,14 +260,6 @@ void ISR_Control(void *data)
 
 	m_6ph_abc_currents.c2 = - m_6ph_abc_currents.a1 - m_6ph_abc_currents.b1 - m_6ph_abc_currents.c1 -m_6ph_abc_currents.a2 - m_6ph_abc_currents.b2;
 
-/*
-    m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4)*1.0712 - 0.0487;
-	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3)*1.0556 + 0.0226;
-	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2)*1.0552 - 0.0176;
-	m_6ph_abc_currents.a2 = (-1.0*Global_Data.aa.A2.me.ADC_B8)*1.0697 - 0.0055;
-	m_6ph_abc_currents.b2 = (-1.0*Global_Data.aa.A2.me.ADC_B7)*1.0564 + 0.0029;
-	m_6ph_abc_currents.c2 = (-1.0*Global_Data.aa.A2.me.ADC_B6)*1.0561 - 0.0266;
-*/
 
 	//crude over current protection
 	if(fabs(m_6ph_abc_currents.a1) > 30.0f || fabs(m_6ph_abc_currents.b1) > 30.0f || fabs(m_6ph_abc_currents.c1) > 30.0f || fabs(m_6ph_abc_currents.a2) > 30.0f || fabs(m_6ph_abc_currents.b2) > 30.0f || fabs(m_6ph_abc_currents.c2) > 30.0f){
@@ -410,20 +332,8 @@ void ISR_Control(void *data)
 		// calculation of fault indices
     R_FD = uz_vsd_opf_6ph_faultdetection(m_6ph_alphabeta_currents);
     	// hysteresis filter
-    R_FD_Filt = uz_vsd_fd_hysteresis_filter(R_FD, 0.9, 1.1);
-    R_FD_Filt_hyst = R_FD_Filt;
-//Single Index Fault detection:
-/*
-    singleindex_FD.input.i_ab_xy_z1z2[0] = i_abxyz1z2.alpha;
-    singleindex_FD.input.i_ab_xy_z1z2[1] = i_abxyz1z2.beta;
-    singleindex_FD.input.i_ab_xy_z1z2[2] = i_abxyz1z2.x;
-    singleindex_FD.input.i_ab_xy_z1z2[3] = i_abxyz1z2.y;
-    singleindex_FD.input.HB_Wert = 2.0;
+    R_FD_Filt_hyst = uz_vsd_fd_hysteresis_filter(R_FD, 0.9, 1.1);
 
-    uz_singleindex_faultdetection_step(&singleindex_FD);
-
-    singleIndex_FD_R = singleindex_FD.output.FD_filtered;
-*/
 
 
     // moving average filter for fault indices:
@@ -460,9 +370,9 @@ if(toggle == 0){
 	uz_movingAverageFilter_set_filterLength(movAvFilter_R2, mov_average_filter_length);
 	uz_movingAverageFilter_set_filterLength(movAvFilter_R3, mov_average_filter_length);
 
-	filteredFDIndices[0] = uz_movingAverageFilter_sample(movAvFilter_R1, R_FD_Filt.R1);
-    filteredFDIndices[1] = uz_movingAverageFilter_sample(movAvFilter_R2, R_FD_Filt.R2);
-    filteredFDIndices[2] = uz_movingAverageFilter_sample(movAvFilter_R3, R_FD_Filt.R3);
+	filteredFDIndices[0] = uz_movingAverageFilter_sample(movAvFilter_R1, R_FD_Filt_hyst.R1);
+    filteredFDIndices[1] = uz_movingAverageFilter_sample(movAvFilter_R2, R_FD_Filt_hyst.R2);
+    filteredFDIndices[2] = uz_movingAverageFilter_sample(movAvFilter_R3, R_FD_Filt_hyst.R3);
     toggle = 1;
 }else{
 
@@ -470,20 +380,12 @@ if(toggle == 0){
 	uz_movingAverageFilter_set_filterLength(movAvFilter_R5, mov_average_filter_length);
 	uz_movingAverageFilter_set_filterLength(movAvFilter_R6, mov_average_filter_length);
 
-	    filteredFDIndices[3] = uz_movingAverageFilter_sample(movAvFilter_R4, R_FD_Filt.R4);
-	    filteredFDIndices[4] = uz_movingAverageFilter_sample(movAvFilter_R5, R_FD_Filt.R5);
-	    filteredFDIndices[5] = uz_movingAverageFilter_sample(movAvFilter_R6, R_FD_Filt.R6);
-	    toggle = 0;
+	filteredFDIndices[3] = uz_movingAverageFilter_sample(movAvFilter_R4, R_FD_Filt_hyst.R4);
+	filteredFDIndices[4] = uz_movingAverageFilter_sample(movAvFilter_R5, R_FD_Filt_hyst.R5);
+	filteredFDIndices[5] = uz_movingAverageFilter_sample(movAvFilter_R6, R_FD_Filt_hyst.R6);
+	toggle = 0;
 }
 
-/*
-    filteredFDIndices[0] = 0;
-    filteredFDIndices[1] = 0;
-    filteredFDIndices[2] = 0;
-    filteredFDIndices[3] = 0;
-    filteredFDIndices[4] = 0;
-    filteredFDIndices[5] = 0;
-*/
     //evaluation of fault-indices:
 
 	R_FD_Filt.R1 = filteredFDIndices[0];
@@ -583,9 +485,6 @@ if(toggle == 0){
 	FD_indices.R6 = OPF_c2;
 
 
-	// Neutral Point configuration (N1N2 = 1 -> 1N with one neutral point, N1N2 = 2 -> 2N with two separate neutral points)
-	N1N2 = 1;
-	ML = 1;		//0 -> MT, 1 -> ML (selection of optimization)
 
 
 	// get k-parameter from Look-up-table
@@ -601,21 +500,6 @@ if(toggle == 0){
 	// enable, disable Controllers depending on OPFs
 
 // für 1N Konfiguration:
-
-/*
-dq_2 = true;
-dq_8 = false;
-dq_12 = true;
-xy_n_PI = true;
-xy_n = true;
-xy_n_2 = true;
-xy_n_6 = true;
-y_off = false;
-z1z2_1H = true;
-z1z2_3H = true;
-z1z2_9H = true;
-z1z2_control = true;
-*/
 
 
 	dq_2 = true;
@@ -687,210 +571,6 @@ else{
 
 
 
-	// Temporaerer Sollwergenerator (Sprünge):
-
-/*
-	if(ref_counter == 0){
-		Global_Data.av.I_q_ref = 0;
-	}
-	if(ref_counter == 1000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 100000){
-		Global_Data.av.I_q_ref = 0;
-	}
-	if(ref_counter >= 110000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter >= 111000){
-		Global_Data.av.I_q_ref = 4;
-	}
-	if(ref_counter >= 112000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter >= 113000){
-		Global_Data.av.I_q_ref = 8;
-	}
-	if(ref_counter >= 114000){
-		Global_Data.av.I_q_ref = 10;
-	}
-	if(ref_counter >= 115000){
-		Global_Data.av.I_q_ref = 0;
-	}
-
-	if(ref_counter >= 130000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter >= 131000){
-		Global_Data.av.I_d_ref = 1;
-	}
-	if(ref_counter >= 132000){
-		Global_Data.av.I_q_ref = 4;
-	}
-	if(ref_counter >= 133000){
-		Global_Data.av.I_d_ref = 3;
-	}
-	if(ref_counter >= 134000){
-		Global_Data.av.I_q_ref = 10;
-	}
-	if(ref_counter >= 135000){
-		Global_Data.av.I_q_ref = 0;
-		Global_Data.av.I_d_ref = 0;
-	}
-
-
-	ref_dq0_currents.d = Global_Data.av.I_d_ref;
-	ref_dq0_currents.q = Global_Data.av.I_q_ref;
-*/
-
-
-
-/*
-	if(ref_counter == 10000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 155000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 160000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 165000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 170000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 175000){
-		Global_Data.av.I_q_ref = 7;
-	}
-	if(ref_counter == 180000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 185000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 190000){
-		Global_Data.av.I_d_ref = 2;
-	}
-	if(ref_counter == 195000){
-		Global_Data.av.I_d_ref = 1;
-	}
-	if(ref_counter == 200000){
-		Global_Data.av.I_d_ref = 0;
-	}
-	if(ref_counter == 205000){
-		Global_Data.av.I_q_ref =5;
-	}
-
-
-	if(ref_counter == 220000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 225000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 230000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 235000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 240000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 245000){
-		Global_Data.av.I_q_ref = 7;
-	}
-	if(ref_counter == 250000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 255000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 260000){
-		Global_Data.av.I_d_ref = 2;
-	}
-	if(ref_counter == 265000){
-		Global_Data.av.I_d_ref = 1;
-	}
-	if(ref_counter == 270000){
-		Global_Data.av.I_d_ref = 0;
-	}
-	if(ref_counter == 275000){
-		Global_Data.av.I_q_ref =5;
-	}
-
-	if(ref_counter == 290000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter == 295000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 300000){
-		Global_Data.av.I_q_ref = 4;
-	}
-	if(ref_counter == 305000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 310000){
-		Global_Data.av.I_q_ref = 2;
-	}
-	if(ref_counter == 315000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 320000){
-		Global_Data.av.I_q_ref = 0.7;
-	}
-	if(ref_counter == 325000){
-		Global_Data.av.I_q_ref = 0.5;
-	}
-	if(ref_counter == 330000){
-		Global_Data.av.I_q_ref = 0.4;
-	}
-	if(ref_counter == 335000){
-		Global_Data.av.I_q_ref = 0.3;
-	}
-
-	if(ref_counter == 350000){
-		Global_Data.av.I_q_ref = 6;
-	}
-	if(ref_counter == 355000){
-		Global_Data.av.I_q_ref = 5;
-	}
-	if(ref_counter == 360000){
-		Global_Data.av.I_q_ref = 4;
-	}
-	if(ref_counter == 365000){
-		Global_Data.av.I_q_ref = 3;
-	}
-	if(ref_counter == 370000){
-		Global_Data.av.I_q_ref = 2;
-	}
-	if(ref_counter == 375000){
-		Global_Data.av.I_q_ref = 1;
-	}
-	if(ref_counter == 380000){
-		Global_Data.av.I_q_ref = 0.7;
-	}
-	if(ref_counter == 385000){
-		Global_Data.av.I_q_ref = 0.5;
-	}
-	if(ref_counter == 390000){
-		Global_Data.av.I_q_ref = 0.4;
-	}
-	if(ref_counter == 395000){
-		Global_Data.av.I_q_ref = 0.3;
-	}
-
-
-	ref_dq0_currents.d = Global_Data.av.I_d_ref;
-	ref_dq0_currents.q = Global_Data.av.I_q_ref;
-
-*/
-
-
-
 
 
 
@@ -908,7 +588,6 @@ else{
 	ref_z1z2_currents[1] = k_parameter.k7 * ref_alphabeta_currents.alpha + k_parameter.k8 * ref_alphabeta_currents.beta;
 
 
-	// ref_xy_currents[0] = sin(7* (Global_Data.av.theta_elec + Global_Data.av.theta_offset));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Stuff for the inverter															////
@@ -951,10 +630,8 @@ else{
 	Global_Data.rasv.halfBridge11DutyCycle = Global_Data.rasv.ref_halfBridge11DutyCycle;
 	Global_Data.rasv.halfBridge12DutyCycle = Global_Data.rasv.ref_halfBridge12DutyCycle;
 
-
-
-
 	theta_ = Global_Data.av.theta_elec + Global_Data.av.theta_offset;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -962,17 +639,12 @@ else{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (current_state==control_state)
     {
-
-    	ref_counter = ref_counter + 1;
-
-
         // Start: Control algorithm - only if ultrazohm is in control state
 
 
-    	//6-Phase-FOC:
-
  //------------------------------------dq-current-control----------------------------------//
 
+    	// calculate control-error for javascope
 		dq_error[0] = ref_dq0_currents.d - m_dq_currents.d;
 		dq_error[1] = ref_dq0_currents.q - m_dq_currents.q;
 
@@ -982,55 +654,29 @@ else{
     	ref_dq_voltage_PI = ref_dq_voltage;
 
     	// R-Controller: 2H d
-		rc_2H_d->input.lower_limit = -8.0;
-		rc_2H_d->input.upper_limit = 8.0;
-
-
 		uz_resonantController_step(rc_2H_d, ref_dq0_currents.d, m_dq_currents.d, omega_el_rad_per_sec);
 		dq2Rout[0] = rc_2H_d->output.out;
-		/*if (dq_2){
-			ref_dq_voltage.d = ref_dq_voltage.d + rc_2H_d->output.out;
-		}*/
+
+		// R-Controller: 2H q
+		uz_resonantController_step(rc_2H_q, ref_dq0_currents.q, m_dq_currents.q, omega_el_rad_per_sec);
+		dq2Rout[1] = rc_2H_q->output.out;
 
 		if (dq_2){
 			ref_dq_voltage.d = ref_dq_voltage.d + uz_resonantController_get_output(rc_2H_d);
-		}
-
-
-		// R-Controller: 2H q
-		rc_2H_q->input.lower_limit = -8.0;	//4
-		rc_2H_q->input.upper_limit = 8.0;	//4
-
-		uz_resonantController_step(rc_2H_q, ref_dq0_currents.q, m_dq_currents.q, omega_el_rad_per_sec);
-		dq2Rout[1] = rc_2H_q->output.out;
-		/*if (dq_2){
-			ref_dq_voltage.q = ref_dq_voltage.q + rc_2H_q->output.out;
-		}*/
-		if (dq_2){
 			ref_dq_voltage.q = ref_dq_voltage.q + uz_resonantController_get_output(rc_2H_q);
 		}
 
 
-    	// R-Controller: 12H d
-		rc_12H_d->input.lower_limit = -4.0;
-		rc_12H_d->input.upper_limit = 4.0;
-
-
-
+		// R-Controller: 12H d
 		uz_resonantController_step(rc_12H_d, ref_dq0_currents.d, m_dq_currents.d, omega_el_rad_per_sec);
 		dq12Rout[0] = rc_12H_d->output.out;
-		if (dq_12){
-			ref_dq_voltage.d = ref_dq_voltage.d + rc_12H_d->output.out;
-		}
 
 		// R-Controller: 12H q
-		rc_12H_q->input.lower_limit = -4.0;
-		rc_12H_q->input.upper_limit = 4.0;
-
-
 		uz_resonantController_step(rc_12H_q, ref_dq0_currents.q, m_dq_currents.q, omega_el_rad_per_sec);
 		dq12Rout[1] = rc_12H_q->output.out;
+
 		if (dq_12){
+			ref_dq_voltage.d = ref_dq_voltage.d + rc_12H_d->output.out;
 			ref_dq_voltage.q = ref_dq_voltage.q + rc_12H_q->output.out;
 		}
 
@@ -1040,7 +686,7 @@ else{
     	ref_alphabeta_voltage = uz_transformation_3ph_dq_to_alphabeta(ref_dq_voltage, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
 
-    	// new control-parameters for dq-PI-Controller:
+    	// new control-parameters for dq-PI-Controller (can be set via javascope):
     	uz_FOC_set_Kp_id(FOC_dq, Global_Data.av.kp_d);
     	uz_FOC_set_Ki_id(FOC_dq, Global_Data.av.ki_d);
     	uz_FOC_set_Kp_iq(FOC_dq, Global_Data.av.kp_q);
@@ -1048,9 +694,9 @@ else{
 
 
 
+
+
 //------------------------------------xy-current-control----------------------------------//
-
-
 
     	ref_xy_voltage[0] = 0;
     	ref_xy_voltage[1] = 0;
@@ -1059,8 +705,6 @@ else{
 		//transform into antisynchronous frame:
 		uz_inv_park_transform(m_xy_n_currents, m_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 		uz_inv_park_transform(ref_xy_n_currents, ref_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-
-
 
 
 
@@ -1095,26 +739,17 @@ else{
 
 		uz_resonantController_step(rc_2H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
 		xy2Rout[0] = rc_2H_x->output.out;
-		if (xy_n_2){
-			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_2H_x->output.out;
-		}
+
 
 		// Controller: 2H. y
-		rc_2H_y->input.lower_limit = -4.0;	//4
-		rc_2H_y->input.upper_limit = 4.0;
-
-
 		uz_resonantController_step(rc_2H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
 		xy2Rout[1] = rc_2H_y->output.out;
 		if (xy_n_2){
+			ref_xy_n_voltage[0] = ref_xy_n_voltage[0] + rc_2H_x->output.out;
 			ref_xy_n_voltage[1] = ref_xy_n_voltage[1] + rc_2H_y->output.out;
 		}
 
 		// R-Controller: 6H. x
-		rc_6H_x->input.lower_limit = -4.0;
-		rc_6H_x->input.upper_limit = 4.0;
-
-
 		uz_resonantController_step(rc_6H_x, ref_xy_n_currents[0], m_xy_n_currents[0], omega_el_rad_per_sec);
 		xy6Rout[0] = rc_6H_x->output.out;
 		if (xy_n_6){
@@ -1126,10 +761,6 @@ else{
 		}
 
 		// R-Controller: 6H. y
-		rc_6H_y->input.lower_limit = -4.0;
-		rc_6H_y->input.upper_limit = 4.0;
-
-
 		uz_resonantController_step(rc_6H_y, ref_xy_n_currents[1], m_xy_n_currents[1], omega_el_rad_per_sec);
 		xy6Rout[1] = rc_6H_y->output.out;
 		if (xy_n_6){
@@ -1143,19 +774,6 @@ else{
     	if(xy_n){
     		ref_xy_voltage[0] = ref_xy_voltage_n[0];
     		ref_xy_voltage[1] = ref_xy_voltage_n[1];
-    	}
-
-    	if(xy_5_7){
-
-    		uz_resonantController_step(rc_5H_x, ref_xy_currents[0], m_xy_currents[0], omega_el_rad_per_sec);
-    		uz_resonantController_step(rc_7H_x, ref_xy_currents[0], m_xy_currents[0], omega_el_rad_per_sec);
-			uz_resonantController_step(rc_5H_y, ref_xy_currents[1], m_xy_currents[1], omega_el_rad_per_sec);
-			uz_resonantController_step(rc_7H_y, ref_xy_currents[1], m_xy_currents[1], omega_el_rad_per_sec);
-
-    		ref_xy_voltage[0] += uz_resonantController_get_output(rc_5H_x);
-    		ref_xy_voltage[0] += uz_resonantController_get_output(rc_7H_x);
-			ref_xy_voltage[1] += uz_resonantController_get_output(rc_5H_y);
-			ref_xy_voltage[1] += uz_resonantController_get_output(rc_7H_y);
     	}
 
 
@@ -1289,14 +907,10 @@ else{
 		uz_PI_Controller_reset(PI_z1);
 		uz_PI_Controller_reset(PI_z2);
 
-		uz_resonantController_reset(rc_2H_x);
-        uz_resonantController_reset(rc_2H_y);
         uz_resonantController_reset(rc_6H_x);
         uz_resonantController_reset(rc_6H_y);
         uz_resonantController_reset(rc_2H_d);
         uz_resonantController_reset(rc_2H_q);
-        uz_resonantController_reset(rc_8H_d);
-        uz_resonantController_reset(rc_8H_q);
         uz_resonantController_reset(rc_12H_d);
         uz_resonantController_reset(rc_12H_q);
 
@@ -1307,7 +921,6 @@ else{
         uz_resonantController_reset(rc_9H_z1);
         uz_resonantController_reset(rc_9H_z2);
 
-        ref_counter = 0;
     }
 
 

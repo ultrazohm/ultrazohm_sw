@@ -53,15 +53,13 @@ DS_Data Global_Data = {
     		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
 	.av.U_ZK = 48.0f,
-	.av.theta_offset =  0.79, //0.83, //1.05, //-0.14608003 + 0.623,		// 0.85
+	.av.theta_offset =  0.79,
 	.av.I_d_ref = 0,
 	.av.I_q_ref = 0,
 };
 
 
-//fault detection:
-uz_vsd_opf_fd_v7 uz_FD_v7;
-
+// Resonant-Controller:
 
 uz_resonantController_t* rc_2H_x;
 uz_resonantController_t* rc_2H_y;
@@ -101,11 +99,6 @@ const struct uz_resonantController_config config_R = {
 
 
 
-
-
-//single Index FD:
-uz_singleindex_faultdetection singleindex_FD;
-
 struct uz_movingAverageFilter_config movAvF_config;
 uz_movingAverageFilter_t* movAvFilter;
 
@@ -115,12 +108,6 @@ uz_movingAverageFilter_t* movAvFilter_R3;
 uz_movingAverageFilter_t* movAvFilter_R4;
 uz_movingAverageFilter_t* movAvFilter_R5;
 uz_movingAverageFilter_t* movAvFilter_R6;
-
-uz_movingAverageFilter_t* movAvFilter_temp1;
-uz_movingAverageFilter_t* movAvFilter_temp2;
-uz_movingAverageFilter_t* movAvFilter_temp3;
-uz_movingAverageFilter_t* movAvFilter_temp4;
-uz_movingAverageFilter_t* movAvFilter_temp5;
 
 
 //parameter for FOC
@@ -273,9 +260,6 @@ int main(void)
         case init_FD:
 
 
-            uz_vsd_opf_fd_v7_init(&uz_FD_v7);
-
-            uz_singleindex_faultdetection_init(&singleindex_FD);
             movAvFilter = uz_movingAverageFilter_init(movAvF_config);
 
             movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
@@ -285,14 +269,8 @@ int main(void)
             movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
             movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
 
-            movAvFilter_temp1 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp2 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp3 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp4 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp5 =  uz_movingAverageFilter_init(movAvF_config);
 
             // all configs for the resonant controllers
-
             struct uz_resonantController_config config_R_dq2H = config_R;
             config_R_dq2H.harmonic_order = 2.0f;
             config_R_dq2H.gain = 150.0f;
@@ -324,47 +302,20 @@ int main(void)
 
             rc_2H_x = uz_resonantController_init(config_R_xy2H);
             rc_2H_y = uz_resonantController_init(config_R_xy2H);
-            rc_5H_x = uz_resonantController_init(config_R_xy5H);
-            rc_5H_y = uz_resonantController_init(config_R_xy5H);
-            rc_7H_x = uz_resonantController_init(config_R_xy7H);
-            rc_7H_y = uz_resonantController_init(config_R_xy7H);
             rc_6H_x = uz_resonantController_init(config_R_xy6H);
             rc_6H_y = uz_resonantController_init(config_R_xy6H);
+
             rc_2H_d = uz_resonantController_init(config_R_dq2H);
             rc_2H_q = uz_resonantController_init(config_R_dq2H);
-
-
-            rc_8H_d = uz_resonantController_init(config_R_dq8H);
-            rc_8H_q = uz_resonantController_init(config_R_dq8H);
             rc_12H_d = uz_resonantController_init(config_R_dq12H);
             rc_12H_q = uz_resonantController_init(config_R_dq12H);
+
             rc_1H_z1 = uz_resonantController_init(config_R_z1z2_1H);
             rc_1H_z2 = uz_resonantController_init(config_R_z1z2_1H);
             rc_3H_z1 = uz_resonantController_init(config_R_z1z2_3H);
             rc_3H_z2 = uz_resonantController_init(config_R_z1z2_3H);
             rc_9H_z1 = uz_resonantController_init(config_R_z1z2_9H);
             rc_9H_z2 = uz_resonantController_init(config_R_z1z2_9H);
-
-/*
-			// Matlab Resonant Controller
-            uz_resonantController_init(&rc_2H_x);
-            uz_resonantController_init(&rc_2H_y);
-            uz_resonantController_init(&rc_6H_x);
-            uz_resonantController_init(&rc_6H_y);
-            uz_resonantController_init(&rc_2H_d);
-            uz_resonantController_init(&rc_2H_q);
-            uz_resonantController_init(&rc_8H_d);
-            uz_resonantController_init(&rc_8H_q);
-            uz_resonantController_init(&rc_12H_d);
-            uz_resonantController_init(&rc_12H_q);
-
-            uz_resonantController_init(&rc_1H_z1);
-            uz_resonantController_init(&rc_1H_z2);
-            uz_resonantController_init(&rc_3H_z1);
-            uz_resonantController_init(&rc_3H_z2);
-            uz_resonantController_init(&rc_9H_z1);
-            uz_resonantController_init(&rc_9H_z2);
-*/
 
             initialization_chain = init_FOC;
             break;

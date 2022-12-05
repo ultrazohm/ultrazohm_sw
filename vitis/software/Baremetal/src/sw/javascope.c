@@ -261,8 +261,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_dq2Rout_q] = &dq2Rout[1];
 	js_ch_observable[JSO_dq12Rout_d] = &dq12Rout[0];
 	js_ch_observable[JSO_dq12Rout_q] = &dq12Rout[1];
-	js_ch_observable[JSO_dq8Rout_d] = &dq8Rout[0];
-	js_ch_observable[JSO_dq8Rout_q] = &dq8Rout[1];
 	js_ch_observable[JSO_z1z2_1Rout_z1] = &z1z2_1Rout[0];
 	js_ch_observable[JSO_z1z2_1Rout_z2] = &z1z2_1Rout[1];
 	js_ch_observable[JSO_z1z2_3Rout_z1] = &z1z2_3Rout[0];
@@ -273,7 +271,6 @@ int JavaScope_initalize(DS_Data* data)
 
 
 
-	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
 
 
 

@@ -15,30 +15,12 @@ Models are available for sixphase and ninephase PMSM.
 General setup
 =============
 
-.. tikz:: Block diagram of IP-Core
-  \begin{tikzpicture}
-  \tikzstyle{big} = [rectangle, rounded corners, minimum width=2.5cm, minimum height=5cm,text centered, draw=black, fill=gray!30, align=center]
-  \tikzstyle{small} = [rectangle, rounded corners, minimum width=2.5cm, minimum height=1cm,text centered, draw=black, fill=gray!30, align=center]
-  \node (inverter1) [small, yshift=2cm] {Three-phase\\inverter};
-  \node (inverter2) [small,] {Three-phase\\inverter};
-  \node (inverterplaceholder) [yshift=-2cm, xshift=1.5cm] {...};
-  \node (transformation) [big, xshift=5cm] {uz\_Xphase\_\\VSD\_trans\\formation};
-  \node (fliflop) [small, xshift=5cm, yshift=-4cm] {uz\_rs\_flip\_flop};
-  \node (pmsm) [big, xshift=10cm] {uz\_pmsm\_\\model\_\\Xph\_dq};
-  \draw[->] ([yshift=0.25cm]inverter1.east) -- node[yshift=0.25cm] {$v_{abc,1}$} ([yshift=2.25cm]transformation.west);
-  \draw[->] ([yshift=1.75cm]transformation.west) -- node[yshift=0.25cm] {$i_{abc,1}$} ([yshift=-0.25cm]inverter1.east);
-  \draw[->] ([yshift=0.25cm]inverter2.east) -- node[yshift=0.25cm] {$v_{abc,2}$} ([yshift=0.25cm]transformation.west);
-  \draw[->] ([yshift=-0.25cm]transformation.west) -- node[yshift=0.25cm] {$i_{abc,2}$} ([yshift=-0.25cm]inverter2.east);
-  \draw[->] ([xshift=-0.25cm]fliflop.north) -- node[xshift=-0.5cm] {ff\_out} ([xshift=-0.25cm]transformation.south);
-  \draw[->] ([xshift=0.25cm]transformation.south) -- node[xshift=0.55cm] {ff\_reset} ([xshift=0.25cm]fliflop.north);
-  \draw[->] (1cm,-4cm) -- node[yshift=0.25cm] {ext: ff\_set} (fliflop.west);              
-  \draw[->] ([yshift=1.5cm]transformation.east) -- node[text width=1cm, align=center, yshift=0.25cm] {$v_{dq}$} ([yshift=1.5cm]pmsm.west);
-  \draw[->] ([yshift=0]pmsm.west) -- node[text width=1cm, align=center, yshift=0.25cm] {$i_{dq}$} ([yshift=0]transformation.east);
-  \draw[->] ([yshift=-1.5cm]pmsm.west) -- node[text width=1cm, align=center,yshift=0.25cm] {$\vartheta{el}$} ([yshift=-1.5cm]transformation.east);	
-  \end{tikzpicture}
+.. figure:: skizze.jpg
+
+    Example CIL setup
 
 
-The "X" for the transfromation and pmsm IP-Core serves as placeholder and the respective IP-Cores for the amount of phases should be used.
+The "X" for the transformation and pmsm IP-Core serves as placeholder and the respective IP-Cores for the amount of phases should be used.
 Individual documentation of the IP-Cores is linked below.
 
 ..  toctree::
@@ -53,20 +35,14 @@ Individual documentation of the IP-Cores is linked below.
 Examples
 ========
 
-Insert Links to extra docs pages with examples including vivado screenshots and vitis code, for example:
-
-threephase CIL
-
-Multiphase CIL
-
-incl. init files
+To use the CIL, the following examples have been created as to show necessary steps in Vivado and Vitis.
+Depending on the use-case, some steps might differ.
 
 ..  toctree::
     :maxdepth: 1
     :glob:
     
     uz_cil_examples/uz_6ph_cil_example
-
 
 
 References

@@ -108,13 +108,16 @@ Nine-phase tranformation
 
 .. doxygenfunction:: uz_pmsm9ph_transformation_get_theta_el
 
-Vivado
-======
 
-Example usage in CIL
---------------------
-As this IP-core's intended use is in combination with the other CIL IP-cores, an example is given here of how to use it in the CIL application.
-The example is given with the six-phase IP-core, but it is applicable also to the other available phases.
+Standalone use
+==============
+
+Vivado
+------
+A small example usage of the IP-core is given below.
+Note that the intended usage is in combination with the other CIL IP-core's and this IP-core has not been optimized for standalone usage.
+To use this IP-core correctly, the :ref:`uz_rs_flip_flop` needs to be added as well, as shown in the screenshot below.
+
 
 .. figure:: connection_with_flipflop.jpg
 
@@ -132,8 +135,13 @@ Since there are frequency differences in all those signals, it could be observed
 
    Incorrect timing for trigger signal (outputs are never updated)
 
-To avoid this behavior, the :ref:`uz_rs_flip_flop` needs to be used.
-The flip-flop will be set by the ``trigger_conversions`` signal and as soon as the IP-core receives the high signal, it outputs an acknowledgement at the ``refresh_values`` port, which can be used to reset the flip-flop again.
+To synchronize the different clock domains used, the :ref:`uz_rs_flip_flop` is placed, as shown in the first picture.
+The flip-flop is set by the ``trigger_conversions`` signal and as soon as the IP-core receives the high signal, it outputs an acknowledgement at the ``refresh_values`` port, which can be used to reset the flip-flop again.
+
+Vitis
+-----
+The following function calls show the minimal usage of this IP-core.
+Using it in combination with the whole CIL setup is shown in the example pages in more detail.
 
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
@@ -171,8 +179,8 @@ The flip-flop will be set by the ``trigger_conversions`` signal and as soon as t
     ...
 
 
-Standalone function test
-------------------------
+Verification
+============
 
 The following setup is used to test the IP-core's functionality (example for nine-phase IP-core).
 It is not recommended to copy this setup, instead the above explanation should be used.

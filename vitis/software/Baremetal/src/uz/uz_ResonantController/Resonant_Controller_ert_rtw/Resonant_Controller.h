@@ -68,10 +68,14 @@ typedef struct {
 } DW_Resonant_Controller_T;
 
 /* External inputs (root inport signals with default storage) */
+/**
+ * @brief input struct of the resonant controller
+ * 
+ */
 typedef struct {
 	real32_T in_ref;                       /**< Reference value for the controller*/
 	real32_T in_m;                         /**< Measured value for the controller*/
-	real32_T omega_el;                     /**< Frequency in rad/s*/
+	real32_T omega_el;                     /**< Fundamental frequency in rad/s*/
 	real32_T h;                            /**< Order of harmonic to be controlled*/
 	real32_T T_sw;                         /**< Sampling time*/
 	real32_T VR;                           /**< Gain of the controller*/
@@ -82,6 +86,10 @@ typedef struct {
 } ExtU_Resonant_Controller_T;
 
 /* External outputs (root outports fed by signals with default storage) */
+/**
+ * @brief output struct of the resonant controller
+ * 
+ */
 typedef struct {
   real32_T out;                         /**< Output of the controller*/
 } ExtY_Resonant_Controller_T;

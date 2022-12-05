@@ -94,13 +94,11 @@ const struct uz_resonantController_config config_R = {
 		.antiwindup_gain = 10.0f,
 		.in_reference_value = 0.0f,
 		.in_measured_value = 0.0f,
-		.reset = 0.0f
 };
 
-
-
-struct uz_movingAverageFilter_config movAvF_config;
-uz_movingAverageFilter_t* movAvFilter;
+struct uz_movingAverageFilter_config movAvF_config = {
+    .filterLength = 450U
+};
 
 uz_movingAverageFilter_t* movAvFilter_R1;
 uz_movingAverageFilter_t* movAvFilter_R2;
@@ -108,6 +106,39 @@ uz_movingAverageFilter_t* movAvFilter_R3;
 uz_movingAverageFilter_t* movAvFilter_R4;
 uz_movingAverageFilter_t* movAvFilter_R5;
 uz_movingAverageFilter_t* movAvFilter_R6;
+
+float dataR1 [500] = {0};
+uz_array_float_t circularBuffer_R1 = {
+   .length = UZ_ARRAY_SIZE(dataR1),
+   .data = &dataR1[0]
+};
+float dataR2 [500] = {0};
+uz_array_float_t circularBuffer_R2 = {
+   .length = UZ_ARRAY_SIZE(dataR2),
+   .data = &dataR2[0]
+};
+float dataR3 [500] = {0};
+uz_array_float_t circularBuffer_R3 = {
+   .length = UZ_ARRAY_SIZE(dataR3),
+   .data = &dataR3[0]
+};
+float dataR4 [500] = {0};
+uz_array_float_t circularBuffer_R4 = {
+   .length = UZ_ARRAY_SIZE(dataR4),
+   .data = &dataR4[0]
+};
+float dataR5 [500] = {0};
+uz_array_float_t circularBuffer_R5 = {
+   .length = UZ_ARRAY_SIZE(dataR5),
+   .data = &dataR5[0]
+};
+float dataR6 [500] = {0};
+uz_array_float_t circularBuffer_R6 = {
+   .length = UZ_ARRAY_SIZE(dataR6),
+   .data = &dataR6[0]
+};
+
+
 
 
 //parameter for FOC
@@ -259,15 +290,12 @@ int main(void)
             break;
         case init_FD:
 
-
-            movAvFilter = uz_movingAverageFilter_init(movAvF_config);
-
-            movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
+			movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R1);
+			movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R2);
+			movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R3);
+			movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
+			movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
+			movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
 
             // all configs for the resonant controllers
@@ -276,16 +304,10 @@ int main(void)
             config_R_dq2H.gain = 150.0f;
             config_R_dq2H.upper_limit = 12.0f;
             config_R_dq2H.lower_limit = -12.0f;
-            struct uz_resonantController_config config_R_dq8H = config_R;
-            config_R_dq8H.harmonic_order = 8.0f;
             struct uz_resonantController_config config_R_dq12H = config_R;
             config_R_dq12H.harmonic_order = 12.0f;
             struct uz_resonantController_config config_R_xy2H = config_R;
             config_R_xy2H.harmonic_order = 2.0f;
-            struct uz_resonantController_config config_R_xy5H = config_R;
-            config_R_xy5H.harmonic_order = 5.0f;
-            struct uz_resonantController_config config_R_xy7H = config_R;
-            config_R_xy7H.harmonic_order = 7.0f;
             struct uz_resonantController_config config_R_xy6H = config_R;
             config_R_xy6H.harmonic_order = 6.0f;
             struct uz_resonantController_config config_R_z1z2_1H = config_R;

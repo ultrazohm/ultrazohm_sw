@@ -20,44 +20,44 @@ struct uz_pmsm_model6ph_dq_config_t cil_pmsm_comfig = {
     .switch_pspl = false};*/
 
 struct uz_pmsm6ph_config_t cil_transformation_config = {
-    //.base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
+//  .base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f};
 
 struct uz_inverter_3ph_config_t cil_inverter1_config = {
-    //.base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
+//    .base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f,
     .switch_pspl_abc = false,
     .switch_pspl_gate = false,
-    .udc = 24.0f};
+    .udc = CIL_UDC};
 
 struct uz_inverter_3ph_config_t cil_inverter2_config = {
-    //.base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
+//    .base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f,
     .switch_pspl_abc = false,
     .switch_pspl_gate = false,
-    .udc = 24.0f};
+    .udc = CIL_UDC};
 
 struct uz_PWM_SS_2L_config_t cil_pwm1_config = {
-	//.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+//	.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
 	.ip_clk_frequency_Hz=100000000.0f,
 	.Tristate_HB1 = false,
 	.Tristate_HB2 = false,
 	.Tristate_HB3 = false,
 	.min_pulse_width = 0.01f,
-	.PWM_freq_Hz = 10e3f,
+	.PWM_freq_Hz = UZ_PWM_FREQUENCY,
 	.PWM_mode = normalized_input_via_AXI,
 	.PWM_en = true,
 	.use_external_counter = true
 };
 
 struct uz_PWM_SS_2L_config_t cil_pwm2_config = {
-	//.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+//	.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
 	.ip_clk_frequency_Hz=100000000.0f,
 	.Tristate_HB1 = false,
 	.Tristate_HB2 = false,
 	.Tristate_HB3 = false,
 	.min_pulse_width = 0.01f,
-	.PWM_freq_Hz = 10e3f,
+	.PWM_freq_Hz = UZ_PWM_FREQUENCY,
 	.PWM_mode = normalized_input_via_AXI,
 	.PWM_en = true,
 	.use_external_counter = true

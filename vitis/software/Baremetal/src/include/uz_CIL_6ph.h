@@ -20,8 +20,11 @@
 #include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
 #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_global_configuration.h"
 #include <stddef.h>
 #include <stdint.h>
+
+#define CIL_UDC	100.0f
 
 typedef struct uz_CIL_6ph_objects_t{
     //uz_pmsm_model6ph_dq_t* cil_pmsm; 

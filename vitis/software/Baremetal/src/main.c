@@ -59,8 +59,7 @@ DS_Data Global_Data = {
 };
 
 
-// Resonant-Controller:
-
+// Resonant-Controller: ----------------------
 uz_resonantController_t* rc_2H_x;
 uz_resonantController_t* rc_2H_y;
 uz_resonantController_t* rc_5H_x;
@@ -96,6 +95,7 @@ const struct uz_resonantController_config config_R = {
 		.in_measured_value = 0.0f,
 };
 
+// Moving-Average-Filter: ----------------------
 struct uz_movingAverageFilter_config movAvF_config = {
     .filterLength = 450U
 };
@@ -140,8 +140,7 @@ uz_array_float_t circularBuffer_R6 = {
 
 
 
-
-//parameter for FOC
+// FOC: ----------------------
 
 struct uz_FOC* FOC_dq;
 
@@ -154,7 +153,6 @@ const struct uz_PMSM_t config_PMSM = {
    .J_kg_m_squared = 0.0f,
    .I_max_Ampere = 25.0f
 };
-
 
 const struct uz_PI_Controller_config config_id = {
 	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
@@ -197,6 +195,8 @@ void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
     output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
 }
 
+// PI-Controller for xy- ans z1z2-System: ----------------------
+
 struct uz_PI_Controller* PI_x_n;
 struct uz_PI_Controller* PI_y_n;
 struct uz_PI_Controller* PI_z1;
@@ -229,6 +229,7 @@ const struct uz_PI_Controller_config config_iz1z2 = {
 
 
 
+// Gan-Inverter:-----------------------------
 
 struct uz_d_gan_inverter_t* gan_inverter_D3;
 struct uz_d_gan_inverter_t* gan_inverter_D4;
@@ -246,7 +247,7 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
 
 
 
-
+// Init: --------------------------------------
 
 enum init_chain
 {
@@ -290,6 +291,7 @@ int main(void)
             break;
         case init_FD:
 
+        	// init moving average filter:
 			movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R1);
 			movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R2);
 			movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R3);
@@ -321,7 +323,7 @@ int main(void)
             config_R_z1z2_9H.harmonic_order = 9.0f;
 
 
-
+            // init resonant-controllers:
             rc_2H_x = uz_resonantController_init(config_R_xy2H);
             rc_2H_y = uz_resonantController_init(config_R_xy2H);
             rc_6H_x = uz_resonantController_init(config_R_xy6H);
@@ -376,12 +378,8 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
-
-
             gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);
             gan_inverter_D4 = uz_d_gan_inverter_init(config_gan_inverter_D4, Global_Data.objects.gan_inverter_outputs_D4);
-
-
 
 
             initialization_chain = print_msg;

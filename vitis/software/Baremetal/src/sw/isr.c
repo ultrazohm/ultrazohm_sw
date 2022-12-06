@@ -57,9 +57,12 @@ extern DS_Data Global_Data;
 
 // general variables/ Setting:
 
-int N1N2 = 1;
-int ML = 1;
+int N1N2 = 1;	// Configuration of neutral points
+int ML = 1;		// Optimization during Open-Phase-Fault (1=ML, 0=MT)
+
+// omega and theta
 float theta_ = 0;
+float omega_el_rad_per_sec = 0.0f;
 
 
 // controller --------------------------------------
@@ -114,11 +117,8 @@ extern uz_movingAverageFilter_t* movAvFilter_R4;
 extern uz_movingAverageFilter_t* movAvFilter_R5;
 extern uz_movingAverageFilter_t* movAvFilter_R6;
 
-float omega_el_rad_per_sec = 0.0f;
 int mov_average_filter_length = 1;
-
 float movave_length = 0.0f;
-
 
 
 // open-phase-fault detection --------------------------------------
@@ -145,7 +145,7 @@ int OPF_c2;
 int display_OPF;
 float display_OPF_f;
 
-
+//------------------------------------
 
 
 
@@ -164,15 +164,14 @@ float z1z2_3Rout[2];
 float z1z2_9Rout[2];
 
 
-// variables for currents, reference voltages:
+// variables for measured currents: m_xxxx
+// variables for reference currents for control: ref_xxxx
+
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
 
 uz_3ph_alphabeta_t m_alphabeta_currents = {0};
 uz_3ph_dq_t m_dq_currents = {0};
-uz_3ph_dq_t m_dq_n_currents = {0};
-uz_3ph_dq_t temp_3ph_dq_t_var = {0};
-uz_3ph_alphabeta_t temp_3ph_alpabeta_var = {0};
 
 uz_3ph_alphabeta_t ref_alphabeta_voltage = {0};
 uz_3ph_dq_t ref_dq_voltage = {0};
@@ -248,9 +247,10 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.c2 = - m_6ph_abc_currents.a1 - m_6ph_abc_currents.b1 - m_6ph_abc_currents.c1 -m_6ph_abc_currents.a2 - m_6ph_abc_currents.b2;
 
 
-	//crude over current protection
+	//over current protection in Software:
 	if(fabs(m_6ph_abc_currents.a1) > 30.0f || fabs(m_6ph_abc_currents.b1) > 30.0f || fabs(m_6ph_abc_currents.c1) > 30.0f || fabs(m_6ph_abc_currents.a2) > 30.0f || fabs(m_6ph_abc_currents.b2) > 30.0f || fabs(m_6ph_abc_currents.c2) > 30.0f){
 
+		// set all dutycycles to 0
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
@@ -283,6 +283,7 @@ void ISR_Control(void *data)
 	Global_Data.av.I_Z = m_6ph_abc_currents.c2;
 
 
+	// VSD-Transform of currents:
 	//Transform phase-currents to alpha-beta-x-y-z1-z2 and write to global_data-struct
 	m_6ph_alphabeta_currents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(m_6ph_abc_currents);
 
@@ -321,7 +322,6 @@ void ISR_Control(void *data)
     	// hysteresis filter
     R_FD_Filt_hyst = uz_vsd_fd_hysteresis_filter(R_FD, 0.9, 1.1);
 
-
     // moving average filter for fault indices:
 
     //calculate optimal filterlength from omega_el
@@ -334,10 +334,11 @@ void ISR_Control(void *data)
     }
 
 
-    //Splitted the movAverageFiltering into two sets, each executed every other cycle (10kHz reduced to 5kHz) to save computations
+    //Splitt the movAverageFiltering into two sets, each executed every other cycle (10kHz reduced to 5kHz) to save computations
 
     mov_average_filter_length = mov_average_filter_length/2;
 
+    //prevent 0 filter-length
     if(mov_average_filter_length == 0){
     	mov_average_filter_length = 1;
     }
@@ -378,14 +379,10 @@ if(toggle == 0){
 	R_FD_eval = uz_vsd_fd_evaluation(R_FD_Filt, 0.4f);
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////	Reference-value generation for current control and other control-releated stuff			////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+// optional:
 // no reset open phase detection (activate with no_reset = true)
 // -> if activated a detected fault will not be reset if corresponding faultindex is below threshold
+
 	if(no_reset){
 		if(!OPF_a1){
 			OPF_a1 = (int)R_FD_eval.R1;
@@ -416,36 +413,10 @@ if(toggle == 0){
 	}
 
 
-//Display OPF in javascope -> write OPFs into Varaible, which is displayed in the javascope
+//Display OPF in javascope -> write OPFs into Variable, which is displayed in the javascope
 
 	// get number of faulted phases
-	// write phase-number of faulted phases into array opf_phases in increasing order (a1-b1-c1-a2-b2-c2)
-	num_OPF = 0;
-
-	if (OPF_a1 == 1){
-		opf_phases[num_OPF] = 1;
-		num_OPF += 1;
-	}
-	if (OPF_b1 == 1){
-		opf_phases[num_OPF] = 2;
-		num_OPF += 1;
-	}
-	if (OPF_c1 == 1){
-		opf_phases[num_OPF] = 3;
-		num_OPF += 1;
-	}
-	if (OPF_a2 == 1){
-		opf_phases[num_OPF] = 4;
-		num_OPF += 1;
-	}
-	if (OPF_b2 == 1){
-		opf_phases[num_OPF] = 5;
-		num_OPF += 1;
-	}
-	if (OPF_c2 == 1){
-		opf_phases[num_OPF] = 6;
-		num_OPF += 1;
-	}
+	// write phase-number of faulted phases into variable display_OPF in increasing order (a1-b1-c1-a2-b2-c2)
 
 	//OPF display as integer. :
 	display_OPF = 0;
@@ -458,6 +429,7 @@ if(toggle == 0){
 	display_OPF_f = (float)display_OPF;
 
 
+// final evaluated Fault indices
 	FD_indices.R1 = OPF_a1;
 	FD_indices.R2 = OPF_b1;
 	FD_indices.R3 = OPF_c1;
@@ -466,7 +438,9 @@ if(toggle == 0){
 	FD_indices.R6 = OPF_c2;
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////	Reference-value generation for current control and other control-releated stuff			////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // get k-parameter from Look-up-table:
 

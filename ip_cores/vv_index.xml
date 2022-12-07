@@ -969,7 +969,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112782580">
+		<CoreRevision value="2112802950">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_delay_compensation/ipcore/parallel_8_sim_delay_compensation_v1_0/component.xml">
 		</ComponentPath>

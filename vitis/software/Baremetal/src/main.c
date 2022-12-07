@@ -45,12 +45,19 @@ DS_Data Global_Data = {
 			.set_imag_current_old = 666.666f,
 			.set_real_current_old = 666.666f,
 			.theta_el_old = 0.0f,
+			.theta_mech_old = 0.0f,
 			.fl_enable_compensation_cogging_old = 0.0f,
-			.ke_idle = 0.4923f, // torque constant (for real machine use 0.4445)
-			.fkt_ke_asym = 1.0f,// factor to respect asymmetry (for real machine use 0.9571)}
-    		}
+			.ke_idle = 0.4589f, // torque constant (for real machine use 0.4445)
+			.fkt_ke_asym = 0.9586f,// factor to respect asymmetry (for real machine use 0.9571)}
+			.n_period_el = 0,
+			.n_period_mech = 0.0,
+			.n_period_mech_old = 0.0f,
+			.fl_sequence_current_ramp = 0,
+			.fl_sequence_asymmetry = 0,
+			.el_period_counter = 0,
+			.current_step_counter = 0.0f,
+    }
 };
-
 
 //Define uz_codegen codegenInstance as a global variable in main.c of the Baremetal project
 uz_codegen codegenInstance;
@@ -95,7 +102,7 @@ int main(void)
             //
             // Initial the tunable variables from codegen (LR)
             // Globa_Data
-            Global_Data.av.theta_offset= 4*M_PI -5.659824F; // [Theta]= rad; electrical encoder offset angle
+            Global_Data.av.theta_offset= 6*M_PI -8.26747F; //-6.0216F;//  //-5.659824F; // [Theta]= rad; electrical encoder offset angle
             //
             //Control Parameters
             rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders
@@ -108,9 +115,9 @@ int main(void)
             rtP.i_max_rms = 30.0; // rms current limit in A
             rtP.i_max_peak = rtP.i_max_rms * 1.41 * 1.2;//rtP.i_max_rms * 1.41 * 1.2; // short time current limit in A
             rtP.i_ref_max =25; // max. permissible reference current in A
-            rtP.n_max = 605.0; // max. continuous speed limit in rpm
+            rtP.n_max = 1605.0; // max. continuous speed limit in rpm
             rtP.n_max_peak = rtP.n_max * 1.2; //max. short time speed limit
-            rtP.n_ref_max = 600.0; // max. permissible reference speed in rmp
+            rtP.n_ref_max = 1600.0; // max. permissible reference speed in rmp
             //Constants
             rtP.p = 18.0; // definition of the motor
 

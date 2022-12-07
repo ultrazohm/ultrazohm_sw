@@ -84,7 +84,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_av] 			= &data->av.a_v;
 	js_ch_observable[JSO_aw] 			= &data->av.a_w;
 	js_ch_observable[JSO_U_ZK] 			= &data->av.U_ZK;
-	js_ch_observable[JSO_Control_Status] 			= &data->vLR.status_control;
+	js_ch_observable[JSO_Control_Status]= &data->vLR.status_control;
 
 
 

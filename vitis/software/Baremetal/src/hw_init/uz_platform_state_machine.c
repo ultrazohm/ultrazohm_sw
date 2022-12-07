@@ -153,6 +153,16 @@ static void idle_entry(void)
     	codegenInstance.input.Ref_I_im_ext_mit=0.0F;
     	codegenInstance.input.Ref_I_re_ext_mit=0.0F;
     	codegenInstance.input.fl_integrator_reset=0U;
+    	// reset codegen errors
+    	codegenInstance.output.error_speed_limit=0U;
+    	codegenInstance.output.fault_max_speed=0U;
+    	codegenInstance.output.fault_peak_current_u=0U;
+    	codegenInstance.output.fault_peak_current_v=0U;
+    	codegenInstance.output.fault_peak_current_w=0U;
+    	codegenInstance.output.fault_peak_speed=0U;
+    	codegenInstance.output.fault_rms_current_u=0U;
+    	codegenInstance.output.fault_rms_current_v=0U;
+    	codegenInstance.output.fault_rms_current_w=0U;
     }
 }
 

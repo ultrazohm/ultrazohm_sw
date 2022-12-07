@@ -121,10 +121,19 @@ typedef struct _variableLukasRabenstein {
 	float set_imag_current_old;
 	float set_real_current_old;
 	float theta_el_old;
+	float theta_mech_old;
 	float fl_enable_compensation_cogging_old;
 	// Torque constant
 	float ke_idle; // torque constant of the machine (T/ampl_i)
 	float fkt_ke_asym; // factor which represents the reduced torque constant due to the asymmetry
+	// period count
+	int n_period_el;
+	float n_period_mech;
+	float n_period_mech_old;
+	int fl_sequence_current_ramp;
+	int fl_sequence_asymmetry;
+	int el_period_counter;
+	float current_step_counter;
 } variableLukasRabenstein;
 
 

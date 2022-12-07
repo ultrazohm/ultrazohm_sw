@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Nov 30 09:28:27 2022
+ * C/C++ source code generated on : Mon Dec  5 17:20:35 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -312,7 +312,7 @@ typedef struct {
    *   '<S355>/Look-Up Table'
    *   '<S357>/Look-Up Table'
    */
-  int16_T pooled19[65];
+  int16_T pooled18[65];
 } ConstP;
 
 /* External inputs (root inport signals with default storage) */

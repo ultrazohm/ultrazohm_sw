@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Nov 30 09:28:27 2022
+ * C/C++ source code generated on : Mon Dec  5 17:20:35 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -708,10 +708,10 @@ static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
    */
   if (rtb_LTEp25_a || rtb_GTEp75) {
     rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   } else {
     rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   }
 
   /* End of Switch: '<S44>/SignCorrected' */
@@ -757,10 +757,10 @@ static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
    */
   if (rtb_LTEp25_a) {
     rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   } else {
     rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   }
 
   /* End of Switch: '<S46>/SignCorrected' */
@@ -1349,10 +1349,9 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   localDW->I_re_gegen_e = localDW->re_lim_l + localDW->I_im_mit_e;
 
   /* MATLAB Function: '<S31>/MATLAB Function' incorporates:
-   *  Constant: '<S31>/Constant2'
    *  Product: '<S31>/Product6'
    */
-  MATLABFunction_a(localDW->Product1_a, 0.9F * rtu_U_ZK1, localDW->Betrieb_n,
+  MATLABFunction_a(localDW->Product1_a, rtu_U_ZK1, localDW->Betrieb_n,
                    localDW->I_re_gegen_e, &localDW->re_lim_l,
                    &localDW->im_lim_mv);
 
@@ -1678,10 +1677,10 @@ static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu)
    */
   if (rtb_LTEp50) {
     rtb_SignCorrected = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   } else {
     rtb_SignCorrected = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled19);
+      rtConstP.pooled18);
   }
 
   /* End of Switch: '<S369>/SignCorrected' */

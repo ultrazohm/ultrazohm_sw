@@ -43,6 +43,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);
+			Global_Data.vLR.current_step_counter = 0.0F;
 			break;
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
@@ -245,11 +246,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-
+				Global_Data.vLR.current_step_counter = 0.0F;
+		Global_Data.vLR.fl_sequence_current_ramp = 0;
 			break;
 
 		case (My_Button_8):
-
+				Global_Data.vLR.fl_sequence_current_ramp = 1;
 			break;
 
 		case (Error_Reset):
@@ -325,6 +327,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);
+	if ( Global_Data.vLR.fl_sequence_current_ramp == 1.0) {
+	js_status_BareToRTOS |= (1 << 11);
+	} else {
+	js_status_BareToRTOS &= ~(1 << 11);
+	}
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

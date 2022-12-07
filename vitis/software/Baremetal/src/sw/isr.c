@@ -44,6 +44,8 @@ XTmrCtr Timer_Interrupt;
 extern DS_Data Global_Data;
 // Add extern uz_codegen codegenInstance to Baremtal/sw/isr.c to use the global inside the ISR
 extern uz_codegen codegenInstance;
+float time_current_ramp; // in s
+float current_ramp_duration;
 
 
 
@@ -83,6 +85,7 @@ void ISR_Control(void *data)
 	// Global_Data.vLR
 	Global_Data.vLR.status_control=codegenInstance.input.fl_power*100+codegenInstance.input.fl_enable_compensation_current*10+codegenInstance.input.fl_enable_compensation_cogging_;
 	//----------------------------------------------------
+	// calculate load depend harmonics for cogging torque compensation
 	if ((codegenInstance.input.Ref_I_im_ext_mit != Global_Data.vLR.set_imag_current_old) || (codegenInstance.input.fl_enable_compensation_cogging_ != Global_Data.vLR.fl_enable_compensation_cogging_old))
 	{ 	// calculate new harmonics with every new reference imag current or enabled cogging torque compensation
 	CalcCompensatingHarmonics();
@@ -115,6 +118,7 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.a_U;
 	Global_Data.rasv.halfBridge2DutyCycle = codegenInstance.output.a_V;
 	Global_Data.rasv.halfBridge3DutyCycle = codegenInstance.output.a_W;
+
 	//
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -145,6 +149,8 @@ void ISR_Control(void *data)
 	//----------------------------------------------------
 	// assign actual values to old values (LR)
 	Global_Data.vLR.theta_el_old = codegenInstance.input.Act_theta_u_el;
+	Global_Data.vLR.theta_mech_old = Global_Data.av.theta_elec;
+	Global_Data.vLR.n_period_mech_old = Global_Data.vLR.n_period_mech;
 	//----------------------------------------------------
 	//
     // Read the timer value at the very end of the ISR to minimize measurement error
@@ -219,18 +225,20 @@ int Initialize_ISR()
 	codegenInstance.input.ordnung_d = 0.0F;
 	codegenInstance.input.phase_d = 0.0F;
 	// Initialize parameters of the asymmetry (for compensation, creal32_T)
-	codegenInstance.input.Psi_PM_U.re =  0.0185800F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_U.im =  0.0F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_V.re = -0.0131380F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_V.im = -0.0131380F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_W.re = -0.0091492F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
-	codegenInstance.input.Psi_PM_W.im =  0.0161712F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	codegenInstance.input.Psi_PM_U.re = +0.01691371537745F;//0.0185800F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_U.im = +0.000000000000000F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_V.re = -0.012530035337452F;//-0.0131380F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_V.im = -0.012340872957559F;//-0.0131380F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_W.re = -0.007978636850798F;//-0.0091492F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	codegenInstance.input.Psi_PM_W.im =  0.014430547280038F;//0.0161712F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
 	//
 	// Reference values
 	codegenInstance.input.Ref_n = 0.0F; //Global_Data.rasv.referenceSpeed;
 	codegenInstance.input.Ref_I_re_ext_mit = 0.0F; // Global_Data.rasv.referenceCurrent_id;
 	codegenInstance.input.Ref_I_im_ext_mit = 0.0F; //Global_Data.rasv.referenceCurrent_iq;
 	//
+	time_current_ramp = 0.0; // Initial time for current ramp
+	current_ramp_duration = 2.0; // time for a current value in sec.
 	//
     //----------------------------------------------------
     return Status;
@@ -411,39 +419,32 @@ static void CalcCompensatingHarmonics()
 	//----------------------------------------------------
 	// second harmonic -> harmonic_a
 	//
+	float factor_torque_constant = -1/((Global_Data.vLR.ke_idle * Global_Data.vLR.fkt_ke_asym)+ (0.3859*expf(-0.2403 * codegenInstance.input.Ref_I_im_ext_mit)+0.05417*expf(-0.01041 * codegenInstance.input.Ref_I_im_ext_mit)));
 	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
 	//
-	float complex second_a = 1.629350987730637*cexpf(3.398380412400018*I);
-	float complex second_b = 0.055649462412890*cexpf(-1.071752469500930*I);
-	float complex second_c = second_a + second_b;
+	float ampl_second_ld =factor_torque_constant*1.08; // load depend amplitude for cogging torque compensation
+	//float ampl_second_ld =-1/((Global_Data.vLR.ke_idle * Global_Data.vLR.fkt_ke_asym)+ (1.039*expf(-0.3255 * codegenInstance.input.Ref_I_im_ext_mit)+0.1711*expf(-0.0435 * codegenInstance.input.Ref_I_im_ext_mit)))*1.08; // load depend amplitude for cogging torque compensation
+	float phase_second_ld =(0.005818*codegenInstance.input.Ref_I_im_ext_mit +  0.828908    -0.3352); // load depend phase for cogging torque compensation
 	codegenInstance.input.ordnung_a = 2.0;
-	codegenInstance.input.amplitude_a = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(second_c);
-	codegenInstance.input.phase_a = cargf(second_c);
-	//
-	float ampl_second_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00844669*codegenInstance.input.Ref_I_im_ext_mit+0.02053428); // load depend amplitude for cogging torque compensation
-	float phase_second_ld = 0.2573*cexpf(-0.5571*codegenInstance.input.Ref_I_im_ext_mit)+1.705*cexpf(-0.002585*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
-	codegenInstance.input.ordnung_b=2.0;
-	codegenInstance.input.amplitude_b = ampl_second_ld;
-	codegenInstance.input.phase_b = phase_second_ld;
+	codegenInstance.input.amplitude_a = ampl_second_ld;
+	codegenInstance.input.phase_a = phase_second_ld;
 	//
 	//----------------------------------------------------
 	// fourth harmonic -> harmonic_a
+	codegenInstance.input.ordnung_b=4.0F;
+	codegenInstance.input.amplitude_b = factor_torque_constant *0.4F;
+	codegenInstance.input.phase_b = -0.2F;
 	//
-	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
+	//----------------------------------------------------
+	// sixth harmonic -> harmonic_a
+	codegenInstance.input.ordnung_c = 0.0;//6.0F;
+	codegenInstance.input.amplitude_c =0.0;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
+	codegenInstance.input.phase_c =0.0;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
 	//
-	float complex fourth_a = 0.243851304483111*cexpf(-1.172847844166133*I);
-	float complex fourth_b = 0.047123962358310*cexpf(0.382933643522585*I);
-	float complex fourth_c = fourth_a + fourth_b;
-	codegenInstance.input.ordnung_c = 4.0;
-	codegenInstance.input.amplitude_c = -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*cabsf(fourth_c);
-	codegenInstance.input.phase_c = cargf(fourth_c);
 	//
-	float ampl_fourth_ld =  -1/(Global_Data.vLR.ke_idle*Global_Data.vLR.fkt_ke_asym)*(0.00505363*codegenInstance.input.Ref_I_im_ext_mit+0.00102233); // load depend amplitude for cogging torque compensation
-	float phase_fourth_ld = 2.464*cexpf(-0.8573*codegenInstance.input.Ref_I_im_ext_mit)+0.9313*cexpf(-0.01067*codegenInstance.input.Ref_I_im_ext_mit); // load depend phase for cogging torque compensation
-	//
-	codegenInstance.input.ordnung_d = 4.0;
-	codegenInstance.input.amplitude_d = ampl_fourth_ld;
-	codegenInstance.input.phase_d = phase_fourth_ld;
+	codegenInstance.input.ordnung_d = 0.0F;
+	codegenInstance.input.amplitude_d =  0.0F;
+	codegenInstance.input.phase_d =  0.0F;
 	//
 	return codegenInstance;
 }

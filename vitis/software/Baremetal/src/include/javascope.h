@@ -99,7 +99,6 @@ enum JS_OberservableData {
 	JSO_Testvalue_16,
 	JSO_Testvalue_17,
 	JSO_Testvalue_18,
-	JSO_SingleIndex_R,
 	JSO_xy2Rout_x,
 	JSO_xy2Rout_y,
 	JSO_xy6Rout_x,

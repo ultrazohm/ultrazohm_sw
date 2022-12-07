@@ -60,8 +60,6 @@ DS_Data Global_Data = {
 
 
 //fault detection:
-uz_vsd_opf_fd_v7 uz_FD_v7;
-
 
 uz_resonantController_t* rc_2H_x;
 uz_resonantController_t* rc_2H_y;
@@ -102,9 +100,6 @@ const struct uz_resonantController_config config_R = {
 
 
 
-
-//single Index FD:
-uz_singleindex_faultdetection singleindex_FD;
 
 struct uz_movingAverageFilter_config movAvF_config;
 uz_movingAverageFilter_t* movAvFilter;
@@ -217,12 +212,12 @@ struct uz_d_gan_inverter_t* gan_inverter_D4;
 
 struct uz_d_gan_inverter_config_t config_gan_inverter_D3 = {
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_0_BASEADDR,
-    .ip_clk_frequency_Hz = 100000
+    .ip_clk_frequency_Hz = 100000 //100000000
 };
 
 struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_1_BASEADDR,
-    .ip_clk_frequency_Hz = 100000
+    .ip_clk_frequency_Hz = 100000 //100000000
 };
 
 
@@ -234,6 +229,57 @@ static struct uz_vsd_8_config_t config_vsd_8={
 };
 uz_vsd_8_t* test_instance_vsd_8;
 
+static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_cost_function_8={
+    .base_address = XPAR_UZ_USER_PARALLEL_8_SIM_PREDI_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .psiPM = 0.0048f,//measurement needed
+    .Lq = 0.000148f,//[H]
+    .Ld = 0.0001473f,//[H]
+    .Rs = 0.1278f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+    .id_ref = 0.0f,//needs to be asked
+    .iq_ref = 0.0f,//needs to be asked
+    .ix_ref = 0.0f,//needs to be asked
+    .iy_ref = 0.0f,//needs to be asked
+};
+uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
+
+static struct uz_delay_compensation_8_config_t config_delay_compensation_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_DELAY_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .psiPM = 0.0048f,
+    .Lq =0.0001484f,//[H]
+    .Ld = 0.0001473f,//[H]
+    .Rs = 0.1278f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+};
+uz_delay_compensation_8_t* test_instance_delay_compensation_8;
+
+static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_PHASE_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .theta_el_offset=-0.7900000f,//needs to be asked
+    .u_dc_link_voltage=36.0f,//needs to be asked
+};
+uz_phase_voltages_8_t* test_instance_phase_voltages_8;
+
+static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_MIN_C_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+};
+uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+
+static struct uz_switching_states_6Phase_8_config_t config_switching_states_6Phase_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_SWITC_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+};
+uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
 
 
 
@@ -281,10 +327,6 @@ int main(void)
             break;
         case init_FD:
 
-
-            uz_vsd_opf_fd_v7_init(&uz_FD_v7);
-
-            uz_singleindex_faultdetection_init(&singleindex_FD);
             movAvFilter = uz_movingAverageFilter_init(movAvF_config);
 
             movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
@@ -294,11 +336,6 @@ int main(void)
             movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
             movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
 
-            movAvFilter_temp1 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp2 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp3 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp4 =  uz_movingAverageFilter_init(movAvF_config);
-            movAvFilter_temp5 =  uz_movingAverageFilter_init(movAvF_config);
 
             // all configs for the resonant controllers
 
@@ -354,27 +391,6 @@ int main(void)
             rc_9H_z1 = uz_resonantController_init(config_R_z1z2_9H);
             rc_9H_z2 = uz_resonantController_init(config_R_z1z2_9H);
 
-/*
-			// Matlab Resonant Controller
-            uz_resonantController_init(&rc_2H_x);
-            uz_resonantController_init(&rc_2H_y);
-            uz_resonantController_init(&rc_6H_x);
-            uz_resonantController_init(&rc_6H_y);
-            uz_resonantController_init(&rc_2H_d);
-            uz_resonantController_init(&rc_2H_q);
-            uz_resonantController_init(&rc_8H_d);
-            uz_resonantController_init(&rc_8H_q);
-            uz_resonantController_init(&rc_12H_d);
-            uz_resonantController_init(&rc_12H_q);
-
-            uz_resonantController_init(&rc_1H_z1);
-            uz_resonantController_init(&rc_1H_z2);
-            uz_resonantController_init(&rc_3H_z1);
-            uz_resonantController_init(&rc_3H_z2);
-            uz_resonantController_init(&rc_9H_z1);
-            uz_resonantController_init(&rc_9H_z2);
-*/
-
             initialization_chain = init_FOC;
             break;
         case init_FOC:
@@ -398,6 +414,11 @@ int main(void)
             uz_adcLtc2311_ip_core_init();
 
             test_instance_vsd_8 = uz_vsd_8_init(config_vsd_8);
+            test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
+            test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
+            test_instance_phase_voltages_8 = uz_phase_voltages_8_init(config_phase_voltages_8);
+            test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
+            test_instance_switching_states_6Phase_8=uz_switching_states_6Phase_8_init(config_switching_states_6Phase_8);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();

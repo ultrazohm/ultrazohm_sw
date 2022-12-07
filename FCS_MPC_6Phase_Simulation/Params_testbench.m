@@ -3,10 +3,10 @@ clc
 clear
 
 % Brose Power Steering Motor 6ph customized
-R_ph = 0.125;    %0.0353;     %0.023;         % phase resistance in Ohm
+R_ph = 0.1278;    %0.0353;     %0.023;         % phase resistance in Ohm
 psi_pm = 0.0048;   %0.039614;   %0.007;         % flux linkage in Vs
-L_d = 0.000147;    %0.824e-3;    %0.00003;       % d-axis inductance in H
-L_q = 0.000147;   %2.488e-3;    %0.00005;       % q-axis inductance in H
+L_d = 0.0001473;    %0.824e-3;    %0.00003;       % d-axis inductance in H
+L_q = 0.0001484;   %2.488e-3;    %0.00005;       % q-axis inductance in H
 L_x = 0.00005566 ;     %0.2744e-3;    %0.00004;       % x-axis inductance in H
 L_y = L_x;                        % y-axis inductance in H
 p = 5;            %5;             % number of pole pairs

@@ -73,7 +73,6 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 extern float filteredFDIndices[6];
 
-extern float singleIndex_FD_R;
 
 extern float testvalue;
 
@@ -131,6 +130,31 @@ float b2_current_vsd_and_park_transformation;
 float c2_current_vsd_and_park_transformation;
 float d_current_vsd_and_park_transformation;
 float q_current_vsd_and_park_transformation;
+
+float idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+
+float d_voltage_per_switching_state;
+float q_voltage_per_switching_state;
+float x_voltage_per_switching_state;
+float y_voltage_per_switching_state;
+
+float J_AXI;
+
+float last_applied_optimal_voltage_d;
+float last_applied_optimal_voltage_q;
+float last_applied_optimal_voltage_x;
+float last_applied_optimal_voltage_y;
+
+float Index_phase_voltages_8;
+
+float Index_prediction_and_cost_function_8;
+
+float Index_min_cost_function_8;
+
+float Index_switching_states_8;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -280,10 +304,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_z1z2_9Rout_z1] = &z1z2_9Rout[0];
 	js_ch_observable[JSO_z1z2_9Rout_z2] = &z1z2_9Rout[1];
 
-
-
-
-	js_ch_observable[JSO_SingleIndex_R] = &singleIndex_FD_R;
 
 	js_ch_observable[JSO_d_current_vsd_and_park_transformation] = &d_current_vsd_and_park_transformation;
 	js_ch_observable[JSO_q_current_vsd_and_park_transformation] = &q_current_vsd_and_park_transformation;

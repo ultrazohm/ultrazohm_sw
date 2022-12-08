@@ -202,11 +202,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+			Global_Data.vLR.ampl_work = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			Global_Data.vLR.phase_work = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -234,11 +234,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			codegenInstance.input.fl_enable_compensation_current=0.0;
 			break;
 
 		case (My_Button_5):
-
+			codegenInstance.input.fl_enable_compensation_cogging_=0.0;
 			break;
 
 		case (My_Button_6):
@@ -314,10 +314,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if ( codegenInstance.input.fl_enable_compensation_current == 1.0) {
+		js_status_BareToRTOS |= (1 << 7);
+		} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+		}
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	if ( codegenInstance.input.fl_enable_compensation_cogging_ == 1.0) {
+	js_status_BareToRTOS |= (1 << 8);
+	} else {
+	js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);

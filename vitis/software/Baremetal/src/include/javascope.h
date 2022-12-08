@@ -55,6 +55,8 @@ enum JS_OberservableData {
 	JSO_aw,
 	JSO_U_ZK,
 	JSO_Control_Status,
+	JSO_ampl_work,
+	JSO_phase_work,
 	JSO_ENDMARKER
 };
 
@@ -122,6 +124,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSSD_FLOAT_ampl_work,
+	JSSD_FLOAT_phase_work,
 	JSSD_ENDMARKER
 };
 
@@ -164,8 +168,8 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	i_imag. (Torque),
 	i_real (Field),
-	n.c.,
-	n.c.,
+	ampl_work,
+	phase_work,
 	n.c.,
 	n.c.,
 	SND_FLD_ENDMARKER
@@ -177,8 +181,8 @@ enum gui_button_mapping {
 	SND_LABELS_ZEROVALUE=0,
 	A,
 	A,
-	,
-	,
+	A,
+	rad,
 	,
 	,
 	SND_LABELS_ENDMARKER
@@ -190,8 +194,8 @@ enum gui_button_mapping {
 	RCV_FLD_ZEROVALUE=0,
 	pseudo_iq,
 	pseudo_id,
-	set_imag_current,
-	set_real_current,
+	ampl_work,
+	phase_work,
 	act._speed,
 	control_status,
 	RCV_FLD_ENDMARKER
@@ -203,8 +207,8 @@ enum gui_button_mapping {
 	RCV_LABELS_ZEROVALUE=0,
 	A,
 	A,
-	,
-	,
+	A,
+	rad,
 	,
 	,
 	RCV_LABELS_ENDMARKER
@@ -217,8 +221,8 @@ enum gui_button_mapping {
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_i_d,
-	JSSD_FLOAT_Set_imag_current,
-	JSSD_FLOAT_Set_real_current,
+	JSSD_FLOAT_ampl_work,
+	JSSD_FLOAT_phase_work,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_Control_Status,
 	JSSD_FLOAT_Error_Code,

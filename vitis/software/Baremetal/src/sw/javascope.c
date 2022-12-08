@@ -85,6 +85,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_aw] 			= &data->av.a_w;
 	js_ch_observable[JSO_U_ZK] 			= &data->av.U_ZK;
 	js_ch_observable[JSO_Control_Status]= &data->vLR.status_control;
+	js_ch_observable[JSO_ampl_work]= &data->vLR.ampl_work;
+	js_ch_observable[JSO_phase_work]= &data->vLR.phase_work;
+
 
 
 
@@ -110,6 +113,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Set_real_current]		= &codegenInstance.input.Ref_I_re_ext_mit;
 	js_slowDataArray[JSSD_FLOAT_Control_Status]		= &(data->vLR.status_control);
 	js_slowDataArray[JSSD_FLOAT_Error_Code]		= &(data->vLR.error_code_LR);
+	js_slowDataArray[JSSD_FLOAT_ampl_work]		= &(data->vLR.ampl_work);
+	js_slowDataArray[JSSD_FLOAT_phase_work]		= &(data->vLR.phase_work);
 
 
 

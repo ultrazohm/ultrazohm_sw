@@ -56,6 +56,8 @@ DS_Data Global_Data = {
 			.fl_sequence_asymmetry = 0,
 			.el_period_counter = 0,
 			.current_step_counter = 0.0f,
+			.ampl_work = 0.0f,
+			.phase_work = 0.0f,
     }
 };
 

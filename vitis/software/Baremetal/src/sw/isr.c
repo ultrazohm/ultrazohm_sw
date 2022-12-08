@@ -98,7 +98,13 @@ void ISR_Control(void *data)
 	//----------------------------------------------------
 	if (current_state==control_state)
     {
-		if(codegenInstance.input.Act_w_el == 0.0F){codegenInstance.input.Act_w_el=0.00001F;}
+		//----------------------------------------------------
+		// second harmonic - parameter identification - DEBUG ONLY!
+		//codegenInstance.input.ordnung_a = 2.0;
+		//codegenInstance.input.amplitude_a = Global_Data.vLR.ampl_work;
+		//codegenInstance.input.phase_a = Global_Data.vLR.phase_work;
+		//----------------------------------------------------
+				if(codegenInstance.input.Act_w_el == 0.0F){codegenInstance.input.Act_w_el=0.00001F;}
     	// Start: Control algorithm - only if ultrazohm is in control state
     	// Control for TFM with asymmetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
@@ -416,30 +422,27 @@ static void CalcCompensatingHarmonics()
 {
 	// Calculation of the harmonics for the cogging torque compensation
 	//
-	//----------------------------------------------------
-	// second harmonic -> harmonic_a
+	//
 	//
 	float factor_torque_constant = -1/((Global_Data.vLR.ke_idle * Global_Data.vLR.fkt_ke_asym)+ (0.3859*expf(-0.2403 * codegenInstance.input.Ref_I_im_ext_mit)+0.05417*expf(-0.01041 * codegenInstance.input.Ref_I_im_ext_mit)));
-	// see matlab code "Run_FOC" -> Desktop/Regelung_TFM_LR/MA/Matlab/TFM
 	//
-	float ampl_second_ld =factor_torque_constant*1.08; // load depend amplitude for cogging torque compensation
-	//float ampl_second_ld =-1/((Global_Data.vLR.ke_idle * Global_Data.vLR.fkt_ke_asym)+ (1.039*expf(-0.3255 * codegenInstance.input.Ref_I_im_ext_mit)+0.1711*expf(-0.0435 * codegenInstance.input.Ref_I_im_ext_mit)))*1.08; // load depend amplitude for cogging torque compensation
-	float phase_second_ld =(0.005818*codegenInstance.input.Ref_I_im_ext_mit +  0.828908    -0.3352); // load depend phase for cogging torque compensation
+	//----------------------------------------------------
+	// second harmonic -> harmonic_a
 	codegenInstance.input.ordnung_a = 2.0;
-	codegenInstance.input.amplitude_a = ampl_second_ld;
-	codegenInstance.input.phase_a = phase_second_ld;
+	codegenInstance.input.amplitude_a = -2.4F;//factor_torque_constant*1.08;
+	codegenInstance.input.phase_a = 0.45F;//(0.005818*codegenInstance.input.Ref_I_im_ext_mit +  0.828908    -0.3352); // load depend phase for cogging torque compensation
 	//
 	//----------------------------------------------------
-	// fourth harmonic -> harmonic_a
-	codegenInstance.input.ordnung_b=4.0F;
-	codegenInstance.input.amplitude_b = factor_torque_constant *0.4F;
-	codegenInstance.input.phase_b = -0.2F;
+	// fourth harmonic -> harmonic_b
+	codegenInstance.input.ordnung_b=4.0F;//4.0F;
+	codegenInstance.input.amplitude_b = -0.63f;//factor_torque_constant *0.4F;
+	codegenInstance.input.phase_b = 5.2F;//-0.2F;
 	//
 	//----------------------------------------------------
-	// sixth harmonic -> harmonic_a
-	codegenInstance.input.ordnung_c = 0.0;//6.0F;
-	codegenInstance.input.amplitude_c =0.0;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
-	codegenInstance.input.phase_c =0.0;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
+	// sixth harmonic -> harmonic_c
+	codegenInstance.input.ordnung_c = 6.0;//6.0F;
+	codegenInstance.input.amplitude_c =-0.25;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
+	codegenInstance.input.phase_c =5.95;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
 	//
 	//
 	codegenInstance.input.ordnung_d = 0.0F;

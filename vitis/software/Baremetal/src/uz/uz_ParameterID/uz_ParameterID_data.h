@@ -146,6 +146,8 @@ typedef struct {
   boolean_T enable_TriState[3]; /**< array to signal which halfbridge of the inverter should be in tristate mode. true signals, that the halfbridge should be in tristate mode. (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
   real32_T thetaOffset; /**< determined offset of theta in rad */
   uz_PMSM_t PMSM_parameters; /**< identified motor parameters */
+  uz_6ph_dq_t inductances_6ph;
+  uz_6ph_dq_t resistances_6ph;
 } uz_ParaID_ElectricalID_output_t;
 
 //----------------------------------------//

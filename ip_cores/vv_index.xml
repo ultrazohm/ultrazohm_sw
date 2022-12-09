@@ -997,7 +997,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112782553">
+		<CoreRevision value="2112805564">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_min_cost_function/ipcore/parallel_8_sim_min_cost_function_v1_0/component.xml">
 		</ComponentPath>
@@ -1025,7 +1025,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112782546">
+		<CoreRevision value="2112804136">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_phase_voltages/ipcore/parallel_8_sim_phase_voltages_v1_0/component.xml">
 		</ComponentPath>
@@ -1081,7 +1081,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112782569">
+		<CoreRevision value="2112804130">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_prediction_and_cost_function/ipcore/parallel_8_sim_prediction_and_cost_function_v1_0/component.xml">
 		</ComponentPath>
@@ -1137,7 +1137,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112772277">
+		<CoreRevision value="2112805559">
 		</CoreRevision>
 		<ComponentPath value="parallel_8_vsd_and_park/ipcore/parallel_8_sim_vsd_and_park_v1_0/component.xml">
 		</ComponentPath>

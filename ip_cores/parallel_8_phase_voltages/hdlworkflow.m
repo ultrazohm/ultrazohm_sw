@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 12:27:42 on 23/11/2022
+% Generated with MATLAB 9.12 (R2022a) at 12:17:35 on 08/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_phase_voltages\hdlworkflow.m'
 %     Overwrite : true
@@ -95,10 +95,6 @@ hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/done
 % Set Outport HDL parameters
 hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/phase_voltages_per_switching_state', 'IOInterface', 'External Port');
 hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/phase_voltages_per_switching_state', 'IOInterfaceMapping', '');
-
-% Set Outport HDL parameters
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Index_in_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('parallel_8_phase_voltages/Phase_voltages_per_switching_state1/Index_in_AXI', 'IOInterfaceMapping', 'x"108"');
 
 
 %% Workflow Configuration Settings

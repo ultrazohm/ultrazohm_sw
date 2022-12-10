@@ -31,4 +31,12 @@ struct uz_delay_compensation_8_config_t{
  */
 uz_delay_compensation_8_t* uz_delay_compensation_8_init(struct uz_delay_compensation_8_config_t config);
 
+/**
+ * @brief Read the output currents id, iq, ix and iy from the IP-Core and return them
+ *
+ * @param self Pointer to driver instance
+ * @return uz_6ph_dq_t
+ */
+uz_6ph_dq_t uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_8_t* self);
+
 #endif // UZ_DELAY_COMPENSATION_8_H

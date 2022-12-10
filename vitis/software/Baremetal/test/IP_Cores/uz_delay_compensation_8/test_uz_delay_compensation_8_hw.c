@@ -127,14 +127,14 @@ void test_uz_delay_compensation_8_set_SampleTime_div_Ly_fail_due_to_zero_base_ad
    float Ly = 0.02f;
    TEST_ASSERT_FAIL_ASSERT(uz_delay_compensation_8_set_SampleTime_div_Ly(0,SampleTime,Ly));
 }
-/*
+
 void test_uz_delay_compensation_8_get_id_k_1(void){
         struct uz_fixedpoint_definition_t fixedpoint_definition = {
         .fractional_bits = 11,
         .integer_bits = 7,
         .is_signed = true};
     float expected_return_value = -1.0;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+id_k_1_AXI_Data_parallel_8_delay_compensation,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+id_k_1_AXI_Data_parallel_8_sim_delay_compensation,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_delay_compensation_8_get_id_k_1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -145,7 +145,7 @@ void test_uz_delay_compensation_8_get_iq_k_1(void){
         .integer_bits = 7,
         .is_signed = true};
     float expected_return_value = -1.0;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iq_k_1_AXI_Data_parallel_8_delay_compensation,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iq_k_1_AXI_Data_parallel_8_sim_delay_compensation,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_delay_compensation_8_get_iq_k_1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -156,7 +156,7 @@ void test_uz_delay_compensation_8_get_ix_k_1(void){
         .integer_bits = 7,
         .is_signed = true};
     float expected_return_value = -1.0;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ix_k_1_AXI_Data_parallel_8_delay_compensation,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+ix_k_1_AXI_Data_parallel_8_sim_delay_compensation,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_delay_compensation_8_get_ix_k_1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
@@ -167,9 +167,9 @@ void test_uz_delay_compensation_8_get_iy_k_1(void){
         .integer_bits = 7,
         .is_signed = true};
     float expected_return_value = -1.0;
-    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iy_k_1_AXI_Data_parallel_8_delay_compensation,fixedpoint_definition,expected_return_value);
+    uz_fixedpoint_axi_read_ExpectAndReturn(TEST_BASE_ADDRESS+iy_k_1_AXI_Data_parallel_8_sim_delay_compensation,fixedpoint_definition,expected_return_value);
     float actual_return_value = uz_delay_compensation_8_get_iy_k_1(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
-*/
+
 #endif // TEST

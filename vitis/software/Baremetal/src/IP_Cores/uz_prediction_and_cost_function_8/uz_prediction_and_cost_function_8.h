@@ -58,7 +58,7 @@ void uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(uz_predict
  * @param self Pointer to driver instance
  * @return Value of Index
  */
-int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self);
+//int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self);
 
 /**
  * @brief Set the value of done_phase_voltages from the Prediction_and_cost_function IP-Core
@@ -93,5 +93,5 @@ int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_func
  * @param self Pointer to driver instance
  * @return Value of done_prediction_and_cost_function
  */
-_Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(uz_prediction_and_cost_function_8_t* self);
+//_Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(uz_prediction_and_cost_function_8_t* self);
 #endif // UZ_PREDICTION_AND_COST_FUNCTION_8_H

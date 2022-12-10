@@ -53,7 +53,7 @@ float uz_min_cost_function_8_get_J_out_AXI(uz_min_cost_function_8_t* self){
 
     return J_out_AXI;
 }
-*/
+
 
 int32_t uz_min_cost_function_8_read_Index_in(uz_min_cost_function_8_t* self){
     uz_assert_not_NULL(self);
@@ -63,4 +63,5 @@ int32_t uz_min_cost_function_8_read_Index_in(uz_min_cost_function_8_t* self){
 
     return Index;
 }
+*/
 #endif

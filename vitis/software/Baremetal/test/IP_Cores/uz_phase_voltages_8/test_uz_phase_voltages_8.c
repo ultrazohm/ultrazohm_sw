@@ -39,7 +39,7 @@ void test_uz_phase_voltages_8_init_test(void)
 
     uz_phase_voltages_8_init(config);
 }
-
+/*
 void test_uz_phase_voltages_8_read_Index_in(void){
 
     uz_phase_voltages_8_set_theta_el_offset_Expect(config.base_address, config.theta_el_offset);
@@ -52,7 +52,7 @@ void test_uz_phase_voltages_8_read_Index_in(void){
     int32_t Index_in = uz_phase_voltages_8_read_Index_in(test_instance);
     TEST_ASSERT_EQUAL_INT(Index_in, Index_in_expect);
 }
-/*
+
 void test_phase_voltages_8_set_set_done_delay_compensation_AXI_test(void)
 {
     uz_phase_voltages_8_set_theta_el_offset_Expect(config.base_address, config.theta_el_offset);

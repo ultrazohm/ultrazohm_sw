@@ -115,7 +115,7 @@ void test_uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update_test(
 
    uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(test_instance,updated_values);
    }
-
+/*
    void test_uz_prediction_and_cost_function_8_read_Index(void){
 
     uz_prediction_and_cost_function_8_hw_set_Lq_Expect(config.base_address, config.Lq);
@@ -163,7 +163,7 @@ void test_uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update_test(
     _Bool done_prediction_and_cost_function = uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(test_instance);
     TEST_ASSERT_EQUAL(done_prediction_and_cost_function_expect, done_prediction_and_cost_function);
 }
-/*
+
 void test_uz_prediction_and_cost_function_8_set_done_phase_voltages_test(void)
 {
     uz_prediction_and_cost_function_8_hw_set_Lq_Expect(config.base_address, config.Lq);

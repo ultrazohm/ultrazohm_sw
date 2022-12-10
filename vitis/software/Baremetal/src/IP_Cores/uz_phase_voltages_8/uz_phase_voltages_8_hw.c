@@ -20,13 +20,13 @@ void uz_phase_voltages_8_set_u_dc_link_voltage(uint32_t base_address, float u_dc
     //single
     uz_axi_write_float(base_address + u_dc_link_voltage_AXI_Data_parallel_8_sim_phase_voltages, u_dc_link_voltage);
 }
-
+/*
 int32_t uz_phase_voltages_8_get_Index_in(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     //int32
     return  uz_axi_read_int32(base_address + Index_in_AXI_Data_parallel_8_sim_phase_voltages);
 }
-/*
+
 void uz_phase_voltages_8_hw_set_done_delay_compensation_AXI(uint32_t base_address, _Bool done_delay_compensation_AXI)
 {
     uz_assert_not_zero_uint32(base_address);

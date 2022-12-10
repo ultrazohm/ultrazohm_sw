@@ -32,12 +32,12 @@ uz_vsd_8_t* uz_vsd_8_init(struct uz_vsd_8_config_t config);
 uz_6ph_abc_t uz_vsd_8_get_ia1_ib1_ic1_ia2_ib2_ic2(uz_vsd_8_t* self);
 
 /**
- * @brief Read the output currents id and iq from the IP-Core and return them
+ * @brief Read the output currents id, iq, ix and iy from the IP-Core and return them
  *
  * @param self Pointer to driver instance
- * @return uz_dq_t
+ * @return uz_6ph_dq_t
  */
-uz_3ph_dq_t uz_vsd_and_park_8_transformation_6phase_get_id_iq(uz_vsd_8_t* self);
+uz_6ph_dq_t uz_vsd_and_park_8_transformation_6phase_get_id_iq_ix_iy(uz_vsd_8_t* self);
 
 
 #endif // UZ_VSD_8_H

@@ -171,14 +171,14 @@ void test_uz_prediction_and_cost_function_8_hw_set_iy_ref_fail_due_to_zero_base_
     float iy_ref = 6.4f;
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_iy_ref(0,iy_ref));
 }
-
+/*
 void test_uz_prediction_and_cost_function_8_hw_get_Index(void){
      int32_t expected_return_value = 3;
      uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+Index_AXI_Data_parallel_8_sim_prediction_and_cost_function,expected_return_value);
      int32_t actual_return_value = uz_prediction_and_cost_function_8_hw_get_Index(TEST_BASE_ADDRESS);
      TEST_ASSERT_EQUAL_FLOAT(expected_return_value,actual_return_value);
 }
-/*
+
 void test_uz_prediction_and_cost_function_8_hw_set_done_phase_voltages(void){
     _Bool done_phase_voltages = 1;
     uz_axi_write_bool_Expect(TEST_BASE_ADDRESS+done_phase_voltages_Data_parallel_8_sim_prediction_and_cost_function,done_phase_voltages);
@@ -211,12 +211,12 @@ void test_uz_prediction_and_cost_function_8_hw_set_current_valid_in_due_to_zero_
     _Bool current_valid_in = 1;
     TEST_ASSERT_FAIL_ASSERT(uz_prediction_and_cost_function_8_hw_set_current_valid_in(0,current_valid_in));
 }
-*/
+
 void test_uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(void){
      _Bool expected_return_value = 1;
      uz_axi_read_bool_ExpectAndReturn(TEST_BASE_ADDRESS+done_prediction_and_cost_function_AXI_Data_parallel_8_sim_prediction_and_cost_function,expected_return_value);
      _Bool actual_return_value = uz_prediction_and_cost_function_8_hw_get_done_prediction_and_cost_function(TEST_BASE_ADDRESS);
      TEST_ASSERT_EQUAL(expected_return_value,actual_return_value);
 }
-
+*/
 #endif // TEST

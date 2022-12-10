@@ -56,7 +56,7 @@ void uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(uz_predict
     uz_prediction_and_cost_function_8_hw_set_ix_ref(self->config.base_address, updated_values.ix_ref);
     uz_prediction_and_cost_function_8_hw_set_iy_ref(self->config.base_address, updated_values.iy_ref);
 }
-
+/*
 int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_function_8_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -65,7 +65,7 @@ int32_t uz_prediction_and_cost_function_8_read_Index(uz_prediction_and_cost_func
 
     return Index;
 }
-/*
+
 void uz_prediction_and_cost_function_8_set_done_phase_voltages_AXI(uz_prediction_and_cost_function_8_t* self, _Bool done_phase_voltages_AXI){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -86,7 +86,7 @@ void uz_prediction_and_cost_function_8_set_current_valid_in_AXI(uz_prediction_an
 
     uz_prediction_and_cost_function_8_hw_set_current_valid_in(self->config.base_address, current_valid_in_AXI);
 }
-*/
+
 _Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(uz_prediction_and_cost_function_8_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -95,5 +95,5 @@ _Bool uz_prediction_and_cost_function_8_read_done_prediction_and_cost_function(u
 
     return done_prediction_and_cost_function;
 }
-
+*/
 #endif

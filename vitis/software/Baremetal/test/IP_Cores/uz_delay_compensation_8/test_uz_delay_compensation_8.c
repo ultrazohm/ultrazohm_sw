@@ -57,7 +57,7 @@ void test_uz_delay_compensation_8_init_test(void)
     uz_delay_compensation_8_init(config);
 }
 
-/*
+
 void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_test(void)
 {
     uz_delay_compensation_8_set_psiPM_Expect(config.base_address, config.psiPM);
@@ -84,12 +84,12 @@ void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_test(void)
     float iyk1_expected = 0.6f;
     uz_delay_compensation_8_get_iy_k_1_ExpectAndReturn(config.base_address, iyk1_expected);
 
-    struct uz_6ph_idk1_iqk1_ixk1_iyk1_t currents = uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(test_instance);
+    struct uz_6ph_dq_t currents = uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(test_instance);
 
-   TEST_ASSERT_EQUAL_FLOAT(currents.id_k_1, idk1_expected);
-   TEST_ASSERT_EQUAL_FLOAT(currents.iq_k_1, iqk1_expectet);
-   TEST_ASSERT_EQUAL_FLOAT(currents.ix_k_1, ixk1_expected);
-   TEST_ASSERT_EQUAL_FLOAT(currents.iy_k_1, iyk1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.d, idk1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.q, iqk1_expectet);
+   TEST_ASSERT_EQUAL_FLOAT(currents.x, ixk1_expected);
+   TEST_ASSERT_EQUAL_FLOAT(currents.y, iyk1_expected);
 }
 
 void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_pointer(void)
@@ -97,6 +97,6 @@ void test_uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1_pointer(void)
     uz_delay_compensation_8_t* testpointer = NULL;
     TEST_ASSERT_FAIL_ASSERT(uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(testpointer));
 }
-*/
+
 
 #endif // TEST

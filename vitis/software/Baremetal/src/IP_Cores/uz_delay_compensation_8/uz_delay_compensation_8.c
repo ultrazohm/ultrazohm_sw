@@ -41,19 +41,19 @@ uz_delay_compensation_8_t* uz_delay_compensation_8_init(struct uz_delay_compensa
     uz_delay_compensation_8_set_SampleTime_div_Ly(self->config.base_address, self->config.SampleTime, self->config.Ly);
     return (self);
 }
-/*
-uz_6ph_idk1_iqk1_ixk1_iyk1_t uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_8_t* self){
+
+uz_6ph_dq_t uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(uz_delay_compensation_8_t* self){
 
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_6ph_idk1_iqk1_ixk1_iyk1_t currents = {0};
+    uz_6ph_dq_t currents = {0};
 
-    currents.id_k_1 = uz_delay_compensation_8_get_id_k_1(self->config.base_address);
-    currents.iq_k_1 = uz_delay_compensation_8_get_iq_k_1(self->config.base_address);
-    currents.ix_k_1 = uz_delay_compensation_8_get_ix_k_1(self->config.base_address);
-    currents.iy_k_1 = uz_delay_compensation_8_get_iy_k_1(self->config.base_address);
+    currents.d = uz_delay_compensation_8_get_id_k_1(self->config.base_address);
+    currents.q = uz_delay_compensation_8_get_iq_k_1(self->config.base_address);
+    currents.x = uz_delay_compensation_8_get_ix_k_1(self->config.base_address);
+    currents.y = uz_delay_compensation_8_get_iy_k_1(self->config.base_address);
 
     return currents;
 }
-*/
+
 #endif

@@ -69,7 +69,6 @@ void test_uz_min_cost_function_8_get_J_AXI_test_pointer(void)
     uz_min_cost_function_8_t* testpointer = NULL;
     TEST_ASSERT_FAIL_ASSERT(uz_min_cost_function_8_get_J_out_AXI(testpointer));
 }
-*/
 
 void test_uz_min_cost_function_8_read_Index_in(void){
 
@@ -80,4 +79,5 @@ void test_uz_min_cost_function_8_read_Index_in(void){
     int32_t Index_in = uz_min_cost_function_8_read_Index_in(test_instance);
     TEST_ASSERT_EQUAL_INT(Index_in, Index_in_expect);
 }
+*/
 #endif // TEST

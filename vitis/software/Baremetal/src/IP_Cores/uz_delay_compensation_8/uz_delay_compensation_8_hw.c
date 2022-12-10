@@ -69,7 +69,7 @@ void uz_delay_compensation_8_set_SampleTime_div_Ly(uint32_t base_address, float 
     float SampleTime_div_Ly = SampleTime/Ly;
     uz_axi_write_float(base_address + SampleTime_div_Ly_AXI_Data_parallel_8_sim_delay_compensation, SampleTime_div_Ly);
 }
-/*
+
 float uz_delay_compensation_8_get_id_k_1(uint32_t base_address)
 {
     uz_assert_not_zero_uint32(base_address);
@@ -78,7 +78,7 @@ float uz_delay_compensation_8_get_id_k_1(uint32_t base_address)
         .fractional_bits = 11,
         .integer_bits = 7,
         .is_signed = true};
-    return uz_fixedpoint_axi_read(base_address + id_k_1_AXI_Data_parallel_8_delay_compensation, fixedpoint_definition);
+    return uz_fixedpoint_axi_read(base_address + id_k_1_AXI_Data_parallel_8_sim_delay_compensation, fixedpoint_definition);
 }
 
 float uz_delay_compensation_8_get_iq_k_1(uint32_t base_address)
@@ -89,7 +89,7 @@ float uz_delay_compensation_8_get_iq_k_1(uint32_t base_address)
         .fractional_bits = 11,
         .integer_bits = 7,
         .is_signed = true};
-    return uz_fixedpoint_axi_read(base_address + iq_k_1_AXI_Data_parallel_8_delay_compensation, fixedpoint_definition);
+    return uz_fixedpoint_axi_read(base_address + iq_k_1_AXI_Data_parallel_8_sim_delay_compensation, fixedpoint_definition);
 }
 
 float uz_delay_compensation_8_get_ix_k_1(uint32_t base_address)
@@ -100,7 +100,7 @@ float uz_delay_compensation_8_get_ix_k_1(uint32_t base_address)
         .fractional_bits = 11,
         .integer_bits = 7,
         .is_signed = true};
-    return uz_fixedpoint_axi_read(base_address + ix_k_1_AXI_Data_parallel_8_delay_compensation, fixedpoint_definition);
+    return uz_fixedpoint_axi_read(base_address + ix_k_1_AXI_Data_parallel_8_sim_delay_compensation, fixedpoint_definition);
 }
 
 float uz_delay_compensation_8_get_iy_k_1(uint32_t base_address)
@@ -111,6 +111,5 @@ float uz_delay_compensation_8_get_iy_k_1(uint32_t base_address)
         .fractional_bits = 11,
         .integer_bits = 7,
         .is_signed = true};
-    return uz_fixedpoint_axi_read(base_address + iy_k_1_AXI_Data_parallel_8_delay_compensation, fixedpoint_definition);
+    return uz_fixedpoint_axi_read(base_address + iy_k_1_AXI_Data_parallel_8_sim_delay_compensation, fixedpoint_definition);
 }
-*/

@@ -297,9 +297,11 @@ extern float c1_current_vsd_and_park_transformation;
 extern float a2_current_vsd_and_park_transformation;
 extern float b2_current_vsd_and_park_transformation;
 extern float c2_current_vsd_and_park_transformation;
-uz_3ph_dq_t dq_currents_vsd_and_park_transformation;
+uz_6ph_dq_t dqxy_currents_vsd_and_park_transformation;
 extern float d_current_vsd_and_park_transformation;
 extern float q_current_vsd_and_park_transformation;
+extern float x_current_vsd_and_park_transformation;
+extern float y_current_vsd_and_park_transformation;
 
 
 extern uz_phase_voltages_8_t* test_instance_phase_voltages_8;
@@ -315,6 +317,12 @@ uz_6ph_idref_iqref_ixref_iyref_t updated_values={
 extern float Index_prediction_and_cost_function_8;
 
 extern uz_delay_compensation_8_t* test_instance_delay_compensation_8;
+uz_6ph_dq_t idk1_iqk1_iyk1_ixk1;
+extern float idk1;
+extern float iqk1;
+extern float ixk1;
+extern float iyk1;
+
 
 extern uz_min_cost_function_8_t* test_instance_min_cost_function_8;
 extern float Index_min_cost_function_8;
@@ -345,7 +353,7 @@ void ISR_Control(void *data)
 	////			6-Phase FCS-MPC					////
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	  uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(test_instance_prediction_and_cost_function_8, updated_values);
+	uz_prediction_and_cost_function_8_idref_iqref_ixref_iyref_update(test_instance_prediction_and_cost_function_8, updated_values);
 
     a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation = uz_vsd_8_get_ia1_ib1_ic1_ia2_ib2_ic2(test_instance_vsd_8);
     a1_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.a1;
@@ -355,17 +363,25 @@ void ISR_Control(void *data)
     b2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.b2;
     c2_current_vsd_and_park_transformation = a1_b1_c1_a2_b2_c2_currents_vsd_and_park_transformation.c2;
 
-    dq_currents_vsd_and_park_transformation = uz_vsd_and_park_8_transformation_6phase_get_id_iq(test_instance_vsd_8);
-    d_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.d;
-    q_current_vsd_and_park_transformation = dq_currents_vsd_and_park_transformation.q;
 
+    dqxy_currents_vsd_and_park_transformation = uz_vsd_and_park_8_transformation_6phase_get_id_iq_ix_iy(test_instance_vsd_8);
+    d_current_vsd_and_park_transformation = dqxy_currents_vsd_and_park_transformation.d;
+    q_current_vsd_and_park_transformation = dqxy_currents_vsd_and_park_transformation.q;
+    x_current_vsd_and_park_transformation = dqxy_currents_vsd_and_park_transformation.x;
+    y_current_vsd_and_park_transformation = dqxy_currents_vsd_and_park_transformation.y;
+
+    /*
     Index_phase_voltages_8=uz_phase_voltages_8_read_Index_in(test_instance_phase_voltages_8);
-
     Index_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_read_Index(test_instance_prediction_and_cost_function_8);
-
     Index_min_cost_function_8=uz_min_cost_function_8_read_Index_in(test_instance_min_cost_function_8);
-
+*/
     Index_switching_states_8=uz_switching_states_6Phase_8_read_Index_in(test_instance_switching_states_6Phase_8);
+
+    idk1_iqk1_iyk1_ixk1 = uz_delay_compensation_8_read_idk1_iqK1_ixk1_iyk1(test_instance_delay_compensation_8);
+    idk1 = idk1_iqk1_iyk1_ixk1.d;
+    iqk1 = idk1_iqk1_iyk1_ixk1.q;
+    ixk1 = idk1_iqk1_iyk1_ixk1.x;
+    iyk1 = idk1_iqk1_iyk1_ixk1.y;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Phase current measurement and various transformations (dq, VSD)					////

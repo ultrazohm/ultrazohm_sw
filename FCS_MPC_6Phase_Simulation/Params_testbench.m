@@ -8,7 +8,7 @@ psi_pm = 0.0048;   %0.039614;   %0.007;         % flux linkage in Vs
 L_d = 0.0001473;    %0.824e-3;    %0.00003;       % d-axis inductance in H
 L_q = 0.0001484;   %2.488e-3;    %0.00005;       % q-axis inductance in H
 L_x = 0.00005566 ;     %0.2744e-3;    %0.00004;       % x-axis inductance in H
-L_y = L_x;                        % y-axis inductance in H
+L_y = 0.0000554;                        % y-axis inductance in H
 p = 5;            %5;             % number of pole pairs
 J = 2.5581e-4;                    % rotor inertia 
 

@@ -117,12 +117,18 @@ enum JS_OberservableData {
 	JSO_z1z2_9Rout_z2,
 	JSO_d_current_vsd_and_park_transformation,
 	JSO_q_current_vsd_and_park_transformation,
+	JSO_x_current_vsd_and_park_transformation,
+	JSO_y_current_vsd_and_park_transformation,
 	JSO_a1_current_vsd_and_park_transformation,
 	JSO_b1_current_vsd_and_park_transformation,
 	JSO_c1_current_vsd_and_park_transformation,
 	JSO_a2_current_vsd_and_park_transformation,
 	JSO_b2_current_vsd_and_park_transformation,
 	JSO_c2_current_vsd_and_park_transformation,
+	JSO_idk1,
+	JSO_iqk1,
+	JSO_ixk1,
+	JSO_iyk1,
 	JSO_ENDMARKER
 };
 

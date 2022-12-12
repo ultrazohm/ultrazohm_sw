@@ -2,8 +2,8 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Thu Dec  8 12:16:50 2022
-# Process ID: 13864
+# Start of session at: Mon Dec 12 16:21:30 2022
+# Process ID: 6080
 # Current directory: C:/ultrazohm_sw/ip_cores/parallel_8_phase_voltages/ipcore/parallel_8_sim_phase_voltages_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/ultrazohm_sw/ip_cores/parallel_8_phase_voltages/ipcore/parallel_8_sim_phase_voltages_v1_0/prj_ip/vivado.log
@@ -87,4 +87,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages_ax
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Dec  8 12:17:01 2022...
+INFO: [Common 17-206] Exiting Vivado at Mon Dec 12 16:21:51 2022...

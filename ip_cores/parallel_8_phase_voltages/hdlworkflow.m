@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 12:17:35 on 08/12/2022
+% Generated with MATLAB 9.12 (R2022a) at 16:22:07 on 12/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_phase_voltages\hdlworkflow.m'
 %     Overwrite : true

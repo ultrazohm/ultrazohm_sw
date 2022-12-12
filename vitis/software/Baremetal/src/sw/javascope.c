@@ -130,11 +130,13 @@ float b2_current_vsd_and_park_transformation;
 float c2_current_vsd_and_park_transformation;
 float d_current_vsd_and_park_transformation;
 float q_current_vsd_and_park_transformation;
+float x_current_vsd_and_park_transformation;
+float y_current_vsd_and_park_transformation;
 
-float idk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
-float iqk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
-float ixk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
-float iyk1_predicted_current_delay_compensation_fcs_mpc_6phase_pmsm;
+float idk1;
+float iqk1;
+float ixk1;
+float iyk1;
 
 float d_voltage_per_switching_state;
 float q_voltage_per_switching_state;
@@ -307,6 +309,8 @@ int JavaScope_initalize(DS_Data* data)
 
 	js_ch_observable[JSO_d_current_vsd_and_park_transformation] = &d_current_vsd_and_park_transformation;
 	js_ch_observable[JSO_q_current_vsd_and_park_transformation] = &q_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_x_current_vsd_and_park_transformation] = &x_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_y_current_vsd_and_park_transformation] = &y_current_vsd_and_park_transformation;
 	//js_ch_observable[JSO_alpha_current_vsd_and_park_transformation] = &alpha_current_vsd_and_park_transformation;
 	//js_ch_observable[JSO_beta_current_vsd_and_park_transformation] = &beta_current_vsd_and_park_transformation;
 	//js_ch_observable[JSO_x_current_vsd_and_park_transformation] = &x_current_vsd_and_park_transformation;
@@ -317,6 +321,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_a2_current_vsd_and_park_transformation] = &a2_current_vsd_and_park_transformation;
 	js_ch_observable[JSO_b2_current_vsd_and_park_transformation] = &b2_current_vsd_and_park_transformation;
 	js_ch_observable[JSO_c2_current_vsd_and_park_transformation] = &c2_current_vsd_and_park_transformation;
+	js_ch_observable[JSO_idk1] = &idk1;
+	js_ch_observable[JSO_iqk1] = &iqk1;
+	js_ch_observable[JSO_ixk1] = &ixk1;
+	js_ch_observable[JSO_iyk1] = &iyk1;
 
 
 

@@ -233,7 +233,7 @@ static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_c
     .base_address = XPAR_UZ_USER_PARALLEL_8_SIM_PREDI_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000000,
     .psiPM = 0.0048f,//measurement needed
-    .Lq = 0.000148f,//[H]
+    .Lq = 0.0001484f,//[H]
     .Ld = 0.0001473f,//[H]
     .Rs = 0.1278f,//[Ohm]
     .SampleTime = 0.00001f,
@@ -268,13 +268,13 @@ static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
     .u_dc_link_voltage=36.0f,//needs to be asked
 };
 uz_phase_voltages_8_t* test_instance_phase_voltages_8;
-
+/*
 static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
     .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_MIN_C_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
 };
 uz_min_cost_function_8_t* test_instance_min_cost_function_8;
-
+*/
 static struct uz_switching_states_6Phase_8_config_t config_switching_states_6Phase_8={
     .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_SWITC_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
@@ -417,7 +417,7 @@ int main(void)
             test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
             test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
             test_instance_phase_voltages_8 = uz_phase_voltages_8_init(config_phase_voltages_8);
-            test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
+            //test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
             test_instance_switching_states_6Phase_8=uz_switching_states_6Phase_8_init(config_switching_states_6Phase_8);
 
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

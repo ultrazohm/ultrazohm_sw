@@ -401,21 +401,21 @@ static void CheckForErrors()
 	Global_Data.vLR.error_code_LR=113;
 	}
 	// speed limit
-	if (codegenInstance.output.fault_peak_speed==1)
-	{
-	ultrazohm_state_machine_set_error(true);
-	Global_Data.vLR.error_code_LR=201;
-	}
-	if (codegenInstance.output.fault_max_speed==1)
-	{
-	ultrazohm_state_machine_set_error(true);
-	Global_Data.vLR.error_code_LR=202;
-	}
-	if (codegenInstance.output.error_speed_limit==1)
-	{
-	ultrazohm_state_machine_set_error(true);
-	Global_Data.vLR.error_code_LR=203;
-	}
+	//if (codegenInstance.output.fault_peak_speed==1)
+	//{
+	//ultrazohm_state_machine_set_error(true);
+	//Global_Data.vLR.error_code_LR=201;
+	//}
+	//if (codegenInstance.output.fault_max_speed==1)
+	//{
+	//ultrazohm_state_machine_set_error(true);
+	//Global_Data.vLR.error_code_LR=202;
+	//}
+	//if (codegenInstance.output.error_speed_limit==1)
+	//{
+	//ultrazohm_state_machine_set_error(true);
+	//Global_Data.vLR.error_code_LR=203;
+	//}
 };
 //
 static void CalcCompensatingHarmonics()

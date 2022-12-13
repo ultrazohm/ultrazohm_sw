@@ -122,6 +122,9 @@ int main(void)
             rtP.n_ref_max = 1600.0; // max. permissible reference speed in rmp
             //Constants
             rtP.p = 18.0; // definition of the motor
+            rtP.Offset_U_ideal = -0*M_PI/3; // current phase angle of phase U
+            rtP.Offset_V_ideal = -2*M_PI/3; // current phase angle of phase V (15n/1n -> -2.3643)
+            rtP.Offset_W_ideal = -4*M_PI/3; // current phase angle of phase W (15n/1n -> -4.2083)
 
             //
             initialization_chain = init_ip_cores;

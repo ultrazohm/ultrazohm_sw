@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Dec  5 17:20:35 2022
+ * C/C++ source code generated on : Tue Dec 13 09:47:16 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -312,7 +312,7 @@ typedef struct {
    *   '<S355>/Look-Up Table'
    *   '<S357>/Look-Up Table'
    */
-  int16_T pooled18[65];
+  int16_T pooled16[65];
 } ConstP;
 
 /* External inputs (root inport signals with default storage) */
@@ -430,6 +430,17 @@ struct P_ {
                                         *   '<S252>/Gain6'
                                         *   '<S253>/Gain6'
                                         *   '<S254>/Gain6'
+                                        */
+  real32_T Offset_U_ideal;             /* Variable: Offset_U_ideal
+                                        * Referenced by: '<S10>/Strangstromregler_asymetrisch'
+                                        */
+  real32_T Offset_V_ideal;             /* Variable: Offset_V_ideal
+                                        * Referenced by: '<S10>/Strangstromregler_asymetrisch1'
+                                        */
+  real32_T Offset_W_ideal;             /* Variable: Offset_W_ideal
+                                        * Referenced by:
+                                        *   '<S25>/Constant'
+                                        *   '<S25>/Constant2'
                                         */
   real32_T i_max_peak;                 /* Variable: i_max_peak
                                         * Referenced by:

@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Dec  5 17:20:35 2022
+ * C/C++ source code generated on : Tue Dec 13 09:47:16 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -708,10 +708,10 @@ static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
    */
   if (rtb_LTEp25_a || rtb_GTEp75) {
     rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   } else {
     rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   }
 
   /* End of Switch: '<S44>/SignCorrected' */
@@ -757,10 +757,10 @@ static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
    */
   if (rtb_LTEp25_a) {
     rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   } else {
     rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   }
 
   /* End of Switch: '<S46>/SignCorrected' */
@@ -1677,10 +1677,10 @@ static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu)
    */
   if (rtb_LTEp50) {
     rtb_SignCorrected = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   } else {
     rtb_SignCorrected = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled18);
+      rtConstP.pooled16);
   }
 
   /* End of Switch: '<S369>/SignCorrected' */
@@ -2277,8 +2277,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         rtU->Act_w_el, rtDW->DiscreteTimeIntegrator,
         rtU->fl_enable_compensation_current, rtU->Act_theta_u_el, rtDW->c,
         rtDW->Merge, rtU->Psi_PM_U, rtU->Psi_PM_V, rtU->Psi_PM_W,
-        rtU->fl_lookup_table, &rtY->a_U, &rtDW->Merge3, 0.0F, 0.0F, 0.0F,
-        &rtDW->Strangstromregler_asymetrisch_h);
+        rtU->fl_lookup_table, &rtY->a_U, &rtDW->Merge3, rtP.Offset_U_ideal,
+        rtP.Offset_U_ideal, -0.0F, &rtDW->Strangstromregler_asymetrisch_h);
 
       /* End of Outputs for SubSystem: '<S10>/Strangstromregler_asymetrisch' */
     } else {
@@ -2335,8 +2335,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         rtU->Act_w_el, rtDW->DiscreteTimeIntegrator,
         rtU->fl_enable_compensation_current, rtU->Act_theta_u_el, rtDW->c,
         rtDW->Merge, rtU->Psi_PM_U, rtU->Psi_PM_V, rtU->Psi_PM_W,
-        rtU->fl_lookup_table, &rtY->a_V, &rtDW->Merge4, -2.09439516F,
-        -2.09439516F, 2.09439516F, &rtDW->Strangstromregler_asymetrisch1);
+        rtU->fl_lookup_table, &rtY->a_V, &rtDW->Merge4, rtP.Offset_V_ideal,
+        rtP.Offset_V_ideal, 2.3561945F, &rtDW->Strangstromregler_asymetrisch1);
 
       /* End of Outputs for SubSystem: '<S10>/Strangstromregler_asymetrisch1' */
     } else {
@@ -2409,25 +2409,24 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* Sum: '<S25>/Sum1' incorporates:
        *  Constant: '<S25>/Constant'
        */
-      rtDW->Delay1 = rtDW->c + -4.18879032F;
+      rtDW->Delay1 = rtDW->c + rtP.Offset_W_ideal;
 
       /* SwitchCase: '<S285>/Switch Case' incorporates:
-       *  Constant: '<S25>/Constant'
        *  Inport: '<Root>/fl_lookup_table'
-       *  Sum: '<S25>/Sum1'
+       *  Product: '<S251>/Product4'
        */
       if (rtU->fl_lookup_table == 1) {
         /* Outputs for IfAction SubSystem: '<S285>/cos_lookup_table' incorporates:
          *  ActionPort: '<S295>/Action Port'
          */
-        cos_lookup_table(rtDW->c + -4.18879032F, &rtDW->c, &rtDW->a);
+        cos_lookup_table(rtDW->Delay1, &rtDW->c, &rtDW->a);
 
         /* End of Outputs for SubSystem: '<S285>/cos_lookup_table' */
       } else {
         /* Outputs for IfAction SubSystem: '<S285>/Subsystem' incorporates:
          *  ActionPort: '<S294>/Action Port'
          */
-        Subsystem(rtDW->c + -4.18879032F, &rtDW->c, &rtDW->a);
+        Subsystem(rtDW->Delay1, &rtDW->c, &rtDW->a);
 
         /* End of Outputs for SubSystem: '<S285>/Subsystem' */
       }
@@ -2438,17 +2437,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Constant: '<S25>/Constant'
        *  Inport: '<Root>/Act_theta_u_el'
        */
-      rtDW->theta_m = rtU->Act_theta_u_el + -4.18879032F;
+      rtDW->theta_m = rtU->Act_theta_u_el + rtP.Offset_W_ideal;
 
       /* SwitchCase: '<S284>/Switch Case' incorporates:
        *  Constant: '<S252>/Constant1'
        *  Constant: '<S253>/Constant1'
        *  Constant: '<S254>/Constant1'
-       *  Constant: '<S25>/Constant'
        *  Constant: '<S25>/Constant2'
        *  Constant: '<S25>/Constant3'
-       *  Inport: '<Root>/Act_theta_u_el'
        *  Inport: '<Root>/fl_lookup_table'
+       *  Product: '<S251>/Product5'
        *  Product: '<S252>/Product4'
        *  Product: '<S252>/Product5'
        *  Product: '<S253>/Product4'
@@ -2457,7 +2455,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Product: '<S254>/Product5'
        *  Sum: '<S25>/Add2'
        *  Sum: '<S25>/Add3'
-       *  Sum: '<S25>/Sum'
        *  SwitchCase: '<S256>/Switch Case'
        *  SwitchCase: '<S257>/Switch Case'
        *  SwitchCase: '<S258>/Switch Case'
@@ -2472,40 +2469,36 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S284>/cos_lookup_table' incorporates:
          *  ActionPort: '<S287>/Action Port'
          */
-        cos_lookup_table(rtU->Act_theta_u_el + -4.18879032F, &rtDW->Product1_d,
-                         &rtDW->b);
+        cos_lookup_table(rtDW->theta_m, &rtDW->Product1_d, &rtDW->b);
 
         /* End of Outputs for SubSystem: '<S284>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S256>/cos_lookup_table' incorporates:
          *  ActionPort: '<S260>/Action Port'
          */
-        cos_lookup_table(rtU->Act_theta_u_el + -4.18879032F, &rtDW->Merge_a,
-                         &rtDW->Merge1_m);
+        cos_lookup_table(rtDW->theta_m, &rtDW->Merge_a, &rtDW->Merge1_m);
 
         /* End of Outputs for SubSystem: '<S256>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S257>/cos_lookup_table' incorporates:
          *  ActionPort: '<S268>/Action Port'
          */
-        cos_lookup_table((rtU->Act_theta_u_el + -4.18879032F) + -4.18879032F,
-                         &rtDW->Gain1, &rtDW->y_i);
+        cos_lookup_table(rtDW->theta_m + rtP.Offset_W_ideal, &rtDW->Gain1,
+                         &rtDW->y_i);
 
         /* End of Outputs for SubSystem: '<S257>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S258>/cos_lookup_table' incorporates:
          *  ActionPort: '<S276>/Action Port'
          */
-        cos_lookup_table((rtU->Act_theta_u_el + -4.18879032F) + 4.18879032F,
-                         &rtDW->Product_d, &rtDW->y);
+        cos_lookup_table(rtDW->theta_m + 4.20624352F, &rtDW->Product_d, &rtDW->y);
 
         /* End of Outputs for SubSystem: '<S258>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S303>/cos_lookup_table' incorporates:
          *  ActionPort: '<S306>/Action Port'
          */
-        cos_lookup_table((rtU->Act_theta_u_el + -4.18879032F) * 2.0F,
-                         &rtDW->Delay1_a, &rtDW->Switch2);
+        cos_lookup_table(rtDW->theta_m * 2.0F, &rtDW->Delay1_a, &rtDW->Switch2);
 
         /* End of Outputs for SubSystem: '<S303>/cos_lookup_table' */
 
@@ -2519,8 +2512,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S322>/cos_lookup_table' incorporates:
          *  ActionPort: '<S325>/Action Port'
          */
-        cos_lookup_table((rtU->Act_theta_u_el + -4.18879032F) * 4.0F,
-                         &rtDW->re_lim, &rtDW->Delay1_k);
+        cos_lookup_table(rtDW->theta_m * 4.0F, &rtDW->re_lim, &rtDW->Delay1_k);
 
         /* End of Outputs for SubSystem: '<S322>/cos_lookup_table' */
 
@@ -2534,8 +2526,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S341>/cos_lookup_table' incorporates:
          *  ActionPort: '<S344>/Action Port'
          */
-        cos_lookup_table((rtU->Act_theta_u_el + -4.18879032F) * 6.0F,
-                         &rtDW->im_lim_f, &rtDW->re_lim_e);
+        cos_lookup_table(rtDW->theta_m * 6.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
 
         /* End of Outputs for SubSystem: '<S341>/cos_lookup_table' */
 
@@ -2549,40 +2540,35 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S284>/Subsystem' incorporates:
          *  ActionPort: '<S286>/Action Port'
          */
-        Subsystem(rtU->Act_theta_u_el + -4.18879032F, &rtDW->Product1_d,
-                  &rtDW->b);
+        Subsystem(rtDW->theta_m, &rtDW->Product1_d, &rtDW->b);
 
         /* End of Outputs for SubSystem: '<S284>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S256>/Subsystem' incorporates:
          *  ActionPort: '<S259>/Action Port'
          */
-        Subsystem(rtU->Act_theta_u_el + -4.18879032F, &rtDW->Merge_a,
-                  &rtDW->Merge1_m);
+        Subsystem(rtDW->theta_m, &rtDW->Merge_a, &rtDW->Merge1_m);
 
         /* End of Outputs for SubSystem: '<S256>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S257>/Subsystem' incorporates:
          *  ActionPort: '<S267>/Action Port'
          */
-        Subsystem((rtU->Act_theta_u_el + -4.18879032F) + -4.18879032F,
-                  &rtDW->Gain1, &rtDW->y_i);
+        Subsystem(rtDW->theta_m + rtP.Offset_W_ideal, &rtDW->Gain1, &rtDW->y_i);
 
         /* End of Outputs for SubSystem: '<S257>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S258>/Subsystem' incorporates:
          *  ActionPort: '<S275>/Action Port'
          */
-        Subsystem((rtU->Act_theta_u_el + -4.18879032F) + 4.18879032F,
-                  &rtDW->Product_d, &rtDW->y);
+        Subsystem(rtDW->theta_m + 4.20624352F, &rtDW->Product_d, &rtDW->y);
 
         /* End of Outputs for SubSystem: '<S258>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S303>/Subsystem' incorporates:
          *  ActionPort: '<S305>/Action Port'
          */
-        Subsystem((rtU->Act_theta_u_el + -4.18879032F) * 2.0F, &rtDW->Delay1_a,
-                  &rtDW->Switch2);
+        Subsystem(rtDW->theta_m * 2.0F, &rtDW->Delay1_a, &rtDW->Switch2);
 
         /* End of Outputs for SubSystem: '<S303>/Subsystem' */
 
@@ -2596,8 +2582,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S322>/Subsystem' incorporates:
          *  ActionPort: '<S324>/Action Port'
          */
-        Subsystem((rtU->Act_theta_u_el + -4.18879032F) * 4.0F, &rtDW->re_lim,
-                  &rtDW->Delay1_k);
+        Subsystem(rtDW->theta_m * 4.0F, &rtDW->re_lim, &rtDW->Delay1_k);
 
         /* End of Outputs for SubSystem: '<S322>/Subsystem' */
 
@@ -2611,8 +2596,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S341>/Subsystem' incorporates:
          *  ActionPort: '<S343>/Action Port'
          */
-        Subsystem((rtU->Act_theta_u_el + -4.18879032F) * 6.0F, &rtDW->im_lim_f,
-                  &rtDW->re_lim_e);
+        Subsystem(rtDW->theta_m * 6.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
 
         /* End of Outputs for SubSystem: '<S341>/Subsystem' */
 

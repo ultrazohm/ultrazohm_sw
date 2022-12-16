@@ -84,6 +84,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages_ax
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/parallel_8_sim_phase_voltages.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Mon Dec 12 16:21:51 2022...
+INFO: [Common 17-206] Exiting Vivado at Fri Dec 16 11:53:24 2022...
 
-Elapsed time is 23.457 seconds.
+Elapsed time is 13.2994 seconds.

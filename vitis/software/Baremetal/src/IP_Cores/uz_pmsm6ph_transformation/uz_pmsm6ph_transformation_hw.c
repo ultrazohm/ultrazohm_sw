@@ -13,12 +13,12 @@ uz_6ph_abc_t uz_pmsm6ph_transformation_hw_read_currents(uint32_t base_address){
     		.fractional_bits=18,
     		.integer_bits=(27-18)
     };
-    output_values.a1=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz, fixed_out);
-    output_values.b1=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x4, fixed_out);
-    output_values.c1=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x8, fixed_out);
-    output_values.a2=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0xC, fixed_out);
-    output_values.b2=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x10, fixed_out);
-    output_values.c2=uz_fixedpoint_axi_read(base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x14, fixed_out);
+    output_values.a1=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz), fixed_out);
+    output_values.b1=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x4U), fixed_out);
+    output_values.c1=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x8U), fixed_out);
+    output_values.a2=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0xCU), fixed_out);
+    output_values.b2=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x10U), fixed_out);
+    output_values.c2=uz_fixedpoint_axi_read( (base_address+i_abc_out_axi_Data_uz_pmsm6ph_trans_100mhz+0x14U), fixed_out);
     return output_values;
 }
 

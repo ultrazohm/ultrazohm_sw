@@ -265,7 +265,7 @@ static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
     .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_PHASE_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000,
     .theta_el_offset=-0.7900000f,//needs to be asked
-    .u_dc_link_voltage=36.0f,//needs to be asked
+    .u_dc_link_voltage=60.0f,//needs to be asked
 };
 uz_phase_voltages_8_t* test_instance_phase_voltages_8;
 /*

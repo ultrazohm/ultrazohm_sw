@@ -17,6 +17,14 @@
 #include "uz_FOC.h"
 #include "../uz_global_configuration.h"
 #if UZ_FOC_MAX_INSTANCES > 0
+#include "../uz_HAL.h"
+#include "../uz_signals/uz_signals.h"
+#include "uz_linear_decoupling.h"
+#include "uz_space_vector_limitation.h"
+#include <math.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
 typedef struct uz_FOC {
 	bool is_ready;
 	bool ext_clamping;

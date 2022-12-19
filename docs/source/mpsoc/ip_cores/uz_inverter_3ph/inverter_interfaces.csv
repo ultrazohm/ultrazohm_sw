@@ -1,0 +1,10 @@
+Port Name,Port Type,Data Type,Interface,Range,Description
+switch_pspl_abc,Input,boolean,AXI 0x100,,true: gate signals from PS; false: gate signals from PL		
+switch_pspl_gate,Input,boolean,AXI 0x104,,true: current values from PS; false: current values from PL
+i_abc_ps,Input,single (3),AXI 0x110-0x118,,input current values from PS in the form of uz_3ph_abc_t
+i_abc_pl,Input,sfix27_En18 (3),External Signal,-256 to +255,input current values from PL in the form of uz_3ph_abc_t
+gate_ps,Input,boolean (6),AXI 0x140-0x154,,input gate signals from PS in the form of uz_inverter_3ph_gate_ps_t
+gate_pl,Input,ufix1 (6),External Signal,0 to 1,input gate signals from PL in the form of uz_inverter_3ph_gate_ps_t
+u_dc,Input,single,AXI 0x108,,set DC link voltage
+u_abc_ps,Output,single (3),AXI 0x170-0x178,,output voltage values to PS in the form of uz_3ph_abc_t (note: line-to-line voltages :math:`u_{ab};u_{bc};u_{ca}`!)
+u_abc_pl,Output,sfix27_En16 (3),External Signal,-1024 to +1023,output voltage values to PL in the form of uz_3ph_abc_t (note: line-to-line voltages :math:`u_{ab};u_{bc};u_{ca}`!)

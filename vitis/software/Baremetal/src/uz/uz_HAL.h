@@ -11,6 +11,7 @@
 #include "xil_printf.h"
 #include "sleep.h"
 
+// cppcheck-suppress misra-c2012-21.1 //. stdio.h is not allowed by MISRA, we use it anyway to have assertion file paths relative, see issue #189 and PR #337
 #define __FILENAME__ strstr(__FILE__, "src")
 
 /**

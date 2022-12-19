@@ -12,7 +12,7 @@ Vivado
 In this example, PWM blocks have been placed individually for the CIL.
 Alternatively, the PWM blocks from the standard model can be used.
 The outputs of the PWM blocks are combined with a Concat block and routed to the inverter's gate inputs.
-Their voltage outputs are connected with the respective inputs of the Transformation IP-core, who's current oututs are fed back to the inverters.
+Their voltage outputs are connected with the respective inputs of the Transformation IP-core, whose current outputs are fed back to the inverters.
 The transformation's transformed output is connected with the PMSM, while the PMSM's rotor angle and current outputs are connected with the Transformation.
 The trigger and refresh signals of the Transformation are connected with the RS-Flip-Flop as shown below.
 
@@ -30,7 +30,7 @@ All individual connections of each IP-core are shown in the table below.
 Vitis
 =====
 
-Each IP-core is initialized at in the ``main.c``, as well as a pointer with the respective type.
+Each IP-core is initialized in ``main.c``, as well as a pointer with the respective type.
 The init functions are called during the init process of all IP-cores.
 
 .. code-block:: c
@@ -89,7 +89,7 @@ The init functions are called during the init process of all IP-cores.
   uz_PWM_SS_2L_t *PWM1 = NULL;
   uz_PWM_SS_2L_t *PWM2 = NULL;
   struct uz_PWM_SS_2L_config_t cil_pwm1_config = {
-  	.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+    .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
     .ip_clk_frequency_Hz=100000000.0f,
     .Tristate_HB1 = false,
     .Tristate_HB2 = false,
@@ -100,7 +100,7 @@ The init functions are called during the init process of all IP-cores.
     .PWM_en = true,
     .use_external_counter = true};
   struct uz_PWM_SS_2L_config_t cil_pwm2_config = {
-  	.base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+    .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
     .ip_clk_frequency_Hz=100000000.0f,
     .Tristate_HB1 = false,
     .Tristate_HB2 = false,
@@ -142,7 +142,7 @@ To use the CIL setup, the IP-core's pointers have to be imported to the ``isr.c`
 Also, variables to store the outputs of the CIL model are defined.
 In this example, a PI controller is used to control the PMSM.
 The usage is not necessary and the respective parts can be disregarded if other controllers are used.
-At the end, the Duty-Cycles are given to the defined PWM modules.
+In the end, the duty cycles are given to the defined PWM modules.
 Depending on the used controller, this might not be necessary.
 
 .. code-block:: c

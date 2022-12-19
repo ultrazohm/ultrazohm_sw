@@ -3,7 +3,8 @@
 =====================
 Nine-phase PMSM Model
 =====================
-Important: This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained).
+
+Important: This IP-core is based on the :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations are explained).
 
 Differences to the three-phase PMSM model IP-core:
 
@@ -11,17 +12,17 @@ Differences to the three-phase PMSM model IP-core:
 - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - All calculations in the IP-Core are done in double precision
-- Interfaces to PL are realized in fixedpoint, while interfaces to the PS use single precision float values
+- Interfaces to PL are realized in fixed-point, while interfaces to the PS use single-precision float values
 
 System description
 ==================
 
-The modelling of the nine-phase machine is based on [[#Slunjski_Diss]_].
+The modeling of the nine-phase machine is based on [[#Slunjski_Diss]_].
 The general idea in this work and also the common approach to model multiphase machines is to transform the phase variables with the VSD and Park transformations as shown and done in :ref:`uz_VSD_transformation` and :ref:`uz_transformation`.
-Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame ant not phase variables.
+Transformed voltages are used as input for this IP-core and the outputs will also be in the rotary or stationary reference frame and not phase variables.
 This IP-core contains the electric differential equations and the mechanical part where the torque is calculated.
 Additionally, either a torque load or a fixed speed can be set to test the machine model.
-While the equations are mostly similar to the ones of :ref:`uz_pmsmModel`, thy will be shown here again for the sake of completeness.
+While the equations are mostly similar to the ones of :ref:`uz_pmsmModel`, they will be shown here again for the sake of completeness.
 To obtain more details about the equations and integrators, reading :ref:`uz_pmsmModel` is advised.
 
 dq equations
@@ -66,7 +67,7 @@ Note that the integrator for :math:`\theta_{el}` is limited to :math:`\pm \pi` t
 IP-core interfaces
 ==================
 
-.. csv-table:: Interface of ninephase PMSM Model IP-Core
+.. csv-table:: Interface of nine-phase PMSM Model IP-Core
    :file: uz_pmsm_model_9ph_dq_interfaces.csv
    :widths: 50 40 80 60 60 190
    :header-rows: 1
@@ -74,7 +75,7 @@ IP-core interfaces
 Driver reference
 ================
 
-The set and get functions for voltage and currents are implemented as normal and unsafe version.
+The set and get functions for voltage and currents are implemented as normal and unsafe versions.
 In addition to the regular functions, *unsafe* versions of the driver exist (``_unsafe``).
 These functions are considerably faster than their safe counterparts but violate the software rules outlined in :ref:`software_development_guidelines`.
 It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
@@ -126,7 +127,7 @@ Usage in PS only
 ****************
 
 Using the model in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
-The placement of the IP-core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
+The placement of the IP-core for the use from PS only is straightforward as only the default PL interfaces have to be connected.
 
 .. figure:: open_loop_ps.jpg
 
@@ -173,15 +174,15 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
   extern uz_pmsm_model9ph_dq_t *pmsm;                               // pointer to PMSM object
   struct uz_pmsm_model9ph_dq_outputs_general_t out_general = {0};   // stores general outputs
   uz_9ph_dq_t in_voltages = {                                       // stores input voltages (set random voltages for testing)
-		.d = 1.0f,
-		.q = 2.0f,
-		.x1 = 3.0f,
-		.y1 = 4.0f,
-		.x2 = 5.0f,
-		.y2 = 6.0f,
-		.x3 = 7.0f,
-		.y3 = 8.0f,
-		.zero = 9.0f};                                   
+        .d = 1.0f,
+        .q = 2.0f,
+        .x1 = 3.0f,
+        .y1 = 4.0f,
+        .x2 = 5.0f,
+        .y2 = 6.0f,
+        .x3 = 7.0f,
+        .y3 = 8.0f,
+        .zero = 9.0f};                                   
   uz_9ph_dq_t out_currents = {0};                                   // stores output currents
   float omega_mech = 10.0f;                                         // fixed speed can be set from Expressions with this variable
   int reset = 0;                                                    // use reset variable to reset integrators from Expressions 

@@ -1,10 +1,9 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
-<<<<<<< HEAD
+
 * Copyright 2022 Josef Knoblach, Dennis Hufnagel
-=======
+
 * Copyright 2022 Josef Knoblach
->>>>>>> feature/Test_6Phase_FCS_MPC
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -21,15 +20,10 @@
 #include "uz_movingAverageFilter.h"
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
-<<<<<<< HEAD
 #include <stdlib.h>
-=======
->>>>>>> feature/Test_6Phase_FCS_MPC
-
 
 typedef struct uz_movingAverageFilter_t{
 	bool is_ready;
-<<<<<<< HEAD
 	uz_array_float_t circularBuffer;
 	uint32_t bufferindex;						//index in circularBuffer where to put new samples
 	uint32_t filterLength;
@@ -37,11 +31,9 @@ typedef struct uz_movingAverageFilter_t{
 	uint32_t old_filterLength;
 	float old_value;							//previous value at bufferindex, before being overwritten
 	float sum;
-=======
 	float circularBuffer[MAX_FILTERLENGTH];	//array to save the last [MAX_FILTERLENGTH] input-samples of the filter
 	int bufferPointer;						//index in circularBuffer where to put new samples
 	int filterLength;
->>>>>>> feature/Test_6Phase_FCS_MPC
 }uz_movingAverageFilter_t;
 
 static uint32_t instance_movingAverageFilter_counter = 0U;
@@ -52,7 +44,6 @@ static uz_movingAverageFilter_t* uz_movingAverageFilter_allocation(void);
 
 
 static uz_movingAverageFilter_t* uz_movingAverageFilter_allocation(void){
-<<<<<<< HEAD
  	uz_assert(instance_movingAverageFilter_counter < UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES);
  	uz_movingAverageFilter_t* self = &instances_movingAverageFilter[instance_movingAverageFilter_counter];
   	instance_movingAverageFilter_counter = instance_movingAverageFilter_counter + 1U;
@@ -156,7 +147,6 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
 	self->old_value= self->circularBuffer.data[self->bufferindex];
 
 	return(output);
-=======
  uz_assert(instance_movingAverageFilter_counter < UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES);
  uz_movingAverageFilter_t* self = &instances_movingAverageFilter[instance_movingAverageFilter_counter];
  instance_movingAverageFilter_counter = instance_movingAverageFilter_counter + 1;
@@ -180,13 +170,11 @@ uz_movingAverageFilter_t* uz_movingAverageFilter_init(struct uz_movingAverageFil
 */
 
     return(self);
->>>>>>> feature/Test_6Phase_FCS_MPC
 }
 
 
 float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample){
 	uz_assert_not_NULL(self);
-<<<<<<< HEAD
 	uz_assert(self->is_ready);
 	//NXOR. Assert that the filter length hasn't changed. Exception for when the filter was reset (old_filterlength == 0)
 	uz_assert((self->filterLength == self->old_filterLength) != (self->old_filterLength == 0U));
@@ -212,7 +200,6 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 	self->bufferindex = (self->bufferindex + 1U) % self->MAX_LENGTH;
 	self->old_value = self->circularBuffer.data[self->bufferindex];
 	self->old_filterLength = self->filterLength;
-=======
 
 	//add new sample to circular buffer
 	self->circularBuffer[self->bufferPointer] = sample;
@@ -246,14 +233,12 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
 	//modulo-increment of buffer-pointer
 	self->bufferPointer = (self->bufferPointer + 1) % MAX_FILTERLENGTH;
 
->>>>>>> feature/Test_6Phase_FCS_MPC
 	return output;
 }
 
 
 void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self){
 	uz_assert_not_NULL(self);
-<<<<<<< HEAD
 	uz_assert(self->is_ready);
 	for(uint32_t i = 0U; i < self->MAX_LENGTH; i++){
 		self->circularBuffer.data[i] = 0.0f;
@@ -270,7 +255,6 @@ void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uin
 	uz_assert(self->is_ready);
 	uz_assert(new_filterLength <= self->MAX_LENGTH);
 	uz_assert(new_filterLength > 0U);
-=======
 	for(int i = 0; i < MAX_FILTERLENGTH; i++){
 		self->circularBuffer[i] = 0.0f;
 	}
@@ -283,6 +267,5 @@ void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int
 	if(new_filterLength > MAX_FILTERLENGTH){
 		new_filterLength = MAX_FILTERLENGTH;
 	}
->>>>>>> feature/Test_6Phase_FCS_MPC
 	self->filterLength = new_filterLength;
 }

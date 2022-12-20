@@ -1,16 +1,13 @@
 #ifndef UZ_MOVINGAVERAGE_H
 #define UZ_MOVINGAVERAGE_H
-<<<<<<< HEAD
 #include <stdint.h> 
 #include "../uz_array/uz_array.h"
-=======
 
 /**
  * @brief Maximum length of moving average filter
  */
 #define MAX_FILTERLENGTH 150
 
->>>>>>> feature/Test_6Phase_FCS_MPC
 /**
  * @brief Object definition for uz_movingAverageFilter_t
  *
@@ -22,7 +19,6 @@ typedef struct uz_movingAverageFilter_t uz_movingAverageFilter_t;
  * @brief Configuration struct for movingAverageFilter. Accessible by the user.
  */
 struct uz_movingAverageFilter_config{
-<<<<<<< HEAD
 	uint32_t filterLength; /**<Length of the filter. Must be larger than 0 and smaller or equal to the length of the cirucularBuffer array*/
 };
 
@@ -49,7 +45,6 @@ float uz_movingAverageFilter_sample_variable_length(uz_movingAverageFilter_t* se
  *
  * @param self pointer to uz_movingAverageFilter_t instance
  * @param sample sample input of the moving average filter
-=======
 	int filterLength;
 };
 
@@ -77,7 +72,6 @@ float uz_movingAverageFilter_sample(uz_movingAverageFilter_t* self, float sample
  */
 void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
 
-<<<<<<< HEAD
 /**
  * @brief Sets a new filter length
  * 
@@ -85,7 +79,7 @@ void uz_movingAverageFilter_reset(uz_movingAverageFilter_t* self);
  * @param new_filterLength new value for the filter length
  */
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uint32_t new_filterLength);
-=======
+
 /*
  * @brief Sets a new filter length
  * @param self pointer to uz_movingAverageFilter_t instance
@@ -94,6 +88,5 @@ void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, uin
 void uz_movingAverageFilter_set_filterLength(uz_movingAverageFilter_t* self, int new_filterLength);
 
 
->>>>>>> feature/Test_6Phase_FCS_MPC
 
 #endif //UZ_MOVINGAVERAGE_H

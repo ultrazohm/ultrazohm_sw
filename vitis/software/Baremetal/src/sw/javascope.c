@@ -34,6 +34,14 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+//ParaID
+#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+extern uz_ParameterID_Data_t ParaID_Data;
+float activeState = 0.0f;
+float FluxMapCounter = 0.0f;
+float ArrayCounter = 0.0f;
+
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float theta_mech_calc_from_resolver;
@@ -58,6 +66,13 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeed;
+
+	      js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
+	      js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
+	      js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
+	      js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
+
 	js_ch_observable[JSO_i_a1]		= &data->av.i_a1;
 	js_ch_observable[JSO_i_b1]		= &data->av.i_b1;
 	js_ch_observable[JSO_i_c1]		= &data->av.i_c1;
@@ -74,12 +89,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_u_dc2]		= &data->av.U_ZK2;
 	js_ch_observable[JSO_u_dc1_filt]= &data->av.U_ZK_filt;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_iq] 			= &data->av.i_q;
-	js_ch_observable[JSO_id] 			= &data->av.i_d;
 	js_ch_observable[JSO_i_alpha]		= &data->av.i_alpha;
 	js_ch_observable[JSO_i_beta]		= &data->av.i_beta;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;
 	js_ch_observable[JSO_uq]			= &data->av.u_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
@@ -103,6 +114,43 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
 	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
+
+	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Psi_PM_Vs);
+	    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Lq_Henry);
+	    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Ld_Henry);
+	    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.R_ph_Ohm);
+	    js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.polePairs);
+	    js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.J_kg_m_squared);
+	    js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
+	    js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+	    js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
+	    js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
+	    js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
+	    js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output.thetaOffset);
+	    js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
+	    js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
+	    js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);
+	    js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]    = &(ArrayCounter);
+	    js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
+	    js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
+	    js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
+	    js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(ParaID_Data.TwoMassID_Output->TrainInertia);
+	    js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(ParaID_Data.TwoMassID_Output->LoadInertia);
+	    js_slowDataArray[JSSD_FLOAT_c_est]                  = &(ParaID_Data.TwoMassID_Output->c_est_out);
+	    js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
+	    js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
+	    js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
+	    js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
+	    js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
+	    js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);
+	    js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(ParaID_Data.OnlineID_Output->Rph_out);
+	    js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
+	    js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
+	    js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
+	    js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
+	    js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
+	    js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
+	    js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 
 	return Status;
 }
@@ -162,5 +210,7 @@ void JavaScope_update(DS_Data* data){
 	}
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
+    uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
+
 
 }

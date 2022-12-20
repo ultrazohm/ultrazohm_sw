@@ -20,6 +20,12 @@ XGpio output;
 int axi_gpio_data = 0xFFFFFFFF;
 int axi_gpio_init_ok = 0U;
 
+//ParameterID Code
+#include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "uz/uz_math_constants.h"
+uz_ParameterID_6ph_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -94,7 +100,6 @@ struct uz_SpeedControl_config config_speed = {
    .config_controller.samplingTime_sec = 0.0001f,
    .config_controller.upper_limit = 8.0f,
    .config_controller.lower_limit = -8.0f,
-   .enable_field_weakening = false
 };
 
 enum init_chain
@@ -126,6 +131,7 @@ int main(void)
             initialization_chain = init_software;
             break;
         case init_software:
+        	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);

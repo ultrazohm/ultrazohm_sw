@@ -126,26 +126,95 @@ enum JS_SlowData {
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
 enum gui_button_mapping {
-	GUI_BTN_ZEROVALUE=0,
-	Enable_System,
-	Enable_Control,
-	Stop,
-	Set_Send_Field_1,
-	Set_Send_Field_2,
-	Set_Send_Field_3,
-	Set_Send_Field_4,
-	Set_Send_Field_5,
-	Set_Send_Field_6,
-	My_Button_1,
-	My_Button_2,
-	My_Button_3,
-	My_Button_4,
-	My_Button_5,
-	My_Button_6,
-	My_Button_7,
-	My_Button_8,
-	Error_Reset,
-	GUI_BTN_ENDMARKER
+    GUI_BTN_ZEROVALUE=0,
+    Enable_System,
+    Enable_Control,
+    Stop,
+    Set_Send_Field_1,
+    Set_Send_Field_2,
+    Set_Send_Field_3,
+    Set_Send_Field_4,
+    Set_Send_Field_5,
+    Set_Send_Field_6,
+    My_Button_1,
+    My_Button_2,
+    My_Button_3,
+    My_Button_4,
+    My_Button_5,
+    My_Button_6,
+    My_Button_7,
+    My_Button_8,
+    Error_Reset,
+    ParaID_Enable_System,
+    ParaID_Enable_Control,
+    ParaID_Enable_ParameterID,
+    ParaID_Disable_ParameterID,
+    ParaID_Enable_ElectricalID,
+    ParaID_Disable_ElectricalID,
+    ParaID_Enable_FrictionID,
+    ParaID_Disable_FrictionID,
+    ParaID_Enable_TwoMassID,
+    ParaID_Disable_TwoMassID,
+    ParaID_Enable_FluxMapID,
+    ParaID_Disable_FluxMapID,
+    ParaID_Enable_OnlineID,
+    ParaID_Disable_OnlineID,
+    ParaID_Enable_Current_Control,
+    ParaID_Enable_Speed_Control,
+    ParaID_Disable_FOC_Control,
+    ParaID_ACCEPT,
+    ParaID_RESET,
+    ParaID_EID_sampleTimeISR,
+    ParaID_EID_n_ref_meas,
+    ParaID_EID_goertzl_Torque,
+    ParaID_EID_goertzl_Freq,
+    ParaID_EID_DutyCyc,
+    ParaID_EID_MaxContinousCurrent,
+    ParaID_EID_Enable_IdentLQ,
+    ParaID_EID_Disable_IdentLQ,
+    ParaID_EID_Admit_Params,
+    ParaID_FID_max_speed,
+    ParaID_FID_N_Brk,
+    ParaID_FID_N_Visco,
+    ParaID_FID_s_step,
+    ParaID_FID_Brk_Count,
+    ParaID_FID_eta_speed,
+    ParaID_FID_Array_Control_counter,
+    ParaID_TMID_Scale_PRBS,
+    ParaID_TMID_d_TMS_start,
+    ParaID_TMID_n_ref,
+    ParaID_TMID_f_min,
+    ParaID_TMID_f_max,
+    ParaID_TMID_Admit_Params,
+    ParaID_FMID_i_d_start,
+    ParaID_FMID_i_d_stop,
+    ParaID_FMID_i_d_step,
+    ParaID_FMID_i_q_start,
+    ParaID_FMID_i_q_stop,
+    ParaID_FMID_i_q_step,
+    ParaID_FMID_Rs_ref,
+    ParaID_FMID_Temp_ref,
+    ParaID_FMID_identRAmp,
+    ParaID_FMID_enable_ident_R,
+    ParaID_FMID_disable_ident_R,
+    ParaID_FMID_enable_AMM,
+    ParaID_FMID_disable_AMM,
+    ParaID_OID_Refresh_Flux_Maps,
+    ParaID_OID_Reset_OnlineID,
+    ParaID_OID_Enable_AutoCurrentControl,
+    ParaID_OID_Disable_AutoCurrentControl,
+    ParaID_OID_d_current_steps,
+    ParaID_OID_q_current_steps,
+    ParaID_OID_max_current,
+    ParaID_OID_ref_temp,
+    ParaID_OID_ref_Rs,
+    ParaID_OID_max_speed,
+    ParaID_OID_min_speed,
+    ParaID_OID_Ident_range_factor,
+    ParaID_OID_max_ident_pause,
+    ParaID_OID_identR_Amp,
+    ParaID_OID_Fluxmap_Control_counter,
+    GUI_BTN_ENDMARKER
 };
 
 
@@ -156,74 +225,69 @@ enum gui_button_mapping {
 // Description (printed text) for the send_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	SND_FLD_ZEROVALUE=0,
-	i_d_ref,
-	i_q_ref,
-	speed_ref,
-	send_field_4,
-	send_field_5,
-	send_field_6,
-	SND_FLD_ENDMARKER
+SND_FLD_ZEROVALUE=0,
+n_ref,
+i_d_ref,
+i_q_ref,
+send_field_4,
+send_field_5,
+send_field_6,
+SND_FLD_ENDMARKER
 
 
 // Physical unit label (printed text) for the send_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	SND_LABELS_ZEROVALUE=0,
-	A,
-	A,
-	rpm,
-	-,
-	-,
-	-,
-	SND_LABELS_ENDMARKER
+SND_LABELS_ZEROVALUE=0,
+RPM,
+A,
+A,
+A,
+A,
+A,
+SND_LABELS_ENDMARKER
 
 
 // Description (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	RCV_FLD_ZEROVALUE=0,
-	rotor speed,
-	dc_link_volt_1,
-	i_d,
-	i_q,
-	ISR_ExecTime_us,
-	ISR_Period_us,
-	RCV_FLD_ENDMARKER
+RCV_FLD_ZEROVALUE=0,
+speed,
+torque,
+i_d,
+i_q,
+u_d,
+u_q,
+RCV_FLD_ENDMARKER
 
 
 // Physical unit label (printed text) for the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	V,
-	A,
-	A,
-	µs,
-	µs,
-	RCV_LABELS_ENDMARKER
+RCV_LABELS_ZEROVALUE=0,
+RPM,
+Nm,
+A,
+A,
+V,
+V,
+RCV_LABELS_ENDMARKER
 
 
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
-	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_speed,
-	JSSD_FLOAT_u_dc1,
-	JSSD_FLOAT_i_d,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Error_Code,
-	SLOWDAT_DISPLAY_ENDMARKER
+SLOWDAT_DISPLAY_ZEROVALUE=0,
+JSSD_FLOAT_speed,
+JSSD_FLOAT_torque,
+JSSD_FLOAT_i_d,
+JSSD_FLOAT_i_q,
+JSSD_FLOAT_u_d,
+JSSD_FLOAT_u_q,
+JSSD_FLOAT_Error_Code,
+SLOWDAT_DISPLAY_ENDMARKER
 */
-
 int JavaScope_initalize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 

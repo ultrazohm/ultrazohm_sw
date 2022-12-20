@@ -25,6 +25,11 @@ IP Cores
     uz_dq_transformation/uz_dq_transformation
     uz_mlp_three_layer/uz_mlp_three_layer
     uz_dac_interface/uz_dac_interface
+<<<<<<< HEAD
+=======
+    uz_pmsm9ph_transformation/uz_pmsm9ph_transformation
+    uz_pmsm_model_multiph_dq/uz_pmsm_model_multiph_dq
+>>>>>>> 0e92e6f0d00ffd671f19cb48d840b3816875ad1e
     uz_rs_flip_flop/uz_rs_flip_flop
     uz_inverter_adapter/uz_inverter_adapter
     uz_cil_pmsm/uz_cil_pmsm

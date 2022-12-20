@@ -1,6 +1,0 @@
-vlib work
-vcom  test_swithcing_states_6Phase_without_delays_src_HDL_DUT2_pkg.vhd
-vcom  test_swithcing_states_6Phase_without_delays_src_Positive.vhd
-vcom  test_swithcing_states_6Phase_without_delays_src_Detect_Rise_Positive.vhd
-vcom  test_swithcing_states_6Phase_without_delays_src_MATLAB_Function1.vhd
-vcom  test_swithcing_states_6Phase_without_delays_src_HDL_DUT2.vhd

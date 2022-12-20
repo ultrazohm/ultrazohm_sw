@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope itemtype="https://www.mathworks.com/help/schema/MathWorksDocPage">
+<head>
+<title>HDL Check Report for 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/docscripts.js"></script>
+        
+        <link href="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/ice_960.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/HDLsite5.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_installed.css" rel="stylesheet" type="text/css">
+        <link href="file://C:/Program%20Files/MATLAB/R2020b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_print.css" rel="stylesheet" type="text/css" media="print">
+        <script type="text/javascript">
+            if (navigator.appName != "ICEbrowser") {
+            var cssStyleSheets = $("link").filter(function(){
+            var href = $(this).attr('href');
+            return href.indexOf("ice_doc_center_print.css") == -1});
+            var hrefElements = $.map(cssStyleSheets, function(elem) {
+            var href = $(elem).attr('href');
+            var hrefArray = href.split("/");
+            hrefArray[hrefArray.length - 1] = hrefArray[hrefArray.length - 1].replace("ice_", "");
+            return {
+            href: hrefArray.join("/"),
+            media: $(elem).attr('media')
+            };
+            });
+            cssStyleSheets.remove();
+            for (var i = 0; i < hrefElements.length; i++) {
+            if ($.browser.msie && $.browser.version <= 8) {
+            document.createStyleSheet(hrefElements[i].href);
+            } else {
+            var link = $('<link rel="stylesheet" href=' + hrefElements[i].href + ' type="text/css" />');
+            if (hrefElements[i].media) {
+            link.attr('media', hrefElements[i].media);
+            }
+            $('head').append(link);
+            }
+            }
+            }
+    </script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<div class="container_192">
+<div class="grid_192">
+ <div class="page_container"><div class="content_frame">
+<h1>HDL Code Generation Check Report for 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter'
+<a href="matlab:open_system('UZ_D_GaN_Inverter/UZ_D_GaN_Inverter');">open model 'UZ_D_GaN_Inverter/UZ_D_GaN_Inverter'</a><BR>
+Generated on 2021-05-07 11:44:50</h1>
+<H2>HDL check for 'UZ_D_GaN_Inverter' complete with 0 errors, 3 warnings, and 5 messages.</H2><BR>
+<H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
+<TABLE>
+<TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:validate:DelayBalancingOff" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');open_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]))">UZ_D_GaN_Inverter</a>
+</TD>
+<TD>Warning</TD>
+<TD><a href="matlab:configset.internal.open('UZ_D_GaN_Inverter','BalanceDelays')">'BalanceDelays'</a> is set to 'Off' for the model. This can introduce a difference in numerics between the original model and generated model when automatic pipelines are inserted and not balanced. To verify the numerics, enable <a href="matlab:configset.internal.open('UZ_D_GaN_Inverter','GenerateValidationModel')">'GenerateValidationModel'</a>, generate HDL code, and open and simulate the validation model.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="HDLShared:hdlshared:cpefamilynotcharacterized" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');open_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]))">UZ_D_GaN_Inverter</a>
+</TD>
+<TD>Warning</TD>
+<TD>Family zynq ultrascale+ not characterized. Using default value, SynthesisToolChipFamily=virtex7, for critical path estimation.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="HDLShared:hdlshared:cpespeednotspecified" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');open_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]))">UZ_D_GaN_Inverter</a>
+</TD>
+<TD>Warning</TD>
+<TD>SynthesisToolSpeedValue not specified. Using default values, SynthesisToolSpeedValue=-1, for critical path estimation.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:validate:LatencyMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
+</TD>
+<TD>Message</TD>
+<TD>After HDL code generation, fixed-point block HDL Reciprocal can have additional latency when compared to the Simulink model. For details, view the generated model.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:validate:NumericsMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
+</TD>
+<TD>Message</TD>
+<TD>After HDL code generation, block HDL Reciprocal can have numeric differences when compared to the Simulink model. For details, view the generated model.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:validate:ValidationNumericMismatch" href="matlab:hilite(get_param(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114]),'object'),'none');hilite_system(char([85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 85 90 95 68 95 71 97 78 95 73 110 118 101 114 116 101 114 47 80 87 77 100 117 116 121 70 114 101 113 68 101 116 101 99 116 105 111 110 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">UZ_D_GaN_Inverter/UZ_D_GaN_Inverter/PWMdutyFreqDetection/HDL Reciprocal</a>
+</TD>
+<TD>Message</TD>
+<TD>'HDL Reciprocal' introduces a delay before the block in the generated model. This may introduce simulation mismatch in the initial cycles of the generated validation model.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated.m</a>
+</TD>
+<TD>Message</TD>
+<TD>Estimated critical path for design: <a href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\criticalPathEstimated.m</a></TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks.m</a>
+</TD>
+<TD>Message</TD>
+<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\UZ_D_GaN_Inverter\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
+</TR>
+</TABLE>
+<BR><BR> </div></div></div></div>
+                    <div class="grid_192">
+                        <div class="footer_container">
+                            <div class="footer">
+                                <ul class="footernav">
+                                    <li class="footernav_trademarks"><a href="C:/Program Files/MATLAB/R2020b/help/acknowledgments.html">Acknowledgments</a></li>
+                                    <li class="footernav_trademarks"><a href="C:/Program%20Files/MATLAB/R2020b/trademarks.txt">Trademarks</a></li>
+                                    <li class="footernav_patents"><a href="C:/Program%20Files/MATLAB/R2020b/patents.txt">Patents</a></li>
+                                    <li class="footernav_help"><a href="C:/Program Files/MATLAB/R2020b/license_agreement.txt">Terms of Use</a></li>
+                                </ul>
+                                <div class="copyright">&copy; 1994-2021 The MathWorks, Inc.</div>
+                            </div>
+                        </div>
+                    </div>
+
+        <script type="text/javascript">
+
+$(document).ready( setTimeout( function () {
+                   $(".expandAllLink").trigger('click');
+            }, 50 ) );
+
+        </script>
+        
+</body>
+</html>

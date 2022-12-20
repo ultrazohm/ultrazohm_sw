@@ -1,0 +1,13 @@
+open_system('gm_parallel_delay_compensation_6phase');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'lightblue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_parallel_delay_compensation_6phase/HDL_DUT/MATLAB Function', 'user2');
+annotate_port('gm_parallel_delay_compensation_6phase/HDL_DUT/MATLAB Function', 0, 1, 'cp : 3.239 ns');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'blue';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_parallel_delay_compensation_6phase/HDL_DUT/MATLAB Function/adder', 'user1');
+annotate_port('gm_parallel_delay_compensation_6phase/HDL_DUT/MATLAB Function/adder', 0, 1, 'cp : 3.239 ns');

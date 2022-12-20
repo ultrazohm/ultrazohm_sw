@@ -1,0 +1,5 @@
+vlib work
+vcom  min_cost_function_and_vopt_FCS_MPC_6Phase_src_Compare_To_Constant.vhd
+vcom  min_cost_function_and_vopt_FCS_MPC_6Phase_src_Positive.vhd
+vcom  min_cost_function_and_vopt_FCS_MPC_6Phase_src_Detect_Rise_Positive.vhd
+vcom  min_cost_function_and_vopt_FCS_MPC_6Phase_src_HDL_DUT1.vhd

@@ -1,0 +1,14 @@
+SLStudio.Utils.RemoveHighlighting(get_param('min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM', 'handle'));
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Compare To Constant', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Detect Rise Positive', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Delay', 1, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Delay46', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Relational Operator', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Switch', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Switch1', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Switch_on1', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Compare To Constant/Compare', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Detect Rise Positive/Positive', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Detect Rise Positive/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_min_cost_function_and_vopt_FCS_MPC_6Phase_PMSM/HDL_DUT1/Detect Rise Positive/Positive/Compare', 0, 1, '');

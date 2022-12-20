@@ -1,0 +1,1174 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for parallel_8_delay_compensation
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_9');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_7');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for parallel_8_delay_compensation
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+13
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+310
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1793
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+26080
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+3241
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+631
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+39
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:200')" name="code2model" class="code2model">
+Delay_compensation
+</a>
+
+</h5>
+<h5>
+Multipliers (1)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (78)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 19
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 17
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+25-bit Subtractor 							: 5
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 13
+</span>
+<br /><span style="font-family:monospace">
+19-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 4
+</span>
+<br /><h5>
+Registers (567)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 173
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:233')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:259')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:245')" name="code2model" class="code2model">
+Delay22
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 27
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="f98c036b-4826-46d3-9843-68ccdd511c79" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:244')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:242')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:254')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:250')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:255')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:251')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:256')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:252')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:237')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:268')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:236')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:269')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:235')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:270')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:234')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:232')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:260')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:265')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'f98c036b-4826-46d3-9843-68ccdd511c79')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 28
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:231')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:261')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:262')" name="code2model" class="code2model">
+Delay38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:263')" name="code2model" class="code2model">
+Delay39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:258')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:257')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 188
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 17
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 27
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 9
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 17
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_9')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit Register 							: 58
+</span>
+<span name="Register_1_9" id="Register_1_9">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:241')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:253')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:240')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:264')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:239')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:266')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:238')" name="code2model" class="code2model">
+Delay16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:267')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+31-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (1642)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 225
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+real 2-to-1 Multiplexer 							: 9
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:289')" name="code2model" class="code2model">
+Switch_on2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:281')" name="code2model" class="code2model">
+Switch_on11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:282')" name="code2model" class="code2model">
+Switch_on12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:283')" name="code2model" class="code2model">
+Switch_on13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:294')" name="code2model" class="code2model">
+Switch_on7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:295')" name="code2model" class="code2model">
+Switch_on8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:296')" name="code2model" class="code2model">
+Switch_on9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:280')" name="code2model" class="code2model">
+Switch_on10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:288')" name="code2model" class="code2model">
+Switch_on18
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 13
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:279')" name="code2model" class="code2model">
+Switch_on1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:285')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:286')" name="code2model" class="code2model">
+Switch_on16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:287')" name="code2model" class="code2model">
+Switch_on17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:284')" name="code2model" class="code2model">
+Switch_on14
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 1312
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 34
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_7')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 8
+</span>
+<span name="Multiplexer_1_7" id="Multiplexer_1_7">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:290')" name="code2model" class="code2model">
+Switch_on3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:291')" name="code2model" class="code2model">
+Switch_on4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:292')" name="code2model" class="code2model">
+Switch_on5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:293')" name="code2model" class="code2model">
+Switch_on6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+31-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><h5>
+Number of Shift operators (17)
+</h5>
+<span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 9
+</span>
+<br /><span style="font-family:monospace">
+31-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+31-bit Dynamic Shift Right 							: 4
+</span>
+<br /><h5>
+Number of I/O Bits (631)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 485
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="ece74cf6-f324-403f-bc0b-31e9b6c835b8" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:201')" name="code2model" class="code2model">
+id_measured
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:202')" name="code2model" class="code2model">
+iq_measured
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:203')" name="code2model" class="code2model">
+ix_measured
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:204')" name="code2model" class="code2model">
+iy_measured
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:205')" name="code2model" class="code2model">
+psiPM_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:206')" name="code2model" class="code2model">
+Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:207')" name="code2model" class="code2model">
+Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:208')" name="code2model" class="code2model">
+Rs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:209')" name="code2model" class="code2model">
+SampleTime_div_Ld_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:210')" name="code2model" class="code2model">
+SampleTime_div_Lq_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:211')" name="code2model" class="code2model">
+SampleTime_div_Lx_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:212')" name="code2model" class="code2model">
+SampleTime_div_Ly_AXI
+</a>
+: 32 bits
+</li>
+<li>
+last_applied_optimal_voltages_in_0: 24 bits
+</li>
+<li>
+last_applied_optimal_voltages_in_1: 24 bits
+</li>
+<li>
+last_applied_optimal_voltages_in_2: 24 bits
+</li>
+<li>
+last_applied_optimal_voltages_in_3: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:214')" name="code2model" class="code2model">
+pole_pairs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:215')" name="code2model" class="code2model">
+omega_m_measured
+</a>
+: 24 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:216')" name="code2model" class="code2model">
+current_valid_in
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:217')" name="code2model" class="code2model">
+done_switching_states
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ece74cf6-f324-403f-bc0b-31e9b6c835b8')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 146
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:297')" name="code2model" class="code2model">
+id_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:298')" name="code2model" class="code2model">
+iq_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:299')" name="code2model" class="code2model">
+ix_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:300')" name="code2model" class="code2model">
+iy_k_1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:301')" name="code2model" class="code2model">
+done_delay_compensation
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:335')" name="code2model" class="code2model">
+id_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:337')" name="code2model" class="code2model">
+iq_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:339')" name="code2model" class="code2model">
+ix_k_1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:341')" name="code2model" class="code2model">
+iy_k_1_AXI
+</a>
+: 18 bits
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:275')" name="code2model" class="code2model">
+MATLAB Function
+</a>
+
+</h5>
+<h5>
+Multipliers (12)
+</h5>
+<span style="font-family:monospace">
+18x24-bit Multiply 							: 12
+</span>
+<br /><h5>
+Adders/Subtractors (232)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 34
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 107
+</span>
+<br /><span style="font-family:monospace">
+43x43-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+46x46-bit Adder 							: 12
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Adder 							: 11
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 23
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 11
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 11
+</span>
+<br /><h5>
+Registers (1224)
+</h5>
+<span style="font-family:monospace">
+32-bit Register 							: 204
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 506
+</span>
+<br /><span style="font-family:monospace">
+8-bit Register 							: 180
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 125
+</span>
+<br /><span style="font-family:monospace">
+42-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+45-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+29-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 48
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 44
+</span>
+<br /><span style="font-family:monospace">
+27-bit Register 							: 22
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 11
+</span>
+<br /><h5>
+Multiplexers (1595)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 720
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 47
+</span>
+<br /><span style="font-family:monospace">
+26-bit 4-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 36
+</span>
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 157
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 92
+</span>
+<br /><span style="font-family:monospace">
+3-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 11
+</span>
+<br /><span style="font-family:monospace">
+5-bit 2-to-1 Multiplexer 							: 440
+</span>
+<br /><span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 22
+</span>
+<br /><h5>
+Number of Shift operators (22)
+</h5>
+<span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 11
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:274')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:274:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:273')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_delay_compensation:273:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

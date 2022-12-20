@@ -1,0 +1,733 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for UZ_D_GaN_Inverter
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_3');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Register_2_2');hdlTableShrink(this, 'Multiplexer_2_2');hdlTableShrink(this, 'Multiplexer_2_3');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for UZ_D_GaN_Inverter
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+78
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+120
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+940
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+21683
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+78
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+813
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+12
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:7')" name="code2model" class="code2model">
+UZ_D_GaN_Inverter
+</a>
+
+</h5>
+<h5>
+Registers (76)
+</h5>
+<span style="font-family:monospace">
+6-bit Register 							: 38
+</span>
+<br /><span style="font-family:monospace">
+4-bit Register 							: 19
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 19
+</span>
+<br /><h5>
+Number of I/O Bits (813)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 27
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul>
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:8')" name="code2model" class="code2model">
+GaN_Temp
+</a>
+: 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:232')" name="code2model" class="code2model">
+GaN_FAULT
+</a>
+: 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:234')" name="code2model" class="code2model">
+GaN_OC
+</a>
+: 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:236')" name="code2model" class="code2model">
+I_DIAG
+</a>
+: 4 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:400')" name="code2model" class="code2model">
+AXI_PWM_Enable
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:764')" name="code2model" class="code2model">
+AXI_en_in
+</a>
+: 1 bit
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 786
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="06235969-41b4-4636-849e-77a6dd9abfb2" dataCollapse="off">
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:10')" name="code2model" class="code2model">
+AXI_Gan_Temp_1_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:186')" name="code2model" class="code2model">
+AXI_Gan_Temp_1_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:187')" name="code2model" class="code2model">
+AXI_Gan_Temp_1_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:188')" name="code2model" class="code2model">
+AXI_Gan_Temp_1_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:482')" name="code2model" class="code2model">
+AXI_Gan_Temp_2_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:483')" name="code2model" class="code2model">
+AXI_Gan_Temp_2_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:484')" name="code2model" class="code2model">
+AXI_Gan_Temp_2_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:491')" name="code2model" class="code2model">
+AXI_Gan_Temp_2_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:510')" name="code2model" class="code2model">
+AXI_Gan_Temp_3_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:511')" name="code2model" class="code2model">
+AXI_Gan_Temp_3_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:512')" name="code2model" class="code2model">
+AXI_Gan_Temp_3_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:513')" name="code2model" class="code2model">
+AXI_Gan_Temp_3_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:537')" name="code2model" class="code2model">
+AXI_Gan_Temp_4_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:538')" name="code2model" class="code2model">
+AXI_Gan_Temp_4_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:539')" name="code2model" class="code2model">
+AXI_Gan_Temp_4_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:540')" name="code2model" class="code2model">
+AXI_Gan_Temp_4_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:624')" name="code2model" class="code2model">
+AXI_Gan_Temp_5_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:625')" name="code2model" class="code2model">
+AXI_Gan_Temp_5_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:626')" name="code2model" class="code2model">
+AXI_Gan_Temp_5_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:627')" name="code2model" class="code2model">
+AXI_Gan_Temp_5_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:628')" name="code2model" class="code2model">
+AXI_Gan_Temp_6_period
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:629')" name="code2model" class="code2model">
+AXI_Gan_Temp_6_hightime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:630')" name="code2model" class="code2model">
+AXI_Gan_Temp_6_lowtime
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:631')" name="code2model" class="code2model">
+AXI_Gan_Temp_6_dutycyc
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:281')" name="code2model" class="code2model">
+AXI_GaN_FAULT
+</a>
+: 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:288')" name="code2model" class="code2model">
+AXI_GaN_OC
+</a>
+: 6 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:294')" name="code2model" class="code2model">
+AXI_I_DIAG
+</a>
+: 4 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:401')" name="code2model" class="code2model">
+PWM_EN
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '06235969-41b4-4636-849e-77a6dd9abfb2')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for For Each Subsystem:    <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:639')" name="code2model" class="code2model">
+PWMdutyFreqDetection
+</a>
+, with 6 instantiations
+</h5>
+<h5>
+Multipliers (78)
+</h5>
+<span style="font-family:monospace">
+34x33-bit Multiply 							: 12
+</span>
+<br /><span style="font-family:monospace">
+36x32-bit Multiply 							: 54
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_2_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 12
+</span>
+<span name="Multiply_2_3" id="Multiply_2_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:836')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (120)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 24
+</span>
+<span name="Adder_2_1" id="Adder_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:821')" name="code2model" class="code2model">
+HDL Counter1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:824')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+32x1-bit Adder 							: 78
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 18
+</span>
+<br /><h5>
+Registers (852)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 102
+</span>
+<span name="Register_2_1" id="Register_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:818')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 648
+</span>
+<span name="Register_2_2" id="Register_2_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:821')" name="code2model" class="code2model">
+HDL Counter1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:817')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 102
+</span>
+<br /><h5>
+Multiplexers (54)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 18
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 3-to-1 Multiplexer 							: 6
+</span>
+<span name="Multiplexer_2_2" id="Multiplexer_2_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:821')" name="code2model" class="code2model">
+HDL Counter1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 24
+</span>
+<span name="Multiplexer_2_3" id="Multiplexer_2_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:825')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:826')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+5-bit 16-to-1 Multiplexer 							: 6
+</span>
+<br /><h5>
+Number of Shift operators (36)
+</h5>
+<span style="font-family:monospace">
+Static Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 18
+</span>
+<br /><span style="font-family:monospace">
+32-bit Dynamic Shift Left 							: 6
+</span>
+<br /><span style="font-family:monospace">
+47-bit Dynamic Shift Left 							: 6
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:819')" name="code2model" class="code2model">
+Detect Fall
+Nonpositive1
+</a>
+, contained inside of For Each Subsystem <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:639')" name="code2model" class="code2model">
+PWMdutyFreqDetection
+</a>
+, with 6 instantiations
+</h5>
+<h5>
+Registers (6)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 6
+</span>
+<br /><h5>
+Multiplexers (12)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:820')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+, contained inside of For Each Subsystem <a href="matlab:coder.internal.code2model('UZ_D_GaN_Inverter:639')" name="code2model" class="code2model">
+PWMdutyFreqDetection
+</a>
+, with 6 instantiations
+</h5>
+<h5>
+Registers (6)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 6
+</span>
+<br /><h5>
+Multiplexers (12)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

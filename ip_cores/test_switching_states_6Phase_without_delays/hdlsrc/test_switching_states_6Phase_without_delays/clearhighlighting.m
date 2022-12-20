@@ -1,0 +1,12 @@
+SLStudio.Utils.RemoveHighlighting(get_param('test_switching_states_6Phase_without_delays', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_test_switching_states_6Phase_without_delays', 'handle'));
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/Detect Rise Positive', 1, 1, '');
+annotate_port('test_switching_states_6Phase_without_delays/HDL_DUT2/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/Delay2', 0, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/Delay2', 1, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/Switch_on2', 0, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('test_switching_states_6Phase_without_delays/HDL_DUT2/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('gm_test_switching_states_6Phase_without_delays/HDL_DUT2/MATLAB Function1/MATLAB Function1', 1, 1, '');
+annotate_port('test_switching_states_6Phase_without_delays/HDL_DUT2/MATLAB Function1', 1, 1, '');

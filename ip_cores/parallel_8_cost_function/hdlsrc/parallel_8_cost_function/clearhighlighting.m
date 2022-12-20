@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('parallel_8_cost_function', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_parallel_8_cost_function', 'handle'));
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Detect Rise Positive', 1, 1, '');
+annotate_port('parallel_8_cost_function/HDL_DUT1/Detect Rise Positive', 1, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Subsystem', 0, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Data Type Conversion1', 1, 1, '');
+annotate_port('parallel_8_cost_function/HDL_DUT1/Data Type Conversion1', 1, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Data Type Conversion2', 1, 1, '');
+annotate_port('parallel_8_cost_function/HDL_DUT1/Data Type Conversion2', 1, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('parallel_8_cost_function/HDL_DUT1/Detect Rise Positive/Positive', 1, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Subsystem/MATLAB Function', 0, 1, '');
+annotate_port('gm_parallel_8_cost_function/HDL_DUT1/Subsystem/MATLAB Function/adder', 0, 1, '');

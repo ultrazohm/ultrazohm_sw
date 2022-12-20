@@ -1,0 +1,2454 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for parallel_8_min_cost_function
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_5');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Multiplexer_1_5');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for parallel_8_min_cost_function
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+7
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+260
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+6114
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+337
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+1094
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:557')" name="code2model" class="code2model">
+Min_cost_function_and_vopt1
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (7)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 7
+</span>
+<span name="Adder_1_1" id="Adder_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:562')" name="code2model" class="code2model">
+Add
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:563')" name="code2model" class="code2model">
+Add1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:564')" name="code2model" class="code2model">
+Add2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:565')" name="code2model" class="code2model">
+Add3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:566')" name="code2model" class="code2model">
+Add4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:567')" name="code2model" class="code2model">
+Add5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:568')" name="code2model" class="code2model">
+Add6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (258)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 5
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:705')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:912')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 21
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="6888abab-19e2-4075-bd96-93864561f985" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:732')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:648')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:597')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:717')" name="code2model" class="code2model">
+Delay70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:660')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:702')" name="code2model" class="code2model">
+Delay57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:695')" name="code2model" class="code2model">
+Delay50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:699')" name="code2model" class="code2model">
+Delay54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:720')" name="code2model" class="code2model">
+Delay73
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:696')" name="code2model" class="code2model">
+Delay51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:735')" name="code2model" class="code2model">
+Delay96
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:690')" name="code2model" class="code2model">
+Delay46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:610')" name="code2model" class="code2model">
+Delay119
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:668')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:625')" name="code2model" class="code2model">
+Delay142
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:665')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:639')" name="code2model" class="code2model">
+Delay165
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:661')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:914')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '6888abab-19e2-4075-bd96-93864561f985')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit Register 							: 49
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul class="SystemdefinedCollapse" id="4ccbfc9f-0ae5-4cba-97bb-f3b410ec0fd0" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:640')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:596')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:718')" name="code2model" class="code2model">
+Delay71
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:669')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:659')" name="code2model" class="code2model">
+Delay25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:714')" name="code2model" class="code2model">
+Delay68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:703')" name="code2model" class="code2model">
+Delay58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:693')" name="code2model" class="code2model">
+Delay49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:700')" name="code2model" class="code2model">
+Delay55
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:723')" name="code2model" class="code2model">
+Delay81
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:719')" name="code2model" class="code2model">
+Delay72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:697')" name="code2model" class="code2model">
+Delay52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:598')" name="code2model" class="code2model">
+Delay104
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:734')" name="code2model" class="code2model">
+Delay95
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:691')" name="code2model" class="code2model">
+Delay47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:612')" name="code2model" class="code2model">
+Delay127
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:609')" name="code2model" class="code2model">
+Delay118
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:688')" name="code2model" class="code2model">
+Delay44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:627')" name="code2model" class="code2model">
+Delay150
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:624')" name="code2model" class="code2model">
+Delay141
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:666')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:641')" name="code2model" class="code2model">
+Delay173
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:638')" name="code2model" class="code2model">
+Delay164
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:662')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:673')" name="code2model" class="code2model">
+Delay371
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:674')" name="code2model" class="code2model">
+Delay372
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:675')" name="code2model" class="code2model">
+Delay373
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:676')" name="code2model" class="code2model">
+Delay374
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:677')" name="code2model" class="code2model">
+Delay375
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:678')" name="code2model" class="code2model">
+Delay376
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:679')" name="code2model" class="code2model">
+Delay377
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:680')" name="code2model" class="code2model">
+Delay378
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:657')" name="code2model" class="code2model">
+Delay23
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '4ccbfc9f-0ae5-4cba-97bb-f3b410ec0fd0')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 176
+</span>
+<span name="Register_1_4" id="Register_1_4">
+<ul class="SystemdefinedCollapse" id="7d934618-c59f-43c6-a313-26c10d902afb" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:652')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:653')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:654')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:664')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:655')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:683')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:656')" name="code2model" class="code2model">
+Delay22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:694')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:715')" name="code2model" class="code2model">
+Delay69
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:671')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:672')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:681')" name="code2model" class="code2model">
+Delay38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:685')" name="code2model" class="code2model">
+Delay41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:682')" name="code2model" class="code2model">
+Delay39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:686')" name="code2model" class="code2model">
+Delay42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:684')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:687')" name="code2model" class="code2model">
+Delay43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:701')" name="code2model" class="code2model">
+Delay56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:706')" name="code2model" class="code2model">
+Delay60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:707')" name="code2model" class="code2model">
+Delay61
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:708')" name="code2model" class="code2model">
+Delay62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:711')" name="code2model" class="code2model">
+Delay65
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:709')" name="code2model" class="code2model">
+Delay63
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:712')" name="code2model" class="code2model">
+Delay66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:710')" name="code2model" class="code2model">
+Delay64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:713')" name="code2model" class="code2model">
+Delay67
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:698')" name="code2model" class="code2model">
+Delay53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:725')" name="code2model" class="code2model">
+Delay83
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:726')" name="code2model" class="code2model">
+Delay84
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:727')" name="code2model" class="code2model">
+Delay85
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:730')" name="code2model" class="code2model">
+Delay88
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:728')" name="code2model" class="code2model">
+Delay86
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:731')" name="code2model" class="code2model">
+Delay89
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:729')" name="code2model" class="code2model">
+Delay87
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:733')" name="code2model" class="code2model">
+Delay90
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:692')" name="code2model" class="code2model">
+Delay48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:600')" name="code2model" class="code2model">
+Delay106
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:601')" name="code2model" class="code2model">
+Delay107
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:602')" name="code2model" class="code2model">
+Delay108
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:606')" name="code2model" class="code2model">
+Delay111
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:603')" name="code2model" class="code2model">
+Delay109
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:607')" name="code2model" class="code2model">
+Delay112
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:605')" name="code2model" class="code2model">
+Delay110
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:608')" name="code2model" class="code2model">
+Delay113
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:689')" name="code2model" class="code2model">
+Delay45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:614')" name="code2model" class="code2model">
+Delay129
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:616')" name="code2model" class="code2model">
+Delay130
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:617')" name="code2model" class="code2model">
+Delay131
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:620')" name="code2model" class="code2model">
+Delay134
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:618')" name="code2model" class="code2model">
+Delay132
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:621')" name="code2model" class="code2model">
+Delay135
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:619')" name="code2model" class="code2model">
+Delay133
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:622')" name="code2model" class="code2model">
+Delay136
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:667')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:629')" name="code2model" class="code2model">
+Delay152
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:630')" name="code2model" class="code2model">
+Delay153
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:631')" name="code2model" class="code2model">
+Delay154
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:634')" name="code2model" class="code2model">
+Delay157
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:632')" name="code2model" class="code2model">
+Delay155
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:635')" name="code2model" class="code2model">
+Delay158
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:633')" name="code2model" class="code2model">
+Delay156
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:636')" name="code2model" class="code2model">
+Delay159
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:663')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:643')" name="code2model" class="code2model">
+Delay175
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:644')" name="code2model" class="code2model">
+Delay176
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:645')" name="code2model" class="code2model">
+Delay177
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:649')" name="code2model" class="code2model">
+Delay180
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:646')" name="code2model" class="code2model">
+Delay178
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:650')" name="code2model" class="code2model">
+Delay181
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:647')" name="code2model" class="code2model">
+Delay179
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:651')" name="code2model" class="code2model">
+Delay182
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:658')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:626')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '7d934618-c59f-43c6-a313-26c10d902afb')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33-bit Register 							: 7
+</span>
+<span name="Register_1_5" id="Register_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:670')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:704')" name="code2model" class="code2model">
+Delay59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:724')" name="code2model" class="code2model">
+Delay82
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:599')" name="code2model" class="code2model">
+Delay105
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:613')" name="code2model" class="code2model">
+Delay128
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:628')" name="code2model" class="code2model">
+Delay151
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:642')" name="code2model" class="code2model">
+Delay174
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (320)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 148
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 17
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul class="SystemdefinedCollapse" id="3778c2c3-8326-4667-bf55-cfae2b00cda6" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:818')" name="code2model" class="code2model">
+Switch_on1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:773')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:895')" name="code2model" class="code2model">
+Switch_on74
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:763')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:892')" name="code2model" class="code2model">
+Switch_on71
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:768')" name="code2model" class="code2model">
+Switch15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:888')" name="code2model" class="code2model">
+Switch_on68
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:776')" name="code2model" class="code2model">
+Switch22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:885')" name="code2model" class="code2model">
+Switch_on65
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:783')" name="code2model" class="code2model">
+Switch29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:882')" name="code2model" class="code2model">
+Switch_on62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:791')" name="code2model" class="code2model">
+Switch36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:878')" name="code2model" class="code2model">
+Switch_on59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:799')" name="code2model" class="code2model">
+Switch43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:875')" name="code2model" class="code2model">
+Switch_on56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:807')" name="code2model" class="code2model">
+Switch50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:872')" name="code2model" class="code2model">
+Switch_on53
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '3778c2c3-8326-4667-bf55-cfae2b00cda6')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 48
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul class="SystemdefinedCollapse" id="1ab4fd92-e7b0-4eb4-9963-a92255a0e081" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:857')" name="code2model" class="code2model">
+Switch_on4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:761')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:762')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:896')" name="code2model" class="code2model">
+Switch_on75
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:819')" name="code2model" class="code2model">
+Switch_on10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:816')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:817')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:893')" name="code2model" class="code2model">
+Switch_on72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:829')" name="code2model" class="code2model">
+Switch_on14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:774')" name="code2model" class="code2model">
+Switch20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:775')" name="code2model" class="code2model">
+Switch21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:889')" name="code2model" class="code2model">
+Switch_on69
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:836')" name="code2model" class="code2model">
+Switch_on20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:781')" name="code2model" class="code2model">
+Switch27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:782')" name="code2model" class="code2model">
+Switch28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:886')" name="code2model" class="code2model">
+Switch_on66
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:842')" name="code2model" class="code2model">
+Switch_on26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:789')" name="code2model" class="code2model">
+Switch34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:790')" name="code2model" class="code2model">
+Switch35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:883')" name="code2model" class="code2model">
+Switch_on63
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:849')" name="code2model" class="code2model">
+Switch_on32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:797')" name="code2model" class="code2model">
+Switch41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:798')" name="code2model" class="code2model">
+Switch42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:880')" name="code2model" class="code2model">
+Switch_on60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:855')" name="code2model" class="code2model">
+Switch_on38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:804')" name="code2model" class="code2model">
+Switch48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:805')" name="code2model" class="code2model">
+Switch49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:876')" name="code2model" class="code2model">
+Switch_on57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:862')" name="code2model" class="code2model">
+Switch_on44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:812')" name="code2model" class="code2model">
+Switch55
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:813')" name="code2model" class="code2model">
+Switch56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:873')" name="code2model" class="code2model">
+Switch_on54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:899')" name="code2model" class="code2model">
+Switch_on98
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:900')" name="code2model" class="code2model">
+Switch_on99
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:820')" name="code2model" class="code2model">
+Switch_on100
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:821')" name="code2model" class="code2model">
+Switch_on101
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:824')" name="code2model" class="code2model">
+Switch_on104
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:825')" name="code2model" class="code2model">
+Switch_on105
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:822')" name="code2model" class="code2model">
+Switch_on102
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:823')" name="code2model" class="code2model">
+Switch_on103
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:870')" name="code2model" class="code2model">
+Switch_on51
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '1ab4fd92-e7b0-4eb4-9963-a92255a0e081')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 100
+</span>
+<span name="Multiplexer_1_4" id="Multiplexer_1_4">
+<ul class="SystemdefinedCollapse" id="ba2c6468-969a-4308-ab2a-8a530c716028" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:835')" name="code2model" class="code2model">
+Switch_on2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:784')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:846')" name="code2model" class="code2model">
+Switch_on3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:795')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:868')" name="code2model" class="code2model">
+Switch_on5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:806')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:879')" name="code2model" class="code2model">
+Switch_on6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:814')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:894')" name="code2model" class="code2model">
+Switch_on73
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:897')" name="code2model" class="code2model">
+Switch_on8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:764')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:898')" name="code2model" class="code2model">
+Switch_on9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:765')" name="code2model" class="code2model">
+Switch12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:826')" name="code2model" class="code2model">
+Switch_on11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:766')" name="code2model" class="code2model">
+Switch13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:827')" name="code2model" class="code2model">
+Switch_on12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:767')" name="code2model" class="code2model">
+Switch14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:891')" name="code2model" class="code2model">
+Switch_on70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:833')" name="code2model" class="code2model">
+Switch_on18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:769')" name="code2model" class="code2model">
+Switch16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:834')" name="code2model" class="code2model">
+Switch_on19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:770')" name="code2model" class="code2model">
+Switch17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:830')" name="code2model" class="code2model">
+Switch_on15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:771')" name="code2model" class="code2model">
+Switch18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:831')" name="code2model" class="code2model">
+Switch_on16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:772')" name="code2model" class="code2model">
+Switch19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:887')" name="code2model" class="code2model">
+Switch_on67
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:840')" name="code2model" class="code2model">
+Switch_on24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:777')" name="code2model" class="code2model">
+Switch23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:841')" name="code2model" class="code2model">
+Switch_on25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:778')" name="code2model" class="code2model">
+Switch24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:837')" name="code2model" class="code2model">
+Switch_on21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:779')" name="code2model" class="code2model">
+Switch25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:838')" name="code2model" class="code2model">
+Switch_on22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:780')" name="code2model" class="code2model">
+Switch26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:884')" name="code2model" class="code2model">
+Switch_on64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:847')" name="code2model" class="code2model">
+Switch_on30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:785')" name="code2model" class="code2model">
+Switch30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:848')" name="code2model" class="code2model">
+Switch_on31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:786')" name="code2model" class="code2model">
+Switch31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:843')" name="code2model" class="code2model">
+Switch_on27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:787')" name="code2model" class="code2model">
+Switch32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:844')" name="code2model" class="code2model">
+Switch_on28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:788')" name="code2model" class="code2model">
+Switch33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:881')" name="code2model" class="code2model">
+Switch_on61
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:853')" name="code2model" class="code2model">
+Switch_on36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:792')" name="code2model" class="code2model">
+Switch37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:854')" name="code2model" class="code2model">
+Switch_on37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:793')" name="code2model" class="code2model">
+Switch38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:850')" name="code2model" class="code2model">
+Switch_on33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:794')" name="code2model" class="code2model">
+Switch39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:851')" name="code2model" class="code2model">
+Switch_on34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:796')" name="code2model" class="code2model">
+Switch40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:877')" name="code2model" class="code2model">
+Switch_on58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:860')" name="code2model" class="code2model">
+Switch_on42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:800')" name="code2model" class="code2model">
+Switch44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:861')" name="code2model" class="code2model">
+Switch_on43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:801')" name="code2model" class="code2model">
+Switch45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:856')" name="code2model" class="code2model">
+Switch_on39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:802')" name="code2model" class="code2model">
+Switch46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:858')" name="code2model" class="code2model">
+Switch_on40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:803')" name="code2model" class="code2model">
+Switch47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:874')" name="code2model" class="code2model">
+Switch_on55
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:866')" name="code2model" class="code2model">
+Switch_on48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:808')" name="code2model" class="code2model">
+Switch51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:867')" name="code2model" class="code2model">
+Switch_on49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:809')" name="code2model" class="code2model">
+Switch52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:863')" name="code2model" class="code2model">
+Switch_on45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:810')" name="code2model" class="code2model">
+Switch53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:864')" name="code2model" class="code2model">
+Switch_on46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:811')" name="code2model" class="code2model">
+Switch54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:871')" name="code2model" class="code2model">
+Switch_on52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:828')" name="code2model" class="code2model">
+Switch_on13
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ba2c6468-969a-4308-ab2a-8a530c716028')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 7
+</span>
+<span name="Multiplexer_1_5" id="Multiplexer_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:890')" name="code2model" class="code2model">
+Switch_on7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:832')" name="code2model" class="code2model">
+Switch_on17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:839')" name="code2model" class="code2model">
+Switch_on23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:845')" name="code2model" class="code2model">
+Switch_on29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:852')" name="code2model" class="code2model">
+Switch_on35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:859')" name="code2model" class="code2model">
+Switch_on41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:865')" name="code2model" class="code2model">
+Switch_on47
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (1094)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 964
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="93b1ee8e-8689-41da-a6b0-bf21e2431a99" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:558')" name="code2model" class="code2model">
+Index_in
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:559')" name="code2model" class="code2model">
+done_prediction_and_cost_function
+</a>
+: 1 bit
+</li>
+<li>
+J_in_0: 20 bits
+</li>
+<li>
+J_in_1: 20 bits
+</li>
+<li>
+J_in_2: 20 bits
+</li>
+<li>
+J_in_3: 20 bits
+</li>
+<li>
+J_in_4: 20 bits
+</li>
+<li>
+J_in_5: 20 bits
+</li>
+<li>
+J_in_6: 20 bits
+</li>
+<li>
+J_in_7: 20 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_0: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_1: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_2: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_3: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_4: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_5: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_6: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_7: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_8: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_9: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_10: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_11: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_12: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_13: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_14: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_15: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_16: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_17: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_18: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_19: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_20: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_21: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_22: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_23: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_24: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_25: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_26: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_27: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_28: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_29: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_30: 24 bits
+</li>
+<li>
+phase_voltages_per_switching_state_in_31: 24 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '93b1ee8e-8689-41da-a6b0-bf21e2431a99')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 130
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:901')" name="code2model" class="code2model">
+done_min_cost_function_and_vopt
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:903')" name="code2model" class="code2model">
+Index
+</a>
+: 32 bits
+</li>
+<li>
+voltages_0: 24 bits
+</li>
+<li>
+voltages_1: 24 bits
+</li>
+<li>
+voltages_2: 24 bits
+</li>
+<li>
+voltages_3: 24 bits
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for User-defined block:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:742')" name="code2model" class="code2model">
+MATLAB Function
+</a>
+
+</h5>
+<h5>
+Multiplexers (5)
+</h5>
+<span style="font-family:monospace">
+32-bit 9-to-1 Multiplexer 							: 1
+</span>
+<br /><span style="font-family:monospace">
+24-bit 36-to-1 Multiplexer 							: 4
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:740')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:740:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:739')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:739:8')" name="code2model" class="code2model">
+Positive
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:576')" name="code2model" class="code2model">
+Compare
+To Constant7
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:575')" name="code2model" class="code2model">
+Compare
+To Constant6
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:574')" name="code2model" class="code2model">
+Compare
+To Constant5
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:573')" name="code2model" class="code2model">
+Compare
+To Constant4
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:572')" name="code2model" class="code2model">
+Compare
+To Constant3
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:571')" name="code2model" class="code2model">
+Compare
+To Constant2
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:570')" name="code2model" class="code2model">
+Compare
+To Constant1
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('parallel_8_min_cost_function:569')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

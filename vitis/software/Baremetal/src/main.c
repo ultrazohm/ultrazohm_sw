@@ -30,21 +30,268 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.ref_halfBridge1DutyCycle = 0.0f,
+		.ref_halfBridge2DutyCycle = 0.0f,
+		.ref_halfBridge3DutyCycle = 0.0f,
+		.ref_halfBridge4DutyCycle = 0.0f,
+		.ref_halfBridge5DutyCycle = 0.0f,
+		.ref_halfBridge6DutyCycle = 0.0f,
+		.ref_halfBridge7DutyCycle = 0.0f,
+		.ref_halfBridge8DutyCycle = 0.0f,
+		.ref_halfBridge9DutyCycle = 0.0f,
+		.ref_halfBridge10DutyCycle = 0.0f,
+		.ref_halfBridge11DutyCycle = 0.0f,
+		.ref_halfBridge12DutyCycle= 0.0f
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    	   //.A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    		.A2 = {.cf.ADC_A1 = 150.875f, .cf.ADC_A2 = 33.8780*2, .cf.ADC_A3 = 33.8780*2, .cf.ADC_A4 = 33.8780*2, .cf.ADC_B5 = 150.875, .cf.ADC_B6 = 33.8780*2, .cf.ADC_B7 = 33.8780*2, .cf.ADC_B8 = 33.8780*2}, //@ 2*18mOhm shunts in parallel
+
+    		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
+    },
+	.av.U_ZK = 36.0f,
+	.av.theta_offset =  0.79, //0.83, //1.05, //-0.14608003 + 0.623,		// 0.85
+	.av.I_d_ref = 0,
+	.av.I_q_ref = 0,
 };
+
+
+//fault detection:
+
+uz_resonantController_t* rc_2H_x;
+uz_resonantController_t* rc_2H_y;
+uz_resonantController_t* rc_5H_x;
+uz_resonantController_t* rc_5H_y;
+uz_resonantController_t* rc_7H_x;
+uz_resonantController_t* rc_7H_y;
+
+uz_resonantController_t* rc_6H_x;
+uz_resonantController_t* rc_6H_y;
+uz_resonantController_t* rc_2H_d;
+uz_resonantController_t* rc_2H_q;
+uz_resonantController_t* rc_8H_d;
+uz_resonantController_t* rc_8H_q;
+uz_resonantController_t* rc_12H_d;
+uz_resonantController_t* rc_12H_q;
+
+uz_resonantController_t* rc_1H_z1;
+uz_resonantController_t* rc_1H_z2;
+uz_resonantController_t* rc_3H_z1;
+uz_resonantController_t* rc_3H_z2;
+uz_resonantController_t* rc_9H_z1;
+uz_resonantController_t* rc_9H_z2;
+
+const struct uz_resonantController_config config_R = {
+		.sampling_time = 0.0001f,
+		.gain = 55.0f,
+		.harmonic_order = 2.0f,
+		.fundamental_frequency = 10.0f,
+		.lower_limit = -4.0f,
+		.upper_limit = 4.0f,
+		.antiwindup_gain = 10.0f,
+		.in_reference_value = 0.0f,
+		.in_measured_value = 0.0f,
+		.reset = 0.0f
+};
+
+
+
+
+
+struct uz_movingAverageFilter_config movAvF_config;
+uz_movingAverageFilter_t* movAvFilter;
+
+uz_movingAverageFilter_t* movAvFilter_R1;
+uz_movingAverageFilter_t* movAvFilter_R2;
+uz_movingAverageFilter_t* movAvFilter_R3;
+uz_movingAverageFilter_t* movAvFilter_R4;
+uz_movingAverageFilter_t* movAvFilter_R5;
+uz_movingAverageFilter_t* movAvFilter_R6;
+
+uz_movingAverageFilter_t* movAvFilter_temp1;
+uz_movingAverageFilter_t* movAvFilter_temp2;
+uz_movingAverageFilter_t* movAvFilter_temp3;
+uz_movingAverageFilter_t* movAvFilter_temp4;
+uz_movingAverageFilter_t* movAvFilter_temp5;
+
+
+//parameter for FOC
+
+struct uz_FOC* FOC_dq;
+
+const struct uz_PMSM_t config_PMSM = {
+   .Ld_Henry = 0.0001473f,			//Richtige Parameter f�r den Motor einf�gen
+   .Lq_Henry = 0.0001484f,
+   .Psi_PM_Vs = 0.0048f,
+   .R_ph_Ohm = 0.1278f,
+   .polePairs = 5.0f,
+   .J_kg_m_squared = 0.0f,
+   .I_max_Ampere = 25.0f
+};
+
+
+const struct uz_PI_Controller_config config_id = {
+	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
+	.Ki = 880, //770, //1/0.0008f *0.1,															 // Ki = 1/Tn *Kp ( * Kp da wir eine Parallelform haben)
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 20.0f,
+	.lower_limit = -20.0f
+};
+
+const struct uz_PI_Controller_config config_iq = {
+	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f, //1.1f,
+	.Ki = 880, //770, //1/0.0008f *0.1,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 20.0f,
+	.lower_limit = -20.0f
+};
+
+struct uz_FOC_config config_FOC = {
+   .decoupling_select = linear_decoupling, // no_decoupling, linear_decoupling
+   .config_PMSM = config_PMSM,
+   .config_id = config_id,
+   .config_iq = config_iq
+};
+
+
+// alphabeta -> dq & reverse
+void uz_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = ( cos_coefficient * input[0]) + (sin_coefficient * input[1]);
+    output[1] =	(-sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
+{
+    float sin_coefficient = sinf(theta_el_rad);
+    float cos_coefficient = cosf(theta_el_rad);
+    output[0] = (cos_coefficient * input[0]) - (sin_coefficient * input[1]);
+    output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
+}
+
+struct uz_PI_Controller* PI_x_n;
+struct uz_PI_Controller* PI_y_n;
+struct uz_PI_Controller* PI_z1;
+struct uz_PI_Controller* PI_z2;
+
+const struct uz_PI_Controller_config config_ix = {
+	.Kp = 0.18f , //* 4.0f, //1.1f,
+	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+const struct uz_PI_Controller_config config_iy = {
+	.Kp = 0.14, //0.18f, //* 4.0f,//1.1f,
+	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+const struct uz_PI_Controller_config config_iz1z2 = {
+	.Kp = 0.14, //0.18f , //* 4.0f,//1.1f,
+	.Ki = 0,
+	.samplingTime_sec = 0.0001f,
+	.upper_limit = 15.0f,
+	.lower_limit = -15.0f
+};
+
+
+
+
+
+struct uz_d_gan_inverter_t* gan_inverter_D3;
+struct uz_d_gan_inverter_t* gan_inverter_D4;
+
+struct uz_d_gan_inverter_config_t config_gan_inverter_D3 = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000 //100000000
+};
+
+struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_D_GAN_INVERTER_1_BASEADDR,
+    .ip_clk_frequency_Hz = 100000 //100000000
+};
+
+
+// IP-Cores for 6 Phase FCS-MPC parallel 8
+static struct uz_vsd_8_config_t config_vsd_8={
+   .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_VSD_A_0_BASEADDR,
+   .ip_clk_frequency_Hz=100000000,
+   .theta_offset = -0.7900000f
+};
+uz_vsd_8_t* test_instance_vsd_8;
+
+static struct uz_prediction_and_cost_function_8_config_t config_prediction_and_cost_function_8={
+    .base_address = XPAR_UZ_USER_PARALLEL_8_SIM_PREDI_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .psiPM = 0.0048f,//measurement needed
+    .Lq = 0.0001484f,//[H]
+    .Ld = 0.0001473f,//[H]
+    .Rs = 0.1278f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+    .id_ref = 0.0f,//needs to be asked
+    .iq_ref = 0.0f,//needs to be asked
+    .ix_ref = 0.0f,//needs to be asked
+    .iy_ref = 0.0f,//needs to be asked
+};
+uz_prediction_and_cost_function_8_t* test_instance_prediction_and_cost_function_8;
+
+static struct uz_delay_compensation_8_config_t config_delay_compensation_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_DELAY_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .psiPM = 0.0048f,
+    .Lq =0.0001484f,//[H]
+    .Ld = 0.0001473f,//[H]
+    .Rs = 0.1278f,//[Ohm]
+    .SampleTime = 0.00001f,
+    .pole_pairs = 5.0f,//needs to be asked
+    .Lx = 0.00005566f,//maybe this value needs to be half of the size
+    .Ly = 0.0000554f,//maybe this value needs to be half of the size
+};
+uz_delay_compensation_8_t* test_instance_delay_compensation_8;
+
+static struct uz_phase_voltages_8_config_t config_phase_voltages_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_PHASE_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+    .theta_el_offset=-0.7900000f,//needs to be asked
+    .u_dc_link_voltage=60.0f,//needs to be asked
+};
+uz_phase_voltages_8_t* test_instance_phase_voltages_8;
+/*
+static struct uz_min_cost_function_8_config_t config_min_cost_function_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_MIN_C_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+};
+uz_min_cost_function_8_t* test_instance_min_cost_function_8;
+*/
+static struct uz_switching_states_6Phase_8_config_t config_switching_states_6Phase_8={
+    .base_address= XPAR_UZ_USER_PARALLEL_8_SIM_SWITC_0_BASEADDR,
+    .ip_clk_frequency_Hz=100000000,
+};
+uz_switching_states_6Phase_8_t* test_instance_switching_states_6Phase_8;
+
+
+
+
 
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_FD,
+	init_FOC,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -54,6 +301,10 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+
+	movAvF_config.filterLength = 150;
+
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -72,10 +323,103 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+            initialization_chain = init_FD;
+            break;
+        case init_FD:
+
+            movAvFilter = uz_movingAverageFilter_init(movAvF_config);
+
+            movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config);
+            movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config);
+            movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config);
+            movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config);
+            movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config);
+            movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config);
+
+
+            // all configs for the resonant controllers
+
+            struct uz_resonantController_config config_R_dq2H = config_R;
+            config_R_dq2H.harmonic_order = 2.0f;
+            config_R_dq2H.gain = 150.0f;
+            config_R_dq2H.upper_limit = 12.0f;
+            config_R_dq2H.lower_limit = -12.0f;
+            struct uz_resonantController_config config_R_dq8H = config_R;
+            config_R_dq8H.harmonic_order = 8.0f;
+            struct uz_resonantController_config config_R_dq12H = config_R;
+            config_R_dq12H.harmonic_order = 12.0f;
+            struct uz_resonantController_config config_R_xy2H = config_R;
+            config_R_xy2H.harmonic_order = 2.0f;
+            struct uz_resonantController_config config_R_xy5H = config_R;
+            config_R_xy5H.harmonic_order = 5.0f;
+            struct uz_resonantController_config config_R_xy7H = config_R;
+            config_R_xy7H.harmonic_order = 7.0f;
+            struct uz_resonantController_config config_R_xy6H = config_R;
+            config_R_xy6H.harmonic_order = 6.0f;
+            struct uz_resonantController_config config_R_z1z2_1H = config_R;
+            config_R_z1z2_1H.harmonic_order = 1.0f;
+            config_R_z1z2_1H.gain = 85.0f;
+            struct uz_resonantController_config config_R_z1z2_3H = config_R;
+            config_R_z1z2_3H.harmonic_order = 3.0f;
+            config_R_z1z2_3H.gain = 85.0f;
+            struct uz_resonantController_config config_R_z1z2_9H = config_R;
+            config_R_z1z2_9H.gain = 85.0f;
+            config_R_z1z2_9H.harmonic_order = 9.0f;
+
+
+
+            rc_2H_x = uz_resonantController_init(config_R_xy2H);
+            rc_2H_y = uz_resonantController_init(config_R_xy2H);
+            rc_5H_x = uz_resonantController_init(config_R_xy5H);
+            rc_5H_y = uz_resonantController_init(config_R_xy5H);
+            rc_7H_x = uz_resonantController_init(config_R_xy7H);
+            rc_7H_y = uz_resonantController_init(config_R_xy7H);
+            rc_6H_x = uz_resonantController_init(config_R_xy6H);
+            rc_6H_y = uz_resonantController_init(config_R_xy6H);
+            rc_2H_d = uz_resonantController_init(config_R_dq2H);
+            rc_2H_q = uz_resonantController_init(config_R_dq2H);
+
+
+            rc_8H_d = uz_resonantController_init(config_R_dq8H);
+            rc_8H_q = uz_resonantController_init(config_R_dq8H);
+            rc_12H_d = uz_resonantController_init(config_R_dq12H);
+            rc_12H_q = uz_resonantController_init(config_R_dq12H);
+            rc_1H_z1 = uz_resonantController_init(config_R_z1z2_1H);
+            rc_1H_z2 = uz_resonantController_init(config_R_z1z2_1H);
+            rc_3H_z1 = uz_resonantController_init(config_R_z1z2_3H);
+            rc_3H_z2 = uz_resonantController_init(config_R_z1z2_3H);
+            rc_9H_z1 = uz_resonantController_init(config_R_z1z2_9H);
+            rc_9H_z2 = uz_resonantController_init(config_R_z1z2_9H);
+
+            initialization_chain = init_FOC;
+            break;
+        case init_FOC:
+
+        	FOC_dq = uz_FOC_init(config_FOC);
+
+        	Global_Data.av.kp_d = config_FOC.config_id.Kp;
+        	Global_Data.av.ki_d = config_FOC.config_id.Ki;
+        	Global_Data.av.kp_q = config_FOC.config_iq.Kp;
+        	Global_Data.av.ki_q = config_FOC.config_iq.Ki;
+
+        	PI_x_n = uz_PI_Controller_init(config_ix);
+        	PI_y_n = uz_PI_Controller_init(config_iy);
+        	PI_z1 = uz_PI_Controller_init(config_iz1z2);
+        	PI_z2 = uz_PI_Controller_init(config_iz1z2);
+
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
+            test_instance_vsd_8 = uz_vsd_8_init(config_vsd_8);
+            test_instance_prediction_and_cost_function_8=uz_prediction_and_cost_function_8_init(config_prediction_and_cost_function_8);
+            test_instance_delay_compensation_8 = uz_delay_compensation_8_init(config_delay_compensation_8);
+            test_instance_phase_voltages_8 = uz_phase_voltages_8_init(config_phase_voltages_8);
+            //test_instance_min_cost_function_8= uz_min_cost_function_8_init(config_min_cost_function_8);
+            test_instance_switching_states_6Phase_8=uz_switching_states_6Phase_8_init(config_switching_states_6Phase_8);
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -91,6 +435,15 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+
+
+            gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);
+            gan_inverter_D4 = uz_d_gan_inverter_init(config_gan_inverter_D4, Global_Data.objects.gan_inverter_outputs_D4);
+
+
+
+
             initialization_chain = print_msg;
             break;
         case print_msg:

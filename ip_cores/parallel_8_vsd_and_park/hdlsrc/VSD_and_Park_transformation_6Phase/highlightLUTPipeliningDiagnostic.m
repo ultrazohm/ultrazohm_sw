@@ -1,0 +1,18 @@
+open_system('VSD_and_Park_transformation_6Phase');
+open_system('gm_VSD_and_Park_transformation_6Phase');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 'user1');
+annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 'user1');
+annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/cos_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 'user1');
+annotate_port('gm_VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');
+hilite_system('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 'user1');
+annotate_port('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 0, 1, 'Lookup Table mapped to RAM');

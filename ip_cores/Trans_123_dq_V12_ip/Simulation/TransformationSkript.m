@@ -4,8 +4,8 @@ clc;        % command window löschen
 clear;      % alle Variablen löschen 
 close all; % alle Fenster schließen
 
-hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
- 'C:\Xilinx\Vivado\2017.4\bin\vivado.bat'); % Hierdruch wird dem HDL-Coder gesagt welches Synthesetool er für die HDL-Generierung nutzen soll.
+%hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
+ %'C:\Xilinx\Vivado\2017.4\bin\vivado.bat'); % Hierdruch wird dem HDL-Coder gesagt welches Synthesetool er für die HDL-Generierung nutzen soll.
 
 %hdlsetuptoolpath('ToolName','Xilinx ISE','ToolPath','C:\Xilinx\14.3\ISE_DS\ISE\bin\nt64\ise.exe')
 SimulationsDauer = 10; %0.2%0.02

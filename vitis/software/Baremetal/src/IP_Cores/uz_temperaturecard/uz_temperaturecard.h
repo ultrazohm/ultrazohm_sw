@@ -300,7 +300,7 @@ typedef struct {
 }uz_temperaturecard_OneGroup;
 
 /**
- * @brief Configuration struct for myIP
+ * @brief Configuration struct for TemperatureCard-IP
  *
  */
 struct uz_temperaturecard_config_t{
@@ -324,7 +324,8 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
 void        uz_TempCard_IF_Reset(uz_temperaturecard_t* self);                                               // Resets the Interface-IP to write new Channel configs
 void        uz_TempCard_IF_Start(uz_temperaturecard_t* self);                                               // Starts the Interface-IP
 void        uz_TempCard_IF_Stop(uz_temperaturecard_t* self);                                                // Stops the Interface-IP
-void        uz_TempCard_IF_MeasureTemps(uz_temperaturecard_t* self);                                        // Gets the Temperature-Data from all LTC2983, converts the results and stores the tempvalue in the struct
+void        uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);                                    // Gets the Temperature-Data from all LTC2983, converts the results and stores the tempvalue in the struct
+void        uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);                                 // Gets the Temperature-Data from one Channel, converts the results and stores the tempvalue in the struct. Call multiple times to step through the Data.
 
 
 #endif // UZ_TEMPERATURECARD_H

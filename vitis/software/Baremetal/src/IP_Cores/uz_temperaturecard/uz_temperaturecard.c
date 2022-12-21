@@ -7,6 +7,7 @@ struct uz_temperaturecard_t {
 	uint32_t 				    ip_clk_frequency_Hz;
 	bool 						is_ready;
 	uint32_t 					Sample_Period;
+	uint32_t 					Stepcounter;
 	uz_temperaturecard_OneGroup	Channel_A;
 	uz_temperaturecard_OneGroup	Channel_B;
 	uz_temperaturecard_OneGroup	Channel_C;
@@ -32,6 +33,7 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
     self-> base_address         = config.base_address;
     self-> ip_clk_frequency_Hz  = config.ip_clk_frequency_Hz;
     self-> Sample_Period        = config.Sample_Period;
+    self-> Stepcounter 			= 0;
 
     for(int i = 0; i < CHANNEL_COUNT; i++){
 		//Select Channel_A
@@ -73,7 +75,7 @@ void uz_TempCard_IF_Stop(uz_temperaturecard_t* self){
     uz_TempCard_IF_hw_Stop(self->base_address);
 }
 
-void uz_TempCard_IF_MeasureTemps(uz_temperaturecard_t* self){
+void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self){
     uz_assert_not_NULL(self);
     for(int i = 0; i < CHANNEL_COUNT; i++){
         //Select Channel_A
@@ -104,4 +106,44 @@ void uz_TempCard_IF_MeasureTemps(uz_temperaturecard_t* self){
     	}
     }
 }
+
+void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self){
+	uz_assert_not_NULL(self);
+
+    if(self->Stepcounter <= CHANNEL_COUNT){
+        //Select Channel_A
+    	self->Channel_A.temperature_raw[self->Stepcounter]   = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_A_0 + (self->Stepcounter * 0x4));   // Read raw Measurement
+    	self->Channel_A.Channels_Valid[self->Stepcounter]    = (self->Channel_A.temperature_raw[self->Stepcounter] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_A.Channels_Valid[self->Stepcounter] == 1){
+    		self->Channel_A.temperature[self->Stepcounter]   = (float)(self->Channel_A.temperature_raw[self->Stepcounter] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;// extract temperature value
+    	}else{
+    		self->Channel_A.temperature[self->Stepcounter]   = 0;
+    	}
+    	self->Stepcounter 			= self->Stepcounter+1;
+    }else if(self->Stepcounter > CHANNEL_COUNT && self->Stepcounter <= CHANNEL_COUNT*2){
+        //Select Channel_B
+    	self->Channel_B.temperature_raw[self->Stepcounter-CHANNEL_COUNT]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_B_0 + ((self->Stepcounter-CHANNEL_COUNT) * 0x4));   // Read raw Measurement
+    	self->Channel_B.Channels_Valid[self->Stepcounter-CHANNEL_COUNT]   = (self->Channel_B.temperature_raw[(self->Stepcounter-CHANNEL_COUNT)] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_B.Channels_Valid[self->Stepcounter-CHANNEL_COUNT] == 1){
+    	   self->Channel_B.temperature[self->Stepcounter-CHANNEL_COUNT]       = (float)(self->Channel_B.temperature_raw[self->Stepcounter-CHANNEL_COUNT] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;// extract temperature value
+    	}else{
+        	self->Channel_B.temperature[self->Stepcounter-CHANNEL_COUNT]      = 0;
+        }
+    	self->Stepcounter 			= self->Stepcounter+1;
+    }else if(self->Stepcounter > CHANNEL_COUNT*2 && self->Stepcounter <= CHANNEL_COUNT*3){
+        //Select Channel_C
+    	self->Channel_C.temperature_raw[self->Stepcounter-CHANNEL_COUNT*2]  = uz_TempCard_IF_hw_readReg(self->base_address + TempCard_IF_Result_C_0 + ((self->Stepcounter-CHANNEL_COUNT*2) * 0x4));   // Read raw Measurement
+    	self->Channel_C.Channels_Valid[self->Stepcounter-CHANNEL_COUNT*2]   = (self->Channel_C.temperature_raw[self->Stepcounter-CHANNEL_COUNT*2] & 0xFF000000) >> 24;                              // extract measurement information
+    	if(self->Channel_C.Channels_Valid[self->Stepcounter-CHANNEL_COUNT*2] == 1){
+    	self->Channel_C.temperature[self->Stepcounter-CHANNEL_COUNT*2]          = (float)(self->Channel_C.temperature_raw[self->Stepcounter-CHANNEL_COUNT*2] & 0x00FFFFFF) * TEMP_CONVERSION_FACTOR;// extract temperature value
+		}else{
+    		self->Channel_C.temperature[self->Stepcounter-CHANNEL_COUNT*2]      = 0;
+    	}
+    	self->Stepcounter 			= self->Stepcounter+1;
+    }else{
+    	self->Stepcounter 			= 0;
+    }
+
+}
+
 #endif

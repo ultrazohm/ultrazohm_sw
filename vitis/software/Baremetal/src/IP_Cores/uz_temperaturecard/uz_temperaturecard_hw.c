@@ -67,83 +67,83 @@ int32_t uz_TempCard_IF_hw_readCounterReg(uint32_t base_address){             // 
 }
 
 //Register-specified
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_0(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_0(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_0);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_0));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_1(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_1(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_1);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_1));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_2(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_2(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_2);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_2));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_3(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_3(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_3);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_3));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_4(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_4(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_4);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_4));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_5(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_5(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_5);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_5));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_6(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_6(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_6);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_6));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_7(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_7(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_7);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_7));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_8(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_8(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_8);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_8));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_9(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_9(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_9);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_9));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_10(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_10(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_10);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_10));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_11(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_11(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_11);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_11));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_12(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_12(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_12);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_12));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_13(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_13(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_13);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_13));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_14(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_14(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_14);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_14));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_15(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_15(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_15);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_15));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_16(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_16(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_16);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_16));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_17(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_17(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_17);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_17));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_18(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_18(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_18);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_18));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_19(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_19(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_A_19);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_A_19));
 }
@@ -310,83 +310,83 @@ int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Config_A_19(uint32_t base_address)
 }
 
 
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_0(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_0(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_0);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_0));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_1(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_1(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_1);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_1));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_2(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_2(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_2);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_2));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_3(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_3(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_3);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_3));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_4(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_4(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_4);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_4));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_5(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_5(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_5);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_5));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_6(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_6(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_6);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_6));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_7(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_7(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_7);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_7));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_8(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_8(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_8);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_8));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_9(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_9(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_9);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_9));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_10(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_10(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_10);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_10));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_11(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_11(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_11);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_11));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_12(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_12(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_12);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_12));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_13(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_13(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_13);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_13));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_14(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_14(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_14);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_14));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_15(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_15(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_15);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_15));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_16(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_16(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_16);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_16));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_17(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_17(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_17);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_17));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_18(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_18(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_18);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_18));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_19(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_B_19(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_B_19);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_B_19));
 }
@@ -553,83 +553,83 @@ int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Config_B_19(uint32_t base_address)
 }
 
 
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_0(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_0(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_0);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_0));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_1(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_1(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_1);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_1));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_2(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_2(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_2);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_2));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_3(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_3(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_3);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_3));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_4(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_4(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_4);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_4));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_5(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_5(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_5);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_5));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_6(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_6(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_6);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_6));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_7(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_7(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_7);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_7));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_8(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_8(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_8);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_8));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_9(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_9(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_9);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_9));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_10(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_10(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_10);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_10));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_11(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_11(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_11);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_11));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_12(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_12(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_12);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_12));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_13(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_13(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_13);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_13));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_14(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_14(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_14);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_14));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_15(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_15(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_15);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_15));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_16(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_16(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_16);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_16));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_17(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_17(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_17);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_17));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_18(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_18(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_18);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_18));
 }
-void uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_19(uint32_t base_address,int32_t data){
+int32_t uz_TempCard_IF_hw_readReg_TempCard_IF_Result_C_19(uint32_t base_address,int32_t data){
     uz_assert_not_zero(base_address + TempCard_IF_Result_C_19);
     return (uz_axi_read_int32(base_address + TempCard_IF_Result_C_19));
 }

@@ -9,8 +9,9 @@ voltage_input_dq_axi,Input,single vector (6/9),AXI 0x180-0x1A0,,input voltages a
 voltage_input_dq,Input,sfix27_En16 vector (6/9),External Signal,-1024 to 1023,input voltages as transformed values in the form of "uz_6ph_dq_t"/ "uz_9ph_dq_t" from PL
 theta_el_out_axi,Output,single,AXI 0x14C,:math:`\pm \pi`,actual electric rotor angle
 theta_el_out,Output,sfix18_En14,External Signal,:math:`\pm \pi`,actual electric rotor angle
-M_Mi_out_axu,Output,single,AXI 0x174,,actual machine torque
+M_Mi_out_axi,Output,single,AXI 0x174,,actual machine torque
 omega_mech_out_axi,Output,single,AXI 0x178,,actual machine speed
+omega_mech_out,Output,sfix24_En11,External Signal,-4096 to 4095,actual machine speed
 currents_dq_out_axi,Output,single vector (6/9),AXI 0x200-0x220,,actual currents in the rotary or stationary reference frame to AXI in the form of "uz_6ph_dq_t"/ "uz_9ph_dq_t"
 currents_dq_out,Output,sfix27_En18 vector (6/9),External Signal,-256 to +255,actual currents in the rotary or stationary reference frame to PL in the form of "uz_6ph_dq_t"/ "uz_9ph_dq_t"
 voltage_input_dq_out_axi_fb,Output,single vector (6/9),AXI 0x280-2A0,,feedback actual input voltages to AXI (available for use_axi_input true and false)

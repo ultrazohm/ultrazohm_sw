@@ -3,16 +3,19 @@
 ======================
 Multi-phase PMSM Model
 ======================
-Important: 
-- The multi-phase PMSM IP-cores are based on the three-phase :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained)
-- There are two mulit-phase IP-cores, a six-phase and a nine-phase one
+
+Important:
+
+ - The multi-phase PMSM IP-cores are based on the three-phase :ref:`uz_pmsmModel` IP-core, where the basics (e.g. working principle of the integrations is explained)
+ - There are two mulit-phase IP-cores, a six-phase and a nine-phase one
 
 Differences to the three-phase PMSM model IP-core:
-- IP-Cores model a six-phase and nine-phase PMSM
-- Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
-- IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
-- All calculations in the IP-Core are done in double precision
-- Interfaces to PL are realized in fixedpoint, while interfaces to the PS use single precision float values
+
+ - IP-Cores model a six-phase and nine-phase PMSM
+ - Sample frequency of the integrator is :math:`T_s=\frac{1}{1\,MHz}`
+ - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
+ - All calculations in the IP-Core are done in double precision
+ - Interfaces to PL are realized in fixedpoint, while interfaces to the PS use single precision float values
 
 System description
 ==================
@@ -167,14 +170,13 @@ Nine-phase model
 
 .. doxygenfunction:: uz_pmsm_model9ph_dq_set_use_axi_input
 
-Example usage
-=============
+Example usage (standalone)
+==========================
 The IP-core has two intended use cases:
-- Using the model in the dq domain only with inputs coming from the PS
-- Simulating a complete multi-phase drive system including the :ref:`uz_inverter_3ph`, :ref:`uz_vsd_transformation` and :ref:`uz_pwm_ss_2l` IP-cores (used for CIL)
 
-Usage in PS only
-----------------
+ - Using the model in the dq domain only with inputs coming from the PS
+ - Simulating a complete multi-phase drive system including the :ref:`uz_inverter_3ph`, :ref:`uz_vsd_transformation` (see the CIL examples in :ref:`uz_cil_pmsm`)
+
 Using the IP-core in PS only is similar to the use cases shown in :ref:`uz_pmsmModel` open loop example which is recreated here.
 The placement of the IP-core for the use from PS only is straight forward as only the default PL interfaces have to be connected.
 For the example the nine-phase model is used, but the same can also be applied for the six-phase model.

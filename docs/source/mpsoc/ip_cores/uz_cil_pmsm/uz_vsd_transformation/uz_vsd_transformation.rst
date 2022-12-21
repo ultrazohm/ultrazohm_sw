@@ -15,7 +15,7 @@ Multi-phase VSD and Park transformation IP-Core
 
 .. csv-table:: Interface of Transformation IP-Core
    :file: ip-core_transformation_interfaces.csv
-   :widths: 50 40 60 50 60 170 30 30
+   :widths: 50 40 60 50 60 170 30 30 30
    :header-rows: 1
 
 VSD and Park transformation

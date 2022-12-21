@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="49" Path="C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_pr/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="4dced50bdbee45048f9f6db32ea2a738"/>
+    <Option Name="Id" Val="645c8168c4744892b821868256ad4243"/>
     <Option Name="Part" Val="xazu11eg-ffvf1517-1-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -127,13 +127,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_9ph_dq_pkg.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_6ph_dq_pkg.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_9ph_dq_tc.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_6ph_dq_tc.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -199,7 +199,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_9ph_dq.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single_to_sfix_24_En11.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_6ph_dq.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

@@ -14,6 +14,7 @@ void setUp(void)
     config.samplingTime_sec = 0.001f;
     config.upper_limit = 10.0f;
     config.lower_limit = -10.0f;
+    config.type = parallel;
 }
 
 void test_uz_PI_Controller_init_assert_Ki_negative(void){
@@ -168,6 +169,43 @@ void test_uz_PI_Controller_sample_output(void){
     }
 }
 
+void test_uz_PI_Controller_sample_ideal_output(void){
+    config.samplingTime_sec = 1.0f;
+    config.Ki = 0.086655113f;
+    config.Kp = 11.54f;
+    config.upper_limit = 20.0f;
+    config.lower_limit = -20.0f;
+    config.type = ideal;
+    uz_PI_Controller* variables = uz_PI_Controller_init(config);
+    float referenceValue = 12.0f;
+    float actualValue = 2.0f;
+    float output[5] = {20.0f, 20.0f, 20.0f, 20.0f, 20.0f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+    //Tests if clamping was active during limitation
+    actualValue = 12.1f;
+    float output2[5] = {-1.154f, -1.254f, -1.354f, -1.454f, -1.554f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output2[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+
+    //Tests the same but with negative error at start
+    uz_PI_Controller_reset(variables);
+    referenceValue = 2.0f;
+    actualValue = 12.0f;
+    float output3[5] = {-20.0f, -20.0f, -20.0f, -20.0f, -20.0f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output3[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+    //Tests if clamping was active during limitation
+    actualValue = 1.9f;
+    float output4[5] = {1.154f, 1.254f, 1.354f, 1.454f, 1.554f};
+    for(int i=0;i<5;i++){
+        TEST_ASSERT_EQUAL_FLOAT(output4[i], uz_PI_Controller_sample(variables, referenceValue, actualValue, false));
+    }
+}
+
 //Tests if the external clamping signal stops the integrator from rising
 void test_uz_PI_Controller_sample_ext_clamping(void){
     config.samplingTime_sec = 1.0f;
@@ -215,5 +253,10 @@ void test_uz_PI_Controller_update_limits_assert_limits(void){
     float upper_limit = 10.0f;
     float lower_limit = -10.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_update_limits(variables, lower_limit, upper_limit));
+}
+
+void test_uz_PI_Controller_assert_type_selection(void){
+    config.type = 3U;
+    TEST_ASSERT_FAIL_ASSERT(uz_PI_Controller_init(config));
 }
 #endif // TEST

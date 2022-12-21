@@ -1,0 +1,9 @@
+{
+	"version": "1.0",
+	"modules": {
+		"interface_mon": {
+			"proto_instances": {
+			}
+		}
+	}
+}

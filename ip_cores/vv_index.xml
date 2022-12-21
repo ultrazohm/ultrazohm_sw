@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests3/ip_cores">
+	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -1851,6 +1851,28 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:user:interface_mon:1.0">
+		</VLNV>
+		<DisplayName value="interface_mon_v1_0">
+		</DisplayName>
+		<Description value="interface_mon_v1_0">
+		</Description>
+		<CoreRevision value="2">
+		</CoreRevision>
+		<ComponentPath value="uz_d_inverter_adapter/interface_monitor/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/UserIP">
+			</Taxonomy>
+		</Taxonomies>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:user:uz_inverter_adapter_mapping:1.0">
 		</VLNV>
 		<DisplayName value="uz_inverter_adapter_mapping_v1_0">
@@ -2572,12 +2594,28 @@
 		<XMLFile value="uz_d_inverter_adapter/interface_definition/uz_inverter_adapter.xml">
 		</XMLFile>
 	</BUSDEF>
+	<BUSDEF>
+		<VLNV value="th_nuernberg:user:uz_inverter_adapter:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="uz_d_inverter_adapter/interface_monitor/uz_inverter_adapter.xml">
+		</XMLFile>
+	</BUSDEF>
 	<BUSABS>
 		<VLNV value="th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0">
 		</VLNV>
 		<Description value="">
 		</Description>
 		<XMLFile value="uz_d_inverter_adapter/interface_definition/uz_inverter_adapter_rtl.xml">
+		</XMLFile>
+	</BUSABS>
+	<BUSABS>
+		<VLNV value="th_nuernberg:user:uz_inverter_adapter_rtl:1.0">
+		</VLNV>
+		<Description value="">
+		</Description>
+		<XMLFile value="uz_d_inverter_adapter/interface_monitor/uz_inverter_adapter_rtl.xml">
 		</XMLFile>
 	</BUSABS>
 	<IPInst>

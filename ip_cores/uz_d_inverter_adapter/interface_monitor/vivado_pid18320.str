@@ -1,0 +1,2055 @@
+/*
+
+Xilinx Vivado v2020.1.1 (64-bit) [Major: 2020, Minor: 1]
+SW Build: 2960000 on Wed Aug  5 22:57:20 MDT 2020
+IP Build: 2956692 on Thu Aug  6 01:41:30 MDT 2020
+
+Process ID (PID): 18320
+License: Customer
+
+Current time: 	Wed Dec 21 12:53:11 CET 2022
+Time zone: 	Central European Standard Time (Europe/Berlin)
+
+OS: Windows 10
+OS Version: 10.0
+OS Architecture: amd64
+Available processors (cores): 12
+
+Screen size: 1920x1080
+Screen resolution (DPI): 100
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	9.0.4 64-bit
+Java home: 	C:/Xilinx/Vivado/2020.1/tps/win64/jre9.0.4
+Java executable location: 	C:/Xilinx/Vivado/2020.1/tps/win64/jre9.0.4/bin/java.exe
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	Mger
+User home directory: C:/Users/Mger
+User working directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+User country: 	DE
+User language: 	de
+User locale: 	de_DE
+
+RDI_BASEROOT: C:/Xilinx/Vivado
+HDI_APPROOT: C:/Xilinx/Vivado/2020.1
+RDI_DATADIR: C:/Xilinx/Vivado/2020.1/data
+RDI_BINDIR: C:/Xilinx/Vivado/2020.1/bin
+
+Vivado preferences file location: C:/Users/Mger/AppData/Roaming/Xilinx/Vivado/2020.1/vivado.xml
+Vivado preferences directory: C:/Users/Mger/AppData/Roaming/Xilinx/Vivado/2020.1/
+Vivado layouts directory: C:/Users/Mger/AppData/Roaming/Xilinx/Vivado/2020.1/data/layouts
+PlanAhead jar file location: 	C:/Xilinx/Vivado/2020.1/lib/classes/planAhead.jar
+Vivado log file location: 	C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/vivado.log
+Vivado journal file location: 	C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/vivado.jou
+Engine tmp dir: 	C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/.Xil/Vivado-18320-enc177112
+
+Xilinx Environment Variables
+----------------------------
+XILINX_PLANAHEAD: C:/Xilinx/Vivado/2020.1
+XILINX_SDK: C:/Xilinx/Vitis/2020.1
+XILINX_VITIS: C:/Xilinx/Vitis/2020.1
+XILINX_VIVADO: C:/Xilinx/Vivado/2020.1
+XILINX_VIVADO_HLS: C:/Xilinx/Vivado/2020.1
+
+
+GUI allocated memory:	128 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 1,033 MB
+
+Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// TclEventType: PROJECT_OPEN_DIALOG
+// bz (cs):  Open Project : addNotify
+// Opening Vivado Project: C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_d_inverter_adapter\interface_monitor\interface_monitor.xpr. Version: Vivado v2020.1.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr 
+// Tcl Message: INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor' 
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr 
+// Tcl Message: INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor' 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'. INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_definition'. 
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 102 MB (+104345kb) [00:00:09]
+// [Engine Memory]: 1,033 MB (+931195kb) [00:00:09]
+// [GUI Memory]: 119 MB (+12460kb) [00:00:09]
+// WARNING: HEventQueue.dispatchEvent() is taking  1906 ms.
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,033 MB. GUI used memory: 116 MB. Current time: 12/21/22, 12:53:13 PM CET
+// Project name: interface_monitor; location: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor; part: xczu9eg-ffvc900-1-i
+// Tcl Message: open_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:06 . Memory (MB): peak = 1058.762 ; gain = 0.000 
+dismissDialog("Open Project"); // bz (cs)
+// Tcl Command: 'rdi::info_commands {device::*}'
+// Tcl Command: 'rdi::info_commands {debug::*}'
+// Tcl Command: 'rdi::info_commands {*}'
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed time: 11 seconds
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 2); // B (F, cs)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 2); // B (F, cs)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 4); // B (F, cs)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 4); // B (F, cs)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 3); // B (F, cs)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 3); // B (F, cs)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 2); // B (F, cs)
+// [GUI Memory]: 134 MB (+9871kb) [00:00:30]
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints, constrs_1]", 3, false); // B (F, cs)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 2); // B (F, cs)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Open Block Design]", 7, false); // u (J, cs)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_BLOCK_DESIGN
+// bz (cs):  Open Block Design : addNotify
+// TclEventType: LOAD_FEATURE
+// Tcl Message: open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd} 
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: RSB_OPEN_DIAGRAM
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: Successfully read diagram <interface_mon> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd> 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: RSB_CONNECTION_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+dismissDialog("Open Block Design"); // bz (cs)
+selectMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_VALIDATE_RSB_DESIGN, "Validate Design"); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_VALIDATE_RSB_DESIGN
+// 'dT' command handler elapsed time: 4 seconds
+// Tcl Command: 'validate_bd_design -force'
+selectButton("OptionPane.button", "Rerun Validate Design"); // JButton (v, B)
+// TclEventType: MSGMGR_REFRESH_MSG
+// TclEventType: RSB_PARAM_PROP
+// TclEventType: RSB_SCRIPT_TASK
+// TclEventType: RSB_PARAM_PROP
+// Tcl Message: validate_bd_design -force 
+selectButton("OptionPane.button", "OK"); // JButton (v, B)
+// [GUI Memory]: 142 MB (+754kb) [00:00:47]
+// Elapsed time: 16 seconds
+selectMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_IP_PACKAGER_WIZARD, "Create and Package New IP..."); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_IP_PACKAGER_WIZARD
+// Q (cs): Create and Package New IP: addNotify
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectRadioButton(PAResourceItoN.NewIpWizard_PACKAGE_BLOCK_DESIGN_FROM_CURRENT, "Package a block design from the current project. Choose a block design as the source for creating a new IP Definition."); // b (a, Q)
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectButton(PAResourceItoN.NewIpWizard_IP_DEFINITION_SOURCE_LOCATION, (String) null); // t (an, Q)
+setFolderChooser("C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor");
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectButton("OptionPane.button", "Overwrite"); // JButton (v, B)
+selectButton("FINISH", "Finish"); // JButton (j, Q)
+// 'q' command handler elapsed time: 24 seconds
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_MESSAGE_RESET
+dismissDialog("Create and Package New IP"); // Q (cs)
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// TclEventType: PACKAGER_CURRENT_CORE
+// Run Command: PAResourceCommand.PACommandNames_IP_PACKAGER
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// Tcl Message: ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force 
+// Tcl Message: INFO: [BD 41-1637] Generated targets are already up-to-date for block design 'interface_mon' - hence not re-generating. INFO: [IP_Flow 19-2181] Payment Required is not set for this core. INFO: [IP_Flow 19-2187] The Product Guide file is missing. 
+// bz (cs):  IP Packager : addNotify
+dismissDialog("IP Packager"); // bz (cs)
+selectList(PAResourceOtoP.PackagerStepsPanel_PACKAGER_STEPS_LIST, "Ports and Interfaces", 4); // ar (J, cs)
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, "H1_FAULT ;  ;  ; in ;  ;  ;  ;  ;  ; STD_LOGIC", 0, "H1_FAULT", 0, false); // M (J, cs)
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, "H2_FAULT ;  ;  ; in ;  ;  ;  ;  ;  ; STD_LOGIC", 2, "H2_FAULT", 0, false, false, true, false, false, false); // M (J, cs) - Control Key
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, "H3_FAULT ;  ;  ; in ;  ;  ;  ;  ;  ; STD_LOGIC", 4, "H3_FAULT", 0, false); // M (J, cs)
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, null, -1, null, -1, false, false, false, false, true, false); // M (J, cs) - Popup Trigger
+selectMenuItem(PAResourceCommand.PACommandNames_PACKAGER_ADD_BUS_INTERFACE, "Add Bus Interface..."); // ai (ao, cs)
+// Run Command: PAResourceCommand.PACommandNames_PACKAGER_ADD_BUS_INTERFACE
+// [GUI Memory]: 167 MB (+18884kb) [00:01:41]
+// H (cs): Add Interface: addNotify
+selectButton(PAResourceItoN.InterfaceDefinitionChooser_INTERFACE_DEFINITION_CHOOSER, (String) null); // t (t, H)
+// u (cs): Interface Definition Chooser: addNotify
+expandTreeTable(PAResourceItoN.InterfaceDefinitionTreeTable_INTERFACES_TREE_TABLE, "User ; ", 8); // al (J, u)
+selectTreeTable(PAResourceItoN.InterfaceDefinitionTreeTable_INTERFACES_TREE_TABLE, "uz_inverter_adapter_rtl ; ", 13, "uz_inverter_adapter_rtl", 0, false); // al (J, u)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (u)
+dismissDialog("Interface Definition Chooser"); // u (cs)
+setText(PAResourceItoN.InterfaceConfigurationPanel_NAME, "uz_inverter_adapter"); // D (C, H)
+// Tcl Message: ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property interface_mode master [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+selectTab(PAResourceEtoH.EditInterfaceDialog_TABBED_PANE, PAResourceEtoH.EditInterfaceDialog_PORT_MAPPING, "Port Mapping", 1); // I (H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@1afa6235", 0); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@46f7c85a", 13); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@10a72cc9", 6); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@1ec8fdc6", 17); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@933ab91", 1); // O (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@5b2d57b9", 0); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@38b7f59f", 24); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@10a09c0a", 10); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@48fa072f", 25); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@291d9743", 8); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@1c755e4b", 28); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@6ab690e3", 4); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@42ef195", 29); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@71f3fee1", 2); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (H)
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// 'a' command handler elapsed time: 54 seconds
+// WARNING: HEventQueue.dispatchEvent() is taking  2124 ms.
+// Tcl Message: ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+dismissDialog("Add Interface"); // H (cs)
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+selectButton(PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN, "save_rsb_design"); // E (g, cs)
+// Run Command: PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN
+// TclEventType: RSB_SAVE_DIAGRAM
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_SAVE_DIAGRAM
+// Tcl Message: save_bd_design 
+// Tcl Message: Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_d_inverter_adapter\interface_monitor\interface_monitor.srcs\sources_1\bd\interface_mon\interface_mon.bd>  Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/ui/bd_9b936e46.ui>  
+selectList(PAResourceOtoP.PackagerStepsPanel_PACKAGER_STEPS_LIST, "Review and Package", 7); // ar (J, cs)
+selectButton(PAResourceQtoS.ReviewContentPanel_RE_PACKAGE_IP, "Re-Package IP"); // a (c, cs)
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// Tcl Message: set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// TclEventType: CREATE_IP_CATALOG
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// TclEventType: CREATE_IP_CATALOG
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// Tcl Message: update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor 
+// Tcl Message: INFO: [IP_Flow 19-725] Reloaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor' 
+// TclEventType: LOAD_FEATURE
+selectButton("OptionPane.button", "OK"); // JButton (v, B)
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+selectMenu(PAResourceItoN.MainMenuMgr_EDIT, "Edit"); // aa (q, cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_EDIT, "Edit"); // aa (q, cs)
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+selectMenu(PAResourceItoN.MainMenuMgr_PROJECT, "Project"); // af (cs)
+selectMenuItem(PAResourceCommand.PACommandNames_CLOSE_PROJECT, "Close Project"); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_CLOSE_PROJECT
+// A (cs): Close Project: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (A)
+// bz (cs):  Close Project : addNotify
+// TclEventType: PROJECT_CLOSE
+dismissDialog("Close Project"); // A (cs)
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// HMemoryUtils.trashcanNow. Engine heap size: 1,037 MB. GUI used memory: 98 MB. Current time: 12/21/22, 12:55:59 PM CET
+// Tcl Message: close_project 
+dismissDialog("Close Project"); // bz (cs)
+selectButton(PAResourceEtoH.GettingStartedView_OPEN_PROJECT, "Open Project"); // y (x, cs)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_PROJECT
+// Elapsed time: 14 seconds
+setFileChooser("C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr");
+// Opening Vivado Project: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr. Version: Vivado v2020.1.1 
+// bz (cs):  Open Project : addNotify
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 1,061 MB. GUI used memory: 96 MB. Current time: 12/21/22, 12:56:27 PM CET
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 1,195 MB. GUI used memory: 96 MB. Current time: 12/21/22, 12:56:42 PM CET
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// [Engine Memory]: 1,195 MB (+116037kb) [00:03:40]
+// WARNING: HEventQueue.dispatchEvent() is taking  1762 ms.
+// Tcl Message: open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'. INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'. 
+// [Engine Memory]: 1,272 MB (+18242kb) [00:03:41]
+// [GUI Memory]: 183 MB (+8022kb) [00:03:41]
+// WARNING: HEventQueue.dispatchEvent() is taking  1092 ms.
+// Tcl Message: open_project: Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 1286.785 ; gain = 228.023 
+// [Engine Memory]: 1,345 MB (+9965kb) [00:03:42]
+// Project name: ultrazohm; location: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project; part: xczu9eg-ffvc900-1-e
+// 'i' command handler elapsed time: 40 seconds
+// Elapsed time: 25 seconds
+dismissDialog("Open Project"); // bz (cs)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Open Block Design]", 7, false); // u (J, cs)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_BLOCK_DESIGN
+// bz (cs):  Open Block Design : addNotify
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// Tcl Message: open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd} 
+// Tcl Message: Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A1_ADC_LTC2311 Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A1_inv_input Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A1_iobufds_inst 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// Tcl Message: Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_analog_adapter/A1_adapter/adc_debug/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D2_adapter/Gates_3L/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:module_ref:top_npc_state_machine:1.0 - top_npc_state_machine_0 Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_3L Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_D3_test Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_Encoder 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D5_adapter/ila_Encoder: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- TUM:user:AXI2TCM:1.1 - AXI2TCM_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/DataMover/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0 Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0 Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Concat_interrupts Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - Trigger_f_cc Adding component instance block -- xilinx.com:ip:vio:3.0 - adc_delay Adding component instance block -- xilinx.com:module_ref:delay_trigger:1.0 - delay_trigger_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/Interrupt/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:mux_axi_ip:1.2 - mux_axi_ip_1 Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_interrupt 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:axi_timebase_wdt:3.0 - axi_timebase_wdt_0 Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_0 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// [Engine Memory]: 1,429 MB (+17805kb) [00:03:49]
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_user/ila_FAULT_diff: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7 Adding component instance block -- xilinx.com:ip:zynq_ultra_ps_e:3.3 - zynq_ultra_ps_e_0 
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_OPEN_DIAGRAM
+// Tcl Message: Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0 Excluding slave segment /zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH from address space /uz_system/DataMover/AXI2TCM_0/M00_AXI. Successfully read diagram <zusys> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd> 
+// TclEventType: RSB_OPEN_DIAGRAM
+// [Engine Memory]: 1,505 MB (+4843kb) [00:04:00]
+// WARNING: HEventQueue.dispatchEvent() is taking  1719 ms.
+// TclEventType: RSB_CONNECTION_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 1,506 MB. GUI used memory: 136 MB. Current time: 12/21/22, 12:57:03 PM CET
+// Elapsed time: 15 seconds
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: RSB_CONNECTION_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// Tcl Message: open_bd_design: Time (s): cpu = 00:00:21 ; elapsed = 00:00:21 . Memory (MB): peak = 1611.801 ; gain = 142.184 
+// [GUI Memory]: 193 MB (+1211kb) [00:04:05]
+// 'bJ' command handler elapsed time: 20 seconds
+dismissDialog("Open Block Design"); // bz (cs)
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed time: 16 seconds
+selectView(PAResourceOtoP.PAViews_SYSTEM, "System", 665, 117, 1224, 538, false, false, false, true, false); // hq (m, cs) - Popup Trigger
+selectMenu(PAResourceQtoS.SystemBuilderView_PINNING, "Pinning"); // af (ao, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_IP_SETTINGS, "IP Settings..."); // ai (ao, cs)
+// Run Command: PAResourceCommand.PACommandNames_IP_SETTINGS
+// d (cs): Settings: addNotify
+// [Engine Memory]: 1,620 MB (+41325kb) [00:04:25]
+// HMemoryUtils.trashcanNow. Engine heap size: 1,620 MB. GUI used memory: 150 MB. Current time: 12/21/22, 12:57:28 PM CET
+expandTree(PAResourceQtoS.SettingsDialog_PROJECT_TREE, "[projectRoot, IP]", 6); // B (E, d)
+selectTree(PAResourceQtoS.SettingsDialog_PROJECT_TREE, "[projectRoot, IP, Repository]", 7, false); // B (E, d)
+selectButton(PAResourceQtoS.SettingsProjectIPRepositoryPage_REFRESH_ALL, "Refresh All"); // a (E, d)
+// TclEventType: CREATE_IP_CATALOG
+// Tcl Message: update_ip_catalog -rebuild 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories 
+// bz (cs):  Refresh All IP Repositories : addNotify
+// [GUI Memory]: 210 MB (+7135kb) [00:04:32]
+// TclEventType: IP_LOCK_CHANGE
+// WARNING: HEventQueue.dispatchEvent() is taking  1052 ms.
+// TclEventType: IP_LOCK_CHANGE
+// Tcl Message: INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'. 
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: RSB_BITABEN_IPREPODATA_REFRESH
+// TclEventType: BDCELL_LOCK_CHANGE
+// TclEventType: CREATE_IP_CATALOG
+// [Engine Memory]: 1,824 MB (+128384kb) [00:04:34]
+dismissDialog("Refresh All IP Repositories"); // bz (cs)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (d)
+dismissDialog("Settings"); // d (cs)
+// [GUI Memory]: 224 MB (+4041kb) [00:04:37]
+selectView(PAResourceOtoP.PAViews_SYSTEM, "System", 771, 170, 1224, 538, false, false, false, true, false); // hq (m, cs) - Popup Trigger
+selectMenu(PAResourceQtoS.SystemBuilderView_PINNING, "Pinning"); // af (ao, cs)
+selectMenu(PAResourceQtoS.SystemBuilderView_PINNING, "Pinning"); // af (ao, cs)
+selectMenuItem(PAResourceQtoS.SystemBuilderMenu_ADD_IP, "Add IP..."); // ai (ao, cs)
+setText("PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE_SEARCH_FIELD", "mon"); // OverlayTextField (az, ResizableWindow)
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2, "interface_mon_v1_0", 0, false); // L (J, ResizableWindow)
+expandTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2); // L (J, ResizableWindow)
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2, "interface_mon_v1_0", 0, false, false, false, false, false, true); // L (J, ResizableWindow) - Double Click
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: RSB_ADD_OBJECT
+// Tcl Message: startgroup 
+// Tcl Message: create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0 
+// Tcl Message: endgroup 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,869 MB. GUI used memory: 162 MB. Current time: 12/21/22, 12:57:52 PM CET
+// Run Command: RDIResourceCommand.RDICommands_DELETE
+// TclEventType: RSB_REMOVE_OBJECT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: RSB_REMOVE_OBJECT
+// TclEventType: REPORT_IP_STATUS_STALE
+// Tcl Message: delete_bd_objs [get_bd_cells uz_user/interface_mon_0] 
+// Elapsed time: 26 seconds
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+selectMenu(PAResourceItoN.MainMenuMgr_PROJECT, "Project"); // af (cs)
+selectMenuItem(PAResourceCommand.PACommandNames_CLOSE_PROJECT, "Close Project"); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_CLOSE_PROJECT
+// am (cs): Save Project: addNotify
+selectButton(PAResourceQtoS.SaveProjectUtils_DONT_SAVE, "Don't Save"); // a (am)
+// A (cs): Close Project: addNotify
+dismissDialog("Save Project"); // am (cs)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (A)
+// bz (cs):  Close Project : addNotify
+// TclEventType: PROJECT_CLOSE
+dismissDialog("Close Project"); // A (cs)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,869 MB. GUI used memory: 224 MB. Current time: 12/21/22, 12:58:18 PM CET
+// Tcl Message: close_project 
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+dismissDialog("Close Project"); // bz (cs)
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr", 1); // r (J, cs)
+// Opening Vivado Project: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr. Version: Vivado v2020.1.1 
+// bz (cs):  Open Project : addNotify
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr 
+// Tcl Message: INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor' 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'. INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_definition'. 
+// TclEventType: PROJECT_NEW
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'. 
+// Project name: interface_monitor; location: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor; part: xczu9eg-ffvc900-1-i
+dismissDialog("Open Project"); // bz (cs)
+// Tcl Message: update_compile_order -fileset sources_1 
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Open Block Design]", 7, false); // u (J, cs)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_BLOCK_DESIGN
+// bz (cs):  Open Block Design : addNotify
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: RSB_OPEN_DIAGRAM
+// Tcl Message: open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd} 
+// Tcl Message: Successfully read diagram <interface_mon> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd> 
+// TclEventType: RSB_OPEN_DIAGRAM
+// TclEventType: RSB_CONNECTION_CHANGE
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: RSB_LOCK_CHANGE
+dismissDialog("Open Block Design"); // bz (cs)
+selectMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_IP_PACKAGER_WIZARD, "Create and Package New IP..."); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_IP_PACKAGER_WIZARD
+// Q (cs): Create and Package New IP: addNotify
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectRadioButton(PAResourceItoN.NewIpWizard_PACKAGE_BLOCK_DESIGN_FROM_CURRENT, "Package a block design from the current project. Choose a block design as the source for creating a new IP Definition."); // b (a, Q)
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectButton(PAResourceItoN.NewIpWizard_IP_DEFINITION_SOURCE_LOCATION, (String) null); // t (an, Q)
+setFolderChooser("C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor");
+selectButton("NEXT", "Next >"); // JButton (j, Q)
+selectButton("OptionPane.button", "Overwrite"); // JButton (v, B)
+selectButton("FINISH", "Finish"); // JButton (j, Q)
+// 'q' command handler elapsed time: 17 seconds
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_MESSAGE_RESET
+dismissDialog("Create and Package New IP"); // Q (cs)
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// TclEventType: PACKAGER_CURRENT_CORE
+// Run Command: PAResourceCommand.PACommandNames_IP_PACKAGER
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// Tcl Message: ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force 
+// Tcl Message: INFO: [BD 41-1637] Generated targets are already up-to-date for block design 'interface_mon' - hence not re-generating. INFO: [IP_Flow 19-2181] Payment Required is not set for this core. INFO: [IP_Flow 19-2187] The Product Guide file is missing. 
+// bz (cs):  IP Packager : addNotify
+dismissDialog("IP Packager"); // bz (cs)
+selectList(PAResourceOtoP.PackagerStepsPanel_PACKAGER_STEPS_LIST, "Ports and Interfaces", 4); // ar (J, cs)
+// [GUI Memory]: 250 MB (+15462kb) [00:05:54]
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, "H1_FAULT ;  ;  ; in ;  ;  ;  ;  ;  ; STD_LOGIC", 0, "H1_FAULT", 0, false, false, false, false, true, false); // M (J, cs) - Popup Trigger
+// [GUI Memory]: 264 MB (+1824kb) [00:06:03]
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, "L3_FAULT_mon ;  ;  ; out ;  ;  ;  ;  ;  ; STD_LOGIC", 11, "L3_FAULT_mon", 0, false); // M (J, cs)
+selectTreeTable(PAResourceOtoP.PortAndInterfaceFacetTable_PORT_AND_INTERFACE_FACET_TABLE, null, -1, null, -1, false, false, false, false, true, false); // M (J, cs) - Popup Trigger
+selectMenuItem(PAResourceCommand.PACommandNames_PACKAGER_ADD_BUS_INTERFACE, "Add Bus Interface..."); // ai (ao, cs)
+// Run Command: PAResourceCommand.PACommandNames_PACKAGER_ADD_BUS_INTERFACE
+// [GUI Memory]: 303 MB (+27064kb) [00:06:07]
+// H (cs): Add Interface: addNotify
+selectButton(PAResourceItoN.InterfaceDefinitionChooser_INTERFACE_DEFINITION_CHOOSER, (String) null); // t (t, H)
+// u (cs): Interface Definition Chooser: addNotify
+selectTreeTable(PAResourceItoN.InterfaceDefinitionTreeTable_INTERFACES_TREE_TABLE, "Advanced ; ", 7, "Advanced", 0, true); // al (J, u) - Node
+expandTreeTable(PAResourceItoN.InterfaceDefinitionTreeTable_INTERFACES_TREE_TABLE, "User ; ", 8); // al (J, u)
+selectTreeTable(PAResourceItoN.InterfaceDefinitionTreeTable_INTERFACES_TREE_TABLE, "uz_inverter_adapter_rtl ; ", 13, "uz_inverter_adapter_rtl", 0, false); // al (J, u)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (u)
+dismissDialog("Interface Definition Chooser"); // u (cs)
+selectComboBox(PAResourceItoN.InterfaceConfigurationPanel_MODE, "monitor", 2); // e (Q, H)
+setText(PAResourceItoN.InterfaceConfigurationPanel_NAME, "uz_inverter_adapter"); // D (C, H)
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (H)
+// HOptionPane Error: 'Bus interface uz_inverter_adapter does not contain any port map. (Missing PortMap)'
+selectButton("OptionPane.button", "OK"); // JButton (v, C)
+// Tcl Message: ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property interface_mode monitor [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+selectTab(PAResourceEtoH.EditInterfaceDialog_TABBED_PANE, PAResourceEtoH.EditInterfaceDialog_PORT_MAPPING, "Port Mapping", 1); // I (H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@66004dae", 13); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@721f1ba", 6); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@703e3656", 17); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@1b232c1f", 0); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@1da5976d", 24); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@33faa22d", 10); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@225b2e9d", 25); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@9e471f0", 8); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@59ec9c02", 28); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@36cd5b1b", 4); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_INTERFACES_LOGICAL_PORTS, "ui.data.coregen.b@22386e64", 29); // N (J, H)
+selectList(PAResourceItoN.InterfacePortMappingPanel_IPS_PHYSICAL_PORTS, "ui.data.coregen.bn@5526d5cf", 2); // O (J, H)
+selectButton(PAResourceItoN.InterfacePortMappingPanel_MAP_PORTS, "Map Ports"); // a (I, H)
+// Elapsed time: 17 seconds
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (H)
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// TclEventType: PACKAGER_OBJECT_ADD
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// 'a' command handler elapsed time: 71 seconds
+// WARNING: HEventQueue.dispatchEvent() is taking  1746 ms.
+// Tcl Message: ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+// Tcl Message: ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]] 
+// Tcl Message: set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]] 
+dismissDialog("Add Interface"); // H (cs)
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+selectList(PAResourceOtoP.PackagerStepsPanel_PACKAGER_STEPS_LIST, "Review and Package", 7); // ar (J, cs)
+selectButton(PAResourceQtoS.ReviewContentPanel_RE_PACKAGE_IP, "Re-Package IP"); // a (c, cs)
+// TclEventType: PACKAGER_OBJECT_CHANGE
+// Tcl Message: set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// Tcl Message: ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0] 
+// TclEventType: CREATE_IP_CATALOG
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// TclEventType: CREATE_IP_CATALOG
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_MESSAGE_UPDATE
+// Tcl Message: update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor 
+// Tcl Message: INFO: [IP_Flow 19-725] Reloaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor' 
+selectButton("OptionPane.button", "OK"); // JButton (v, B)
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+selectMenu(PAResourceItoN.MainMenuMgr_PROJECT, "Project"); // af (cs)
+selectMenuItem(PAResourceCommand.PACommandNames_CLOSE_PROJECT, "Close Project"); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_CLOSE_PROJECT
+// A (cs): Close Project: addNotify
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (A)
+// bz (cs):  Close Project : addNotify
+// TclEventType: PROJECT_CLOSE
+dismissDialog("Close Project"); // A (cs)
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// HMemoryUtils.trashcanNow. Engine heap size: 1,869 MB. GUI used memory: 143 MB. Current time: 12/21/22, 1:00:34 PM CET
+// Tcl Message: close_project 
+dismissDialog("Close Project"); // bz (cs)
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr", 1); // r (J, cs)
+// Opening Vivado Project: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr. Version: Vivado v2020.1.1 
+// bz (cs):  Open Project : addNotify
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: FILESET_TARGET_UCF_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// WARNING: HEventQueue.dispatchEvent() is taking  1108 ms.
+// Tcl Message: open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'. INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'. 
+// Tcl Message: open_project: Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 2130.797 ; gain = 0.000 
+// Project name: ultrazohm; location: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project; part: xczu9eg-ffvc900-1-e
+// Elapsed time: 20 seconds
+dismissDialog("Open Project"); // bz (cs)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, IP Integrator, Open Block Design]", 7, false); // u (J, cs)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_BLOCK_DESIGN
+// bz (cs):  Open Block Design : addNotify
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// Tcl Message: open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd} 
+// Tcl Message: Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A1_ADC_LTC2311 Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A1_inv_input Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A1_iobufds_inst 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_analog_adapter/A1_adapter/adc_debug/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D2_adapter/Gates_3L/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:module_ref:top_npc_state_machine:1.0 - top_npc_state_machine_0 Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_3L Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_D3_test Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_Encoder 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D5_adapter/ila_Encoder: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- TUM:user:AXI2TCM:1.1 - AXI2TCM_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/DataMover/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0 Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0 Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Concat_interrupts Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - Trigger_f_cc Adding component instance block -- xilinx.com:ip:vio:3.0 - adc_delay Adding component instance block -- xilinx.com:module_ref:delay_trigger:1.0 - delay_trigger_0 Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0 
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/Interrupt/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:mux_axi_ip:1.2 - mux_axi_ip_1 Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_interrupt 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:axi_timebase_wdt:3.0 - axi_timebase_wdt_0 Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_0 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// Tcl Message: INFO: [xilinx.com:ip:ila:6.2-6] /uz_user/ila_FAULT_diff: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details. 
+// Tcl Message: Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6 Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7 Adding component instance block -- xilinx.com:ip:zynq_ultra_ps_e:3.3 - zynq_ultra_ps_e_0 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_PROPERTY_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_OPEN_DIAGRAM
+// Tcl Message: Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0 Excluding slave segment /zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH from address space /uz_system/DataMover/AXI2TCM_0/M00_AXI. Successfully read diagram <zusys> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd> 
+// TclEventType: RSB_OPEN_DIAGRAM
+// TclEventType: RSB_CONNECTION_CHANGE
+// Elapsed time: 12 seconds
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// [Engine Memory]: 1,921 MB (+6510kb) [00:08:12]
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_LOCK_CHANGE
+// TclEventType: RSB_CHANGE_CURRENT_DIAGRAM
+// Tcl Message: open_bd_design: Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2130.797 ; gain = 0.000 
+// 'bJ' command handler elapsed time: 17 seconds
+dismissDialog("Open Block Design"); // bz (cs)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,930 MB. GUI used memory: 178 MB. Current time: 12/21/22, 1:01:17 PM CET
+selectView(PAResourceOtoP.PAViews_SYSTEM, "System", 779, 135, 1224, 538, false, false, false, true, false); // hq (m, cs) - Popup Trigger
+selectMenu(PAResourceQtoS.SystemBuilderView_PINNING, "Pinning"); // af (ao, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_IP_SETTINGS, "IP Settings..."); // ai (ao, cs)
+// Run Command: PAResourceCommand.PACommandNames_IP_SETTINGS
+// d (cs): Settings: addNotify
+// Tcl Message: update_compile_order -fileset sources_1 
+expandTree(PAResourceQtoS.SettingsDialog_PROJECT_TREE, "[projectRoot, IP]", 6); // B (E, d)
+selectTree(PAResourceQtoS.SettingsDialog_PROJECT_TREE, "[projectRoot, IP, Repository]", 7, false); // B (E, d)
+selectButton(PAResourceQtoS.SettingsProjectIPRepositoryPage_REFRESH_ALL, "Refresh All"); // a (E, d)
+// TclEventType: CREATE_IP_CATALOG
+// Tcl Message: update_ip_catalog -rebuild 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories 
+// bz (cs):  Refresh All IP Repositories : addNotify
+// TclEventType: IP_LOCK_CHANGE
+// TclEventType: RSB_BITABEN_IPREPODATA_REFRESH
+// TclEventType: BDCELL_LOCK_CHANGE
+// TclEventType: CREATE_IP_CATALOG
+// Tcl Message: INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'. 
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a (d)
+dismissDialog("Refresh All IP Repositories"); // bz (cs)
+dismissDialog("Settings"); // d (cs)
+// [Engine Memory]: 2,117 MB (+105109kb) [00:08:28]
+selectView(PAResourceOtoP.PAViews_SYSTEM, "System", 716, 93, 1224, 538, false, false, false, true, false); // hq (m, cs) - Popup Trigger
+// HMemoryUtils.trashcanNow. Engine heap size: 2,119 MB. GUI used memory: 208 MB. Current time: 12/21/22, 1:01:32 PM CET
+selectMenuItem(PAResourceQtoS.SystemBuilderMenu_ADD_IP, "Add IP..."); // ai (ao, cs)
+setText("PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE_SEARCH_FIELD", "mon"); // OverlayTextField (az, ResizableWindow)
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2, "interface_mon_v1_0", 0, false); // L (J, ResizableWindow)
+expandTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2); // L (J, ResizableWindow)
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "interface_mon_v1_0", 2, "interface_mon_v1_0", 0, false, false, false, false, false, true); // L (J, ResizableWindow) - Double Click
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: RSB_ADD_OBJECT
+// Tcl Message: startgroup 
+// Tcl Message: create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0 
+// Tcl Message: endgroup 
+// TclEventType: RSB_REMOVE_ADDRNETWORK
+// TclEventType: RSB_INSERT_ADDRNETWORK
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_intf_net [get_bd_intf_pins uz_user/interface_mon_0/uz_inverter_adapter] [get_bd_intf_pins uz_user/uz_inverter_adapter_0/uz_inverter_adapter] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon] [get_bd_pins uz_user/ila_FAULT_diff/probe0] 
+// Run Command: RDIResourceCommand.RDICommands_DELETE
+// TclEventType: RSB_REMOVE_OBJECT
+// Tcl Message: delete_bd_objs [get_bd_nets uz_user/interface_mon_0_H3_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe0] [get_bd_pins uz_user/interface_mon_0/L3_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe1] [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe2] [get_bd_pins uz_user/interface_mon_0/L2_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe3] [get_bd_pins uz_user/interface_mon_0/H2_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe4] [get_bd_pins uz_user/interface_mon_0/L1_FAULT_mon] 
+// TclEventType: RSB_CONNECTION_CHANGE
+// Tcl Message: connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe5] [get_bd_pins uz_user/interface_mon_0/H1_FAULT_mon] 
+// Elapsed time: 74 seconds
+selectButton(PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN, "save_rsb_design"); // E (g, cs)
+// Run Command: PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN
+// TclEventType: RSB_SAVE_DIAGRAM
+// bz (cs):  Save Design : addNotify
+// Tcl Message: save_bd_design 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_SAVE_DIAGRAM
+// Tcl Message: Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\vivado\project\zusys\zusys.bd>  Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ec7575b2.ui>  Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ecf4f3b3.ui>  
+dismissDialog("Save Design"); // bz (cs)
+selectMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+selectMenuItem(PAResourceCommand.PACommandNames_VALIDATE_RSB_DESIGN, "Validate Design"); // ai (cs)
+dismissMenu(PAResourceItoN.MainMenuMgr_TOOLS, "Tools"); // aa (q, cs)
+// Run Command: PAResourceCommand.PACommandNames_VALIDATE_RSB_DESIGN
+// Tcl Command: 'validate_bd_design'
+// TclEventType: MSGMGR_REFRESH_MSG
+// TclEventType: RSB_PARAM_PROP
+// TclEventType: RSB_SCRIPT_TASK
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: validate_bd_design 
+// TclEventType: FILE_SET_CHANGE
+// bz (cs):  Validate Design : addNotify
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_CLOSE_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// Tcl Message: INFO: [Ipptcl 7-1463] No Compatible Board Interface found. Board Tab not created in customize GUI 
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// Tcl Message: xit::source_ipfile: Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 2333.988 ; gain = 0.000 
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: xit::source_ipfile: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2333.988 ; gain = 0.000 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_CLOSE_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_CLOSE_DIAGRAM
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: REPORT_IP_STATUS_STALE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,172 MB. GUI used memory: 190 MB. Current time: 12/21/22, 1:05:27 PM CET
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_SCRIPT_TASK
+// TclEventType: RSB_PARAM_PROP
+// Tcl Message: INFO: [xilinx.com:ip:clk_wiz:6.0-1] /uz_system/uz_clocks/clk_wiz_0 clk_wiz propagate 
+// Tcl Message: validate_bd_design: Time (s): cpu = 00:01:56 ; elapsed = 00:03:18 . Memory (MB): peak = 2349.344 ; gain = 15.355 
+// Elapsed time: 198 seconds
+dismissDialog("Validate Design"); // bz (cs)
+selectButton("OptionPane.button", "OK"); // JButton (v, B)
+selectButton(PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN, "save_rsb_design"); // E (g, cs)
+// Run Command: PAResourceCommand.PACommandNames_SAVE_RSB_DESIGN
+// TclEventType: RSB_SAVE_DIAGRAM
+// bz (cs):  Save Design : addNotify
+// Tcl Message: save_bd_design 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RSB_SAVE_DIAGRAM
+// Tcl Message: Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\vivado\project\zusys\zusys.bd>  Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ec7575b2.ui>  Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ecf4f3b3.ui>  
+// Tcl Message: save_bd_design: Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2349.344 ; gain = 0.000 
+dismissDialog("Save Design"); // bz (cs)
+// Run Command: PAResourceCommand.PACommandNames_CUSTOMIZE_RSB_BLOC
+// r (cs): Re-customize IP: addNotify
+selectButton(RDIResource.BaseDialog_CANCEL, "Cancel"); // a (r)
+dismissDialog("Re-customize IP"); // r (cs)
+// Elapsed time: 119 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 20, false); // u (J, cs)
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// A (cs): Synthesis is Out-of-date: addNotify
+selectButton(RDIResource.BaseDialog_YES, "Yes"); // a (A)
+// bz (cs):  Resetting Runs : addNotify
+// TclEventType: RUN_MODIFY
+dismissDialog("Synthesis is Out-of-date"); // A (cs)
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run synth_1 
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run zusys_smartconnect_1_1_synth_1 
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run zusys_smartconnect_0_0_synth_1 
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run zusys_smartconnect_1_0_synth_1 
+// f (cs): Launch Runs: addNotify

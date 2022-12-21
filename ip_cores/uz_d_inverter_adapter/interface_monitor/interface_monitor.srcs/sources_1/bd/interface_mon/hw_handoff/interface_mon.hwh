@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Dec 21 12:32:41 2022" VIVADOVERSION="2020.1.1">
+
+  <SYSTEMINFO ARCH="zynquplus" DEVICE="xczu9eg" NAME="interface_mon" PACKAGE="ffvc900" SPEEDGRADE="-1"/>
+
+  <EXTERNALPORTS>
+    <PORT DIR="O" NAME="H1_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_H1_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H1_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="L1_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_L1_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L1_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="H2_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_H2_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H2_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="L2_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_L2_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L2_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="H3_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_H3_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H3_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" NAME="L3_FAULT_mon" SIGIS="undef" SIGNAME="External_Ports_L3_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L3_FAULT"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="H1_FAULT" SIGIS="undef" SIGNAME="External_Ports_H1_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H1_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="L1_FAULT" SIGIS="undef" SIGNAME="External_Ports_L1_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L1_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="H2_FAULT" SIGIS="undef" SIGNAME="External_Ports_H2_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H2_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="L2_FAULT" SIGIS="undef" SIGNAME="External_Ports_L2_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L2_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="H3_FAULT" SIGIS="undef" SIGNAME="External_Ports_H3_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="H3_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="I" NAME="L3_FAULT" SIGIS="undef" SIGNAME="External_Ports_L3_FAULT">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="External_Ports" PORT="L3_FAULT_mon"/>
+      </CONNECTIONS>
+    </PORT>
+  </EXTERNALPORTS>
+
+  <EXTERNALINTERFACES/>
+
+  <MODULES/>
+
+</EDKSYSTEM>

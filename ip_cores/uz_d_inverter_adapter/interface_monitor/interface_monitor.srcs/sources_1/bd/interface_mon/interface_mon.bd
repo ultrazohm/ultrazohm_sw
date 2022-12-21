@@ -1,0 +1,90 @@
+{
+  "design": {
+    "design_info": {
+      "boundary_crc": "0x289733ED289733ED",
+      "device": "xczu9eg-ffvc900-1-i",
+      "name": "interface_mon",
+      "rev_ctrl_bd_flag": "RevCtrlBdOff",
+      "synth_flow_mode": "Hierarchical",
+      "tool_version": "2020.1.1",
+      "validated": "true"
+    },
+    "design_tree": {},
+    "ports": {
+      "H1_FAULT_mon": {
+        "direction": "O"
+      },
+      "L1_FAULT_mon": {
+        "direction": "O"
+      },
+      "H2_FAULT_mon": {
+        "direction": "O"
+      },
+      "L2_FAULT_mon": {
+        "direction": "O"
+      },
+      "H3_FAULT_mon": {
+        "direction": "O"
+      },
+      "L3_FAULT_mon": {
+        "direction": "O"
+      },
+      "H1_FAULT": {
+        "direction": "I"
+      },
+      "L1_FAULT": {
+        "direction": "I"
+      },
+      "H2_FAULT": {
+        "direction": "I"
+      },
+      "L2_FAULT": {
+        "direction": "I"
+      },
+      "H3_FAULT": {
+        "direction": "I"
+      },
+      "L3_FAULT": {
+        "direction": "I"
+      }
+    },
+    "nets": {
+      "H1_FAULT_1": {
+        "ports": [
+          "H1_FAULT",
+          "H1_FAULT_mon"
+        ]
+      },
+      "L1_FAULT_1": {
+        "ports": [
+          "L1_FAULT",
+          "L1_FAULT_mon"
+        ]
+      },
+      "H2_FAULT_1": {
+        "ports": [
+          "H2_FAULT",
+          "H2_FAULT_mon"
+        ]
+      },
+      "L2_FAULT_1": {
+        "ports": [
+          "L2_FAULT",
+          "L2_FAULT_mon"
+        ]
+      },
+      "H3_FAULT_1": {
+        "ports": [
+          "H3_FAULT",
+          "H3_FAULT_mon"
+        ]
+      },
+      "L3_FAULT_1": {
+        "ports": [
+          "L3_FAULT",
+          "L3_FAULT_mon"
+        ]
+      }
+    }
+  }
+}

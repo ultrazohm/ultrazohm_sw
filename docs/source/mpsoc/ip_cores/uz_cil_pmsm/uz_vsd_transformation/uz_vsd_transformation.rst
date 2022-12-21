@@ -4,7 +4,7 @@
 Multi-phase VSD and Park transformation IP-Core
 ===============================================
 
-- IP-cores for multi-phase VSD and Park transformation (six-phase and nine-phase versions implemented individually)
+- IP-cores for multi-phase VSD and Park transformation (three-phase, six-phase and nine-phase versions implemented individually)
 - Applies multi-phase VSD transformation to input and Park transformation to only alpha and beta values
 - Performs respective inverse transformation
 - Input interface is PL-only
@@ -21,12 +21,33 @@ Multi-phase VSD and Park transformation IP-Core
 VSD and Park transformation
 ===========================
 
-The IP-Core applies the transformations to the inputs ``x_abc1_ll_pl``, ``x_abc2_ll_pl`` (and ``x_abc3_ll_pl`` for nine-phase IP-core).
+The IP-Core applies the transformations to the inputs ``x_abc1_ll_pl``, (``x_abc2_ll_pl`` for six-phase and nine-phase, ``x_abc3_ll_pl`` for nine-phase IP-core).
 The values must be supplied as line-to-line values because a transformation to star values is applied in the IP-Core before applying the VSD transformation.
 The line-to-line to star-value transformation is realized by applying the Clarke transformation to each three-phase subset, dividing the amplitudes by :math:`\sqrt{3}` and rotating the pointers by -30° before applying the inverse Clarke transformation.
 Although the naming "x" suggests, any values can be used as input, the intention is to use line-to-line voltages as input.
 After the transformation to the stationary reference frame by application of the VSD transformation, the Park transformation is applied to the alpha and beta values only, yielding the following output vector (see below).
 Note that the min and max values of the output vector (defined by the fixed-point datatype) are significantly smaller than the ones of the input values and must be taken into account when using the IP-core.
+
+Three-phase transformation
+--------------------------
+
+.. math::
+
+  \textrm{x_out_dq}=
+  \begin{bmatrix} x_{d} & x_{q} \end{bmatrix} ^T
+
+The IP-core uses the commonly used Clarke transformation to transform the phase variables to the stationary reference frame: 
+
+.. math::
+  
+  \begin{bmatrix} C \end{bmatrix}=
+    \frac{1}{3}
+    \begin{bmatrix}
+      1 & -\frac{1}{2} & -\frac{1}{2} \\
+      0 & \frac{\sqrt{3}}{2} & -\frac{\sqrt{3}}{2} \\
+      \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
+    \end{bmatrix}
+
 
 Six-phase transformation
 ------------------------
@@ -35,7 +56,6 @@ Six-phase transformation
 
   \textrm{x_out_dq}=
   \begin{bmatrix} x_{d} & x_{q} & x_{x} & x_{y} & x_{z1} & x_{z2} \end{bmatrix} ^T
-
 
 The IP-core uses the following VSD matrix according to [[#Eldeeb_Diss]_] to transform the phase variables to the stationary reference frame: 
 
@@ -83,11 +103,24 @@ Inverse VSD and Park transformation
 
 The input ``x_in_dq`` is used for the inverse transformation.
 The d and q values are transformed to alpha and beta with the inverse Park transformation.
-Afterward, the inverse VSD transformation is applied which yields the phase variables.
+Afterwards, the inverse VSD transformation is applied which yields the phase variables.
 The phase variables are output as star values and not line-to-line values!
 
 Driver reference
 ================
+
+Three-phase transformation
+--------------------------
+
+.. doxygentypedef:: uz_pmsm3ph_transformation_t
+
+.. doxygenstruct:: uz_pmsm3ph_config_t
+
+.. doxygenfunction:: uz_pmsm3ph_transformation_init
+
+.. doxygenfunction:: uz_pmsm3ph_transformation_get_currents
+
+.. doxygenfunction:: uz_pmsm3ph_transformation_get_theta_el
 
 Six-phase transformation
 ------------------------

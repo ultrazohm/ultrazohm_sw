@@ -34,8 +34,6 @@
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 
-#include "../Codegen/uz_singleindex_faultdetection.h"
-
 #include "../uz/uz_FOC/uz_FOC.h"
 #include "../uz/uz_filter/uz_filter.h"
 
@@ -57,8 +55,8 @@ extern DS_Data Global_Data;
 
 // general variables/ Setting:
 
-int N1N2 = 1;	// Configuration of neutral points
-int ML = 1;		// Optimization during Open-Phase-Fault (1=ML, 0=MT)
+int N1N2 = 1;	// Configuration of neutral points (1 = 1N, 1 neutral point; 2 = 2N, 2 neutral points)
+int ML = 1;		// Optimization during Open-Phase-Fault (1=ML, Minimum Loss; 0=MT, Maximum Torque)
 
 // omega and theta
 float theta_ = 0;
@@ -135,7 +133,7 @@ float filteredFDIndices[6] = {0};
 int opf_phases[6] = {0};
 int num_OPF = 0;
 
-bool no_reset = false;
+bool no_reset = false;	// enable/disable reset of detected faults
 int OPF_a1;
 int OPF_b1;
 int OPF_c1;
@@ -334,7 +332,7 @@ void ISR_Control(void *data)
     }
 
 
-    //Splitt the movAverageFiltering into two sets, each executed every other cycle (10kHz reduced to 5kHz) to save computations
+    //Split the movAverageFiltering into two sets, each executed every other cycle (10kHz reduced to 5kHz) to save computations (reduces runtime of ISR)
 
     mov_average_filter_length = mov_average_filter_length/2;
 
@@ -418,7 +416,7 @@ if(toggle == 0){
 	// get number of faulted phases
 	// write phase-number of faulted phases into variable display_OPF in increasing order (a1-b1-c1-a2-b2-c2)
 
-	//OPF display as integer. :
+	//OPF display as integer:
 	display_OPF = 0;
 	display_OPF += 100000*OPF_a1;
 	display_OPF += 10000*OPF_b1;
@@ -647,7 +645,7 @@ else{
     	ref_xy_voltage[1] = 0;
 
 
-		//transform into antisynchronous frame:
+		//transform into antisynchronous x'y' frame:
 		uz_inv_park_transform(m_xy_n_currents, m_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 		uz_inv_park_transform(ref_xy_n_currents, ref_xy_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
 
@@ -750,7 +748,7 @@ else{
 
 
 
-    	//----------------combine reference values form alpha-beta, x-y and z1-z2 control----------------//
+    //----------------combine reference values form alpha-beta, x-y and z1-z2 control----------------//
 
     	ref_6ph_alphabeta_voltage.alpha = ref_alphabeta_voltage.alpha;
     	ref_6ph_alphabeta_voltage.beta = ref_alphabeta_voltage.beta;
@@ -759,6 +757,7 @@ else{
     	ref_6ph_alphabeta_voltage.z1 = ref_z1z2_voltage[0];
     	ref_6ph_alphabeta_voltage.z2 = ref_z1z2_voltage[1];
 
+    // inv VSD-Transformation
     	ref_6ph_abc_voltage = uz_transformation_asym30deg_6ph_alphabeta_to_abc(ref_6ph_alphabeta_voltage);
 
     //calculate duty-cycles:

@@ -52,7 +52,7 @@ DS_Data Global_Data = {
 
     		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
-	.av.U_ZK = 48.0f,
+	.av.U_ZK = 36.0f,
 	.av.theta_offset =  0.79,
 	.av.I_d_ref = 0,
 	.av.I_q_ref = 0,
@@ -155,16 +155,16 @@ const struct uz_PMSM_t config_PMSM = {
 };
 
 const struct uz_PI_Controller_config config_id = {
-	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f,//1.1f,										//nach Betragsoptimum:  Kp = Tn/(2*Ks*T_sw) mit Tn = L/R, T_sw = 1/f_sw (10kHz), Ks = 1/R
-	.Ki = 880, //770, //1/0.0008f *0.1,															 // Ki = 1/Tn *Kp ( * Kp da wir eine Parallelform haben)
+	.Kp = 0.37,
+	.Ki = 880,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 20.0f,
 	.lower_limit = -20.0f
 };
 
 const struct uz_PI_Controller_config config_iq = {
-	.Kp = 0.37, //0.37, //0.5, //0.6, //0.75, //1.125f, //0.2f, //1.1f,
-	.Ki = 880, //770, //1/0.0008f *0.1,
+	.Kp = 0.37,
+	.Ki = 880,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 20.0f,
 	.lower_limit = -20.0f
@@ -196,30 +196,29 @@ void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
 }
 
 // PI-Controller for xy- ans z1z2-System: ----------------------
-
 struct uz_PI_Controller* PI_x_n;
 struct uz_PI_Controller* PI_y_n;
 struct uz_PI_Controller* PI_z1;
 struct uz_PI_Controller* PI_z2;
 
 const struct uz_PI_Controller_config config_ix = {
-	.Kp = 0.18f , //* 4.0f, //1.1f,
-	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.Kp = 0.14f ,
+	.Ki = 880,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 15.0f,
 	.lower_limit = -15.0f
 };
 
 const struct uz_PI_Controller_config config_iy = {
-	.Kp = 0.14, //0.18f, //* 4.0f,//1.1f,
-	.Ki = 880, //880, //1/0.0008f *0.005f,
+	.Kp = 0.14,
+	.Ki = 880,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 15.0f,
 	.lower_limit = -15.0f
 };
 
 const struct uz_PI_Controller_config config_iz1z2 = {
-	.Kp = 0.14, //0.18f , //* 4.0f,//1.1f,
+	.Kp = 0.22,
 	.Ki = 0,
 	.samplingTime_sec = 0.0001f,
 	.upper_limit = 15.0f,

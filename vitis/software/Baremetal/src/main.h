@@ -54,9 +54,6 @@
 
 #include "include/pwm_init.h"
 
-#include "Codegen/uz_singleindex_faultdetection.h"
-#include "Codegen/uz_vsd_opf_fd_v7.h"
-
 #include "uz/uz_filter/uz_filter.h"
 
 #include "uz/uz_FOC/uz_FOC.h"

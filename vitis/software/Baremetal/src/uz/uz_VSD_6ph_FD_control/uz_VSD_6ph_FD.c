@@ -40,11 +40,11 @@ float uz_thresholdEvaluation(float input, float threshold);
 
 uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 
-	uz_6phFD_indices output = {0};
+	uz_6phFD_indices output = {0.0f};
 	float denum = 0.0f;
 
 	//fault index for phase 1
-	if(input.alpha + input.z1 == 0){
+	if(input.alpha + input.z1 == 0.0f){
 		output.R1 = 0.0f;
 	}else{
 		output.R1 = -input.x/(input.alpha + input.z1);
@@ -53,7 +53,7 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 
 	//fault index for phase 2
 	denum = -input.alpha + sqrtf(3.0f)* input.beta;
-	if(denum == 0){
+	if(denum == 0.0f){
 		output.R2 = 0.0f;
 	}else{
 		output.R2 = (input.x + sqrtf(3.0f)*input.y - 2.0f*input.z1)/(denum);
@@ -61,7 +61,7 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 
 	//fault index for phase 3
 	denum = -input.alpha - sqrtf(3.0f)*input.beta;
-	if(denum == 0){
+	if(denum == 0.0f){
 		output.R3 = 0.0f;
 	}else{
 		output.R3 = (input.x - sqrtf(3.0f)*input.y -2.0f*input.z1)/(denum);
@@ -76,11 +76,11 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 	}
 
 	//fault index for phase 5
-	denum = input.alpha - 1/sqrtf(3.0f)*input.beta;
-	if(denum == 0){
+	denum = input.alpha - 1.0f/sqrtf(3.0f)*input.beta;
+	if(denum == 0.0f){
 		output.R5 = 0.0f;
 	}else{
-		output.R5 = (input.x  + 1/sqrtf(3.0f)*input.y + 2.0f/sqrtf(3.0f)*input.z2)/(denum);
+		output.R5 = (input.x  + 1.0f/sqrtf(3.0f)*input.y + 2.0f/sqrtf(3.0f)*input.z2)/(denum);
 	}
 
 	//fault index for phase 6

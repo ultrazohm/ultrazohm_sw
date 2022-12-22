@@ -15,8 +15,6 @@ annotate_port('gm_parallel_8_delay_compensation/Delay_compensation/Data Type Con
 annotate_port('parallel_8_delay_compensation/Delay_compensation/Data Type Conversion2', 1, 1, '');
 annotate_port('gm_parallel_8_delay_compensation/Delay_compensation/Data Type Conversion3', 1, 1, '');
 annotate_port('parallel_8_delay_compensation/Delay_compensation/Data Type Conversion3', 1, 1, '');
-annotate_port('gm_parallel_8_delay_compensation/Delay_compensation/Data Type Conversion4', 1, 1, '');
-annotate_port('parallel_8_delay_compensation/Delay_compensation/Data Type Conversion4', 1, 1, '');
 annotate_port('gm_parallel_8_delay_compensation/Delay_compensation/Data Type Conversion5', 1, 1, '');
 annotate_port('parallel_8_delay_compensation/Delay_compensation/Data Type Conversion5', 1, 1, '');
 annotate_port('gm_parallel_8_delay_compensation/Delay_compensation/Data Type Conversion6', 1, 1, '');

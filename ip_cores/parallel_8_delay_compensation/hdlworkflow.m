@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 16:31:48 on 07/12/2022
+% Generated with MATLAB 9.12 (R2022a) at 15:49:25 on 22/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_delay_compensation\hdlworkflow.m'
 %     Overwrite : true
@@ -99,8 +99,8 @@ hdlset_param('parallel_8_delay_compensation/Delay_compensation/pole_pairs_AXI', 
 hdlset_param('parallel_8_delay_compensation/Delay_compensation/pole_pairs_AXI', 'IOInterfaceMapping', 'x"114"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/omega_m_measured_AXI', 'IOInterfaceMapping', 'x"134"');
 
 % Set Inport HDL parameters
 hdlset_param('parallel_8_delay_compensation/Delay_compensation/current_valid_in', 'IOInterface', 'External Port');

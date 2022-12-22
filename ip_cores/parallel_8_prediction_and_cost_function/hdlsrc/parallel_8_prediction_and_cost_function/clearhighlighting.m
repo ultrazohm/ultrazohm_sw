@@ -8,8 +8,6 @@ annotate_port('gm_parallel_8_prediction_and_cost_function/Prediction_and_cost_fu
 annotate_port('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion18', 1, 1, '');
 annotate_port('gm_parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion39', 1, 1, '');
 annotate_port('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion39', 1, 1, '');
-annotate_port('gm_parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion4', 1, 1, '');
-annotate_port('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion4', 1, 1, '');
 annotate_port('gm_parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion40', 1, 1, '');
 annotate_port('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion40', 1, 1, '');
 annotate_port('gm_parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Data Type Conversion41', 1, 1, '');

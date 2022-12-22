@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 12:11:26 on 08/12/2022
+% Generated with MATLAB 9.12 (R2022a) at 15:44:33 on 22/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_prediction_and_cost_function\hdlworkflow.m'
 %     Overwrite : true
@@ -87,8 +87,8 @@ hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_functi
 hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/Rs_AXI', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/omega_m_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/omega_m_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/omega_m_measured_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/omega_m_measured_AXI', 'IOInterfaceMapping', 'x"134"');
 
 % Set Inport HDL parameters
 hdlset_param('parallel_8_prediction_and_cost_function/Prediction_and_cost_function1/pole_pairs_AXI', 'IOInterface', 'AXI4-Lite');

@@ -277,7 +277,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //Defines for the lib
 #define TEMP_CONVERSION_FACTOR      0.000976563     // 1/1024
-#define CHANNEL_COUNT     			20
+#define CHANNEL_COUNT     			    20
 #define GROUP_COUNT                 3
 #define CHANNEL_TOTAL               CHANNEL_COUNT * GROUP_COUNT
 #define IP_CORE_READBACK_VALUE      0xAFFEAFFE
@@ -293,10 +293,10 @@ typedef struct uz_temperaturecard_t uz_temperaturecard_t;
  *
  */
 typedef struct {
-	float       temperature[CHANNEL_COUNT];
-	uint32_t    temperature_raw[CHANNEL_COUNT];
-	uint32_t    Configdata[CHANNEL_COUNT];
-	uint8_t		Channels_Valid[CHANNEL_COUNT];
+	float       temperature[CHANNEL_COUNT];       /**< calculated value for one Temperature Channel */
+	uint32_t    temperature_raw[CHANNEL_COUNT];   /**< raw value for one Temperature Channe */
+	uint32_t    Configdata[CHANNEL_COUNT];        /**< used Config for one Temperature Channe */
+	uint8_t		  Channels_Valid[CHANNEL_COUNT];    /**< Informations about the measurement */
 }uz_temperaturecard_OneGroup;
 
 /**
@@ -304,12 +304,12 @@ typedef struct {
  *
  */
 struct uz_temperaturecard_config_t{
-    uint32_t    base_address;
-    uint32_t    ip_clk_frequency_Hz;
-    uint32_t 	Sample_Period;
-    uint32_t    Configdata_A[CHANNEL_COUNT];
-    uint32_t    Configdata_B[CHANNEL_COUNT];
-    uint32_t    Configdata_C[CHANNEL_COUNT];
+    uint32_t    base_address;                   /**< Base address of the IP-Core instance to which the driver is coupled */
+    uint32_t    ip_clk_frequency_Hz;            /**< Clock frequency of IP-Core */
+    uint32_t 	  Sample_Period;                  /**< Period of the freerunning counter to trigger a temperature measurement */
+    uint32_t    Configdata_A[CHANNEL_COUNT];    /**< Configuration-struct for the first 20-Channels  / Channelgroup A */
+    uint32_t    Configdata_B[CHANNEL_COUNT];    /**< Configuration-struct for the second 20-Channels / Channelgroup B */
+    uint32_t    Configdata_C[CHANNEL_COUNT];    /**< Configuration-struct for the last 20-Channels   / Channelgroup C */
 };
 
 /**
@@ -321,10 +321,24 @@ struct uz_temperaturecard_config_t{
 uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t config);
 
 //Functions
+
+/**
+ * @brief Resets the whole TemperatureCard-IP. This should be used after the init of the IP-Core to update the LTC2983
+ *
+ * @param self Pointer to driver instance
+ */
 void        uz_TempCard_IF_Reset(uz_temperaturecard_t* self);                                               // Resets the Interface-IP to write new Channel configs
+
+
 void        uz_TempCard_IF_Start(uz_temperaturecard_t* self);                                               // Starts the Interface-IP
+
+
 void        uz_TempCard_IF_Stop(uz_temperaturecard_t* self);                                                // Stops the Interface-IP
+
+
 void        uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);                                    // Gets the Temperature-Data from all LTC2983, converts the results and stores the tempvalue in the struct
+
+
 void        uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);                                 // Gets the Temperature-Data from one Channel, converts the results and stores the tempvalue in the struct. Call multiple times to step through the Data.
 
 

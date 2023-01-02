@@ -1,0 +1,19 @@
+-IC:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph
+-IC:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests2/ip_cores/uz_mpc_6ph/slprj/raccel/external_state_machine
+-IC:/Program\ Files/MATLAB/R2021a/rtw/c/src/rapid
+-IC:/Program\ Files/MATLAB/R2021a/rtw/c/raccel
+-IC:/Program\ Files/MATLAB/R2021a/rtw/c/src/ext_mode/common
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/coder/rtiostream/src
+-IC:/Program\ Files/MATLAB/R2021a/extern/include
+-IC:/Program\ Files/MATLAB/R2021a/simulink/include
+-IC:/Program\ Files/MATLAB/R2021a/rtw/c/src
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/coder/rtiostream/src/rtiostreamtcpip
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/coder/rtiostream/src/utils
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/simscape/engine/sli/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/simscape/engine/core/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/simscape/compiler/core/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/network_engine/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/common/math/core/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/common/lang/core/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/common/external/library/c/win64
+-IC:/Program\ Files/MATLAB/R2021a/toolbox/physmod/common/foundation/core/c/win64

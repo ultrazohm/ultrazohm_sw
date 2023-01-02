@@ -1,0 +1,3 @@
+vlib work
+vcom  uz_typeconv_multi_src_Detect_Rise_Positive.vhd
+vcom  uz_typeconv_multi_src_uz_typeconv_multi.vhd

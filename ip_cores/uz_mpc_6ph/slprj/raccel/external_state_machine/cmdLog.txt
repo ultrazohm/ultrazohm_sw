@@ -1,0 +1,5 @@
+The argument '-tgtconn_server_info_file' passed to rtiostream_tcpip is not valid and will be ignored.
+The argument 'C:\Users\micha\AppData\Local\Temp\tgtconnpfb2689f2_0044_4945_aecd_38f976823b60.info' passed to rtiostream_tcpip is not valid and will be ignored.
+The argument '-tgtconn_port' passed to rtiostream_tcpip is not valid and will be ignored.
+The argument '0' passed to rtiostream_tcpip is not valid and will be ignored.
+Warning: First solve for initial conditions failed to converge. Trying again with all high priorities relaxed to low.

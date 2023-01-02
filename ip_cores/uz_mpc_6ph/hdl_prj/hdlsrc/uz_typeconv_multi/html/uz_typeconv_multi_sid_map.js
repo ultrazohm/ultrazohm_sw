@@ -1,0 +1,30 @@
+function RTW_SidParentMap() {
+    this.sidParentMap = new Array();
+    this.sidParentMap["uz_typeconv_multi:8"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:51"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:41"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:45"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:46"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:47"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:48"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:49"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:52"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:53"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:43"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:55"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:44"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:54"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:10"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:42"] = "uz_typeconv_multi:7";
+    this.sidParentMap["uz_typeconv_multi:43:1"] = "uz_typeconv_multi:43";
+    this.sidParentMap["uz_typeconv_multi:43:2"] = "uz_typeconv_multi:43";
+    this.sidParentMap["uz_typeconv_multi:43:3"] = "uz_typeconv_multi:43";
+    this.sidParentMap["uz_typeconv_multi:43:4"] = "uz_typeconv_multi:43";
+    this.sidParentMap["uz_typeconv_multi:43:5"] = "uz_typeconv_multi:43";
+    this.sidParentMap["uz_typeconv_multi:43:4:1"] = "uz_typeconv_multi:43:4";
+    this.sidParentMap["uz_typeconv_multi:43:4:2"] = "uz_typeconv_multi:43:4";
+    this.sidParentMap["uz_typeconv_multi:43:4:3"] = "uz_typeconv_multi:43:4";
+    this.sidParentMap["uz_typeconv_multi:43:4:5"] = "uz_typeconv_multi:43:4";
+    this.getParentSid = function(sid) { return this.sidParentMap[sid];}
+}
+    RTW_SidParentMap.instance = new RTW_SidParentMap();

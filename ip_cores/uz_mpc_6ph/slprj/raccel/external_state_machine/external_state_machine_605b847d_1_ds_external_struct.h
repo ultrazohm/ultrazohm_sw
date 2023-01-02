@@ -1,0 +1,3 @@
+#ifndef struct__ExternalFunctionStructTag
+#define struct__ExternalFunctionStructTag
+#endif

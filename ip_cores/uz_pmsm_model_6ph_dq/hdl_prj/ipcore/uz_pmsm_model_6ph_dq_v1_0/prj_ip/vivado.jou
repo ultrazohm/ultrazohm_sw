@@ -2,11 +2,11 @@
 # Vivado v2020.1 (64-bit)
 # SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
 # IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
-# Start of session at: Fri Sep 16 14:12:38 2022
-# Process ID: 10832
-# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip
+# Start of session at: Wed Dec 21 11:20:27 2022
+# Process ID: 3560
+# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_pr/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
-# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip/vivado.log
-# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip\vivado.jou
+# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_pr/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip/vivado.log
+# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_pr/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/prj_ip\vivado.jou
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace

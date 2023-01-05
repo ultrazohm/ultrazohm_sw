@@ -1,0 +1,7 @@
+f_sw_avg = 11.4 kHz
+v_dc = 560 V
+lambda_d = 0.5
+lambda_q = 1
+lambda_x = 1
+lambda_y = 1
+lambda_u = 0

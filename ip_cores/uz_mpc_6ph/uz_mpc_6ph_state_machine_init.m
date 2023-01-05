@@ -17,14 +17,15 @@ A = 0.1;
 % machine parameters
 Rs = 0.19;              % Phase resistance in Ohm
 psi_pm = 0.19;          % PM flux linkage in Vs
-Ld = 20.0e-3;            % d-inductance in H
-Lq = 60.4e-3;            % q-inductance in H
-Lx = 300.0e-3;            % x-inductance in H
-Ly = 300.0e-3;            % y-inductance in H
+Ld = 1.8e-3;            % d-inductance in H
+Lq = 3.8e-3;            % q-inductance in H
+Lx = 2.4e-3;            % x-inductance in H
+Ly = 2.5e-3;            % y-inductance in H
 p = 5;                  % pole pairs
 
 VR = 400;               % Rated eff. line-line voltage in V
-IR = 7.071;             % Rated eff. phase current in A
+% IR = 7.071;             % Rated eff. phase current in A
+IR = 14.142;
 nR = 3000;              % Rated mechanical speed in 1/min
 
 % p.u. base units acc. to T.Geyer, Model predictive control of high power
@@ -69,17 +70,17 @@ fixdt_type_delta_u_costs = fixdt(0,27,24);
 % reference values for simulation
 fixdt_type_vsd = fixdt(1,18,15);
 v_dc = 565.0;
-id_ref = -0.0;
-iq_ref = 5.0;
+id_ref = 0.0;
+iq_ref = 10.0;
 ix_ref = 0.0;
 iy_ref = 0.0;
-n_rpm = 1000.0;
+n_rpm = 200.0;
 omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;
 lambda_q = 1.0;
-lambda_x = 0.1;
-lambda_y = 0.1;
+lambda_x = 1.0;
+lambda_y = 1.0;
 lambda_u = 0.0;
 
 % parameters for sine waves

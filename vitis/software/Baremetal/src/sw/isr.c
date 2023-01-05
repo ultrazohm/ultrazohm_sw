@@ -68,11 +68,11 @@ float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
 
 // 2x3ph PMSM parameters
 const uz_PMSM_6ph_t dengine={
-		.R_ph_Ohm=0.19f,
-		.Ld_Henry=0.002f,
-		.Lq_Henry=0.0064f,
-		.Lx_Henry=0.003f,
-		.Ly_Henry=0.003f,
+		.R_ph_Ohm=0.2615f,
+		.Ld_Henry=0.0018f,
+		.Lq_Henry=0.0038f,
+		.Lx_Henry=0.0024f,
+		.Ly_Henry=0.0025f,
 		.polePairs=5.0f,
 		.Psi_PM_Vs=0.19f
 };
@@ -80,8 +80,8 @@ const uz_PMSM_6ph_t dengine={
 // 2x3ph PMSM rated values
 const rated_val_t rated_val={
 		.VR=400.0f,
-//		.IR=7.071f,
-		.IR=14.142f,
+		.IR=7.071f,
+//		.IR=14.142f,
 		.nR=3000.0f
 };
 
@@ -113,14 +113,14 @@ uint32_t test_index = 42;
 float test_angle = 0.0;
 
 float id_ref = 0.0f;
-float iq_ref = 5.0f;
+float iq_ref = 0.0f;
 float ix_ref = 0.0f;
 float iy_ref = 0.0f;
 
 float lambda_d = 1.0f;
 float lambda_q = 1.0f;
-float lambda_x = 0.1f;
-float lambda_y = 0.1f;
+float lambda_x = 1.0f;
+float lambda_y = 1.0f;
 float lambda_u = 0.000f;
 
 uz_6ph_abc_t pmsm_ph_currents = {0};
@@ -139,7 +139,7 @@ struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_outputs = {
     .theta_el = 0.0f};
 float load_torque = 0.0f;
 float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
-float setp_rpm = 1000.0f;
+float setp_rpm = 0.0f;
 
 
 
@@ -219,6 +219,7 @@ void ISR_Control(void *data)
     Global_Data.av.ia2_cil = pmsm_ph_currents.a2;
     Global_Data.av.ib2_cil = pmsm_ph_currents.b2;
     Global_Data.av.ic2_cil = pmsm_ph_currents.c2;
+    Global_Data.av.theta_elec = uz_pmsm6ph_transformation_get_theta_el(transformation_6ph);
 
     // read VSD currents from ip-core
     Global_Data.av.alpha = uz_convert_sfixed_to_float(uz_axi_read_int32(XPAR_UZ_USER_VSD_6PH_IP_0_BASEADDR+0x100),11);

@@ -58,11 +58,11 @@ struct uz_pmsm_model6ph_dq_config_t pmsm_config={
               .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
               .ip_core_frequency_Hz=100000000,
               .simulate_mechanical_system = false,
-              .r_1 = 0.19f,
-			  .inductance.d = 0.002f,
-			  .inductance.q = 0.0064f,
-			  .inductance.x = 0.003f,
-			  .inductance.y = 0.003f,
+              .r_1 = 0.2615f,
+			  .inductance.d = 0.0018f,
+			  .inductance.q = 0.0038f,
+			  .inductance.x = 0.0024f,
+			  .inductance.y = 0.0025f,
 			  .inductance.z1 = 0.003f,
 			  .inductance.z2 = 0.003f,
               .psi_pm = 0.19f,
@@ -82,7 +82,7 @@ struct uz_inverter_3ph_config_t inverter_1_config = {
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
-		.udc=560.0f
+		.udc=56.0f
 };
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
@@ -90,7 +90,7 @@ struct uz_inverter_3ph_config_t inverter_2_config = {
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
-		.udc=560.0f
+		.udc=56.0f
 };
 
 struct uz_pmsm6ph_config_t pmsm_6ph_transformation_config={
@@ -212,6 +212,9 @@ int main(void)
 			inverter_2 = uz_inverter_3ph_init(inverter_2_config);
 			transformation_6ph=uz_pmsm6ph_transformation_init(pmsm_6ph_transformation_config);
 			//end
+
+			//debug for typeconv_multi ip-core (convert omega_mech from pmsm to el. p.u. for prediciton)
+			uz_axi_write_uint32(XPAR_UZ_USER_UZ_TYPECONV_MULTI_0_BASEADDR + 0x100, uz_convert_float_to_unsigned_fixed(0.000636619f, 18)); //0.000636619f=2pi*p/60 *3000
 
             initialization_chain = print_msg;
             break;

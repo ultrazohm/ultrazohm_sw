@@ -25,6 +25,12 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+extern float setp_rpm;
+extern float id_ref;
+extern float iq_ref;
+extern float ix_ref;
+extern float iy_ref;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -187,27 +193,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			setp_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x110, uz_convert_float_to_sfixed(value, 15));
 			break;
 
 		case (Set_Send_Field_3):
-
+			id_ref = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			iq_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+			ix_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
-
+			iy_ref = value;
 			break;
 
 		case (My_Button_1):

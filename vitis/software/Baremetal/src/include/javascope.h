@@ -180,12 +180,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	set_speed,
+	set_i_max_mpc,
+	set_id_ref,
+	set_iq_ref,
+	set_ix_ref,
+	set_iy_ref,
 	SND_FLD_ENDMARKER
 
 
@@ -194,7 +194,7 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
+	p.u.,
 	A,
 	A,
 	A,

@@ -17,7 +17,7 @@ pu_fixdt_type = fixdt(1,18,15); % output data type of pu values
     % voltage
     V_R = 400;      % terminal_eff
     % current
-    I_R = 10;      % A_eff
+    I_R = 10/sqrt(2);      % A_eff
     % pole pairs
     p = 5;    
     % angular frequency (electrical)
@@ -55,6 +55,6 @@ pu_fixdt_type = fixdt(1,18,15); % output data type of pu values
     
     
     
-ampl = 10*sqrt(2); % A
+ampl = 28*sqrt(2); % A
 freq_Hz = 300;      % Hz
 v_dc = 565;         % volt

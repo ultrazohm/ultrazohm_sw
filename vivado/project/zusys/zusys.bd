@@ -118,7 +118,6 @@
         "xlconstant_1": "",
         "xlconstant_2": "",
         "xlconstant_3": "",
-        "uz_sixphase_VSD_tran_0": "",
         "uz_inverter_3ph_0": "",
         "uz_inverter_3ph_1": "",
         "SR_Flip_Flop_0": "",
@@ -144,7 +143,9 @@
         "uz_6ph_cost_ip_0": "",
         "uz_park_transform_ip_0": "",
         "uz_pmsm_model_6ph_dq_0": "",
-        "uz_typeconv_multi_0": ""
+        "uz_typeconv_multi_0": "",
+        "uz_sixphase_VSD_tran_0": "",
+        "two_level_sixphase_f_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -5154,7 +5155,7 @@
             "xci_name": "zusys_smartconnect_1_1",
             "parameters": {
               "NUM_MI": {
-                "value": "15"
+                "value": "16"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5179,7 +5180,8 @@
                   "M11_AXI",
                   "M12_AXI",
                   "M13_AXI",
-                  "M14_AXI"
+                  "M14_AXI",
+                  "M15_AXI"
                 ],
                 "parameters": {
                   "NUM_READ_OUTSTANDING": {
@@ -5549,6 +5551,30 @@
                     "value": "0"
                   }
                 }
+              },
+              "M15_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             },
             "addressing": {
@@ -5570,7 +5596,8 @@
                     "M11_AXI",
                     "M12_AXI",
                     "M13_AXI",
-                    "M14_AXI"
+                    "M14_AXI",
+                    "M15_AXI"
                   ]
                 }
               }
@@ -5855,10 +5882,6 @@
                 "value": "18"
               }
             }
-          },
-          "uz_sixphase_VSD_tran_0": {
-            "vlnv": "xilinx.com:ip:uz_sixphase_VSD_transformation:1.0",
-            "xci_name": "zusys_uz_sixphase_VSD_tran_0_0"
           },
           "uz_inverter_3ph_0": {
             "vlnv": "xilinx.com:ip:uz_inverter_3ph:1.0",
@@ -6223,6 +6246,14 @@
           "uz_typeconv_multi_0": {
             "vlnv": "xilinx.com:ip:uz_typeconv_multi:1.0",
             "xci_name": "zusys_uz_typeconv_multi_0_0"
+          },
+          "uz_sixphase_VSD_tran_0": {
+            "vlnv": "xilinx.com:ip:uz_sixphase_VSD_transformation:1.0",
+            "xci_name": "zusys_uz_sixphase_VSD_tran_0_1"
+          },
+          "two_level_sixphase_f_0": {
+            "vlnv": "xilinx.com:ip:two_level_sixphase_f_sw_cnt_ip:1.0",
+            "xci_name": "zusys_two_level_sixphase_f_0_0"
           }
         },
         "interface_nets": {
@@ -6286,12 +6317,6 @@
               "user_smartconnect_1/M08_AXI"
             ]
           },
-          "user_smartconnect_1_M11_AXI": {
-            "interface_ports": [
-              "user_smartconnect_1/M11_AXI",
-              "uz_sixphase_VSD_tran_0/AXI4"
-            ]
-          },
           "user_smartconnect_1_M07_AXI": {
             "interface_ports": [
               "uz_6ph_predict_ip_0/AXI4_Lite",
@@ -6321,6 +6346,18 @@
               "uz_inverter_3ph_1/AXI4",
               "user_smartconnect_1/M10_AXI"
             ]
+          },
+          "user_smartconnect_1_M15_AXI": {
+            "interface_ports": [
+              "user_smartconnect_1/M15_AXI",
+              "two_level_sixphase_f_0/AXI4_Lite"
+            ]
+          },
+          "user_smartconnect_1_M11_AXI": {
+            "interface_ports": [
+              "uz_sixphase_VSD_tran_0/AXI4",
+              "user_smartconnect_1/M11_AXI"
+            ]
           }
         },
         "nets": {
@@ -6340,8 +6377,6 @@
               "uz_inverter_3ph_0/AXI4_ARESETN",
               "uz_inverter_3ph_1/IPCORE_RESETN",
               "uz_inverter_3ph_1/AXI4_ARESETN",
-              "uz_sixphase_VSD_tran_0/IPCORE_RESETN",
-              "uz_sixphase_VSD_tran_0/AXI4_ARESETN",
               "SR_Flip_Flop_0/IPCORE_RESETN",
               "SR_Flip_Flop_0/AXI4_Lite_ARESETN",
               "conversion/aresetn",
@@ -6358,7 +6393,11 @@
               "uz_pmsm_model_6ph_dq_0/AXI4_ARESETN",
               "uz_pmsm_model_6ph_dq_0/IPCORE_RESETN",
               "uz_typeconv_multi_0/IPCORE_RESETN",
-              "uz_typeconv_multi_0/AXI4_Lite_ARESETN"
+              "uz_typeconv_multi_0/AXI4_Lite_ARESETN",
+              "uz_sixphase_VSD_tran_0/IPCORE_RESETN",
+              "uz_sixphase_VSD_tran_0/AXI4_ARESETN",
+              "two_level_sixphase_f_0/IPCORE_RESETN",
+              "two_level_sixphase_f_0/AXI4_Lite_ARESETN"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -6378,8 +6417,6 @@
               "uz_inverter_3ph_1/IPCORE_CLK",
               "uz_inverter_3ph_0/AXI4_ACLK",
               "uz_inverter_3ph_1/AXI4_ACLK",
-              "uz_sixphase_VSD_tran_0/IPCORE_CLK",
-              "uz_sixphase_VSD_tran_0/AXI4_ACLK",
               "SR_Flip_Flop_0/IPCORE_CLK",
               "SR_Flip_Flop_0/AXI4_Lite_ACLK",
               "conversion/aclk",
@@ -6396,7 +6433,11 @@
               "uz_pmsm_model_6ph_dq_0/AXI4_ACLK",
               "uz_pmsm_model_6ph_dq_0/IPCORE_CLK",
               "uz_typeconv_multi_0/IPCORE_CLK",
-              "uz_typeconv_multi_0/AXI4_Lite_ACLK"
+              "uz_typeconv_multi_0/AXI4_Lite_ACLK",
+              "uz_sixphase_VSD_tran_0/IPCORE_CLK",
+              "uz_sixphase_VSD_tran_0/AXI4_ACLK",
+              "two_level_sixphase_f_0/IPCORE_CLK",
+              "two_level_sixphase_f_0/AXI4_Lite_ACLK"
             ]
           },
           "Net": {
@@ -6731,8 +6772,8 @@
           "uz_pmsm_model_6ph_dq_0_theta_el_out": {
             "ports": [
               "uz_pmsm_model_6ph_dq_0/theta_el_out",
-              "uz_sixphase_VSD_tran_0/theta_el",
-              "uz_park_transform_ip_0/angle_el"
+              "uz_park_transform_ip_0/angle_el",
+              "uz_sixphase_VSD_tran_0/theta_el"
             ]
           },
           "uz_sixphase_VSD_tran_0_x_abc_1_0": {
@@ -6747,30 +6788,6 @@
               "uz_sixphase_VSD_tran_0/x_abc_2_0",
               "uz_inverter_3ph_1/i_abc_pl_0",
               "conversion/Din1"
-            ]
-          },
-          "uz_inverter_3ph_0_u_abc_pl_0": {
-            "ports": [
-              "uz_inverter_3ph_0/u_abc_pl_0",
-              "uz_sixphase_VSD_tran_0/x_abc1_ll_pl_0"
-            ]
-          },
-          "uz_inverter_3ph_1_u_abc_pl_0": {
-            "ports": [
-              "uz_inverter_3ph_1/u_abc_pl_0",
-              "uz_sixphase_VSD_tran_0/x_abc2_ll_pl_0"
-            ]
-          },
-          "uz_sixphase_VSD_tran_0_refresh_values": {
-            "ports": [
-              "uz_sixphase_VSD_tran_0/refresh_values",
-              "SR_Flip_Flop_0/reset_1"
-            ]
-          },
-          "SR_Flip_Flop_0_ff_out": {
-            "ports": [
-              "SR_Flip_Flop_0/ff_out",
-              "uz_sixphase_VSD_tran_0/trigger_new_values"
             ]
           },
           "xlconcat_0_dout": {
@@ -6964,73 +6981,85 @@
           "uz_6ph_cost_ip_0_G0": {
             "ports": [
               "uz_6ph_cost_ip_0/G0",
-              "xlconcat_0/In0"
+              "xlconcat_0/In0",
+              "two_level_sixphase_f_0/ss_in_0"
             ]
           },
           "uz_6ph_cost_ip_0_G1": {
             "ports": [
               "uz_6ph_cost_ip_0/G1",
-              "xlconcat_0/In1"
+              "xlconcat_0/In1",
+              "two_level_sixphase_f_0/ss_in_1"
             ]
           },
           "uz_6ph_cost_ip_0_G2": {
             "ports": [
               "uz_6ph_cost_ip_0/G2",
-              "xlconcat_0/In2"
+              "xlconcat_0/In2",
+              "two_level_sixphase_f_0/ss_in_2"
             ]
           },
           "uz_6ph_cost_ip_0_G3": {
             "ports": [
               "uz_6ph_cost_ip_0/G3",
-              "xlconcat_0/In3"
+              "xlconcat_0/In3",
+              "two_level_sixphase_f_0/ss_in_3"
             ]
           },
           "uz_6ph_cost_ip_0_G4": {
             "ports": [
               "uz_6ph_cost_ip_0/G4",
-              "xlconcat_0/In4"
+              "xlconcat_0/In4",
+              "two_level_sixphase_f_0/ss_in_4"
             ]
           },
           "uz_6ph_cost_ip_0_G5": {
             "ports": [
               "uz_6ph_cost_ip_0/G5",
-              "xlconcat_0/In5"
+              "xlconcat_0/In5",
+              "two_level_sixphase_f_0/ss_in_5"
             ]
           },
           "uz_6ph_cost_ip_0_G6": {
             "ports": [
               "uz_6ph_cost_ip_0/G6",
-              "xlconcat_1/In0"
+              "xlconcat_1/In0",
+              "two_level_sixphase_f_0/ss_in_6"
             ]
           },
           "uz_6ph_cost_ip_0_G7": {
             "ports": [
               "uz_6ph_cost_ip_0/G7",
-              "xlconcat_1/In1"
+              "xlconcat_1/In1",
+              "two_level_sixphase_f_0/ss_in_7"
             ]
           },
           "uz_6ph_cost_ip_0_G8": {
             "ports": [
               "uz_6ph_cost_ip_0/G8",
-              "xlconcat_1/In2"
+              "xlconcat_1/In2",
+              "two_level_sixphase_f_0/ss_in_8"
             ]
           },
           "uz_6ph_cost_ip_0_G9": {
             "ports": [
               "uz_6ph_cost_ip_0/G9",
-              "xlconcat_1/In3"
+              "xlconcat_1/In3",
+              "two_level_sixphase_f_0/ss_in_9"
             ]
           },
           "uz_6ph_cost_ip_0_G10": {
             "ports": [
               "uz_6ph_cost_ip_0/G10",
-              "xlconcat_1/In4"
+              "xlconcat_1/In4",
+              "two_level_sixphase_f_0/ss_in_10"
             ]
           },
           "uz_6ph_cost_ip_0_G11": {
             "ports": [
               "uz_6ph_cost_ip_0/G11",
-              "xlconcat_1/In5"
+              "xlconcat_1/In5",
+              "two_level_sixphase_f_0/ss_in_11"
             ]
           },
           "uz_park_transform_ip_0_cos": {
@@ -7045,18 +7074,6 @@
               "uz_6_ph_voltages_ip_0/sin_angle"
             ]
           },
-          "uz_sixphase_VSD_tran_0_x_out_dq_0": {
-            "ports": [
-              "uz_sixphase_VSD_tran_0/x_out_dq_0",
-              "uz_pmsm_model_6ph_dq_0/voltage_input_dq_0"
-            ]
-          },
-          "uz_pmsm_model_6ph_dq_0_currents_dq_out_0": {
-            "ports": [
-              "uz_pmsm_model_6ph_dq_0/currents_dq_out_0",
-              "uz_sixphase_VSD_tran_0/x_in_dq_0"
-            ]
-          },
           "uz_typeconv_multi_0_sfix18En15": {
             "ports": [
               "uz_typeconv_multi_0/sfix18En15",
@@ -7067,6 +7084,42 @@
             "ports": [
               "uz_pmsm_model_6ph_dq_0/omega_mech_out",
               "uz_typeconv_multi_0/omega_m_sfix24En11"
+            ]
+          },
+          "uz_sixphase_VSD_tran_0_refresh_values": {
+            "ports": [
+              "uz_sixphase_VSD_tran_0/refresh_values",
+              "SR_Flip_Flop_0/reset_1"
+            ]
+          },
+          "SR_Flip_Flop_0_ff_out": {
+            "ports": [
+              "SR_Flip_Flop_0/ff_out",
+              "uz_sixphase_VSD_tran_0/trigger_new_values"
+            ]
+          },
+          "uz_pmsm_model_6ph_dq_0_currents_dq_out_0": {
+            "ports": [
+              "uz_pmsm_model_6ph_dq_0/currents_dq_out_0",
+              "uz_sixphase_VSD_tran_0/x_in_dq_0"
+            ]
+          },
+          "uz_sixphase_VSD_tran_0_x_out_dq_0": {
+            "ports": [
+              "uz_sixphase_VSD_tran_0/x_out_dq_0",
+              "uz_pmsm_model_6ph_dq_0/voltage_input_dq_0"
+            ]
+          },
+          "uz_inverter_3ph_0_u_abc_pl_0": {
+            "ports": [
+              "uz_inverter_3ph_0/u_abc_pl_0",
+              "uz_sixphase_VSD_tran_0/x_abc1_ll_pl_0"
+            ]
+          },
+          "uz_inverter_3ph_1_u_abc_pl_0": {
+            "ports": [
+              "uz_inverter_3ph_1/u_abc_pl_0",
+              "uz_sixphase_VSD_tran_0/x_abc2_ll_pl_0"
             ]
           }
         }
@@ -10598,6 +10651,11 @@
                 "offset": "0x00800B0000",
                 "range": "64K"
               },
+              "SEG_two_level_sixphase_f_0_reg0": {
+                "address_block": "/uz_user/two_level_sixphase_f_0/AXI4_Lite/reg0",
+                "offset": "0x00801E0000",
+                "range": "64K"
+              },
               "SEG_uz_6_ph_voltages_ip_0_reg0": {
                 "address_block": "/uz_user/uz_6_ph_voltages_ip_0/AXI4_Lite/reg0",
                 "offset": "0x0080150000",
@@ -10675,7 +10733,7 @@
               },
               "SEG_uz_sixphase_VSD_tran_0_reg0": {
                 "address_block": "/uz_user/uz_sixphase_VSD_tran_0/AXI4/reg0",
-                "offset": "0x00801E0000",
+                "offset": "0x0080200000",
                 "range": "64K"
               },
               "SEG_uz_typeconv_multi_0_reg0": {

@@ -1741,6 +1741,50 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:two_level_sixphase_f_sw_cnt_ip:1.0">
+		</VLNV>
+		<DisplayName value="two_level_sixphase_f_sw_cnt_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112844383">
+		</CoreRevision>
+		<ComponentPath value="two_level_sixphase_f_sw_counter/hdl_prj/ipcore/two_level_sixphase_f_sw_cnt_ip_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="user.org:ip:uz_dac_spi_interface:1.0">
 		</VLNV>
 		<DisplayName value="uz_dac_spi_interface">
@@ -2867,11 +2911,13 @@
 	<IP>
 		<VLNV value="xilinx.com:ip:uz_sixphase_VSD_transformation:1.0">
 		</VLNV>
-		<DisplayName value="uz_sixphase_VSD_transformation_v1_0">
+		<DisplayName value="uz_sixphase_VSD_transformation">
 		</DisplayName>
-		<Description value="uz_sixphase_VSD_transformation_v1_0">
+		<Description value="HDL Coder generated IP">
 		</Description>
-		<CoreRevision value="1">
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112729135">
 		</CoreRevision>
 		<ComponentPath value="uz_sixphase_VSD_transformation/hdl_prj/ipcore/uz_sixphase_VSD_transformation_v1_0/component.xml">
 		</ComponentPath>
@@ -2906,7 +2952,7 @@
 			</Family>
 		</Families>
 		<Taxonomies>
-			<Taxonomy value="/BaseIP">
+			<Taxonomy value="/HDL Coder Generated IP">
 			</Taxonomy>
 		</Taxonomies>
 		<Interfaces>

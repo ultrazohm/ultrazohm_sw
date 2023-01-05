@@ -1,0 +1,17 @@
+SLStudio.Utils.RemoveHighlighting(get_param('two_level_sixphase_f_sw_counter', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_two_level_sixphase_f_sw_counter', 'handle'));
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Count_f_sw', 1, 4, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/SS_Old', 1, 1, '');
+annotate_port('two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/SS_Old', 1, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/delay', 1, 1, '');
+annotate_port('two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/delay', 1, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/reset_old2', 0, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/reset_old2', 1, 1, '');
+annotate_port('two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/reset_old2', 1, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Detec_edge', 0, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/dtc', 0, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Saturation', 0, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Count_f_sw/Count_f_sw', 1, 4, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Count_f_sw/Count_f_sw', 1, 1, '');
+annotate_port('gm_two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Count_f_sw/Count_f_sw', 1, 1, '');
+annotate_port('two_level_sixphase_f_sw_counter/two_level_sixphase_f_sw_counter/Count_f_sw', 1, 1, '');

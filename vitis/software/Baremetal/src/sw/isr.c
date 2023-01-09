@@ -166,18 +166,17 @@ void ISR_Control(void *data)
 	//ParaID
 	ParaID_Data.ActualValues.i_abc_6ph = six_ph_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(six_ph_currents, Global_Data.av.theta_elec);
-  ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK_filt;
-  ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f;
-  ParaID_Data.ActualValues.omega_el = Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs;
-  ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
-  ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
-
+	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK_filt;
+	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f;
+	ParaID_Data.ActualValues.omega_el = Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs;
+	ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-
 		//ParaID
+    	//comment out output1/2 lines if FOC is used!!!!!!!
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
     	output1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
     	output1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
@@ -185,25 +184,24 @@ void ISR_Control(void *data)
     	output2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
     	output2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
     	output2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
-
+    	//ParaID end
 
     	//FOC
+    	//comment out output1/2 lines if ParaID is used!!!!!!!
         u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
     	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
     	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
-
     	input1.a = phase_ref_volts.a1;
     	input1.b = phase_ref_volts.b1;
     	input1.c = phase_ref_volts.c1;
     	input2.a = phase_ref_volts.a2;
     	input2.b = phase_ref_volts.b2;
     	input2.c = phase_ref_volts.c2;
-
     	//output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
     	//output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
-
+    	//FOC end
 
     	//PWM dont comment out!!
     	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;

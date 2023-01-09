@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 15:49:25 on 22/12/2022
+% Generated with MATLAB 9.12 (R2022a) at 12:50:13 on 23/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_delay_compensation\hdlworkflow.m'
 %     Overwrite : true
@@ -43,20 +43,8 @@ hdlset_param('parallel_8_delay_compensation/Delay_compensation', 'IPCoreName', '
 hdlset_param('parallel_8_delay_compensation/Delay_compensation', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/id_measured', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iq_measured', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/ix_measured', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_measured', 'IOInterface', 'External Port');
-hdlset_param('parallel_8_delay_compensation/Delay_compensation/iy_measured', 'IOInterfaceMapping', '');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/dq_measured_currents', 'IOInterface', 'External Port');
+hdlset_param('parallel_8_delay_compensation/Delay_compensation/dq_measured_currents', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
 hdlset_param('parallel_8_delay_compensation/Delay_compensation/psiPM_AXI', 'IOInterface', 'AXI4-Lite');

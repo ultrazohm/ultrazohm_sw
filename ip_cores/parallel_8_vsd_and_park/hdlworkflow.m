@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 15:28:40 on 22/12/2022
+% Generated with MATLAB 9.12 (R2022a) at 17:02:05 on 22/12/2022
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\ultrazohm_sw\ip_cores\parallel_8_vsd_and_park\hdlworkflow.m'
 %     Overwrite : true
@@ -26,6 +26,7 @@ hdlset_param('VSD_and_Park_transformation_6Phase', 'PackagePostfix', '_pac');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'ResetInputPort', 'reset_x');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'ResetType', 'Synchronous');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'ResourceReport', 'on');
+hdlset_param('VSD_and_Park_transformation_6Phase', 'ScalarizePorts', 'DUTLevel');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'SynthesisTool', 'Xilinx Vivado');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
 hdlset_param('VSD_and_Park_transformation_6Phase', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-1L-i');
@@ -41,28 +42,12 @@ hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1', 'IPCoreName
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_a1', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_a1', 'IOInterfaceMapping', '');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/abc_1', 'IOInterface', 'External Port');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/abc_1', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_b1', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_b1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c1', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c1', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_a2', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_a2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_b2', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_b2', 'IOInterfaceMapping', '');
-
-% Set Inport HDL parameters
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c2', 'IOInterface', 'External Port');
-hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/i_c2', 'IOInterfaceMapping', '');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/abc_2', 'IOInterface', 'External Port');
+hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/abc_2', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
 hdlset_param('VSD_and_Park_transformation_6Phase/vsd_and_park_tra1/theta_el', 'IOInterface', 'External Port');

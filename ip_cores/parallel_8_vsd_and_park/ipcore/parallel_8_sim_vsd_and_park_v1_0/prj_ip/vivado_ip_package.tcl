@@ -35,7 +35,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112824488 [ipx::current_core]
+set_property core_revision 2112824581 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/parallel_8_sim_vsd_and_park_src_vsd_and_park_tra1_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -178,6 +178,10 @@ set_property value {ACTIVE_LOW} [ipx::get_bus_parameters POLARITY -of_objects [i
 
 # Add report files
 ipx::add_file_group -type {product_guide} {} [ipx::current_core]
+ipx::add_file {doc/InBitPacking.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/InBitPacking.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/OutBitPacking.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{image}} [ipx::get_files {doc/OutBitPacking.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/doc_arch_axi4_lite.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/doc_arch_axi4_lite.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/free_running.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]

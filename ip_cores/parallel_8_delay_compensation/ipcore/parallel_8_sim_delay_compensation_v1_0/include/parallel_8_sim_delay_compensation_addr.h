@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\ultrazohm_sw\ip_cores\parallel_8_delay_compensation\ipcore\parallel_8_sim_delay_compensation_v1_0\include\parallel_8_sim_delay_compensation_addr.h
  * Description:       C Header File
- * Created:           2022-12-22 15:48:47
+ * Created:           2022-12-23 12:49:39
 */
 
 #ifndef PARALLEL_8_SIM_DELAY_COMPENSATION_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_parallel_8_sim_delay_compensation                 0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_parallel_8_sim_delay_compensation                0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_parallel_8_sim_delay_compensation             0x8  //contains unique IP timestamp (yymmddHHMM): 2212221548
+#define  IPCore_Timestamp_parallel_8_sim_delay_compensation             0x8  //contains unique IP timestamp (yymmddHHMM): 2212231249
 #define  psiPM_AXI_Data_parallel_8_sim_delay_compensation               0x100  //data register for Inport psiPM_AXI
 #define  Lq_AXI_Data_parallel_8_sim_delay_compensation                  0x104  //data register for Inport Lq_AXI
 #define  Ld_AXI_Data_parallel_8_sim_delay_compensation                  0x108  //data register for Inport Ld_AXI

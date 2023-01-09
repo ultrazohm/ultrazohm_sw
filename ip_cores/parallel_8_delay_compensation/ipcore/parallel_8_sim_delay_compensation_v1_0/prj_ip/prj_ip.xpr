@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/ultrazohm_sw/ip_cores/parallel_8_delay_compensation/ipcore/parallel_8_sim_delay_compensation_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="43ce3e3c7af94d6ebcb2ecf3f6b9b379"/>
+    <Option Name="Id" Val="bd4e241334434768b3763172a8c6d8e5"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1L-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -115,7 +115,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

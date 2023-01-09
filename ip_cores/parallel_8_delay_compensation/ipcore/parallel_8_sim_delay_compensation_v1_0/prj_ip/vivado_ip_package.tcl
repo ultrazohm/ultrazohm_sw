@@ -11,7 +11,7 @@ add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_add_
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_mul_single.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_sub_single.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_MATLAB_Function.vhd}
-add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd}
+add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_24_En11_to_single.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_single_to_sfix_18_En11.vhd}
 add_files -norecurse {../hdl/vhdl/parallel_8_sim_delay_compensation_src_Delay_compensation.vhd}
@@ -40,7 +40,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112824508 [ipx::current_core]
+set_property core_revision 2112825769 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_Delay_compensation_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -79,10 +79,10 @@ ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_MATLAB_Function.vh
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_24_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_24_En11_to_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_24_En11_to_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

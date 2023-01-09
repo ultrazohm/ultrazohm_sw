@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e0bbecd7</spirit:value>
+            <spirit:value>83194abb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e0bbecd7</spirit:value>
+            <spirit:value>83194abb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -348,62 +348,11 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>id_measured</spirit:name>
+        <spirit:name>dq_measured_currents</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">17</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>iq_measured</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">17</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>ix_measured</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">17</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>iy_measured</spirit:name>
-        <spirit:wire>
-          <spirit:direction>in</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">17</spirit:left>
+            <spirit:left spirit:format="long">161</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -879,7 +828,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -921,7 +870,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/parallel_8_sim_delay_compensation.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_1a746b86</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5b797d55</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -967,7 +916,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_18_En11_to_single.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/parallel_8_sim_delay_compensation_src_nfp_convert_sfix_27_En18_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1079,15 +1028,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>parallel_8_sim_delay_compensation</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112824508</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-12-22T14:49:03Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112825769</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2022-12-23T11:50:00Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3bfa60a2"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="c9387831"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="fd03a407"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="a5fe95a1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="daa3ad74"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

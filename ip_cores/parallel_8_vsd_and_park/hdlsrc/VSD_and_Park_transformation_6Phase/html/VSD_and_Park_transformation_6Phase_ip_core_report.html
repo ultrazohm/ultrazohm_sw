@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.148
+<td class="summaryTableSndColOddRow">1.151
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">22-Dec-2022 15:28:06
+<td class="summaryTableSndColOddRow">22-Dec-2022 17:01:32
 </td>
 </tr>
 <tr>
@@ -154,11 +154,11 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:273')">i_a1</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:400')">abc_1</a>
 </td>
 <td>Inport
 </td>
-<td>sfix27_En18
+<td>sfix27_En18 (3)
 </td>
 <td>External Port
 </td>
@@ -168,67 +168,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:274')">i_b1</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:401')">abc_2</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">sfix27_En18
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:275')">i_c1</a>
-</td>
-<td>Inport
-</td>
-<td>sfix27_En18
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:276')">i_a2</a>
-</td>
-<td class="distinctCellColor">Inport
-</td>
-<td class="distinctCellColor">sfix27_En18
-</td>
-<td class="distinctCellColor">External Port
-</td>
-<td class="distinctCellColor">
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:277')">i_b2</a>
-</td>
-<td>Inport
-</td>
-<td>sfix27_En18
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('VSD_and_Park_transformation_6Phase:278')">i_c2</a>
-</td>
-<td class="distinctCellColor">Inport
-</td>
-<td class="distinctCellColor">sfix27_En18
+<td class="distinctCellColor">sfix27_En18 (3)
 </td>
 <td class="distinctCellColor">External Port
 </td>
@@ -585,7 +529,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2212221528
+<td>contains unique IP timestamp (yymmddHHMM): 2212221701
 </td>
 </tr>
 <tr>
@@ -686,6 +630,22 @@ The register address mapping is also in the following C header file for you to u
 <a href="matlab:edit('C:\ultrazohm_sw\ip_cores\parallel_8_vsd_and_park\ipcore\parallel_8_sim_vsd_and_park_v1_0\include\parallel_8_sim_vsd_and_park_addr.h')">include\parallel_8_sim_vsd_and_park_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
+</div>
+<div>
+<h3 class="sectionHeading">Bit Packing Order</h3>
+Following is the general representation of data packing order and data unpacking order for Vector Input and output cases for Internal IO, External IO and External port interfaces.
+If it is assumed that an interface is mapped to one input(or output) port of the model which has a port width of 128 and port dimension of 4, then:
+<br/><br/>
+ Following is the bit packing order to the DUT IP for Input vector case.
+<br/><br/>
+<img src="InBitPacking.jpg"/>
+<br/><br/>
+<br/>
+ Following is the bit unpacking order from the DUT IP for Vector Output case.
+<br/><br/>
+<img src="OutBitPacking.jpg"/>
+<br/><br/>
+It should be noted that the above instances are just for demonstration purpose and may not represent the actual mapped port width and port dimension. 
 </div>
 <div>
 <h3 class="sectionHeading">IP Core User Guide</h3>

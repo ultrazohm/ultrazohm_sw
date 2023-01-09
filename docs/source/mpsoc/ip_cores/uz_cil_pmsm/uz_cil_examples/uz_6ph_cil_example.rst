@@ -127,6 +127,7 @@ The init functions are called during the init process of all IP-cores.
     ...
     case init_ip_cores:
       // init IP-cores
+      pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
       transformation = uz_pmsm6ph_transformation_init(cil_transformation_config);
       inverter1 = uz_inverter_3ph_init(cil_inverter1_config);
       inverter2 = uz_inverter_3ph_init(cil_inverter2_config);

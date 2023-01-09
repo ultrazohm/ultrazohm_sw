@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b4f7f7a5</spirit:value>
+            <spirit:value>3d42b9f5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b4f7f7a5</spirit:value>
+            <spirit:value>3d42b9f5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1306,7 +1306,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_3ph_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f8748bac</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_9bab004b</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1484,7 +1484,7 @@
         <spirit:userFileType>image</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>doc/uz_pmsm_model_ip_core_report.html</spirit:name>
+        <spirit:name>doc/uz_pmsm_model_3ph_dq_ip_core_report.html</spirit:name>
         <spirit:userFileType>html</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1519,14 +1519,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model_3ph_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112850121</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-01-09T09:41:48Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112850141</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-01-09T10:01:56Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="7139251d"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="68ae535d"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="1394d519"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="720b1f42"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="8770405e"/>
     </xilinx:packagingInfo>

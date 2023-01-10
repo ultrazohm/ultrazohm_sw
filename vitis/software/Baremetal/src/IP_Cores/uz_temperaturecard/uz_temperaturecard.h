@@ -276,11 +276,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //Defines for the lib
-#define TEMP_CONVERSION_FACTOR      0.000976563     // 1/1024
-#define CHANNEL_COUNT     			    20
-#define GROUP_COUNT                 3
-#define CHANNEL_TOTAL               CHANNEL_COUNT * GROUP_COUNT
-#define IP_CORE_READBACK_VALUE      0xAFFEAFFE
+#define TEMP_CONVERSION_FACTOR      0.000976563                         /**< Needed to calculate the Temperature*/ // 1/1024
+#define CHANNEL_COUNT     			    20                                  /**< Temperature Channel for one LTC2983*/
+#define GROUP_COUNT                 3                                   /**< Number of LTC2983 */
+#define CHANNEL_TOTAL               CHANNEL_COUNT * GROUP_COUNT         /**< calculated Number of Temperature Channels*/
+#define IP_CORE_READBACK_VALUE      0xAFFEAFFE                          /**< Readback to check if IP-Core is available*/
 
 /**
  * @brief Data type for object uz_temperaturecard
@@ -294,8 +294,8 @@ typedef struct uz_temperaturecard_t uz_temperaturecard_t;
  */
 typedef struct {
 	float       temperature[CHANNEL_COUNT];       /**< calculated value for one Temperature Channel */
-	uint32_t    temperature_raw[CHANNEL_COUNT];   /**< raw value for one Temperature Channe */
-	uint32_t    Configdata[CHANNEL_COUNT];        /**< used Config for one Temperature Channe */
+	uint32_t    temperature_raw[CHANNEL_COUNT];   /**< raw value for one Temperature Channel */
+	uint32_t    Configdata[CHANNEL_COUNT];        /**< used Config for one Temperature Channel */
 	uint8_t		  Channels_Valid[CHANNEL_COUNT];    /**< Informations about the measurement */
 }uz_temperaturecard_OneGroup;
 
@@ -320,26 +320,40 @@ struct uz_temperaturecard_config_t{
  */
 uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t config);
 
-//Functions
-
 /**
  * @brief Resets the whole TemperatureCard-IP. This should be used after the init of the IP-Core to update the LTC2983
  *
  * @param self Pointer to driver instance
  */
-void        uz_TempCard_IF_Reset(uz_temperaturecard_t* self);                                               // Resets the Interface-IP to write new Channel configs
+void uz_TempCard_IF_Reset(uz_temperaturecard_t* self);
 
+/**
+ * @brief Starts the TemperatureCard-IP
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_TempCard_IF_Start(uz_temperaturecard_t* self);
 
-void        uz_TempCard_IF_Start(uz_temperaturecard_t* self);                                               // Starts the Interface-IP
+/**
+ * @brief Starts the TemperatureCard-IP
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_TempCard_IF_Stop(uz_temperaturecard_t* self);
 
+/**
+ * @brief Reads every Temperature-Channel of the IP-Core and updates every Temperature-Data of the instance. ATTENTION!!! this will need a lot of time, NEVER use it in the ISR!
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);
 
-void        uz_TempCard_IF_Stop(uz_temperaturecard_t* self);                                                // Stops the Interface-IP
-
-
-void        uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);                                    // Gets the Temperature-Data from all LTC2983, converts the results and stores the tempvalue in the struct
-
-
-void        uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);                                 // Gets the Temperature-Data from one Channel, converts the results and stores the tempvalue in the struct. Call multiple times to step through the Data.
+/**
+ * @brief Reads one Temperature-Channel of the IP-Core and updates the dedicated Temperature-Data of the the instance. To Update the whole Temperature-Data of the instance, multiple calls equal the Channel-amount (60) are needed. Can be used inside the ISR.
+ *
+ * @param self Pointer to driver instance
+ */
+void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);
 
 
 #endif // UZ_TEMPERATURECARD_H

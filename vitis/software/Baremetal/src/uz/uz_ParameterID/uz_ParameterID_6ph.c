@@ -237,7 +237,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
 	Data->GlobalConfig.PMSM_config.polePairs = 5.0f;
 	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
-	Data->GlobalConfig.PMSM_config.I_max_Ampere = 13.0f;
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 7.0f;
 	Data->GlobalConfig.ratCurrent = 7.0f;
 	Data->GlobalConfig.ratTorque = 0.29f;
 	Data->GlobalConfig.ratSpeed = 3000.0f;

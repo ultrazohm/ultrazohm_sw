@@ -77,6 +77,8 @@ uz_3ph_abc_t input2 = {0.0f};
 struct uz_DutyCycle_t output1 = {0};
 struct uz_DutyCycle_t output2 = {0};
 
+uz_6ph_abc_t maxDC = {0};
+
 uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
 
 #define PHASE_CURRENT_CONV	37.735/7.0f/1.19f
@@ -171,6 +173,18 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs;
 	ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
 	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
+
+
+	//get max DC
+	if (maxDC.a1 < ParaID_Data.ElectricalID_Output.PWM_Switch_0)
+	{
+		maxDC.a1 = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
+		maxDC.b1 = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
+		maxDC.c1 = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
+		maxDC.a2 = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
+		maxDC.b2 = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
+		maxDC.c2 = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
+	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

@@ -34,17 +34,14 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-//ParaID
-#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+//Initialize the Interrupt structure
+extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+
+#include "../uz/uz_ParameterID/uz_ParameterID.h"
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
-
-
-//Initialize the Interrupt structure
-extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern float theta_mech_calc_from_resolver;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -66,33 +63,28 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[omega_el]            = &ParaID_Data.ActualValues.omega_el;
+	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeed;
+  js_ch_observable[JSO_ia1] = &ParaID_Data.ActualValues.i_abc_6ph.a1;
+  js_ch_observable[JSO_ib1] = &ParaID_Data.ActualValues.i_abc_6ph.b1;
+  js_ch_observable[JSO_ic1] = &ParaID_Data.ActualValues.i_abc_6ph.c1;
+  js_ch_observable[JSO_ia2] = &ParaID_Data.ActualValues.i_abc_6ph.a2;
+	js_ch_observable[JSO_ib2] = &ParaID_Data.ActualValues.i_abc_6ph.b2;
+	js_ch_observable[JSO_ic2] = &ParaID_Data.ActualValues.i_abc_6ph.c2;
+	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
+	  js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
+	  js_ch_observable[JSO_ix] = &ParaID_Data.ActualValues.i_dq_6ph.x;
+	  js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
+	  js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
+	  js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
+	  js_ch_observable[JSO_state] = &(activeState);
+  js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_abc.a;
+  js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_abc.b;
+  js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_abc.c;
 
-	      js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
-	      js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
-	      js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
-	      js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
-
-	js_ch_observable[JSO_i_a1]		= &data->av.i_a1;
-	js_ch_observable[JSO_i_b1]		= &data->av.i_b1;
-	js_ch_observable[JSO_i_c1]		= &data->av.i_c1;
-	js_ch_observable[JSO_i_a1_filt]		= &data->av.i_a1_filt;
-	js_ch_observable[JSO_i_b1_filt]		= &data->av.i_b1_filt;
-	js_ch_observable[JSO_i_c1_filt]		= &data->av.i_c1_filt;
-	js_ch_observable[JSO_u_dc1]		= &data->av.U_ZK;
-	js_ch_observable[JSO_i_a2]		= &data->av.i_a2;
-	js_ch_observable[JSO_i_b2]		= &data->av.i_b2;
-	js_ch_observable[JSO_i_c2]		= &data->av.i_c2;
-	js_ch_observable[JSO_i_a2_filt]		= &data->av.i_a2_filt;
-	js_ch_observable[JSO_i_b2_filt]		= &data->av.i_b2_filt;
-	js_ch_observable[JSO_i_c2_filt]		= &data->av.i_c2_filt;
-	js_ch_observable[JSO_u_dc2]		= &data->av.U_ZK2;
-	js_ch_observable[JSO_u_dc1_filt]= &data->av.U_ZK_filt;
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_i_alpha]		= &data->av.i_alpha;
-	js_ch_observable[JSO_i_beta]		= &data->av.i_beta;
-	js_ch_observable[JSO_ud]			= &data->av.u_d;
-	js_ch_observable[JSO_uq]			= &data->av.u_q;
+  js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
+  js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
+  js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq.d;
+  js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -107,15 +99,18 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
-	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
-	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
-
-	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Psi_PM_Vs);
+	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(ParaID_Data.ActualValues.v_dq.d);
+	    js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
+	    js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);
+	    js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
+	    js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeed);
+	    js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalRotorSpeed);
+	    js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Psi_PM_Vs);
 	    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Lq_Henry);
 	    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Ld_Henry);
 	    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.R_ph_Ohm);
@@ -166,6 +161,8 @@ void JavaScope_update(DS_Data* data){
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
 
+	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
+
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
@@ -210,7 +207,5 @@ void JavaScope_update(DS_Data* data){
 	}
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
-    uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
-
 
 }

@@ -18,13 +18,15 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
-
-#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
-extern uz_ParameterID_Data_t ParaID_Data;
-
+#include "../uz/uz_ParameterID/uz_ParameterID.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+
+extern uz_ParameterID_Data_t ParaID_Data;
+//If FOC is used
+extern uz_FOC* FOC_instance;
+extern uz_SpeedControl_t* SpeedControl_instance;
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
@@ -41,6 +43,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Stop): // Stop
 			ultrazohm_state_machine_set_stop(true);
 			break;
+
+			//Change Send_Filed 1-3
+			        case (Set_Send_Field_1):
+			            ParaID_Data.GlobalConfig.n_ref = value;
+			            break;
+
+			        case (Set_Send_Field_2):
+			            ParaID_Data.GlobalConfig.i_dq_ref.d = value;
+			            break;
+
+			        case (Set_Send_Field_3):
+			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
+			            break;
+
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
 			{
@@ -190,19 +206,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-			//Change Send_Filed 1-3
-			        case (Set_Send_Field_1):
-			            ParaID_Data.GlobalConfig.n_ref = value;
-			            break;
-
-			        case (Set_Send_Field_2):
-			            ParaID_Data.GlobalConfig.i_dq_ref.d = value;
-			            break;
-
-			        case (Set_Send_Field_3):
-			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
-			            break;
-
 		case (Set_Send_Field_4):
 
 			break;
@@ -216,72 +219,36 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			data->rasv.halfBridge1DutyCycle = 0.043f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			ultrazohm_state_machine_set_error(true);
 			break;
 
 		case (My_Button_2):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.043f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_3):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.043f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_4):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.043f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_5):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.043f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_6):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.043f;
+
 			break;
 
 		case (My_Button_7):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_8):
 
 			break;
-
 		//After all My_Button cases add the following
 		        //ParameterID
 
@@ -417,7 +384,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		        case (ParaID_EID_Admit_Params):
 		            //If FOC is used
-
+		            //uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
+		            //uz_SpeedControl_set_PMSM_config(SpeedControl_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
 		            break;
 
 		        case (ParaID_FID_max_speed):
@@ -660,7 +628,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
 
-	/* Bit 13 - Ident_Lq */
+	//Replace Bit 13-19 with the following
+	    /* Bit 13 - Ident_Lq */
 	    if (ParaID_Data.ElectricalID_Config.identLq == true) {
 	        js_status_BareToRTOS |= (1 << 13);
 	    } else {

@@ -32,6 +32,7 @@ Vitis
 
 Each IP-core is initialized in ``main.c``, as well as a pointer with the respective type.
 The init functions are called during the init process of all IP-cores.
+Please check all MAX_INSTANCE defines, including the amount of PWM instances, if additional IP-cores are used.
 
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
@@ -152,7 +153,7 @@ Depending on the used controller, this might not be necessary.
   ...
   // Data for PMSM
   #include "../IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
-  extern uz_pmsm_model6ph_dq_t pmsm;
+  extern uz_pmsm_model6ph_dq_t *pmsm;
   float omega_mech = 100.0f;
   float load_torque = 0.0f;
   struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_output = {0};
@@ -160,7 +161,7 @@ Depending on the used controller, this might not be necessary.
   // Data for Transformation
   #include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
   #include "../uz/uz_Transformation/uz_Transformation.h"
-  extern uz_pmsm6ph_transformation_t transformation;
+  extern uz_pmsm6ph_transformation_t *transformation;
   uz_6ph_abc_t transformation_currents_abc = {0};
   float theta_el = 0.0f;
 
@@ -178,9 +179,9 @@ Depending on the used controller, this might not be necessary.
   // Data for PWM
   #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
   #include "../uz/uz_FOC/uz_FOC.h"
-  extern uz_PWM_SS_2L_t PWM1;
-  extern uz_PWM_SS_2L_t PWM2;
-  float V_dc_volts = 500.0f;
+  extern uz_PWM_SS_2L_t *PWM1;
+  extern uz_PWM_SS_2L_t *PWM2;
+  float V_dc_volts = 100.0f;
   struct uz_DutyCycle_t duty_cycle_sys1 = {0};
   struct uz_DutyCycle_t duty_cycle_sys2 = {0};
   ...
@@ -206,8 +207,8 @@ Depending on the used controller, this might not be necessary.
     out_voltage_abc2.c = out_voltage_abc.c2;
 
     // Duty Cycles
-    duty_cycle_sys1 = uz_FOC_generate_DutyCycles(out_voltage_abc1, V_dc_volts); //create Duty-Cycles for subsets
-    duty_cycle_sys2 = uz_FOC_generate_DutyCycles(out_voltage_abc2, V_dc_volts); //create Duty-Cycles for subsets
+    duty_cycle_sys1 = uz_FOC_generate_DutyCycles(out_voltage_abc1, V_dc_volts); // create Duty-Cycles for subsets
+    duty_cycle_sys2 = uz_FOC_generate_DutyCycles(out_voltage_abc2, V_dc_volts); // create Duty-Cycles for subsets
     uz_PWM_SS_2L_set_duty_cycle(PWM1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
     uz_PWM_SS_2L_set_duty_cycle(PWM2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
     ...

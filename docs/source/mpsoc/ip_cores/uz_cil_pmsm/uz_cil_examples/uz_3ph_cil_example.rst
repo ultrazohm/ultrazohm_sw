@@ -1,4 +1,4 @@
-.. _uz_6ph_cil_example:
+.. _uz_3ph_cil_example:
 
 =======================
 Three-phase CIL Example
@@ -93,24 +93,24 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
   // FOC (optional)
   const struct uz_PI_Controller_config cil_pi_config = {
 	  .Kp = 1250.0f,
-	  .Ki = 78250.0f,
+    .Ki = 78250.0f,
 	  .samplingTime_sec = 0.0001f,
 	  .upper_limit = 100.0f,
 	  .lower_limit = -100.0f};
   const uz_PMSM_t foc_pmsm = {
     .I_max_Ampere = 10.0f,
-		.J_kg_m_squared = 0.001f,
-		.Ld_Henry = cil_pmsm_comfig.L_d,
-		.Lq_Henry = cil_pmsm_comfig.L_q,
-		.Psi_PM_Vs = cil_pmsm_comfig.psi_pm,
-		.R_ph_Ohm = cil_pmsm_comfig.r_1,
-		.polePairs = cil_pmsm_comfig.polepairs};
+    .J_kg_m_squared = 0.001f,
+    .Ld_Henry = cil_pmsm_comfig.L_d,
+    .Lq_Henry = cil_pmsm_comfig.L_q,
+    .Psi_PM_Vs = cil_pmsm_comfig.psi_pm,
+    .R_ph_Ohm = cil_pmsm_comfig.r_1,
+    .polePairs = cil_pmsm_comfig.polepairs};
   uz_FOC *foc = NULL;
   struct uz_FOC_config cil_foc_config = {
-		.decoupling_select = no_decoupling,
-		.config_id = cil_pi_config,
-		.config_iq = cil_pi_config,
-		.config_PMSM = foc_pmsm};
+    .decoupling_select = no_decoupling,
+    .config_id = cil_pi_config,
+    .config_iq = cil_pi_config,
+    .config_PMSM = foc_pmsm};
   ...
   int main(void)
   {
@@ -142,10 +142,10 @@ Depending on the used controller, this might not be necessary.
   extern uz_pmsm_model3ph_t *pmsm;
   struct uz_pmsm_model3ph_outputs_t pmsm_output = {0};
   struct uz_pmsm_model3ph_inputs_t pmsm_input = {
-		  .load_torque = 0.0f,								// torque or omega dont need to be set here, only as an example
-		  .omega_mech_1_s = 100.0f,
-		  .v_d_V = 0.0f,									    // AXI voltage inputs are not used if CIL setup inf FPGA is used
-		  .v_q_V = 0.0f};
+      .load_torque = 0.0f,								// torque or omega dont need to be set here, only as an example
+      .omega_mech_1_s = 100.0f,
+      .v_d_V = 0.0f,									    // AXI voltage inputs are not used if CIL setup inf FPGA is used
+      .v_q_V = 0.0f};
 
   // Data for Transformation
   #include "../IP_Cores/uz_pmsm3ph_transformation/uz_pmsm3ph_transformation.h"
@@ -176,15 +176,15 @@ Depending on the used controller, this might not be necessary.
     uz_pmsm_model3ph_set_inputs(pmsm,pmsm_input);                                          						  // set omega and load torque (only one active)
     uz_pmsm_model3ph_trigger_input_strobe(pmsm);																                        // write inputs to HW
     uz_pmsm_model3ph_trigger_output_strobe(pmsm);																                        // update outputs from HW
-	  pmsm_output = uz_pmsm_model3ph_get_outputs(pmsm);                                                   // read outputs from PMSM
-	  transformation_currents_abc = uz_pmsm3ph_transformation_get_currents(transformation);               // read current from transformation
-	  theta_el = uz_pmsm3ph_transformation_get_theta_el(transformation);                                  // read theta from transformation
+    pmsm_output = uz_pmsm_model3ph_get_outputs(pmsm);                                                   // read outputs from PMSM
+    transformation_currents_abc = uz_pmsm3ph_transformation_get_currents(transformation);               // read current from transformation
+    theta_el = uz_pmsm3ph_transformation_get_theta_el(transformation);                                  // read theta from transformation
 
-	  // Controller
-	  transformed_currents = uz_transformation_3ph_abc_to_dq(transformation_currents_abc,theta_el);				         // transform currents to dq
-	  abc_out_controller = uz_FOC_sample_abc(foc,setpoint_currents,transformed_currents,V_dc_volts,pmsm_output.omega_mech_1_s,theta_el); // controller
+    // Controller
+    transformed_currents = uz_transformation_3ph_abc_to_dq(transformation_currents_abc,theta_el);				         // transform currents to dq
+    abc_out_controller = uz_FOC_sample_abc(foc,setpoint_currents,transformed_currents,V_dc_volts,pmsm_output.omega_mech_1_s,theta_el); // controller
 
-	  // Duty Cycles
-	  duty_cycle = uz_FOC_generate_DutyCycles(abc_out_controller, V_dc_volts); 									                   // create Duty-Cycles
-	  uz_PWM_SS_2L_set_duty_cycle(PWM, duty_cycle.DutyCycle_U, duty_cycle.DutyCycle_V, duty_cycle.DutyCycle_W);    // write Duty-Cycles to PWM module
+    // Duty Cycles
+    duty_cycle = uz_FOC_generate_DutyCycles(abc_out_controller, V_dc_volts); 									                   // create Duty-Cycles
+    uz_PWM_SS_2L_set_duty_cycle(PWM, duty_cycle.DutyCycle_U, duty_cycle.DutyCycle_V, duty_cycle.DutyCycle_W);    // write Duty-Cycles to PWM module
     ...

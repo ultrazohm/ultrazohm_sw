@@ -42,6 +42,7 @@ Depending on the use case, some steps might differ.
     :maxdepth: 1
     :glob:
     
+    uz_cil_examples/uz_3ph_cil_example
     uz_cil_examples/uz_6ph_cil_example
 
 

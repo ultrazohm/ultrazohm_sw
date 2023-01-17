@@ -111,20 +111,20 @@ int main(void)
             rtP.K1 = 553.33325; // integral parameter for resonant PI-controller first order
             rtP.K2 = 0.1* rtP.K1;// integral parameter for resonant PI-controller second order
             //rtP.K3 = 0.1* rtP.K1;// integral parameter for resonant PI-controller third order
-            rtP.K4 = 0.1* rtP.K1;// integral parameter for resonant PI-controller fourth order
+            rtP.K4 = 0.01* rtP.K1;// integral parameter for resonant PI-controller fourth order
             rtP.K6 = 0.1* rtP.K1;// integral parameter for resonant PI-controller sixth order
             // Limits
             rtP.i_max_rms = 30.0; // rms current limit in A
             rtP.i_max_peak = rtP.i_max_rms * 1.41 * 1.2;//rtP.i_max_rms * 1.41 * 1.2; // short time current limit in A
-            rtP.i_ref_max =25; // max. permissible reference current in A
-            rtP.n_max = 1605.0; // max. continuous speed limit in rpm
+            rtP.i_ref_max =26; // max. permissible reference current in A
+            rtP.n_max = 605.0; // max. continuous speed limit in rpm
             rtP.n_max_peak = rtP.n_max * 1.2; //max. short time speed limit
-            rtP.n_ref_max = 1600.0; // max. permissible reference speed in rmp
+            rtP.n_ref_max = 600.0; // max. permissible reference speed in rmp
             //Constants
             rtP.p = 18.0; // definition of the motor
             rtP.Offset_U_ideal = -0*M_PI/3; // current phase angle of phase U
-            rtP.Offset_V_ideal = -2*M_PI/3; // current phase angle of phase V (15n/1n -> -2.3643)
-            rtP.Offset_W_ideal = -4*M_PI/3; // current phase angle of phase W (15n/1n -> -4.2083)
+            rtP.Offset_V_ideal = -2*M_PI/3; //-2.3643;//  current phase angle of phase V (15n/1n -> -2.3643)
+            rtP.Offset_W_ideal = -4*M_PI/3; //-4.2083;//   current phase angle of phase W (15n/1n -> -4.2083)
 
             //
             initialization_chain = init_ip_cores;

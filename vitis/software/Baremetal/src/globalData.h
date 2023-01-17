@@ -123,6 +123,7 @@ typedef struct _variableLukasRabenstein {
 	float theta_el_old;
 	float theta_mech_old;
 	float fl_enable_compensation_cogging_old;
+	float torque_LPF_frequ;
 	// Torque constant
 	float ke_idle; // torque constant of the machine (T/ampl_i)
 	float fkt_ke_asym; // factor which represents the reduced torque constant due to the asymmetry

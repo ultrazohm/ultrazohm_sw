@@ -87,7 +87,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Control_Status]= &data->vLR.status_control;
 	js_ch_observable[JSO_ampl_work]= &data->vLR.ampl_work;
 	js_ch_observable[JSO_phase_work]= &data->vLR.phase_work;
-
+	js_ch_observable[JSO_Torque]= &data->av.mechanicalTorque;
+	js_ch_observable[JSO_Torque_LPF]= &data->av.mechanicalTorqueObserved;
 
 
 
@@ -103,7 +104,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorque);
+	js_slowDataArray[JSSD_FLOAT_torque_LPF] 		    = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

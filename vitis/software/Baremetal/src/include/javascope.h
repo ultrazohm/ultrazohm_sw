@@ -57,6 +57,8 @@ enum JS_OberservableData {
 	JSO_Control_Status,
 	JSO_ampl_work,
 	JSO_phase_work,
+	JSO_Torque,
+	JSO_Torque_LPF,
 	JSO_ENDMARKER
 };
 
@@ -70,6 +72,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_Set_imag_current,
 	JSSD_FLOAT_Set_real_current,
 	JSSD_FLOAT_Control_Status,
+	JSSD_FLOAT_torque_LPF,
+	JSSD_FLOAT_torque,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
@@ -86,7 +90,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
-	JSSD_FLOAT_torque,
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,

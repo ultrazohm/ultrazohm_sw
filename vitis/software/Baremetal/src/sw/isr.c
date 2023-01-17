@@ -49,6 +49,8 @@ float current_ramp_duration;
 
 
 
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -73,8 +75,13 @@ void ISR_Control(void *data)
     // Actual Values
     // currents
     codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.15F;		//A * 80.0F/4.0F
-    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F + 0.10F;		//A * 80.0F/4.0F
+    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
    	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
+   	Global_Data.av.mechanicalTorque=-(Global_Data.aa.A2.me.ADC_B5) * 20.0F; // Kistler torque shaft + voltage divider (1/2) -> 5 V equal 100 Nm
+   	// Torque low pass filter
+   	static float torque_lpf_mem_in = 0.0f;
+   	static float torque_lpf_mem_out = 0.0f;
+   	Global_Data.av.mechanicalTorqueObserved = LPF1(Global_Data.av.mechanicalTorque,&torque_lpf_mem_in, &torque_lpf_mem_out,Global_Data.av.pwm_frequency_hz, Global_Data.vLR.torque_LPF_frequ);
    	// dc-link voltage
    	codegenInstance.input.Act_U_ZK = Global_Data.aa.A2.me.ADC_A4 * 12.5F;			//V
    	// mechanical values
@@ -104,7 +111,7 @@ void ISR_Control(void *data)
 		//codegenInstance.input.amplitude_a = Global_Data.vLR.ampl_work;
 		//codegenInstance.input.phase_a = Global_Data.vLR.phase_work;
 		//----------------------------------------------------
-				if(codegenInstance.input.Act_w_el == 0.0F){codegenInstance.input.Act_w_el=0.00001F;}
+		if(codegenInstance.input.Act_w_el == 0.0F){codegenInstance.input.Act_w_el=0.00001F;}
     	// Start: Control algorithm - only if ultrazohm is in control state
     	// Control for TFM with asymmetric phase shift (LR)
 		uz_codegen_step(&codegenInstance);
@@ -212,7 +219,6 @@ int Initialize_ISR()
 	codegenInstance.input.fl_enable_compensation_cogging_ = 0U; // 1 enables the compensation of the cogging torque
 	codegenInstance.input.fl_compensat_CT_current= 1U; // 1 the cogging torque compensation gets through the compensation of the asymmetry; 0 direct cogging torque compensation
 	codegenInstance.input.fl_lookup_table= 0U; // 1 use lookup tables for sin/cos; 0: use sin/cos function
-
 	// Initialize reference values (real32_T)
 	codegenInstance.input.Ref_n = 0.0F;
 	codegenInstance.input.Ref_I_re_ext_mit = 0.0F;
@@ -245,6 +251,7 @@ int Initialize_ISR()
 	//
 	time_current_ramp = 0.0; // Initial time for current ramp
 	current_ramp_duration = 2.0; // time for a current value in sec.
+	Global_Data.vLR.torque_LPF_frequ = 1000.0f;
 	//
     //----------------------------------------------------
     return Status;
@@ -434,20 +441,20 @@ static void CalcCompensatingHarmonics()
 	//
 	//----------------------------------------------------
 	// fourth harmonic -> harmonic_b
-	codegenInstance.input.ordnung_b=4.0F;//4.0F;
-	codegenInstance.input.amplitude_b = -0.63f;//factor_torque_constant *0.4F;
+	codegenInstance.input.ordnung_b= 4.0F;//4.0F;
+	codegenInstance.input.amplitude_b =  -0.63f;//factor_torque_constant *0.4F;
 	codegenInstance.input.phase_b = 5.2F;//-0.2F;
 	//
 	//----------------------------------------------------
 	// sixth harmonic -> harmonic_c
 	codegenInstance.input.ordnung_c = 6.0;//6.0F;
-	codegenInstance.input.amplitude_c =-0.25;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
-	codegenInstance.input.phase_c =5.95;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
+	codegenInstance.input.amplitude_c = -0.25;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
+	codegenInstance.input.phase_c = 5.95;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
 	//
 	//
 	codegenInstance.input.ordnung_d = 0.0F;
 	codegenInstance.input.amplitude_d =  0.0F;
-	codegenInstance.input.phase_d =  0.0F;
+	codegenInstance.input.phase_d =  0.0F;//
 	//
 	return codegenInstance;
 }

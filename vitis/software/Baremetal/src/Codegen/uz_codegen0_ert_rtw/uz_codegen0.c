@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 4.7
+ * Model version                  : 4.8
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Dec 13 09:47:16 2022
+ * C/C++ source code generated on : Tue Jan 17 15:19:36 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -2336,7 +2336,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         rtU->fl_enable_compensation_current, rtU->Act_theta_u_el, rtDW->c,
         rtDW->Merge, rtU->Psi_PM_U, rtU->Psi_PM_V, rtU->Psi_PM_W,
         rtU->fl_lookup_table, &rtY->a_V, &rtDW->Merge4, rtP.Offset_V_ideal,
-        rtP.Offset_V_ideal, 2.3561945F, &rtDW->Strangstromregler_asymetrisch1);
+        rtP.Offset_V_ideal, 2.09439516F, &rtDW->Strangstromregler_asymetrisch1);
 
       /* End of Outputs for SubSystem: '<S10>/Strangstromregler_asymetrisch1' */
     } else {
@@ -2491,7 +2491,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S258>/cos_lookup_table' incorporates:
          *  ActionPort: '<S276>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m + 4.20624352F, &rtDW->Product_d, &rtDW->y);
+        cos_lookup_table(rtDW->theta_m + 4.18879032F, &rtDW->Product_d, &rtDW->y);
 
         /* End of Outputs for SubSystem: '<S258>/cos_lookup_table' */
 
@@ -2561,7 +2561,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S258>/Subsystem' incorporates:
          *  ActionPort: '<S275>/Action Port'
          */
-        Subsystem(rtDW->theta_m + 4.20624352F, &rtDW->Product_d, &rtDW->y);
+        Subsystem(rtDW->theta_m + 4.18879032F, &rtDW->Product_d, &rtDW->y);
 
         /* End of Outputs for SubSystem: '<S258>/Subsystem' */
 

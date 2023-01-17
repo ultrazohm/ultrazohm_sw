@@ -58,8 +58,8 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
     .friction_coefficient = 0.001f,
     .coulomb_friction_constant = 0.001f,
     .inertia = 0.001f,
-    .simulate_mechanical_system = true,
-    .switch_pspl = false};
+    .simulate_mechanical_system = false, //false: set fixed rpm, true: set load torque
+    .switch_pspl = false};               //false: voltage input from CIL, true: voltage input from AXI
 
   // Transformation
   uz_pmsm3ph_transformation_t *transformation = NULL;

@@ -30,7 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -41,7 +43,44 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-//==============================================================================================================================================================
+struct uz_DutyCycle_t output = {0};
+float theta_offset = -0.50f;
+float omega_el_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec = 0.0f;
+float Kp_id = 5.65f;
+float Ki_id = 2715.0f;
+float Kp_iq = 7.11f;
+float Ki_iq = 2715.0f;
+float speed_Kp = 0.0207f; // 0.0207f
+float speed_Ki = 0.207f;
+float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
+float action_current = 3.5f; // I_q für Agenten
+// speed control
+bool ext_clamping = false;
+
+// position control
+float position_ref = 0.0f; // mm
+int pos_strich = 0;         // Striche 0-2000
+float pos_delta = 0;        // mm
+float position_abs = 0.0f;  // mm
+int globalposition = 0;
+int i_counter = 0; // software counter for reference signal
+int counter_ip_core_res = 0; // counter for software timeout
+int counter_for_reset = 0; // counter for occurence of software timeout
+int counter_wait_pos = 0;
+// nn testing
+float old_theta_pendulum=0.0f;
+float old_position=0.0f;
+float angle_derv=0.0f;
+float position_derv=0.0f;
+float position_target=0.0f;
+uint32_t action=0;
+
+
+
+// ip core reset
+extern float offset_theta_pendulum;
+//=============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
 // - triggered from PL
@@ -53,7 +92,9 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

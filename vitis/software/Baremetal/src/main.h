@@ -41,6 +41,10 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_piController/uz_piController.h"
 
 #include "uz/uz_HAL.h"
 

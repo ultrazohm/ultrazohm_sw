@@ -14,9 +14,11 @@
 *******************************************************************************/
 
 #include "../main.h"
+#include "../globalData.h"
 #include "../defines.h"
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 #include "xil_cache.h"
 
 //Variables for JavaScope
@@ -24,7 +26,6 @@ static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
-
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -58,7 +59,9 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Speed_rpm1]		= &data->av.mechanicalRotorSpeed1;
+	js_ch_observable[JSO_Speed_rpm2]		= &data->av.mechanicalRotorSpeed2;
+	js_ch_observable[JSO_Speed_rpm3]		= &data->av.mechanicalRotorSpeed3;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
@@ -67,7 +70,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_Theta_el1] 		= &data->av.theta_elec1;
+	js_ch_observable[JSO_Theta_el2] 		= &data->av.theta_elec2;
+	js_ch_observable[JSO_Theta_el3] 		= &data->av.theta_elec3;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
@@ -84,7 +89,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed1);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;

@@ -17,13 +17,14 @@
 #define ENCODER_H_
 
 #include "../uz/controlToolbox/control_toolbox.h"
-#include "../globalData.h"
+#include "../main.h"
 
-//Defines for averaging the speed from the encoder
-#define SPEED_BUF_SIZE  					2 //3== erster CCS-Versuch
-#define SPEED_BUF_SIZE_INVERS 				1/SPEED_BUF_SIZE
 
-void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
-void update_speed_and_position_of_encoder_on_D5(DS_Data *const data);	// update speed and position in global data struct
-
+void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber);
+void initialize_incremental_encoder_ipcore_on_D5_2(float incrementalEncoderResolution, float motorPolePairNumber);
+void initialize_incremental_encoder_ipcore_on_D5_3(float incrementalEncoderResolution, float motorPolePairNumber);
+void update_speed_and_position_of_encoder_on_D5_1(DS_Data *const data);	// update speed and position in global data struct
+void update_speed_and_position_of_encoder_on_D5_2(DS_Data* const data);
+void update_speed_and_position_of_encoder_on_D5_3(DS_Data* const data);
+void reset_ip_core_of_encoder_on_D5_3(DS_Data* const data);
 #endif /* ENCODER_H_ */

@@ -35,11 +35,15 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
-	JSO_Speed_rpm,
+	JSO_Speed_rpm1,
+	JSO_Speed_rpm2,
+	JSO_Speed_rpm3,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,
-	JSO_Theta_el,
+	JSO_Theta_el1,
+	JSO_Theta_el2,
+	JSO_Theta_el3,
 	JSO_Theta_mech,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
@@ -114,7 +118,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_ENDMARKER
 };
-
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum
 // numbers in the following enum.
@@ -152,12 +155,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
-	send_field_4,
-	send_field_5,
-	send_field_6,
+	Reference speed,
+	Position_DQN_Agent,
+	,
+	,
+	,
+	,
 	SND_FLD_ENDMARKER
 
 
@@ -166,11 +169,11 @@ enum gui_button_mapping {
 
 	SND_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
-	A,
-	A,
-	A,
-	A,
+	m,
+	,
+	,
+	,
+	,
 	SND_LABELS_ENDMARKER
 
 
@@ -178,10 +181,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
+	Speed,
 	receive_field_2,
-	receive_field_3,
-	receive_field_4,
+	Id,
+	Iq,
 	receive_field_5,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
@@ -205,10 +208,10 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_speed,
 	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,

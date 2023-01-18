@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores">
+	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -2435,6 +2435,50 @@
 				</Part>
 			</Family>
 			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:uz_resolver_mech_rev_calc:1.0">
+		</VLNV>
+		<DisplayName value="uz_resolver_mech_rev_calc">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112863072">
+		</CoreRevision>
+		<ComponentPath value="uz_resolver_mech_rev_calc/hdl_prj/ipcore/uz_resolver_mech_rev_calc_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="kintexu">
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>

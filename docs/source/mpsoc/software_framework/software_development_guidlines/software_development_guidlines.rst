@@ -141,20 +141,12 @@ Coding style
 
 - Indentation is a tab with size 8 [#linuxCodingStyle]_
 - Use Vitis autoformat function (``ctrl`` + ``shift`` + ``f``) to conform with coding style
-- To use the UltraZohm coding style import the UltraZohm Vitis settings:
-- In Vitis follow these steps:
-    1. ``Window``
-    2. ``Preferences``
-    3. ``Import`` (bottom left) 
-    4. ``Browse``
-    5. ``ultrazohm_sw/vitis/ultrazohm_vitis_settings.epf``
-    6. ``Finish``
-    7. Restart Vitis
-    8. (Optional): Change theme (Light/Dark)
-    9. ``Window``
-    10. ``Preferences``
-    11. ``Additional`` -> ``General`` -> ``Appearance``
-    12. Choose a ``Theme`` to adjust color palette
+- Optional: Change theme (Light/Dark)
+
+    #. ``Window``
+    #. ``Preferences``
+    #. ``Additional`` -> ``General`` -> ``Appearance``
+    #. Choose a ``Theme`` to adjust color palette
 
 Static code analysis
 --------------------
@@ -293,7 +285,7 @@ Sources
 .. [#CleanCode] Clean Code, A Handbook of Agile Software Craftsmanship, Robert C Martin, 2009
 .. [#MakingEmbedded] Making Embedded Systems, Elecia White, 2011
 .. [#TDD] Test-Driven Development for Embedded C, James W. Grenning, 2011
-.. [#ModernC] `Modern C, Jens Gusted <https://gforge.inria.fr/frs/download.php/latestfile/5298/ModernC.pdf>`_
+.. [#ModernC] `Modern C, Jens Gusted <https://hal.inria.fr/hal-02383654/document>`_
 .. [#misra] Guidelines for the Use of the C Language in Critical Systems, ISBN 978-1-906400-10-1 (paperback), ISBN 978-1-906400-11-8 (PDF), March 2013.
 .. [#cert] `SEI CERT C Coding Standard <https://wiki.sei.cmu.edu/confluence/display/c/3+Recommendations>`_
 .. [#linuxCodingStyle] `Linux kernel coding style <https://www.kernel.org/doc/html/v4.14/process/coding-style.html>`_

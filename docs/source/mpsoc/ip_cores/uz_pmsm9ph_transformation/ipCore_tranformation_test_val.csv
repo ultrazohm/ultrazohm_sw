@@ -1,0 +1,5 @@
+﻿Port Name,Value Decimal,Value Hex
+theta_el,:math:`\frac{\pi}{8}`,0x1921
+x_abc1/2/3_ll_pl(1),111.9,0x06fe666
+x_abc1/2/3_ll_pl(2),31.55,0x01f8ccc
+x_abc1/2/3_ll_pl(3),-101.99,0x79a028f

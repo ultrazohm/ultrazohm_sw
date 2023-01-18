@@ -75,7 +75,7 @@ void ISR_Control(void *data)
     // Actual Values
     // currents
     codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.15F;		//A * 80.0F/4.0F
-    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
+    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 0.50F;		//A * 80.0F/4.0F
    	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
    	Global_Data.av.mechanicalTorque=-(Global_Data.aa.A2.me.ADC_B5) * 20.0F; // Kistler torque shaft + voltage divider (1/2) -> 5 V equal 100 Nm
    	// Torque low pass filter
@@ -435,21 +435,21 @@ static void CalcCompensatingHarmonics()
 	//
 	//----------------------------------------------------
 	// second harmonic -> harmonic_a
-	codegenInstance.input.ordnung_a = 2.0;
-	codegenInstance.input.amplitude_a = -2.4F;//factor_torque_constant*1.08;
-	codegenInstance.input.phase_a = 0.45F;//(0.005818*codegenInstance.input.Ref_I_im_ext_mit +  0.828908    -0.3352); // load depend phase for cogging torque compensation
+	codegenInstance.input.ordnung_a = 2.0F;// TFM_config_15n_1n value ->2.0;
+	codegenInstance.input.amplitude_a = 1.68F;// TFM_config_15n_1n value ->-2.4F;//factor_torque_constant*1.08;
+	codegenInstance.input.phase_a = -0.67F;// TFM_config_15n_1n value ->0.45F;//(0.005818*codegenInstance.input.Ref_I_im_ext_mit +  0.828908    -0.3352); // load depend phase for cogging torque compensation
 	//
 	//----------------------------------------------------
 	// fourth harmonic -> harmonic_b
-	codegenInstance.input.ordnung_b= 4.0F;//4.0F;
-	codegenInstance.input.amplitude_b =  -0.63f;//factor_torque_constant *0.4F;
-	codegenInstance.input.phase_b = 5.2F;//-0.2F;
+	codegenInstance.input.ordnung_b= 4.0F;// TFM_config_15n_1n value ->4.0F;//4.0F;
+	codegenInstance.input.amplitude_b =  0.685F;// TFM_config_15n_1n value ->-0.63f;//factor_torque_constant *0.4F;
+	codegenInstance.input.phase_b = -2.85F;// TFM_config_15n_1n value ->5.2F;//-0.2F;
 	//
 	//----------------------------------------------------
 	// sixth harmonic -> harmonic_c
-	codegenInstance.input.ordnung_c = 6.0;//6.0F;
-	codegenInstance.input.amplitude_c = -0.25;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
-	codegenInstance.input.phase_c = 5.95;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
+	codegenInstance.input.ordnung_c = 6.0F;// TFM_config_15n_1n value ->6.0;//6.0F;
+	codegenInstance.input.amplitude_c = 0.3316F;// TFM_config_15n_1n value ->-0.25;//factor_torque_constant *(0.0018*powf(codegenInstance.input.Ref_I_im_ext_mit,2)+0.0034*codegenInstance.input.Ref_I_im_ext_mit+0.1674);
+	codegenInstance.input.phase_c = -1.05F;// TFM_config_15n_1n value -> 5.95;//-0.0308*codegenInstance.input.Ref_I_im_ext_mit+0.932;
 	//
 	//
 	codegenInstance.input.ordnung_d = 0.0F;

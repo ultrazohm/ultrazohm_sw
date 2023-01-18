@@ -72,6 +72,13 @@ uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
 uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
 uz_6ph_abc_t phase_ref_volts = {0.0f};
 
+// Temp:
+uz_6ph_alphabeta_t temp_sept = {0};
+uz_6ph_abc_t temp_setp_traf;
+
+//end Temp
+
+
 uz_3ph_abc_t input1 = {0.0f};
 uz_3ph_abc_t input2 = {0.0f};
 struct uz_DutyCycle_t output1 = {0};
@@ -136,12 +143,12 @@ void ISR_Control(void *data)
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
 
     // transform phase currents
-    six_ph_currents.a1 = Global_Data.av.i_a1_filt;
-    six_ph_currents.b1 = Global_Data.av.i_b1_filt;
-    six_ph_currents.c1 = Global_Data.av.i_c1_filt;
-    six_ph_currents.a2 = Global_Data.av.i_a2_filt;
-    six_ph_currents.b2 = Global_Data.av.i_b2_filt;
-    six_ph_currents.c2 = Global_Data.av.i_c2_filt;
+    six_ph_currents.a1 = Global_Data.av.i_a1;
+    six_ph_currents.b1 = Global_Data.av.i_b1;
+    six_ph_currents.c1 = Global_Data.av.i_c1;
+    six_ph_currents.a2 = Global_Data.av.i_a2;
+    six_ph_currents.b2 = Global_Data.av.i_b2;
+    six_ph_currents.c2 = Global_Data.av.i_c2;
     six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
 
 
@@ -192,12 +199,12 @@ void ISR_Control(void *data)
 		//ParaID
     	//comment out output1/2 lines if FOC is used!!!!!!!
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	output1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
+    	/*output1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
     	output1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
     	output1.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
     	output2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
     	output2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
-    	output2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
+    	output2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;*/
     	//ParaID end
 
     	//FOC
@@ -207,23 +214,27 @@ void ISR_Control(void *data)
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
     	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
+    	//Temp:
+		phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(temp_sept);
+		//temp end
     	input1.a = phase_ref_volts.a1;
     	input1.b = phase_ref_volts.b1;
     	input1.c = phase_ref_volts.c1;
     	input2.a = phase_ref_volts.a2;
     	input2.b = phase_ref_volts.b2;
     	input2.c = phase_ref_volts.c2;
-    	//output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
-    	//output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
+    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
+    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
     	//FOC end
 
+
     	//PWM dont comment out!!
-    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
-    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
+    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U + six_ph_currents.a1/fabs(six_ph_currents.a1)*0.02f;
+    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V + six_ph_currents.b1/fabs(six_ph_currents.b1)*0.02f;
+    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W + six_ph_currents.c1/fabs(six_ph_currents.c1)*0.02f;
+    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U + six_ph_currents.a2/fabs(six_ph_currents.a2)*0.02f;
+    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V + six_ph_currents.b2/fabs(six_ph_currents.b2)*0.02f;
+    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W + six_ph_currents.c2/fabs(six_ph_currents.c2)*0.02f;
 
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

@@ -50,6 +50,7 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void) {
     self->PtrToModelData->dwork=&self->rtDW;
     self->PtrToModelData->inputs=&self->input;
     self->PtrToModelData->outputs=&self->output;
+    ElectricalID_6ph_codegen_initialize(self->PtrToModelData);
     return (self);
 }
 

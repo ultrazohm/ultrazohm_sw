@@ -80,12 +80,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
 	js_ch_observable[JSO_state] = &(activeState);
-	js_ch_observable[JSO_DCa1] = &output1.DutyCycle_U;
-	js_ch_observable[JSO_DCb1] = &output1.DutyCycle_V;
-	js_ch_observable[JSO_DCc1] = &output1.DutyCycle_W;
-	js_ch_observable[JSO_DCa2] = &output2.DutyCycle_U;
-	js_ch_observable[JSO_DCb2] = &output2.DutyCycle_V;
-	js_ch_observable[JSO_DCc2] = &output2.DutyCycle_W;
   js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_abc.a;
   js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_abc.b;
   js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_abc.c;
@@ -103,10 +97,6 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.u_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.u_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

@@ -120,7 +120,12 @@ float movave_length = 0.0f;
 
 
 
-//------------------------------------
+
+//ParaID
+#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+extern uz_ParameterID_Data_t ParaID_Data;
+extern uz_ParameterID_6ph_t* ParameterID;
+//end
 
 
 
@@ -185,6 +190,16 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
+
+	//ParaID
+		ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
+		ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(m_6ph_abc_currents, Global_Data.av.theta_elec);
+		ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
+		ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
+		ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
+		ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
+		ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
+		//ParaID ende
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,18 +365,16 @@ void ISR_Control(void *data)
 
     //write duty-cycles
 
-    	//Temp:
-		phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(temp_sept);
-		//temp end
-		input1.a = phase_ref_volts.a1;
-		input1.b = phase_ref_volts.b1;
-		input1.c = phase_ref_volts.c1;
-		input2.a = phase_ref_volts.a2;
-		input2.b = phase_ref_volts.b2;
-		input2.c = phase_ref_volts.c2;
-		dutyCycles_set1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK);
-		dutyCycles_set2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK);
-		//FOC end
+
+    	//ParaID
+		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+		dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
+		dutyCycles_set1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
+		dutyCycles_set1.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
+		dutyCycles_set2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
+		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
+		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
+		//ParaID end
 
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
     	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;

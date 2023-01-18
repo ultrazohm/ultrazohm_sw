@@ -11,24 +11,24 @@ rename_channels_manually = 0;
 import_data_to_simulink_datainspector = 1;
 overwrite_data_in_simulink_datainspector = 1;
 
-% %% import latest csv
-% Logfile_list = dir('Log_*.csv');
-% %chose latest logfile which is not empty
-% Logfile_list_size = Logfile_list.bytes;
-% for logfile_list_index = size(Logfile_list,1):-1:1
-%     if (Logfile_list(logfile_list_index).bytes>360)
-%         break;
-%     elseif(delete_empty_log_files == 1)
-%         % delete the most recent empty logfiles
-%         delete_file = [Logfile_list(logfile_list_index).folder,'\',Logfile_list(logfile_list_index).name];
-%         delete(delete_file)
-%         disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
-%     end
-% end
-% file_name = Logfile_list(logfile_list_index).name
+%% import latest csv
+Logfile_list = dir('Log_*.csv');
+%chose latest logfile which is not empty
+Logfile_list_size = Logfile_list.bytes;
+for logfile_list_index = size(Logfile_list,1):-1:1
+    if (Logfile_list(logfile_list_index).bytes>360)
+        break;
+    elseif(delete_empty_log_files == 1)
+        % delete the most recent empty logfiles
+        delete_file = [Logfile_list(logfile_list_index).folder,'\',Logfile_list(logfile_list_index).name];
+        delete(delete_file)
+        disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
+    end
+end
+file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-file_name = ['Sollwertspruenge_epsilon_02_1000rpm_c1OPF.csv'];
+% file_name = 'Log_2022-02-16_10-27-23.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

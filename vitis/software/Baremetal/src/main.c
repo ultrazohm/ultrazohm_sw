@@ -16,6 +16,13 @@
 // Includes from own files
 #include "main.h"
 
+
+//ParameterID Code
+#include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "uz/uz_math_constants.h"
+uz_ParameterID_6ph_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -283,6 +290,7 @@ int main(void)
             initialization_chain = init_software;
             break;
         case init_software:
+        	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);

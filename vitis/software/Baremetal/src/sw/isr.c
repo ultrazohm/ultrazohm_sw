@@ -237,12 +237,12 @@ int Initialize_ISR()
 	codegenInstance.input.ordnung_d = 0.0F;
 	codegenInstance.input.phase_d = 0.0F;
 	// Initialize parameters of the asymmetry (for compensation, creal32_T)
-	codegenInstance.input.Psi_PM_U.re = +0.01691371537745F;//0.0185800F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_U.im = +0.000000000000000F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
-	codegenInstance.input.Psi_PM_V.re = -0.012530035337452F;//-0.0131380F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_V.im = -0.012340872957559F;//-0.0131380F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
-	codegenInstance.input.Psi_PM_W.re = -0.007978636850798F;//-0.0091492F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
-	codegenInstance.input.Psi_PM_W.im =  0.014430547280038F;//0.0161712F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	codegenInstance.input.Psi_PM_U.re = +0.0167226F; //value 15n_1n -> +0.01691371537745F;//0.0185800F; // real part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_U.im = +0.0000000F; //value 15n_1n -> +0.000000000000000F; // imaginary part of flux linkage of phase U as complex number (amplitude * exp(phase angle U))
+	codegenInstance.input.Psi_PM_V.re = -0.0112042F; //value 15n_1n -> -0.012530035337452F;//-0.0131380F; // real part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_V.im = -0.0147213F; //value 15n_1n -> -0.012340872957559F;//-0.0131380F; // imaginary part of flux linkage of phase V as complex number (amplitude * exp(phase angle V))
+	codegenInstance.input.Psi_PM_W.re = -0.0061064F; //value 15n_1n -> -0.007978636850798F;//-0.0091492F; // real part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
+	codegenInstance.input.Psi_PM_W.im = +0.0147373F; //value 15n_1n -> 0.014430547280038F;//0.0161712F; // imaginary part of flux linkage of phase W as complex number (amplitude * exp(phase angle W))
 	//
 	// Reference values
 	codegenInstance.input.Ref_n = 0.0F; //Global_Data.rasv.referenceSpeed;

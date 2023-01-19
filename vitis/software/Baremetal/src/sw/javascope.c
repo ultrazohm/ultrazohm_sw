@@ -34,6 +34,12 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+extern float theta_mech_res_calc_ip;
+extern float theta_elec_res_calc_ip;
+extern float theta_mech_calc_from_resolver;
+
+extern float theta_mech_resolver_ip;
+extern float theta_elec_resolver_ip;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -59,6 +65,8 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_theta_m_res_calc] = &theta_mech_res_calc_ip;
+	js_ch_observable[JSO_theta_el_res_calc] = &theta_elec_res_calc_ip;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
@@ -67,8 +75,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_Theta_el] 		= &theta_elec_resolver_ip;
+	js_ch_observable[JSO_theta_mech] 	= &theta_mech_resolver_ip;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

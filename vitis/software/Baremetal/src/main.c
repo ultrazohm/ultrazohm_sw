@@ -90,7 +90,15 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            //initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_IP = initialize_resolverIP_on_D5();
+
+            //resolver_mech_rev_calc
+            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x100, 2); //resolver polepairs
+            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x108, 65535); //position_intmax
+            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x10C, 5); //machine polepairs
+            uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x110, 0.003814697f); //bitToRPS Factor
+
             initialization_chain = print_msg;
             break;
         case print_msg:

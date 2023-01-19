@@ -12,7 +12,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-
+/*
 #include <stdint.h>
 #include <math.h>
 #include "../include/encoder.h"
@@ -51,3 +51,4 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }
+*/

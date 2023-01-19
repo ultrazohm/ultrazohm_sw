@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../include/uz_resolverIP_init.h"
+#include "../uz/uz_math_constants.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +42,24 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+float theta_mech_resolver_ip = 0.0f;
+float theta_elec_resolver_ip = 0.0f;
+float speed_rpm_resolver_ip = 0.0f;
+
+float theta_mech_res_calc_ip = 0.0f;
+float theta_elec_res_calc_ip = 0.0f;
+
+
+// Data for determination of mechanical resolver angle
+float theta_mech_old=0.0f;
+int32_t cnt = 0U;
+bool cnt_reset = 0;
+float cnt_float=0.0f;
+float cnt_reset_float=0.0f;
+float theta_mech_calc_from_resolver = 0.0f;
+float theta_m_max = 0.0f;
+float theta_m_min = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -53,7 +73,19 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_position_and_speed_of_resolverIP(&Global_Data);
+
+
+    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x114),20); //position_mech_2pi
+	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_el_2pi
+
+
+    theta_mech_resolver_ip = theta_mech_calc_from_resolver;
+    theta_elec_resolver_ip = fmod(theta_mech_calc_from_resolver*5.0f, 2.0f*UZ_PIf);
+
+    speed_rpm_resolver_ip = Global_Data.av.mechanicalRotorSpeed;
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -70,6 +102,46 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    // Determine mechanical angle of resolver
+        if(theta_mech_old-Global_Data.av.theta_mech > 4.0f) {
+        	cnt++;
+        	cnt_float=(float)cnt;
+        } else if (theta_mech_old-Global_Data.av.theta_mech < -4.0f) {
+        	cnt--;
+        	cnt_float=(float)cnt;
+        }
+
+        if(cnt > 1 || cnt < -1) {
+        	cnt = 0;
+        	cnt_float = 0.0f;
+        }
+
+        if(cnt_reset == 1) {
+        	cnt = 0;
+        	cnt_float = 0;
+        	cnt_reset = 0;
+        	cnt_reset_float=0;
+        }
+
+
+        if(cnt >= 0){
+        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_IP) + cnt*2*3.14159265358979323846/2.0f;
+        } else {
+        	theta_mech_calc_from_resolver = Global_Data.av.theta_mech/2.0f + (2+cnt)*2*3.14159265358979323846/2.0f;
+        }
+
+        theta_mech_old = Global_Data.av.theta_mech;
+
+        if (Global_Data.av.theta_mech <= theta_m_min) {
+        	theta_m_min = Global_Data.av.theta_mech;
+        }
+
+        if (Global_Data.av.theta_mech >= theta_m_max) {
+        	theta_m_max = Global_Data.av.theta_mech;
+        }
+
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

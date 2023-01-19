@@ -20,10 +20,18 @@ annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/De
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay19', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay2', 1, 1, '');
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay2', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay21', 1, 1, '');
+annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay21', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay22', 1, 1, '');
+annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay22', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay23', 1, 1, '');
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay23', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay24', 1, 1, '');
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay24', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay25', 1, 1, '');
+annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay25', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay26', 1, 1, '');
+annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay26', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay6', 1, 1, '');
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay6', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay8', 1, 1, '');
@@ -54,6 +62,8 @@ annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/de
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/delayMatch18', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/delayMatch19', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/delayMatch20', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/delayMatch21', 1, 1, '');
+annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/delayMatch22', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay4', 1, 1, '');
 annotate_port('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay4', 1, 1, '');
 annotate_port('gm_uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/Delay5', 1, 1, '');

@@ -75,6 +75,18 @@ uz_6ph_abc_t phase_ref_volts = {0.0f};
 // Temp:
 uz_6ph_alphabeta_t temp_sept = {0};
 uz_6ph_abc_t temp_setp_traf;
+#define DEADTIME_US 1.0f
+float deadtime_comp(float duty_cycle,float deadtime_us)
+{
+	if(duty_cycle>0.5f)
+		return duty_cycle + deadtime_us/100.0f;
+	else if(duty_cycle<0.5f)
+		return duty_cycle - deadtime_us/100.0f;
+	else if(duty_cycle==0.5f)
+		return duty_cycle;
+	else
+		return 0.0f;
+}
 
 //end Temp
 
@@ -227,14 +239,22 @@ void ISR_Control(void *data)
     	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
     	//FOC end
 
+    	// compensated PWM
+		Global_Data.rasv.halfBridge1DutyCycle = deadtime_comp(output1.DutyCycle_U,DEADTIME_US);
+		Global_Data.rasv.halfBridge2DutyCycle = deadtime_comp(output1.DutyCycle_V,DEADTIME_US);
+		Global_Data.rasv.halfBridge3DutyCycle = deadtime_comp(output1.DutyCycle_W,DEADTIME_US);
+		Global_Data.rasv.halfBridge4DutyCycle = deadtime_comp(output2.DutyCycle_U,DEADTIME_US);
+		Global_Data.rasv.halfBridge5DutyCycle = deadtime_comp(output2.DutyCycle_V,DEADTIME_US);
+		Global_Data.rasv.halfBridge6DutyCycle = deadtime_comp(output2.DutyCycle_W,DEADTIME_US);
+
 
     	//PWM dont comment out!!
-    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U + six_ph_currents.a1/fabs(six_ph_currents.a1)*0.02f;
+    	/*Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U + six_ph_currents.a1/fabs(six_ph_currents.a1)*0.02f;
     	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V + six_ph_currents.b1/fabs(six_ph_currents.b1)*0.02f;
     	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W + six_ph_currents.c1/fabs(six_ph_currents.c1)*0.02f;
     	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U + six_ph_currents.a2/fabs(six_ph_currents.a2)*0.02f;
     	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V + six_ph_currents.b2/fabs(six_ph_currents.b2)*0.02f;
-    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W + six_ph_currents.c2/fabs(six_ph_currents.c2)*0.02f;
+    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W + six_ph_currents.c2/fabs(six_ph_currents.c2)*0.02f;*/
 
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

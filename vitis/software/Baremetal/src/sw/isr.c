@@ -49,6 +49,9 @@ float speed_rpm_resolver_ip = 0.0f;
 
 float theta_mech_res_calc_ip = 0.0f;
 float theta_elec_res_calc_ip = 0.0f;
+float omega_mech_res_calc_ip = 0.0f;
+float rpm_mech_res_calc_ip = 0.0f;
+float cnt_ip =0.0f;
 
 
 // Data for determination of mechanical resolver angle
@@ -60,6 +63,7 @@ float cnt_reset_float=0.0f;
 float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -75,10 +79,12 @@ void ISR_Control(void *data)
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
     update_position_and_speed_of_resolverIP(&Global_Data);
+    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_MECH_REV_CA_0_BASEADDR + 0x104, false); // cnt_reset false=normal operation
 
-
-    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x114),20); //position_mech_2pi
-	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_el_2pi
+    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_MECH_REV_CA_0_BASEADDR + 0x114),20); //position_mech_2pi
+	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_MECH_REV_CA_0_BASEADDR + 0x118),20); //position_el_2pi
+	omega_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_MECH_REV_CA_0_BASEADDR + 0x11C),11); //omega_mech
+	rpm_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_RESOLVER_MECH_REV_CA_0_BASEADDR + 0x120),11); //rpm_mech
 
 
     theta_mech_resolver_ip = theta_mech_calc_from_resolver;

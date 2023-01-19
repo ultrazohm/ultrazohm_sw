@@ -52,7 +52,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core name
 </td>
-<td class="summaryTableSndColOddRow">resolver_mech_rev_calc
+<td class="summaryTableSndColOddRow">uz_resolver_mech_rev_calc
 </td>
 </tr>
 <tr>
@@ -64,13 +64,13 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\*.*')">hdl_prj\ipcore\resolver_mech_rev_calc_v1_0</a>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\*.*')">hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0</a>
 </td>
 </tr>
 <tr>
 <td>IP core zip file name
 </td>
-<td class="summaryTableSndColEvenRow">resolver_mech_rev_calc_v1_0.zip
+<td class="summaryTableSndColEvenRow">uz_resolver_mech_rev_calc_v1_0.zip
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.63
+<td class="summaryTableSndColOddRow">1.67
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">19-Jan-2023 09:09:36
+<td class="summaryTableSndColOddRow">19-Jan-2023 16:20:02
 </td>
 </tr>
 <tr>
@@ -336,15 +336,15 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:230')">cnt</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:230')">cnt_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
 <td class="distinctCellColor">int32
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"124"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -459,7 +459,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2301190909
+<td>contains unique IP timestamp (yymmddHHMM): 2301191620
 </td>
 </tr>
 <tr>
@@ -534,6 +534,14 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 <td class="distinctCellColor">data register for Outport rpm_mech_AXI
 </td>
 </tr>
+<tr>
+<td>cnt_AXI_Data
+</td>
+<td>0x124
+</td>
+<td>data register for Outport cnt_AXI
+</td>
+</tr>
 </tbody>
 </table>
 <br/>
@@ -541,7 +549,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\include\resolver_mech_rev_calc_addr.h')">include\resolver_mech_rev_calc_addr.h</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\include\uz_resolver_mech_rev_calc_addr.h')">include\uz_resolver_mech_rev_calc_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -563,7 +571,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 5, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 6, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -601,64 +609,64 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\*.*')">hdl_prj\ipcore\resolver_mech_rev_calc_v1_0</a>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\*.*')">hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\*.*')">resolver_mech_rev_calc_v1_0.zip</a>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\*.*')">uz_resolver_mech_rev_calc_v1_0.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="matlab:web('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\doc\uz_resolver_mech_revolution_float_ip_core_report.html')">doc\uz_resolver_mech_revolution_float_ip_core_report.html</a>
+<a href="matlab:web('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\doc\uz_resolver_mech_revolution_float_ip_core_report.html')">doc\uz_resolver_mech_revolution_float_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc_pkg.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc_pkg.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc_pkg.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_Detect_Rise_Positive.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_Detect_Rise_Positive.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_Detect_Rise_Positive.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_Detect_Rise_Positive.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_revolution_counter.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_revolution_counter.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_revolution_counter.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_revolution_counter.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_add_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_add_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_add_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_add_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_sfix_32_En0_to_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_sfix_32_En0_to_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_sfix_32_En0_to_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_sfix_32_En0_to_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_24_En11.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_24_En11.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_24_En11.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_24_En11.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_fix_16_En0_to_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_fix_16_En0_to_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_fix_16_En0_to_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_fix_16_En0_to_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_fix_16_En0.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_fix_16_En0.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_fix_16_En0.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_fix_16_En0.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_27_En20.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_27_En20.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_27_En20.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_single_to_sfix_27_En20.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_sfix_16_En0_to_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_convert_sfix_16_En0_to_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_sfix_16_En0_to_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_convert_sfix_16_En0_to_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_div_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_div_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_div_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_div_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_mod_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_mod_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_mod_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_mod_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_nfp_mul_single.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_nfp_mul_single.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_mul_single.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_nfp_mul_single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc.vhd')">hdl\vhdl\resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_src_uz_resolver_mech_rev_calc.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_reset_sync.vhd')">hdl\vhdl\resolver_mech_rev_calc_reset_sync.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_reset_sync.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_reset_sync.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_dut.vhd')">hdl\vhdl\resolver_mech_rev_calc_dut.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_dut.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_dut.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_addr_decoder.vhd')">hdl\vhdl\resolver_mech_rev_calc_addr_decoder.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_addr_decoder.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_addr_decoder.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_axi_lite_module.vhd')">hdl\vhdl\resolver_mech_rev_calc_axi_lite_module.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_axi_lite_module.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_axi_lite_module.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc_axi_lite.vhd')">hdl\vhdl\resolver_mech_rev_calc_axi_lite.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc_axi_lite.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc_axi_lite.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\hdl\vhdl\resolver_mech_rev_calc.vhd')">hdl\vhdl\resolver_mech_rev_calc.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\hdl\vhdl\uz_resolver_mech_rev_calc.vhd')">hdl\vhdl\uz_resolver_mech_rev_calc.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\resolver_mech_rev_calc_v1_0\include\resolver_mech_rev_calc_addr.h')">include\resolver_mech_rev_calc_addr.h</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_resolver_mech_rev_calc_v1_0\include\uz_resolver_mech_rev_calc_addr.h')">include\uz_resolver_mech_rev_calc_addr.h</a>
 </div>
 </body>
 </html>

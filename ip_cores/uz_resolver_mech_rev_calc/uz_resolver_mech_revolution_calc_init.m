@@ -13,6 +13,7 @@ t_ADC = 1/f_ADC;    % ADC sample time in s
 resolver_polepairs = 3;
 machine_polepairs = 5;
 f_mech = 500;
+shift = pi;
 
 rps_max_16bit = 125;
 rps_max_14bit = 500;

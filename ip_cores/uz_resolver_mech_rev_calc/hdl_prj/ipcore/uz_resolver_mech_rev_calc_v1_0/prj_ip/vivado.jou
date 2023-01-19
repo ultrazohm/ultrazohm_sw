@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Wed Jan 18 10:32:47 2023
-# Process ID: 15052
+# Start of session at: Thu Jan 19 16:20:08 2023
+# Process ID: 28312
 # Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolver_mech_rev_calc/hdl_prj/ipcore/uz_resolver_mech_rev_calc_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolver_mech_rev_calc/hdl_prj/ipcore/uz_resolver_mech_rev_calc_v1_0/prj_ip/vivado.log

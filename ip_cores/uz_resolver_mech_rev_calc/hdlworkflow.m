@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.10 (R2021a) at 09:10:21 on 19/01/2023
+% Generated with MATLAB 9.10 (R2021a) at 16:20:41 on 19/01/2023
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_resolver_mech_rev_calc\hdlworkflow.m'
 %     Overwrite : true
@@ -37,7 +37,7 @@ hdlset_param('uz_resolver_mech_revolution_float', 'Traceability', 'on');
 hdlset_param('uz_resolver_mech_revolution_float', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', 'IPCoreName', 'resolver_mech_rev_calc');
+hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', 'IPCoreName', 'uz_resolver_mech_rev_calc');
 hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
@@ -93,8 +93,8 @@ hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_me
 hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_mech', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_AXI', 'IOInterfaceMapping', 'x"124"');
 
 % Set Outport HDL parameters
 hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/done', 'IOInterface', 'External Port');

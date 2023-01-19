@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.8
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Jan 17 15:19:36 2023
+ * C/C++ source code generated on : Thu Jan 19 18:04:57 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -1143,7 +1143,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S83>/cos_lookup_table' incorporates:
      *  ActionPort: '<S86>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e * 2.0F, &localDW->Delay1_c,
+    cos_lookup_table(localDW->theta_e * 3.0F, &localDW->Delay1_c,
                      &localDW->im_lim_k);
 
     /* End of Outputs for SubSystem: '<S83>/cos_lookup_table' */
@@ -1151,7 +1151,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S83>/Subsystem' incorporates:
      *  ActionPort: '<S85>/Action Port'
      */
-    Subsystem(localDW->theta_e * 2.0F, &localDW->Delay1_c, &localDW->im_lim_k);
+    Subsystem(localDW->theta_e * 3.0F, &localDW->Delay1_c, &localDW->im_lim_k);
 
     /* End of Outputs for SubSystem: '<S83>/Subsystem' */
   }
@@ -1166,7 +1166,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S84>/cos_lookup_table' incorporates:
      *  ActionPort: '<S94>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g * 2.0F, &localDW->Merge_gt,
+    cos_lookup_table(localDW->Delay1_g * 3.0F, &localDW->Merge_gt,
                      &localDW->Sum_j);
 
     /* End of Outputs for SubSystem: '<S84>/cos_lookup_table' */
@@ -1174,7 +1174,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S84>/Subsystem' incorporates:
      *  ActionPort: '<S93>/Action Port'
      */
-    Subsystem(localDW->Delay1_g * 2.0F, &localDW->Merge_gt, &localDW->Sum_j);
+    Subsystem(localDW->Delay1_g * 3.0F, &localDW->Merge_gt, &localDW->Sum_j);
 
     /* End of Outputs for SubSystem: '<S84>/Subsystem' */
   }
@@ -1189,7 +1189,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S102>/cos_lookup_table' incorporates:
      *  ActionPort: '<S105>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e * 4.0F, &localDW->re_lim_b,
+    cos_lookup_table(localDW->theta_e * 5.0F, &localDW->re_lim_b,
                      &localDW->Delay1_m);
 
     /* End of Outputs for SubSystem: '<S102>/cos_lookup_table' */
@@ -1197,7 +1197,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S102>/Subsystem' incorporates:
      *  ActionPort: '<S104>/Action Port'
      */
-    Subsystem(localDW->theta_e * 4.0F, &localDW->re_lim_b, &localDW->Delay1_m);
+    Subsystem(localDW->theta_e * 5.0F, &localDW->re_lim_b, &localDW->Delay1_m);
 
     /* End of Outputs for SubSystem: '<S102>/Subsystem' */
   }
@@ -1212,7 +1212,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S103>/cos_lookup_table' incorporates:
      *  ActionPort: '<S113>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g * 4.0F, &localDW->Merge_ac,
+    cos_lookup_table(localDW->Delay1_g * 5.0F, &localDW->Merge_ac,
                      &localDW->Sum_o);
 
     /* End of Outputs for SubSystem: '<S103>/cos_lookup_table' */
@@ -1220,7 +1220,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S103>/Subsystem' incorporates:
      *  ActionPort: '<S112>/Action Port'
      */
-    Subsystem(localDW->Delay1_g * 4.0F, &localDW->Merge_ac, &localDW->Sum_o);
+    Subsystem(localDW->Delay1_g * 5.0F, &localDW->Merge_ac, &localDW->Sum_o);
 
     /* End of Outputs for SubSystem: '<S103>/Subsystem' */
   }
@@ -1235,7 +1235,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S121>/cos_lookup_table' incorporates:
      *  ActionPort: '<S124>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e * 6.0F, &localDW->im_lim_o,
+    cos_lookup_table(localDW->theta_e * 7.0F, &localDW->im_lim_o,
                      &localDW->re_lim_g);
 
     /* End of Outputs for SubSystem: '<S121>/cos_lookup_table' */
@@ -1243,7 +1243,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S121>/Subsystem' incorporates:
      *  ActionPort: '<S123>/Action Port'
      */
-    Subsystem(localDW->theta_e * 6.0F, &localDW->im_lim_o, &localDW->re_lim_g);
+    Subsystem(localDW->theta_e * 7.0F, &localDW->im_lim_o, &localDW->re_lim_g);
 
     /* End of Outputs for SubSystem: '<S121>/Subsystem' */
   }
@@ -1258,7 +1258,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S122>/cos_lookup_table' incorporates:
      *  ActionPort: '<S132>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g * 6.0F, &localDW->theta_e,
+    cos_lookup_table(localDW->Delay1_g * 7.0F, &localDW->theta_e,
                      &localDW->Sum_d);
 
     /* End of Outputs for SubSystem: '<S122>/cos_lookup_table' */
@@ -1266,7 +1266,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     /* Outputs for IfAction SubSystem: '<S122>/Subsystem' incorporates:
      *  ActionPort: '<S131>/Action Port'
      */
-    Subsystem(localDW->Delay1_g * 6.0F, &localDW->theta_e, &localDW->Sum_d);
+    Subsystem(localDW->Delay1_g * 7.0F, &localDW->theta_e, &localDW->Sum_d);
 
     /* End of Outputs for SubSystem: '<S122>/Subsystem' */
   }
@@ -2498,42 +2498,42 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S303>/cos_lookup_table' incorporates:
          *  ActionPort: '<S306>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m * 2.0F, &rtDW->Delay1_a, &rtDW->Switch2);
+        cos_lookup_table(rtDW->theta_m * 3.0F, &rtDW->Delay1_a, &rtDW->Switch2);
 
         /* End of Outputs for SubSystem: '<S303>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S304>/cos_lookup_table' incorporates:
          *  ActionPort: '<S314>/Action Port'
          */
-        cos_lookup_table(rtDW->Delay1 * 2.0F, &rtDW->Merge_g, &rtDW->Sum_a);
+        cos_lookup_table(rtDW->Delay1 * 3.0F, &rtDW->Merge_g, &rtDW->Sum_a);
 
         /* End of Outputs for SubSystem: '<S304>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S322>/cos_lookup_table' incorporates:
          *  ActionPort: '<S325>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m * 4.0F, &rtDW->re_lim, &rtDW->Delay1_k);
+        cos_lookup_table(rtDW->theta_m * 5.0F, &rtDW->re_lim, &rtDW->Delay1_k);
 
         /* End of Outputs for SubSystem: '<S322>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S323>/cos_lookup_table' incorporates:
          *  ActionPort: '<S333>/Action Port'
          */
-        cos_lookup_table(rtDW->Delay1 * 4.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
+        cos_lookup_table(rtDW->Delay1 * 5.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
 
         /* End of Outputs for SubSystem: '<S323>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S341>/cos_lookup_table' incorporates:
          *  ActionPort: '<S344>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m * 6.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
+        cos_lookup_table(rtDW->theta_m * 7.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
 
         /* End of Outputs for SubSystem: '<S341>/cos_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S342>/cos_lookup_table' incorporates:
          *  ActionPort: '<S352>/Action Port'
          */
-        cos_lookup_table(rtDW->Delay1 * 6.0F, &rtDW->theta_m, &rtDW->Sum_an);
+        cos_lookup_table(rtDW->Delay1 * 7.0F, &rtDW->theta_m, &rtDW->Sum_an);
 
         /* End of Outputs for SubSystem: '<S342>/cos_lookup_table' */
       } else {
@@ -2568,42 +2568,42 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         /* Outputs for IfAction SubSystem: '<S303>/Subsystem' incorporates:
          *  ActionPort: '<S305>/Action Port'
          */
-        Subsystem(rtDW->theta_m * 2.0F, &rtDW->Delay1_a, &rtDW->Switch2);
+        Subsystem(rtDW->theta_m * 3.0F, &rtDW->Delay1_a, &rtDW->Switch2);
 
         /* End of Outputs for SubSystem: '<S303>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S304>/Subsystem' incorporates:
          *  ActionPort: '<S313>/Action Port'
          */
-        Subsystem(rtDW->Delay1 * 2.0F, &rtDW->Merge_g, &rtDW->Sum_a);
+        Subsystem(rtDW->Delay1 * 3.0F, &rtDW->Merge_g, &rtDW->Sum_a);
 
         /* End of Outputs for SubSystem: '<S304>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S322>/Subsystem' incorporates:
          *  ActionPort: '<S324>/Action Port'
          */
-        Subsystem(rtDW->theta_m * 4.0F, &rtDW->re_lim, &rtDW->Delay1_k);
+        Subsystem(rtDW->theta_m * 5.0F, &rtDW->re_lim, &rtDW->Delay1_k);
 
         /* End of Outputs for SubSystem: '<S322>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S323>/Subsystem' incorporates:
          *  ActionPort: '<S332>/Action Port'
          */
-        Subsystem(rtDW->Delay1 * 4.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
+        Subsystem(rtDW->Delay1 * 5.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
 
         /* End of Outputs for SubSystem: '<S323>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S341>/Subsystem' incorporates:
          *  ActionPort: '<S343>/Action Port'
          */
-        Subsystem(rtDW->theta_m * 6.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
+        Subsystem(rtDW->theta_m * 7.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
 
         /* End of Outputs for SubSystem: '<S341>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S342>/Subsystem' incorporates:
          *  ActionPort: '<S351>/Action Port'
          */
-        Subsystem(rtDW->Delay1 * 6.0F, &rtDW->theta_m, &rtDW->Sum_an);
+        Subsystem(rtDW->Delay1 * 7.0F, &rtDW->theta_m, &rtDW->Sum_an);
 
         /* End of Outputs for SubSystem: '<S342>/Subsystem' */
       }

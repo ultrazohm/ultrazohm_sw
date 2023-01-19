@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.2
+ * Model version                  : 3.3
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Jan 11 14:54:24 2023
+ * C/C++ source code generated on : Wed Jan 18 15:16:18 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -2710,7 +2710,7 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
      *  Inport: '<Root>/ActualValues'
      */
     /* Exit 'alignRotor_d_off': '<S1>:53' */
-    /* '<S1>:53:7' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
+    /* '<S1>:53:10' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
     rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
       rtElectricalID_6ph_codegen_U->ActualValues.theta_m;
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
@@ -4283,7 +4283,7 @@ static void ElectricalID(ExtU_ElectricalID_6ph_codegen_t
          */
         /* Transition: '<S1>:411' */
         /* Exit 'alignRotor_d_off': '<S1>:53' */
-        /* '<S1>:53:7' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
+        /* '<S1>:53:10' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
           rtElectricalID_6ph_codegen_U->ActualValues.theta_m;
         rtElectricalID_6ph_codegen_DW->is_ElectricalID =
@@ -4490,7 +4490,7 @@ static void ElectricalID(ExtU_ElectricalID_6ph_codegen_t
         /* End of Chart: '<S1>/ElectricalID.Subchart_Step_Response' */
         /* set DutyCycles */
       } else {
-        /* '<S1>:53:5' counter  = counter +1; */
+        /* '<S1>:53:8' counter  = counter +1; */
         qY = rtElectricalID_6ph_codegen_DW->counter + /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_6ph_codegen_DW->counter + 1U <
             rtElectricalID_6ph_codegen_DW->counter) {
@@ -4512,11 +4512,15 @@ static void ElectricalID(ExtU_ElectricalID_6ph_codegen_t
         rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_alignRotor_d_off;
 
         /* Entry 'alignRotor_d_off': '<S1>:53' */
-        /* '<S1>:53:3' counter = uint32(1); */
+        /* '<S1>:53:4' counter = uint32(1); */
         rtElectricalID_6ph_codegen_DW->counter = 1U;
 
+        /* Merge: '<S1>/ Merge ' */
+        /* '<S1>:53:5' ElectricalID_output.PWM_Switch_0 = single(0); */
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_0 = 0.0F;
+
         /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* '<S1>:53:4' ElectricalID_FOC_output.activeState = uint16(121); */
+        /* '<S1>:53:6' ElectricalID_FOC_output.activeState = uint16(121); */
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 121U;
       } else {
         /* '<S1>:3:7' DutyCycle_filt = single(single(counter)*GlobalConfig.sampleTimeISR*2); */

@@ -125,6 +125,7 @@ float movave_length = 0.0f;
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
 extern uz_ParameterID_Data_t ParaID_Data;
 extern uz_ParameterID_6ph_t* ParameterID;
+uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //end
 
 
@@ -191,9 +192,14 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
 
+
 	//ParaID
+	paraid_temp_dq_currents = uz_transformation_asym30deg_6ph_abc_to_dq(m_6ph_abc_currents, Global_Data.av.theta_elec);
+	paraid_temp_dq_currents.d = m_6ph_alphabeta_currents.alpha;
+	paraid_temp_dq_currents.q = m_6ph_alphabeta_currents.beta;
+
 		ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-		ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(m_6ph_abc_currents, Global_Data.av.theta_elec);
+		ParaID_Data.ActualValues.i_dq_6ph = paraid_temp_dq_currents;
 		ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 		ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 		ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;

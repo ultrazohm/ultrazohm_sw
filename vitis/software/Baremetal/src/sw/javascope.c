@@ -40,11 +40,15 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
+float para_state = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
 
-extern struct uz_DutyCycle_t output1;
-extern struct uz_DutyCycle_t output2;
+#include "../uz/uz_FOC/uz_FOC.h"
+
+
+extern struct uz_DutyCycle_t dutyCycles_set1;
+extern struct uz_DutyCycle_t dutyCycles_set2;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -79,7 +83,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
-	js_ch_observable[JSO_state] = &(activeState);
+	js_ch_observable[JSO_DCa1] = &(dutyCycles_set1.DutyCycle_U);
+	js_ch_observable[JSO_DCb1] = &(dutyCycles_set1.DutyCycle_V);
+	js_ch_observable[JSO_DCc1] = &(dutyCycles_set1.DutyCycle_W);
+	js_ch_observable[JSO_DCa2] = &(dutyCycles_set2.DutyCycle_U);
+	js_ch_observable[JSO_DCb2] = &(dutyCycles_set2.DutyCycle_V);
+	js_ch_observable[JSO_DCc2] = &(dutyCycles_set2.DutyCycle_W);
   js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_abc.a;
   js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_abc.b;
   js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_abc.c;
@@ -88,6 +97,8 @@ int JavaScope_initalize(DS_Data* data)
   js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
   js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq.d;
   js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq.q;
+	js_ch_observable[JSO_state] = &(para_state);
+
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -159,7 +170,7 @@ void JavaScope_update(DS_Data* data){
 
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
-
+	para_state = activeState;
 	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed

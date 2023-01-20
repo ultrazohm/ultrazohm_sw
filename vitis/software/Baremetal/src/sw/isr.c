@@ -63,87 +63,25 @@ float theta_ = 0;
 float omega_el_rad_per_sec = 0.0f;
 
 
-// controller --------------------------------------
-
-extern uz_FOC* FOC_dq;
-extern struct uz_FOC_config config_FOC;
-
-extern uz_PI_Controller* PI_x_n;
-extern uz_PI_Controller* PI_y_n;
-extern uz_PI_Controller* PI_z1;
-extern uz_PI_Controller* PI_z2;
-
-extern uz_resonantController_t* rc_2H_x;
-extern uz_resonantController_t* rc_2H_y;
-extern uz_resonantController_t* rc_6H_x;
-extern uz_resonantController_t* rc_6H_y;
-
-extern uz_resonantController_t* rc_2H_d;
-extern uz_resonantController_t* rc_2H_q;
-extern uz_resonantController_t* rc_12H_d;
-extern uz_resonantController_t* rc_12H_q;
-
-extern uz_resonantController_t* rc_1H_z1;
-extern uz_resonantController_t* rc_1H_z2;
-extern uz_resonantController_t* rc_3H_z1;
-extern uz_resonantController_t* rc_3H_z2;
-extern uz_resonantController_t* rc_9H_z1;
-extern uz_resonantController_t* rc_9H_z2;
-
-// Variables for enabeling/disabeling the controllers
-bool dq_2 = true;
-bool dq_12 = true;
-bool xy_n_PI = true;
-bool xy_n = true;
-bool xy_n_2 = true;
-bool xy_n_6 = true;
-bool y_off = false;
-bool z1z2_1H = true;
-bool z1z2_3H = true;
-bool z1z2_9H = true;
-bool z1z2_control = true;
-bool z2_control_off = false;
-
-
-// moving average filter --------------------------------------
-
-int toggle = 0;
-extern uz_movingAverageFilter_t* movAvFilter_R1;
-extern uz_movingAverageFilter_t* movAvFilter_R2;
-extern uz_movingAverageFilter_t* movAvFilter_R3;
-extern uz_movingAverageFilter_t* movAvFilter_R4;
-extern uz_movingAverageFilter_t* movAvFilter_R5;
-extern uz_movingAverageFilter_t* movAvFilter_R6;
-
-int mov_average_filter_length = 1;
-float movave_length = 0.0f;
-
-
-
-
 //ParaID
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
 extern uz_ParameterID_Data_t ParaID_Data;
 extern uz_ParameterID_6ph_t* ParameterID;
 uz_6ph_dq_t paraid_temp_dq_currents = {0};
-//end
+//RaraID end
 
+//controller start
+extern uz_PI_Controller *PI_d;
+extern uz_PI_Controller *PI_q;
+#include "../uz/uz_ResonantController/uz_resonant_controller.h"
+extern uz_resonantController_t* resonant_x;
+extern uz_resonantController_t* resonant_y;
+uz_6ph_dq_t vsd_ref_volts_dq = {0};
+uz_6ph_abc_t vsd_ref_volts_abc = {0};
+//controller end
 
-
-// Variables for control error
-float dq_error[2];
-float xy_error[2];
-float z1z2_error[2];
-
-// Varaibles for outputs of the ressonant-controllers
-float xy2Rout[2];
-float xy6Rout[2];
-float dq2Rout[2];
-float dq12Rout[2];
-float z1z2_1Rout[2];
-float z1z2_3Rout[2];
-float z1z2_9Rout[2];
-
+enum control_type {controller, para_id};
+enum control_type active_type = controller;
 
 // variables for measured currents: m_xxxx
 // variables for reference currents for control: ref_xxxx
@@ -173,7 +111,7 @@ uz_3ph_abc_t input2 = {0};
 uz_6ph_alphabeta_t temp_sept = {0};
 uz_6ph_abc_t phase_ref_volts = {0};
 
-
+float polepairs = 5.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -190,7 +128,7 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*config_FOC.config_PMSM.polePairs*2.0f*M_PI/60;
+	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polepairs*2.0f*M_PI/60;
 
 
 	//ParaID
@@ -198,14 +136,14 @@ void ISR_Control(void *data)
 	paraid_temp_dq_currents.d = m_6ph_alphabeta_currents.alpha;
 	paraid_temp_dq_currents.q = m_6ph_alphabeta_currents.beta;
 
-		ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-		ParaID_Data.ActualValues.i_dq_6ph = paraid_temp_dq_currents;
-		ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
-		ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
-		ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-		ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
-		ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
-		//ParaID ende
+	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
+	ParaID_Data.ActualValues.i_dq_6ph = paraid_temp_dq_currents;
+	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
+	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
+	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
+	ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
+	//ParaID ende
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,35 +219,6 @@ void ISR_Control(void *data)
 
 
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////	Reference-value generation for current control and other control-releated stuff			////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-// default:
-	dq_2 = true;
-	dq_12 = true;
-	xy_n_PI = true;
-	xy_n = true;
-	xy_n_2 = true;
-	xy_n_6 = true;
-	y_off = false;
-	z1z2_1H = true;
-	z1z2_3H = true;
-	z1z2_9H = true;
-	z1z2_control = true;
-
-
-
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Stuff for the inverter															////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,18 +269,31 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	switch(active_type)
+    	{
+    	case controller:{
+    	//controllers
+    	vsd_ref_volts_dq.d = uz_PI_Controller_sample(PI_d,0.0f,Global_Data.av.I_d,false);
+    	vsd_ref_volts_dq.q = uz_PI_Controller_sample(PI_q,0.0f,Global_Data.av.I_q,false);
+    	vsd_ref_volts_dq.x = uz_resonantController_step(resonant_x,0.0f,Global_Data.av.I_x,ParaID_Data.ActualValues.omega_el);
+    	vsd_ref_volts_dq.y = uz_resonantController_step(resonant_y,0.0f,Global_Data.av.I_y,ParaID_Data.ActualValues.omega_el);
 
+    	//transformation
+    	vsd_ref_volts_abc = uz_transformation_asym30deg_6ph_dq_to_abc(vsd_ref_volts_dq,theta_);
+    	ref_volage_phase_set1.a = vsd_ref_volts_abc.a1;
+    	ref_volage_phase_set1.b = vsd_ref_volts_abc.b1;
+    	ref_volage_phase_set1.c = vsd_ref_volts_abc.c1;
+    	ref_volage_phase_set2.a = vsd_ref_volts_abc.a2;
+		ref_volage_phase_set2.b = vsd_ref_volts_abc.b2;
+		ref_volage_phase_set2.c = vsd_ref_volts_abc.c2;
 
-
-    //----------------combine reference values form alpha-beta, x-y and z1-z2 control----------------//
-
+		//DC generation
 		dutyCycles_set1 = uz_FOC_generate_DutyCycles(ref_volage_phase_set1, Global_Data.av.U_ZK);
     	dutyCycles_set2 = uz_FOC_generate_DutyCycles(ref_volage_phase_set2, Global_Data.av.U_ZK);
 
-    //write duty-cycles
+    	break;}
 
-
+    	case para_id:{
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
 		dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
@@ -382,13 +304,15 @@ void ISR_Control(void *data)
 		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
 		//ParaID end
 
+		break;}
+    	default: break;}
+		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
     	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;
     	Global_Data.rasv.halfBridge6DutyCycle = dutyCycles_set2.DutyCycle_W;
     	Global_Data.rasv.halfBridge7DutyCycle = dutyCycles_set1.DutyCycle_U;
     	Global_Data.rasv.halfBridge8DutyCycle = dutyCycles_set1.DutyCycle_V;
     	Global_Data.rasv.halfBridge9DutyCycle = dutyCycles_set1.DutyCycle_W;
-
     }
 
 

@@ -75,7 +75,7 @@ uz_6ph_abc_t phase_ref_volts = {0.0f};
 // Temp:
 uz_6ph_alphabeta_t temp_sept = {0};
 uz_6ph_abc_t temp_setp_traf;
-#define DEADTIME_US 1.0f
+#define DEADTIME_US 1.8
 float deadtime_comp(float duty_cycle,float deadtime_us)
 {
 	if(duty_cycle>0.5f)

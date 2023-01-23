@@ -70,18 +70,6 @@ extern uz_ParameterID_6ph_t* ParameterID;
 uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //RaraID end
 
-//controller start
-extern uz_PI_Controller *PI_d;
-extern uz_PI_Controller *PI_q;
-#include "../uz/uz_ResonantController/uz_resonant_controller.h"
-extern uz_resonantController_t* resonant_x;
-extern uz_resonantController_t* resonant_y;
-uz_6ph_dq_t vsd_ref_volts_dq = {0};
-uz_6ph_abc_t vsd_ref_volts_abc = {0};
-//controller end
-
-enum control_type {controller, para_id};
-enum control_type active_type = controller;
 
 // variables for measured currents: m_xxxx
 // variables for reference currents for control: ref_xxxx
@@ -269,31 +257,6 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (current_state==control_state)
     {
-    	switch(active_type)
-    	{
-    	case controller:{
-    	//controllers
-    	vsd_ref_volts_dq.d = uz_PI_Controller_sample(PI_d,0.0f,Global_Data.av.I_d,false);
-    	vsd_ref_volts_dq.q = uz_PI_Controller_sample(PI_q,0.0f,Global_Data.av.I_q,false);
-    	vsd_ref_volts_dq.x = uz_resonantController_step(resonant_x,0.0f,Global_Data.av.I_x,ParaID_Data.ActualValues.omega_el);
-    	vsd_ref_volts_dq.y = uz_resonantController_step(resonant_y,0.0f,Global_Data.av.I_y,ParaID_Data.ActualValues.omega_el);
-
-    	//transformation
-    	vsd_ref_volts_abc = uz_transformation_asym30deg_6ph_dq_to_abc(vsd_ref_volts_dq,theta_);
-    	ref_volage_phase_set1.a = vsd_ref_volts_abc.a1;
-    	ref_volage_phase_set1.b = vsd_ref_volts_abc.b1;
-    	ref_volage_phase_set1.c = vsd_ref_volts_abc.c1;
-    	ref_volage_phase_set2.a = vsd_ref_volts_abc.a2;
-		ref_volage_phase_set2.b = vsd_ref_volts_abc.b2;
-		ref_volage_phase_set2.c = vsd_ref_volts_abc.c2;
-
-		//DC generation
-		dutyCycles_set1 = uz_FOC_generate_DutyCycles(ref_volage_phase_set1, Global_Data.av.U_ZK);
-    	dutyCycles_set2 = uz_FOC_generate_DutyCycles(ref_volage_phase_set2, Global_Data.av.U_ZK);
-
-    	break;}
-
-    	case para_id:{
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
 		dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
@@ -303,9 +266,6 @@ void ISR_Control(void *data)
 		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
 		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
 		//ParaID end
-
-		break;}
-    	default: break;}
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
     	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;

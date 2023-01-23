@@ -24,22 +24,6 @@ uz_ParameterID_6ph_t* ParameterID = NULL;
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 //ParameterID end
 
-//res_contr start
-#include "uz/uz_ResonantController/uz_resonant_controller.h"
-uz_resonantController_t* resonant_x = NULL;
-uz_resonantController_t* resonant_y = NULL;
-const struct uz_resonantController_config config_R = {
-  .sampling_time = 0.0001f,
-  .gain = 52.5f,
-  .harmonic_order = 6.0f,
-  .fundamental_frequency = 10.0f,
-  .lower_limit = -4.0f,
-  .upper_limit = 4.0f,
-  .antiwindup_gain = 10.0f,
-  .in_reference_value = 0.0f,
-  .in_measured_value = 0.0f,
-};
-//res_contr end
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -117,28 +101,6 @@ uz_array_float_t circularBuffer_R6 = {
 
 
 
-uz_PI_Controller *PI_d = NULL;
-uz_PI_Controller *PI_q = NULL;
-const struct uz_PI_Controller_config config_id = {
-	.Kp = 0.37,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 20.0f,
-	.lower_limit = -20.0f
-};
-
-const struct uz_PI_Controller_config config_iq = {
-	.Kp = 0.37,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 20.0f,
-	.lower_limit = -20.0f
-};
-
-
-
-
-
 
 
 // Gan-Inverter:-----------------------------
@@ -202,14 +164,6 @@ int main(void)
             initialization_chain = init_FD;
             break;
         case init_FD:
-
-        	//controller start
-        	PI_d = uz_PI_Controller_init(config_id);
-        	PI_q = uz_PI_Controller_init(config_iq);
-        	resonant_x = uz_resonantController_init(config_R);
-        	resonant_y = uz_resonantController_init(config_R);
-        	//controller end
-
             initialization_chain = init_FOC;
             break;
         case init_FOC:

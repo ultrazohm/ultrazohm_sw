@@ -7,9 +7,12 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_resolver_mech_revolution_float:295"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:315"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:329"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:385"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:165"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:250"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:251"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:376"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:382"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:253"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:272"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:177"] = "uz_resolver_mech_revolution_float:161";
@@ -47,6 +50,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_resolver_mech_revolution_float:352"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:356"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:357"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:386"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:387"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:184"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:185"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:186"] = "uz_resolver_mech_revolution_float:161";
@@ -59,6 +64,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_resolver_mech_revolution_float:340"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:273"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:294"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:383"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:252"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:254"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:274"] = "uz_resolver_mech_revolution_float:161";
@@ -66,6 +72,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_resolver_mech_revolution_float:320"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:334"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:341"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:384"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:204"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:208"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:209"] = "uz_resolver_mech_revolution_float:161";
@@ -75,6 +82,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["uz_resolver_mech_revolution_float:299"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:318"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:333"] = "uz_resolver_mech_revolution_float:161";
+    this.sidParentMap["uz_resolver_mech_revolution_float:388"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:255"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:228"] = "uz_resolver_mech_revolution_float:161";
     this.sidParentMap["uz_resolver_mech_revolution_float:229"] = "uz_resolver_mech_revolution_float:161";

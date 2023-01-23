@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.67
+<td class="summaryTableSndColOddRow">1.73
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">19-Jan-2023 16:20:02
+<td class="summaryTableSndColOddRow">23-Jan-2023 17:22:02
 </td>
 </tr>
 <tr>
@@ -252,25 +252,25 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:165')">trigger</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:385')">theta_el_offset_AXI</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">boolean
+<td class="distinctCellColor">single
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"114"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:228')">position_mech_raw</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:165')">trigger</a>
 </td>
-<td>Outport
+<td>Inport
 </td>
-<td>uint16
+<td>boolean
 </td>
 <td>External Port
 </td>
@@ -280,11 +280,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:229')">position_mech_2pi</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:228')">position_mech_raw</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix27_En20
+<td class="distinctCellColor">uint16
 </td>
 <td class="distinctCellColor">External Port
 </td>
@@ -294,7 +294,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:303')">position_el_2pi</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:229')">position_mech_2pi</a>
 </td>
 <td>Outport
 </td>
@@ -308,11 +308,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:345')">omega_mech</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:303')">position_el_2pi</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix24_En11
+<td class="distinctCellColor">sfix27_En20
 </td>
 <td class="distinctCellColor">External Port
 </td>
@@ -322,7 +322,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:349')">rpm_mech</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:345')">omega_mech</a>
 </td>
 <td>Outport
 </td>
@@ -336,49 +336,49 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:230')">cnt_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:349')">rpm_mech</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">int32
+<td class="distinctCellColor">sfix24_En11
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"124"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:231')">done</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:230')">cnt_AXI</a>
 </td>
 <td>Outport
 </td>
-<td>boolean
+<td>int32
 </td>
-<td>External Port
+<td>AXI4-Lite
 </td>
-<td>
+<td>x"124"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:353')">position_mech_2pi_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:231')">done</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix27_En20
+<td class="distinctCellColor">boolean
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"114"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:354')">position_el_2pi_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:353')">position_mech_2pi_AXI</a>
 </td>
 <td>Outport
 </td>
@@ -392,11 +392,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:358')">omega_mech_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:354')">position_el_2pi_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix24_En11
+<td class="distinctCellColor">sfix27_En20
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
@@ -406,7 +406,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:359')">rpm_mech_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:358')">omega_mech_AXI</a>
 </td>
 <td>Outport
 </td>
@@ -417,6 +417,20 @@ Target platform interface table:
 <td>x"120"
 </td>
 <td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_resolver_mech_revolution_float:359')">rpm_mech_AXI</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">sfix24_En11
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"128"
+</td>
+<td class="distinctCellColor">
 </td>
 </tr>
 </tbody>
@@ -459,7 +473,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2301191620
+<td>contains unique IP timestamp (yymmddHHMM): 2301231722
 </td>
 </tr>
 <tr>
@@ -503,35 +517,35 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>position_mech_2pi_AXI_Data
+<td>theta_el_offset_AXI_Data
 </td>
 <td>0x114
 </td>
-<td>data register for Outport position_mech_2pi_AXI
+<td>data register for Inport theta_el_offset_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">position_el_2pi_AXI_Data
+<td class="distinctCellColor">position_mech_2pi_AXI_Data
 </td>
 <td class="distinctCellColor">0x118
 </td>
-<td class="distinctCellColor">data register for Outport position_el_2pi_AXI
+<td class="distinctCellColor">data register for Outport position_mech_2pi_AXI
 </td>
 </tr>
 <tr>
-<td>omega_mech_AXI_Data
+<td>position_el_2pi_AXI_Data
 </td>
 <td>0x11C
 </td>
-<td>data register for Outport omega_mech_AXI
+<td>data register for Outport position_el_2pi_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">rpm_mech_AXI_Data
+<td class="distinctCellColor">omega_mech_AXI_Data
 </td>
 <td class="distinctCellColor">0x120
 </td>
-<td class="distinctCellColor">data register for Outport rpm_mech_AXI
+<td class="distinctCellColor">data register for Outport omega_mech_AXI
 </td>
 </tr>
 <tr>
@@ -540,6 +554,14 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 <td>0x124
 </td>
 <td>data register for Outport cnt_AXI
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">rpm_mech_AXI_Data
+</td>
+<td class="distinctCellColor">0x128
+</td>
+<td class="distinctCellColor">data register for Outport rpm_mech_AXI
 </td>
 </tr>
 </tbody>

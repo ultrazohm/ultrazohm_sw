@@ -25,6 +25,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+extern bool reset_ip_cnt;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -216,10 +218,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);
+			reset_ip_cnt = true;
 			break;
 
 		case (My_Button_3):
 			ultrazohm_state_machine_set_userLED(false);
+			reset_ip_cnt = false;
 			break;
 
 		case (My_Button_4):

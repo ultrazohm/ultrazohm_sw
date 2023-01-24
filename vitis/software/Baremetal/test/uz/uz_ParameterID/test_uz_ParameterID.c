@@ -23,7 +23,7 @@
 #include "CleanPsiArray_codegen.h"
 #include "InterpMeshGrid_codegen.h"
 #include "uz_Transformation.h"
-#include "uz_FOC.h"
+#include "uz_CurrentControl.h"
 #include "uz_speedcontrol.h"
 #include "uz_PWM_SS_2L.h" 
 #include "uz_piController.h"
@@ -32,7 +32,7 @@
 #include "uz_signals.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
-struct uz_FOC_config config = {0};
+struct uz_CurrentControl_config config = {0};
 struct uz_SpeedControl_config config_n = {0};
 void setUp(void)
 {
@@ -45,7 +45,6 @@ void setUp(void)
     config.config_iq.upper_limit = 10.0f;
     config.config_iq.lower_limit = -10.0f;
     config.decoupling_select = no_decoupling;
-    config_n.is_field_weakening_active = false;
     config_n.config_controller.samplingTime_sec = 0.00001f;
     config_n.config_controller.upper_limit = 10.0f;
     config_n.config_controller.lower_limit = -10.0f;
@@ -77,9 +76,9 @@ void test_uz_ParameterID_generate_DutyCycle_PWM_NULL(void) {
 }
 
 void test_uz_ParameterID_Controller_Data_NULL(void) {
-    uz_FOC* FOC_instance = uz_FOC_init(config);
+    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
     uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, FOC_instance, SC_instance));
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, CC_instance, SC_instance));
 }
 
 void test_uz_ParameterID_Controller_FOC_NULL(void) {
@@ -88,8 +87,8 @@ void test_uz_ParameterID_Controller_FOC_NULL(void) {
 }
 
 void test_uz_ParameterID_Controller_SC_NULL(void) {
-    uz_FOC* FOC_instance = uz_FOC_init(config);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, FOC_instance, NULL));
+    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, NULL));
 }
 
 void test_uz_ParameterID_CleanPsiArray_NULL(void) {

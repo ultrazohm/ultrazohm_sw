@@ -14,7 +14,7 @@ resolver_polepairs = 3;
 machine_polepairs = 5;
 f_mech = 500;
 
-theta_el_offset = -4.261607;
+theta_el_offset = -44.261607;
 
 rps_max_16bit = 125;
 rps_max_14bit = 500;

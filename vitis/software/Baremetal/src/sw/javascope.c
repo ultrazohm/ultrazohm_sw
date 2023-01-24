@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_math_constants.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -45,6 +46,9 @@ extern float theta_mech_resolver_ip;
 extern float theta_elec_resolver_ip;
 extern float speed_rpm_resolver_ip;
 extern float cnt_float;
+
+extern float theta_m_mod;
+extern float theta_el_mod;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -79,8 +83,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &theta_elec_resolver_ip;
-	js_ch_observable[JSO_theta_mech] 	= &theta_mech_resolver_ip;
+	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_el_mod;
+	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_m_mod;
 	js_ch_observable[JSO_speed_rpm_resolver_ip]	= &speed_rpm_resolver_ip;
 	js_ch_observable[JSO_cnt]			= &cnt_float;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

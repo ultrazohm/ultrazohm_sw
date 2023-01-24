@@ -33,6 +33,7 @@
 #include "../include/uz_resolverIP_init.h"
 #include "../uz/uz_math_constants.h"
 
+#include "float.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -65,6 +66,9 @@ float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 bool first_ISR = true;
 
+float theta_m_offset = 0.0;
+float theta_m_mod = 0.0f;
+float theta_el_mod = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -81,14 +85,20 @@ void ISR_Control(void *data)
     update_position_and_speed_of_resolverIP(&Global_Data);
     uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false); // cnt_reset false=normal operation
 
-    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x114),20); //position_mech_2pi
-	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_el_2pi
-	omega_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x11C),11); //omega_mech
-	rpm_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x120),11); //rpm_mech
+    uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x114, theta_m_offset); // theta_el offset
+
+    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_mech_2pi
+	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x11C),20); //position_el_2pi
+	omega_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x120),11); //omega_mech
+	rpm_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x128),11); //rpm_mech
 	cnt_ip = uz_axi_read_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x124); //cnt
 
-    theta_mech_resolver_ip = theta_mech_calc_from_resolver;
-    theta_elec_resolver_ip = fmod(theta_mech_calc_from_resolver*5.0f, 2.0f*UZ_PIf);
+    theta_mech_resolver_ip = theta_mech_calc_from_resolver + theta_m_offset;
+    theta_elec_resolver_ip = theta_mech_calc_from_resolver*5.0f + theta_m_offset*5.0f;
+
+    Global_Data.av.theta_m_mod = uz_modf(theta_mech_resolver_ip, 6.2830f);
+    Global_Data.av.theta_el_mod = uz_modf(theta_elec_resolver_ip, 6.2830f);
+
 
     speed_rpm_resolver_ip = Global_Data.av.mechanicalRotorSpeed;
 
@@ -317,3 +327,34 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+
+float uz_modf(float u0, float u1)
+{
+  float q;
+  float y;
+  _Bool yEq;
+  y = u0;
+  if (u1 == 0.0f) {
+    if (u0 == 0.0f) {
+      y = u1;
+    }
+  } else if (u0 == 0.0f) {
+    y = 0.0f / u1;
+  } else {
+    y = fmodf(u0, u1);
+    yEq = (y == 0.0f);
+    if ((!yEq) && (u1 > floorf(u1))) {
+      q = fabsf(u0 / u1);
+      yEq = (fabsf(q - floorf(q + 0.5f)) <= FLT_EPSILON * q);
+    }
+
+    if (yEq) {
+      y = 0.0f;
+    } else if ((u0 < 0.0f) != (u1 < 0.0f)) {
+      y += u1;
+    }
+  }
+
+  return y;
+}

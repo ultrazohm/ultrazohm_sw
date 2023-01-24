@@ -1,120 +1,124 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.10 (R2021a) at 16:20:41 on 19/01/2023
+% Generated with MATLAB 9.10 (R2021a) at 16:46:35 on 24/01/2023
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_resolver_mech_rev_calc\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc'
+%     DUT       : 'uz_resolver_pl_interface/uz_resolver_pl_interface'
 % To view changes after modifying the workflow, run the following command:
-% >> hWC.export('DUT','uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc');
+% >> hWC.export('DUT','uz_resolver_pl_interface/uz_resolver_pl_interface');
 %--------------------------------------------------------------------------
 
 %% Load the Model
-load_system('uz_resolver_mech_revolution_float');
+load_system('uz_resolver_pl_interface');
 
 %% Restore the Model to default HDL parameters
-%hdlrestoreparams('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc');
+%hdlrestoreparams('uz_resolver_pl_interface/uz_resolver_pl_interface');
 
 %% Model HDL Parameters
-%% Set Model 'uz_resolver_mech_revolution_float' HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float', 'CriticalPathEstimation', 'on');
-hdlset_param('uz_resolver_mech_revolution_float', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint'));
-hdlset_param('uz_resolver_mech_revolution_float', 'HDLGenerateWebview', 'on');
-hdlset_param('uz_resolver_mech_revolution_float', 'HDLSubsystem', 'uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc');
-hdlset_param('uz_resolver_mech_revolution_float', 'OptimizationReport', 'on');
-hdlset_param('uz_resolver_mech_revolution_float', 'ResetType', 'Synchronous');
-hdlset_param('uz_resolver_mech_revolution_float', 'ResourceReport', 'on');
-hdlset_param('uz_resolver_mech_revolution_float', 'SynthesisTool', 'Xilinx Vivado');
-hdlset_param('uz_resolver_mech_revolution_float', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
-hdlset_param('uz_resolver_mech_revolution_float', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-1-e');
-hdlset_param('uz_resolver_mech_revolution_float', 'SynthesisToolPackageName', '');
-hdlset_param('uz_resolver_mech_revolution_float', 'SynthesisToolSpeedValue', '');
-hdlset_param('uz_resolver_mech_revolution_float', 'TargetDirectory', 'hdl_prj\hdlsrc');
-hdlset_param('uz_resolver_mech_revolution_float', 'TargetPlatform', 'Generic Xilinx Platform');
-hdlset_param('uz_resolver_mech_revolution_float', 'Traceability', 'on');
-hdlset_param('uz_resolver_mech_revolution_float', 'Workflow', 'IP Core Generation');
+%% Set Model 'uz_resolver_pl_interface' HDL parameters
+hdlset_param('uz_resolver_pl_interface', 'CriticalPathEstimation', 'on');
+hdlset_param('uz_resolver_pl_interface', 'FloatingPointTargetConfiguration', hdlcoder.createFloatingPointTargetConfig('NativeFloatingPoint'));
+hdlset_param('uz_resolver_pl_interface', 'HDLGenerateWebview', 'on');
+hdlset_param('uz_resolver_pl_interface', 'HDLSubsystem', 'uz_resolver_pl_interface/uz_resolver_pl_interface');
+hdlset_param('uz_resolver_pl_interface', 'OptimizationReport', 'on');
+hdlset_param('uz_resolver_pl_interface', 'ResetType', 'Synchronous');
+hdlset_param('uz_resolver_pl_interface', 'ResourceReport', 'on');
+hdlset_param('uz_resolver_pl_interface', 'SynthesisTool', 'Xilinx Vivado');
+hdlset_param('uz_resolver_pl_interface', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
+hdlset_param('uz_resolver_pl_interface', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-1-e');
+hdlset_param('uz_resolver_pl_interface', 'SynthesisToolPackageName', '');
+hdlset_param('uz_resolver_pl_interface', 'SynthesisToolSpeedValue', '');
+hdlset_param('uz_resolver_pl_interface', 'TargetDirectory', 'hdl_prj\hdlsrc');
+hdlset_param('uz_resolver_pl_interface', 'TargetPlatform', 'Generic Xilinx Platform');
+hdlset_param('uz_resolver_pl_interface', 'Traceability', 'on');
+hdlset_param('uz_resolver_pl_interface', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', 'IPCoreName', 'uz_resolver_mech_rev_calc');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', 'ProcessorFPGASynchronization', 'Free running');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface', 'IPCoreName', 'uz_resolver_pl_interface');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_raw', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_raw', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_raw', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_raw', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/resolver_polepairs_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/resolver_polepairs_AXI', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/resolver_polepairs_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/resolver_polepairs_AXI', 'IOInterfaceMapping', 'x"100"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_reset_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_reset_AXI', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/cnt_reset_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/cnt_reset_AXI', 'IOInterfaceMapping', 'x"104"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_intmax_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_intmax_AXI', 'IOInterfaceMapping', 'x"108"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_intmax_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_intmax_AXI', 'IOInterfaceMapping', 'x"108"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/machine_polepairs_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/machine_polepairs_AXI', 'IOInterfaceMapping', 'x"10C"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/machine_polepairs_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/machine_polepairs_AXI', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/velocity_raw', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/velocity_raw', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/velocity_raw', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/velocity_raw', 'IOInterfaceMapping', '');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/bitToRPS_Factor_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/bitToRPS_Factor_AXI', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/bitToRPS_Factor_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/bitToRPS_Factor_AXI', 'IOInterfaceMapping', 'x"110"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/trigger', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/trigger', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/theta_m_offset_rad_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/theta_m_offset_rad_AXI', 'IOInterfaceMapping', 'x"114"');
+
+% Set Inport HDL parameters
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/trigger', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/trigger', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_raw', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_raw', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_raw', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_raw', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_2pi', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_2pi', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_2pi', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_2pi', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_el_2pi', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_el_2pi', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_el_2pi', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_el_2pi', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/omega_mech', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/omega_mech', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/omega_mech_rad_s', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/omega_mech_rad_s', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_mech', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_mech', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/n_mech_rpm', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/n_mech_rpm', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/cnt_AXI', 'IOInterfaceMapping', 'x"124"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/cnt_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/cnt_AXI', 'IOInterfaceMapping', 'x"124"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/done', 'IOInterface', 'External Port');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/done', 'IOInterfaceMapping', '');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/done', 'IOInterface', 'External Port');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/done', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_2pi_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_mech_2pi_AXI', 'IOInterfaceMapping', 'x"114"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_2pi_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_mech_2pi_AXI', 'IOInterfaceMapping', 'x"118"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_el_2pi_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/position_el_2pi_AXI', 'IOInterfaceMapping', 'x"118"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_el_2pi_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/position_el_2pi_AXI', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/omega_mech_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/omega_mech_AXI', 'IOInterfaceMapping', 'x"11C"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/omega_mech_rad_s_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/omega_mech_rad_s_AXI', 'IOInterfaceMapping', 'x"120"');
 
 % Set Outport HDL parameters
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_mech_AXI', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc/rpm_mech_AXI', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/n_mech_rpm_AXI', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_resolver_pl_interface/uz_resolver_pl_interface/n_mech_rpm_AXI', 'IOInterfaceMapping', 'x"128"');
 
 
 %% Workflow Configuration Settings
@@ -166,4 +170,4 @@ hWC.SSHPassword = '';
 hWC.validate;
 
 %% Run the workflow
-hdlcoder.runWorkflow('uz_resolver_mech_revolution_float/uz_resolver_mech_rev_calc', hWC);
+hdlcoder.runWorkflow('uz_resolver_pl_interface/uz_resolver_pl_interface', hWC);

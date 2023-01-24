@@ -82,6 +82,8 @@ typedef struct _actualValues_ {
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
+	float theta_m_mod;
+	float theta_el_mod;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

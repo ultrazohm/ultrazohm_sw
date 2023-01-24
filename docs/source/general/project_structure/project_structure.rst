@@ -6,7 +6,7 @@ Project structure
 
 The following sections describe the structure of the UltraZohm project and community.
 Our general community approach is based on `GithHub Open Source Guide <https://opensource.guide/>`_.
-The repository is licensed under the `Apache 2.0 license <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_).
+The repository is licensed under the `Apache 2.0 license <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_.
 We thrive to be a welcoming, open community and expect everybody to act accordingly.
 The documentation and code are public.
 However, the communication channels require new community members to get in touch with the existing community (e.g., mail to info@ultrazohm.com).
@@ -15,7 +15,6 @@ This is especially important for currently active research, including pre-public
 
 - The project is hosted on bitbucket (https://www.bitbucket.org/ultrazohm/ultrazohm_sw)
 - We use the UltraZohm Slack channel for direct, informal communication within the community
-- We use the UltraZohm forum (https://forum.ultrazohm.com/) for more general topics and discussions (topics related to the use-case)
 - We use Bitbucket issues as a bugtracker (topics related to the UltraZohm itself)
 
 The user groups determine the read/write permissions for Bitbucket.

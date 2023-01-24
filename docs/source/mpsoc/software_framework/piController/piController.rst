@@ -4,11 +4,17 @@
 PI-Controller
 =============
 
-Toolbox for a standard PI-Controller in parallel form. It's transfer function is:
+Toolbox for a standard PI-Controller in either parallel or ideal form. The transfer function of the parallel implementation is:
 
 .. math::
 
   \frac{Y(s)}{E(s)}=K_p +\frac{K_i}{s}
+
+Whilst the transfer function of the ideal implementation is:
+
+.. math::
+
+  \frac{Y(s)}{E(s)}=K_p (1 + \frac{K_i}{s})
 
 .. _uz_piController_config:
 
@@ -21,6 +27,7 @@ Setup
 Configuration
 -------------
 
+.. doxygenenum:: uz_PI_Controller_select
 .. doxygenstruct:: uz_PI_Controller_config
   :members:
     
@@ -34,6 +41,7 @@ Example
   #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      struct uz_PI_Controller_config config = {
+        .type = parallel,
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,

@@ -1,3 +1,5 @@
+.. _digital_adapter_boards:
+
 ======================
 Digital Adapter Boards
 ======================

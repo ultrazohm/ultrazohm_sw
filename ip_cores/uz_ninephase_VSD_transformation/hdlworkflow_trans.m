@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.11 (R2021b) at 15:42:07 on 30/06/2022
+% Generated with MATLAB 9.11 (R2021b) at 11:06:01 on 17/10/2022
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_working\ip_cores\uz_ninephase_VSD_transformation\hdlworkflow_trans.m'
+%     Filename  : 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_ninephase_VSD_transformation\hdlworkflow_trans.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -36,7 +36,7 @@ hdlset_param('uz_ninephase_VSD_transformation', 'SynthesisToolChipFamily', 'Zynq
 hdlset_param('uz_ninephase_VSD_transformation', 'SynthesisToolDeviceName', 'xazu11eg-ffvf1517-1-i');
 hdlset_param('uz_ninephase_VSD_transformation', 'SynthesisToolPackageName', '');
 hdlset_param('uz_ninephase_VSD_transformation', 'SynthesisToolSpeedValue', '');
-hdlset_param('uz_ninephase_VSD_transformation', 'TargetDirectory', 'hdl_prj123\hdlsrc');
+hdlset_param('uz_ninephase_VSD_transformation', 'TargetDirectory', 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_ninephase_VSD_transformation\hdl_proj\hdlsrc');
 hdlset_param('uz_ninephase_VSD_transformation', 'TargetFrequency', 100);
 hdlset_param('uz_ninephase_VSD_transformation', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('uz_ninephase_VSD_transformation', 'Workflow', 'IP Core Generation');
@@ -44,6 +44,7 @@ hdlset_param('uz_ninephase_VSD_transformation', 'Workflow', 'IP Core Generation'
 % Set SubSystem HDL parameters
 hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq', 'AXI4SlaveIDWidth', '12');
 hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq', 'IPCoreName', 'uz_ninephase_VSD_transformation');
+hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq', 'IPCoreVersion', '1.0');
 hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
@@ -117,13 +118,17 @@ hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq/x_abc_3', 'IOInterfaceMa
 hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq/x_out_dq', 'IOInterface', 'External Port');
 hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq/x_out_dq', 'IOInterfaceMapping', '');
 
+% Set Outport HDL parameters
+hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq/refresh_values', 'IOInterface', 'External Port');
+hdlset_param('uz_ninephase_VSD_transformation/abc_to_dq/refresh_values', 'IOInterfaceMapping', '');
+
 
 %% Workflow Configuration Settings
 % Construct the Workflow Configuration Object with default settings
 hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','IP Core Generation');
 
 % Specify the top level project directory
-hWC.ProjectFolder = 'hdl_prj123';
+hWC.ProjectFolder = 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_ninephase_VSD_transformation\hdl_proj';
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;
 

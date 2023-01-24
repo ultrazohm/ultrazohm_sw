@@ -1,0 +1,26 @@
+Typ,Port name,Target IP-core,Target port name
+Transformation,,,
+In,AXI4,smartconnect_1,M01_AXI
+In,x_in_dq,uz_pmsm_model_6ph_dq,currents_dq_out
+In,theta_el,uz_pmsm_model_6ph_dq,theta_el_out
+In,trigger_new_values,uz_rs\flip_flop,ff_out
+In,x_abc1_ll_pl,uz_inverter_3ph_0,u_abc_pl
+In,x_abc2_ll_pl,uz_inverter_3ph_1,u_abc_pl
+Out,x_abc_1,uz_inverter_3ph_0,i_abc_pl
+Out,x_abc_2,uz_inverter_3ph_1,i_abc_pl
+Out,x_out_dq,uz_pmsm_model_6ph_dq,voltage_input_dq
+Out,refresh_values,uz_rs_flip_flop,ff_reset
+PMSM,,,
+In,AXI4,smartconnect_1,M00_AXI
+In,voltage_input_dq,uz_sixphase_VSD_tran,x_out_dq
+Out,theta_el_out,uz_sixphase_VSD_tran,theta_el
+Out,currents_dq_out,uz_sixphase_VSD_tran,x_in_dq
+PWM 1/2,,,
+In,AXI4_Lite,smartconnect_1,M0[4/5]_AXI
+In,triangle_in,../uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V0,triangle_out
+Out,SS[0-5]_OUT,uz_inverter_3ph_[1/2],gate_pl (use Concat)
+Inverter 1/2,,,
+In,AXI4,smartconnect_1,M0[2/3]_AXI
+In,i_abc_pl,uz_sixphase_VSD_tran,x_abc_[1/2]
+In,gate_pl,PWM_and_SS_control_V[1/2],SS[0-5]_OUT (use concat)
+Out,u_abc_pl,uz_sixphase_VSD_tran,x_abc[1/2]_ll_pl

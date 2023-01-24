@@ -337,6 +337,8 @@ uint32_t uz_adcLtc2311_update_conversion_factor(uz_adcLtc2311_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->config.channel_config.conversion_factor_definition.is_signed); // IP-Core only uses signed fixed point data type
+    uz_assert(CONVERSION_FACTOR_NUMBER_OF_BITS >= (self->config.channel_config.conversion_factor_definition.fractional_bits + self->config.channel_config.conversion_factor_definition.integer_bits));
 
     uint32_t return_value = UZ_SUCCESS;
     // Get the current state of the control register

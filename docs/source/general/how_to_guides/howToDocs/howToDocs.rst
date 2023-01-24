@@ -197,6 +197,66 @@ Refernce:
 
     Reference ::numref:`labelName`.
 
+
+Math
+^^^^
+
+- `See sphinx documentation regarding math <https://sphinx-rtd-trial.readthedocs.io/en/latest/ext/math.html>`_
+- Equations can be inline with ``:math:`i_1=\sqrt{i_d^2 +i_q^2}``` to render :math:`i_1=\sqrt{i_d^2 +i_q^2}` using Latex syntax
+- Equations can also be in a dedicated blocks
+
+.. code-block::
+
+  .. math::
+
+    i_1=\sqrt{i_d^2 +i_q^2}
+
+.. math::
+
+  i_1=\sqrt{i_d^2 +i_q^2}
+
+- Numbering and referencing equations using sphinx build in reference system
+
+.. code-block::
+
+  .. math:: 
+   :label: eq_example_number
+
+    i_1=\sqrt{i_d^2 +i_q^2}
+
+.. math:: 
+    :label: eq_example_number
+
+      i_1=\sqrt{i_d^2 +i_q^2}
+
+- This text references :eq:`eq_example_number` by using ``:eq:`eq_example_number```
+- The build-in sphinx numbering can not label multiple equations, e.g., in align environments
+- Alternative according to https://www.mail-archive.com/sphinx-users@googlegroups.com/msg04040.html
+
+.. code-block::
+
+    .. math::
+        :nowrap:
+
+        \begin{align}
+                    i_1 &=\sqrt{i_d^2 +i_q^2} \label{eq_example_1} \\ 
+                    i_1 &=\sqrt{i_d^2 +i_q^2} \label{eq_example_2}
+        \end{align}
+
+    - :math:`\eqref{eq_example_1}` and :math:`\eqref{eq_example_2}` are the same equations
+
+.. math::
+    :nowrap:
+
+    \begin{align}
+                i_1 &=\sqrt{i_d^2 +i_q^2} \label{eq_example_1} \\ 
+                i_1 &=\sqrt{i_d^2 +i_q^2} \label{eq_example_2}
+    \end{align}
+
+- :math:`\eqref{eq_example_1}` and :math:`\eqref{eq_example_2}` are the same equations
+
+
+
 Links
 ^^^^^
 

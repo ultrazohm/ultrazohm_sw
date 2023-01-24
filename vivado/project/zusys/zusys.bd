@@ -3413,7 +3413,7 @@
               },
               "uz_resolver_mech_rev_0": {
                 "vlnv": "xilinx.com:ip:uz_resolver_mech_rev_calc:1.0",
-                "xci_name": "zusys_uz_resolver_mech_rev_0_0"
+                "xci_name": "zusys_uz_resolver_mech_rev_0_1"
               }
             },
             "interface_nets": {
@@ -3540,10 +3540,10 @@
                   "uz_resolver_mech_rev_0/trigger"
                 ]
               },
-              "uz_resolver_mech_rev_0_omega_mech": {
+              "uz_resolver_mech_rev_0_position_mech_2pi": {
                 "ports": [
-                  "uz_resolver_mech_rev_0/omega_mech",
-                  "ila_Encoder/probe6"
+                  "uz_resolver_mech_rev_0/position_mech_2pi",
+                  "ila_Encoder/probe4"
                 ]
               },
               "uz_resolver_mech_rev_0_position_el_2pi": {
@@ -3552,10 +3552,10 @@
                   "ila_Encoder/probe5"
                 ]
               },
-              "uz_resolver_mech_rev_0_position_mech_2pi": {
+              "uz_resolver_mech_rev_0_omega_mech": {
                 "ports": [
-                  "uz_resolver_mech_rev_0/position_mech_2pi",
-                  "ila_Encoder/probe4"
+                  "uz_resolver_mech_rev_0/omega_mech",
+                  "ila_Encoder/probe6"
                 ]
               }
             }

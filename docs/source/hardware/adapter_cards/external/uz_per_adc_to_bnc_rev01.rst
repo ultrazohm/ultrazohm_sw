@@ -6,6 +6,11 @@ BNC to ADC Adapter
 .. image:: uz_per_adc_to_bnc/1_BNC_to_ADC_soldered.jpg
    :height: 500
 
+Source
+------
+
+- `BNC to ADC repository <https://bitbucket.org/ultrazohm/uz_per_adc_to_bnc/>`
+
 Functionality
 -------------
 

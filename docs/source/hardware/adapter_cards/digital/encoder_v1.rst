@@ -8,8 +8,15 @@ Digital Encoder 1v00
 .. image:: encoder_v1/3D_View_Top.png
    :height: 500
 
+Source
+------
+
+* `uz_d_encoder Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_encoder>`_
+
+
 Functionality
------------------------
+-------------
+
 Supports the following encoder types:
 
 * **Resolver**: Fully integrated Resolver controller with excitation signal generation, serial interface and optional absolute encoder emulation (shared with one digital hall channel)
@@ -20,7 +27,8 @@ Supports the following encoder types:
 
 
 Detailed Description
------------------------
+--------------------
+
 The UltraZohm Sensor Board features a variety of different industrial standard interfaces. This makes the board the perfect solution for flexible use in testing environments. 
 It supports incremental encoders, resolvers, analog and digital hall sensors as well es absolute encoders via serial connection.
 Most of the interfaces can be used simultaneously, which allows for either using many sensors in parallel or for evaluating different sensor systems at once. 
@@ -28,29 +36,32 @@ With many placement options the sensor board can be customized to serve the need
 
 
 Before first use
-----------------------------
+----------------
+
 * Determine correct placement options for correct function
 * Program CPLDs with firmware, see :ref:`label_cpld_programming` for details
 
 Known issues
------------------------
+------------
+
 none
 
 Compatibility 
-----------------------
+-------------
+
 * The first version is compatible with slots D1-D4. The next revision is intended to be used in slot D5. 
 
 Pinout
-----------------------
+------
 
 .. image:: encoder_v1/3D_View_Sideview2_Comments.png
    :height: 500
 
 Interfaces in Detail
------------------------
+--------------------
 
 Resolver
-"""""""""""""""""""""""""""
+""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Resolver.png
    :height: 300
@@ -82,7 +93,7 @@ When communicating with the controller, attention has to be payed on the SPI mod
 
 
 Digital Hall
-"""""""""""""""""""""""""""
+""""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Digital_Hall.png
    :width: 1000
@@ -95,7 +106,7 @@ Digital inputs provide connectivity for hall sensors. The inputs are called Hall
 In case the signals are single ended the differential to single ended converter can be bypassed with jumper resistors. If the logic level of those signals is 3.3V already the level shifter can be bypassed as well.
 
 Absolute Encoder
-"""""""""""""""""""""""""""
+""""""""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Absolute_Encoder.png
    :width: 1000
@@ -108,7 +119,7 @@ Fully integrated absolute encoders with industrial standard interfaces like SSI 
 Placement options provide usage with different interface specifications.
 
 Analog Hall
-"""""""""""""""""""""""""""
+"""""""""""
 
 .. image:: encoder_v1/3D_View_Connectors_Analog_Hall.png
    :width: 1000
@@ -120,7 +131,8 @@ The analog hall interface is based on the UltraZohm analog board. It is equipped
 
 
 References
-"""""""""""""""
+""""""""""
+
 * :download:`Schematic 1v00 <encoder_v1/SCH_UltraZohm_Digital_Sensor_Board_1v01.pdf>`
 * :ref:`label_cpld_programming`
 

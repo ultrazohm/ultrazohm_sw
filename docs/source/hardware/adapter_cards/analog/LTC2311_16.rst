@@ -14,6 +14,7 @@ Features
 * ADC `LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 * ADCs are triggered in groups of 4 or 8
 * Usage of up to three cards possible
+* `UZ_A_LTC2311-16 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_ltc2311-16>`_
 
 
 Revisions

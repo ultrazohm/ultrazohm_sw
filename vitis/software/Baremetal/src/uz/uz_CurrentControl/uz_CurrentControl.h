@@ -18,13 +18,13 @@ enum uz_CurrentControl_decoupling_select {
  */
 struct uz_CurrentControl_config {
 	enum uz_CurrentControl_decoupling_select decoupling_select; /**< CurrentControl decoupling selector \n
-													0 = no_decoupling \n
-													1 = linear_decoupling*/
+													 no_decoupling \n
+													 linear_decoupling*/
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
-
 };
+
 /**
  * @brief Struct for the three DutyCycles for a three-phase-system
  * 
@@ -126,8 +126,8 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
  * 
  * @param self uz_CurrentControl_t instance
  * @param decoupling_select enum CurrentControl decoupling selector \n
-							0 = no_decoupling \n
-							1 = linear_decoupling
+							 no_decoupling \n
+							 linear_decoupling
  */
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select);
 

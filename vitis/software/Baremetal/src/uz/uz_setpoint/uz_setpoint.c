@@ -182,7 +182,7 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
             output.q = uz_signals_saturation(im_ref, id_limit, -id_limit);//new max. ampere limit for q-axis current
             break;
 
-        case (IPMSM):;
+        case (IPMSM):
             output.q = uz_SetPoint_newton_FW_raphson_iq_approximation(self, M_ref_Nm, V_FE_max, omega_el_rad_per_sec);
             float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
             float iq_fw_squared = output.q * output.q;

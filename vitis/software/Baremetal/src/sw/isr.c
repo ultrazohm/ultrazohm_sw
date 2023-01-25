@@ -86,6 +86,8 @@ const struct uz_PMSM_t config_PMSM1 = {
    .I_max_Ampere = 10.0f
  };//these parameters are only needed if linear decoupling is selected
 
+bool first_ISR = false;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -227,6 +229,13 @@ void ISR_Control(void *data)
     }
 
     theta_mech_old = Global_Data.av.theta_mech;
+
+    // reset SW and FPGA resolver calculation counter for having defined init state
+	if (first_ISR == true) {
+		cnt = 0;
+		cnt_float = 0.0f;
+		first_ISR = false;
+	}
 
     if (Global_Data.av.theta_mech <= theta_m_min) {
     	theta_m_min = Global_Data.av.theta_mech;

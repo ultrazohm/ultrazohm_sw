@@ -137,7 +137,8 @@ int main(void)
             Global_Data.objects.iir_i_b2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_i_c2 = uz_signals_IIR_Filter_init(iir_config_currents);
             Global_Data.objects.iir_rpm_ref = uz_signals_IIR_Filter_init(iir_config_rpm_ref);
-            Global_Data.av.theta_offset = 1.120014f;
+        Global_Data.av.theta_offset = 1.120014f; //!!! if cnt is reset to zero at init we have to add pi to 1.120014 = 4.261607
+//            Global_Data.av.theta_offset = 4.261607f;
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config_FOC);
             Global_Data.objects.foc_speed = uz_SpeedControl_init(config_speed);

@@ -16,6 +16,15 @@
 
 #include "uz_CurrentControl.h"
 #include "../uz_global_configuration.h"
+#include "../uz_HAL.h"
+#include "../uz_signals/uz_signals.h"
+#include "uz_linear_decoupling.h"
+#include "uz_space_vector_limitation.h"
+#include <math.h>
+
+
+
+
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
 typedef struct uz_CurrentControl_t {
 	bool is_ready;

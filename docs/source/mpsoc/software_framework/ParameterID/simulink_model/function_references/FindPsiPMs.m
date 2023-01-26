@@ -1,12 +1,28 @@
-function [psi_pm] = FindPsiPMs(frequencies,amplitudes)
+function [psi_pm,psi_freq,angle] = FindPsiPMs(frequencies,amplitudes,angles,compensate,fc)
 %FindPsiPMs Finds PSI_PMs of higher orders
 %   Detailed explanation goes here
 [ampl_1,index_1] = max(amplitudes);
 omega_el1 = 2*pi*frequencies(index_1);
+%% initialize arrays
 psi_pm = single(zeros(5,1));
-psi_pm(1) = ampl_1/omega_el1;%Order: 1st
-psi_pm(2) = amplitudes(3*index_1)/(omega_el1*3);%Order: 3rd
-psi_pm(3) = amplitudes(5*index_1)/(omega_el1*5);%Order: 5th
-psi_pm(4) = amplitudes(7*index_1)/(omega_el1*7);%Order: 7th
-psi_pm(5) = amplitudes(11*index_1)/(omega_el1*11);%Order: 11th
+psi_freq = psi_pm;
+angle = psi_pm;
+order = single([1;3;5;7;11]);
+%% calculate results
+% calculate frequencies to orders
+psi_freq = order*frequencies(index_1);
+% calculate psi magnitude
+if(compensate)
+    factor = sqrt(1+(2*pi*psi_freq))
+    psi_pm = amplitudes(index_1*order)./(omega_el1*order)*factor;
+else
+    psi_pm = amplitudes(index_1*order)./(omega_el1*order);
+end
+% calculate angles
+if(compensate)
+    correction = atan(psi_freq/fc);
+    angle = angles(order*index_1) - angles(index_1) + correction;
+else
+   angle = angles(order*index_1) - angles(index_1);
+end
 end

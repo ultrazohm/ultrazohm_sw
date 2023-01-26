@@ -5,8 +5,8 @@ Y = single(zeros(10000,1));%1000 depends on the size of recorded data!
 L = length(data);
 Y = fft(data);
 tol = single(1e-7);
-for i=10000%1000 depends on the size of recorded data!
-    if(Y(i)<tol)
+for i=1:10000%1000 depends on the size of recorded data!
+    if(abs(Y(i))<tol)
         Y(i) = single(0);
     end
 end

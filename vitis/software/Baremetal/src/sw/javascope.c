@@ -89,6 +89,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_phase_work]= &data->vLR.phase_work;
 	js_ch_observable[JSO_Torque]= &data->av.mechanicalTorque;
 	js_ch_observable[JSO_Torque_LPF]= &data->av.mechanicalTorqueObserved;
+	js_ch_observable[JSO_I_U_ref]= &data->vLR.I_U_ref;
+	js_ch_observable[JSO_I_V_ref]= &data->vLR.I_V_ref;
+	js_ch_observable[JSO_I_W_ref]= &data->vLR.I_W_ref;
+	js_ch_observable[JSO_U_ZK]= &data->av.U_ZK;
+
 
 
 

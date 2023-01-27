@@ -137,6 +137,9 @@ typedef struct _variableLukasRabenstein {
 	float current_step_counter;
 	float ampl_work;
 	float phase_work;
+	float I_U_ref;
+	float I_V_ref;
+	float I_W_ref;
 } variableLukasRabenstein;
 
 

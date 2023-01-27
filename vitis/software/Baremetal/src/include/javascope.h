@@ -59,6 +59,9 @@ enum JS_OberservableData {
 	JSO_phase_work,
 	JSO_Torque,
 	JSO_Torque_LPF,
+	JSO_I_U_ref,
+	JSO_I_V_ref,
+	JSO_I_W_ref,
 	JSO_ENDMARKER
 };
 

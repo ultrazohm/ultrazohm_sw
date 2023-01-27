@@ -8442,12 +8442,6 @@
           "uz_system/AXI4_Lite_PWM_0"
         ]
       },
-      "AXI4_Lite1_1": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite_PWM_1",
-          "uz_system/AXI4_Lite_PWM_1"
-        ]
-      },
       "S00_AXI_1": {
         "interface_ports": [
           "uz_system/M10_AXI",
@@ -8506,6 +8500,12 @@
         "interface_ports": [
           "uz_system/S00_AXI",
           "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
+        ]
+      },
+      "AXI4_Lite1_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_1",
+          "uz_system/AXI4_Lite_PWM_1"
         ]
       }
     },

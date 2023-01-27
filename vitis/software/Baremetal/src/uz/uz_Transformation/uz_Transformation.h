@@ -227,6 +227,14 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq(uz_6ph_abc_t input, float 
 uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_to_abc(uz_6ph_dq_t input, float theta_el_rad);
 
 /**
+ * @brief Calculates the abc-phases from the line-line inputs
+ * 
+ * @param input uz_6ph_abc_t struct where a1=u_a1b1, b1=u_b1c1, ..., c2=u_c2a1
+ * @return uz_6ph_abc_t outputs the calculated abc-phases
+ */
+uz_6ph_abc_t uz_line_line_to_abc(uz_6ph_abc_t input);
+
+/**
  * @brief Calculates the stationary reference frame values from abc-phases using the ninephase VSD Transformation
  * 
  * @param input uz_9ph_abc_t

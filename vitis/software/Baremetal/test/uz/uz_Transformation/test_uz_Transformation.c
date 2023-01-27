@@ -5,6 +5,7 @@
 #include <math.h>
 #include "uz_math_constants.h"
 #include "uz_Transformation.h"
+#include "uz_Transformation.c"
 
 uz_3ph_abc_t UVW_system = {0}; 
 uz_3ph_dq_t dq_system = {0};
@@ -32,6 +33,22 @@ void setUp(void)
     alphabeta_system.alpha = 0.0f;
     alphabeta_system.beta = 0.0f;
     alphabeta_system.gamma = 0.0f;
+}
+
+// Test helpfunction
+void test_uz_complex_rotation(void){
+    uz_3ph_alphabeta_t startvalue = {
+        .alpha = 111.9f,
+        .beta = 31.55f,
+        .gamma = -102.0f};
+    uz_3ph_alphabeta_t result = {
+        .alpha = 71.3f,
+        .beta = 10.24f,
+        .gamma = -102.0f};
+    uz_3ph_alphabeta_t rotated = uz_complex_rotation(startvalue);
+    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.alpha, result.alpha);
+    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.beta, result.beta);
+    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.gamma, result.gamma);
 }
 
 // Testfunctions threephase

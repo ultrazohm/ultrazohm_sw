@@ -274,8 +274,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VALID               (uint8_t) 0x1
 //-----------------------------------------------------------------------------------------------------------
 
-
-
 //Defines for the lib
 /** Needed to calculate the Temperature */
 #define TEMP_CONVERSION_FACTOR      0.000976563                         // 1/1024
@@ -312,7 +310,7 @@ typedef struct {
 struct uz_temperaturecard_config_t{
     uint32_t    base_address;                   /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t    ip_clk_frequency_Hz;            /**< Clock frequency of IP-Core */
-    uint32_t 	  Sample_Period;                  /**< Period of the freerunning counter to trigger a temperature measurement */
+    uint32_t 	  Sample_Freq;                    /**< Sampling frequency to trigger a temperature measurement */
     uint32_t    Configdata_A[20];               /**< Configuration-struct for the first 20-Channels  / Channelgroup A */
     uint32_t    Configdata_B[20];               /**< Configuration-struct for the second 20-Channels / Channelgroup B */
     uint32_t    Configdata_C[20];               /**< Configuration-struct for the last 20-Channels   / Channelgroup C */

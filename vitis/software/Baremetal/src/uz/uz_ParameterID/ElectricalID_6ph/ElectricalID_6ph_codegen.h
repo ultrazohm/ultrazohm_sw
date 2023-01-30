@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.16
+ * Model version                  : 3.17
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Jan 30 11:01:09 2023
+ * C/C++ source code generated on : Mon Jan 30 15:54:56 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,7 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
+
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
@@ -79,7 +80,6 @@ typedef struct {
 #endif
 
 
-#endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
@@ -87,7 +87,6 @@ typedef struct {
   internal_psi_analysis r;
   internal_psi_analysis r1;
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
-  uz_ParaID_Controller_Parameters_output_t c;
   creal32_T Y[10000];
   creal32_T wwc[9999];
   creal32_T ytmp[5000];
@@ -166,9 +165,7 @@ typedef struct {
   real32_T L_est_a;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   real32_T R_est_d;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T L_est_e;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
-  real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T psiOverJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID_6ph_codegen' */
@@ -243,17 +240,17 @@ typedef struct {
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sQ4F4aYAfnRuwrnP5W0JnuE_;
+  uint8_T is_c14_sOl2qK5Jgl8wgLAgCVNGlcG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_sTK5oN2u41FtyrTT3M4LBvD_;
+  uint8_T is_c14_smKAQOpfcqZuphzD9nBAV5E_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_sei0wtTtu3rWzJvdVkbw0IB_;
+  uint8_T is_c14_s451roa26QaSlwrUK1XaIPC_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_sm7bGqwGrGWaAT4sjTM7K5B_;
+  uint8_T is_c14_sKKowLY6BYWJ0UaTkkxpXdH_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_sJ2fckg9tfxlA3RfEdiBHFB_;
+  uint8_T is_c14_skaq22ouKlVhBqFs6wr5xfG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_s3sY6TQNXW104EzFIbsrQcG_;
+  uint8_T is_c14_siwgtZdmVja6trmQjDW7cPG_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;

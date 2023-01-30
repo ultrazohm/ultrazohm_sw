@@ -241,6 +241,9 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->GlobalConfig.ratCurrent = 8.0f;
 	Data->GlobalConfig.ratTorque = 0.29f;
 	Data->GlobalConfig.ratSpeed = 3000.0f;
+	Data->GlobalConfig.voltage_measurement_C = 0.012e-6f;
+	Data->GlobalConfig.voltage_measurement_Rp = 6500.0f;
+	Data->GlobalConfig.voltage_measurement_Rs = 2*78700.0f;
 
 	//Initialize ElectricalID-Config
 	Data->ElectricalID_Config.goertzlFreq = 0.0f;

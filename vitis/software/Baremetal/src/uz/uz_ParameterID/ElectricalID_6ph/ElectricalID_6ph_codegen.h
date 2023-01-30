@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.7
+ * Model version                  : 3.15
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Jan 19 14:09:17 2023
+ * C/C++ source code generated on : Fri Jan 27 14:51:38 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (9), Warnings (3), Error (0)
  */
 
 #include "../uz_ParameterID_data.h"
@@ -68,11 +68,25 @@ typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
+  internal_psi_analysis analysis;      /* '<Root>/ElectricalID_6ph_codegen' */
+  internal_psi_analysis r;
+  internal_psi_analysis r1;
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
-  uz_ParaID_Controller_Parameters_output_t b;
+  uz_ParaID_Controller_Parameters_output_t c;
+  creal32_T Y[10000];
+  creal32_T wwc[9999];
+  creal32_T ytmp[5000];
+  creal32_T reconVar1[5000];
+  creal32_T reconVar2[5000];
+  creal32_T fy[16384];
+  creal32_T fv[16384];
+  creal32_T fy_k[16384];
+  creal32_T Y_c;
+  creal32_T y;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T voltage_meas_array[10000];  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Vstep[205];         /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T inv_VSD[36];        /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T current_meas_array[1024];
@@ -110,6 +124,18 @@ typedef struct {
   real32_T d_m[2048];           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T J_o[4096];           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T i_est_n[2048];
+  real32_T P2[10000];
+  real32_T sintabinv[16385];
+  real32_T costab1q[8193];
+  real32_T costab[16385];
+  real32_T sintab[16385];
+  real32_T hcostab[8192];
+  real32_T hsintab[8192];
+  real32_T hcostabinv[8192];
+  real32_T hsintabinv[8192];
+  real32_T costab1q_b[5001];
+  real32_T costable[10001];
+  real32_T sintable[10001];
   real32_T setp_abc[6];
   real32_T setp_dq[6];
   real32_T H_bn[4];
@@ -142,7 +168,34 @@ typedef struct {
   real32_T V0_a;                /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T lambda_c;
   real32_T e_h4;
+  real32_T x_re;
+  real32_T x_im;
+  real32_T nt_im;
+  real32_T sintabinv_tmp;
+  real32_T temp_re;
+  real32_T temp_im;
+  real32_T twid_re;
+  real32_T twid_im;
+  real32_T reconVar1_im;
+  real32_T costable_tmp;
+  real32_T ytmp_re_tmp;
+  real32_T ytmp_im_tmp;
   int32_T i;
+  int32_T i_p;
+  int32_T idx;
+  int32_T rt;
+  int32_T y_c;
+  int32_T idx_f;
+  int32_T b_idx;
+  int32_T ix;
+  int32_T iy;
+  int32_T h_i;
+  int32_T b_istart;
+  int32_T b_j;
+  int32_T b_ihi;
+  int32_T i_g;
+  int32_T ix_g;
+  int32_T iy_m;
   uint32_T counter;                    /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
@@ -175,17 +228,17 @@ typedef struct {
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sCHQlK7mZLkMj1oUC6g0nTD_;
+  uint8_T is_c14_sQ4F4aYAfnRuwrnP5W0JnuE_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_shV5vdCrOZuYWyfJ79CjAGC_;
+  uint8_T is_c14_sTK5oN2u41FtyrTT3M4LBvD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_sjmcPFOtCN9FQrBXqO15cxD_;
+  uint8_T is_c14_sei0wtTtu3rWzJvdVkbw0IB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_stn3vDFYFw0ytAi5iqWnJAE_;
+  uint8_T is_c14_sm7bGqwGrGWaAT4sjTM7K5B_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_sEdmSWeEzJRvMrK23NRhcl_S;
+  uint8_T is_c14_sJ2fckg9tfxlA3RfEdiBHFB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_suJr77aDRcBapkR34CUCR6C_;
+  uint8_T is_c14_s3sY6TQNXW104EzFIbsrQcG_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;

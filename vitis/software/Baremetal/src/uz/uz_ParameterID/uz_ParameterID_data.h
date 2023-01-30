@@ -74,6 +74,9 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
+  real32_t voltage_measurement_C;
+  real32_t voltage_measurement_Rp;
+  real32_t voltage_measurement_Rs;
 } uz_ParaID_GlobalConfig_t;
 
 
@@ -144,10 +147,12 @@ typedef struct {
   real32_T PWM_Switch_b2;
   real32_T PWM_Switch_c2;
   boolean_T enable_TriState[3]; /**< array to signal which halfbridge of the inverter should be in tristate mode. true signals, that the halfbridge should be in tristate mode. (only needed from the start of ElectricalID, until Ld and Lq have been identified) */
+  boolean_T enable_TriState_set_2[3];
   real32_T thetaOffset; /**< determined offset of theta in rad */
   uz_PMSM_t PMSM_parameters; /**< identified motor parameters */
   uz_6ph_dq_t inductances_6ph;
   uz_6ph_dq_t resistances_6ph;
+  real32_T psi_pm[5];
 } uz_ParaID_ElectricalID_output_t;
 
 //----------------------------------------//

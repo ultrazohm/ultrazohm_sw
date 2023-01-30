@@ -1,0 +1,4 @@
+vlib work
+vcom  uz_rs_flip_flop_src_uz_rs_flip_flop_pkg.vhd
+vcom  uz_rs_flip_flop_src_S_R_Flip_Flop.vhd
+vcom  uz_rs_flip_flop_src_uz_rs_flip_flop.vhd

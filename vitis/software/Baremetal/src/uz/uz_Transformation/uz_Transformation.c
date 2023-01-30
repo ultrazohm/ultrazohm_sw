@@ -16,6 +16,7 @@
  ******************************************************************************/
 
 #include "uz_Transformation.h"
+#include "../uz_math_constants.h"
 #include "../uz_HAL.h"
 #include <math.h>
 

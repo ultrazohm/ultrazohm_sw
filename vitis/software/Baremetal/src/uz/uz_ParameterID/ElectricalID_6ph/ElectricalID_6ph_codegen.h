@@ -64,6 +64,11 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
+struct internal_psi_analysis {
+	real32_T analysis;      /* '<Root>/ElectricalID_6ph_codegen' */
+	real32_T r;
+	real32_T r1;
+};
 
 
 /* Block signals and states (default storage) for system '<Root>' */

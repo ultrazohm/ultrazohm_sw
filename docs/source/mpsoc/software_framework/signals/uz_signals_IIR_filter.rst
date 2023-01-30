@@ -1,3 +1,5 @@
+.. _uz_IIR_filter:
+
 ==========
 IIR filter
 ==========

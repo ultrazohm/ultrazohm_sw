@@ -4,6 +4,12 @@
 Digital Optical
 =================================
 
+Source
+------
+
+- `Digital optical repository <https://bitbucket.org/ultrazohm/uz_d_optical/src/master/>`_
+
+
 ..	toctree::
 	:maxdepth: 1
 	:caption: Revisions

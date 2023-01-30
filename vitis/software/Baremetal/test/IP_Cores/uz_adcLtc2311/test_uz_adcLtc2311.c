@@ -168,6 +168,36 @@ void test_uz_adcLtc2311_update_conversion_factor(void)
     TEST_ASSERT_EQUAL(function_return_value, UZ_SUCCESS);
 }
 
+void test_uz_adcLtc2311_init_assertion_wrong_conversion_factor(void){
+    struct uz_adcLtc2311_config_t default_configuration_assertion = {
+        .base_address = TEST_BASE_ADDRESS,
+        .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+        .channel_config = {
+            .conversion_factor = 1.0f,
+            .conversion_factor_definition = {
+                .is_signed = true,
+                .integer_bits = 20U, // Intentionally more than the maximum number of bits
+                .fractional_bits = 20U},
+            .offset = 0.0f,
+        },
+        .spi_master_config = {.samples = 1U, .sample_time = 6U, .trigger_mode = pl_trigger},
+        .cpol = 1U,
+        .cpha = 0U,
+        .napping_spi_masters = 0U,
+        .sleeping_spi_masters = 0U,
+        .master_select = UZ_ADCLTC2311_MASTER1,
+        .channel_select = UZ_ADCLTC2311_CH1 | UZ_ADCLTC2311_CH2 | UZ_ADCLTC2311_CH3 | UZ_ADCLTC2311_CH4 | UZ_ADCLTC2311_CH5 | UZ_ADCLTC2311_CH6 | UZ_ADCLTC2311_CH7 | UZ_ADCLTC2311_CH8,
+        .pre_delay = 0U,
+        .post_delay = 0U,
+        .clk_div = 0U,
+        .max_attempts = 10U};
+    // Ignores all function calls that happen before the assertion
+    uz_adcLtc2311_hw_write_cr_Ignore();
+    uz_adcLtc2311_hw_read_cr_IgnoreAndReturn(1);
+    TEST_ASSERT_FAIL_ASSERT(uz_adcLtc2311_init(default_configuration_assertion));
+}
+
+
 /**
  * @brief Test hardware failure in case of conversion factor update
  * 

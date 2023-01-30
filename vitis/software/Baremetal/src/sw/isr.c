@@ -92,6 +92,11 @@ struct uz_DutyCycle_t dutyCycles_set2 = {0};
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;
 extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
+// voltage measurement
+uz_6ph_abc_t u_phase_UDC = {0};
+uz_6ph_abc_t u_line_line = {0};
+float ADC_conv_faktor_sys1 = -1.0f*36.0f/2.77f; //UDC!!
+
 
 // Temp
 uz_3ph_abc_t input1 = {0};
@@ -126,6 +131,8 @@ void ISR_Control(void *data)
 
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = paraid_temp_dq_currents;
+	ParaID_Data.ActualValues.v_abc_6ph = uz_line_line_to_abc(u_line_line);
+	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, 0.0f);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
@@ -138,8 +145,23 @@ void ISR_Control(void *data)
 ////			Phase current measurement and various transformations (dq, VSD)					////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//assign ADC values to motor current variables
+	// ADC values from voltage Measurement
+	u_phase_UDC.a1 = Global_Data.aa.A3.me.ADC_A4 * ADC_conv_faktor_sys1;
+	u_phase_UDC.b1 = Global_Data.aa.A3.me.ADC_A3 * ADC_conv_faktor_sys1;
+	u_phase_UDC.c1 = Global_Data.aa.A3.me.ADC_A2 * ADC_conv_faktor_sys1;
+	u_phase_UDC.a2 = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor_sys1;
+	u_phase_UDC.b2 = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor_sys1;
+	u_phase_UDC.c2 = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor_sys1;
 
+	// calculate line-to-line voltage
+	u_line_line.a1 = u_phase_UDC.a1-u_phase_UDC.b1;
+	u_line_line.b1 = u_phase_UDC.b1-u_phase_UDC.c1;
+	u_line_line.c1 = u_phase_UDC.c1-u_phase_UDC.a1;
+	u_line_line.a2 = u_phase_UDC.a2-u_phase_UDC.b2;
+	u_line_line.b2 = u_phase_UDC.b2-u_phase_UDC.c2;
+	u_line_line.c2 = u_phase_UDC.c2-u_phase_UDC.a2;
+
+	//assign ADC values to motor current variables
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4);
 	m_6ph_abc_currents.b1 = (-1.0*Global_Data.aa.A2.me.ADC_A3);
 	m_6ph_abc_currents.c1 = (-1.0*Global_Data.aa.A2.me.ADC_A2);

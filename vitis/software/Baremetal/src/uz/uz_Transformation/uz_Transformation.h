@@ -1,6 +1,12 @@
 #ifndef UZ_TRANSFORMATION_H
 #define UZ_TRANSFORMATION_H
 
+struct uz_complex_magn_phase{
+    float magnitude;
+    float phase;
+};
+
+
 /**
  * @brief Struct for the variables of a dq0-System
  */

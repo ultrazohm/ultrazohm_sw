@@ -22,14 +22,11 @@
 // not declared as static because tests showed better performance without static declaration
 float uz_6ph_arraymul(int line, float const matrixval[6][6], float const val[6]);
 float uz_9ph_arraymul(int line, float const matrixval[9][9], float const val[9]);
-uz_3ph_alphabeta_t uz_complex_rotation(uz_3ph_alphabeta_t input);
+uz_3ph_alphabeta_t uz_complex_rotation(uz_3ph_alphabeta_t input, struct uz_complex_magn_phase factor);
 
 
 
-struct uz_complex_magn_phase{
-    float magnitude;
-    float phase;
-};
+
 
 // abc -> dq & reverse
 uz_3ph_dq_t uz_transformation_3ph_abc_to_dq(uz_3ph_abc_t input, float theta_el_rad)
@@ -203,32 +200,43 @@ uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_to_abc(uz_6ph_dq_t input, float 
     return (uz_transformation_asym30deg_6ph_alphabeta_to_abc(intermediate));
 }
 
-uz_3ph_alphabeta_t uz_complex_rotation(uz_3ph_alphabeta_t input){
-    uz_3ph_alphabeta_t out = {0};
+uz_3ph_alphabeta_t uz_complex_rotation(uz_3ph_alphabeta_t input, struct uz_complex_magn_phase factor){
+    uz_3ph_alphabeta_t output = {0};
     struct uz_complex_magn_phase complex = {0};
-    complex.magn = sqrt(powf(input.alpha,2)+powf(input.beta,2));
-    complex.phase = atan(input.beta/input.alpha);
-    complex.magn = complex.magn * 1.0/sqrt(3.0);
-    complex.phase = complex.magn - 1.0f/6.0f*UZ_PIf;
-    out.alpha = complex.magn * cos(complex.phase);
-    out.beta = complex.magn * sin(complex.phase);
-    out.gamma = input.gamma;
-    return out;
+    complex.magnitude = sqrtf(powf(input.alpha,2.0f)+powf(input.beta,2.0f));
+    complex.phase = atan2f(input.beta,input.alpha);
+    output.alpha = complex.magnitude * factor.magnitude * cosf(complex.phase+factor.phase);
+    output.beta = complex.magnitude * factor.magnitude * sinf(complex.phase+factor.phase);
+    output.gamma = input.gamma;
+    return output;
 }
 
 uz_6ph_abc_t uz_line_line_to_abc(uz_6ph_abc_t input){
-    uz_3ph_abc_t in_sys1 = {0.0f};
-    uz_3ph_abc_t in_sys2 = {0.0f};
-    uz_3ph_alphabeta_t alphabeta_sys1 = {0.0f};
-    uz_3ph_alphabeta_t alphabeta_sys2 = {0.0f};
-    in_sys1.a = input.a1;
-    in_sys1.b = input.b1;
-    in_sys1.c = input.c1;
-    in_sys2.a = input.a2;
-    in_sys2.b = input.b2;
-    in_sys2.c = input.c2;
-    alphabeta_sys1 = uz_complex_rotation(uz_transformation_3ph_abc_to_alphabeta(in_sys1));
-    alphabeta_sys2 = uz_complex_rotation(uz_transformation_3ph_abc_to_alphabeta(in_sys2));
+    uz_6ph_abc_t output = {0};
+    uz_3ph_abc_t abc_sys1 = {0};
+    uz_3ph_abc_t abc_sys2 = {0};
+    uz_3ph_alphabeta_t alphabeta_sys1 = {0};
+    uz_3ph_alphabeta_t alphabeta_sys2 = {0};
+    struct uz_complex_magn_phase factor = {
+        .magnitude = 1.0f/sqrtf(3.0f),
+        .phase = -1.0f/6.0f*UZ_PIf};
+    abc_sys1.a = input.a1;
+    abc_sys1.b = input.b1;
+    abc_sys1.c = input.c1;
+    abc_sys2.a = input.a2;
+    abc_sys2.b = input.b2;
+    abc_sys2.c = input.c2;
+    alphabeta_sys1 = uz_complex_rotation(uz_transformation_3ph_abc_to_alphabeta(abc_sys1),factor);
+    alphabeta_sys2 = uz_complex_rotation(uz_transformation_3ph_abc_to_alphabeta(abc_sys2),factor);
+    abc_sys1 = uz_transformation_3ph_alphabeta_to_abc(alphabeta_sys1);
+    abc_sys2 = uz_transformation_3ph_alphabeta_to_abc(alphabeta_sys2);
+    output.a1 = abc_sys1.a;
+    output.b1 = abc_sys1.b;
+    output.c1 = abc_sys1.c;
+    output.a2 = abc_sys2.a;
+    output.b2 = abc_sys2.b;
+    output.c2 = abc_sys2.c;
+    return output;
 }
 
 

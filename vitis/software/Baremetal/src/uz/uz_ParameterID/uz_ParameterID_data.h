@@ -74,9 +74,9 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
-  real32_t voltage_measurement_C;
-  real32_t voltage_measurement_Rp;
-  real32_t voltage_measurement_Rs;
+  real32_T voltage_measurement_C;
+  real32_T voltage_measurement_Rp;
+  real32_T voltage_measurement_Rs;
 } uz_ParaID_GlobalConfig_t;
 
 

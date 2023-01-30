@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.15
+ * Model version                  : 3.16
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Jan 27 14:51:38 2023
+ * C/C++ source code generated on : Mon Jan 30 11:01:09 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,7 +31,6 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
-
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
@@ -65,6 +64,22 @@
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
 
+#ifndef DEFINED_TYPEDEF_FOR_internal_psi_analysis_
+#define DEFINED_TYPEDEF_FOR_internal_psi_analysis_
+
+typedef struct {
+  real32_T amplitudes[5001];
+  real32_T frequencies[5001];
+  real32_T angles[5001];
+  real32_T psi_pm[5];
+  real32_T psi_freq[5];
+  real32_T psi_angle[5];
+} internal_psi_analysis;
+
+#endif
+
+
+#endif
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

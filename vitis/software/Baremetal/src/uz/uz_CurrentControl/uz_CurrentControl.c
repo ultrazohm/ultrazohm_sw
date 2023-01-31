@@ -16,6 +16,15 @@
 
 #include "uz_CurrentControl.h"
 #include "../uz_global_configuration.h"
+#include "../uz_HAL.h"
+#include "../uz_signals/uz_signals.h"
+#include "uz_linear_decoupling.h"
+#include "uz_space_vector_limitation.h"
+#include <math.h>
+
+
+
+
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
 #include <math.h>
 #include "../uz_HAL.h"
@@ -29,7 +38,7 @@ typedef struct uz_CurrentControl_t {
 	struct uz_PI_Controller* Controller_iq;
 }uz_CurrentControl_t;
 
-static uz_3ph_dq_t uz_CurrentControl_CurrentControl(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static uint32_t instances_counter_CurrentControl = 0;
 
@@ -69,7 +78,7 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
-	uz_3ph_dq_t v_pre_limit_Volts = uz_CurrentControl_CurrentControl(self, i_reference_Ampere, i_actual_Ampere);
+	uz_3ph_dq_t v_pre_limit_Volts = uz_CurrentControl_sample_pi_controllers(self, i_reference_Ampere, i_actual_Ampere);
 	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
 	v_pre_limit_Volts.d += v_decoup_Volts.d;
 	v_pre_limit_Volts.q += v_decoup_Volts.q;
@@ -85,7 +94,7 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t
 	return(v_output_Volts);
 }
 
-static uz_3ph_dq_t uz_CurrentControl_CurrentControl(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_3ph_dq_t v_output_Volts = { 0 };

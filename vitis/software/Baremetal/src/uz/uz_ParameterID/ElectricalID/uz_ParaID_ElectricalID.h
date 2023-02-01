@@ -22,13 +22,7 @@
  * @brief Object definition for uz_ParaID_ElectricalID_t
  * 
  */
-typedef struct uz_ParaID_ElectricalID_t{
-	ExtY_ElectricalID_t output;
-	ExtU_ElectricalID_t input;
-	DW_ElectricalID_t rtDW; /* Observable states */
-	RT_MODEL_ElectricalID_t modelData;
-	RT_MODEL_ElectricalID_t *PtrToModelData;
-} uz_ParaID_ElectricalID_t;
+typedef struct uz_ParaID_ElectricalID_t uz_ParaID_ElectricalID_t;
 
 /**
  * @brief Initializes the uz_ParaID_ElectricalID_t object
@@ -44,4 +38,13 @@ uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void);
  */
 void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self);
 
+void uz_ElectricalID_set_Config(uz_ParaID_ElectricalID_t *self, uz_ParaID_ElectricalIDConfig_t Config);
+void uz_ElectricalID_set_ActualValues(uz_ParaID_ElectricalID_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_ElectricalID_set_GlobalConfig(uz_ParaID_ElectricalID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+
+bool uz_ElectricalID_get_enteredElectricalID(uz_ParaID_ElectricalID_t *self);
+bool uz_ElectricalID_get_finishedElectricalID(uz_ParaID_ElectricalID_t *self);
+uz_ParaID_Controller_Parameters_output_t* uz_ElectricalID_get_FOC_output(uz_ParaID_ElectricalID_t *self);
+uz_ParaID_ElectricalID_output_t* uz_ElectricalID_get_output(uz_ParaID_ElectricalID_t *self);
 #endif

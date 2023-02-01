@@ -18,8 +18,16 @@
 #include "uz_ParaID_ElectricalID.h"
 #include "../../uz_HAL.h"
 
-static uint32_t instances_counter_ParaID_ElectricalID = 0;
+typedef struct uz_ParaID_ElectricalID_t{
+	bool is_ready;
+	ExtY_ElectricalID_t output;
+	ExtU_ElectricalID_t input;
+	DW_ElectricalID_t rtDW; /* Observable states */
+	RT_MODEL_ElectricalID_t modelData;
+	RT_MODEL_ElectricalID_t *PtrToModelData;
+};
 
+static uint32_t instances_counter_ParaID_ElectricalID = 0;
 static uz_ParaID_ElectricalID_t instances_ParaID_ElectricalID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_ElectricalID_t* uz_ParaID_ElectricalID_allocation(void);
@@ -43,6 +51,54 @@ uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void) {
 void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self) {
 	uz_assert_not_NULL(self);
 	ElectricalID_step(self->PtrToModelData);
+}
+
+void uz_ElectricalID_set_Config(uz_ParaID_ElectricalID_t *self, uz_ParaID_ElectricalIDConfig_t Config) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ElectricalIDConfig = Config;
+}
+
+void uz_ElectricalID_set_ActualValues(uz_ParaID_ElectricalID_t *self, uz_ParaID_ActualValues_t ActualValues) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ActualValues = ActualValues;
+}
+
+void uz_ElectricalID_set_GlobalConfig(uz_ParaID_ElectricalID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.GlobalConfig_out = GlobalConfig;
+}
+
+void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ControlFlags = ControlFlags;
+}
+
+bool uz_ElectricalID_get_enteredElectricalID(uz_ParaID_ElectricalID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->output.enteredElectricalID);
+}
+
+bool uz_ElectricalID_get_finishedElectricalID(uz_ParaID_ElectricalID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->output.finishedElectricalID);
+}
+
+uz_ParaID_Controller_Parameters_output_t* uz_ElectricalID_get_FOC_output(uz_ParaID_ElectricalID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.ElectricalID_FOC_output);
+}
+
+uz_ParaID_ElectricalID_output_t* uz_ElectricalID_get_output(uz_ParaID_ElectricalID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.ElectricalID_output);
 }
 
 #endif

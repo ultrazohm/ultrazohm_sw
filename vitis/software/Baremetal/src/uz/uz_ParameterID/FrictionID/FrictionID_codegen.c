@@ -364,11 +364,11 @@ static void CoulombFrictionTorqueEstimation(ExtU_FrictionID_t *rtFrictionID_U,
         x = rtFrictionID_DW->measArray2[(int32_T)rtFrictionID_DW->mean_count - 1];
 
         /* Inport: '<Root>/FrictionConfigID' */
-        if (x < (1.0F - rtFrictionID_U->FrictionConfigID.eta) *
+        if (x < (1.0F - rtFrictionID_U->FrictionIDConfig.eta) *
             rtFrictionID_DW->n_eva * 0.1047F) {
           /* '<S1>:486:12' switcher=boolean(0); */
           rtFrictionID_DW->switcher = false;
-        } else if (x > (rtFrictionID_U->FrictionConfigID.eta + 1.0F) *
+        } else if (x > (rtFrictionID_U->FrictionIDConfig.eta + 1.0F) *
                    rtFrictionID_DW->n_eva * 0.1047F) {
           /* '<S1>:486:12' switcher=boolean(0); */
           rtFrictionID_DW->switcher = false;
@@ -546,11 +546,11 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
 
   /* Inport: '<Root>/FrictionConfigID' */
   /* '<S1>:546:16' n_eva               = single(FrictionConfigID.n_eva_max); */
-  rtFrictionID_DW->n_eva = rtFrictionID_U->FrictionConfigID.n_eva_max;
+  rtFrictionID_DW->n_eva = rtFrictionID_U->FrictionIDConfig.n_eva_max;
 
   /* '<S1>:546:17' n_eva_step          = single(n_eva/single(FrictionConfigID.N_Visco)); */
   rtFrictionID_DW->n_eva_step = rtFrictionID_DW->n_eva / (real32_T)
-    rtFrictionID_U->FrictionConfigID.N_Visco;
+    rtFrictionID_U->FrictionIDConfig.N_Visco;
 
   /* '<S1>:546:18' M_Brk               = single(0); */
   rtFrictionID_DW->M_Brk = 0.0F;
@@ -567,7 +567,7 @@ static void initParams(ExtU_FrictionID_t *rtFrictionID_U, ExtY_FrictionID_t
   /* '<S1>:546:21' delay               = single(5*(GlobalConfig.Kp_iq / GlobalConfig.Ki_iq)); */
   /* '<S1>:546:22' M_eva_step          = single(GlobalConfig.ratTorque*FrictionConfigID.StepScale); */
   rtFrictionID_DW->M_eva_step = rtFrictionID_U->GlobalConfig_out.ratTorque *
-    rtFrictionID_U->FrictionConfigID.StepScale;
+    rtFrictionID_U->FrictionIDConfig.StepScale;
 
   /* Outport: '<Root>/FrictionID_FOC_output' */
   /* '<S1>:546:23' line                = single(zeros(2,1)); */
@@ -851,7 +851,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
      case IN_BreakawayTorqueEstimation:
       /* During 'BreakawayTorqueEstimation': '<S1>:492' */
       /* '<S1>:497:1' sf_internal_predicateOutput = counter>FrictionConfigID.N_Brk; */
-      if (rtFrictionID_DW->counter > rtFrictionID_U->FrictionConfigID.N_Brk) {
+      if (rtFrictionID_DW->counter > rtFrictionID_U->FrictionIDConfig.N_Brk) {
         /* Transition: '<S1>:497' */
         /* Exit Internal 'BreakawayTorqueEstimation': '<S1>:492' */
         rtFrictionID_DW->is_BreakawayTorqueEstimation = IN_NO_ACTIVE_CHILD;
@@ -885,12 +885,12 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
 
         /* '<S1>:492:8' if(nextstate>=FrictionConfigID.BrkCount) */
         if (rtFrictionID_DW->nextstate >=
-            rtFrictionID_U->FrictionConfigID.BrkCount) {
+            rtFrictionID_U->FrictionIDConfig.BrkCount) {
           /* '<S1>:492:9' M_eva=single(0); */
           rtFrictionID_DW->M_eva = 0.0F;
 
           /* '<S1>:492:10' if(counter<=FrictionConfigID.N_Brk) */
-          if (rtFrictionID_DW->counter <= rtFrictionID_U->FrictionConfigID.N_Brk)
+          if (rtFrictionID_DW->counter <= rtFrictionID_U->FrictionIDConfig.N_Brk)
           {
             /* '<S1>:492:11' Ustep(counter)=M_Brk; */
             rtFrictionID_DW->Ustep[(int32_T)rtFrictionID_DW->counter - 1] =
@@ -951,7 +951,7 @@ void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M)
           /* '<S1>:495:9' if(abs(ActualValues.omega_m)<=omega_Brk&&abs(M_eva)<FrictionConfigID.maxCurrent) */
           if ((rtFrictionID_DW->ex <= rtFrictionID_DW->omega_Brk) && (fabsf
                (rtFrictionID_DW->M_eva) <
-               rtFrictionID_U->FrictionConfigID.maxCurrent)) {
+               rtFrictionID_U->FrictionIDConfig.maxCurrent)) {
             /* '<S1>:495:11' M_eva=M_eva+M_eva_step; */
             rtFrictionID_DW->M_eva += rtFrictionID_DW->M_eva_step;
 

@@ -9,7 +9,7 @@
  *
  * Model version                  : 4.8
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Jan 23 16:45:33 2023
+ * C/C++ source code generated on : Mon Jan 30 10:51:45 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -86,10 +86,10 @@ static void MATLABFunction_i(creal32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
   rtu_omega_el, uint8_T rtu_enable, real32_T *rty_I_re_mit, real32_T
   *rty_I_im_mit, real32_T *rty_I_re_gegen, real32_T *rty_I_im_gegen, real32_T
   *rty_I_re_null, real32_T *rty_I_im_null, DW_MATLABFunction_m *localDW);
-static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
-  real32_T *rty_sin2piu);
-static void Subsystem(real32_T rtu_theta_el, real32_T *rty_costheta_el, real32_T
-                      *rty_sintheta_el);
+static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu);
+static void Subsystem(real32_T rtu_theta_el, real32_T *rty_costheta_el);
+static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu);
+static void Subsystem_f(real32_T rtu_theta_el, real32_T *rty_sintheta_el);
 static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
   rtu_Betrieb, real32_T rtu_im, real32_T *rty_re_lim, real32_T *rty_im_lim);
 static void Strangstromregler_asymetri_Init(DW_Strangstromregler_asymetrisc
@@ -104,8 +104,6 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   *rty_a, real32_T *rty_I_ref1, real32_T rtp_Offset_S, real32_T rtp_Offset_gegen,
   real32_T rtp_Offset_null, DW_Strangstromregler_asymetrisc *localDW);
 static void SwitchCaseActionSubsystem(real32_T *rty_a, real32_T *rty_Iref);
-static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu);
-static void Subsystem_d(real32_T rtu_theta_el, real32_T *rty_sintheta_el);
 static uint32_T plook_u32u16u64n48_even8c_gf(uint16_T u, uint16_T bp0, uint32_T
   maxIndex, uint64_T *fraction)
 {
@@ -205,8 +203,8 @@ static void MATLABFunction(real32_T rtu_i_im, real32_T rtu_w, boolean_T
 /*
  * Output and update for atomic system:
  *    '<S30>/MATLAB Function'
- *    '<S140>/MATLAB Function'
- *    '<S250>/MATLAB Function'
+ *    '<S173>/MATLAB Function'
+ *    '<S316>/MATLAB Function'
  */
 static void MATLABFunction_i(creal32_T rtu_Psi_PM_U, creal32_T rtu_Psi_PM_V,
   creal32_T rtu_Psi_PM_W, real32_T rtu_I_re, real32_T rtu_I_im, real32_T
@@ -626,149 +624,96 @@ real32_T rt_modf(real32_T u0, real32_T u1)
  *    '<S36>/cos_lookup_table'
  *    '<S37>/cos_lookup_table'
  *    '<S38>/cos_lookup_table'
- *    '<S64>/cos_lookup_table'
- *    '<S65>/cos_lookup_table'
- *    '<S83>/cos_lookup_table'
- *    '<S84>/cos_lookup_table'
- *    '<S102>/cos_lookup_table'
- *    '<S103>/cos_lookup_table'
- *    '<S121>/cos_lookup_table'
+ *    '<S73>/cos_lookup_table'
+ *    '<S74>/cos_lookup_table'
+ *    '<S98>/cos_lookup_table'
+ *    '<S99>/cos_lookup_table'
+ *    '<S123>/cos_lookup_table'
+ *    '<S124>/cos_lookup_table'
+ *    '<S148>/cos_lookup_table'
  *    ...
  */
-static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
-  real32_T *rty_sin2piu)
+static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu)
 {
   uint64_T frac;
   uint32_T bpIdx;
-  int16_T rtb_SignCorrected_n;
-  uint16_T rtb_CastU16En16_c;
-  uint16_T rtb_CastU16En16_i;
+  int16_T rtb_SignCorrected;
+  uint16_T rtb_CastU16En16;
   boolean_T rtb_GTEp75;
-  boolean_T rtb_LTEp25_a;
+  boolean_T rtb_LTEp25;
 
-  /* DataTypeConversion: '<S44>/CastU16En16' incorporates:
-   *  Constant: '<S40>/Constant'
+  /* DataTypeConversion: '<S46>/CastU16En16' incorporates:
+   *  Constant: '<S43>/Constant'
+   *  Gain: '<S43>/Gain4'
+   *  Math: '<S43>/Mod'
+   */
+  rtb_CastU16En16 = (uint16_T)(0.159154937F * rt_modf(rtu_theta_el, 6.28318548F)
+    * 65536.0F);
+
+  /* RelationalOperator: '<S46>/LTEp25' incorporates:
    *  DataTypeConversion: '<S46>/CastU16En16'
-   *  Gain: '<S40>/Gain4'
-   *  Math: '<S40>/Mod'
    */
-  rtb_CastU16En16_i = (uint16_T)(0.159154937F * rt_modf(rtu_theta_el,
-    6.28318548F) * 65536.0F);
+  rtb_LTEp25 = (rtb_CastU16En16 <= 16384);
 
-  /* RelationalOperator: '<S44>/LTEp25' incorporates:
-   *  DataTypeConversion: '<S44>/CastU16En16'
+  /* RelationalOperator: '<S46>/GTEp75' incorporates:
+   *  DataTypeConversion: '<S46>/CastU16En16'
    */
-  rtb_LTEp25_a = (rtb_CastU16En16_i <= 16384);
-
-  /* RelationalOperator: '<S44>/GTEp75' incorporates:
-   *  DataTypeConversion: '<S44>/CastU16En16'
-   */
-  rtb_GTEp75 = (rtb_CastU16En16_i >= 49152);
-
-  /* Switch: '<S44>/QuadHandle2' incorporates:
-   *  Constant: '<S44>/Point75'
-   *  DataTypeConversion: '<S44>/CastU16En16'
-   *  RelationalOperator: '<S44>/LTEp50'
-   *  Sum: '<S44>/p75mA'
-   *  Switch: '<S44>/QuadHandle1b'
-   */
-  if (rtb_CastU16En16_i <= 32768) {
-    /* Switch: '<S44>/QuadHandle1a' incorporates:
-     *  Constant: '<S44>/Point25'
-     *  Sum: '<S44>/Amp25'
-     *  Sum: '<S44>/p25mA'
-     */
-    if (rtb_LTEp25_a) {
-      rtb_CastU16En16_c = (uint16_T)(16384 - rtb_CastU16En16_i);
-    } else {
-      rtb_CastU16En16_c = (uint16_T)(rtb_CastU16En16_i - 16384);
-    }
-
-    /* End of Switch: '<S44>/QuadHandle1a' */
-  } else if (rtb_GTEp75) {
-    /* Switch: '<S44>/QuadHandle1b' incorporates:
-     *  Constant: '<S44>/Point75'
-     *  Sum: '<S44>/Amp75'
-     */
-    rtb_CastU16En16_c = (uint16_T)(rtb_CastU16En16_i - 49152);
-  } else {
-    rtb_CastU16En16_c = (uint16_T)(49152 - rtb_CastU16En16_i);
-  }
-
-  /* End of Switch: '<S44>/QuadHandle2' */
-
-  /* Lookup_n-D: '<S43>/Look-Up Table' */
-  bpIdx = plook_u32u16u64n48_even8c_gf(rtb_CastU16En16_c, 0U, 64U, &frac);
-
-  /* Switch: '<S44>/SignCorrected' incorporates:
-   *  Logic: '<S44>/1st or 4th Quad'
-   *  Lookup_n-D: '<S43>/Look-Up Table'
-   *  Switch: '<S46>/SignCorrected'
-   *  UnaryMinus: '<S44>/Negate'
-   */
-  if (rtb_LTEp25_a || rtb_GTEp75) {
-    rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
-  } else {
-    rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
-  }
-
-  /* End of Switch: '<S44>/SignCorrected' */
-
-  /* DataTypeConversion: '<S40>/Data Type Conversion' incorporates:
-   *  Switch: '<S46>/SignCorrected'
-   */
-  *rty_cos2piu = (real32_T)rtb_SignCorrected_n * 6.10351562E-5F;
-
-  /* RelationalOperator: '<S46>/LTEp50' */
-  rtb_LTEp25_a = (rtb_CastU16En16_i <= 32768);
-
-  /* Switch: '<S46>/QuadHandle1' incorporates:
-   *  Constant: '<S46>/Point50'
-   *  Sum: '<S46>/Amp50'
-   */
-  if (!rtb_LTEp25_a) {
-    rtb_CastU16En16_i = (uint16_T)(rtb_CastU16En16_i - 32768);
-  }
-
-  /* End of Switch: '<S46>/QuadHandle1' */
+  rtb_GTEp75 = (rtb_CastU16En16 >= 49152);
 
   /* Switch: '<S46>/QuadHandle2' incorporates:
-   *  Constant: '<S46>/Point50'
-   *  RelationalOperator: '<S46>/LTEp25'
-   *  Sum: '<S46>/p50mA'
-   *  Switch: '<S46>/QuadHandle1'
+   *  Constant: '<S46>/Point75'
+   *  DataTypeConversion: '<S46>/CastU16En16'
+   *  RelationalOperator: '<S46>/LTEp50'
+   *  Sum: '<S46>/p75mA'
+   *  Switch: '<S46>/QuadHandle1b'
    */
-  if (rtb_CastU16En16_i > 16384) {
-    rtb_CastU16En16_i = (uint16_T)(32768 - rtb_CastU16En16_i);
+  if (rtb_CastU16En16 <= 32768) {
+    /* Switch: '<S46>/QuadHandle1a' incorporates:
+     *  Constant: '<S46>/Point25'
+     *  Sum: '<S46>/Amp25'
+     *  Sum: '<S46>/p25mA'
+     */
+    if (rtb_LTEp25) {
+      rtb_CastU16En16 = (uint16_T)(16384 - rtb_CastU16En16);
+    } else {
+      rtb_CastU16En16 = (uint16_T)(rtb_CastU16En16 - 16384);
+    }
+
+    /* End of Switch: '<S46>/QuadHandle1a' */
+  } else if (rtb_GTEp75) {
+    /* Switch: '<S46>/QuadHandle1b' incorporates:
+     *  Constant: '<S46>/Point75'
+     *  Sum: '<S46>/Amp75'
+     */
+    rtb_CastU16En16 = (uint16_T)(rtb_CastU16En16 - 49152);
+  } else {
+    rtb_CastU16En16 = (uint16_T)(49152 - rtb_CastU16En16);
   }
 
   /* End of Switch: '<S46>/QuadHandle2' */
 
-  /* Lookup_n-D: '<S45>/Look-Up Table' incorporates:
-   *  Switch: '<S46>/QuadHandle2'
-   */
-  bpIdx = plook_u32u16u64n48_even8c_gf(rtb_CastU16En16_i, 0U, 64U, &frac);
+  /* Lookup_n-D: '<S45>/Look-Up Table' */
+  bpIdx = plook_u32u16u64n48_even8c_gf(rtb_CastU16En16, 0U, 64U, &frac);
 
   /* Switch: '<S46>/SignCorrected' incorporates:
+   *  Logic: '<S46>/1st or 4th Quad'
    *  Lookup_n-D: '<S45>/Look-Up Table'
    *  UnaryMinus: '<S46>/Negate'
    */
-  if (rtb_LTEp25_a) {
-    rtb_SignCorrected_n = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
+  if (rtb_LTEp25 || rtb_GTEp75) {
+    rtb_SignCorrected = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
+      rtConstP.pooled17);
   } else {
-    rtb_SignCorrected_n = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
+    rtb_SignCorrected = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
+      rtConstP.pooled17);
   }
 
   /* End of Switch: '<S46>/SignCorrected' */
 
-  /* DataTypeConversion: '<S40>/Data Type Conversion1' incorporates:
+  /* DataTypeConversion: '<S43>/Data Type Conversion' incorporates:
    *  Switch: '<S46>/SignCorrected'
    */
-  *rty_sin2piu = (real32_T)rtb_SignCorrected_n * 6.10351562E-5F;
+  *rty_cos2piu = (real32_T)rtb_SignCorrected * 6.10351562E-5F;
 }
 
 /*
@@ -776,25 +721,124 @@ static void cos_lookup_table(real32_T rtu_theta_el, real32_T *rty_cos2piu,
  *    '<S36>/Subsystem'
  *    '<S37>/Subsystem'
  *    '<S38>/Subsystem'
- *    '<S64>/Subsystem'
- *    '<S65>/Subsystem'
- *    '<S83>/Subsystem'
- *    '<S84>/Subsystem'
- *    '<S102>/Subsystem'
- *    '<S103>/Subsystem'
- *    '<S121>/Subsystem'
+ *    '<S73>/Subsystem'
+ *    '<S74>/Subsystem'
+ *    '<S98>/Subsystem'
+ *    '<S99>/Subsystem'
+ *    '<S123>/Subsystem'
+ *    '<S124>/Subsystem'
+ *    '<S148>/Subsystem'
  *    ...
  */
-static void Subsystem(real32_T rtu_theta_el, real32_T *rty_costheta_el, real32_T
-                      *rty_sintheta_el)
+static void Subsystem(real32_T rtu_theta_el, real32_T *rty_costheta_el)
 {
-  /* DataTypeConversion: '<S39>/Data Type Conversion' incorporates:
-   *  Trigonometry: '<S39>/Cos'
+  /* DataTypeConversion: '<S42>/Data Type Conversion' incorporates:
+   *  Trigonometry: '<S42>/Cos'
    */
   *rty_costheta_el = cosf(rtu_theta_el);
+}
 
-  /* DataTypeConversion: '<S39>/Data Type Conversion1' incorporates:
-   *  Trigonometry: '<S39>/Sin'
+/*
+ * Output and update for action system:
+ *    '<S39>/sin_lookup_table'
+ *    '<S40>/sin_lookup_table'
+ *    '<S41>/sin_lookup_table'
+ *    '<S75>/sin_lookup_table'
+ *    '<S76>/sin_lookup_table'
+ *    '<S100>/sin_lookup_table'
+ *    '<S101>/sin_lookup_table'
+ *    '<S125>/sin_lookup_table'
+ *    '<S126>/sin_lookup_table'
+ *    '<S150>/sin_lookup_table'
+ *    ...
+ */
+static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu)
+{
+  uint64_T frac;
+  uint32_T bpIdx;
+  int16_T rtb_SignCorrected;
+  uint16_T rtb_CastU16En16;
+  boolean_T rtb_LTEp50_g;
+
+  /* DataTypeConversion: '<S61>/CastU16En16' incorporates:
+   *  Constant: '<S58>/Constant'
+   *  Gain: '<S58>/Gain4'
+   *  Math: '<S58>/Mod'
+   */
+  rtb_CastU16En16 = (uint16_T)(0.159154937F * rt_modf(rtu_theta_el, 6.28318548F)
+    * 65536.0F);
+
+  /* RelationalOperator: '<S61>/LTEp50' incorporates:
+   *  DataTypeConversion: '<S61>/CastU16En16'
+   */
+  rtb_LTEp50_g = (rtb_CastU16En16 <= 32768);
+
+  /* Switch: '<S61>/QuadHandle1' incorporates:
+   *  Constant: '<S61>/Point50'
+   *  DataTypeConversion: '<S61>/CastU16En16'
+   *  Sum: '<S61>/Amp50'
+   */
+  if (!rtb_LTEp50_g) {
+    rtb_CastU16En16 = (uint16_T)(rtb_CastU16En16 - 32768);
+  }
+
+  /* End of Switch: '<S61>/QuadHandle1' */
+
+  /* Switch: '<S61>/QuadHandle2' incorporates:
+   *  Constant: '<S61>/Point50'
+   *  RelationalOperator: '<S61>/LTEp25'
+   *  Sum: '<S61>/p50mA'
+   *  Switch: '<S61>/QuadHandle1'
+   */
+  if (rtb_CastU16En16 > 16384) {
+    rtb_CastU16En16 = (uint16_T)(32768 - rtb_CastU16En16);
+  }
+
+  /* End of Switch: '<S61>/QuadHandle2' */
+
+  /* Lookup_n-D: '<S60>/Look-Up Table' incorporates:
+   *  Switch: '<S61>/QuadHandle2'
+   */
+  bpIdx = plook_u32u16u64n48_even8c_gf(rtb_CastU16En16, 0U, 64U, &frac);
+
+  /* Switch: '<S61>/SignCorrected' incorporates:
+   *  Lookup_n-D: '<S60>/Look-Up Table'
+   *  UnaryMinus: '<S61>/Negate'
+   */
+  if (rtb_LTEp50_g) {
+    rtb_SignCorrected = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
+      rtConstP.pooled17);
+  } else {
+    rtb_SignCorrected = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
+      rtConstP.pooled17);
+  }
+
+  /* End of Switch: '<S61>/SignCorrected' */
+
+  /* DataTypeConversion: '<S58>/Data Type Conversion' incorporates:
+   *  Switch: '<S61>/SignCorrected'
+   */
+  *rty_sin2piu = (real32_T)rtb_SignCorrected * 6.10351562E-5F;
+}
+
+/*
+ * Output and update for action system:
+ *    '<S39>/Subsystem'
+ *    '<S40>/Subsystem'
+ *    '<S41>/Subsystem'
+ *    '<S75>/Subsystem'
+ *    '<S76>/Subsystem'
+ *    '<S100>/Subsystem'
+ *    '<S101>/Subsystem'
+ *    '<S125>/Subsystem'
+ *    '<S126>/Subsystem'
+ *    '<S150>/Subsystem'
+ *    ...
+ */
+static void Subsystem_f(real32_T rtu_theta_el, real32_T *rty_sintheta_el)
+{
+  /* DataTypeConversion: '<S57>/Data Type Conversion' incorporates:
+   *  Trigonometry: '<S57>/Sin'
    */
   *rty_sintheta_el = sinf(rtu_theta_el);
 }
@@ -805,12 +849,12 @@ static void Subsystem(real32_T rtu_theta_el, real32_T *rty_costheta_el, real32_T
  *    '<S32>/MATLAB Function'
  *    '<S33>/MATLAB Function'
  *    '<S34>/MATLAB Function'
- *    '<S141>/MATLAB Function'
- *    '<S142>/MATLAB Function'
- *    '<S143>/MATLAB Function'
- *    '<S144>/MATLAB Function'
- *    '<S251>/MATLAB Function'
- *    '<S252>/MATLAB Function'
+ *    '<S174>/MATLAB Function'
+ *    '<S175>/MATLAB Function'
+ *    '<S176>/MATLAB Function'
+ *    '<S177>/MATLAB Function'
+ *    '<S317>/MATLAB Function'
+ *    '<S318>/MATLAB Function'
  *    ...
  */
 static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
@@ -820,21 +864,21 @@ static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
   real32_T rtu_im_0;
   real32_T tmp;
 
-  /* MATLAB Function 'Strangstromregelung-Einzelne Blocks/resonater-PI-Regler/MATLAB Function': '<S63>:1' */
-  /* '<S63>:1:2' if (re^2 + im^2)<=U_lim^2 */
+  /* MATLAB Function 'Strangstromregelung-Einzelne Blocks/resonater-PI-Regler/MATLAB Function': '<S72>:1' */
+  /* '<S72>:1:2' if (re^2 + im^2)<=U_lim^2 */
   tmp = rtu_U_lim * rtu_U_lim;
   if (rtu_re * rtu_re + rtu_im * rtu_im <= tmp) {
-    /* '<S63>:1:3' re_lim = re; */
+    /* '<S72>:1:3' re_lim = re; */
     re_lim = rtu_re;
 
-    /* '<S63>:1:4' im_lim = im; */
+    /* '<S72>:1:4' im_lim = im; */
     rtu_im_0 = rtu_im;
   } else if (!rtu_Betrieb) {
-    /* '<S63>:1:5' elseif Betrieb == 0 */
+    /* '<S72>:1:5' elseif Betrieb == 0 */
     /* Generator */
-    /* '<S63>:1:7' if abs(im)>0.95*U_lim */
+    /* '<S72>:1:7' if abs(im)>0.95*U_lim */
     if (fabsf(rtu_im) > 0.95F * rtu_U_lim) {
-      /* '<S63>:1:8' im_lim = sign(im)*0.95*U_lim; */
+      /* '<S72>:1:8' im_lim = sign(im)*0.95*U_lim; */
       if (rtu_im < 0.0F) {
         rtu_im_0 = -1.0F;
       } else {
@@ -843,12 +887,12 @@ static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
 
       rtu_im_0 = rtu_im_0 * 0.95F * rtu_U_lim;
     } else {
-      /* '<S63>:1:9' else */
-      /* '<S63>:1:10' im_lim = im; */
+      /* '<S72>:1:9' else */
+      /* '<S72>:1:10' im_lim = im; */
       rtu_im_0 = rtu_im;
     }
 
-    /* '<S63>:1:12' re_lim = sign(re)*sqrt(U_lim^2 - im_lim^2); */
+    /* '<S72>:1:12' re_lim = sign(re)*sqrt(U_lim^2 - im_lim^2); */
     if (rtu_re < 0.0F) {
       re_lim = -1.0F;
     } else {
@@ -857,11 +901,11 @@ static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
 
     re_lim *= sqrtf(tmp - rtu_im_0 * rtu_im_0);
   } else {
-    /* '<S63>:1:13' else */
+    /* '<S72>:1:13' else */
     /* Motor */
-    /* '<S63>:1:15' if abs(re)>0.95*U_lim */
+    /* '<S72>:1:15' if abs(re)>0.95*U_lim */
     if (fabsf(rtu_re) > 0.95F * rtu_U_lim) {
-      /* '<S63>:1:16' re_lim = sign(re)*0.95*U_lim; */
+      /* '<S72>:1:16' re_lim = sign(re)*0.95*U_lim; */
       if (rtu_re < 0.0F) {
         re_lim = -1.0F;
       } else {
@@ -870,12 +914,12 @@ static void MATLABFunction_a(real32_T rtu_re, real32_T rtu_U_lim, boolean_T
 
       re_lim = re_lim * 0.95F * rtu_U_lim;
     } else {
-      /* '<S63>:1:17' else */
-      /* '<S63>:1:18' re_lim = re; */
+      /* '<S72>:1:17' else */
+      /* '<S72>:1:18' re_lim = re; */
       re_lim = rtu_re;
     }
 
-    /* '<S63>:1:20' im_lim = sign(im)*sqrt(U_lim^2 - re_lim^2); */
+    /* '<S72>:1:20' im_lim = sign(im)*sqrt(U_lim^2 - re_lim^2); */
     if (rtu_im < 0.0F) {
       rtu_im_0 = -1.0F;
     } else {
@@ -1021,264 +1065,490 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    */
   localDW->Delay1_g = rtu_Theta_u_back + rtp_Offset_S;
 
-  /* SwitchCase: '<S65>/Switch Case' incorporates:
+  /* Product: '<S31>/Product4' */
+  localDW->Product4_f = localDW->Delay1_g;
+
+  /* SwitchCase: '<S73>/Switch Case' incorporates:
    *  Product: '<S31>/Product4'
    */
   if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S65>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S75>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S73>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S78>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g, &localDW->re_lim_i, &localDW->Add1_l);
+    cos_lookup_table(localDW->Delay1_g, &localDW->re_lim_i);
 
-    /* End of Outputs for SubSystem: '<S65>/cos_lookup_table' */
+    /* End of Outputs for SubSystem: '<S73>/cos_lookup_table' */
   } else {
-    /* Outputs for IfAction SubSystem: '<S65>/Subsystem' incorporates:
-     *  ActionPort: '<S74>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S73>/Subsystem' incorporates:
+     *  ActionPort: '<S77>/Action Port'
      */
-    Subsystem(localDW->Delay1_g, &localDW->re_lim_i, &localDW->Add1_l);
+    Subsystem(localDW->Delay1_g, &localDW->re_lim_i);
 
-    /* End of Outputs for SubSystem: '<S65>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S73>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S65>/Switch Case' */
+  /* End of SwitchCase: '<S73>/Switch Case' */
+
+  /* SwitchCase: '<S76>/Switch Case' incorporates:
+   *  Product: '<S31>/Product4'
+   */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S76>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S93>/Action Port'
+     */
+    sin_lookup_table(localDW->Delay1_g, &localDW->Add1_l);
+
+    /* End of Outputs for SubSystem: '<S76>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S76>/Subsystem' incorporates:
+     *  ActionPort: '<S92>/Action Port'
+     */
+    Subsystem_f(localDW->Delay1_g, &localDW->Add1_l);
+
+    /* End of Outputs for SubSystem: '<S76>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S76>/Switch Case' */
 
   /* Sum: '<S23>/Sum' incorporates:
    *  Constant: '<S23>/Constant'
    */
   localDW->theta_e = rtu_Theta_u + rtp_Offset_S;
 
-  /* SwitchCase: '<S64>/Switch Case' incorporates:
+  /* Product: '<S31>/Product5' */
+  localDW->Product5_h = localDW->theta_e;
+
+  /* SwitchCase: '<S74>/Switch Case' incorporates:
    *  Product: '<S31>/Product5'
    */
   if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S64>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S67>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S74>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S83>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e, &localDW->Product1_a, &localDW->im_lim_l);
+    cos_lookup_table(localDW->theta_e, &localDW->Product1_a);
 
-    /* End of Outputs for SubSystem: '<S64>/cos_lookup_table' */
+    /* End of Outputs for SubSystem: '<S74>/cos_lookup_table' */
   } else {
-    /* Outputs for IfAction SubSystem: '<S64>/Subsystem' incorporates:
-     *  ActionPort: '<S66>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S74>/Subsystem' incorporates:
+     *  ActionPort: '<S82>/Action Port'
      */
-    Subsystem(localDW->theta_e, &localDW->Product1_a, &localDW->im_lim_l);
+    Subsystem(localDW->theta_e, &localDW->Product1_a);
 
-    /* End of Outputs for SubSystem: '<S64>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S74>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S64>/Switch Case' */
+  /* End of SwitchCase: '<S74>/Switch Case' */
+
+  /* SwitchCase: '<S75>/Switch Case' incorporates:
+   *  Product: '<S31>/Product5'
+   */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S75>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S88>/Action Port'
+     */
+    sin_lookup_table(localDW->theta_e, &localDW->Product4_f);
+
+    /* End of Outputs for SubSystem: '<S75>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S75>/Subsystem' incorporates:
+     *  ActionPort: '<S87>/Action Port'
+     */
+    Subsystem_f(localDW->theta_e, &localDW->Product4_f);
+
+    /* End of Outputs for SubSystem: '<S75>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S75>/Switch Case' */
 
   /* SwitchCase: '<S36>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
     /* Outputs for IfAction SubSystem: '<S36>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S40>/Action Port'
+     *  ActionPort: '<S43>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e, &localDW->Merge_oy, &localDW->Merge1_h);
+    cos_lookup_table(localDW->theta_e, &localDW->Merge_h);
 
     /* End of Outputs for SubSystem: '<S36>/cos_lookup_table' */
   } else {
     /* Outputs for IfAction SubSystem: '<S36>/Subsystem' incorporates:
-     *  ActionPort: '<S39>/Action Port'
+     *  ActionPort: '<S42>/Action Port'
      */
-    Subsystem(localDW->theta_e, &localDW->Merge_oy, &localDW->Merge1_h);
+    Subsystem(localDW->theta_e, &localDW->Merge_h);
 
     /* End of Outputs for SubSystem: '<S36>/Subsystem' */
   }
 
   /* End of SwitchCase: '<S36>/Switch Case' */
 
-  /* SwitchCase: '<S37>/Switch Case' incorporates:
+  /* SwitchCase: '<S39>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S39>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S58>/Action Port'
+     */
+    sin_lookup_table(localDW->theta_e, &localDW->Merge_h4);
+
+    /* End of Outputs for SubSystem: '<S39>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S39>/Subsystem' incorporates:
+     *  ActionPort: '<S57>/Action Port'
+     */
+    Subsystem_f(localDW->theta_e, &localDW->Merge_h4);
+
+    /* End of Outputs for SubSystem: '<S39>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S39>/Switch Case' */
+
+  /* Sum: '<S23>/Add2' incorporates:
    *  Constant: '<S23>/Constant2'
-   *  Sum: '<S23>/Add2'
    */
+  localDW->Add2_o = localDW->theta_e + rtp_Offset_gegen;
+
+  /* SwitchCase: '<S37>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
     /* Outputs for IfAction SubSystem: '<S37>/cos_lookup_table' incorporates:
      *  ActionPort: '<S48>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e + rtp_Offset_gegen, &localDW->im_lim_mv,
-                     &localDW->re_lim_l);
+    cos_lookup_table(localDW->Add2_o, &localDW->Product5_h);
 
     /* End of Outputs for SubSystem: '<S37>/cos_lookup_table' */
   } else {
     /* Outputs for IfAction SubSystem: '<S37>/Subsystem' incorporates:
      *  ActionPort: '<S47>/Action Port'
      */
-    Subsystem(localDW->theta_e + rtp_Offset_gegen, &localDW->im_lim_mv,
-              &localDW->re_lim_l);
+    Subsystem(localDW->Add2_o, &localDW->Product5_h);
 
     /* End of Outputs for SubSystem: '<S37>/Subsystem' */
   }
 
   /* End of SwitchCase: '<S37>/Switch Case' */
 
-  /* SwitchCase: '<S38>/Switch Case' incorporates:
+  /* SwitchCase: '<S40>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S40>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S63>/Action Port'
+     */
+    sin_lookup_table(localDW->Add2_o, &localDW->re_lim_l);
+
+    /* End of Outputs for SubSystem: '<S40>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S40>/Subsystem' incorporates:
+     *  ActionPort: '<S62>/Action Port'
+     */
+    Subsystem_f(localDW->Add2_o, &localDW->re_lim_l);
+
+    /* End of Outputs for SubSystem: '<S40>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S40>/Switch Case' */
+
+  /* Sum: '<S23>/Add3' incorporates:
    *  Constant: '<S23>/Constant3'
-   *  Sum: '<S23>/Add3'
    */
+  localDW->Add3_j = localDW->theta_e + rtp_Offset_null;
+
+  /* SwitchCase: '<S38>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
     /* Outputs for IfAction SubSystem: '<S38>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S56>/Action Port'
+     *  ActionPort: '<S53>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e + rtp_Offset_null, &localDW->Product_am,
-                     &localDW->Strom_kompensiert_l);
+    cos_lookup_table(localDW->Add3_j, &localDW->Product_am);
 
     /* End of Outputs for SubSystem: '<S38>/cos_lookup_table' */
   } else {
     /* Outputs for IfAction SubSystem: '<S38>/Subsystem' incorporates:
-     *  ActionPort: '<S55>/Action Port'
+     *  ActionPort: '<S52>/Action Port'
      */
-    Subsystem(localDW->theta_e + rtp_Offset_null, &localDW->Product_am,
-              &localDW->Strom_kompensiert_l);
+    Subsystem(localDW->Add3_j, &localDW->Product_am);
 
     /* End of Outputs for SubSystem: '<S38>/Subsystem' */
   }
 
   /* End of SwitchCase: '<S38>/Switch Case' */
 
-  /* SwitchCase: '<S83>/Switch Case' incorporates:
+  /* SwitchCase: '<S41>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S41>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S68>/Action Port'
+     */
+    sin_lookup_table(localDW->Add3_j, &localDW->Add2_o);
+
+    /* End of Outputs for SubSystem: '<S41>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S41>/Subsystem' incorporates:
+     *  ActionPort: '<S67>/Action Port'
+     */
+    Subsystem_f(localDW->Add3_j, &localDW->Add2_o);
+
+    /* End of Outputs for SubSystem: '<S41>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S41>/Switch Case' */
+
+  /* Product: '<S32>/Product5' incorporates:
    *  Constant: '<S32>/Constant1'
-   *  Product: '<S32>/Product5'
    */
+  localDW->Product5_hz = localDW->theta_e * 3.0F;
+
+  /* SwitchCase: '<S99>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S83>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S86>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S99>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S108>/Action Port'
      */
-    cos_lookup_table(localDW->theta_e * 3.0F, &localDW->Delay1_c,
-                     &localDW->im_lim_k);
+    cos_lookup_table(localDW->Product5_hz, &localDW->Delay1_c);
 
-    /* End of Outputs for SubSystem: '<S83>/cos_lookup_table' */
+    /* End of Outputs for SubSystem: '<S99>/cos_lookup_table' */
   } else {
-    /* Outputs for IfAction SubSystem: '<S83>/Subsystem' incorporates:
-     *  ActionPort: '<S85>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S99>/Subsystem' incorporates:
+     *  ActionPort: '<S107>/Action Port'
      */
-    Subsystem(localDW->theta_e * 3.0F, &localDW->Delay1_c, &localDW->im_lim_k);
+    Subsystem(localDW->Product5_hz, &localDW->Delay1_c);
 
-    /* End of Outputs for SubSystem: '<S83>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S99>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S83>/Switch Case' */
+  /* End of SwitchCase: '<S99>/Switch Case' */
 
-  /* SwitchCase: '<S84>/Switch Case' incorporates:
-   *  Constant: '<S32>/Constant1'
-   *  Product: '<S32>/Product4'
-   */
+  /* SwitchCase: '<S100>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S84>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S94>/Action Port'
-     */
-    cos_lookup_table(localDW->Delay1_g * 3.0F, &localDW->Merge_gt,
-                     &localDW->Sum_j);
-
-    /* End of Outputs for SubSystem: '<S84>/cos_lookup_table' */
-  } else {
-    /* Outputs for IfAction SubSystem: '<S84>/Subsystem' incorporates:
-     *  ActionPort: '<S93>/Action Port'
-     */
-    Subsystem(localDW->Delay1_g * 3.0F, &localDW->Merge_gt, &localDW->Sum_j);
-
-    /* End of Outputs for SubSystem: '<S84>/Subsystem' */
-  }
-
-  /* End of SwitchCase: '<S84>/Switch Case' */
-
-  /* SwitchCase: '<S102>/Switch Case' incorporates:
-   *  Constant: '<S33>/Constant1'
-   *  Product: '<S33>/Product5'
-   */
-  if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S102>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S105>/Action Port'
-     */
-    cos_lookup_table(localDW->theta_e * 5.0F, &localDW->re_lim_b,
-                     &localDW->Delay1_m);
-
-    /* End of Outputs for SubSystem: '<S102>/cos_lookup_table' */
-  } else {
-    /* Outputs for IfAction SubSystem: '<S102>/Subsystem' incorporates:
-     *  ActionPort: '<S104>/Action Port'
-     */
-    Subsystem(localDW->theta_e * 5.0F, &localDW->re_lim_b, &localDW->Delay1_m);
-
-    /* End of Outputs for SubSystem: '<S102>/Subsystem' */
-  }
-
-  /* End of SwitchCase: '<S102>/Switch Case' */
-
-  /* SwitchCase: '<S103>/Switch Case' incorporates:
-   *  Constant: '<S33>/Constant1'
-   *  Product: '<S33>/Product4'
-   */
-  if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S103>/cos_lookup_table' incorporates:
+    /* Outputs for IfAction SubSystem: '<S100>/sin_lookup_table' incorporates:
      *  ActionPort: '<S113>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g * 5.0F, &localDW->Merge_ac,
-                     &localDW->Sum_o);
+    sin_lookup_table(localDW->Product5_hz, &localDW->Add3_j);
 
-    /* End of Outputs for SubSystem: '<S103>/cos_lookup_table' */
+    /* End of Outputs for SubSystem: '<S100>/sin_lookup_table' */
   } else {
-    /* Outputs for IfAction SubSystem: '<S103>/Subsystem' incorporates:
+    /* Outputs for IfAction SubSystem: '<S100>/Subsystem' incorporates:
      *  ActionPort: '<S112>/Action Port'
      */
-    Subsystem(localDW->Delay1_g * 5.0F, &localDW->Merge_ac, &localDW->Sum_o);
+    Subsystem_f(localDW->Product5_hz, &localDW->Add3_j);
 
-    /* End of Outputs for SubSystem: '<S103>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S100>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S103>/Switch Case' */
+  /* End of SwitchCase: '<S100>/Switch Case' */
 
-  /* SwitchCase: '<S121>/Switch Case' incorporates:
-   *  Constant: '<S34>/Constant1'
-   *  Product: '<S34>/Product5'
+  /* Product: '<S32>/Product4' incorporates:
+   *  Constant: '<S32>/Constant1'
    */
-  if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S121>/cos_lookup_table' incorporates:
-     *  ActionPort: '<S124>/Action Port'
-     */
-    cos_lookup_table(localDW->theta_e * 7.0F, &localDW->im_lim_o,
-                     &localDW->re_lim_g);
+  localDW->Product5_hz = localDW->Delay1_g * 3.0F;
 
-    /* End of Outputs for SubSystem: '<S121>/cos_lookup_table' */
+  /* SwitchCase: '<S98>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S98>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S103>/Action Port'
+     */
+    cos_lookup_table(localDW->Product5_hz, &localDW->Merge_hl);
+
+    /* End of Outputs for SubSystem: '<S98>/cos_lookup_table' */
   } else {
-    /* Outputs for IfAction SubSystem: '<S121>/Subsystem' incorporates:
-     *  ActionPort: '<S123>/Action Port'
+    /* Outputs for IfAction SubSystem: '<S98>/Subsystem' incorporates:
+     *  ActionPort: '<S102>/Action Port'
      */
-    Subsystem(localDW->theta_e * 7.0F, &localDW->im_lim_o, &localDW->re_lim_g);
+    Subsystem(localDW->Product5_hz, &localDW->Merge_hl);
 
-    /* End of Outputs for SubSystem: '<S121>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S98>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S121>/Switch Case' */
+  /* End of SwitchCase: '<S98>/Switch Case' */
 
-  /* SwitchCase: '<S122>/Switch Case' incorporates:
-   *  Constant: '<S34>/Constant1'
-   *  Product: '<S34>/Product4'
-   */
+  /* SwitchCase: '<S101>/Switch Case' */
   if (rtu_fl_lookup_table == 1) {
-    /* Outputs for IfAction SubSystem: '<S122>/cos_lookup_table' incorporates:
+    /* Outputs for IfAction SubSystem: '<S101>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S118>/Action Port'
+     */
+    sin_lookup_table(localDW->Product5_hz, &localDW->Sum_j);
+
+    /* End of Outputs for SubSystem: '<S101>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S101>/Subsystem' incorporates:
+     *  ActionPort: '<S117>/Action Port'
+     */
+    Subsystem_f(localDW->Product5_hz, &localDW->Sum_j);
+
+    /* End of Outputs for SubSystem: '<S101>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S101>/Switch Case' */
+
+  /* Product: '<S33>/Product5' incorporates:
+   *  Constant: '<S33>/Constant1'
+   */
+  localDW->Product5_l = localDW->theta_e * 5.0F;
+
+  /* SwitchCase: '<S124>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S124>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S133>/Action Port'
+     */
+    cos_lookup_table(localDW->Product5_l, &localDW->Product5_hz);
+
+    /* End of Outputs for SubSystem: '<S124>/cos_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S124>/Subsystem' incorporates:
      *  ActionPort: '<S132>/Action Port'
      */
-    cos_lookup_table(localDW->Delay1_g * 7.0F, &localDW->theta_e,
-                     &localDW->Sum_d);
+    Subsystem(localDW->Product5_l, &localDW->Product5_hz);
 
-    /* End of Outputs for SubSystem: '<S122>/cos_lookup_table' */
-  } else {
-    /* Outputs for IfAction SubSystem: '<S122>/Subsystem' incorporates:
-     *  ActionPort: '<S131>/Action Port'
-     */
-    Subsystem(localDW->Delay1_g * 7.0F, &localDW->theta_e, &localDW->Sum_d);
-
-    /* End of Outputs for SubSystem: '<S122>/Subsystem' */
+    /* End of Outputs for SubSystem: '<S124>/Subsystem' */
   }
 
-  /* End of SwitchCase: '<S122>/Switch Case' */
+  /* End of SwitchCase: '<S124>/Switch Case' */
+
+  /* SwitchCase: '<S125>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S125>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S138>/Action Port'
+     */
+    sin_lookup_table(localDW->Product5_l, &localDW->Delay1_m);
+
+    /* End of Outputs for SubSystem: '<S125>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S125>/Subsystem' incorporates:
+     *  ActionPort: '<S137>/Action Port'
+     */
+    Subsystem_f(localDW->Product5_l, &localDW->Delay1_m);
+
+    /* End of Outputs for SubSystem: '<S125>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S125>/Switch Case' */
+
+  /* Product: '<S33>/Product4' incorporates:
+   *  Constant: '<S33>/Constant1'
+   */
+  localDW->Product4_ic = localDW->Delay1_g * 5.0F;
+
+  /* SwitchCase: '<S123>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S123>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S128>/Action Port'
+     */
+    cos_lookup_table(localDW->Product4_ic, &localDW->Product5_l);
+
+    /* End of Outputs for SubSystem: '<S123>/cos_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S123>/Subsystem' incorporates:
+     *  ActionPort: '<S127>/Action Port'
+     */
+    Subsystem(localDW->Product4_ic, &localDW->Product5_l);
+
+    /* End of Outputs for SubSystem: '<S123>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S123>/Switch Case' */
+
+  /* SwitchCase: '<S126>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S126>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S143>/Action Port'
+     */
+    sin_lookup_table(localDW->Product4_ic, &localDW->Sum_o);
+
+    /* End of Outputs for SubSystem: '<S126>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S126>/Subsystem' incorporates:
+     *  ActionPort: '<S142>/Action Port'
+     */
+    Subsystem_f(localDW->Product4_ic, &localDW->Sum_o);
+
+    /* End of Outputs for SubSystem: '<S126>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S126>/Switch Case' */
+
+  /* Product: '<S34>/Product5' incorporates:
+   *  Constant: '<S34>/Constant1'
+   */
+  localDW->Product5_hz4 = localDW->theta_e * 7.0F;
+
+  /* SwitchCase: '<S149>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S149>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S158>/Action Port'
+     */
+    cos_lookup_table(localDW->Product5_hz4, &localDW->theta_e);
+
+    /* End of Outputs for SubSystem: '<S149>/cos_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S149>/Subsystem' incorporates:
+     *  ActionPort: '<S157>/Action Port'
+     */
+    Subsystem(localDW->Product5_hz4, &localDW->theta_e);
+
+    /* End of Outputs for SubSystem: '<S149>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S149>/Switch Case' */
+
+  /* SwitchCase: '<S150>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S150>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S163>/Action Port'
+     */
+    sin_lookup_table(localDW->Product5_hz4, &localDW->Product4_ic);
+
+    /* End of Outputs for SubSystem: '<S150>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S150>/Subsystem' incorporates:
+     *  ActionPort: '<S162>/Action Port'
+     */
+    Subsystem_f(localDW->Product5_hz4, &localDW->Product4_ic);
+
+    /* End of Outputs for SubSystem: '<S150>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S150>/Switch Case' */
+
+  /* Product: '<S34>/Product4' incorporates:
+   *  Constant: '<S34>/Constant1'
+   */
+  localDW->Product4_if = localDW->Delay1_g * 7.0F;
+
+  /* SwitchCase: '<S148>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S148>/cos_lookup_table' incorporates:
+     *  ActionPort: '<S153>/Action Port'
+     */
+    cos_lookup_table(localDW->Product4_if, &localDW->Delay1_g);
+
+    /* End of Outputs for SubSystem: '<S148>/cos_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S148>/Subsystem' incorporates:
+     *  ActionPort: '<S152>/Action Port'
+     */
+    Subsystem(localDW->Product4_if, &localDW->Delay1_g);
+
+    /* End of Outputs for SubSystem: '<S148>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S148>/Switch Case' */
+
+  /* SwitchCase: '<S151>/Switch Case' */
+  if (rtu_fl_lookup_table == 1) {
+    /* Outputs for IfAction SubSystem: '<S151>/sin_lookup_table' incorporates:
+     *  ActionPort: '<S168>/Action Port'
+     */
+    sin_lookup_table(localDW->Product4_if, &localDW->Product5_hz4);
+
+    /* End of Outputs for SubSystem: '<S151>/sin_lookup_table' */
+  } else {
+    /* Outputs for IfAction SubSystem: '<S151>/Subsystem' incorporates:
+     *  ActionPort: '<S167>/Action Port'
+     */
+    Subsystem_f(localDW->Product4_if, &localDW->Product5_hz4);
+
+    /* End of Outputs for SubSystem: '<S151>/Subsystem' */
+  }
+
+  /* End of SwitchCase: '<S151>/Switch Case' */
 
   /* MATLAB Function: '<S30>/MATLAB Function' */
   MATLABFunction_i(rtu_Psi_PM, rtu_Psi_PM_n, rtu_Psi_PM_k, rtu_I_re, rtu_I_im,
-                   rtu_w1, rtu_enable_compensation_current, &localDW->Delay1_g,
-                   &localDW->I_im_mit_e, &localDW->I_re_gegen_e,
-                   &localDW->I_im_gegen_g, &localDW->I_re_null_k,
-                   &localDW->I_im_null_n, &localDW->sf_MATLABFunction_i);
+                   rtu_w1, rtu_enable_compensation_current,
+                   &localDW->Product4_if, &localDW->I_im_mit_e,
+                   &localDW->I_re_gegen_e, &localDW->I_im_gegen_g,
+                   &localDW->I_re_null_k, &localDW->I_im_null_n,
+                   &localDW->sf_MATLABFunction_i);
 
   /* Sum: '<S30>/Strom_kompensiert' incorporates:
    *  Gain: '<S30>/Gain'
@@ -1292,11 +1562,12 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S30>/Product5'
    *  Sum: '<S30>/Add'
    */
-  localDW->Strom_kompensiert_l = (((((rtu_I_im_CT + localDW->I_im_mit_e) *
-    -localDW->Merge1_h + localDW->Delay1_g * localDW->Merge_oy) +
-    localDW->I_re_gegen_e * localDW->im_lim_mv) + localDW->I_im_gegen_g *
-    -localDW->re_lim_l) + localDW->I_re_null_k * localDW->Product_am) +
-    localDW->I_im_null_n * -localDW->Strom_kompensiert_l;
+  localDW->Add2_o = (((((rtu_I_im_CT + localDW->I_im_mit_e) * -localDW->Merge_h4
+                        + localDW->Product4_if * localDW->Merge_h) +
+                       localDW->I_re_gegen_e * localDW->Product5_h) +
+                      localDW->I_im_gegen_g * -localDW->re_lim_l) +
+                     localDW->I_re_null_k * localDW->Product_am) +
+    localDW->I_im_null_n * -localDW->Add2_o;
 
   /* Gain: '<S31>/Gain6' incorporates:
    *  Gain: '<S32>/Gain6'
@@ -1304,7 +1575,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S34>/Gain6'
    *  Sum: '<S23>/Sum2'
    */
-  localDW->Product_am = (localDW->Strom_kompensiert_l - rtu_I_S) * rtP.Kp;
+  localDW->Product_am = (localDW->Add2_o - rtu_I_S) * rtP.Kp;
 
   /* Product: '<S31>/Product1' incorporates:
    *  Gain: '<S31>/Gain6'
@@ -1315,15 +1586,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Delay: '<S31>/Delay1'
    *  Sum: '<S31>/Sum4'
    */
-  localDW->Merge_oy = 2.5E-5F * rtP.K1 * (localDW->Delay1_DSTATE +
+  localDW->Merge_h = 5.0E-5F * rtP.K1 * (localDW->Delay1_DSTATE +
     localDW->Product1_a);
 
   /* DiscreteIntegrator: '<S31>/Discrete-Time Integrator' */
-  localDW->Merge1_h = 0.5F * localDW->Merge_oy +
+  localDW->Merge_h4 = 0.5F * localDW->Merge_h +
     localDW->DiscreteTimeIntegrator_DSTATE;
 
   /* Sum: '<S31>/Sum5' */
-  localDW->Product1_a += localDW->Merge1_h;
+  localDW->Product1_a += localDW->Merge_h4;
 
   /* MATLAB Function: '<S23>/MATLAB Function' */
   MATLABFunction(rtu_I_im, rtu_w1, &localDW->Betrieb_n);
@@ -1332,28 +1603,29 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Gain: '<S31>/Gain'
    *  Gain: '<S31>/Gain6'
    */
-  localDW->re_lim_l = localDW->Product_am * -localDW->im_lim_l;
+  localDW->re_lim_l = localDW->Product_am * -localDW->Product4_f;
 
   /* Gain: '<S31>/Gain2' incorporates:
    *  Delay: '<S31>/Delay'
    *  Sum: '<S31>/Sum2'
    */
-  localDW->Delay1_g = 2.5E-5F * rtP.K1 * (localDW->re_lim_l +
+  localDW->Product4_if = 5.0E-5F * rtP.K1 * (localDW->re_lim_l +
     localDW->Delay_DSTATE);
 
   /* DiscreteIntegrator: '<S31>/Discrete-Time Integrator1' */
-  localDW->I_im_mit_e = 0.5F * localDW->Delay1_g +
+  localDW->I_im_mit_e = 0.5F * localDW->Product4_if +
     localDW->DiscreteTimeIntegrator1_DSTATE;
 
   /* Sum: '<S31>/Sum6' */
   localDW->I_re_gegen_e = localDW->re_lim_l + localDW->I_im_mit_e;
 
   /* MATLAB Function: '<S31>/MATLAB Function' incorporates:
+   *  Constant: '<S31>/Constant2'
    *  Product: '<S31>/Product6'
    */
-  MATLABFunction_a(localDW->Product1_a, rtu_U_ZK1, localDW->Betrieb_n,
+  MATLABFunction_a(localDW->Product1_a, 0.9F * rtu_U_ZK1, localDW->Betrieb_n,
                    localDW->I_re_gegen_e, &localDW->re_lim_l,
-                   &localDW->im_lim_mv);
+                   &localDW->Product5_h);
 
   /* Product: '<S31>/Product3' */
   localDW->Product3_h = localDW->re_lim_i * localDW->re_lim_l;
@@ -1362,13 +1634,13 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   localDW->Delay1_c *= localDW->Product_am;
 
   /* Delay: '<S32>/Delay1' */
-  localDW->im_lim_l = localDW->Delay1_DSTATE_m;
+  localDW->Product4_f = localDW->Delay1_DSTATE_m;
 
   /* Gain: '<S32>/Gain1' incorporates:
    *  Delay: '<S32>/Delay1'
    *  Sum: '<S32>/Sum4'
    */
-  localDW->I_im_gegen_g = 2.5E-5F * rtP.K2 * (localDW->Delay1_DSTATE_m +
+  localDW->I_im_gegen_g = 5.0E-5F * rtP.K2 * (localDW->Delay1_DSTATE_m +
     localDW->Delay1_c);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator' */
@@ -1381,13 +1653,13 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Product: '<S32>/Product' incorporates:
    *  Gain: '<S32>/Gain'
    */
-  localDW->re_lim_i = localDW->Product_am * -localDW->im_lim_k;
+  localDW->re_lim_i = localDW->Product_am * -localDW->Add3_j;
 
   /* Gain: '<S32>/Gain2' incorporates:
    *  Delay: '<S32>/Delay'
    *  Sum: '<S32>/Sum2'
    */
-  localDW->I_im_null_n = 2.5E-5F * rtP.K2 * (localDW->re_lim_i +
+  localDW->I_im_null_n = 5.0E-5F * rtP.K2 * (localDW->re_lim_i +
     localDW->Delay_DSTATE_a);
 
   /* DiscreteIntegrator: '<S32>/Discrete-Time Integrator1' */
@@ -1402,35 +1674,35 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S32>/Product6'
    */
   MATLABFunction_a(localDW->Delay1_c, 0.05F * rtu_U_ZK1, localDW->Betrieb_n,
-                   localDW->U_im_pl, &localDW->re_lim_i, &localDW->im_lim_l);
+                   localDW->U_im_pl, &localDW->re_lim_i, &localDW->Product4_f);
 
   /* Product: '<S33>/Product1' */
-  localDW->re_lim_b *= localDW->Product_am;
+  localDW->Product5_hz *= localDW->Product_am;
 
   /* Gain: '<S33>/Gain1' incorporates:
    *  Delay: '<S33>/Delay1'
    *  Sum: '<S33>/Sum4'
    */
-  localDW->Gain1_n = 2.5E-5F * rtP.K4 * (localDW->Delay1_DSTATE_g +
-    localDW->re_lim_b);
+  localDW->Gain1_n = 5.0E-5F * rtP.K4 * (localDW->Delay1_DSTATE_g +
+    localDW->Product5_hz);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_j = 0.5F * localDW->Gain1_n +
     localDW->DiscreteTimeIntegrator_DSTATE_i;
 
   /* Sum: '<S33>/Sum5' */
-  localDW->U_re_j = localDW->DiscreteTimeIntegrator_j + localDW->re_lim_b;
+  localDW->U_re_j = localDW->DiscreteTimeIntegrator_j + localDW->Product5_hz;
 
   /* Product: '<S33>/Product' incorporates:
    *  Gain: '<S33>/Gain'
    */
-  localDW->im_lim_k = localDW->Product_am * -localDW->Delay1_m;
+  localDW->Add3_j = localDW->Product_am * -localDW->Delay1_m;
 
   /* Gain: '<S33>/Gain2' incorporates:
    *  Delay: '<S33>/Delay'
    *  Sum: '<S33>/Sum2'
    */
-  localDW->Delay1_m = 2.5E-5F * rtP.K4 * (localDW->im_lim_k +
+  localDW->Delay1_m = 5.0E-5F * rtP.K4 * (localDW->Add3_j +
     localDW->Delay_DSTATE_b);
 
   /* DiscreteIntegrator: '<S33>/Discrete-Time Integrator1' */
@@ -1438,45 +1710,45 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
     localDW->DiscreteTimeIntegrator1_DSTAT_k;
 
   /* Sum: '<S33>/Sum6' */
-  localDW->U_im_pt = localDW->im_lim_k + localDW->DiscreteTimeIntegrator1_e;
+  localDW->U_im_pt = localDW->Add3_j + localDW->DiscreteTimeIntegrator1_e;
 
   /* MATLAB Function: '<S33>/MATLAB Function' incorporates:
    *  Constant: '<S33>/Constant2'
    *  Product: '<S33>/Product6'
    */
   MATLABFunction_a(localDW->U_re_j, 0.02F * rtu_U_ZK1, localDW->Betrieb_n,
-                   localDW->U_im_pt, &localDW->re_lim_b, &localDW->im_lim_k);
+                   localDW->U_im_pt, &localDW->Product5_hz, &localDW->Add3_j);
 
   /* Product: '<S34>/Product1' */
-  localDW->im_lim_o *= localDW->Product_am;
+  localDW->theta_e *= localDW->Product_am;
 
   /* Gain: '<S34>/Gain1' incorporates:
    *  Delay: '<S34>/Delay1'
    *  Sum: '<S34>/Sum4'
    */
-  localDW->Gain1_a = 2.5E-5F * rtP.K6 * (localDW->Delay1_DSTATE_i +
-    localDW->im_lim_o);
+  localDW->Gain1_a = 5.0E-5F * rtP.K6 * (localDW->Delay1_DSTATE_i +
+    localDW->theta_e);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_h = 0.5F * localDW->Gain1_a +
     localDW->DiscreteTimeIntegrator_DSTAT_if;
 
   /* Sum: '<S34>/Sum5' */
-  localDW->U_re_b = localDW->DiscreteTimeIntegrator_h + localDW->im_lim_o;
+  localDW->U_re_b = localDW->DiscreteTimeIntegrator_h + localDW->theta_e;
 
   /* Product: '<S34>/Product' incorporates:
    *  Gain: '<S34>/Gain'
    */
-  localDW->Product_am *= -localDW->re_lim_g;
+  localDW->Product_am *= -localDW->Product4_ic;
 
   /* Delay: '<S34>/Delay' */
-  localDW->re_lim_g = localDW->Delay_DSTATE_h;
+  localDW->Product4_ic = localDW->Delay_DSTATE_h;
 
   /* Gain: '<S34>/Gain2' incorporates:
    *  Delay: '<S34>/Delay'
    *  Sum: '<S34>/Sum2'
    */
-  localDW->Gain2_m = 2.5E-5F * rtP.K6 * (localDW->Product_am +
+  localDW->Gain2_m = 5.0E-5F * rtP.K6 * (localDW->Product_am +
     localDW->Delay_DSTATE_h);
 
   /* DiscreteIntegrator: '<S34>/Discrete-Time Integrator1' */
@@ -1491,7 +1763,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Product: '<S34>/Product6'
    */
   MATLABFunction_a(localDW->U_re_b, 0.01F * rtu_U_ZK1, localDW->Betrieb_n,
-                   localDW->Product_am, &localDW->re_lim_g, &localDW->im_lim_o);
+                   localDW->Product_am, &localDW->Product4_ic, &localDW->theta_e);
 
   /* Sum: '<S23>/Add' incorporates:
    *  Constant: '<S23>/Constant1'
@@ -1513,15 +1785,15 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
    *  Sum: '<S33>/Sum'
    *  Sum: '<S34>/Sum'
    */
-  *rty_a = ((((localDW->im_lim_mv * -localDW->Add1_l + localDW->Product3_h) +
-              (localDW->Merge_gt * localDW->re_lim_i + localDW->im_lim_l *
-               -localDW->Sum_j)) + (localDW->Merge_ac * localDW->re_lim_b +
-              localDW->im_lim_k * -localDW->Sum_o)) + (localDW->theta_e *
-             localDW->re_lim_g + localDW->im_lim_o * -localDW->Sum_d)) /
+  *rty_a = ((((localDW->Product5_h * -localDW->Add1_l + localDW->Product3_h) +
+              (localDW->Merge_hl * localDW->re_lim_i + localDW->Product4_f *
+               -localDW->Sum_j)) + (localDW->Product5_l * localDW->Product5_hz +
+              localDW->Add3_j * -localDW->Sum_o)) + (localDW->Delay1_g *
+             localDW->Product4_ic + localDW->theta_e * -localDW->Product5_hz4)) /
     rtu_U_ZK1 + 0.5F;
 
   /* SignalConversion generated from: '<S23>/I_ref1' */
-  *rty_I_ref1 = localDW->Strom_kompensiert_l;
+  *rty_I_ref1 = localDW->Add2_o;
 
   /* Update for Delay: '<S31>/Delay1' incorporates:
    *  Sum: '<S31>/Sum3'
@@ -1529,16 +1801,16 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   localDW->Delay1_DSTATE = localDW->re_lim_l - localDW->Product1_a;
 
   /* Update for DiscreteIntegrator: '<S31>/Discrete-Time Integrator' */
-  localDW->DiscreteTimeIntegrator_DSTATE = 0.5F * localDW->Merge_oy +
-    localDW->Merge1_h;
+  localDW->DiscreteTimeIntegrator_DSTATE = 0.5F * localDW->Merge_h +
+    localDW->Merge_h4;
 
   /* Update for Delay: '<S31>/Delay' incorporates:
    *  Sum: '<S31>/Sum1'
    */
-  localDW->Delay_DSTATE = localDW->im_lim_mv - localDW->I_re_gegen_e;
+  localDW->Delay_DSTATE = localDW->Product5_h - localDW->I_re_gegen_e;
 
   /* Update for DiscreteIntegrator: '<S31>/Discrete-Time Integrator1' */
-  localDW->DiscreteTimeIntegrator1_DSTATE = 0.5F * localDW->Delay1_g +
+  localDW->DiscreteTimeIntegrator1_DSTATE = 0.5F * localDW->Product4_if +
     localDW->I_im_mit_e;
 
   /* Update for Delay: '<S32>/Delay1' incorporates:
@@ -1553,7 +1825,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Update for Delay: '<S32>/Delay' incorporates:
    *  Sum: '<S32>/Sum1'
    */
-  localDW->Delay_DSTATE_a = localDW->im_lim_l - localDW->U_im_pl;
+  localDW->Delay_DSTATE_a = localDW->Product4_f - localDW->U_im_pl;
 
   /* Update for DiscreteIntegrator: '<S32>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_DSTAT_m = 0.5F * localDW->I_im_null_n +
@@ -1562,7 +1834,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Update for Delay: '<S33>/Delay1' incorporates:
    *  Sum: '<S33>/Sum3'
    */
-  localDW->Delay1_DSTATE_g = localDW->re_lim_b - localDW->U_re_j;
+  localDW->Delay1_DSTATE_g = localDW->Product5_hz - localDW->U_re_j;
 
   /* Update for DiscreteIntegrator: '<S33>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_DSTATE_i = 0.5F * localDW->Gain1_n +
@@ -1571,7 +1843,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Update for Delay: '<S33>/Delay' incorporates:
    *  Sum: '<S33>/Sum1'
    */
-  localDW->Delay_DSTATE_b = localDW->im_lim_k - localDW->U_im_pt;
+  localDW->Delay_DSTATE_b = localDW->Add3_j - localDW->U_im_pt;
 
   /* Update for DiscreteIntegrator: '<S33>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_DSTAT_k = 0.5F * localDW->Delay1_m +
@@ -1580,7 +1852,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Update for Delay: '<S34>/Delay1' incorporates:
    *  Sum: '<S34>/Sum3'
    */
-  localDW->Delay1_DSTATE_i = localDW->re_lim_g - localDW->U_re_b;
+  localDW->Delay1_DSTATE_i = localDW->Product4_ic - localDW->U_re_b;
 
   /* Update for DiscreteIntegrator: '<S34>/Discrete-Time Integrator' */
   localDW->DiscreteTimeIntegrator_DSTAT_if = 0.5F * localDW->Gain1_a +
@@ -1589,7 +1861,7 @@ static void Strangstromregler_asymetrisch(real32_T rtu_I_re, real32_T rtu_I_im,
   /* Update for Delay: '<S34>/Delay' incorporates:
    *  Sum: '<S34>/Sum1'
    */
-  localDW->Delay_DSTATE_h = localDW->im_lim_o - localDW->Product_am;
+  localDW->Delay_DSTATE_h = localDW->theta_e - localDW->Product_am;
 
   /* Update for DiscreteIntegrator: '<S34>/Discrete-Time Integrator1' */
   localDW->DiscreteTimeIntegrator1_DSTAT_a = 0.5F * localDW->Gain2_m +
@@ -1615,97 +1887,6 @@ static void SwitchCaseActionSubsystem(real32_T *rty_a, real32_T *rty_Iref)
   *rty_Iref = 0.0F;
 }
 
-/*
- * Output and update for action system:
- *    '<S361>/sin_lookup_table'
- *    '<S362>/sin_lookup_table'
- *    '<S363>/sin_lookup_table'
- *    '<S364>/sin_lookup_table'
- */
-static void sin_lookup_table(real32_T rtu_theta_el, real32_T *rty_sin2piu)
-{
-  uint64_T frac;
-  uint32_T bpIdx;
-  int16_T rtb_SignCorrected;
-  uint16_T rtb_CastU16En16;
-  boolean_T rtb_LTEp50;
-
-  /* DataTypeConversion: '<S369>/CastU16En16' incorporates:
-   *  Constant: '<S366>/Constant'
-   *  Gain: '<S366>/Gain4'
-   *  Math: '<S366>/Mod'
-   */
-  rtb_CastU16En16 = (uint16_T)(0.159154937F * rt_modf(rtu_theta_el, 6.28318548F)
-    * 65536.0F);
-
-  /* RelationalOperator: '<S369>/LTEp50' incorporates:
-   *  DataTypeConversion: '<S369>/CastU16En16'
-   */
-  rtb_LTEp50 = (rtb_CastU16En16 <= 32768);
-
-  /* Switch: '<S369>/QuadHandle1' incorporates:
-   *  Constant: '<S369>/Point50'
-   *  DataTypeConversion: '<S369>/CastU16En16'
-   *  Sum: '<S369>/Amp50'
-   */
-  if (!rtb_LTEp50) {
-    rtb_CastU16En16 = (uint16_T)(rtb_CastU16En16 - 32768);
-  }
-
-  /* End of Switch: '<S369>/QuadHandle1' */
-
-  /* Switch: '<S369>/QuadHandle2' incorporates:
-   *  Constant: '<S369>/Point50'
-   *  RelationalOperator: '<S369>/LTEp25'
-   *  Sum: '<S369>/p50mA'
-   *  Switch: '<S369>/QuadHandle1'
-   */
-  if (rtb_CastU16En16 > 16384) {
-    rtb_CastU16En16 = (uint16_T)(32768 - rtb_CastU16En16);
-  }
-
-  /* End of Switch: '<S369>/QuadHandle2' */
-
-  /* Lookup_n-D: '<S368>/Look-Up Table' incorporates:
-   *  Switch: '<S369>/QuadHandle2'
-   */
-  bpIdx = plook_u32u16u64n48_even8c_gf(rtb_CastU16En16, 0U, 64U, &frac);
-
-  /* Switch: '<S369>/SignCorrected' incorporates:
-   *  Lookup_n-D: '<S368>/Look-Up Table'
-   *  UnaryMinus: '<S369>/Negate'
-   */
-  if (rtb_LTEp50) {
-    rtb_SignCorrected = intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
-  } else {
-    rtb_SignCorrected = (int16_T)-intrp1d_s16s32s32u32u64n48l_f(bpIdx, frac,
-      rtConstP.pooled16);
-  }
-
-  /* End of Switch: '<S369>/SignCorrected' */
-
-  /* DataTypeConversion: '<S366>/Data Type Conversion' incorporates:
-   *  Switch: '<S369>/SignCorrected'
-   */
-  *rty_sin2piu = (real32_T)rtb_SignCorrected * 6.10351562E-5F;
-}
-
-/*
- * Output and update for action system:
- *    '<S361>/Subsystem'
- *    '<S362>/Subsystem'
- *    '<S363>/Subsystem'
- *    '<S364>/Subsystem'
- */
-static void Subsystem_d(real32_T rtu_theta_el, real32_T *rty_sintheta_el)
-{
-  /* DataTypeConversion: '<S365>/Data Type Conversion' incorporates:
-   *  Trigonometry: '<S365>/Sin'
-   */
-  *rty_sintheta_el = sinf(rtu_theta_el);
-}
-
 /* Model step function */
 void uz_codegen0_step(RT_MODEL *const rtM)
 {
@@ -1718,7 +1899,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Act_U_ZK'
    *  Sum: '<S3>/Sum'
    */
-  rtDW->Gain = (rtU->Act_U_ZK - rtDW->Delay_DSTATE) * 0.0025F;
+  rtDW->Gain = (rtU->Act_U_ZK - rtDW->Delay_DSTATE) * 0.005F;
 
   /* DiscreteIntegrator: '<S3>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator = 0.5F * rtDW->Gain +
@@ -1924,7 +2105,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Sum: '<S7>/Sum'
        */
       rtDW->Switch2 = (rtDW->b - rtU->Act_n) / (real32_T)rtU->fl_power * 3.0F *
-        1.53278565F;
+        0.766392827F;
 
       /* Gain: '<S13>/Gain1' incorporates:
        *  Delay: '<S7>/Delay'
@@ -2055,9 +2236,9 @@ void uz_codegen0_step(RT_MODEL *const rtM)
      */
     if (rtU->fl_enable_compensation_cogging_ == 1) {
       /* Outputs for IfAction SubSystem: '<S11>/Rastmomentkompensation' incorporates:
-       *  ActionPort: '<S359>/Action Port'
+       *  ActionPort: '<S458>/Action Port'
        */
-      /* SwitchCase: '<S361>/Switch Case' incorporates:
+      /* SwitchCase: '<S460>/Switch Case' incorporates:
        *  Inport: '<Root>/Act_theta_u_el'
        *  Inport: '<Root>/fl_lookup_table'
        *  Inport: '<Root>/ordnung_a'
@@ -2068,95 +2249,95 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        *  Inport: '<Root>/phase_b'
        *  Inport: '<Root>/phase_c'
        *  Inport: '<Root>/phase_d'
-       *  Product: '<S359>/Product10'
-       *  Product: '<S359>/Product11'
-       *  Product: '<S359>/Product8'
-       *  Product: '<S359>/Product9'
-       *  Sum: '<S359>/Add6'
-       *  Sum: '<S359>/Add7'
-       *  Sum: '<S359>/Add8'
-       *  Sum: '<S359>/Add9'
-       *  SwitchCase: '<S362>/Switch Case'
-       *  SwitchCase: '<S363>/Switch Case'
-       *  SwitchCase: '<S364>/Switch Case'
+       *  Product: '<S458>/Product10'
+       *  Product: '<S458>/Product11'
+       *  Product: '<S458>/Product8'
+       *  Product: '<S458>/Product9'
+       *  Sum: '<S458>/Add6'
+       *  Sum: '<S458>/Add7'
+       *  Sum: '<S458>/Add8'
+       *  Sum: '<S458>/Add9'
+       *  SwitchCase: '<S461>/Switch Case'
+       *  SwitchCase: '<S462>/Switch Case'
+       *  SwitchCase: '<S463>/Switch Case'
        */
       if (rtU->fl_lookup_table == 1) {
-        /* Outputs for IfAction SubSystem: '<S361>/sin_lookup_table' incorporates:
-         *  ActionPort: '<S366>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S460>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S465>/Action Port'
          */
         sin_lookup_table(rtU->ordnung_a * rtU->Act_theta_u_el + rtU->phase_a,
                          &rtDW->c);
 
-        /* End of Outputs for SubSystem: '<S361>/sin_lookup_table' */
+        /* End of Outputs for SubSystem: '<S460>/sin_lookup_table' */
 
-        /* Outputs for IfAction SubSystem: '<S362>/sin_lookup_table' incorporates:
-         *  ActionPort: '<S371>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S461>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S470>/Action Port'
          */
         sin_lookup_table(rtU->ordnung_b * rtU->Act_theta_u_el + rtU->phase_b,
                          &rtDW->a);
 
-        /* End of Outputs for SubSystem: '<S362>/sin_lookup_table' */
+        /* End of Outputs for SubSystem: '<S461>/sin_lookup_table' */
 
-        /* Outputs for IfAction SubSystem: '<S363>/sin_lookup_table' incorporates:
-         *  ActionPort: '<S376>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S462>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S475>/Action Port'
          */
         sin_lookup_table(rtU->ordnung_c * rtU->Act_theta_u_el + rtU->phase_c,
                          &rtDW->b);
 
-        /* End of Outputs for SubSystem: '<S363>/sin_lookup_table' */
+        /* End of Outputs for SubSystem: '<S462>/sin_lookup_table' */
 
-        /* Outputs for IfAction SubSystem: '<S364>/sin_lookup_table' incorporates:
-         *  ActionPort: '<S381>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S463>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S480>/Action Port'
          */
         sin_lookup_table(rtU->ordnung_d * rtU->Act_theta_u_el + rtU->phase_d,
                          &rtDW->Gain1);
 
-        /* End of Outputs for SubSystem: '<S364>/sin_lookup_table' */
+        /* End of Outputs for SubSystem: '<S463>/sin_lookup_table' */
       } else {
-        /* Outputs for IfAction SubSystem: '<S361>/Subsystem' incorporates:
-         *  ActionPort: '<S365>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S460>/Subsystem' incorporates:
+         *  ActionPort: '<S464>/Action Port'
          */
-        Subsystem_d(rtU->ordnung_a * rtU->Act_theta_u_el + rtU->phase_a,
+        Subsystem_f(rtU->ordnung_a * rtU->Act_theta_u_el + rtU->phase_a,
                     &rtDW->c);
 
-        /* End of Outputs for SubSystem: '<S361>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S460>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S362>/Subsystem' incorporates:
-         *  ActionPort: '<S370>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S461>/Subsystem' incorporates:
+         *  ActionPort: '<S469>/Action Port'
          */
-        Subsystem_d(rtU->ordnung_b * rtU->Act_theta_u_el + rtU->phase_b,
+        Subsystem_f(rtU->ordnung_b * rtU->Act_theta_u_el + rtU->phase_b,
                     &rtDW->a);
 
-        /* End of Outputs for SubSystem: '<S362>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S461>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S363>/Subsystem' incorporates:
-         *  ActionPort: '<S375>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S462>/Subsystem' incorporates:
+         *  ActionPort: '<S474>/Action Port'
          */
-        Subsystem_d(rtU->ordnung_c * rtU->Act_theta_u_el + rtU->phase_c,
+        Subsystem_f(rtU->ordnung_c * rtU->Act_theta_u_el + rtU->phase_c,
                     &rtDW->b);
 
-        /* End of Outputs for SubSystem: '<S363>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S462>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S364>/Subsystem' incorporates:
-         *  ActionPort: '<S380>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S463>/Subsystem' incorporates:
+         *  ActionPort: '<S479>/Action Port'
          */
-        Subsystem_d(rtU->ordnung_d * rtU->Act_theta_u_el + rtU->phase_d,
+        Subsystem_f(rtU->ordnung_d * rtU->Act_theta_u_el + rtU->phase_d,
                     &rtDW->Gain1);
 
-        /* End of Outputs for SubSystem: '<S364>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S463>/Subsystem' */
       }
 
-      /* End of SwitchCase: '<S361>/Switch Case' */
+      /* End of SwitchCase: '<S460>/Switch Case' */
 
-      /* Sum: '<S359>/Add5' incorporates:
+      /* Sum: '<S458>/Add5' incorporates:
        *  Inport: '<Root>/amplitude_a'
        *  Inport: '<Root>/amplitude_b'
        *  Inport: '<Root>/amplitude_c'
        *  Inport: '<Root>/amplitude_d'
-       *  Product: '<S359>/Product4'
-       *  Product: '<S359>/Product5'
-       *  Product: '<S359>/Product6'
-       *  Product: '<S359>/Product7'
+       *  Product: '<S458>/Product4'
+       *  Product: '<S458>/Product5'
+       *  Product: '<S458>/Product6'
+       *  Product: '<S458>/Product7'
        */
       rtDW->c = ((rtU->amplitude_a * rtDW->c + rtU->amplitude_b * rtDW->a) +
                  rtU->amplitude_c * rtDW->b) + rtU->amplitude_d * rtDW->Gain1;
@@ -2164,9 +2345,9 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       /* End of Outputs for SubSystem: '<S11>/Rastmomentkompensation' */
     } else {
       /* Outputs for IfAction SubSystem: '<S11>/Switch Case Action Subsystem' incorporates:
-       *  ActionPort: '<S360>/Action Port'
+       *  ActionPort: '<S459>/Action Port'
        */
-      /* SignalConversion generated from: '<S360>/In1' incorporates:
+      /* SignalConversion generated from: '<S459>/In1' incorporates:
        *  Constant: '<S11>/Constant3'
        */
       rtDW->c = 0.0F;
@@ -2366,22 +2547,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
          *  ActionPort: '<S25>/Action Port'
          */
         /* InitializeConditions for SwitchCase: '<S10>/Switch Case2' incorporates:
-         *  Delay: '<S251>/Delay'
-         *  Delay: '<S251>/Delay1'
-         *  Delay: '<S252>/Delay'
-         *  Delay: '<S252>/Delay1'
-         *  Delay: '<S253>/Delay'
-         *  Delay: '<S253>/Delay1'
-         *  Delay: '<S254>/Delay'
-         *  Delay: '<S254>/Delay1'
-         *  DiscreteIntegrator: '<S251>/Discrete-Time Integrator'
-         *  DiscreteIntegrator: '<S251>/Discrete-Time Integrator1'
-         *  DiscreteIntegrator: '<S252>/Discrete-Time Integrator'
-         *  DiscreteIntegrator: '<S252>/Discrete-Time Integrator1'
-         *  DiscreteIntegrator: '<S253>/Discrete-Time Integrator'
-         *  DiscreteIntegrator: '<S253>/Discrete-Time Integrator1'
-         *  DiscreteIntegrator: '<S254>/Discrete-Time Integrator'
-         *  DiscreteIntegrator: '<S254>/Discrete-Time Integrator1'
+         *  Delay: '<S317>/Delay'
+         *  Delay: '<S317>/Delay1'
+         *  Delay: '<S318>/Delay'
+         *  Delay: '<S318>/Delay1'
+         *  Delay: '<S319>/Delay'
+         *  Delay: '<S319>/Delay1'
+         *  Delay: '<S320>/Delay'
+         *  Delay: '<S320>/Delay1'
+         *  DiscreteIntegrator: '<S317>/Discrete-Time Integrator'
+         *  DiscreteIntegrator: '<S317>/Discrete-Time Integrator1'
+         *  DiscreteIntegrator: '<S318>/Discrete-Time Integrator'
+         *  DiscreteIntegrator: '<S318>/Discrete-Time Integrator1'
+         *  DiscreteIntegrator: '<S319>/Discrete-Time Integrator'
+         *  DiscreteIntegrator: '<S319>/Discrete-Time Integrator1'
+         *  DiscreteIntegrator: '<S320>/Discrete-Time Integrator'
+         *  DiscreteIntegrator: '<S320>/Discrete-Time Integrator1'
          */
         rtDW->Delay1_DSTATE = 0.0F;
         rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.0F;
@@ -2411,27 +2592,45 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        */
       rtDW->Delay1 = rtDW->c + rtP.Offset_W_ideal;
 
-      /* SwitchCase: '<S285>/Switch Case' incorporates:
+      /* Product: '<S317>/Product4' */
+      rtDW->b = rtDW->Delay1;
+
+      /* SwitchCase: '<S359>/Switch Case' incorporates:
        *  Inport: '<Root>/fl_lookup_table'
-       *  Product: '<S251>/Product4'
+       *  Product: '<S317>/Product4'
+       *  SwitchCase: '<S362>/Switch Case'
        */
       if (rtU->fl_lookup_table == 1) {
-        /* Outputs for IfAction SubSystem: '<S285>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S295>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S359>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S364>/Action Port'
          */
-        cos_lookup_table(rtDW->Delay1, &rtDW->c, &rtDW->a);
+        cos_lookup_table(rtDW->Delay1, &rtDW->c);
 
-        /* End of Outputs for SubSystem: '<S285>/cos_lookup_table' */
+        /* End of Outputs for SubSystem: '<S359>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S362>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S379>/Action Port'
+         */
+        sin_lookup_table(rtDW->Delay1, &rtDW->a);
+
+        /* End of Outputs for SubSystem: '<S362>/sin_lookup_table' */
       } else {
-        /* Outputs for IfAction SubSystem: '<S285>/Subsystem' incorporates:
-         *  ActionPort: '<S294>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S359>/Subsystem' incorporates:
+         *  ActionPort: '<S363>/Action Port'
          */
-        Subsystem(rtDW->Delay1, &rtDW->c, &rtDW->a);
+        Subsystem(rtDW->Delay1, &rtDW->c);
 
-        /* End of Outputs for SubSystem: '<S285>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S359>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S362>/Subsystem' incorporates:
+         *  ActionPort: '<S378>/Action Port'
+         */
+        Subsystem_f(rtDW->Delay1, &rtDW->a);
+
+        /* End of Outputs for SubSystem: '<S362>/Subsystem' */
       }
 
-      /* End of SwitchCase: '<S285>/Switch Case' */
+      /* End of SwitchCase: '<S359>/Switch Case' */
 
       /* Sum: '<S25>/Sum' incorporates:
        *  Constant: '<S25>/Constant'
@@ -2439,178 +2638,407 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        */
       rtDW->theta_m = rtU->Act_theta_u_el + rtP.Offset_W_ideal;
 
-      /* SwitchCase: '<S284>/Switch Case' incorporates:
-       *  Constant: '<S252>/Constant1'
-       *  Constant: '<S253>/Constant1'
-       *  Constant: '<S254>/Constant1'
-       *  Constant: '<S25>/Constant2'
-       *  Constant: '<S25>/Constant3'
+      /* Product: '<S317>/Product5' */
+      rtDW->Gain1 = rtDW->theta_m;
+
+      /* SwitchCase: '<S361>/Switch Case' incorporates:
        *  Inport: '<Root>/fl_lookup_table'
-       *  Product: '<S251>/Product5'
-       *  Product: '<S252>/Product4'
-       *  Product: '<S252>/Product5'
-       *  Product: '<S253>/Product4'
-       *  Product: '<S253>/Product5'
-       *  Product: '<S254>/Product4'
-       *  Product: '<S254>/Product5'
-       *  Sum: '<S25>/Add2'
-       *  Sum: '<S25>/Add3'
-       *  SwitchCase: '<S256>/Switch Case'
-       *  SwitchCase: '<S257>/Switch Case'
-       *  SwitchCase: '<S258>/Switch Case'
-       *  SwitchCase: '<S303>/Switch Case'
-       *  SwitchCase: '<S304>/Switch Case'
+       *  Product: '<S317>/Product5'
        *  SwitchCase: '<S322>/Switch Case'
-       *  SwitchCase: '<S323>/Switch Case'
-       *  SwitchCase: '<S341>/Switch Case'
-       *  SwitchCase: '<S342>/Switch Case'
+       *  SwitchCase: '<S325>/Switch Case'
+       *  SwitchCase: '<S360>/Switch Case'
        */
       if (rtU->fl_lookup_table == 1) {
-        /* Outputs for IfAction SubSystem: '<S284>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S287>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S360>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S369>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m, &rtDW->Product1_d, &rtDW->b);
+        cos_lookup_table(rtDW->theta_m, &rtDW->Product1_d);
 
-        /* End of Outputs for SubSystem: '<S284>/cos_lookup_table' */
+        /* End of Outputs for SubSystem: '<S360>/cos_lookup_table' */
 
-        /* Outputs for IfAction SubSystem: '<S256>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S260>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S361>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S374>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m, &rtDW->Merge_a, &rtDW->Merge1_m);
+        sin_lookup_table(rtDW->theta_m, &rtDW->b);
 
-        /* End of Outputs for SubSystem: '<S256>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S257>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S268>/Action Port'
-         */
-        cos_lookup_table(rtDW->theta_m + rtP.Offset_W_ideal, &rtDW->Gain1,
-                         &rtDW->y_i);
-
-        /* End of Outputs for SubSystem: '<S257>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S258>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S276>/Action Port'
-         */
-        cos_lookup_table(rtDW->theta_m + 4.18879032F, &rtDW->Product_d, &rtDW->y);
-
-        /* End of Outputs for SubSystem: '<S258>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S303>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S306>/Action Port'
-         */
-        cos_lookup_table(rtDW->theta_m * 3.0F, &rtDW->Delay1_a, &rtDW->Switch2);
-
-        /* End of Outputs for SubSystem: '<S303>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S304>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S314>/Action Port'
-         */
-        cos_lookup_table(rtDW->Delay1 * 3.0F, &rtDW->Merge_g, &rtDW->Sum_a);
-
-        /* End of Outputs for SubSystem: '<S304>/cos_lookup_table' */
+        /* End of Outputs for SubSystem: '<S361>/sin_lookup_table' */
 
         /* Outputs for IfAction SubSystem: '<S322>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S325>/Action Port'
+         *  ActionPort: '<S329>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m * 5.0F, &rtDW->re_lim, &rtDW->Delay1_k);
+        cos_lookup_table(rtDW->theta_m, &rtDW->Merge_n);
 
         /* End of Outputs for SubSystem: '<S322>/cos_lookup_table' */
 
-        /* Outputs for IfAction SubSystem: '<S323>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S333>/Action Port'
-         */
-        cos_lookup_table(rtDW->Delay1 * 5.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
-
-        /* End of Outputs for SubSystem: '<S323>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S341>/cos_lookup_table' incorporates:
+        /* Outputs for IfAction SubSystem: '<S325>/sin_lookup_table' incorporates:
          *  ActionPort: '<S344>/Action Port'
          */
-        cos_lookup_table(rtDW->theta_m * 7.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
+        sin_lookup_table(rtDW->theta_m, &rtDW->Merge_m);
 
-        /* End of Outputs for SubSystem: '<S341>/cos_lookup_table' */
-
-        /* Outputs for IfAction SubSystem: '<S342>/cos_lookup_table' incorporates:
-         *  ActionPort: '<S352>/Action Port'
-         */
-        cos_lookup_table(rtDW->Delay1 * 7.0F, &rtDW->theta_m, &rtDW->Sum_an);
-
-        /* End of Outputs for SubSystem: '<S342>/cos_lookup_table' */
+        /* End of Outputs for SubSystem: '<S325>/sin_lookup_table' */
       } else {
-        /* Outputs for IfAction SubSystem: '<S284>/Subsystem' incorporates:
-         *  ActionPort: '<S286>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S360>/Subsystem' incorporates:
+         *  ActionPort: '<S368>/Action Port'
          */
-        Subsystem(rtDW->theta_m, &rtDW->Product1_d, &rtDW->b);
+        Subsystem(rtDW->theta_m, &rtDW->Product1_d);
 
-        /* End of Outputs for SubSystem: '<S284>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S360>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S256>/Subsystem' incorporates:
-         *  ActionPort: '<S259>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S361>/Subsystem' incorporates:
+         *  ActionPort: '<S373>/Action Port'
          */
-        Subsystem(rtDW->theta_m, &rtDW->Merge_a, &rtDW->Merge1_m);
+        Subsystem_f(rtDW->theta_m, &rtDW->b);
 
-        /* End of Outputs for SubSystem: '<S256>/Subsystem' */
-
-        /* Outputs for IfAction SubSystem: '<S257>/Subsystem' incorporates:
-         *  ActionPort: '<S267>/Action Port'
-         */
-        Subsystem(rtDW->theta_m + rtP.Offset_W_ideal, &rtDW->Gain1, &rtDW->y_i);
-
-        /* End of Outputs for SubSystem: '<S257>/Subsystem' */
-
-        /* Outputs for IfAction SubSystem: '<S258>/Subsystem' incorporates:
-         *  ActionPort: '<S275>/Action Port'
-         */
-        Subsystem(rtDW->theta_m + 4.18879032F, &rtDW->Product_d, &rtDW->y);
-
-        /* End of Outputs for SubSystem: '<S258>/Subsystem' */
-
-        /* Outputs for IfAction SubSystem: '<S303>/Subsystem' incorporates:
-         *  ActionPort: '<S305>/Action Port'
-         */
-        Subsystem(rtDW->theta_m * 3.0F, &rtDW->Delay1_a, &rtDW->Switch2);
-
-        /* End of Outputs for SubSystem: '<S303>/Subsystem' */
-
-        /* Outputs for IfAction SubSystem: '<S304>/Subsystem' incorporates:
-         *  ActionPort: '<S313>/Action Port'
-         */
-        Subsystem(rtDW->Delay1 * 3.0F, &rtDW->Merge_g, &rtDW->Sum_a);
-
-        /* End of Outputs for SubSystem: '<S304>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S361>/Subsystem' */
 
         /* Outputs for IfAction SubSystem: '<S322>/Subsystem' incorporates:
-         *  ActionPort: '<S324>/Action Port'
+         *  ActionPort: '<S328>/Action Port'
          */
-        Subsystem(rtDW->theta_m * 5.0F, &rtDW->re_lim, &rtDW->Delay1_k);
+        Subsystem(rtDW->theta_m, &rtDW->Merge_n);
 
         /* End of Outputs for SubSystem: '<S322>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S323>/Subsystem' incorporates:
-         *  ActionPort: '<S332>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S325>/Subsystem' incorporates:
+         *  ActionPort: '<S343>/Action Port'
          */
-        Subsystem(rtDW->Delay1 * 5.0F, &rtDW->Merge_dn, &rtDW->Sum_cr);
+        Subsystem_f(rtDW->theta_m, &rtDW->Merge_m);
+
+        /* End of Outputs for SubSystem: '<S325>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S361>/Switch Case' */
+
+      /* Sum: '<S25>/Add2' incorporates:
+       *  Constant: '<S25>/Constant2'
+       */
+      rtDW->y = rtDW->theta_m + rtP.Offset_W_ideal;
+
+      /* SwitchCase: '<S323>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S326>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S323>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S334>/Action Port'
+         */
+        cos_lookup_table(rtDW->y, &rtDW->Gain1);
+
+        /* End of Outputs for SubSystem: '<S323>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S326>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S349>/Action Port'
+         */
+        sin_lookup_table(rtDW->y, &rtDW->y_i);
+
+        /* End of Outputs for SubSystem: '<S326>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S323>/Subsystem' incorporates:
+         *  ActionPort: '<S333>/Action Port'
+         */
+        Subsystem(rtDW->y, &rtDW->Gain1);
 
         /* End of Outputs for SubSystem: '<S323>/Subsystem' */
 
-        /* Outputs for IfAction SubSystem: '<S341>/Subsystem' incorporates:
-         *  ActionPort: '<S343>/Action Port'
+        /* Outputs for IfAction SubSystem: '<S326>/Subsystem' incorporates:
+         *  ActionPort: '<S348>/Action Port'
          */
-        Subsystem(rtDW->theta_m * 7.0F, &rtDW->im_lim_f, &rtDW->re_lim_e);
+        Subsystem_f(rtDW->y, &rtDW->y_i);
 
-        /* End of Outputs for SubSystem: '<S341>/Subsystem' */
-
-        /* Outputs for IfAction SubSystem: '<S342>/Subsystem' incorporates:
-         *  ActionPort: '<S351>/Action Port'
-         */
-        Subsystem(rtDW->Delay1 * 7.0F, &rtDW->theta_m, &rtDW->Sum_an);
-
-        /* End of Outputs for SubSystem: '<S342>/Subsystem' */
+        /* End of Outputs for SubSystem: '<S326>/Subsystem' */
       }
 
-      /* End of SwitchCase: '<S284>/Switch Case' */
+      /* End of SwitchCase: '<S323>/Switch Case' */
 
-      /* MATLAB Function: '<S250>/MATLAB Function' incorporates:
+      /* Sum: '<S25>/Add3' incorporates:
+       *  Constant: '<S25>/Constant3'
+       */
+      rtDW->Add3 = rtDW->theta_m + 4.18879032F;
+
+      /* SwitchCase: '<S324>/Switch Case' incorporates:
+       *  Constant: '<S25>/Constant3'
+       *  Inport: '<Root>/fl_lookup_table'
+       *  Sum: '<S25>/Add3'
+       *  SwitchCase: '<S327>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S324>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S339>/Action Port'
+         */
+        cos_lookup_table(rtDW->theta_m + 4.18879032F, &rtDW->Switch2);
+
+        /* End of Outputs for SubSystem: '<S324>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S327>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S354>/Action Port'
+         */
+        sin_lookup_table(rtDW->theta_m + 4.18879032F, &rtDW->y);
+
+        /* End of Outputs for SubSystem: '<S327>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S324>/Subsystem' incorporates:
+         *  ActionPort: '<S338>/Action Port'
+         */
+        Subsystem(rtDW->theta_m + 4.18879032F, &rtDW->Switch2);
+
+        /* End of Outputs for SubSystem: '<S324>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S327>/Subsystem' incorporates:
+         *  ActionPort: '<S353>/Action Port'
+         */
+        Subsystem_f(rtDW->theta_m + 4.18879032F, &rtDW->y);
+
+        /* End of Outputs for SubSystem: '<S327>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S324>/Switch Case' */
+
+      /* Product: '<S318>/Product5' incorporates:
+       *  Constant: '<S318>/Constant1'
+       */
+      rtDW->Product5_g = rtDW->theta_m * 3.0F;
+
+      /* SwitchCase: '<S386>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S385>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S385>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S394>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product5_g, &rtDW->Delay1_a);
+
+        /* End of Outputs for SubSystem: '<S385>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S386>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S399>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product5_g, &rtDW->Add3);
+
+        /* End of Outputs for SubSystem: '<S386>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S385>/Subsystem' incorporates:
+         *  ActionPort: '<S393>/Action Port'
+         */
+        Subsystem(rtDW->Product5_g, &rtDW->Delay1_a);
+
+        /* End of Outputs for SubSystem: '<S385>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S386>/Subsystem' incorporates:
+         *  ActionPort: '<S398>/Action Port'
+         */
+        Subsystem_f(rtDW->Product5_g, &rtDW->Add3);
+
+        /* End of Outputs for SubSystem: '<S386>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S386>/Switch Case' */
+
+      /* Product: '<S318>/Product4' incorporates:
+       *  Constant: '<S318>/Constant1'
+       */
+      rtDW->Product4_i = rtDW->Delay1 * 3.0F;
+
+      /* SwitchCase: '<S384>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S387>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S384>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S389>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product4_i, &rtDW->Product5_g);
+
+        /* End of Outputs for SubSystem: '<S384>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S387>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S404>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product4_i, &rtDW->Sum_a);
+
+        /* End of Outputs for SubSystem: '<S387>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S384>/Subsystem' incorporates:
+         *  ActionPort: '<S388>/Action Port'
+         */
+        Subsystem(rtDW->Product4_i, &rtDW->Product5_g);
+
+        /* End of Outputs for SubSystem: '<S384>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S387>/Subsystem' incorporates:
+         *  ActionPort: '<S403>/Action Port'
+         */
+        Subsystem_f(rtDW->Product4_i, &rtDW->Sum_a);
+
+        /* End of Outputs for SubSystem: '<S387>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S384>/Switch Case' */
+
+      /* Product: '<S319>/Product5' incorporates:
+       *  Constant: '<S319>/Constant1'
+       */
+      rtDW->Product5_g0 = rtDW->theta_m * 5.0F;
+
+      /* SwitchCase: '<S411>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S410>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S410>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S419>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product5_g0, &rtDW->Product4_i);
+
+        /* End of Outputs for SubSystem: '<S410>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S411>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S424>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product5_g0, &rtDW->Delay1_k);
+
+        /* End of Outputs for SubSystem: '<S411>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S410>/Subsystem' incorporates:
+         *  ActionPort: '<S418>/Action Port'
+         */
+        Subsystem(rtDW->Product5_g0, &rtDW->Product4_i);
+
+        /* End of Outputs for SubSystem: '<S410>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S411>/Subsystem' incorporates:
+         *  ActionPort: '<S423>/Action Port'
+         */
+        Subsystem_f(rtDW->Product5_g0, &rtDW->Delay1_k);
+
+        /* End of Outputs for SubSystem: '<S411>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S411>/Switch Case' */
+
+      /* Product: '<S319>/Product4' incorporates:
+       *  Constant: '<S319>/Constant1'
+       */
+      rtDW->Product4_a = rtDW->Delay1 * 5.0F;
+
+      /* SwitchCase: '<S409>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S412>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S409>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S414>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product4_a, &rtDW->Product5_g0);
+
+        /* End of Outputs for SubSystem: '<S409>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S412>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S429>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product4_a, &rtDW->Sum_cr);
+
+        /* End of Outputs for SubSystem: '<S412>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S409>/Subsystem' incorporates:
+         *  ActionPort: '<S413>/Action Port'
+         */
+        Subsystem(rtDW->Product4_a, &rtDW->Product5_g0);
+
+        /* End of Outputs for SubSystem: '<S409>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S412>/Subsystem' incorporates:
+         *  ActionPort: '<S428>/Action Port'
+         */
+        Subsystem_f(rtDW->Product4_a, &rtDW->Sum_cr);
+
+        /* End of Outputs for SubSystem: '<S412>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S409>/Switch Case' */
+
+      /* Product: '<S320>/Product5' incorporates:
+       *  Constant: '<S320>/Constant1'
+       */
+      rtDW->Product5_j = rtDW->theta_m * 7.0F;
+
+      /* SwitchCase: '<S436>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S435>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S435>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S444>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product5_j, &rtDW->theta_m);
+
+        /* End of Outputs for SubSystem: '<S435>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S436>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S449>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product5_j, &rtDW->Product4_a);
+
+        /* End of Outputs for SubSystem: '<S436>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S435>/Subsystem' incorporates:
+         *  ActionPort: '<S443>/Action Port'
+         */
+        Subsystem(rtDW->Product5_j, &rtDW->theta_m);
+
+        /* End of Outputs for SubSystem: '<S435>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S436>/Subsystem' incorporates:
+         *  ActionPort: '<S448>/Action Port'
+         */
+        Subsystem_f(rtDW->Product5_j, &rtDW->Product4_a);
+
+        /* End of Outputs for SubSystem: '<S436>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S436>/Switch Case' */
+
+      /* Product: '<S320>/Product4' incorporates:
+       *  Constant: '<S320>/Constant1'
+       */
+      rtDW->Product4_ap = rtDW->Delay1 * 7.0F;
+
+      /* SwitchCase: '<S434>/Switch Case' incorporates:
+       *  Inport: '<Root>/fl_lookup_table'
+       *  SwitchCase: '<S437>/Switch Case'
+       */
+      if (rtU->fl_lookup_table == 1) {
+        /* Outputs for IfAction SubSystem: '<S434>/cos_lookup_table' incorporates:
+         *  ActionPort: '<S439>/Action Port'
+         */
+        cos_lookup_table(rtDW->Product4_ap, &rtDW->Delay1);
+
+        /* End of Outputs for SubSystem: '<S434>/cos_lookup_table' */
+
+        /* Outputs for IfAction SubSystem: '<S437>/sin_lookup_table' incorporates:
+         *  ActionPort: '<S454>/Action Port'
+         */
+        sin_lookup_table(rtDW->Product4_ap, &rtDW->Product5_j);
+
+        /* End of Outputs for SubSystem: '<S437>/sin_lookup_table' */
+      } else {
+        /* Outputs for IfAction SubSystem: '<S434>/Subsystem' incorporates:
+         *  ActionPort: '<S438>/Action Port'
+         */
+        Subsystem(rtDW->Product4_ap, &rtDW->Delay1);
+
+        /* End of Outputs for SubSystem: '<S434>/Subsystem' */
+
+        /* Outputs for IfAction SubSystem: '<S437>/Subsystem' incorporates:
+         *  ActionPort: '<S453>/Action Port'
+         */
+        Subsystem_f(rtDW->Product4_ap, &rtDW->Product5_j);
+
+        /* End of Outputs for SubSystem: '<S437>/Subsystem' */
+      }
+
+      /* End of SwitchCase: '<S434>/Switch Case' */
+
+      /* MATLAB Function: '<S316>/MATLAB Function' incorporates:
        *  Inport: '<Root>/Act_w_el'
        *  Inport: '<Root>/Psi_PM_U'
        *  Inport: '<Root>/Psi_PM_V'
@@ -2619,321 +3047,324 @@ void uz_codegen0_step(RT_MODEL *const rtM)
        */
       MATLABFunction_i(rtU->Psi_PM_U, rtU->Psi_PM_V, rtU->Psi_PM_W, rtDW->I_re,
                        rtDW->Add, rtU->Act_w_el,
-                       rtU->fl_enable_compensation_current, &rtDW->Delay1,
+                       rtU->fl_enable_compensation_current, &rtDW->Product4_ap,
                        &rtDW->I_im_mit, &rtDW->I_re_gegen, &rtDW->I_im_gegen,
                        &rtDW->I_re_null, &rtDW->I_im_null,
                        &rtDW->sf_MATLABFunction_e);
 
-      /* Sum: '<S250>/Strom_kompensiert' incorporates:
-       *  Gain: '<S250>/Gain'
-       *  Gain: '<S250>/Gain1'
-       *  Gain: '<S250>/Gain2'
-       *  Product: '<S250>/Product'
-       *  Product: '<S250>/Product1'
-       *  Product: '<S250>/Product2'
-       *  Product: '<S250>/Product3'
-       *  Product: '<S250>/Product4'
-       *  Product: '<S250>/Product5'
-       *  Sum: '<S250>/Add'
+      /* Sum: '<S316>/Strom_kompensiert' incorporates:
+       *  Gain: '<S316>/Gain'
+       *  Gain: '<S316>/Gain1'
+       *  Gain: '<S316>/Gain2'
+       *  Product: '<S316>/Product'
+       *  Product: '<S316>/Product1'
+       *  Product: '<S316>/Product2'
+       *  Product: '<S316>/Product3'
+       *  Product: '<S316>/Product4'
+       *  Product: '<S316>/Product5'
+       *  Sum: '<S316>/Add'
        */
-      rtDW->y = (((((rtDW->Merge + rtDW->I_im_mit) * -rtDW->Merge1_m +
-                    rtDW->Delay1 * rtDW->Merge_a) + rtDW->I_re_gegen *
+      rtDW->y = (((((rtDW->Merge + rtDW->I_im_mit) * -rtDW->Merge_m +
+                    rtDW->Product4_ap * rtDW->Merge_n) + rtDW->I_re_gegen *
                    rtDW->Gain1) + rtDW->I_im_gegen * -rtDW->y_i) +
-                 rtDW->I_re_null * rtDW->Product_d) + rtDW->I_im_null * -rtDW->y;
+                 rtDW->I_re_null * rtDW->Switch2) + rtDW->I_im_null * -rtDW->y;
 
-      /* Gain: '<S251>/Gain6' incorporates:
-       *  Gain: '<S252>/Gain6'
-       *  Gain: '<S253>/Gain6'
-       *  Gain: '<S254>/Gain6'
+      /* Gain: '<S317>/Gain6' incorporates:
+       *  Gain: '<S318>/Gain6'
+       *  Gain: '<S319>/Gain6'
+       *  Gain: '<S320>/Gain6'
        *  Inport: '<Root>/Act_Iw'
        *  Sum: '<S25>/Sum2'
        */
-      rtDW->Product_d = (rtDW->y - rtU->Act_Iw) * rtP.Kp;
+      rtDW->Switch2 = (rtDW->y - rtU->Act_Iw) * rtP.Kp;
 
-      /* Product: '<S251>/Product1' incorporates:
-       *  Gain: '<S251>/Gain6'
+      /* Product: '<S317>/Product1' incorporates:
+       *  Gain: '<S317>/Gain6'
        */
-      rtDW->Product1_d *= rtDW->Product_d;
+      rtDW->Product1_d *= rtDW->Switch2;
 
-      /* Gain: '<S251>/Gain1' incorporates:
-       *  Delay: '<S251>/Delay1'
-       *  Sum: '<S251>/Sum4'
+      /* Gain: '<S317>/Gain1' incorporates:
+       *  Delay: '<S317>/Delay1'
+       *  Sum: '<S317>/Sum4'
        */
-      rtDW->Merge_a = 2.5E-5F * rtP.K1 * (rtDW->Delay1_DSTATE + rtDW->Product1_d);
+      rtDW->Merge_n = 5.0E-5F * rtP.K1 * (rtDW->Delay1_DSTATE + rtDW->Product1_d);
 
-      /* DiscreteIntegrator: '<S251>/Discrete-Time Integrator' */
-      rtDW->Merge1_m = 0.5F * rtDW->Merge_a +
+      /* DiscreteIntegrator: '<S317>/Discrete-Time Integrator' */
+      rtDW->Merge_m = 0.5F * rtDW->Merge_n +
         rtDW->DiscreteTimeIntegrator_DSTATE_o;
 
-      /* Sum: '<S251>/Sum5' */
-      rtDW->Product1_d += rtDW->Merge1_m;
+      /* Sum: '<S317>/Sum5' */
+      rtDW->Product1_d += rtDW->Merge_m;
 
       /* MATLAB Function: '<S25>/MATLAB Function' incorporates:
        *  Inport: '<Root>/Act_w_el'
        */
       MATLABFunction(rtDW->Add, rtU->Act_w_el, &rtDW->Betrieb);
 
-      /* Product: '<S251>/Product' incorporates:
-       *  Gain: '<S251>/Gain'
-       *  Gain: '<S251>/Gain6'
+      /* Product: '<S317>/Product' incorporates:
+       *  Gain: '<S317>/Gain'
+       *  Gain: '<S317>/Gain6'
        */
-      rtDW->y_i = rtDW->Product_d * -rtDW->b;
+      rtDW->y_i = rtDW->Switch2 * -rtDW->b;
 
-      /* Gain: '<S251>/Gain2' incorporates:
-       *  Delay: '<S251>/Delay'
-       *  Sum: '<S251>/Sum2'
+      /* Gain: '<S317>/Gain2' incorporates:
+       *  Delay: '<S317>/Delay'
+       *  Sum: '<S317>/Sum2'
        */
-      rtDW->Add = 2.5E-5F * rtP.K1 * (rtDW->y_i + rtDW->Delay_DSTATE_l);
+      rtDW->Add = 5.0E-5F * rtP.K1 * (rtDW->y_i + rtDW->Delay_DSTATE_l);
 
-      /* DiscreteIntegrator: '<S251>/Discrete-Time Integrator1' */
-      rtDW->Delay1 = 0.5F * rtDW->Add + rtDW->DiscreteTimeIntegrator1_DSTATE;
+      /* DiscreteIntegrator: '<S317>/Discrete-Time Integrator1' */
+      rtDW->Product4_ap = 0.5F * rtDW->Add +
+        rtDW->DiscreteTimeIntegrator1_DSTATE;
 
-      /* Sum: '<S251>/Sum6' */
-      rtDW->I_im_mit = rtDW->y_i + rtDW->Delay1;
+      /* Sum: '<S317>/Sum6' */
+      rtDW->I_im_mit = rtDW->y_i + rtDW->Product4_ap;
 
-      /* MATLAB Function: '<S251>/MATLAB Function' incorporates:
-       *  Constant: '<S251>/Constant2'
-       *  Product: '<S251>/Product6'
+      /* MATLAB Function: '<S317>/MATLAB Function' incorporates:
+       *  Constant: '<S317>/Constant2'
+       *  Product: '<S317>/Product6'
        */
       MATLABFunction_a(rtDW->Product1_d, 0.46F * rtDW->DiscreteTimeIntegrator,
                        rtDW->Betrieb, rtDW->I_im_mit, &rtDW->y_i, &rtDW->Gain1);
 
-      /* Product: '<S251>/Product3' */
+      /* Product: '<S317>/Product3' */
       rtDW->I_re_gegen = rtDW->c * rtDW->y_i;
 
-      /* Product: '<S252>/Product1' */
-      rtDW->Delay1_a *= rtDW->Product_d;
+      /* Product: '<S318>/Product1' */
+      rtDW->Delay1_a *= rtDW->Switch2;
 
-      /* Delay: '<S252>/Delay1' */
+      /* Delay: '<S318>/Delay1' */
       rtDW->b = rtDW->Delay1_DSTATE_o;
 
-      /* Gain: '<S252>/Gain1' incorporates:
-       *  Delay: '<S252>/Delay1'
-       *  Sum: '<S252>/Sum4'
+      /* Gain: '<S318>/Gain1' incorporates:
+       *  Delay: '<S318>/Delay1'
+       *  Sum: '<S318>/Sum4'
        */
-      rtDW->I_im_gegen = 2.5E-5F * rtP.K2 * (rtDW->Delay1_DSTATE_o +
+      rtDW->I_im_gegen = 5.0E-5F * rtP.K2 * (rtDW->Delay1_DSTATE_o +
         rtDW->Delay1_a);
 
-      /* DiscreteIntegrator: '<S252>/Discrete-Time Integrator' */
+      /* DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
       rtDW->I_re_null = 0.5F * rtDW->I_im_gegen +
         rtDW->DiscreteTimeIntegrator_DSTATE_m;
 
-      /* Sum: '<S252>/Sum5' */
+      /* Sum: '<S318>/Sum5' */
       rtDW->Delay1_a += rtDW->I_re_null;
 
-      /* Product: '<S252>/Product' incorporates:
-       *  Gain: '<S252>/Gain'
+      /* Product: '<S318>/Product' incorporates:
+       *  Gain: '<S318>/Gain'
        */
-      rtDW->c = rtDW->Product_d * -rtDW->Switch2;
+      rtDW->c = rtDW->Switch2 * -rtDW->Add3;
 
-      /* Gain: '<S252>/Gain2' incorporates:
-       *  Delay: '<S252>/Delay'
-       *  Sum: '<S252>/Sum2'
+      /* Gain: '<S318>/Gain2' incorporates:
+       *  Delay: '<S318>/Delay'
+       *  Sum: '<S318>/Sum2'
        */
-      rtDW->I_im_null = 2.5E-5F * rtP.K2 * (rtDW->c + rtDW->Delay_DSTATE_nv);
+      rtDW->I_im_null = 5.0E-5F * rtP.K2 * (rtDW->c + rtDW->Delay_DSTATE_nv);
 
-      /* DiscreteIntegrator: '<S252>/Discrete-Time Integrator1' */
+      /* DiscreteIntegrator: '<S318>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_e = 0.5F * rtDW->I_im_null +
         rtDW->DiscreteTimeIntegrator1_DSTAT_f;
 
-      /* Sum: '<S252>/Sum6' */
+      /* Sum: '<S318>/Sum6' */
       rtDW->U_im_k = rtDW->c + rtDW->DiscreteTimeIntegrator1_e;
 
-      /* MATLAB Function: '<S252>/MATLAB Function' incorporates:
-       *  Constant: '<S252>/Constant2'
-       *  Product: '<S252>/Product6'
+      /* MATLAB Function: '<S318>/MATLAB Function' incorporates:
+       *  Constant: '<S318>/Constant2'
+       *  Product: '<S318>/Product6'
        */
       MATLABFunction_a(rtDW->Delay1_a, 0.05F * rtDW->DiscreteTimeIntegrator,
                        rtDW->Betrieb, rtDW->U_im_k, &rtDW->c, &rtDW->b);
 
-      /* Product: '<S253>/Product1' */
-      rtDW->re_lim *= rtDW->Product_d;
+      /* Product: '<S319>/Product1' */
+      rtDW->Product4_i *= rtDW->Switch2;
 
-      /* Gain: '<S253>/Gain1' incorporates:
-       *  Delay: '<S253>/Delay1'
-       *  Sum: '<S253>/Sum4'
+      /* Gain: '<S319>/Gain1' incorporates:
+       *  Delay: '<S319>/Delay1'
+       *  Sum: '<S319>/Sum4'
        */
-      rtDW->Gain1_m = 2.5E-5F * rtP.K4 * (rtDW->Delay1_DSTATE_g + rtDW->re_lim);
+      rtDW->Gain1_m = 5.0E-5F * rtP.K4 * (rtDW->Delay1_DSTATE_g +
+        rtDW->Product4_i);
 
-      /* DiscreteIntegrator: '<S253>/Discrete-Time Integrator' */
+      /* DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_a = 0.5F * rtDW->Gain1_m +
         rtDW->DiscreteTimeIntegrator_DSTATE_c;
 
-      /* Sum: '<S253>/Sum5' */
-      rtDW->U_re_n = rtDW->DiscreteTimeIntegrator_a + rtDW->re_lim;
+      /* Sum: '<S319>/Sum5' */
+      rtDW->U_re_n = rtDW->DiscreteTimeIntegrator_a + rtDW->Product4_i;
 
-      /* Product: '<S253>/Product' incorporates:
-       *  Gain: '<S253>/Gain'
+      /* Product: '<S319>/Product' incorporates:
+       *  Gain: '<S319>/Gain'
        */
-      rtDW->Switch2 = rtDW->Product_d * -rtDW->Delay1_k;
+      rtDW->Add3 = rtDW->Switch2 * -rtDW->Delay1_k;
 
-      /* Gain: '<S253>/Gain2' incorporates:
-       *  Delay: '<S253>/Delay'
-       *  Sum: '<S253>/Sum2'
+      /* Gain: '<S319>/Gain2' incorporates:
+       *  Delay: '<S319>/Delay'
+       *  Sum: '<S319>/Sum2'
        */
-      rtDW->Delay1_k = 2.5E-5F * rtP.K4 * (rtDW->Switch2 + rtDW->Delay_DSTATE_a);
+      rtDW->Delay1_k = 5.0E-5F * rtP.K4 * (rtDW->Add3 + rtDW->Delay_DSTATE_a);
 
-      /* DiscreteIntegrator: '<S253>/Discrete-Time Integrator1' */
+      /* DiscreteIntegrator: '<S319>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_a = 0.5F * rtDW->Delay1_k +
         rtDW->DiscreteTimeIntegrator1_DSTAT_o;
 
-      /* Sum: '<S253>/Sum6' */
-      rtDW->U_im_p = rtDW->Switch2 + rtDW->DiscreteTimeIntegrator1_a;
+      /* Sum: '<S319>/Sum6' */
+      rtDW->U_im_p = rtDW->Add3 + rtDW->DiscreteTimeIntegrator1_a;
 
-      /* MATLAB Function: '<S253>/MATLAB Function' incorporates:
-       *  Constant: '<S253>/Constant2'
-       *  Product: '<S253>/Product6'
+      /* MATLAB Function: '<S319>/MATLAB Function' incorporates:
+       *  Constant: '<S319>/Constant2'
+       *  Product: '<S319>/Product6'
        */
       MATLABFunction_a(rtDW->U_re_n, 0.02F * rtDW->DiscreteTimeIntegrator,
-                       rtDW->Betrieb, rtDW->U_im_p, &rtDW->re_lim,
-                       &rtDW->Switch2);
+                       rtDW->Betrieb, rtDW->U_im_p, &rtDW->Product4_i,
+                       &rtDW->Add3);
 
-      /* Product: '<S254>/Product1' */
-      rtDW->im_lim_f *= rtDW->Product_d;
+      /* Product: '<S320>/Product1' */
+      rtDW->theta_m *= rtDW->Switch2;
 
-      /* Gain: '<S254>/Gain1' incorporates:
-       *  Delay: '<S254>/Delay1'
-       *  Sum: '<S254>/Sum4'
+      /* Gain: '<S320>/Gain1' incorporates:
+       *  Delay: '<S320>/Delay1'
+       *  Sum: '<S320>/Sum4'
        */
-      rtDW->Gain1_j = 2.5E-5F * rtP.K6 * (rtDW->Delay1_DSTATE_oi +
-        rtDW->im_lim_f);
+      rtDW->Gain1_j = 5.0E-5F * rtP.K6 * (rtDW->Delay1_DSTATE_oi + rtDW->theta_m);
 
-      /* DiscreteIntegrator: '<S254>/Discrete-Time Integrator' */
+      /* DiscreteIntegrator: '<S320>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_n = 0.5F * rtDW->Gain1_j +
         rtDW->DiscreteTimeIntegrator_DSTATE_g;
 
-      /* Sum: '<S254>/Sum5' */
-      rtDW->U_re_d = rtDW->DiscreteTimeIntegrator_n + rtDW->im_lim_f;
+      /* Sum: '<S320>/Sum5' */
+      rtDW->U_re_d = rtDW->DiscreteTimeIntegrator_n + rtDW->theta_m;
 
-      /* Product: '<S254>/Product' incorporates:
-       *  Gain: '<S254>/Gain'
+      /* Product: '<S320>/Product' incorporates:
+       *  Gain: '<S320>/Gain'
        */
-      rtDW->Product_d *= -rtDW->re_lim_e;
+      rtDW->Switch2 *= -rtDW->Product4_a;
 
-      /* Delay: '<S254>/Delay' */
-      rtDW->re_lim_e = rtDW->Delay_DSTATE_nm;
+      /* Delay: '<S320>/Delay' */
+      rtDW->Product4_a = rtDW->Delay_DSTATE_nm;
 
-      /* Gain: '<S254>/Gain2' incorporates:
-       *  Delay: '<S254>/Delay'
-       *  Sum: '<S254>/Sum2'
+      /* Gain: '<S320>/Gain2' incorporates:
+       *  Delay: '<S320>/Delay'
+       *  Sum: '<S320>/Sum2'
        */
-      rtDW->Gain2_i = 2.5E-5F * rtP.K6 * (rtDW->Product_d +
-        rtDW->Delay_DSTATE_nm);
+      rtDW->Gain2_i = 5.0E-5F * rtP.K6 * (rtDW->Switch2 + rtDW->Delay_DSTATE_nm);
 
-      /* DiscreteIntegrator: '<S254>/Discrete-Time Integrator1' */
+      /* DiscreteIntegrator: '<S320>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_g = 0.5F * rtDW->Gain2_i +
         rtDW->DiscreteTimeIntegrator1_DSTA_os;
 
-      /* Sum: '<S254>/Sum6' */
-      rtDW->Product_d += rtDW->DiscreteTimeIntegrator1_g;
+      /* Sum: '<S320>/Sum6' */
+      rtDW->Switch2 += rtDW->DiscreteTimeIntegrator1_g;
 
-      /* MATLAB Function: '<S254>/MATLAB Function' incorporates:
-       *  Constant: '<S254>/Constant2'
-       *  Product: '<S254>/Product6'
+      /* MATLAB Function: '<S320>/MATLAB Function' incorporates:
+       *  Constant: '<S320>/Constant2'
+       *  Product: '<S320>/Product6'
        */
       MATLABFunction_a(rtDW->U_re_d, 0.01F * rtDW->DiscreteTimeIntegrator,
-                       rtDW->Betrieb, rtDW->Product_d, &rtDW->re_lim_e,
-                       &rtDW->im_lim_f);
+                       rtDW->Betrieb, rtDW->Switch2, &rtDW->Product4_a,
+                       &rtDW->theta_m);
 
       /* Outport: '<Root>/a_W' incorporates:
        *  Constant: '<S25>/Constant1'
-       *  Gain: '<S251>/Gain3'
-       *  Gain: '<S252>/Gain3'
-       *  Gain: '<S253>/Gain3'
-       *  Gain: '<S254>/Gain3'
-       *  Product: '<S251>/Product2'
-       *  Product: '<S252>/Product2'
-       *  Product: '<S252>/Product3'
-       *  Product: '<S253>/Product2'
-       *  Product: '<S253>/Product3'
-       *  Product: '<S254>/Product2'
-       *  Product: '<S254>/Product3'
+       *  Gain: '<S317>/Gain3'
+       *  Gain: '<S318>/Gain3'
+       *  Gain: '<S319>/Gain3'
+       *  Gain: '<S320>/Gain3'
        *  Product: '<S25>/Divide'
-       *  Sum: '<S251>/Sum'
-       *  Sum: '<S252>/Sum'
-       *  Sum: '<S253>/Sum'
-       *  Sum: '<S254>/Sum'
+       *  Product: '<S317>/Product2'
+       *  Product: '<S318>/Product2'
+       *  Product: '<S318>/Product3'
+       *  Product: '<S319>/Product2'
+       *  Product: '<S319>/Product3'
+       *  Product: '<S320>/Product2'
+       *  Product: '<S320>/Product3'
        *  Sum: '<S25>/Add'
        *  Sum: '<S25>/Add1'
+       *  Sum: '<S317>/Sum'
+       *  Sum: '<S318>/Sum'
+       *  Sum: '<S319>/Sum'
+       *  Sum: '<S320>/Sum'
        */
-      rtY->a_W = ((((rtDW->Gain1 * -rtDW->a + rtDW->I_re_gegen) + (rtDW->Merge_g
-        * rtDW->c + rtDW->b * -rtDW->Sum_a)) + (rtDW->Merge_dn * rtDW->re_lim +
-        rtDW->Switch2 * -rtDW->Sum_cr)) + (rtDW->theta_m * rtDW->re_lim_e +
-        rtDW->im_lim_f * -rtDW->Sum_an)) / rtDW->DiscreteTimeIntegrator + 0.5F;
+      rtY->a_W = ((((rtDW->Gain1 * -rtDW->a + rtDW->I_re_gegen) +
+                    (rtDW->Product5_g * rtDW->c + rtDW->b * -rtDW->Sum_a)) +
+                   (rtDW->Product5_g0 * rtDW->Product4_i + rtDW->Add3 *
+                    -rtDW->Sum_cr)) + (rtDW->Delay1 * rtDW->Product4_a +
+        rtDW->theta_m * -rtDW->Product5_j)) / rtDW->DiscreteTimeIntegrator +
+        0.5F;
 
       /* Merge: '<S10>/Merge5' incorporates:
        *  SignalConversion generated from: '<S25>/I_ref1'
        */
       rtDW->Merge5 = rtDW->y;
 
-      /* Update for Delay: '<S251>/Delay1' incorporates:
-       *  Sum: '<S251>/Sum3'
+      /* Update for Delay: '<S317>/Delay1' incorporates:
+       *  Sum: '<S317>/Sum3'
        */
       rtDW->Delay1_DSTATE = rtDW->y_i - rtDW->Product1_d;
 
-      /* Update for DiscreteIntegrator: '<S251>/Discrete-Time Integrator' */
-      rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.5F * rtDW->Merge_a +
-        rtDW->Merge1_m;
+      /* Update for DiscreteIntegrator: '<S317>/Discrete-Time Integrator' */
+      rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.5F * rtDW->Merge_n +
+        rtDW->Merge_m;
 
-      /* Update for Delay: '<S251>/Delay' incorporates:
-       *  Sum: '<S251>/Sum1'
+      /* Update for Delay: '<S317>/Delay' incorporates:
+       *  Sum: '<S317>/Sum1'
        */
       rtDW->Delay_DSTATE_l = rtDW->Gain1 - rtDW->I_im_mit;
 
-      /* Update for DiscreteIntegrator: '<S251>/Discrete-Time Integrator1' */
-      rtDW->DiscreteTimeIntegrator1_DSTATE = 0.5F * rtDW->Add + rtDW->Delay1;
+      /* Update for DiscreteIntegrator: '<S317>/Discrete-Time Integrator1' */
+      rtDW->DiscreteTimeIntegrator1_DSTATE = 0.5F * rtDW->Add +
+        rtDW->Product4_ap;
 
-      /* Update for Delay: '<S252>/Delay1' incorporates:
-       *  Sum: '<S252>/Sum3'
+      /* Update for Delay: '<S318>/Delay1' incorporates:
+       *  Sum: '<S318>/Sum3'
        */
       rtDW->Delay1_DSTATE_o = rtDW->c - rtDW->Delay1_a;
 
-      /* Update for DiscreteIntegrator: '<S252>/Discrete-Time Integrator' */
+      /* Update for DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_DSTATE_m = 0.5F * rtDW->I_im_gegen +
         rtDW->I_re_null;
 
-      /* Update for Delay: '<S252>/Delay' incorporates:
-       *  Sum: '<S252>/Sum1'
+      /* Update for Delay: '<S318>/Delay' incorporates:
+       *  Sum: '<S318>/Sum1'
        */
       rtDW->Delay_DSTATE_nv = rtDW->b - rtDW->U_im_k;
 
-      /* Update for DiscreteIntegrator: '<S252>/Discrete-Time Integrator1' */
+      /* Update for DiscreteIntegrator: '<S318>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_DSTAT_f = 0.5F * rtDW->I_im_null +
         rtDW->DiscreteTimeIntegrator1_e;
 
-      /* Update for Delay: '<S253>/Delay1' incorporates:
-       *  Sum: '<S253>/Sum3'
+      /* Update for Delay: '<S319>/Delay1' incorporates:
+       *  Sum: '<S319>/Sum3'
        */
-      rtDW->Delay1_DSTATE_g = rtDW->re_lim - rtDW->U_re_n;
+      rtDW->Delay1_DSTATE_g = rtDW->Product4_i - rtDW->U_re_n;
 
-      /* Update for DiscreteIntegrator: '<S253>/Discrete-Time Integrator' */
+      /* Update for DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_DSTATE_c = 0.5F * rtDW->Gain1_m +
         rtDW->DiscreteTimeIntegrator_a;
 
-      /* Update for Delay: '<S253>/Delay' incorporates:
-       *  Sum: '<S253>/Sum1'
+      /* Update for Delay: '<S319>/Delay' incorporates:
+       *  Sum: '<S319>/Sum1'
        */
-      rtDW->Delay_DSTATE_a = rtDW->Switch2 - rtDW->U_im_p;
+      rtDW->Delay_DSTATE_a = rtDW->Add3 - rtDW->U_im_p;
 
-      /* Update for DiscreteIntegrator: '<S253>/Discrete-Time Integrator1' */
+      /* Update for DiscreteIntegrator: '<S319>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_DSTAT_o = 0.5F * rtDW->Delay1_k +
         rtDW->DiscreteTimeIntegrator1_a;
 
-      /* Update for Delay: '<S254>/Delay1' incorporates:
-       *  Sum: '<S254>/Sum3'
+      /* Update for Delay: '<S320>/Delay1' incorporates:
+       *  Sum: '<S320>/Sum3'
        */
-      rtDW->Delay1_DSTATE_oi = rtDW->re_lim_e - rtDW->U_re_d;
+      rtDW->Delay1_DSTATE_oi = rtDW->Product4_a - rtDW->U_re_d;
 
-      /* Update for DiscreteIntegrator: '<S254>/Discrete-Time Integrator' */
+      /* Update for DiscreteIntegrator: '<S320>/Discrete-Time Integrator' */
       rtDW->DiscreteTimeIntegrator_DSTATE_g = 0.5F * rtDW->Gain1_j +
         rtDW->DiscreteTimeIntegrator_n;
 
-      /* Update for Delay: '<S254>/Delay' incorporates:
-       *  Sum: '<S254>/Sum1'
+      /* Update for Delay: '<S320>/Delay' incorporates:
+       *  Sum: '<S320>/Sum1'
        */
-      rtDW->Delay_DSTATE_nm = rtDW->im_lim_f - rtDW->Product_d;
+      rtDW->Delay_DSTATE_nm = rtDW->theta_m - rtDW->Switch2;
 
-      /* Update for DiscreteIntegrator: '<S254>/Discrete-Time Integrator1' */
+      /* Update for DiscreteIntegrator: '<S320>/Discrete-Time Integrator1' */
       rtDW->DiscreteTimeIntegrator1_DSTA_os = 0.5F * rtDW->Gain2_i +
         rtDW->DiscreteTimeIntegrator1_g;
 
@@ -3005,15 +3436,15 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    */
   rtDW->c = rtU->Act_Iu * rtU->Act_Iu;
 
-  /* DiscreteIntegrator: '<S385>/Accumulator' incorporates:
-   *  Delay: '<S385>/Delay'
-   *  Sum: '<S385>/Sum'
+  /* DiscreteIntegrator: '<S484>/Accumulator' incorporates:
+   *  Delay: '<S484>/Delay'
+   *  Sum: '<S484>/Sum'
    */
   rtDW->a = (rtDW->c - rtDW->Delay_DSTATE_k[0]) + rtDW->Accumulator_DSTATE;
 
   /* Outport: '<Root>/fault_rms_current_u' incorporates:
    *  Constant: '<S5>/Constant1'
-   *  Gain: '<S385>/Gain'
+   *  Gain: '<S484>/Gain'
    *  RelationalOperator: '<S5>/Smaller1'
    *  Sqrt: '<S5>/Square Root'
    */
@@ -3026,16 +3457,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    */
   rtY->fault_peak_speed = (rtP.n_max_peak <= rtU->Act_n);
 
-  /* DiscreteIntegrator: '<S386>/Accumulator' incorporates:
-   *  Delay: '<S386>/Delay'
+  /* DiscreteIntegrator: '<S485>/Accumulator' incorporates:
+   *  Delay: '<S485>/Delay'
    *  Inport: '<Root>/Act_n'
-   *  Sum: '<S386>/Sum'
+   *  Sum: '<S485>/Sum'
    */
   rtDW->b = (rtU->Act_n - rtDW->Delay_DSTATE_ki[0]) + rtDW->Accumulator_DSTATE_d;
 
   /* Outport: '<Root>/fault_max_speed' incorporates:
    *  Constant: '<S5>/Constant3'
-   *  Gain: '<S386>/Gain'
+   *  Gain: '<S485>/Gain'
    *  RelationalOperator: '<S5>/Smaller3'
    */
   rtY->fault_max_speed = (rtP.n_max <= 0.00833333377F * rtDW->b);
@@ -3045,16 +3476,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    */
   rtDW->Gain1 = rtU->Act_Iv * rtU->Act_Iv;
 
-  /* DiscreteIntegrator: '<S387>/Accumulator' incorporates:
-   *  Delay: '<S387>/Delay'
-   *  Sum: '<S387>/Sum'
+  /* DiscreteIntegrator: '<S486>/Accumulator' incorporates:
+   *  Delay: '<S486>/Delay'
+   *  Sum: '<S486>/Sum'
    */
   rtDW->y_i = (rtDW->Gain1 - rtDW->Delay_DSTATE_kl[0]) +
     rtDW->Accumulator_DSTATE_f;
 
   /* Outport: '<Root>/fault_rms_current_v' incorporates:
    *  Constant: '<S5>/Constant5'
-   *  Gain: '<S387>/Gain'
+   *  Gain: '<S486>/Gain'
    *  RelationalOperator: '<S5>/Smaller5'
    *  Sqrt: '<S5>/Square Root1'
    */
@@ -3065,16 +3496,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    */
   rtDW->y = rtU->Act_Iw * rtU->Act_Iw;
 
-  /* DiscreteIntegrator: '<S388>/Accumulator' incorporates:
-   *  Delay: '<S388>/Delay'
-   *  Sum: '<S388>/Sum'
+  /* DiscreteIntegrator: '<S487>/Accumulator' incorporates:
+   *  Delay: '<S487>/Delay'
+   *  Sum: '<S487>/Sum'
    */
   rtDW->Switch2 = (rtDW->y - rtDW->Delay_DSTATE_b[0]) +
     rtDW->Accumulator_DSTATE_n;
 
   /* Outport: '<Root>/fault_rms_current_w' incorporates:
    *  Constant: '<S5>/Constant7'
-   *  Gain: '<S388>/Gain'
+   *  Gain: '<S487>/Gain'
    *  RelationalOperator: '<S5>/Smaller7'
    *  Sqrt: '<S5>/Square Root2'
    */
@@ -3103,7 +3534,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->DiscreteTimeIntegrator_DSTATE = 0.5F * rtDW->Gain +
     rtDW->DiscreteTimeIntegrator;
 
-  /* Update for Delay: '<S385>/Delay' */
+  /* Update for Delay: '<S484>/Delay' */
   for (rtDW->idxDelay = 0; rtDW->idxDelay < 19; rtDW->idxDelay++) {
     rtDW->Delay_DSTATE_k[rtDW->idxDelay] = rtDW->Delay_DSTATE_k[rtDW->idxDelay +
       1];
@@ -3111,12 +3542,12 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   rtDW->Delay_DSTATE_k[19] = rtDW->c;
 
-  /* End of Update for Delay: '<S385>/Delay' */
+  /* End of Update for Delay: '<S484>/Delay' */
 
-  /* Update for DiscreteIntegrator: '<S385>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S484>/Accumulator' */
   rtDW->Accumulator_DSTATE = rtDW->a;
 
-  /* Update for Delay: '<S386>/Delay' incorporates:
+  /* Update for Delay: '<S485>/Delay' incorporates:
    *  Inport: '<Root>/Act_n'
    */
   for (rtDW->idxDelay = 0; rtDW->idxDelay < 119; rtDW->idxDelay++) {
@@ -3126,30 +3557,30 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   rtDW->Delay_DSTATE_ki[119] = rtU->Act_n;
 
-  /* End of Update for Delay: '<S386>/Delay' */
+  /* End of Update for Delay: '<S485>/Delay' */
 
-  /* Update for DiscreteIntegrator: '<S386>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S485>/Accumulator' */
   rtDW->Accumulator_DSTATE_d = rtDW->b;
 
-  /* Update for DiscreteIntegrator: '<S387>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S486>/Accumulator' */
   rtDW->Accumulator_DSTATE_f = rtDW->y_i;
   for (rtDW->idxDelay = 0; rtDW->idxDelay < 19; rtDW->idxDelay++) {
-    /* Update for Delay: '<S387>/Delay' */
+    /* Update for Delay: '<S486>/Delay' */
     rtDW->Delay_DSTATE_kl[rtDW->idxDelay] = rtDW->Delay_DSTATE_kl[rtDW->idxDelay
       + 1];
 
-    /* Update for Delay: '<S388>/Delay' */
+    /* Update for Delay: '<S487>/Delay' */
     rtDW->Delay_DSTATE_b[rtDW->idxDelay] = rtDW->Delay_DSTATE_b[rtDW->idxDelay +
       1];
   }
 
-  /* Update for Delay: '<S387>/Delay' */
+  /* Update for Delay: '<S486>/Delay' */
   rtDW->Delay_DSTATE_kl[19] = rtDW->Gain1;
 
-  /* Update for Delay: '<S388>/Delay' */
+  /* Update for Delay: '<S487>/Delay' */
   rtDW->Delay_DSTATE_b[19] = rtDW->y;
 
-  /* Update for DiscreteIntegrator: '<S388>/Accumulator' */
+  /* Update for DiscreteIntegrator: '<S487>/Accumulator' */
   rtDW->Accumulator_DSTATE_n = rtDW->Switch2;
 }
 
@@ -3226,52 +3657,52 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
   /* End of SystemInitialize for SubSystem: '<S10>/Strangstromregler_asymetrisch1' */
 
   /* SystemInitialize for IfAction SubSystem: '<S10>/Strangstromregler_asymetrisch2' */
-  /* InitializeConditions for Delay: '<S251>/Delay1' */
+  /* InitializeConditions for Delay: '<S317>/Delay1' */
   rtDW->Delay1_DSTATE = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S251>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S317>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE_o = 0.0F;
 
-  /* InitializeConditions for Delay: '<S251>/Delay' */
+  /* InitializeConditions for Delay: '<S317>/Delay' */
   rtDW->Delay_DSTATE_l = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S251>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S317>/Discrete-Time Integrator1' */
   rtDW->DiscreteTimeIntegrator1_DSTATE = 0.0F;
 
-  /* InitializeConditions for Delay: '<S252>/Delay1' */
+  /* InitializeConditions for Delay: '<S318>/Delay1' */
   rtDW->Delay1_DSTATE_o = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S252>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S318>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE_m = 0.0F;
 
-  /* InitializeConditions for Delay: '<S252>/Delay' */
+  /* InitializeConditions for Delay: '<S318>/Delay' */
   rtDW->Delay_DSTATE_nv = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S252>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S318>/Discrete-Time Integrator1' */
   rtDW->DiscreteTimeIntegrator1_DSTAT_f = 0.0F;
 
-  /* InitializeConditions for Delay: '<S253>/Delay1' */
+  /* InitializeConditions for Delay: '<S319>/Delay1' */
   rtDW->Delay1_DSTATE_g = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S253>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S319>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE_c = 0.0F;
 
-  /* InitializeConditions for Delay: '<S253>/Delay' */
+  /* InitializeConditions for Delay: '<S319>/Delay' */
   rtDW->Delay_DSTATE_a = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S253>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S319>/Discrete-Time Integrator1' */
   rtDW->DiscreteTimeIntegrator1_DSTAT_o = 0.0F;
 
-  /* InitializeConditions for Delay: '<S254>/Delay1' */
+  /* InitializeConditions for Delay: '<S320>/Delay1' */
   rtDW->Delay1_DSTATE_oi = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S254>/Discrete-Time Integrator' */
+  /* InitializeConditions for DiscreteIntegrator: '<S320>/Discrete-Time Integrator' */
   rtDW->DiscreteTimeIntegrator_DSTATE_g = 0.0F;
 
-  /* InitializeConditions for Delay: '<S254>/Delay' */
+  /* InitializeConditions for Delay: '<S320>/Delay' */
   rtDW->Delay_DSTATE_nm = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S254>/Discrete-Time Integrator1' */
+  /* InitializeConditions for DiscreteIntegrator: '<S320>/Discrete-Time Integrator1' */
   rtDW->DiscreteTimeIntegrator1_DSTA_os = 0.0F;
 
   /* End of SystemInitialize for SubSystem: '<S10>/Strangstromregler_asymetrisch2' */

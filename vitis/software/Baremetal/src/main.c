@@ -107,7 +107,7 @@ int main(void)
             Global_Data.av.theta_offset= 6*M_PI -7.8212F; //-6.0216F;//  //-5.659824F; // [Theta]= rad; electrical encoder offset angle
             //
             //Control Parameters
-            rtP.Kp = 10.0530977;// proportional parameter for resonant PI-controller all orders
+            rtP.Kp = 3.0F;//10.0530977;// proportional parameter for resonant PI-controller all orders
             rtP.K1 = 553.33325; // integral parameter for resonant PI-controller first order
             rtP.K2 = 0.1* rtP.K1;// integral parameter for resonant PI-controller second order
             //rtP.K3 = 0.1* rtP.K1;// integral parameter for resonant PI-controller third order
@@ -123,8 +123,8 @@ int main(void)
             //Constants
             rtP.p = 18.0; // definition of the motor
             rtP.Offset_U_ideal = -0*M_PI/3; // current phase angle of phase U
-            rtP.Offset_V_ideal = -2*M_PI/3; //-2.3643;//  current phase angle of phase V (15n/1n -> -2.3643)
-            rtP.Offset_W_ideal = -4*M_PI/3; //-4.2083;//   current phase angle of phase W (15n/1n -> -4.2083)
+            rtP.Offset_V_ideal = -2*M_PI/3; // current phase angle of phase V (15n/1n -> -2.3643) (7n/8n -> -2.2200)
+            rtP.Offset_W_ideal = -4*M_PI/3; //  current phase angle of phase W (15n/1n -> -4.2083) (7n/8n -> -4.3132)
 
             //
             initialization_chain = init_ip_cores;

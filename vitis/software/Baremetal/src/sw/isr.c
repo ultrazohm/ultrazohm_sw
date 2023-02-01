@@ -69,13 +69,27 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     //----------------------------------------------------
     CheckForErrors();
+    // step response
+    if ((Global_Data.vLR.fl_sequence_current_ramp == 1U) && (Global_Data.vLR.theta_mech_old > Global_Data.av.theta_elec))
+    { if (Global_Data.vLR.current_step_counter == 0.0F)
+    	{
+    		codegenInstance.input.Ref_I_im_ext_mit=5.0F;
+    		Global_Data.vLR.current_step_counter = 1.0F;
+    	}
+      else if (Global_Data.vLR.current_step_counter == 1.0F)
+    	{
+  		codegenInstance.input.Ref_I_im_ext_mit=0.0F;
+  		Global_Data.vLR.current_step_counter = 0U;
+  		Global_Data.vLR.fl_sequence_current_ramp = 0U;
+    	}
+    };
     //----------------------------------------------------
     // write values for control
     // LR
     // Actual Values
     // currents
     codegenInstance.input.Act_Iu =(Global_Data.aa.A2.me.ADC_A1-2.5) * 80.0F/4.0F - 0.15F;		//A * 80.0F/4.0F
-    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 0.50F;		//A * 80.0F/4.0F
+    codegenInstance.input.Act_Iv =(Global_Data.aa.A2.me.ADC_A2-2.5) * 80.0F/4.0F - 0.70F;		//A * 80.0F/4.0F
    	codegenInstance.input.Act_Iw =(Global_Data.aa.A2.me.ADC_A3-2.5) * 80.0F/4.0F - 0.20F;		//A * 80.0F/4.0F
    	Global_Data.av.mechanicalTorque=-(Global_Data.aa.A2.me.ADC_B5) * 20.0F; // Kistler torque shaft + voltage divider (1/2) -> 5 V equal 100 Nm
    	// Torque low pass filter
@@ -445,7 +459,7 @@ static void CalcCompensatingHarmonics()
 	//
 	//----------------------------------------------------
 	// fourth harmonic -> harmonic_b
-	codegenInstance.input.ordnung_b= 4.0F;// TFM_config_15n_1n value ->4.0F;//4.0F;
+	codegenInstance.input.ordnung_b=4.0F;// TFM_config_15n_1n value ->4.0F;//4.0F;
 	codegenInstance.input.amplitude_b = 0.685F;// TFM_config_15n_1n value ->-0.63f;//factor_torque_constant *0.4F;
 	codegenInstance.input.phase_b = 1.8F;// TFM_config_15n_1n value ->5.2F;//-0.2F;
 	//

@@ -29,7 +29,7 @@ file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
 % file_name = 'step_at_50rpm_10A_22A.csv';
-file_name = 'TFM_7n_8n_steps_JavaScope.csv';
+% file_name = 'TFM_7n_8n_steps_JavaScope.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

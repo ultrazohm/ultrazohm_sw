@@ -35,7 +35,9 @@ static uz_ParaID_ElectricalID_t* uz_ParaID_ElectricalID_allocation(void);
 static uz_ParaID_ElectricalID_t* uz_ParaID_ElectricalID_allocation(void) {
 	uz_assert(instances_counter_ParaID_ElectricalID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_ParaID_ElectricalID_t* self = &instances_ParaID_ElectricalID[instances_counter_ParaID_ElectricalID];
+	uz_assert_false(self->is_ready);
 	instances_counter_ParaID_ElectricalID++;
+	self->is_ready = true;
 	return (self);
 }
 uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void) {

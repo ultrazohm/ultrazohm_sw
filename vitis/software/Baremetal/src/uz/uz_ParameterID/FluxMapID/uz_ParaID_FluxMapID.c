@@ -35,7 +35,9 @@ static uz_ParaID_FluxMapID_t* uz_ParaID_FluxMapID_allocation(void);
 static uz_ParaID_FluxMapID_t* uz_ParaID_FluxMapID_allocation(void) {
 	uz_assert(instances_counter_ParaID_FluxMapID < UZ_PARAMETERID_MAX_INSTANCES);
 	uz_ParaID_FluxMapID_t* self = &instances_ParaID_FluxMapID[instances_counter_ParaID_FluxMapID];
+	uz_assert_false(self->is_ready);
 	instances_counter_ParaID_FluxMapID++;
+	self->is_ready = true;
 	return (self);
 }
 uz_ParaID_FluxMapID_t* uz_FluxMapID_init(void) {

@@ -30,6 +30,7 @@ struct uz_nn_layer_t
     struct uz_matrix_t weight_matrix;
     struct uz_matrix_t bias_matrix;
     struct uz_matrix_t output_matrix;
+    struct uz_matrix_t sumout_matrix;
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
@@ -63,7 +64,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
-
+    self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -126,6 +127,13 @@ uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return (self->output);
+}
+
+uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->sumout);
 }
 
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self){

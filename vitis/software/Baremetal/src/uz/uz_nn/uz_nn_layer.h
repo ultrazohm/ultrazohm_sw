@@ -36,9 +36,11 @@ struct uz_nn_layer_config{
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
     uint32_t length_of_bias; /**< Number of bias in the layer, has to be calculated by UZ_MATRIX_SIZE(bias) */
     uint32_t length_of_output; /**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
+    uint32_t length_of_sumout; /**< Number of sumouts in the layer, has to be calculated by UZ_MATRIX_SIZE(sumout) and is equal to the number of weights */
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
     float *const output; /** Pointer to an array that holds the output / where the output is written to */
+    float *const sumout; /** Pointer to an array that holds the sumouts for backprop */
 };
 
 /**
@@ -68,7 +70,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const output);
 
 uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
-
+uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
 

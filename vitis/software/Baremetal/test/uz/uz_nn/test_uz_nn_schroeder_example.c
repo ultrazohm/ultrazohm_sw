@@ -46,11 +46,13 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(y_1),
         .weights = w_1,
         .bias = b_1,
-        .output = y_1},
-    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
+        .output = y_1,
+        .sumout = y_1},
+    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2,.sumout = y_2},
+  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3,.sumout = y_3}};
 void setUp(void)
 {
 }
@@ -60,13 +62,14 @@ void tearDown(void)
 }
 
 void test_uz_nn_schroeder(void)
-{
+  {
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
     uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     uz_nn_ff(test,input);
     float expected_result= -1.52f; 
     uz_matrix_t* output=uz_nn_get_output_data(test);
+    uz_matrix_t* sumout = uz_nn_get_sumout_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
     TEST_ASSERT_FLOAT_WITHIN(0.4,expected_result,result);
     // calculate output error

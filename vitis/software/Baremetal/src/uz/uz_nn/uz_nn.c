@@ -26,7 +26,8 @@ struct uz_nn_t
     bool is_ready;
     uint32_t number_of_layer;
     uint32_t number_of_inputs;
-    uint32_t number_of_outpts;
+    uint32_t number_of_outputs;
+    uint32_t number_of_sumouts;
     uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
 };
 
@@ -52,7 +53,8 @@ uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
     uz_nn_t *self = uz_nn_allocation();
     self->number_of_layer = number_of_layer;
     self->number_of_inputs = config[0U].number_of_inputs;
-    self->number_of_outpts = config[number_of_layer - 1U].length_of_output;
+    self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
+    self->number_of_sumouts = config[number_of_layer - 1U].length_of_sumout;
     for (uint32_t i = 0U; i < number_of_layer; i++)
     {
         self->layer[i] = uz_nn_layer_init(config[i]);
@@ -90,6 +92,13 @@ uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
     return uz_nn_layer_get_output_data(self->layer[(self->number_of_layer - 1U)]);
 }
 
+uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_sumout_data(self->layer[(self->number_of_layer - 1U)]);
+}
+
 uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
@@ -121,11 +130,11 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return self->number_of_outpts;
+    return self->number_of_outputs;
 }
 float uz_nn_calc_output_error(float output,float reference_output)
 {
-    float error;
+    float error=0.0f;
     error = output - reference_output;
     return error;
 }

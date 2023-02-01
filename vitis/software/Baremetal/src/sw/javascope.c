@@ -46,7 +46,7 @@ float ArrayCounter = 0.0f;
 
 #include "../uz/uz_FOC/uz_FOC.h"
 
-
+extern float temp_avg;
 extern struct uz_DutyCycle_t dutyCycles_set1;
 extern struct uz_DutyCycle_t dutyCycles_set2;
 
@@ -71,32 +71,27 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_ia1] = &ParaID_Data.ActualValues.i_abc_6ph.a1;
-	js_ch_observable[JSO_ib1] = &ParaID_Data.ActualValues.i_abc_6ph.b1;
-	js_ch_observable[JSO_ic1] = &ParaID_Data.ActualValues.i_abc_6ph.c1;
-	js_ch_observable[JSO_ia2] = &ParaID_Data.ActualValues.i_abc_6ph.a2;
-	js_ch_observable[JSO_ib2] = &ParaID_Data.ActualValues.i_abc_6ph.b2;
-	js_ch_observable[JSO_ic2] = &ParaID_Data.ActualValues.i_abc_6ph.c2;
+	js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq_6ph.d;
+	js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq_6ph.q;
+	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_dq_6ph.x;
+	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_dq_6ph.y;
+	js_ch_observable[JSO_uz1] = &ParaID_Data.ActualValues.v_dq_6ph.z1;
+	js_ch_observable[JSO_uz2] = &ParaID_Data.ActualValues.v_dq_6ph.z2;
 	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
 	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
 	js_ch_observable[JSO_ix] = &ParaID_Data.ActualValues.i_dq_6ph.x;
 	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
-	js_ch_observable[JSO_DCa1] = &(dutyCycles_set1.DutyCycle_U);
-	js_ch_observable[JSO_DCb1] = &(dutyCycles_set1.DutyCycle_V);
-	js_ch_observable[JSO_DCc1] = &(dutyCycles_set1.DutyCycle_W);
-	js_ch_observable[JSO_DCa2] = &(dutyCycles_set2.DutyCycle_U);
-	js_ch_observable[JSO_DCb2] = &(dutyCycles_set2.DutyCycle_V);
-	js_ch_observable[JSO_DCc2] = &(dutyCycles_set2.DutyCycle_W);
-  js_ch_observable[JSO_ua] = &ParaID_Data.ActualValues.V_abc.a;
-  js_ch_observable[JSO_ub] = &ParaID_Data.ActualValues.V_abc.b;
-  js_ch_observable[JSO_uc] = &ParaID_Data.ActualValues.V_abc.c;
-
+	js_ch_observable[JSO_ua1] = &(ParaID_Data.ActualValues.v_abc_6ph.a1);
+	js_ch_observable[JSO_ub1] = &(ParaID_Data.ActualValues.v_abc_6ph.b1);
+	js_ch_observable[JSO_uc1] = &(ParaID_Data.ActualValues.v_abc_6ph.c1);
+	js_ch_observable[JSO_ua2] = &(ParaID_Data.ActualValues.v_abc_6ph.a2);
+	js_ch_observable[JSO_ub2] = &(ParaID_Data.ActualValues.v_abc_6ph.b2);
+	js_ch_observable[JSO_uc2] = &(ParaID_Data.ActualValues.v_abc_6ph.c2);
+	js_ch_observable[JSO_temp_avg] = &(temp_avg);
   js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
   js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
-  js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq.d;
-  js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq.q;
 	js_ch_observable[JSO_state] = &(para_state);
 
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;

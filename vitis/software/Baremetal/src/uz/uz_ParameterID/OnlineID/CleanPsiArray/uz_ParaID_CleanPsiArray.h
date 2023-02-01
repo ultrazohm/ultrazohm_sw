@@ -22,13 +22,7 @@
  * @brief object definition for uz_ParaID_CleanPsiArray_t
  * 
  */
-typedef struct {
-	ExtY_CleanPsiArray_t output;
-	ExtU_CleanPsiArray_t input;
-	DW_CleanPsiArray_t rtDW; /* Observable states */
-	RT_MODEL_CleanPsiArray_t modelData;
-	RT_MODEL_CleanPsiArray_t *PtrToModelData;
-} uz_ParaID_CleanPsiArray_t;
+typedef struct uz_ParaID_CleanPsiArray_t uz_ParaID_CleanPsiArray_t;
 
 /**
  * @brief Initializes the uz_ParaID_CleanPsiArray_t object
@@ -42,6 +36,12 @@ uz_ParaID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
  * 
  * @param self pointer to object
  */
-void uz_CleanPsiArray(uz_ParaID_CleanPsiArray_t *self);
+void uz_CleanPsiArray_step(uz_ParaID_CleanPsiArray_t *self);
 
+void uz_CleanPsiArray_set_OnlineID_output(uz_ParaID_CleanPsiArray_t* self, uz_ParaID_OnlineID_output_t OnlineID_output);
+void uz_CleanPsiArray_set_eta_c(uz_ParaID_CleanPsiArray_t* self, float eta_c);
+
+float* uz_CleanPsiArray_get_psi_array_out(uz_ParaID_CleanPsiArray_t* self);
+bool uz_CleanPsiArray_get_array_cleaned_flag(uz_ParaID_CleanPsiArray_t* self);
+float uz_CleanPsiArray_get_n_flux_points(uz_ParaID_CleanPsiArray_t* self);
 #endif

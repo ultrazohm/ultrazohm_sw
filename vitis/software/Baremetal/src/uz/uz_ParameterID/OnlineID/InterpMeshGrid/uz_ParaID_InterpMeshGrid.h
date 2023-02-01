@@ -22,13 +22,7 @@
  * @brief object definition for uz_ParaID_InterpMeshGrid_t
  * 
  */
-typedef struct {
-	ExtY_InterpMeshGrid_t output;
-	ExtU_InterpMeshGrid_t input;
-	DW_InterpMeshGrid_t rtDW; /* Observable states */
-	RT_MODEL_InterpMeshGrid_t modelData;
-	RT_MODEL_InterpMeshGrid_t *PtrToModelData;
-} uz_ParaID_InterpMeshGrid_t;
+typedef struct uz_ParaID_InterpMeshGrid_t uz_ParaID_InterpMeshGrid_t;
 
 /**
  * @brief Initializes the uz_ParaID_InterpMeshGrid_t object
@@ -42,6 +36,11 @@ uz_ParaID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
  * 
  * @param self pointer to object
  */
-void uz_InterpMeshGrid(uz_ParaID_InterpMeshGrid_t *self);
+void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self);
 
+void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float psi_array_in[600]);
+void uz_InterpMeshGrid_set_i_rat(uz_ParaID_InterpMeshGrid_t *self, float i_rat);
+void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t OnlineID_input);
+
+uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self);
 #endif

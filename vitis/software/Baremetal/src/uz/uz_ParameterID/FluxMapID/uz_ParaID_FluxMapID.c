@@ -18,8 +18,16 @@
 #include "uz_ParaID_FluxMapID.h"
 #include "../../uz_HAL.h"
 
-static uint32_t instances_counter_ParaID_FluxMapID = 0;
+typedef struct uz_ParaID_FluxMapID_t{
+	bool is_ready;
+	ExtY_FluxMapID_t output;
+	ExtU_FluxMapID_t input;
+	DW_FluxMapID_t rtDW; /* Observable states */
+	RT_MODEL_FluxMapID_t modelData;
+	RT_MODEL_FluxMapID_t *PtrToModelData;
+};
 
+static uint32_t instances_counter_ParaID_FluxMapID = 0;
 static uz_ParaID_FluxMapID_t instances_ParaID_FluxMapID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_FluxMapID_t* uz_ParaID_FluxMapID_allocation(void);
@@ -45,4 +53,50 @@ void uz_FluxMapID_step(uz_ParaID_FluxMapID_t *self) {
 	FluxMapID_step(self->PtrToModelData);
 }
 
+void uz_FluxMapID_set_Config(uz_ParaID_FluxMapID_t *self, uz_ParaID_FluxMapIDConfig_t Config) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.FluxMapIDConfig = Config;
+}
+
+void uz_FluxMapID_set_ActualValues(uz_ParaID_FluxMapID_t *self, uz_ParaID_ActualValues_t ActualValues) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ActualValues = ActualValues;
+}
+
+void uz_FluxMapID_set_GlobalConfig(uz_ParaID_FluxMapID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.GlobalConfig_out = GlobalConfig;
+}
+
+void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ControlFlags = ControlFlags;
+}
+
+bool uz_FluxMapID_get_enteredFluxMapID(uz_ParaID_FluxMapID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->output.enteredFluxMapID);
+}
+bool uz_FluxMapID_get_finishedFluxMapID(uz_ParaID_FluxMapID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->output.finishedFluxMapID);
+}
+
+uz_ParaID_Controller_Parameters_output_t* uz_FluxMapID_get_FOC_output(uz_ParaID_FluxMapID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.FluxMapID_FOC_output);
+}
+
+uz_ParaID_FluxMapID_output_t* uz_FluxMapID_get_output(uz_ParaID_FluxMapID_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.FluxMapID_output);
+}
 #endif

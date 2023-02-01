@@ -63,13 +63,23 @@ void test_uz_nn_schroeder(void)
 {
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-    uz_nn_t *test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER );
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     uz_nn_ff(test,input);
-    float expected_result=-1.52f; // 
+    float expected_result= -1.52f; 
     uz_matrix_t* output=uz_nn_get_output_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
     TEST_ASSERT_FLOAT_WITHIN(0.4,expected_result,result);
-//    TEST_ASSERT_EQUAL_FLOAT(expected_result,result);
-}
+    // calculate output error
+    float reference_output = {-4.41f};
+    float error = uz_nn_calc_output_error(result,reference_output);
+    printf("Error value is : %.6f", error);
+    // check what backpropfunction does
+    // extract last layer from test nn
+   // uz_nn_layer_back(test->layer[2],output);
+   // uz_nn_layer_get_output_data(test->layer[2]);
+    // float test1 = uz_matrix_get_element_zero_based(output,0,1);
+    // float test2 =uz_matrix_get_element_zero_based(output,0,1);
+
+ }
 
 #endif // TEST

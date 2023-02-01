@@ -71,6 +71,18 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
     }
 }
 
+
+void uz_nn_backprop(uz_nn_t *self, uz_matrix_t const *const output)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_nn_layer_back(self->layer[2], output);
+    for (uint32_t i = 0; i < (self->number_of_layer - 1U); i++)
+    {
+        uz_nn_layer_back(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
+    }
+}
+
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
@@ -111,5 +123,10 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
     uz_assert(self->is_ready);
     return self->number_of_outpts;
 }
-
+float uz_nn_calc_output_error(float output,float reference_output)
+{
+    float error;
+    error = output - reference_output;
+    return error;
+}
 #endif

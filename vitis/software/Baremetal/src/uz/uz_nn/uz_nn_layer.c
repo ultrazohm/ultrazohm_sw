@@ -25,6 +25,8 @@ struct uz_nn_layer_t
     uz_matrix_t *weights;
     uz_matrix_t *bias;
     uz_matrix_t *output;
+    uz_matrix_t *sumout;// wird benötigt für backprop
+    uz_matrix_t *lokalGradients;// wird benötigt für backprop
     struct uz_matrix_t weight_matrix;
     struct uz_matrix_t bias_matrix;
     struct uz_matrix_t output_matrix;
@@ -100,8 +102,24 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
+    // speichere Wert für Summenausgang
+    self->sumout = self->output;
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
+
+void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const output)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(output);
+    uz_assert(self->is_ready);
+    uz_assert(uz_matrix_get_number_of_rows(output) == 1U);
+    float data[2]={1.0f,0.0f};
+    struct uz_matrix_t delta = {0};
+    uz_matrix_t *input = uz_matrix_init(&delta, data, UZ_MATRIX_SIZE(data), 1, 2);
+    uz_matrix_apply_function_to_each_element(self->sumout, self->activation_function_derivative);
+    uz_matrix_multiply(input,self->output,self->lokalGradients);
+}
+
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {

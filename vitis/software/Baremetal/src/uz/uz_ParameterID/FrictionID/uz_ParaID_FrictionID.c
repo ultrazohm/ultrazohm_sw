@@ -18,7 +18,7 @@
 #include "uz_ParaID_FrictionID.h"
 #include "../../uz_HAL.h"
 
-typedef struct uz_ParaID_FrictionID_t{
+struct uz_ParaID_FrictionID_t{
 	bool is_ready;
 	ExtY_FrictionID_t output;
 	ExtU_FrictionID_t input;

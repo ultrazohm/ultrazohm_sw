@@ -18,7 +18,7 @@
 #include "uz_ParaID_ControlState.h"
 #include "../../uz_HAL.h"
 
-typedef struct uz_ParaID_ControlState_t{
+struct uz_ParaID_ControlState_t{
 	bool is_ready;
 	ExtY_ControlState_t output;
 	ExtU_ControlState_t input;

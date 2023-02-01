@@ -18,7 +18,7 @@
 #include "uz_ParaID_FluxMapID.h"
 #include "../../uz_HAL.h"
 
-typedef struct uz_ParaID_FluxMapID_t{
+struct uz_ParaID_FluxMapID_t{
 	bool is_ready;
 	ExtY_FluxMapID_t output;
 	ExtU_FluxMapID_t input;

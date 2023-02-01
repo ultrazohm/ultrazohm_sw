@@ -18,7 +18,7 @@
 #include "uz_ParaID_ElectricalID.h"
 #include "../../uz_HAL.h"
 
-typedef struct uz_ParaID_ElectricalID_t{
+struct uz_ParaID_ElectricalID_t{
 	bool is_ready;
 	ExtY_ElectricalID_t output;
 	ExtU_ElectricalID_t input;

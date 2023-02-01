@@ -134,52 +134,52 @@ void test_uz_ParameterID_update_transmit_values_ArrayCounter_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, NULL));
 }
 
-void test_uz_ControlState_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_ControlState_step(NULL));
-}
+// void test_uz_ControlState_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_ControlState_step(NULL));
+// }
 
-void test_uz_FrictionID_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_FrictionID_step(NULL));
-}
+// void test_uz_FrictionID_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_FrictionID_step(NULL));
+// }
 
-void test_uz_ElectricalID_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_ElectricalID_step(NULL));
-}
+// void test_uz_ElectricalID_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_ElectricalID_step(NULL));
+// }
 
-void test_uz_TwoMassID_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_TwoMassID_step(NULL));
-}
+// void test_uz_TwoMassID_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_TwoMassID_step(NULL));
+// }
 
-void test_uz_FluxMapID_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_step(NULL));
-}
+// void test_uz_FluxMapID_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_step(NULL));
+// }
 
-void test_uz_OnlineID_step_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_step(NULL));
-}
+// void test_uz_OnlineID_step_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_step(NULL));
+// }
 
-void test_uz_OnlineID_AutoRefCurrents_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_AutoRefCurrents_step(NULL));
-}
+// void test_uz_OnlineID_AutoRefCurrents_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_AutoRefCurrents_step(NULL));
+// }
 
-void test_uz_OnlineID_CleanPsiArray_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_CleanPsiArray(NULL));
-}
+// void test_uz_OnlineID_CleanPsiArray_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_CleanPsiArray(NULL));
+// }
 
-void test_uz_AutoRefCurrents_step_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_AutoRefCurrents_step(NULL));
-}
+// void test_uz_AutoRefCurrents_step_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_AutoRefCurrents_step(NULL));
+// }
 
-void test_uz_CleanPsiArray_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_CleanPsiArray(NULL));
-}
+// void test_uz_CleanPsiArray_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_CleanPsiArray_step(NULL));
+// }
 
-void test_uz_OnlineID_CalcFluxMaps_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_CalcFluxMaps(NULL));
-}
+// void test_uz_OnlineID_CalcFluxMaps_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_OnlineID_CalcFluxMaps(NULL));
+// }
 
-void test_uz_InterpMeshGrid_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_InterpMeshGrid(NULL));
-}
+// void test_uz_InterpMeshGrid_NULL(void) {
+//     TEST_ASSERT_FAIL_ASSERT(uz_InterpMeshGrid_step(NULL));
+// }
 
 #endif

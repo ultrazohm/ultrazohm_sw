@@ -51,17 +51,9 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-
-
-// general variables/ Setting:
-
-int N1N2 = 1;	// Configuration of neutral points (1 = 1N, 1 neutral point; 2 = 2N, 2 neutral points)
-int ML = 1;		// Optimization during Open-Phase-Fault (1=ML, Minimum Loss; 0=MT, Maximum Torque)
-
 // omega and theta
-float theta_ = 0;
+float theta = 0;
 float omega_el_rad_per_sec = 0.0f;
-
 
 //ParaID
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
@@ -94,17 +86,13 @@ extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
 // voltage measurement
 uz_6ph_abc_t u_phase_UDC = {0};
-uz_6ph_abc_t u_line_line = {0};
-float ADC_conv_faktor_sys1 = -1.0f*36.0f/2.77f; //UDC!!
-
-
-// Temp
-uz_3ph_abc_t input1 = {0};
-uz_3ph_abc_t input2 = {0};
-uz_6ph_alphabeta_t temp_sept = {0};
-uz_6ph_abc_t phase_ref_volts = {0};
+uz_6ph_abc_t u_phase = {0};
+float u_neutral = 0.0f;
+float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
 
 float polepairs = 5.0f;
+
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -123,15 +111,9 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polepairs*2.0f*M_PI/60;
 
-
-	//ParaID
-	paraid_temp_dq_currents = uz_transformation_asym30deg_6ph_abc_to_dq(m_6ph_abc_currents, Global_Data.av.theta_elec);
-	paraid_temp_dq_currents.d = m_6ph_alphabeta_currents.alpha;
-	paraid_temp_dq_currents.q = m_6ph_alphabeta_currents.beta;
-
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-	ParaID_Data.ActualValues.i_dq_6ph = paraid_temp_dq_currents;
-	ParaID_Data.ActualValues.v_abc_6ph = uz_line_line_to_abc(u_line_line);
+	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, 0.0f);
+	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, 0.0f);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
@@ -146,20 +128,21 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// ADC values from voltage Measurement
-	u_phase_UDC.a1 = Global_Data.aa.A3.me.ADC_A4 * ADC_conv_faktor_sys1;
-	u_phase_UDC.b1 = Global_Data.aa.A3.me.ADC_A3 * ADC_conv_faktor_sys1;
-	u_phase_UDC.c1 = Global_Data.aa.A3.me.ADC_A2 * ADC_conv_faktor_sys1;
-	u_phase_UDC.a2 = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor_sys1;
-	u_phase_UDC.b2 = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor_sys1;
-	u_phase_UDC.c2 = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor_sys1;
+	u_phase_UDC.a1 = Global_Data.aa.A3.me.ADC_A4 * ADC_conv_faktor;
+	u_phase_UDC.b1 = Global_Data.aa.A3.me.ADC_A3 * ADC_conv_faktor;
+	u_phase_UDC.c1 = Global_Data.aa.A3.me.ADC_A2 * ADC_conv_faktor;
+	u_phase_UDC.a2 = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor;
+	u_phase_UDC.b2 = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor;
+	u_phase_UDC.c2 = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor;
+	u_neutral = (u_phase_UDC.a1 + u_phase_UDC.b1 + u_phase_UDC.c1 + u_phase_UDC.a2 + u_phase_UDC.b2 + u_phase_UDC.c2) / 6.0f;
 
-	// calculate line-to-line voltage
-	u_line_line.a1 = u_phase_UDC.a1-u_phase_UDC.b1;
-	u_line_line.b1 = u_phase_UDC.b1-u_phase_UDC.c1;
-	u_line_line.c1 = u_phase_UDC.c1-u_phase_UDC.a1;
-	u_line_line.a2 = u_phase_UDC.a2-u_phase_UDC.b2;
-	u_line_line.b2 = u_phase_UDC.b2-u_phase_UDC.c2;
-	u_line_line.c2 = u_phase_UDC.c2-u_phase_UDC.a2;
+	// calculate phase voltages
+	u_phase.a1 = u_phase_UDC.a1 - u_neutral;
+	u_phase.b1 = u_phase_UDC.b1 - u_neutral;
+	u_phase.c1 = u_phase_UDC.c1 - u_neutral;
+	u_phase.a2 = u_phase_UDC.a2 - u_neutral;
+	u_phase.b2 = u_phase_UDC.b2 - u_neutral;
+	u_phase.c2 = u_phase_UDC.c2 - u_neutral;
 
 	//assign ADC values to motor current variables
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4);
@@ -270,7 +253,7 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge11DutyCycle = Global_Data.rasv.ref_halfBridge11DutyCycle;
 	Global_Data.rasv.halfBridge12DutyCycle = Global_Data.rasv.ref_halfBridge12DutyCycle;
 
-	theta_ = Global_Data.av.theta_elec + Global_Data.av.theta_offset;
+	//theta_ = Global_Data.av.theta_elec + Global_Data.av.theta_offset;
 
 
 
@@ -288,6 +271,7 @@ void ISR_Control(void *data)
 		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
 		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
 		//ParaID end
+
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
     	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;

@@ -13,6 +13,21 @@
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 2
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 2
 
+// stuff for training and update
+// sumout
+float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float s_3[NUMBER_OF_OUTPUTS] = {0};
+
+//derivate matrix activation, Dimension muss noch angepasst werden
+float d_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float d_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float d_3[NUMBER_OF_OUTPUTS] = {0};
+//local Gradients
+float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float g_3[NUMBER_OF_OUTPUTS] = {0};
+
 float x[NUMBER_OF_INPUTS] = {-5.0f};
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "schroeder_weights/layer1_weights.csv"
@@ -22,6 +37,7 @@ float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 		};
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
+
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "schroeder_weights/layer2_weights.csv"
 };
@@ -29,6 +45,7 @@ float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "schroeder_weights/layer2_bias.csv"
 };
 float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+
 
 float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
 #include "schroeder_weights/layer3_weights.csv"
@@ -47,12 +64,16 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
         .length_of_sumout = UZ_MATRIX_SIZE(y_1),
+        .length_of_derivate_gradients= UZ_MATRIX_SIZE(y_1),
+        .length_of_gradientslocal = UZ_MATRIX_SIZE(y_1),
         .weights = w_1,
         .bias = b_1,
         .output = y_1,
-        .sumout = y_1},
-    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2,.sumout = y_2},
-  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3,.sumout = y_3}};
+        .sumout = s_1,
+        .derivate_gradients = d_1,
+        .gradientslocal = g_1},
+    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(y_2), .length_of_derivate_gradients = UZ_MATRIX_SIZE(y_2), .length_of_gradientslocal = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .derivate_gradients = d_2, .gradientslocal = g_2},
+  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(y_3), .length_of_derivate_gradients = UZ_MATRIX_SIZE(y_3), .length_of_gradientslocal = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3, .derivate_gradients = d_3, .gradientslocal = g_3}};
 void setUp(void)
 {
 }
@@ -71,18 +92,18 @@ void test_uz_nn_schroeder(void)
     uz_matrix_t* output=uz_nn_get_output_data(test);
     uz_matrix_t* sumout = uz_nn_get_sumout_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
-    TEST_ASSERT_FLOAT_WITHIN(0.4,expected_result,result);
+    TEST_ASSERT_FLOAT_WITHIN(0.4f,expected_result,result);
+    float aktiv = uz_nn_activation_function_linear_derivative(1.0f);
     // calculate output error
     float reference_output = {-4.41f};
     float error = uz_nn_calc_output_error(result,reference_output);
     printf("Error value is : %.6f", error);
-    // check what backpropfunction does
-    // extract last layer from test nn
-   // uz_nn_layer_back(test->layer[2],output);
-   // uz_nn_layer_get_output_data(test->layer[2]);
-    // float test1 = uz_matrix_get_element_zero_based(output,0,1);
-    // float test2 =uz_matrix_get_element_zero_based(output,0,1);
 
+    // Berechne Aktivierungsfunktionsableitung
+    
+    // Berechne lokale Gradienten
+
+    // Trainiere einen step des Netzes 
  }
 
 #endif // TEST

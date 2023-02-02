@@ -49,7 +49,8 @@ float uz_nn_calc_output_error(float output,float reference_output);
 void uz_nn_backprop(uz_nn_t *self, uz_matrix_t const *const output);
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
-uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self);
+
+uz_matrix_t* uz_nn_get_sumout_data(uz_nn_t const *const self);
 uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, uint32_t layer);
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);

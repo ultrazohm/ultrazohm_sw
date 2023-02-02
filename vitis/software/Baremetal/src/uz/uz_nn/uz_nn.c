@@ -28,6 +28,8 @@ struct uz_nn_t
     uint32_t number_of_inputs;
     uint32_t number_of_outputs;
     uint32_t number_of_sumouts;
+    uint32_t number_of_derivate_gradients;
+    uint32_t number_of_gradientslocal;
     uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
 };
 
@@ -55,6 +57,8 @@ uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
     self->number_of_inputs = config[0U].number_of_inputs;
     self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
     self->number_of_sumouts = config[number_of_layer - 1U].length_of_sumout;
+    self->number_of_derivate_gradients = config[number_of_layer - 1U].length_of_derivate_gradients;
+    self->number_of_gradientslocal = config[number_of_layer - 1U].length_of_gradientslocal;
     for (uint32_t i = 0U; i < number_of_layer; i++)
     {
         self->layer[i] = uz_nn_layer_init(config[i]);
@@ -78,10 +82,12 @@ void uz_nn_backprop(uz_nn_t *self, uz_matrix_t const *const output)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_nn_layer_back(self->layer[2], output);
+    uz_nn_layer_calculate_derivate_activationfunc(self->layer[2], output);
+    uz_nn_layer_calculate_localgradients(self->layer[2], output);
     for (uint32_t i = 0; i < (self->number_of_layer - 1U); i++)
     {
-        uz_nn_layer_back(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
+        uz_nn_layer_calculate_derivate_activationfunc(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
+        uz_nn_layer_calculate_localgradients(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
     }
 }
 

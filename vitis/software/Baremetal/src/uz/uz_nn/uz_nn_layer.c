@@ -26,11 +26,14 @@ struct uz_nn_layer_t
     uz_matrix_t *bias;
     uz_matrix_t *output;
     uz_matrix_t *sumout;// wird benötigt für backprop
-    uz_matrix_t *lokalGradients;// wird benötigt für backprop
+    uz_matrix_t *derivate_gradients;// wird benötigt für backprop
+    uz_matrix_t *gradientslocal;// wird benötigt für backprop
     struct uz_matrix_t weight_matrix;
     struct uz_matrix_t bias_matrix;
     struct uz_matrix_t output_matrix;
     struct uz_matrix_t sumout_matrix;
+    struct uz_matrix_t derivate_gradients_matrix;
+    struct uz_matrix_t gradientslocal_matrix;
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
@@ -56,15 +59,22 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.weights);
     uz_assert_not_NULL(layer_config.bias);
     uz_assert_not_NULL(layer_config.output);
+    uz_assert_not_NULL(layer_config.sumout);
+    uz_assert_not_NULL(layer_config.derivate_gradients);
+    uz_assert_not_NULL(layer_config.gradientslocal);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_derivate_gradients);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
     self->number_of_neurons = layer_config.number_of_neurons;
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
-    self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
+    self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
+    self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, 1, layer_config.number_of_neurons);
+    self->gradientslocal = uz_matrix_init(&self->gradientslocal_matrix, layer_config.gradientslocal, layer_config.length_of_gradientslocal, 1, layer_config.number_of_neurons);
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -104,7 +114,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
     // speichere Wert für Summenausgang
-    self->sumout = self->output;
+    *self->sumout->data = *self->output->data;
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
@@ -118,7 +128,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const output
     struct uz_matrix_t delta = {0};
     uz_matrix_t *input = uz_matrix_init(&delta, data, UZ_MATRIX_SIZE(data), 1, 2);
     uz_matrix_apply_function_to_each_element(self->sumout, self->activation_function_derivative);
-    uz_matrix_multiply(input,self->output,self->lokalGradients);
+    uz_matrix_multiply(input,self->output,self->gradientslocal);
 }
 
 
@@ -146,6 +156,20 @@ uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
 	uz_assert(self->is_ready);
 	return self->weights;
 }
-
-
+uz_matrix_t *uz_nn_layer_calculate_derivate_activationfunc(uz_nn_layer_t const *const self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    // Werte von sumout in derivate gradients schreiben
+     *self->derivate_gradients->data = *self->sumout->data;
+     // Aktivierungsfunktionsableitung auf die Elemente
+    uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
+    return (self->derivate_gradients);
+}
+uz_matrix_t *uz_nn_layer_calculate_localgradients(uz_nn_layer_t const *const self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->gradientslocal);
+}
 #endif

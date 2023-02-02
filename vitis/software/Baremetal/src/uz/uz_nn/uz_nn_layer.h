@@ -74,8 +74,9 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const output);
 
 uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
-
+uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
-
+uz_matrix_t *uz_nn_layer_calculate_derivate_activationfunc(uz_nn_layer_t const *const self);
+uz_matrix_t *uz_nn_layer_calculate_localgradients(uz_nn_layer_t const *const self);
 #endif // UZ_NN_LAYER_H

@@ -20,10 +20,10 @@ float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float s_3[NUMBER_OF_OUTPUTS] = {0};
 
 //derivate matrix activation, Dimension muss noch angepasst werden
-float d_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-float d_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
-float d_3[NUMBER_OF_OUTPUTS] = {0};
-//local Gradients
+float d_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float d_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float d_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
+//local Gradients, Dimension muss noch angepasst werden
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float g_3[NUMBER_OF_OUTPUTS] = {0};
@@ -63,9 +63,9 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
-        .length_of_sumout = UZ_MATRIX_SIZE(y_1),
-        .length_of_derivate_gradients= UZ_MATRIX_SIZE(y_1),
-        .length_of_gradientslocal = UZ_MATRIX_SIZE(y_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(s_1),
+        .length_of_derivate_gradients= UZ_MATRIX_SIZE(d_1),
+        .length_of_gradientslocal = UZ_MATRIX_SIZE(g_1),
         .weights = w_1,
         .bias = b_1,
         .output = y_1,
@@ -90,15 +90,14 @@ void test_uz_nn_schroeder(void)
     uz_nn_ff(test,input);
     float expected_result= -1.52f; 
     uz_matrix_t* output=uz_nn_get_output_data(test);
-    uz_matrix_t* sumout = uz_nn_get_sumout_data(test);
+    uz_matrix_t* sumout=uz_nn_get_sumout_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
     TEST_ASSERT_FLOAT_WITHIN(0.4f,expected_result,result);
-    float aktiv = uz_nn_activation_function_linear_derivative(1.0f);
     // calculate output error
     float reference_output = {-4.41f};
     float error = uz_nn_calc_output_error(result,reference_output);
     printf("Error value is : %.6f", error);
-
+    uz_nn_backprop(test);
     // Berechne Aktivierungsfunktionsableitung
     
     // Berechne lokale Gradienten

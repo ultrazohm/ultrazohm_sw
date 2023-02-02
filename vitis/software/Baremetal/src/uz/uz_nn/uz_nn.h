@@ -46,7 +46,7 @@ float uz_nn_calc_output_error(float output,float reference_output);
  * @param reference_output expected output 
  * @return float of error 
  */
-void uz_nn_backprop(uz_nn_t *self, uz_matrix_t const *const output);
+void uz_nn_backprop(uz_nn_t *self);
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 

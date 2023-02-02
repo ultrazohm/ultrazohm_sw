@@ -163,7 +163,7 @@ uz_matrix_t *uz_nn_layer_calculate_derivate_activationfunc(uz_nn_layer_t const *
     // Werte von sumout in derivate gradients schreiben
      *self->derivate_gradients->data = *self->sumout->data;
      // Aktivierungsfunktionsableitung auf die Elemente
-    uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
+    // uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
     return (self->derivate_gradients);
 }
 uz_matrix_t *uz_nn_layer_calculate_localgradients(uz_nn_layer_t const *const self)

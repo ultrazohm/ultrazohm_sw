@@ -64,7 +64,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.gradientslocal);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
-    uz_assert(layer_config.number_of_neurons == layer_config.length_of_derivate_gradients);
+    uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_derivate_gradients);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
@@ -73,7 +73,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
     self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
-    self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, 1, layer_config.number_of_neurons);
+    self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.number_of_inputs, layer_config.number_of_neurons);
     self->gradientslocal = uz_matrix_init(&self->gradientslocal_matrix, layer_config.gradientslocal, layer_config.length_of_gradientslocal, 1, layer_config.number_of_neurons);
     switch (layer_config.activation_function)
     {
@@ -156,14 +156,21 @@ uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
 	uz_assert(self->is_ready);
 	return self->weights;
 }
+
+uz_matrix_t* uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return self->derivate_gradients;
+}
+
 uz_matrix_t *uz_nn_layer_calculate_derivate_activationfunc(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     // Werte von sumout in derivate gradients schreiben
-     *self->derivate_gradients->data = *self->sumout->data;
+    *self->derivate_gradients->data = *self->sumout->data;
      // Aktivierungsfunktionsableitung auf die Elemente
-    // uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
+    //uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
     return (self->derivate_gradients);
 }
 uz_matrix_t *uz_nn_layer_calculate_localgradients(uz_nn_layer_t const *const self)

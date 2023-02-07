@@ -68,38 +68,13 @@ DS_Data Global_Data = {
 };
 
 
-float dataR1 [500] = {0};
-uz_array_float_t circularBuffer_R1 = {
-   .length = UZ_ARRAY_SIZE(dataR1),
-   .data = &dataR1[0]
-};
-float dataR2 [500] = {0};
-uz_array_float_t circularBuffer_R2 = {
-   .length = UZ_ARRAY_SIZE(dataR2),
-   .data = &dataR2[0]
-};
-float dataR3 [500] = {0};
-uz_array_float_t circularBuffer_R3 = {
-   .length = UZ_ARRAY_SIZE(dataR3),
-   .data = &dataR3[0]
-};
-float dataR4 [500] = {0};
-uz_array_float_t circularBuffer_R4 = {
-   .length = UZ_ARRAY_SIZE(dataR4),
-   .data = &dataR4[0]
-};
-float dataR5 [500] = {0};
-uz_array_float_t circularBuffer_R5 = {
-   .length = UZ_ARRAY_SIZE(dataR5),
-   .data = &dataR5[0]
-};
-float dataR6 [500] = {0};
-uz_array_float_t circularBuffer_R6 = {
-   .length = UZ_ARRAY_SIZE(dataR6),
-   .data = &dataR6[0]
-};
-
-
+// voltage measurement
+#include "uz/uz_ParameterID/ElectricalID_6ph/FFTRecordedVoltage/FFTRecordedVoltage.h"
+float meas_array[10000];
+float frequencies[5001];
+float amplitudes[5001];
+float angles[5001];
+int transmit = 0;
 
 
 
@@ -214,6 +189,13 @@ int main(void)
             break;
         default:
             break;
+        }
+
+        if(transmit)
+        {
+        	transmit = 0;
+        	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
+        	FFTRecordedVoltage(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR,frequencies, amplitudes, angles);
         }
     }
     return (status);

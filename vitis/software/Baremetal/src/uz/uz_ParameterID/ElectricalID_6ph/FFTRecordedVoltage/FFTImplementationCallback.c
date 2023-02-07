@@ -5,7 +5,7 @@
  * File: FFTImplementationCallback.c
  *
  * MATLAB Coder version            : 5.3
- * C/C++ source code generated on  : 07-Feb-2023 13:28:43
+ * C/C++ source code generated on  : 07-Feb-2023 15:30:05
  */
 
 /* Include Files */
@@ -40,6 +40,10 @@ void c_FFTImplementationCallback_doH(const float x[10000], creal32_T y[10000],
   static float b_costab[10001];
   static float b_sintab[10001];
   static float hcostab[8192];
+  static float hcostabinv[8192];
+  static float hsintab[8192];
+  static float hsintabinv[8192];
+  static float costab1q[5001];
   static const short iv[5000] = {
       1,    5000, 4999, 4998, 4997, 4996, 4995, 4994, 4993, 4992, 4991, 4990,
       4989, 4988, 4987, 4986, 4985, 4984, 4983, 4982, 4981, 4980, 4979, 4978,
@@ -458,10 +462,6 @@ void c_FFTImplementationCallback_doH(const float x[10000], creal32_T y[10000],
       33,   32,   31,   30,   29,   28,   27,   26,   25,   24,   23,   22,
       21,   20,   19,   18,   17,   16,   15,   14,   13,   12,   11,   10,
       9,    8,    7,    6,    5,    4,    3,    2};
-  float hcostabinv[8192];
-  float hsintab[8192];
-  float hsintabinv[8192];
-  float costab1q[5001];
   float b_ytmp_re_tmp;
   float re_tmp;
   float temp_im;

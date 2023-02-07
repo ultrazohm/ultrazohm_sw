@@ -90,6 +90,6 @@ uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_Electri
 
 void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination)
 {
-    	memcpy(destination, self->output.voltage_meas_array, 1000U * sizeof(float));
+    	memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
 }
 #endif

@@ -23,6 +23,7 @@ void test_fft(void)
     float amplitudes[5001];
     float angles[5001];
     FFTRecordedVoltage(data, sampletime, frequencies, amplitudes, angles);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f,frequencies[0]);
 }
 
 #endif // TEST

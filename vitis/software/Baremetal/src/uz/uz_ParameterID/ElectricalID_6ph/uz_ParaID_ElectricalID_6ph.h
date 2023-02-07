@@ -30,6 +30,6 @@ bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self);
 bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self);
 uz_ParaID_Controller_Parameters_output_t uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self);
 uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self);
-uz_ParaID_ElectricalID_fft_out_t uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
+void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination);
 
 #endif // ELECTRICALID_6PH_H

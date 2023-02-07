@@ -49,4 +49,6 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 
+void uz_ParameterID_transmit_measured_voltages(uz_ParameterID_6ph_t* self, float *destination);
+
 #endif // UZ_PARAMETERID_6PH_H

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.24
+ * Model version                  : 3.26
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Feb  7 10:56:21 2023
+ * C/C++ source code generated on : Tue Feb  7 11:14:55 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -3150,10 +3150,10 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
     break;
 
    case IN_measure_induced_voltage:
-    /* Outport: '<Root>/ElectricalID_fft_out' */
+    /* Outport: '<Root>/finished_voltage_measurement' */
     /* Exit 'measure_induced_voltage': '<S1>:405' */
-    /* '<S1>:405:10' ElectricalID_fft_out.finish_flag = true; */
-    rtElectricalID_6ph_codegen_Y->ElectricalID_fft_out.finish_flag = true;
+    /* '<S1>:405:10' finished_voltage_measurement = true; */
+    rtElectricalID_6ph_codegen_Y->finished_voltage_measurement = true;
 
     /* '<S1>:405:11' counter = uint32(1); */
     rtElectricalID_6ph_codegen_DW->counter = 1U;
@@ -5354,11 +5354,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       /* During 'measure_induced_voltage': '<S1>:405' */
       /* '<S1>:406:1' sf_internal_predicateOutput = counter==10000; */
       if (rtElectricalID_6ph_codegen_DW->counter == 10000U) {
-        /* Outport: '<Root>/ElectricalID_fft_out' */
+        /* Outport: '<Root>/finished_voltage_measurement' */
         /* Transition: '<S1>:406' */
         /* Exit 'measure_induced_voltage': '<S1>:405' */
-        /* '<S1>:405:10' ElectricalID_fft_out.finish_flag = true; */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_fft_out.finish_flag = true;
+        /* '<S1>:405:10' finished_voltage_measurement = true; */
+        rtElectricalID_6ph_codegen_Y->finished_voltage_measurement = true;
 
         /* '<S1>:405:11' counter = uint32(1); */
         rtElectricalID_6ph_codegen_DW->counter = 1U;
@@ -5369,19 +5369,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* '<S1>:1056:3' ElectricalID_FOC_output.activeState = uint16(152); */
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 152U;
       } else {
-        /* '<S1>:405:7' ElectricalID_fft_out.voltage_meas_array(counter-1) = ActualValues.v_abc_6ph.a1; */
-        rtElectricalID_6ph_codegen_DW->exitPortIndex =
-          rtElectricalID_6ph_codegen_DW->counter - /*MW:OvSatOk*/ 1U;
-        if (rtElectricalID_6ph_codegen_DW->counter - 1U >
-            rtElectricalID_6ph_codegen_DW->counter) {
-          rtElectricalID_6ph_codegen_DW->exitPortIndex = 0U;
-        }
-
-        /* Outport: '<Root>/ElectricalID_fft_out' incorporates:
+        /* Outport: '<Root>/voltage_meas_array' incorporates:
          *  Inport: '<Root>/ActualValues'
          */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_fft_out.voltage_meas_array
-          [(int32_T)rtElectricalID_6ph_codegen_DW->exitPortIndex - 1] =
+        /* '<S1>:405:7' voltage_meas_array(counter-1) = ActualValues.v_abc_6ph.a1; */
+        rtElectricalID_6ph_codegen_Y->voltage_meas_array =
           rtElectricalID_6ph_codegen_U->ActualValues.v_abc_6ph.a1;
 
         /* '<S1>:405:8' counter = counter + 1; */
@@ -5942,7 +5934,7 @@ void ElectricalID_6ph_codegen_step(RT_MODEL_ElectricalID_6ph_cod_t *const
     /* donothing */
   } else if (rtElectricalID_6ph_codegen_DW->is_c3_ElectricalID_6ph_codegen ==
              IN_ElectricalID) {
-    ElectricalID(&rtElectricalID_6ph_codegen_U->ControlFlags_f,
+    ElectricalID(&rtElectricalID_6ph_codegen_U->ElectricalID_fft_in,
                  rtElectricalID_6ph_codegen_U, rtElectricalID_6ph_codegen_Y,
                  rtElectricalID_6ph_codegen_DW);
 
@@ -6052,7 +6044,6 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     /* SystemInitialize for Chart: '<Root>/ElectricalID_6ph_codegen' incorporates:
      *  Merge: '<S1>/ Merge '
      *  Outport: '<Root>/ElectricalID_FOC_output'
-     *  Outport: '<Root>/ElectricalID_fft_out'
      */
     rtElectricalID_6ph_codegen_DW->counter_n = 1U;
     rtElectricalID_6ph_codegen_DW->z_c = 1U;
@@ -6142,11 +6133,6 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     for (i = 0; i < 5; i++) {
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.psi_pm[i] = 0.0F;
     }
-
-    memset
-      (&rtElectricalID_6ph_codegen_Y->ElectricalID_fft_out.voltage_meas_array[0],
-       0, 10000U * sizeof(real32_T));
-    rtElectricalID_6ph_codegen_Y->ElectricalID_fft_out.finish_flag = false;
 
     /* End of SystemInitialize for Chart: '<Root>/ElectricalID_6ph_codegen' */
     /* '<S1>:922:7' sineCounter = uint32(0); */

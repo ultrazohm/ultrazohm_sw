@@ -67,17 +67,29 @@ bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.enteredElectricalID;
 }
+
 bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.finishedElectricalID;
 }
+
+bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.finished_voltage_measurement;
+}
+
 uz_ParaID_Controller_Parameters_output_t uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.ElectricalID_FOC_output;
 }
+
 uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
 {
     return self->output.ElectricalID_output;
 }
 
+real32_T uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self)
+{
+    return self->output.voltage_meas_array;
+}
 #endif

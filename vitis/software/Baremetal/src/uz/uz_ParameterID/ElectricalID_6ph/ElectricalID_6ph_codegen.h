@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.24
+ * Model version                  : 3.26
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Feb  7 10:56:21 2023
+ * C/C++ source code generated on : Tue Feb  7 11:14:55 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,6 +63,8 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
+
+
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
@@ -202,7 +204,7 @@ typedef struct {
   uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
-  uz_ParaID_ElectricalID_fft_in_t ControlFlags_f;/* '<Root>/ElectricalID_fft_in' */
+  uz_ParaID_ElectricalID_fft_in_t ElectricalID_fft_in;/* '<Root>/ElectricalID_fft_in' */
 } ExtU_ElectricalID_6ph_codegen_t;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -211,7 +213,9 @@ typedef struct {
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
   uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
-  uz_ParaID_ElectricalID_fft_out_t ElectricalID_fft_out;/* '<Root>/ElectricalID_fft_out' */
+  real32_T voltage_meas_array;         /* '<Root>/voltage_meas_array' */
+  boolean_T finished_voltage_measurement;
+                                     /* '<Root>/finished_voltage_measurement' */
 } ExtY_ElectricalID_6ph_codegen_t;
 
 /* Real-time Model Data Structure */

@@ -83,7 +83,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
-	js_ch_observable[JSO_ia1] = &(ParaID_Data.ActualValues.i_abc_6ph.a1);
+	js_ch_observable[JSO_ua1] = &(ParaID_Data.ActualValues.v_abc_6ph.a1);
 	js_ch_observable[JSO_ib1] = &(ParaID_Data.ActualValues.i_abc_6ph.b1);
 	js_ch_observable[JSO_ic1] = &(ParaID_Data.ActualValues.i_abc_6ph.c1);
 	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);

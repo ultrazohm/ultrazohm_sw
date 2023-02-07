@@ -137,7 +137,7 @@ void ISR_Control(void *data)
 	u_neutral = (u_phase_UDC.a1 + u_phase_UDC.b1 + u_phase_UDC.c1 + u_phase_UDC.a2 + u_phase_UDC.b2 + u_phase_UDC.c2) / 6.0f;
 
 	// calculate phase voltages
-	u_phase.a1 = u_phase_UDC.a1 - u_neutral;
+	u_phase.a1 = (u_phase_UDC.a1 - u_neutral)*24.7f;
 	u_phase.b1 = u_phase_UDC.b1 - u_neutral;
 	u_phase.c1 = u_phase_UDC.c1 - u_neutral;
 	u_phase.a2 = u_phase_UDC.a2 - u_neutral;
@@ -264,12 +264,17 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
+	/*	dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
 		dutyCycles_set1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
 		dutyCycles_set1.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
 		dutyCycles_set2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
 		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
-		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
+		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;*/
+
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5,true,true,true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11,true,true,true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17,true,true,true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_18_to_23,true,true,true);
 		//ParaID end
 
 		//write duty-cycles

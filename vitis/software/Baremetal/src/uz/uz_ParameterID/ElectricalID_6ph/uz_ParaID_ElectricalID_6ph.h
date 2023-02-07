@@ -19,6 +19,7 @@
 
 #include "../uz_ParameterID_data.h"
 
+
 typedef struct uz_ParaID_ElectricalID_6ph_t uz_ParaID_ElectricalID_6ph_t;
 
 uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);

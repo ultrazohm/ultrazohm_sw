@@ -181,5 +181,7 @@ uint32_t uz_matrix_get_max_index(uz_matrix_t const*const A);
  */
 void uz_matrix_transpose(uz_matrix_t* A);
 
+void uz_matrix_copy(uz_matrix_t const*const source, uz_matrix_t *const destination);
+
 
 #endif // UZ_MATRIX_H

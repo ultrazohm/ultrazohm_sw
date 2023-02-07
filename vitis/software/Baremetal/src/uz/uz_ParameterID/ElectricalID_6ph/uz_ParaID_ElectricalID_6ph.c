@@ -88,8 +88,8 @@ uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_Electri
     return self->output.ElectricalID_output;
 }
 
-real32_T uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self)
+void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination)
 {
-    return self->output.voltage_meas_array;
+    	memcpy(destination, self->output.voltage_meas_array, 1000U * sizeof(float));
 }
 #endif

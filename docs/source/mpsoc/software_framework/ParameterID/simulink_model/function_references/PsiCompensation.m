@@ -1,4 +1,4 @@
-function output = PsiCompensation(input,R_series,R_parallel,C)
+function output = PsiCompensation(input,R_series,R_parallel,C) %#codegen
 %PsiCompensation compensates the calculated psis for given voltage devider/filter 
 %   Detailed explanation goes here
 %% set out=in

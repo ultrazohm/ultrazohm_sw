@@ -24,10 +24,12 @@ typedef struct uz_ParaID_ElectricalID_6ph_t uz_ParaID_ElectricalID_6ph_t;
 
 uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);
 
-void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config,uz_ParaID_ActualValues_t actual,uz_ParaID_GlobalConfig_t global_config,uz_ParaID_ControlFlags_t flags);
+void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags);
 bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self);
 bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self);
+bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self);
 uz_ParaID_Controller_Parameters_output_t uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self);
 uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self);
+uz_ParaID_ElectricalID_fft_out_t uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
 
 #endif // ELECTRICALID_6PH_H

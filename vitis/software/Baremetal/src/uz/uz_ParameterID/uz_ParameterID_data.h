@@ -399,13 +399,5 @@ typedef struct {
   real32_T angles[5001];
 } uz_ParaID_ElectricalID_fft_in_t;
 
-/**
- * @brief FIlll!!!
- *
- */
-typedef struct {
-  real32_T voltage_meas_array[10000];
-  boolean_T finish_flag;
-} uz_ParaID_ElectricalID_fft_out_t;
 
 #endif

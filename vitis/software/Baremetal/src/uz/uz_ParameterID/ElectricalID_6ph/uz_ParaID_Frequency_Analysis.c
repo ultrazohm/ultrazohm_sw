@@ -15,14 +15,10 @@
 ******************************************************************************/
 
 #include "uz_ParaID_Frequency_Analysis.h"
+#include "FFTRecordedVoltage/FFTRecordedVoltage.h"
 #include "../../uz_HAL.h"
 #include <string.h>
 
-#ifdef TEST
-uz_ParameterID_Data_t ParaID_Data = {
-    .GlobalConfig.sampleTimeISR = 1.0f/10000.0f
-};
-#endif
 
 uint16_t uz_find_array_max_value_index(float array[], uint16_t elements){
     float high_value = 0.0f;
@@ -105,19 +101,19 @@ void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint
 }
 
 
-uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000])
+uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000], float ISR_sampletime)
 {
     // data inits
     float frequencies[5001];
     float amplitudes[5001];
     float angles[5001];
-    const uint16_t n_order = 5U
-    uint16_t order[n_order] = {1U, 3U, 5U, 7U, 9U};    // orders to determine (5 in total)
-    uint16_t indices_real[n_order];                   // array to save indices of psi_psm orders
-    float psi_pms[n_order][3];                        // array holding psi pms
+    const uint16_t n_order = 5U;
+    uint16_t order[] = {1U, 3U, 5U, 7U, 9U};    // orders to determine (5 in total)
+    uint16_t indices_real[n_order];             // array to save indices of psi_psm orders
+    float psi_pms[n_order][3];                  // array holding psi pms
     uz_ParaID_ElectricalID_fft_in_t output;     // output struct for ParaID
     // calculate FFT
-    FFTRecordedVoltage(induced_voltage, ParaID_Data.GlobalConfig.sampleTimeISR, frequencies, amplitudes, angles);
+    FFTRecordedVoltage(induced_voltage, ISR_sampletime, frequencies, amplitudes, angles);
     // find fft peaks for psi_pm orders
     uz_find_fft_peak_indices(order, n_order, amplitudes, 5001U,indices_real);
     // calculate psi_pms

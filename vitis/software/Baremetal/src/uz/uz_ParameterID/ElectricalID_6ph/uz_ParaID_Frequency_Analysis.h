@@ -19,6 +19,8 @@
 
 #include "../uz_ParameterID_data.h"
 #include "../../uz_math_constants.h"
+#include <stdint.h>
+
 
 /**
  * @brief find the index of the highest value in an array of floats
@@ -71,7 +73,7 @@ float uz_wrap_to_2pi(float angle);
  */
 void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint16_t n_order, float fft_frequencies[], float fft_amplitudes[], float fft_angles[]);
 
-uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000]);
+uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000], float ISR_sampletime);
  
 
 #endif // FREQUENCY_ANALYSIS_H

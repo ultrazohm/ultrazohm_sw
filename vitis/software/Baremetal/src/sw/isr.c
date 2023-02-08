@@ -72,6 +72,8 @@ struct uz_DutyCycle_t dutycyc_right_motor = {0.0f};
 static void ReadAllADC();
 float n_ref=0.0f;
 float n_sine_frq=1.0f/5.0f;
+uint32_t pulse_counter = 0U;
+
 
 void ISR_Control(void *data)
 {
@@ -93,6 +95,11 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	// duty cyle is not set to 0
+        if(pulse_counter<1){
+            Global_Data.rasv.halfBridge2DutyCycle=0.05f;
+        }else{
+            Global_Data.rasv.halfBridge2DutyCycle = 0.00f;
+        }
 
     } else {
 

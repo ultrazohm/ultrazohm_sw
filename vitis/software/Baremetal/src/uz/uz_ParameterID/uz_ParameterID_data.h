@@ -389,16 +389,10 @@ typedef struct uz_ParameterID_Data_t {
 													2 = Speed_Control*/
 } uz_ParameterID_Data_t;
 
-/**
- * @brief FIlll!!!
- *
- */
 typedef struct {
   boolean_T finished_flag;
-  real32_T amplitudes[5001];
-  real32_T frequencies[5001];
-  real32_T angles[5001];
+  real32_T psi_pm_amplitude[5];
+  real32_T psi_pm_angle[5];
 } uz_ParaID_ElectricalID_fft_in_t;
-
 
 #endif

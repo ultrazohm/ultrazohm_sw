@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.28
+ * Model version                  : 3.31
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Feb  7 11:52:44 2023
+ * C/C++ source code generated on : Wed Feb  8 12:08:30 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -39,16 +39,15 @@
 #define IN_Waiting                     ((uint8_T)2U)
 #define IN_alignRotor_d_off            ((uint8_T)7U)
 #define IN_alignRotor_d_on             ((uint8_T)8U)
-#define IN_calculate_psi_pm            ((uint8_T)9U)
-#define IN_endState                    ((uint8_T)10U)
-#define IN_findDutyCycle               ((uint8_T)11U)
-#define IN_measure_induced_voltage     ((uint8_T)12U)
-#define IN_rotorInertiaEstimation      ((uint8_T)13U)
-#define IN_stop                        ((uint8_T)14U)
-#define IN_waitAccept                  ((uint8_T)15U)
-#define IN_waitLock                    ((uint8_T)16U)
-#define IN_waitSetRPM                  ((uint8_T)17U)
-#define IN_waitState                   ((uint8_T)18U)
+#define IN_endState                    ((uint8_T)9U)
+#define IN_findDutyCycle               ((uint8_T)10U)
+#define IN_measure_induced_voltage     ((uint8_T)11U)
+#define IN_rotorInertiaEstimation      ((uint8_T)12U)
+#define IN_stop                        ((uint8_T)13U)
+#define IN_waitAccept                  ((uint8_T)14U)
+#define IN_waitLock                    ((uint8_T)15U)
+#define IN_waitSetRPM                  ((uint8_T)16U)
+#define IN_waitState                   ((uint8_T)17U)
 #define NumBitsPerChar                 8U
 
 extern real32_T rt_hypotf_snf(real32_T u0, real32_T u1);
@@ -115,7 +114,8 @@ static void goertzel(ExtU_ElectricalID_6ph_codegen_t
                      *rtElectricalID_6ph_codegen_U,
                      DW_ElectricalID_6ph_codegen_t
                      *rtElectricalID_6ph_codegen_DW);
-static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
+static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
+  *BusConversion_InsertedFor_Elect, ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
@@ -2852,11 +2852,14 @@ static void goertzel(ExtU_ElectricalID_6ph_codegen_t
 }
 
 /* Function for Chart: '<Root>/ElectricalID_6ph_codegen' */
-static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
+static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
+  *BusConversion_InsertedFor_Elect, ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW)
 {
+  int32_T i;
+
   /* Exit Internal 'ElectricalID': '<S1>:761' */
   switch (rtElectricalID_6ph_codegen_DW->is_ElectricalID) {
    case IN_Subchart_Step_Response:
@@ -3129,12 +3132,6 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
-   case IN_calculate_psi_pm:
-    /* Exit 'calculate_psi_pm': '<S1>:1056' */
-    /* '<S1>:1056:6' FindPsiPMs(ElectricalID_fft_in.frequencies,ElectricalID_fft_in.amplitudes,ElectricalID_fft_in.angles); */
-    rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
-    break;
-
    case IN_findDutyCycle:
     /* Inport: '<Root>/ActualValues' */
     /* Exit 'findDutyCycle': '<S1>:789' */
@@ -3150,13 +3147,17 @@ static void exit_internal_ElectricalID(ExtU_ElectricalID_6ph_codegen_t
     break;
 
    case IN_measure_induced_voltage:
-    /* Outport: '<Root>/finished_voltage_measurement' */
     /* Exit 'measure_induced_voltage': '<S1>:405' */
-    /* '<S1>:405:10' finished_voltage_measurement = true; */
-    rtElectricalID_6ph_codegen_Y->finished_voltage_measurement = true;
-
-    /* '<S1>:405:11' counter = uint32(1); */
+    /* '<S1>:405:14' counter = uint32(1); */
     rtElectricalID_6ph_codegen_DW->counter = 1U;
+
+    /* '<S1>:405:15' ElectricalID_output.psi_pm = ElectricalID_fft_in.psi_pm_amplitude; */
+    for (i = 0; i < 5; i++) {
+      /* Merge: '<S1>/ Merge ' */
+      rtElectricalID_6ph_codegen_DW->ElectricalID_output.psi_pm[i] =
+        BusConversion_InsertedFor_Elect->psi_pm_amplitude[i];
+    }
+
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -3212,8 +3213,9 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
     /* '<S1>:901:3' initParams; */
     initParams(rtElectricalID_6ph_codegen_U, rtElectricalID_6ph_codegen_Y,
                rtElectricalID_6ph_codegen_DW);
-    exit_internal_ElectricalID(rtElectricalID_6ph_codegen_U,
-      rtElectricalID_6ph_codegen_Y, rtElectricalID_6ph_codegen_DW);
+    exit_internal_ElectricalID(BusConversion_InsertedFor_Elect,
+      rtElectricalID_6ph_codegen_U, rtElectricalID_6ph_codegen_Y,
+      rtElectricalID_6ph_codegen_DW);
     rtElectricalID_6ph_codegen_DW->is_c3_ElectricalID_6ph_codegen = IN_Waiting;
 
     /* Entry 'Waiting': '<S1>:902' */
@@ -5248,31 +5250,6 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       }
       break;
 
-     case IN_calculate_psi_pm:
-      /* During 'calculate_psi_pm': '<S1>:1056' */
-      /* '<S1>:1058:1' sf_internal_predicateOutput = ElectricalID_fft_in.finished_flag; */
-      if (BusConversion_InsertedFor_Elect->finished_flag) {
-        /* Transition: '<S1>:1058' */
-        /* Exit 'calculate_psi_pm': '<S1>:1056' */
-        /* '<S1>:1056:6' FindPsiPMs(ElectricalID_fft_in.frequencies,ElectricalID_fft_in.amplitudes,ElectricalID_fft_in.angles); */
-        rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_stop;
-
-        /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* Entry 'stop': '<S1>:361' */
-        /* state 10.1 */
-        /* '<S1>:361:3' ElectricalID_FOC_output.activeState = uint16(1152); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState =
-          1152U;
-
-        /* '<S1>:361:4' ElectricalID_FOC_output.n_ref_FOC = single(0); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.n_ref_FOC = 0.0F;
-
-        /* '<S1>:361:5' ElectricalID_FOC_output.resetIntegrator = boolean(1); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.resetIntegrator =
-          true;
-      }
-      break;
-
      case IN_endState:
       /* During 'endState': '<S1>:356' */
       /* '<S1>:425:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
@@ -5352,25 +5329,43 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
      case IN_measure_induced_voltage:
       /* During 'measure_induced_voltage': '<S1>:405' */
-      /* '<S1>:406:1' sf_internal_predicateOutput = counter==10000; */
-      if (rtElectricalID_6ph_codegen_DW->counter == 10000U) {
+      /* '<S1>:406:1' sf_internal_predicateOutput = ElectricalID_fft_in.finished_flag; */
+      if (BusConversion_InsertedFor_Elect->finished_flag) {
         /* Transition: '<S1>:406' */
         /* Exit 'measure_induced_voltage': '<S1>:405' */
-        /* '<S1>:405:10' finished_voltage_measurement = true; */
-        /* '<S1>:405:11' counter = uint32(1); */
+        /* '<S1>:405:14' counter = uint32(1); */
         rtElectricalID_6ph_codegen_DW->counter = 1U;
-        rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_calculate_psi_pm;
 
-        /* Outport: '<Root>/finished_voltage_measurement' */
-        /* Entry 'calculate_psi_pm': '<S1>:1056' */
-        /* '<S1>:1056:3' finished_voltage_measurement = false; */
-        rtElectricalID_6ph_codegen_Y->finished_voltage_measurement = false;
+        /* '<S1>:405:15' ElectricalID_output.psi_pm = ElectricalID_fft_in.psi_pm_amplitude; */
+        for (rtElectricalID_6ph_codegen_DW->i = 0;
+             rtElectricalID_6ph_codegen_DW->i < 5;
+             rtElectricalID_6ph_codegen_DW->i++) {
+          /* Merge: '<S1>/ Merge ' */
+          rtElectricalID_6ph_codegen_DW->
+            ElectricalID_output.psi_pm[rtElectricalID_6ph_codegen_DW->i] =
+            BusConversion_InsertedFor_Elect->
+            psi_pm_amplitude[rtElectricalID_6ph_codegen_DW->i];
+        }
+
+        rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_stop;
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* '<S1>:1056:4' ElectricalID_FOC_output.activeState = uint16(152); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 152U;
-      } else {
-        /* '<S1>:405:7' voltage_meas_array(counter-1) = ActualValues.v_abc_6ph.a1; */
+        /* Entry 'stop': '<S1>:361' */
+        /* state 10.1 */
+        /* '<S1>:361:3' ElectricalID_FOC_output.activeState = uint16(1152); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState =
+          1152U;
+
+        /* '<S1>:361:4' ElectricalID_FOC_output.n_ref_FOC = single(0); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.n_ref_FOC = 0.0F;
+
+        /* '<S1>:361:5' ElectricalID_FOC_output.resetIntegrator = boolean(1); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.resetIntegrator =
+          true;
+
+        /* '<S1>:405:7' if(counter<=10000) */
+      } else if (rtElectricalID_6ph_codegen_DW->counter <= 10000U) {
+        /* '<S1>:405:8' voltage_meas_array(counter-1) = ActualValues.v_abc_6ph.a1; */
         rtElectricalID_6ph_codegen_DW->exitPortIndex =
           rtElectricalID_6ph_codegen_DW->counter - /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_6ph_codegen_DW->counter - 1U >
@@ -5385,7 +5380,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->exitPortIndex - 1] =
           rtElectricalID_6ph_codegen_U->ActualValues.v_abc_6ph.a1;
 
-        /* '<S1>:405:8' counter = counter + 1; */
+        /* '<S1>:405:9' counter = counter + 1; */
         rtElectricalID_6ph_codegen_DW->exitPortIndex =
           rtElectricalID_6ph_codegen_DW->counter + /*MW:OvSatOk*/ 1U;
         if (rtElectricalID_6ph_codegen_DW->counter + 1U <
@@ -5395,6 +5390,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         rtElectricalID_6ph_codegen_DW->counter =
           rtElectricalID_6ph_codegen_DW->exitPortIndex;
+      } else {
+        /* Outport: '<Root>/finished_voltage_measurement' */
+        /* '<S1>:405:10' else */
+        /* '<S1>:405:11' finished_voltage_measurement = true; */
+        rtElectricalID_6ph_codegen_Y->finished_voltage_measurement = true;
       }
       break;
 

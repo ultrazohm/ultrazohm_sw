@@ -181,5 +181,18 @@ uint32_t uz_matrix_get_max_index(uz_matrix_t const*const A);
  */
 void uz_matrix_transpose(uz_matrix_t* A);
 
+/**
+ * @brief Copies the matrix source into the matrix destination. Requires that source and destination have the same length. Rows, columns, and data will be overwritten by this function!
+ *
+ * @param source Matrix to be copied
+ * @param destination Matrix where the data is copied to
+ */
+void uz_matrix_copy(uz_matrix_t const*const source, uz_matrix_t *const destination);
+/**
+ * @brief Sets matrix A to a unity/identity matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 
 #endif // UZ_MATRIX_H

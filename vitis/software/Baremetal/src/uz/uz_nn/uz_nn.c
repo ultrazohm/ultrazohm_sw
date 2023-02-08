@@ -82,12 +82,14 @@ void uz_nn_backprop(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_nn_layer_calculate_derivate_activationfunc(self->layer[2]);
-    //uz_nn_layer_calculate_localgradients(self->layer[2]);
-    for (uint32_t i = self->number_of_layer; i < (self->number_of_layer - 1U); i--)
-    {
-        uz_nn_layer_calculate_derivate_activationfunc(self->layer[i - 1U]);
-    }
+    // aus derivate matrix und nn zurückpropagieren und die lokalen gradienten Berechnen
+    uz_nn_layer_back(self->layer[2]);
+    uz_nn_layer_back(self->layer[1]);
+    uz_nn_layer_back(self->layer[0]);
+    // for (uint32_t i = self->number_of_layer; i < (self->number_of_layer - 1U); i--)
+    // {
+    //     uz_nn_layer_back(self->layer[i - 1U]);
+    // }
 }
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)

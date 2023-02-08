@@ -22,7 +22,21 @@ void test_uz_matrix_set_matrix_to_zero(void){
     TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,0,0));
     TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,0,1));
     TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,1,0));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,1,1));
+
+}
+
+
+void test_uz_matrix_set_unity_matrix(void){
+    uint32_t rows=2;
+    uint32_t columns=2;
+    float A_data[4]={1,2,3,4};
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows, columns );
+    uz_matrix_set_unity_matrix(A);
+    TEST_ASSERT_EQUAL_FLOAT(1,uz_matrix_get_element_zero_based(A,0,0));
     TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,0,1));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,1,0));
+    TEST_ASSERT_EQUAL_FLOAT(1,uz_matrix_get_element_zero_based(A,1,1));
 
 }
 

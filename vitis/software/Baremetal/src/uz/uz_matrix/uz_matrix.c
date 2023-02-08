@@ -177,6 +177,20 @@ void uz_matrix_set_zero(uz_matrix_t *const A)
     }
 }
 
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column)
+            A->data[(row * A->columns) + column] = 1.0f;
+            else
+            A->data[(row * A->columns) + column] = 0.0f;
+        }
+    }
+}
 void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);
@@ -280,4 +294,18 @@ void uz_matrix_transpose(uz_matrix_t *A)
             uz_matrix_set_element_zero_based(A, x, column, row);
         }
     }
+}
+
+void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destination)
+{    
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    uz_assert(source->length_of_data == destination->length_of_data);
+    destination->rows=source->rows;
+    destination->columns=source->columns;
+
+    for(uint32_t i=0U;i<destination->length_of_data;i++){
+        destination->data[i]=source->data[i];
+    }
+
 }

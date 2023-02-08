@@ -40,4 +40,21 @@ void test_uz_matrix_set_unity_matrix(void){
 
 }
 
+void test_uz_matrix_set_zero_except_diagonal(void){
+    uint32_t rows=3;
+    uint32_t columns=3;
+    float A_data[9]={1,2,3,4,5,6,7,8,9};
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows, columns);
+    uz_matrix_set_zero_except_diagonal(A);
+    TEST_ASSERT_EQUAL_FLOAT(1,uz_matrix_get_element_zero_based(A,0,0));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,0,1));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,0,2));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,1,0));
+    TEST_ASSERT_EQUAL_FLOAT(5,uz_matrix_get_element_zero_based(A,1,1));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,1,2));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,2,0));
+    TEST_ASSERT_EQUAL_FLOAT(0,uz_matrix_get_element_zero_based(A,2,1));
+    TEST_ASSERT_EQUAL_FLOAT(9,uz_matrix_get_element_zero_based(A,2,2));
+}
+
 #endif // TEST

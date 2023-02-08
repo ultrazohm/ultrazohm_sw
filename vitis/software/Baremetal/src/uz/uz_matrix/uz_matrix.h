@@ -195,4 +195,10 @@ void uz_matrix_copy(uz_matrix_t const*const source, uz_matrix_t *const destinati
  */
 void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 
+/**
+ * @brief Sets whole matrix zero except diagonal axis (see unity matrix)
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 #endif // UZ_MATRIX_H

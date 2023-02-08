@@ -129,7 +129,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self)
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
     uz_matrix_set_zero_except_diagonal(self->derivate_gradients);
-//    uz_matrix_multiply(self->sumout,self->derivate_gradients,self->gradientslocal);
+    uz_matrix_multiply(self->sumout,self->derivate_gradients,self->gradientslocal);
 }
 
 
@@ -165,12 +165,6 @@ uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self)
 	return (self->derivate_gradients);
 }
 
-// uz_matrix_t *uz_nn_layer_get_derivate_activationfunc(uz_nn_layer_t const *const self)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     return (0);
-// }
 uz_matrix_t *uz_nn_layer_get_localgradients(uz_nn_layer_t const*const self)
 {
     uz_assert_not_NULL(self);

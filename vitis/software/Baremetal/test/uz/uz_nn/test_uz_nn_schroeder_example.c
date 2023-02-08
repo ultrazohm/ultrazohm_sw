@@ -139,8 +139,8 @@ void test_uz_nn_schroeder(void)
     derivatehelper[6] = uz_matrix_get_element_zero_based(helper2,1,0);
     derivatehelper[7] = uz_matrix_get_element_zero_based(helper2,1,1);
     derivatehelper[8] = uz_matrix_get_element_zero_based(helper3,0,0);
-    // Berechne Aktivierungsfunktionsableitung
-    
+    // Berechne zwischenwerte
+
     // Berechne lokale Gradienten
 
     // Trainiere einen step des Netzes 

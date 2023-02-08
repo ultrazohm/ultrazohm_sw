@@ -57,4 +57,27 @@ void test_uz_matrix_set_zero_except_diagonal(void){
     TEST_ASSERT_EQUAL_FLOAT(9,uz_matrix_get_element_zero_based(A,2,2));
 }
 
+void test_uz_matrix_set_columnvector_as_diagonal(void){
+    uint32_t rows=2;
+    uint32_t columns=2;
+    float A_data[4]={1,2,3,4};
+    float vec_data[2]={5,10};
+    uz_matrix_t* vector=init_array_test_helper(vec_data,UZ_MATRIX_SIZE(vec_data),1, columns);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows, columns);
+    uz_matrix_set_columnvector_as_diagonal(A,vector);
+    TEST_ASSERT_EQUAL_FLOAT(5,uz_matrix_get_element_zero_based(A,0,0));
+    TEST_ASSERT_EQUAL_FLOAT(10,uz_matrix_get_element_zero_based(A,1,1));
+}
+
+void test_uz_matrix_set_rowvector_as_diagonal(void){
+    uint32_t rows=2;
+    uint32_t columns=2;
+    float A_data[4]={1,2,3,4};
+    float vec_data[2]={25,100};
+    uz_matrix_t* vector=init_array_test_helper(vec_data,UZ_MATRIX_SIZE(vec_data),rows, 1);
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows, columns);
+    uz_matrix_set_columnvector_as_diagonal(A,vector);
+    TEST_ASSERT_EQUAL_FLOAT(25,uz_matrix_get_element_zero_based(A,0,0));
+    TEST_ASSERT_EQUAL_FLOAT(100,uz_matrix_get_element_zero_based(A,1,1));
+}
 #endif // TEST

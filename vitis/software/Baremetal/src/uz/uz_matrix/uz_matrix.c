@@ -209,6 +209,37 @@ void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A)
         }
     }
 }
+
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = rowvector->data[column];
+        }
+        else{
+            }
+        }
+    }
+}
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = columnvector->data[row];
+        }
+        else{
+            }
+        }
+    }
+}
 void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);

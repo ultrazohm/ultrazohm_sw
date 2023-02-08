@@ -126,9 +126,9 @@ void test_uz_nn_schroeder(void)
     uz_matrix_t* my_matrix=uz_matrix_init(&input_matrix,derivatesarray,UZ_MATRIX_SIZE(derivatesarray),rows,columns);
     uz_nn_backprop(test);
     // check derivates
-    uz_matrix_t* helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t* helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t* helper3 = uz_nn_get_derivate_data(test,3); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *helper3 = uz_nn_get_derivate_data(test,3); // index 1-3 verwenden für nn mit 3 layern
     float derivatehelper[UZ_MATRIX_SIZE(d_1)+UZ_MATRIX_SIZE(d_2)+UZ_MATRIX_SIZE(d_3)];
     derivatehelper[0] = uz_matrix_get_element_zero_based(helper1,0,0);
     derivatehelper[1] = uz_matrix_get_element_zero_based(helper1,0,1);

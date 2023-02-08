@@ -201,4 +201,15 @@ void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
  * @param A Pointer to a uz_matrix_t instance 
  */
 void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
+
+/**
+ * @brief Assigns vector elements to the diagonal in A
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * 
+ * @param vector Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_vector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const vector);
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
 #endif // UZ_MATRIX_H

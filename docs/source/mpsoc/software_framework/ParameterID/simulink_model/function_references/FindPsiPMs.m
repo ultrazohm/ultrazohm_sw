@@ -13,7 +13,7 @@ range = uint16(zeros(around_val+1,1));
 %% find higher order indizes
 for i=2:5
     ideal_index = index(1)*order(i);
-    %range = [(ideal_index-around_val):1:(ideal_index+around_val)];
+    range = [(ideal_index-around_val):1:(ideal_index+around_val)];
     [ampl(i),index(i)] = max(amplitudes(range));
     index(i) = index(i)+ideal_index-around_val-1;
 end

@@ -38,7 +38,7 @@ uz_ParaID_CleanPsiArray_t* uz_CleanPsiArray_init(void);
  */
 void uz_CleanPsiArray_step(uz_ParaID_CleanPsiArray_t *self);
 
-void uz_CleanPsiArray_set_OnlineID_output(uz_ParaID_CleanPsiArray_t* self, uz_ParaID_OnlineID_output_t OnlineID_output);
+void uz_CleanPsiArray_set_OnlineID_output(uz_ParaID_CleanPsiArray_t* self, uz_ParaID_OnlineID_output_t* OnlineID_output);
 void uz_CleanPsiArray_set_eta_c(uz_ParaID_CleanPsiArray_t* self, float eta_c);
 
 float* uz_CleanPsiArray_get_psi_array_out(uz_ParaID_CleanPsiArray_t* self);

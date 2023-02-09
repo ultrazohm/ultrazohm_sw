@@ -104,9 +104,9 @@ void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint
 uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000], float ISR_sampletime)
 {
     // data inits
-    float frequencies[5001];
-    float amplitudes[5001];
-    float angles[5001];
+    static float frequencies[5001];
+    static float amplitudes[5001];
+    static float angles[5001];
     const uint16_t n_order = 5U;
     uint16_t order[] = {1U, 3U, 5U, 7U, 9U};    // orders to determine (5 in total)
     uint16_t indices_real[n_order];             // array to save indices of psi_psm orders
@@ -119,8 +119,11 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     // calculate psi_pms
     uz_calculate_psi_pms(psi_pms, indices_real, n_order, frequencies, amplitudes, angles);
     // write to output struct
-    memcpy(output.psi_pm_amplitude, &psi_pms[0][1], sizeof(float)*n_order);
-    memcpy(output.psi_pm_angle, &psi_pms[0][2], sizeof(float)*n_order);
+    for(uint16_t i=0U;i<n_order;i++)
+    {
+        output.psi_pm_amplitude[i] = psi_pms[i][1];
+        output.psi_pm_angle[i] = psi_pms[i][2]
+    }
     output.finished_flag = true;
     return output;
 }

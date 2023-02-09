@@ -122,7 +122,7 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     for(uint16_t i=0U;i<n_order;i++)
     {
         output.psi_pm_amplitude[i] = psi_pms[i][1];
-        output.psi_pm_angle[i] = psi_pms[i][2]
+        output.psi_pm_angle[i] = psi_pms[i][2];
     }
     output.finished_flag = true;
     return output;

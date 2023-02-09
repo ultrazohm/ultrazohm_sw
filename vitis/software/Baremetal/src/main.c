@@ -187,9 +187,7 @@ int main(void)
         if(ParaID_Data.finished_voltage_measurement && !psi_pms.finished_flag)
         {
         	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
-
-        	//FFTRecordedVoltage(meas_array, ISR_sampletime, frequencies, amplitudes, angles);
-        	psi_pms = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
+        	ParaID_Data.ElectricalID_FFT = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
         }
     }
     return (status);

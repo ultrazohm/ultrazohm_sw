@@ -45,7 +45,4 @@ void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_
 uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self);
 
 
-
-
-float* uz_InterpMeshGrid_test(uz_ParaID_InterpMeshGrid_t *self);
 #endif

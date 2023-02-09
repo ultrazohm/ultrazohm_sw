@@ -76,12 +76,6 @@ void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_
 	self->input.OnlineID_input = *OnlineID_input;
 }
 
-float* uz_InterpMeshGrid_test(uz_ParaID_InterpMeshGrid_t *self) {
-	uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-	return(&self->input.psi_array_in[0]);
-}
-
 uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

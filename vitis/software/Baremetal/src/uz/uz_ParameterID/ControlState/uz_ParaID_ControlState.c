@@ -108,10 +108,10 @@ void uz_ControlState_set_enteredOnlineID(uz_ParaID_ControlState_t *self, bool di
 	uz_assert(self->is_ready);
 	self->input.enteredOnlineID = did_enter;
 }
-void uz_ControlState_set_ElectricalID_output(uz_ParaID_ControlState_t *self, uz_ParaID_ElectricalID_output_t ElectricalID_output) {
+void uz_ControlState_set_ElectricalID_output(uz_ParaID_ControlState_t *self, uz_ParaID_ElectricalID_output_t* ElectricalID_output) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ElectricalID_output = ElectricalID_output;
+	self->input.ElectricalID_output = *ElectricalID_output;
 }
 
 void uz_ControlState_set_GlobalConfig(uz_ParaID_ControlState_t *self, uz_ParaID_GlobalConfig_t GlobalConfig) {

@@ -48,7 +48,7 @@ void uz_ControlState_set_enteredFluxMapID(uz_ParaID_ControlState_t *self, bool d
 void uz_ControlState_set_enteredTwoMassID(uz_ParaID_ControlState_t *self, bool did_enter);
 void uz_ControlState_set_enteredElectricalID(uz_ParaID_ControlState_t *self, bool did_enter);
 void uz_ControlState_set_enteredOnlineID(uz_ParaID_ControlState_t *self, bool did_enter);
-void uz_ControlState_set_ElectricalID_output(uz_ParaID_ControlState_t *self, uz_ParaID_ElectricalID_output_t ElectricalID_output);
+void uz_ControlState_set_ElectricalID_output(uz_ParaID_ControlState_t *self, uz_ParaID_ElectricalID_output_t* ElectricalID_output);
 void uz_ControlState_set_GlobalConfig(uz_ParaID_ControlState_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
 void uz_ControlState_set_ElectricalID_FOC_output(uz_ParaID_ControlState_t *self, uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output);
 

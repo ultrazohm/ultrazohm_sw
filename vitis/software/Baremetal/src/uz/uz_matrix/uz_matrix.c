@@ -181,6 +181,7 @@ void uz_matrix_set_unity_matrix(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
     uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
     for (uint32_t row = 0; row < A->rows; row++)
     {
         for (uint32_t column = 0; column < A->columns; column++)

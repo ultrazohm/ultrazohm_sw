@@ -41,7 +41,7 @@ void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self);
 void uz_ElectricalID_set_Config(uz_ParaID_ElectricalID_t *self, uz_ParaID_ElectricalIDConfig_t Config);
 void uz_ElectricalID_set_ActualValues(uz_ParaID_ElectricalID_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_ElectricalID_set_GlobalConfig(uz_ParaID_ElectricalID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
-void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
 
 bool uz_ElectricalID_get_enteredElectricalID(uz_ParaID_ElectricalID_t *self);
 bool uz_ElectricalID_get_finishedElectricalID(uz_ParaID_ElectricalID_t *self);

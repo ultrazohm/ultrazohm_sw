@@ -53,6 +53,7 @@ uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void) {
 
 void uz_ElectricalID_step(uz_ParaID_ElectricalID_t *self) {
 	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
 	ElectricalID_step(self->PtrToModelData);
 }
 
@@ -74,10 +75,10 @@ void uz_ElectricalID_set_GlobalConfig(uz_ParaID_ElectricalID_t *self, uz_ParaID_
 	self->input.GlobalConfig_out = GlobalConfig;
 }
 
-void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+void uz_ElectricalID_set_ControlFlags(uz_ParaID_ElectricalID_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ControlFlags = ControlFlags;
+	self->input.ControlFlags = *ControlFlags;
 }
 
 bool uz_ElectricalID_get_enteredElectricalID(uz_ParaID_ElectricalID_t *self) {

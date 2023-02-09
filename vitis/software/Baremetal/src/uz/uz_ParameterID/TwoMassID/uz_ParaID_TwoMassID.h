@@ -41,7 +41,7 @@ void uz_TwoMassID_step(uz_ParaID_TwoMassID_t *self);
 void uz_TwoMassID_set_Config(uz_ParaID_TwoMassID_t *self, uz_ParaID_TwoMassIDConfig_t Config);
 void uz_TwoMassID_set_ActualValues(uz_ParaID_TwoMassID_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_TwoMassID_set_GlobalConfig(uz_ParaID_TwoMassID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
-void uz_TwoMassID_set_ControlFlags(uz_ParaID_TwoMassID_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+void uz_TwoMassID_set_ControlFlags(uz_ParaID_TwoMassID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
 
 bool uz_TwoMassID_get_enteredTwoMassID(uz_ParaID_TwoMassID_t *self);
 bool uz_TwoMassID_get_finishedTwoMassID(uz_ParaID_TwoMassID_t *self);

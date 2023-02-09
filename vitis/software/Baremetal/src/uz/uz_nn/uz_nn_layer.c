@@ -112,11 +112,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
-    // speichere Wert für Summenausgang
-    uz_matrix_copy(self->output,self->sumout);
-    // for(size_t i=0;i<self->output->length_of_data;i++){
-    //     self->sumout->data[i]=self->output->data[i];
-    // }
+    uz_matrix_copy(self->output,self->sumout);// speichere Wert für Summenausgang
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
@@ -124,14 +120,22 @@ void uz_nn_layer_back(uz_nn_layer_t *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_matrix_set_unity_matrix(self->derivate_gradients);
-    // Test fuer Backprop, zwischenspeichermat C
+    uz_matrix_set_unity_matrix(self->derivate_gradients);// ist das überhaupt nötig? wahrscheinlich nicht
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-    uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative);
-    uz_matrix_set_zero_except_diagonal(self->derivate_gradients);
-    uz_matrix_multiply(self->sumout,self->derivate_gradients,self->gradientslocal);
+    uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative); 
+    // diese Zeile noch ändern kostet unnötig Rechenzeit!
+    uz_matrix_set_zero_except_diagonal(self->derivate_gradients); //Nebendiagonalen 0 setzen, da activierungfunktionsableitung von 0 eins ergibt
+    //uz_matrix_multiply(self->sumout,self->derivate_gradients,self->gradientslocal);
+
 }
 
+float uz_nn_layer_delta(uz_nn_layer_t *const self,float error)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+ //   uz_matrix_multiply(self->derivate_gradients,error,self->gradientslocal);
+
+}
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {

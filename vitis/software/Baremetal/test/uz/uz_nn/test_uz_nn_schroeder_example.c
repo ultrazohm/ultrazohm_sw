@@ -116,15 +116,13 @@ void test_uz_nn_schroeder(void)
     sumouthelper[4] = uz_matrix_get_element_zero_based(sumout3,0,0);
     // calculate output error
     float reference_output = {-4.41f};
-    float error = uz_nn_calc_output_error(result,reference_output);
-    printf("Error value is : %.6f", error);
     // Berechne float array und konvertiere es in uz matrix
     float derivatesarray[NUMBER_OF_HIDDEN_LAYER*4] = {1.0f-(tanhf(sumouthelper[0])*tanhf(sumouthelper[0])), 0, 0, 1.0f-(tanhf(sumouthelper[1])*tanhf(sumouthelper[1])), 1.0f-(tanhf(sumouthelper[2])*tanhf(sumouthelper[2])), 0, 0, 1.0f-(tanhf(sumouthelper[3])*tanhf(sumouthelper[3])), 1};  
     struct uz_matrix_t input_matrix = {0};
     int rows=3;
     int columns=4;
     uz_matrix_t* my_matrix=uz_matrix_init(&input_matrix,derivatesarray,UZ_MATRIX_SIZE(derivatesarray),rows,columns);
-    uz_nn_backprop(test);
+    uz_nn_backprop(test,reference_output,result);
     // check derivates
     uz_matrix_t *helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern

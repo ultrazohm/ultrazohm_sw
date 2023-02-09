@@ -18,7 +18,7 @@
 #include "uz_ParaID_TwoMassID.h"
 #include "../../uz_HAL.h"
 
-typedef struct uz_ParaID_TwoMassID_t{
+struct uz_ParaID_TwoMassID_t{
 	bool is_ready;
 	ExtY_TwoMassID_t output;
 	ExtU_TwoMassID_t input;

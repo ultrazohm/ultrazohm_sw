@@ -40,6 +40,7 @@ static uz_ParaID_ElectricalID_t* uz_ParaID_ElectricalID_allocation(void) {
 	self->is_ready = true;
 	return (self);
 }
+
 uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void) {
 	uz_ParaID_ElectricalID_t* self = uz_ParaID_ElectricalID_allocation();
 	self->PtrToModelData = &self->modelData;

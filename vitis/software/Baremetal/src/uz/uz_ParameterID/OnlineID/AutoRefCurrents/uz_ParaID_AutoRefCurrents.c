@@ -74,10 +74,10 @@ void uz_AutoRefCurrents_set_GlobalConfig(uz_ParaID_AutoRefCurrents_t *self, uz_P
 	self->input.GlobalConfig_out = GlobalConfig;
 }
 
-void uz_AutoRefCurrents_set_ControlFlags(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+void uz_AutoRefCurrents_set_ControlFlags(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ControlFlags = ControlFlags;
+	self->input.ControlFlags = *ControlFlags;
 }
 
 uz_ParaID_AutoRefCurrents_output_t* uz_AutoRefCurrents_get_output(uz_ParaID_AutoRefCurrents_t *self) {

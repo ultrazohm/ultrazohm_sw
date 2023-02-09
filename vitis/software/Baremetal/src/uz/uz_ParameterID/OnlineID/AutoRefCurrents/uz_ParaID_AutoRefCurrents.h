@@ -41,7 +41,7 @@ void uz_AutoRefCurrents_step(uz_ParaID_AutoRefCurrents_t *self);
 void uz_AutoRefCurrents_set_Config(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_AutoRefCurrentsConfig_t Config);
 void uz_AutoRefCurrents_set_ActualValues(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_AutoRefCurrents_set_GlobalConfig(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
-void uz_AutoRefCurrents_set_ControlFlags(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+void uz_AutoRefCurrents_set_ControlFlags(uz_ParaID_AutoRefCurrents_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
 
 uz_ParaID_AutoRefCurrents_output_t* uz_AutoRefCurrents_get_output(uz_ParaID_AutoRefCurrents_t *self);
 #endif

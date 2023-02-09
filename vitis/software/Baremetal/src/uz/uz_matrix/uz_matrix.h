@@ -156,10 +156,16 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
  * @param f Function pointer, function has to accept one float as argument and return one float
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
-
+/**
+ * @brief Applies a function f, that is passed as a function pointer, to the diagonal of a uz_matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param f Function pointer, function has to accept one float as argument and return one float
+ */
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float) );
 
 /**
- * @brief Retruns the value of the biggest element of the matrix
+ * @brief Returns the value of the biggest element of the matrix
  * 
  * @param A Pointer to a uz_matrix_t instance 
  * @return float 

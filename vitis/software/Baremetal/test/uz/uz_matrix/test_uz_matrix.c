@@ -131,6 +131,18 @@ void test_uz_matrix_apply_function_to_each_element(void)
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
 }
 
+void test_uz_matrix_apply_function_to_diagonal(void)
+{
+    float (*fcn_pointer)(float);
+    fcn_pointer = &uz_nn_activation_function_relu;
+    float A_data[4] = {-1.0f, 2.0f, -4.0f, 5.0f};
+    float expected[4] = {0.0f, 2.0f, -4.0f, 5.0f}; // Relu function just sets every element that is negative to zero
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),2,2);
+
+    uz_matrix_apply_function_to_diagonal(A, fcn_pointer);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
+}
+
 void test_uz_matrix_get_max_element_value(void)
 {
     float A_data[9] = {1.0f, 3.0f, 5.0f, 9.0f, 1.0f, 1.0f, 1.0f, 2.0f, 6.0f};

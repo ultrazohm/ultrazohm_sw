@@ -198,6 +198,7 @@ void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
     uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
     for (uint32_t row = 0; row < A->rows; row++)
     {
         for (uint32_t column = 0; column < A->columns; column++)
@@ -214,6 +215,7 @@ void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const
 {
     uz_assert_not_NULL(A);
     uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
     for (uint32_t row = 0; row < A->rows; row++)
     {
         for (uint32_t column = 0; column < A->columns; column++)
@@ -229,6 +231,7 @@ void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *co
 {
     uz_assert_not_NULL(A);
     uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
     for (uint32_t row = 0; row < A->rows; row++)
     {
         for (uint32_t column = 0; column < A->columns; column++)
@@ -285,6 +288,25 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float (*f)(f
     for (uint32_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] = f(A->data[i]);
+    }
+}
+
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float))
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(f);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        { 
+        if (row == column){
+            A->data[(row * A->columns) + column] = f(A->data[(row * A->columns) + column]);
+        }
+        else{
+            }
+        }
     }
 }
 

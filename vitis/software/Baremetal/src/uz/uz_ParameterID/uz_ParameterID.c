@@ -376,7 +376,7 @@ static void uz_ParaID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_
 	uz_assert_not_NULL(Data);
 	//Update State-Inputs
 	uz_OnlineID_set_ActualValues(self->OnlineID, Data->ActualValues);
-	uz_OnlineID_set_ControlFlags(self->OnlineID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_OnlineID_set_ControlFlags(self->OnlineID, uz_ControlState_get_ControlFlags(self->ControlState));
 	uz_OnlineID_set_GlobalConfig(self->OnlineID, *uz_ControlState_get_GlobalConfig(self->ControlState));
 	uz_OnlineID_set_Config(self->OnlineID, Data->OnlineID_Config);
 
@@ -392,7 +392,7 @@ static void uz_ParaID_OnlineID_step(uz_ParameterID_t* self, uz_ParameterID_Data_
 static void uz_ParaID_AutoRefCurrents_step(uz_ParameterID_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	uz_OnlineID_set_AutoRefCurrents_ControlFlags(self->OnlineID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_OnlineID_set_AutoRefCurrents_ControlFlags(self->OnlineID, uz_ControlState_get_ControlFlags(self->ControlState));
 	uz_OnlineID_set_AutoRefCurrents_GlobalConfig(self->OnlineID, *uz_ControlState_get_GlobalConfig(self->ControlState));
 	uz_OnlineID_AutoRefCurrents_step(self->OnlineID, Data);
 }

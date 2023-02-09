@@ -270,7 +270,12 @@ void ISR_Control(void *data)
 		dutyCycles_set2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
 		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
 		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
+
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output.enable_TriState[0], ParaID_Data.ElectricalID_Output.enable_TriState[1], ParaID_Data.ElectricalID_Output.enable_TriState[2]);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output.enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[2]);
 		//ParaID end
+		//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+		//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, true, true, true);
 
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;

@@ -69,14 +69,15 @@ DS_Data Global_Data = {
 
 
 // voltage measurement
-#include "uz/uz_ParameterID/ElectricalID_6ph/FFTRecordedVoltage/FFTRecordedVoltage.h"
+#include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
+//#include "uz/uz_ParameterID/ElectricalID_6ph/FFTRecordedVoltage/FFTRecordedVoltage.h"
 float meas_array[10000];
-float frequencies[5001];
-float amplitudes[5001];
-float angles[5001];
 int transmit = 0;
-
-
+uz_ParaID_ElectricalID_fft_in_t psi_pms;
+//float frequencies[5001];
+  //  float amplitudes[5001];
+   // float angles[5001];
+   // float ISR_sampletime = 1.0f/10000.0f;
 
 // Gan-Inverter:-----------------------------
 
@@ -114,9 +115,6 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
-
-
-
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -142,11 +140,6 @@ int main(void)
             initialization_chain = init_FOC;
             break;
         case init_FOC:
-
-
-
-
-
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -191,11 +184,12 @@ int main(void)
             break;
         }
 
-        if(transmit)
+        if(ParaID_Data.finished_voltage_measurement && !psi_pms.finished_flag)
         {
-        	transmit = 0;
         	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
-        	FFTRecordedVoltage(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR,frequencies, amplitudes, angles);
+
+        	//FFTRecordedVoltage(meas_array, ISR_sampletime, frequencies, amplitudes, angles);
+        	psi_pms = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
         }
     }
     return (status);

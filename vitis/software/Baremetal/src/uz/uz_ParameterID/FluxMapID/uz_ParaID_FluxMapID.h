@@ -41,7 +41,7 @@ void uz_FluxMapID_step(uz_ParaID_FluxMapID_t *self);
 void uz_FluxMapID_set_Config(uz_ParaID_FluxMapID_t *self, uz_ParaID_FluxMapIDConfig_t Config);
 void uz_FluxMapID_set_ActualValues(uz_ParaID_FluxMapID_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_FluxMapID_set_GlobalConfig(uz_ParaID_FluxMapID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
-void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
 
 bool uz_FluxMapID_get_enteredFluxMapID(uz_ParaID_FluxMapID_t *self);
 bool uz_FluxMapID_get_finishedFluxMapID(uz_ParaID_FluxMapID_t *self);

@@ -73,10 +73,10 @@ void uz_FluxMapID_set_GlobalConfig(uz_ParaID_FluxMapID_t *self, uz_ParaID_Global
 	self->input.GlobalConfig_out = GlobalConfig;
 }
 
-void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ControlFlags = ControlFlags;
+	self->input.ControlFlags = *ControlFlags;
 }
 
 bool uz_FluxMapID_get_enteredFluxMapID(uz_ParaID_FluxMapID_t *self) {

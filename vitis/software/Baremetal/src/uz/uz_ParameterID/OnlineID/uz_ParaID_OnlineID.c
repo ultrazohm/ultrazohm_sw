@@ -80,16 +80,18 @@ void uz_OnlineID_set_GlobalConfig(uz_ParaID_OnlineID_t *self, uz_ParaID_GlobalCo
 	self->input.GlobalConfig_out = GlobalConfig;
 }
 
-void uz_OnlineID_set_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+void uz_OnlineID_set_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ControlFlags = ControlFlags;
+	self->input.ControlFlags = *ControlFlags;
 }
 
-void uz_OnlineID_set_cleaned_psi_array(uz_ParaID_OnlineID_t *self, float cleaned_psi_array[600]) {
+void uz_OnlineID_set_cleaned_psi_array(uz_ParaID_OnlineID_t *self, float* array_pointer) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	memcpy(self->input.cleaned_psi_array, cleaned_psi_array, sizeof(self->input.cleaned_psi_array));
+	for(uint32_t i = 0U; i < (sizeof(self->input.cleaned_psi_array)); i++) {
+		self->input.cleaned_psi_array[0] = array_pointer[0];
+	}
 }
 
 bool uz_OnlineID_get_enteredOnlineID(uz_ParaID_OnlineID_t *self) {
@@ -161,10 +163,10 @@ void uz_OnlineID_set_AutoRefCurrents_GlobalConfig(uz_ParaID_OnlineID_t *self, uz
 	uz_AutoRefCurrents_set_GlobalConfig(self->AutoRefCurrents, GlobalConfig);
 }
 
-void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t ControlFlags) {
+void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_AutoRefCurrents_set_ControlFlags(self->AutoRefCurrents, &ControlFlags);
+	uz_AutoRefCurrents_set_ControlFlags(self->AutoRefCurrents, ControlFlags);
 }
 
 uz_ParaID_FluxMapsData_t* uz_OnlineID_get_InterpMeshGrid_FluxMapData(uz_ParaID_OnlineID_t *self) {

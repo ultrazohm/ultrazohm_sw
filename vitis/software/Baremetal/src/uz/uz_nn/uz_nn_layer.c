@@ -120,11 +120,8 @@ void uz_nn_layer_back(uz_nn_layer_t *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_matrix_set_unity_matrix(self->derivate_gradients);// ist das überhaupt nötig? wahrscheinlich nicht
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-    uz_matrix_apply_function_to_each_element(self->derivate_gradients, self->activation_function_derivative); 
-    // diese Zeile noch ändern kostet unnötig Rechenzeit!
-    uz_matrix_set_zero_except_diagonal(self->derivate_gradients); //Nebendiagonalen 0 setzen, da activierungfunktionsableitung von 0 eins ergibt
+    uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     //uz_matrix_multiply(self->sumout,self->derivate_gradients,self->gradientslocal);
 
 }
@@ -133,7 +130,7 @@ float uz_nn_layer_delta(uz_nn_layer_t *const self,float error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
- //   uz_matrix_multiply(self->derivate_gradients,error,self->gradientslocal);
+    // uz_matrix_multiply(self->derivate_gradients,error,self->gradientslocal);
 
 }
 

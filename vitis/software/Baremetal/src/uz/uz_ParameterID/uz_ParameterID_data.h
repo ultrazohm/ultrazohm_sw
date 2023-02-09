@@ -155,6 +155,12 @@ typedef struct {
   real32_T psi_pm[5];
 } uz_ParaID_ElectricalID_output_t;
 
+typedef struct {
+  boolean_T finished_flag;
+  real32_T psi_pm_amplitude[5];
+  real32_T psi_pm_angle[5];
+} uz_ParaID_ElectricalID_fft_in_t;
+
 //----------------------------------------//
 //----------------------------------------//
 //------------FluxMapID-------------------//
@@ -372,6 +378,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
 	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
+  uz_ParaID_ElectricalID_fft_in_t ElectricalID_FFT;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
@@ -388,11 +395,5 @@ typedef struct uz_ParameterID_Data_t {
 													1 = Current_Control \n
 													2 = Speed_Control*/
 } uz_ParameterID_Data_t;
-
-typedef struct {
-  boolean_T finished_flag;
-  real32_T psi_pm_amplitude[5];
-  real32_T psi_pm_angle[5];
-} uz_ParaID_ElectricalID_fft_in_t;
 
 #endif

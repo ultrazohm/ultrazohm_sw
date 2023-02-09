@@ -40,7 +40,12 @@ void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self);
 
 void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float psi_array_in[600]);
 void uz_InterpMeshGrid_set_i_rat(uz_ParaID_InterpMeshGrid_t *self, float i_rat);
-void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t OnlineID_input);
+void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t* OnlineID_input);
 
 uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self);
+
+
+
+
+float* uz_InterpMeshGrid_test(uz_ParaID_InterpMeshGrid_t *self);
 #endif

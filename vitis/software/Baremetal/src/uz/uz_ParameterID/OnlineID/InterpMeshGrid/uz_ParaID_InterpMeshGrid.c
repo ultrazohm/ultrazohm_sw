@@ -56,10 +56,12 @@ void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self) {
 	InterpMeshGrid_step(self->PtrToModelData);
 }
 
-void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float psi_array_in[600]) {
+void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float* psi_array_pointer) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	memcpy(self->input.psi_array_in, psi_array_in, sizeof(self->input.psi_array_in));
+	for (uint32_t i = 0U; i < sizeof(self->input.psi_array_in); i++) {
+		self->input.psi_array_in[i] = psi_array_pointer[i];
+	}
 }
 
 void uz_InterpMeshGrid_set_i_rat(uz_ParaID_InterpMeshGrid_t *self, float i_rat) {
@@ -68,10 +70,16 @@ void uz_InterpMeshGrid_set_i_rat(uz_ParaID_InterpMeshGrid_t *self, float i_rat) 
 	self->input.i_rat = i_rat;
 }
 
-void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t OnlineID_input) {
+void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t* OnlineID_input) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.OnlineID_input = OnlineID_input;
+	self->input.OnlineID_input = *OnlineID_input;
+}
+
+float* uz_InterpMeshGrid_test(uz_ParaID_InterpMeshGrid_t *self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->input.psi_array_in[0]);
 }
 
 uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self) {

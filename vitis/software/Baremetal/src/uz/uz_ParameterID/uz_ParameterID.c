@@ -298,14 +298,14 @@ static void uz_ParaID_ElectricalID_step(uz_ParameterID_t* self, uz_ParameterID_D
 	uz_ElectricalID_set_ActualValues(self->ElectricalID, Data->ActualValues);
 	uz_ElectricalID_set_Config(self->ElectricalID, Data->ElectricalID_Config);
 	uz_ElectricalID_set_GlobalConfig(self->ElectricalID, *uz_ControlState_get_GlobalConfig(self->ControlState));
-	uz_ElectricalID_set_ControlFlags(self->ElectricalID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_ElectricalID_set_ControlFlags(self->ElectricalID, uz_ControlState_get_ControlFlags(self->ControlState));
 
 	//Step the function
 	uz_ElectricalID_step(self->ElectricalID);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_ElectricalID_get_FOC_output(self->ElectricalID));
-	uz_ControlState_set_ElectricalID_output(self->ControlState, *uz_ElectricalID_get_output(self->ElectricalID));
+	uz_ControlState_set_ElectricalID_output(self->ControlState, uz_ElectricalID_get_output(self->ElectricalID));
 	uz_ControlState_set_enteredElectricalID(self->ControlState, uz_ElectricalID_get_enteredElectricalID(self->ElectricalID));
 	uz_ControlState_set_finishedElectricalID(self->ControlState, uz_ElectricalID_get_finishedElectricalID(self->ElectricalID));
 }
@@ -327,7 +327,7 @@ static void uz_ParaID_FrictionID_step(uz_ParameterID_t* self, uz_ParameterID_Dat
 	uz_FrictionID_set_ActualValues(self->FrictionID, Data->ActualValues);
 	uz_FrictionID_set_Config(self->FrictionID, Data->FrictionID_Config);
 	uz_FrictionID_set_GlobalConfig(self->FrictionID, *uz_ControlState_get_GlobalConfig(self->ControlState));
-	uz_FrictionID_set_ControlFlags(self->FrictionID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_FrictionID_set_ControlFlags(self->FrictionID, uz_ControlState_get_ControlFlags(self->ControlState));
 
 	//Step the function
 	uz_FrictionID_step(self->FrictionID);
@@ -344,7 +344,7 @@ static void uz_ParaID_TwoMassID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 	uz_TwoMassID_set_ActualValues(self->TwoMassID, Data->ActualValues);
 	uz_TwoMassID_set_Config(self->TwoMassID, Data->TwoMassID_Config);
 	uz_TwoMassID_set_GlobalConfig(self->TwoMassID, *uz_ControlState_get_GlobalConfig(self->ControlState));
-	uz_TwoMassID_set_ControlFlags(self->TwoMassID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_TwoMassID_set_ControlFlags(self->TwoMassID, uz_ControlState_get_ControlFlags(self->ControlState));
 
 	//Step the function
 	uz_TwoMassID_step(self->TwoMassID);
@@ -361,7 +361,7 @@ static void uz_ParaID_FluxMapID_step(uz_ParameterID_t* self, uz_ParameterID_Data
 	uz_FluxMapID_set_ActualValues(self->FluxMapID, Data->ActualValues);
 	uz_FluxMapID_set_Config(self->FluxMapID, Data->FluxMapID_Config);
 	uz_FluxMapID_set_GlobalConfig(self->FluxMapID, *uz_ControlState_get_GlobalConfig(self->ControlState));
-	uz_FluxMapID_set_ControlFlags(self->FluxMapID, *uz_ControlState_get_ControlFlags(self->ControlState));
+	uz_FluxMapID_set_ControlFlags(self->FluxMapID, uz_ControlState_get_ControlFlags(self->ControlState));
 
 	//Step the function
 	uz_FluxMapID_step(self->FluxMapID);

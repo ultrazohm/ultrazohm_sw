@@ -139,7 +139,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config,Data->ActualValues,Data->GlobalConfig,*Data->ControlFlags);
+	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
 
 	//Update Control-State-inputs
 	self->ControlState->input.ElectricalID_FOC_output = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
@@ -310,6 +310,9 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->Psi_D_pointer = 0.0f;
 	Data->Psi_Q_pointer = 0.0f;
 	Data->ParaID_Control_Selection = No_Control;
+
+	//initialize fft in
+	Data->ElectricalID_FFT.finished_flag = false;
 }
 
 #endif

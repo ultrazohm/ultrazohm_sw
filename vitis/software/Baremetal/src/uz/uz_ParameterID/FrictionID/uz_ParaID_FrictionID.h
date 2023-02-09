@@ -41,7 +41,7 @@ void uz_FrictionID_step(uz_ParaID_FrictionID_t *self);
 void uz_FrictionID_set_Config(uz_ParaID_FrictionID_t *self, uz_ParaID_FrictionIDConfig_t Config);
 void uz_FrictionID_set_ActualValues(uz_ParaID_FrictionID_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_FrictionID_set_GlobalConfig(uz_ParaID_FrictionID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
-void uz_FrictionID_set_ControlFlags(uz_ParaID_FrictionID_t *self, uz_ParaID_ControlFlags_t ControlFlags);
+void uz_FrictionID_set_ControlFlags(uz_ParaID_FrictionID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
 
 bool uz_FrictionID_get_enteredFrictionID(uz_ParaID_FrictionID_t *self);
 bool uz_FrictionID_get_finishedFrictionID(uz_ParaID_FrictionID_t *self);

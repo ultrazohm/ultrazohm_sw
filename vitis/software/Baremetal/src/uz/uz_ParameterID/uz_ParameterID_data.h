@@ -70,6 +70,7 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
+  uint32_T motor_type; /**< 0 = SMPMSM, 1 = IPMSM*/
 } uz_ParaID_GlobalConfig_t;
 
 
@@ -97,6 +98,7 @@ typedef struct {
   real32_T M_ref_FOC;  /**< reference torque for the setpoint function */
   uint16_T activeState; /**< activeState of the ID-states */
   real32_T n_ref_FOC; /**< reference speed for the speed controller */
+  boolean_T enableFOC_torque; /**<flag to enable torque controller*/
   boolean_T enableFOC_speed; /**<flag to enable speed controller */
   boolean_T enableFOC_current; /**<flag to enable current controller */
   boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */

@@ -25,15 +25,18 @@
 #include "uz_Transformation.h"
 #include "uz_CurrentControl.h"
 #include "uz_speedcontrol.h"
+#include "uz_setpoint.h"
 #include "uz_PWM_SS_2L.h" 
 #include "uz_piController.h"
 #include "uz_space_vector_limitation.h"
 #include "uz_linear_decoupling.h"
 #include "uz_signals.h"
+#include "uz_newton_raphson.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};
 struct uz_SpeedControl_config config_n = {0};
+struct uz_SetPoint_config config_sp = {0};
 void setUp(void)
 {
     //Have to be set to init FOC%SpeedControl to check individual asserts later. 
@@ -48,6 +51,11 @@ void setUp(void)
     config_n.config_controller.samplingTime_sec = 0.00001f;
     config_n.config_controller.upper_limit = 10.0f;
     config_n.config_controller.lower_limit = -10.0f;
+    config_sp.config_PMSM.Ld_Henry = 0.1f;
+    config_sp.config_PMSM.Lq_Henry = 0.1f;
+    config_sp.config_PMSM.polePairs = 4.0f;
+    config_sp.config_PMSM.I_max_Ampere = 10.0f;
+    config_sp.config_PMSM.R_ph_Ohm = 0.3f;
 
 }
 
@@ -78,17 +86,26 @@ void test_uz_ParameterID_generate_DutyCycle_PWM_NULL(void) {
 void test_uz_ParameterID_Controller_Data_NULL(void) {
     uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
     uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, CC_instance, SC_instance));
+    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);   
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, CC_instance, SC_instance, SP_instance));
 }
 
 void test_uz_ParameterID_Controller_FOC_NULL(void) {
     uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, NULL, SC_instance));
+    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, NULL, SC_instance, SP_instance));
 }
 
 void test_uz_ParameterID_Controller_SC_NULL(void) {
     uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, NULL));
+    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, NULL, SP_instance));
+}
+
+void test_uz_ParameterID_Controller_SP_NULL(void) {
+    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
+    uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, SC_instance, NULL));
 }
 
 void test_uz_ParameterID_CleanPsiArray_NULL(void) {

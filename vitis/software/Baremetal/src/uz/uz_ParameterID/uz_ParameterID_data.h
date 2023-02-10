@@ -153,10 +153,12 @@ typedef struct {
   uz_6ph_dq_t inductances_6ph;
   uz_6ph_dq_t resistances_6ph;
   real32_T psi_pm[5];
+  real32_T psi_pm_angle[5];
 } uz_ParaID_ElectricalID_output_t;
 
 typedef struct {
   boolean_T finished_flag;
+  real32_T psi_pm_frequency[5];
   real32_T psi_pm_amplitude[5];
   real32_T psi_pm_angle[5];
 } uz_ParaID_ElectricalID_fft_in_t;

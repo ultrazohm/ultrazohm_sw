@@ -75,5 +75,6 @@ void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint
 
 uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000], float ISR_sampletime);
  
+uz_ParaID_ElectricalID_fft_in_t uz_correct_psi_pms_ElectricalID(uz_ParaID_ElectricalID_fft_in_t psi_pm_uncorrected, uz_ParaID_GlobalConfig_t global_config, const uint16_t n_order);
 
 #endif // FREQUENCY_ANALYSIS_H

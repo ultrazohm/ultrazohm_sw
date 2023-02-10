@@ -158,6 +158,7 @@ typedef struct {
 
 typedef struct {
   boolean_T finished_flag;
+  real32_T psi_pm_frequency[5];
   real32_T psi_pm_amplitude[5];
   real32_T psi_pm_angle[5];
 } uz_ParaID_ElectricalID_fft_in_t;

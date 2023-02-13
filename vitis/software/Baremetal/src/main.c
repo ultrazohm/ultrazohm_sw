@@ -62,7 +62,7 @@ DS_Data Global_Data = {
     		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
 	.av.U_ZK = 36.0f,
-	.av.theta_offset =  0.79,
+	//.av.theta_offset =  0.79,
 	.av.I_d_ref = 0,
 	.av.I_q_ref = 0,
 };
@@ -90,8 +90,6 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
     .base_address = XPAR_UZ_DIGITAL_ADAPTER_UZ_D_GAN_INVERTER_UZ_D_GAN_INVERTER_0_BASEADDR,
     .ip_clk_frequency_Hz = 100000
 };
-
-
 
 
 // Init: --------------------------------------
@@ -196,27 +194,26 @@ int main(void)
 
 void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run)
 {
-	printf("ParaID Out\n");
 	printf("Run, Rd, Rq, Rx, Ry, Rz1, Rz2\n");
 	printf("%d, %f, %f, %f, %f, %f, %f\n", run, mess.resistances_6ph.d, mess.resistances_6ph.q, mess.resistances_6ph.x, mess.resistances_6ph.y, mess.resistances_6ph.z1, mess.resistances_6ph.z2);
 
 	printf("Run, Ld, Lq, Lx, Ly, Lz1, Lz2\n");
-	printf("%d, %f, %f, %f, %f, %f, %f\n", run, mess.inductances_6ph.d, mess.inductances_6ph.q, mess.inductances_6ph.x, mess.inductances_6ph.y, mess.inductances_6ph.z1, mess.inductances_6ph.z2);
+	printf("%d, %f, %f, %f, %f, %f, %f\n", run, mess.inductances_6ph.d*1000.0f, mess.inductances_6ph.q*1000.0f, mess.inductances_6ph.x*1000.0f, mess.inductances_6ph.y*1000.0f, mess.inductances_6ph.z1*1000.0f, mess.inductances_6ph.z2*1000.0f);
 
 	printf("Run, fPsiPM1_raw, fPsiPM3_raw, fPsiPM5_raw, fPsiPM7_raw, fPsiPM9_raw\n");
 	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_frequency[0], uncorrected.psi_pm_frequency[1], uncorrected.psi_pm_frequency[2], uncorrected.psi_pm_frequency[3], uncorrected.psi_pm_frequency[4]);
 	printf("Run, mPsiPM1_raw, mPsiPM3_raw, mPsiPM5_raw, mPsiPM7_raw, mPsiPM9_raw\n");
-	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_amplitude[0], uncorrected.psi_pm_amplitude[1], uncorrected.psi_pm_amplitude[2], uncorrected.psi_pm_amplitude[3], uncorrected.psi_pm_amplitude[4]);
+	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_amplitude[0]*1000.0f, uncorrected.psi_pm_amplitude[1]*1000.0f, uncorrected.psi_pm_amplitude[2]*1000.0f, uncorrected.psi_pm_amplitude[3]*1000.0f, uncorrected.psi_pm_amplitude[4]*1000.0f);
 	printf("Run, aPsiPM1_raw, aPsiPM3_raw, aPsiPM5_raw, aPsiPM7_raw, aPsiPM9_raw\n");
 	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_angle[0], uncorrected.psi_pm_angle[1], uncorrected.psi_pm_angle[2], uncorrected.psi_pm_angle[3], uncorrected.psi_pm_angle[4]);
 
 	printf("Run, fPsiPM1, fPsiPM3, fPsiPM5, fPsiPM7, fPsiPM9\n");
 	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_frequency[0], corrected.psi_pm_frequency[1], corrected.psi_pm_frequency[2], corrected.psi_pm_frequency[3], corrected.psi_pm_frequency[4]);
 	printf("Run, mPsiPM1, mPsiPM3, mPsiPM5, mPsiPM7, mPsiPM9\n");
-	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_amplitude[0], corrected.psi_pm_amplitude[1], corrected.psi_pm_amplitude[2], corrected.psi_pm_amplitude[3], corrected.psi_pm_amplitude[4]);
+	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_amplitude[0]*1000.0f, corrected.psi_pm_amplitude[1]*1000.0f, corrected.psi_pm_amplitude[2]*1000.0f, corrected.psi_pm_amplitude[3]*1000.0f, corrected.psi_pm_amplitude[4]*1000.0f);
 	printf("Run, aPsiPM1, aPsiPM3, aPsiPM5, aPsiPM7, aPsiPM9\n");
 	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_angle[0], corrected.psi_pm_angle[1], corrected.psi_pm_angle[2], corrected.psi_pm_angle[3], corrected.psi_pm_angle[4]);
 
 	printf("Run, theta_off\n");
-	printf("%d, %f", run, mess.thetaOffset);
+	printf("%d, %f\n", run, mess.thetaOffset);
 }

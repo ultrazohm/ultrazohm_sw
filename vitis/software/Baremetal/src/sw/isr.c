@@ -89,7 +89,7 @@ uz_6ph_abc_t u_phase_UDC = {0};
 uz_6ph_abc_t u_phase = {0};
 float u_neutral = 0.0f;
 float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
-
+float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
 
 
@@ -119,7 +119,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
 	ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
 	//ParaID ende
 
 
@@ -137,12 +137,12 @@ void ISR_Control(void *data)
 	u_neutral = (u_phase_UDC.a1 + u_phase_UDC.b1 + u_phase_UDC.c1 + u_phase_UDC.a2 + u_phase_UDC.b2 + u_phase_UDC.c2) / 6.0f;
 
 	// calculate phase voltages
-	u_phase.a1 = (u_phase_UDC.a1 - u_neutral)*24.7f;
-	u_phase.b1 = u_phase_UDC.b1 - u_neutral;
-	u_phase.c1 = u_phase_UDC.c1 - u_neutral;
-	u_phase.a2 = u_phase_UDC.a2 - u_neutral;
-	u_phase.b2 = u_phase_UDC.b2 - u_neutral;
-	u_phase.c2 = u_phase_UDC.c2 - u_neutral;
+	u_phase.a1 = (u_phase_UDC.a1 - u_neutral)*voltage_divider_factor;
+	u_phase.b1 = (u_phase_UDC.b1 - u_neutral)*voltage_divider_factor;
+	u_phase.c1 = (u_phase_UDC.c1 - u_neutral)*voltage_divider_factor;
+	u_phase.a2 = (u_phase_UDC.a2 - u_neutral)*voltage_divider_factor;
+	u_phase.b2 = (u_phase_UDC.b2 - u_neutral)*voltage_divider_factor;
+	u_phase.c2 = (u_phase_UDC.c2 - u_neutral)*voltage_divider_factor;
 
 	//assign ADC values to motor current variables
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4);

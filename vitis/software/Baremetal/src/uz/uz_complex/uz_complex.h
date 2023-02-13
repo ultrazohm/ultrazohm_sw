@@ -1,7 +1,7 @@
 #ifndef UZ_COMPLEX_H
 #define UZ_COMPLEX_H
 
-#include "../../uz_math_constants.h"
+#include "../uz_math_constants.h"
 #include <stdint.h>
 #include <math.h>
 

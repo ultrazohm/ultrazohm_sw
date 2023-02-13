@@ -1,5 +1,5 @@
 #include "uz_complex.h"
-#include "../../uz_HAL.h"
+#include "../uz_HAL.h"
 
 
 uz_complex_cartesian_t uz_complex_multiplication(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2)

@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.43
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Feb 13 10:22:57 2023
+ * C/C++ source code generated on : Mon Feb 13 11:37:04 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,6 +63,7 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
+
 
 
 /* Block signals and states (default storage) for system '<Root>' */
@@ -160,11 +161,11 @@ typedef struct {
   uint32_T counter_i;          /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint32_T exitPortIndex_d;    /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint32_T counter_j;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint32_T exitPortIndex_b5;   /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  uint32_T exitPortIndex_b;    /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T counter_g;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T exitPortIndex_a;    /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T counter_f;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint32_T exitPortIndex_ji;   /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  uint32_T exitPortIndex_j;    /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T counter_o;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T exitPortIndex_p;     /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint32_T counter_n;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
@@ -184,17 +185,17 @@ typedef struct {
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sqqzw66ymXf5yiE8TS3bwbH_;
+  uint8_T is_c14_sS0DUDPJXu3UmW4bX8jfLpB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_sofOdUAuKYRLrbWgFhk0O3_S;
+  uint8_T is_c14_sz6k2JkkNbSiUzK0sxwG4eF_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_s61MEaM0QX1bmLWhMEaPg8G_;
+  uint8_T is_c14_sQa73ILtbRUhqWhZlRkOiGF_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_sLGoT5r5E9utOQkir7Kj8wD_;
+  uint8_T is_c14_sXk8xDDlDDsWtST7J04GULH_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_s193EyubssM6M4k9xZswDB_S;
+  uint8_T is_c14_seOL0ThG0BgXovqeDobSq4D_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_syLllmfXw1kcAFTVnn4uN2D_;
+  uint8_T is_c14_s51WMJx1dhbhtRLAJ2NuKPC_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;

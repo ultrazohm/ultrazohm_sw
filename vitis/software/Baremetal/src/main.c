@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-
+#include <stdio.h>
 
 //ParameterID Code
 #include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
@@ -72,12 +72,9 @@ DS_Data Global_Data = {
 #include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
 //#include "uz/uz_ParameterID/ElectricalID_6ph/FFTRecordedVoltage/FFTRecordedVoltage.h"
 float meas_array[10000];
-int transmit = 0;
-uz_ParaID_ElectricalID_fft_in_t psi_pms;
-//float frequencies[5001];
-  //  float amplitudes[5001];
-   // float angles[5001];
-   // float ISR_sampletime = 1.0f/10000.0f;
+uz_ParaID_ElectricalID_fft_in_t uncorrected;
+uz_ParaID_ElectricalID_fft_in_t corrected;
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run);
 
 // Gan-Inverter:-----------------------------
 
@@ -184,11 +181,42 @@ int main(void)
             break;
         }
 
-        if(ParaID_Data.finished_voltage_measurement && !psi_pms.finished_flag)
+        if(ParaID_Data.finished_voltage_measurement && !corrected.finished_flag)
         {
         	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
-        	ParaID_Data.ElectricalID_FFT = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
+        	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
+        	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
+        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output, 1);
+
+			ParaID_Data.ElectricalID_FFT = corrected;
         }
     }
     return (status);
+}
+
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run)
+{
+	printf("ParaID Out\n");
+	printf("Run, Rd, Rq, Rx, Ry, Rz1, Rz2\n");
+	printf("%d, %f, %f, %f, %f, %f, %f\n", run, mess.resistances_6ph.d, mess.resistances_6ph.q, mess.resistances_6ph.x, mess.resistances_6ph.y, mess.resistances_6ph.z1, mess.resistances_6ph.z2);
+
+	printf("Run, Ld, Lq, Lx, Ly, Lz1, Lz2\n");
+	printf("%d, %f, %f, %f, %f, %f, %f\n", run, mess.inductances_6ph.d, mess.inductances_6ph.q, mess.inductances_6ph.x, mess.inductances_6ph.y, mess.inductances_6ph.z1, mess.inductances_6ph.z2);
+
+	printf("Run, fPsiPM1_raw, fPsiPM3_raw, fPsiPM5_raw, fPsiPM7_raw, fPsiPM9_raw\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_frequency[0], uncorrected.psi_pm_frequency[1], uncorrected.psi_pm_frequency[2], uncorrected.psi_pm_frequency[3], uncorrected.psi_pm_frequency[4]);
+	printf("Run, mPsiPM1_raw, mPsiPM3_raw, mPsiPM5_raw, mPsiPM7_raw, mPsiPM9_raw\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_amplitude[0], uncorrected.psi_pm_amplitude[1], uncorrected.psi_pm_amplitude[2], uncorrected.psi_pm_amplitude[3], uncorrected.psi_pm_amplitude[4]);
+	printf("Run, aPsiPM1_raw, aPsiPM3_raw, aPsiPM5_raw, aPsiPM7_raw, aPsiPM9_raw\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, uncorrected.psi_pm_angle[0], uncorrected.psi_pm_angle[1], uncorrected.psi_pm_angle[2], uncorrected.psi_pm_angle[3], uncorrected.psi_pm_angle[4]);
+
+	printf("Run, fPsiPM1, fPsiPM3, fPsiPM5, fPsiPM7, fPsiPM9\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_frequency[0], corrected.psi_pm_frequency[1], corrected.psi_pm_frequency[2], corrected.psi_pm_frequency[3], corrected.psi_pm_frequency[4]);
+	printf("Run, mPsiPM1, mPsiPM3, mPsiPM5, mPsiPM7, mPsiPM9\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_amplitude[0], corrected.psi_pm_amplitude[1], corrected.psi_pm_amplitude[2], corrected.psi_pm_amplitude[3], corrected.psi_pm_amplitude[4]);
+	printf("Run, aPsiPM1, aPsiPM3, aPsiPM5, aPsiPM7, aPsiPM9\n");
+	printf("%d, %f, %f, %f, %f, %f\n", run, corrected.psi_pm_angle[0], corrected.psi_pm_angle[1], corrected.psi_pm_angle[2], corrected.psi_pm_angle[3], corrected.psi_pm_angle[4]);
+
+	printf("Run, theta_off\n");
+	printf("%d, %f", run, mess.thetaOffset);
 }

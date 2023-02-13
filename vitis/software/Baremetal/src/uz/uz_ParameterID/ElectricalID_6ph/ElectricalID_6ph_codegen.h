@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.41
+ * Model version                  : 3.43
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Feb  9 16:26:53 2023
+ * C/C++ source code generated on : Mon Feb 13 10:22:57 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -110,6 +110,8 @@ typedef struct {
   real32_T i_est_l[2048];
   real32_T setp_abc[6];
   real32_T setp_dq[6];
+  real32_T setp_abc_k[6];
+  real32_T setp_dq_c[6];
   real32_T H_a[4];
   real32_T R_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T L_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */

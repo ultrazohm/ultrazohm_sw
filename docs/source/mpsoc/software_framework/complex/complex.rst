@@ -13,23 +13,18 @@ If only one part of the complex number is used (only real, only imaginary or onl
 Reference
 =========
 
-.. doxygenstruct:: uz_complex_cartesian_t
+.. doxygentypedef:: uz_complex_cartesian_t
   :members:
 
-.. doxygenstruct:: uz_complex_exponential_t
+.. doxygentypedef:: uz_complex_exponential_t
   :members:
 
 .. doxygenfunction:: uz_complex_addition
-  :members:
 
 .. doxygenfunction:: uz_complex_multiplication
-  :members:
 
 .. doxygenfunction:: uz_complex_division
-  :members:
 
 .. doxygenfunction:: uz_complex_cartesian_to_exponential
-  :members:
 
 .. doxygenfunction:: uz_complex_exponential_to_cartesian
-  :members:

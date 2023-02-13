@@ -78,18 +78,15 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 }
 
 
-void uz_nn_backprop(uz_nn_t *self,float reference_output, float result)
+void uz_nn_backprop(uz_nn_t *self,float const reference_output)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    float error = uz_nn_calc_output_error(result,reference_output);
     // aus derivate matrix und nn zurückpropagieren und die lokalen gradienten Berechnen
-    uz_nn_layer_back(self->layer[2]);
-    uz_nn_layer_back(self->layer[1]);
-    uz_nn_layer_back(self->layer[0]);
-    // uz_nn_layer_delta(self->layer[2],error);
-    // uz_nn_layer_delta(self->layer[1],error);
-    // uz_nn_layer_delta(self->layer[0],error);
+    const float *reference = &reference_output;
+    uz_nn_layer_back_last_layer(self->layer[2], reference);
+    uz_nn_layer_back(self->layer[1],uz_nn_get_gradient_data(self,2),uz_nn_get_weight_matrix(self,2));
+    //uz_nn_layer_back(self->layer[0],uz_nn_get_gradient_data(self,1),uz_nn_get_weight_matrix(self,1));
 }
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
@@ -126,6 +123,12 @@ uz_matrix_t *uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer)
     uz_assert(self->is_ready);
     return uz_nn_layer_get_derivate_data(self->layer[layer - 1]);
 }
+uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_gradient_data(self->layer[layer - 1]);
+}
 
 uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer)
 {
@@ -155,10 +158,5 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
     uz_assert(self->is_ready);
     return self->number_of_outputs;
 }
-float uz_nn_calc_output_error(float output,float reference_output)
-{
-    float error=0.0f;
-    error = output - reference_output;
-    return error;
-}
+
 #endif

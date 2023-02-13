@@ -38,16 +38,8 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  * @param self 
  * @return uz_matrix_t* 
  */
-float uz_nn_calc_output_error(float output,float reference_output);
-/**
- * @brief Returns ...
- * 
- * @param output Output of nn
- * @param reference_output expected output 
- * @return float of error 
- */
-void uz_nn_backprop(uz_nn_t *self,float reference_output, float result);
 
+void uz_nn_backprop(uz_nn_t *self,float const reference_output);
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_t layer);
 uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer);
@@ -57,5 +49,6 @@ uz_matrix_t* uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer);
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
+uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer);
 
 #endif // UZ_NN_H

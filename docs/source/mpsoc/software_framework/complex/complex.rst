@@ -14,12 +14,12 @@ Reference
 =========
 
 .. doxygentypedef:: uz_complex_cartesian_t
-  :members:
 
 .. doxygentypedef:: uz_complex_exponential_t
-  :members:
 
 .. doxygenfunction:: uz_complex_addition
+
+.. doxygenfunction:: uz_complex_subtraction
 
 .. doxygenfunction:: uz_complex_multiplication
 

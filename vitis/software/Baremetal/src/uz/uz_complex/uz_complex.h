@@ -10,8 +10,8 @@
  *
  */
 typedef struct uz_complex_cartesian_t{
-    float real; /**< real component */
-    float imaginary; /**< imaginary component */
+    float real;             /**< real component */
+    float imaginary;        /**< imaginary component */
 }uz_complex_cartesian_t;
 
 /**
@@ -19,8 +19,8 @@ typedef struct uz_complex_cartesian_t{
  *
  */
 typedef struct uz_complex_exponential_t{
-    float absolute; /**< absolute of exponential complex number */
-    float phase; /**< phase of exponential complex number in rad */
+    float absolute;         /**< absolute of exponential complex number */
+    float phase;            /**< phase of exponential complex number in rad */
 }uz_complex_exponential_t;
 
 /**
@@ -28,7 +28,7 @@ typedef struct uz_complex_exponential_t{
  * 
  * @param arg1 first factor
  * @param arg2 second factor
- * @return the complex multiplication of both factors
+ * @return uz_complex_cartesian_t the complex multiplication of both factors
  */
 uz_complex_cartesian_t uz_complex_multiplication(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2);
 
@@ -37,7 +37,7 @@ uz_complex_cartesian_t uz_complex_multiplication(uz_complex_cartesian_t arg1, uz
  * 
  * @param arg1 first summand
  * @param arg2 second summand
- * @return the complex addition of both summands
+ * @return uz_complex_cartesian_t the complex addition of both summands
  */
 uz_complex_cartesian_t uz_complex_addition(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2);
 
@@ -46,7 +46,7 @@ uz_complex_cartesian_t uz_complex_addition(uz_complex_cartesian_t arg1, uz_compl
  * 
  * @param subtrahend number to subtract
  * @param minuend number to subtract with
- * @return the complex subtraction of subtrahend - minuend
+ * @return uz_complex_cartesian_t the complex subtraction of subtrahend - minuend
  */
 uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend, uz_complex_cartesian_t minuend);
 
@@ -55,7 +55,7 @@ uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend,
  * 
  * @param dividend number to get divided
  * @param divisor number to divide with
- * @return the complex division of dividend/divisor
+ * @return uz_complex_cartesian_t the complex division of dividend/divisor
 */
 uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_complex_cartesian_t divisor);
 
@@ -63,7 +63,7 @@ uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_c
  * @brief transformation from complex cartesian to complex exponential
  * 
  * @param in cartesian complex number
- * @return complex number in exponential form
+ * @return uz_complex_exponential_t complex number in exponential form
 */
 uz_complex_exponential_t uz_complex_cartesian_to_exponential(uz_complex_cartesian_t in);
 
@@ -71,7 +71,7 @@ uz_complex_exponential_t uz_complex_cartesian_to_exponential(uz_complex_cartesia
  * @brief transformation from complex exponential to complex cartesian
  * 
  * @param in exponential complex number
- * @return complex number in cartesian form
+ * @return uz_complex_cartesian_t complex number in cartesian form
 */
 uz_complex_cartesian_t uz_complex_exponential_to_cartesian(uz_complex_exponential_t in);
 

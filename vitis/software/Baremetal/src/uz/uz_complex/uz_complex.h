@@ -11,17 +11,17 @@
  */
 typedef struct uz_complex_cartesian_t{
     float real;             /**< real component */
-    float imaginary;        /**< imaginary component */
+    float imag;             /**< imaginary component */
 }uz_complex_cartesian_t;
 
 /**
  * @brief struct for complex number in exponantial form
  *
  */
-typedef struct uz_complex_exponential_t{
-    float absolute;         /**< absolute of exponential complex number */
-    float phase;            /**< phase of exponential complex number in rad */
-}uz_complex_exponential_t;
+typedef struct uz_complex_polar_t{
+    float abs;              /**< absolute of polar complex number */
+    float angle;            /**< phase of polar complex number in rad */
+}uz_complex_polar_t;
 
 /**
  * @brief multiplication for complex numbers
@@ -60,19 +60,19 @@ uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend,
 uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_complex_cartesian_t divisor);
 
 /**
- * @brief transformation from complex cartesian to complex exponential
+ * @brief transformation from complex cartesian to complex polar
  * 
  * @param in cartesian complex number
- * @return uz_complex_exponential_t complex number in exponential form
+ * @return uz_complex_polar_t complex number in polar form
 */
-uz_complex_exponential_t uz_complex_cartesian_to_exponential(uz_complex_cartesian_t in);
+uz_complex_polar_t uz_complex_cartesian_to_polar(uz_complex_cartesian_t in);
 
 /**
- * @brief transformation from complex exponential to complex cartesian
+ * @brief transformation from complex polar to complex cartesian
  * 
- * @param in exponential complex number
+ * @param in polar complex number
  * @return uz_complex_cartesian_t complex number in cartesian form
 */
-uz_complex_cartesian_t uz_complex_exponential_to_cartesian(uz_complex_exponential_t in);
+uz_complex_cartesian_t uz_complex_polar_to_cartesian(uz_complex_polar_t in);
 
 #endif // UZ_COMPLEX_H

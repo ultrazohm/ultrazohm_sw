@@ -18,6 +18,14 @@ uz_complex_cartesian_t uz_complex_addition(uz_complex_cartesian_t arg1, uz_compl
     return out;  
 }
 
+uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend, uz_complex_cartesian_t minuend)
+{
+    uz_complex_cartesian_t out;
+    out.real = subtrahend.real - minuend.real;
+    out.imaginary = subtrahend.imaginary - minuend.imaginary;
+    return out; 
+}
+
 uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_complex_cartesian_t divisor)
 {
     uz_assert(divisor.real!=0.0f && divisor.imaginary!=0.0f);

@@ -44,6 +44,13 @@ void test_uz_complex_addition(void)
     TEST_ASSERT_EQUAL_FLOAT(-1.0f,result.imaginary);
 }
 
+void test_uz_complex_subtraction(void)
+{
+    uz_complex_cartesian_t result = uz_complex_subtraction(test_arg1, test_arg2);
+    TEST_ASSERT_EQUAL_FLOAT(5.0f,result.real);
+    TEST_ASSERT_EQUAL_FLOAT(-5.0f,result.imaginary);
+}
+
 void test_uz_complex_division(void)
 {
     uz_complex_cartesian_t result = uz_complex_division(test_arg1, test_arg2);

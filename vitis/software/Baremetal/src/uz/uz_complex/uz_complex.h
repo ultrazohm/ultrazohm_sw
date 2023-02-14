@@ -42,6 +42,15 @@ uz_complex_cartesian_t uz_complex_multiplication(uz_complex_cartesian_t arg1, uz
 uz_complex_cartesian_t uz_complex_addition(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2);
 
 /**
+ * @brief subtraction for complex numbers
+ * 
+ * @param subtrahend number to subtract
+ * @param minuend number to subtract with
+ * @return the complex subtraction of subtrahend - minuend
+ */
+uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend, uz_complex_cartesian_t minuend);
+
+/**
  * @brief division for complex numbers
  * 
  * @param dividend number to get divided

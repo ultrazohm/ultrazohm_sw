@@ -123,18 +123,19 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
-void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const locgradprev,  uz_matrix_t const *const weightprev)
+void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev, uz_matrix_t *cache)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    //init Cout zwischenspeichern
-    float C[2] = {0};
-    struct uz_matrix_t C_matrix={0};
-    uz_matrix_t* C_out=uz_matrix_init(&C_matrix, C,UZ_MATRIX_SIZE(C),1,2);
-    uz_matrix_multiply(self->derivate_gradients,weightprev,C_out); //matrix zum zwischenspeichern
-    //uz_matrix_multiply(C_out,locgradprev,self->delta);
+    uz_matrix_multiply(self->derivate_gradients,weightprev,cache); //matrix zum zwischenspeichern
+    float cache1 = uz_matrix_get_element_zero_based(cache,0,0);
+    float cache2 = uz_matrix_get_element_zero_based(cache,1,0);
+    float cache3 = uz_matrix_get_element_zero_based(cache,0,1);
+    float cache4 = uz_matrix_get_element_zero_based(cache,1,1);
+    // funktioniert bis hierhin, cache1 hat die richtigen Werte
+    //uz_matrix_multiply(cache,locgradprev,self->gradientslocal);
 }
 
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference)
@@ -149,7 +150,7 @@ void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const re
     }
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
+    uz_matrix_multiply(self->derivate_gradients,self->error,self->gradientslocal);
 }
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)

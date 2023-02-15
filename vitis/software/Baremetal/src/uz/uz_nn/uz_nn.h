@@ -50,5 +50,4 @@ uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
 uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer);
-
 #endif // UZ_NN_H

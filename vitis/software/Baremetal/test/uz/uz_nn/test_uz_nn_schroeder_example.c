@@ -27,7 +27,7 @@ float d_3[UZ_MATRIX_SIZE(s_3)] = {0};
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float g_3[NUMBER_OF_OUTPUTS] = {0};
-// erro
+// error
 float e_1[2]={1.0f};
 float e_2[2]={1.0f};
 float e_3[1]={1.0f};
@@ -129,6 +129,11 @@ void test_uz_nn_schroeder(void)
     int columns=4;
     uz_matrix_t* my_matrix=uz_matrix_init(&input_matrix,derivatesarray,UZ_MATRIX_SIZE(derivatesarray),rows,columns);
     uz_nn_backprop(test,reference_output);
+    //check delta
+    // uz_matrix_t *deltahelper1 = uz_nn_get_gradient_data(test,2); // index 1-3 verwenden für nn mit 3 layern
+    // float delta1[2];
+    // delta1[0] = uz_matrix_get_element_zero_based(deltahelper1,0,0);
+    // delta1[1] = uz_matrix_get_element_zero_based(deltahelper1,1,0);
     // check derivates
     uz_matrix_t *helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern

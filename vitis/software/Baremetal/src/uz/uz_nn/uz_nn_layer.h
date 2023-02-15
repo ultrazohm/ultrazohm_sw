@@ -72,13 +72,13 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @param self 
  * @return uz_matrix* 
  */
-void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t const *const locgradprev,  uz_matrix_t const *const weightprev);
+void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,  uz_matrix_t *const weightprev, uz_matrix_t *cache);
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference);
 float uz_nn_layer_delta(uz_nn_layer_t *const self,float error);
-uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
-uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_localgradients(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const*const self);

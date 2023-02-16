@@ -5,7 +5,7 @@
  * File: FFTRecordedVoltage.h
  *
  * MATLAB Coder version            : 5.3
- * C/C++ source code generated on  : 07-Feb-2023 15:30:05
+ * C/C++ source code generated on  : 16-Feb-2023 14:08:29
  */
 
 #ifndef FFTRECORDEDVOLTAGE_H
@@ -22,8 +22,8 @@ extern "C" {
 
 /* Function Declarations */
 extern void FFTRecordedVoltage(const float data[10000], float sampletime,
-                               float frequencies[5001], float amplitudes[5001],
-                               float angles[5001]);
+                               float tol, float frequencies[5001],
+                               float amplitudes[5001], float angles[5001]);
 
 #ifdef __cplusplus
 }

@@ -5,7 +5,7 @@
  * File: FFTRecordedVoltage.c
  *
  * MATLAB Coder version            : 5.3
- * C/C++ source code generated on  : 07-Feb-2023 15:30:05
+ * C/C++ source code generated on  : 16-Feb-2023 14:08:29
  */
 
 /* Include Files */
@@ -91,12 +91,13 @@ static float rt_hypotf_snf(float u0, float u1)
  *
  * Arguments    : const float data[10000]
  *                float sampletime
+ *                float tol
  *                float frequencies[5001]
  *                float amplitudes[5001]
  *                float angles[5001]
  * Return Type  : void
  */
-void FFTRecordedVoltage(const float data[10000], float sampletime,
+void FFTRecordedVoltage(const float data[10000], float sampletime, float tol,
                         float frequencies[5001], float amplitudes[5001],
                         float angles[5001])
 {
@@ -793,7 +794,7 @@ void FFTRecordedVoltage(const float data[10000], float sampletime,
     /* depends on the size of recorded data! */
     nt_re = yCol[k].re;
     nt_im = yCol[k].im;
-    if (rt_hypotf_snf(nt_re, nt_im) < 1.0E-7F) {
+    if (rt_hypotf_snf(nt_re, nt_im) < tol) {
       nt_re = 0.0F;
       nt_im = 0.0F;
       yCol[k].re = 0.0F;

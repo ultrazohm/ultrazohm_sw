@@ -2,7 +2,7 @@
 ## Makefile generated for component 'FFTRecordedVoltage'. 
 ## 
 ## Makefile     : FFTRecordedVoltage_rtw.mk
-## Generated on : Tue Feb 07 15:30:12 2023
+## Generated on : Thu Feb 16 14:08:45 2023
 ## Final product: ./FFTRecordedVoltage.lib
 ## Product type : static-library
 ## 
@@ -24,7 +24,7 @@ MAKEFILE                  = FFTRecordedVoltage_rtw.mk
 MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2021b
 MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2021b/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/docs/source/mpsoc/software_framework/ParameterID/simulink_model/function_references
+START_DIR                 = C:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/docs/source/mpsoc/software_framework/ParameterID/simulink_model/function_references
 TGT_FCN_LIB               = ISO_C
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0

@@ -184,7 +184,7 @@ int main(void)
         	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
         	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
         	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
-        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output, 10);
+        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output, 2U);
 
 			ParaID_Data.ElectricalID_FFT = corrected;
         }
@@ -194,37 +194,37 @@ int main(void)
 
 void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run)
 {
-	printf("Rd:%f	",mess.resistances_6ph.d);
-	printf("Rq:%f	",mess.resistances_6ph.q);
-	printf("Rx:%f	",mess.resistances_6ph.x);
-	printf("Ry:%f	",mess.resistances_6ph.y);
-	printf("Rz1:%f	",mess.resistances_6ph.z1);
+	printf("Rd:%f\n",mess.resistances_6ph.d);
+	printf("Rq:%f\n",mess.resistances_6ph.q);
+	printf("Rx:%f\n",mess.resistances_6ph.x);
+	printf("Ry:%f\n",mess.resistances_6ph.y);
+	printf("Rz1:%f\n",mess.resistances_6ph.z1);
 	printf("Rz2:%f\n",mess.resistances_6ph.z2);
 
-	printf("Ld:%f	",mess.inductances_6ph.d);
-	printf("Lq:%f	",mess.inductances_6ph.q);
-	printf("Lx:%f	",mess.inductances_6ph.x);
-	printf("Ly:%f	",mess.inductances_6ph.y);
-	printf("Lz1:%f	",mess.inductances_6ph.z1);
-	printf("Lz2:%f\n",mess.inductances_6ph.z2);
+	printf("Ld:%f\n",mess.inductances_6ph.d*1000.0f);
+	printf("Lq:%f\n",mess.inductances_6ph.q*1000.0f);
+	printf("Lx:%f\n",mess.inductances_6ph.x*1000.0f);
+	printf("Ly:%f\n",mess.inductances_6ph.y*1000.0f);
+	printf("Lz1:%f\n",mess.inductances_6ph.z1*1000.0f);
+	printf("Lz2:%f\n",mess.inductances_6ph.z2*1000.0f);
 
-	printf("Psi_f1:%f	",corrected.psi_pm_frequency[0]);
-	printf("Psi_f2:%f	",corrected.psi_pm_frequency[1]);
-	printf("Psi_f3:%f	",corrected.psi_pm_frequency[2]);
-	printf("Psi_f4:%f	",corrected.psi_pm_frequency[3]);
+	printf("Psi_f1:%f\n",corrected.psi_pm_frequency[0]);
+	printf("Psi_f2:%f\n",corrected.psi_pm_frequency[1]);
+	printf("Psi_f3:%f\n",corrected.psi_pm_frequency[2]);
+	printf("Psi_f4:%f\n",corrected.psi_pm_frequency[3]);
 	printf("Psi_f5:%f\n",corrected.psi_pm_frequency[4]);
 
-	printf("Psi_m1:%f	",corrected.psi_pm_amplitude[0]*1000.0f);
-	printf("Psi_m2:%f	",corrected.psi_pm_amplitude[1]*1000.0f);
-	printf("Psi_m3:%f	",corrected.psi_pm_amplitude[2]*1000.0f);
-	printf("Psi_m4:%f	",corrected.psi_pm_amplitude[3]*1000.0f);
+	printf("Psi_m1:%f\n",corrected.psi_pm_amplitude[0]*1000.0f);
+	printf("Psi_m2:%f\n",corrected.psi_pm_amplitude[1]*1000.0f);
+	printf("Psi_m3:%f\n",corrected.psi_pm_amplitude[2]*1000.0f);
+	printf("Psi_m4:%f\n",corrected.psi_pm_amplitude[3]*1000.0f);
 	printf("Psi_m5:%f\n",corrected.psi_pm_amplitude[4]*1000.0f);
 
-	printf("Psi_a1:%f	",corrected.psi_pm_angle[0]);
-	printf("Psi_a2:%f	",corrected.psi_pm_angle[1]);
-	printf("Psi_a3:%f	",corrected.psi_pm_angle[2]);
-	printf("Psi_a4:%f	",corrected.psi_pm_angle[3]);
+	printf("Psi_a1:%f\n",corrected.psi_pm_angle[0]);
+	printf("Psi_a2:%f\n",corrected.psi_pm_angle[1]);
+	printf("Psi_a3:%f\n",corrected.psi_pm_angle[2]);
+	printf("Psi_a4:%f\n",corrected.psi_pm_angle[3]);
 	printf("Psi_a5:%f\n",corrected.psi_pm_angle[4]);
 
-	printf("theta%f\n", mess.thetaOffset);
+	printf("theta:%f\n", mess.thetaOffset);
 }

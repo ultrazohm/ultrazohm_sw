@@ -218,4 +218,5 @@ void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 void uz_matrix_set_vector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const vector);
 void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
 void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
+void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 #endif // UZ_MATRIX_H

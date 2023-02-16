@@ -381,3 +381,28 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
     }
 
 }
+
+void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    // eine Spalte nur, wegen 
+    uz_assert(A->columns == B->columns == C_out->columns == 1);
+    uz_assert((A->rows + B->rows) == C_out->rows);
+    uz_matrix_set_zero(C_out);
+    uint32_t m = A->rows;
+    uint32_t n = B->rows;
+    // loop first through A, then through C
+    for (uint32_t i = 0; i < m; i++)
+    {
+    C_out->data[i] = A->data[i];
+    }
+    for (uint32_t k = 0; k < n; k++)
+    {
+    C_out->data[m + k] = B->data[k];
+    }
+}

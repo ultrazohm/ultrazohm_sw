@@ -86,10 +86,12 @@ void uz_nn_backprop(uz_nn_t *self,float const reference_output)
     uz_matrix_t *cache1=uz_matrix_init(&C1_matrix, C1,UZ_MATRIX_SIZE(C1),2,1);
     struct uz_matrix_t C2_matrix={0};
     uz_matrix_t *cache2=uz_matrix_init(&C2_matrix, C2,UZ_MATRIX_SIZE(C2),2,2);
-    uz_matrix_t *delta = uz_nn_get_gradient_data(self,2);
-    uz_matrix_t *w_x = uz_nn_get_weight_matrix(self,3);
     uz_nn_layer_back(self->layer[1],uz_nn_get_gradient_data(self,3),uz_nn_get_weight_matrix(self,3),cache1);
     uz_nn_layer_back(self->layer[0],uz_nn_get_gradient_data(self,2),uz_nn_get_weight_matrix(self,2),cache2);
+    //Berechne alle Gradienten
+    uz_nn_layer_calc_gradients(self->layer[2]);
+    uz_nn_layer_calc_gradients(self->layer[1]);
+    uz_nn_layer_calc_gradients(self->layer[0]);
 }
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)

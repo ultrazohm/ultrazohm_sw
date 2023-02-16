@@ -79,8 +79,8 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
     self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
     self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.length_of_sumout, layer_config.length_of_sumout);
-    self->gradientslocal = uz_matrix_init(&self->gradientslocal_matrix, layer_config.gradientslocal, layer_config.length_of_gradientslocal, 1, layer_config.number_of_neurons);
-    self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,1,layer_config.number_of_neurons);
+    self->gradientslocal = uz_matrix_init(&self->gradientslocal_matrix, layer_config.gradientslocal, layer_config.length_of_gradientslocal,layer_config.number_of_neurons,1);
+    self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -130,12 +130,16 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,weightprev,cache); //matrix zum zwischenspeichern
-    float cache1 = uz_matrix_get_element_zero_based(cache,0,0);
-    float cache2 = uz_matrix_get_element_zero_based(cache,1,0);
-    float cache3 = uz_matrix_get_element_zero_based(cache,0,1);
-    float cache4 = uz_matrix_get_element_zero_based(cache,1,1);
+    // float cache1 = uz_matrix_get_element_zero_based(cache,0,0);
+    // float cache2 = uz_matrix_get_element_zero_based(cache,1,0);
+    // float cache3 = uz_matrix_get_element_zero_based(cache,0,1);
+    // float cache4 = uz_matrix_get_element_zero_based(cache,1,1);
     // funktioniert bis hierhin, cache1 hat die richtigen Werte
-    //uz_matrix_multiply(cache,locgradprev,self->gradientslocal);
+    // mit copybefehl kein assert, die Frage ist warum, die Dimension ist laut debugger gleich
+    // uz_matrix_copy würde auch in assert gehen wenn dimension ungleich
+    // für layer 2 funktioniert es nur mit copy für layer 1 failt es logischerweise, da die Dimension anders ist
+    //uz_matrix_copy(cache,self->gradientslocal);
+    uz_matrix_multiply(cache,locgradprev,self->gradientslocal);
 }
 
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference)
@@ -151,6 +155,13 @@ void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const re
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,self->error,self->gradientslocal);
+    uz_matrix_multiply_by_scalar(self->gradientslocal,-1.0f); //-1 Am Ausgang
+}
+
+void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self)
+{
+
+
 }
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)

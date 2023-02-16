@@ -86,8 +86,8 @@ void uz_nn_backprop(uz_nn_t *self,float const reference_output)
     uz_matrix_t *cache1=uz_matrix_init(&C1_matrix, C1,UZ_MATRIX_SIZE(C1),2,1);
     struct uz_matrix_t C2_matrix={0};
     uz_matrix_t *cache2=uz_matrix_init(&C2_matrix, C2,UZ_MATRIX_SIZE(C2),2,2);
-    uz_nn_layer_back(self->layer[1],uz_nn_get_gradient_data(self,3),uz_nn_get_weight_matrix(self,3),cache1);
-    uz_nn_layer_back(self->layer[0],uz_nn_get_gradient_data(self,2),uz_nn_get_weight_matrix(self,2),cache2);
+    uz_nn_layer_back(self->layer[1],uz_nn_get_delta_data(self,3),uz_nn_get_weight_matrix(self,3),cache1);
+    uz_nn_layer_back(self->layer[0],uz_nn_get_delta_data(self,2),uz_nn_get_weight_matrix(self,2),cache2);
     //Berechne alle Gradienten
     uz_nn_layer_calc_gradients(self->layer[2]);
     uz_nn_layer_calc_gradients(self->layer[1]);
@@ -128,11 +128,11 @@ uz_matrix_t *uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer)
     uz_assert(self->is_ready);
     return uz_nn_layer_get_derivate_data(self->layer[layer - 1]);
 }
-uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer)
+uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return uz_nn_layer_get_gradient_data(self->layer[layer - 1]);
+    return uz_nn_layer_get_delta_data(self->layer[layer - 1]);
 }
 
 uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer)

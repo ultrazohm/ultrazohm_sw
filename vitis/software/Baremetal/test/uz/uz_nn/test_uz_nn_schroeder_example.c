@@ -23,10 +23,14 @@ float s_3[NUMBER_OF_OUTPUTS] = {0};
 float d_1[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_2)] = {0};
 float d_2[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_2)] = {0};
 float d_3[UZ_MATRIX_SIZE(s_3)] = {0};
-//local Gradients, Dimension muss noch angepasst werden
-float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
-float g_3[NUMBER_OF_OUTPUTS] = {0};
+//deltas
+float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float delta_3[NUMBER_OF_OUTPUTS] = {0};
+//Gradienten
+float g_1[4] = {0};
+float g_2[6] = {0};
+float g_3[3] = {0};
 // error
 float e_1[2]={1.0f};
 float e_2[2]={1.0f};
@@ -69,17 +73,19 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_output = UZ_MATRIX_SIZE(y_1),
         .length_of_sumout = UZ_MATRIX_SIZE(s_1),
         .length_of_derivate_gradients= UZ_MATRIX_SIZE(d_1),
-        .length_of_gradientslocal = UZ_MATRIX_SIZE(g_1),
+        .length_of_delta = UZ_MATRIX_SIZE(delta_1),
         .length_of_error = UZ_MATRIX_SIZE(e_1),
+        .length_of_gradients = UZ_MATRIX_SIZE(g_1),
         .weights = w_1,
         .bias = b_1,
         .output = y_1,
         .sumout = s_1,
         .derivate_gradients = d_1,
-        .gradientslocal = g_1,
+        .delta = delta_1,
+        .gradients = g_1,
         .error = e_1},
-    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2), .length_of_gradientslocal = UZ_MATRIX_SIZE(g_2),.length_of_error = UZ_MATRIX_SIZE(e_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .derivate_gradients = d_2, .gradientslocal = g_2, .error=e_2},
-  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(s_3), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3), .length_of_gradientslocal = UZ_MATRIX_SIZE(g_3), .length_of_error = UZ_MATRIX_SIZE(e_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3, .derivate_gradients = d_3, .gradientslocal = g_3, .error= e_3}};
+    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2),.length_of_delta = UZ_MATRIX_SIZE(delta_2), .length_of_gradients = UZ_MATRIX_SIZE(g_2),.length_of_error = UZ_MATRIX_SIZE(e_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .derivate_gradients = d_2, .delta = d_2, .gradients = g_2, .error=e_2},
+  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(s_3), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3),.length_of_delta = UZ_MATRIX_SIZE(delta_3), .length_of_gradients = UZ_MATRIX_SIZE(g_3), .length_of_error = UZ_MATRIX_SIZE(e_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3, .derivate_gradients = d_3,.delta = d_3,  .gradients = g_3, .error= e_3}};
 
 void setUp(void)
 {
@@ -124,9 +130,9 @@ void test_uz_nn_schroeder(void)
     const float reference_output = {-4.41f};
     uz_nn_backprop(test,reference_output);
     //check delta
-    uz_matrix_t *deltahelper1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t *deltahelper2 = uz_nn_get_gradient_data(test,2); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t *deltahelper3 = uz_nn_get_gradient_data(test,3); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *deltahelper1 = uz_nn_get_delta_data(test,1); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *deltahelper2 = uz_nn_get_delta_data(test,2); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t *deltahelper3 = uz_nn_get_delta_data(test,3); // index 1-3 verwenden für nn mit 3 layern
     float delta1[5];
     delta1[0] = uz_matrix_get_element_zero_based(deltahelper1,0,0);
     delta1[1] = uz_matrix_get_element_zero_based(deltahelper1,0,1);

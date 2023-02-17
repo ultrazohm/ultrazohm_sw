@@ -133,12 +133,12 @@ void test_uz_nn_schroeder(void)
     uz_matrix_t *deltahelper1 = uz_nn_get_delta_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *deltahelper2 = uz_nn_get_delta_data(test,2); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *deltahelper3 = uz_nn_get_delta_data(test,3); // index 1-3 verwenden für nn mit 3 layern
-    float delta1[5];
-    delta1[0] = uz_matrix_get_element_zero_based(deltahelper1,0,0);
-    delta1[1] = uz_matrix_get_element_zero_based(deltahelper1,0,1);
-    delta1[2] = uz_matrix_get_element_zero_based(deltahelper2,0,0);
-    delta1[3] = uz_matrix_get_element_zero_based(deltahelper2,0,1);
-    delta1[4] = uz_matrix_get_element_zero_based(deltahelper3,0,0);
+    float deltahelp[5];
+    deltahelp[0] = uz_matrix_get_element_zero_based(deltahelper1,0,0);
+    deltahelp[1] = uz_matrix_get_element_zero_based(deltahelper1,0,1);
+    deltahelp[2] = uz_matrix_get_element_zero_based(deltahelper2,0,0);
+    deltahelp[3] = uz_matrix_get_element_zero_based(deltahelper2,0,1);
+    deltahelp[4] = uz_matrix_get_element_zero_based(deltahelper3,0,0);
     // check derivates
     uz_matrix_t *helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern

@@ -38,14 +38,17 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
+#define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
+#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
+#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
+#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
+#define UZ_PARAMETERID_MAX_INSTANCES                    0U
 #define UZ_PARAMETERID_6PH_MAX_INSTANCES                0U
-
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -71,9 +74,15 @@
     #define UZ_SPEEDCONTROL_MAX_INSTANCES                   50U
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
-	#define UZ_PARAMETERID_MAX_INSTANCES					100U
+    #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         20U
     #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
     #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
+    #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            6U
+    #define UZ_SUM_MAX_INSTANCES                            5U
+    #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            50U
+    #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
+    #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
+    #define UZ_PARAMETERID_MAX_INSTANCES                    20U
     #define UZ_PARAMETERID_6PH_MAX_INSTANCES                20U
 #endif

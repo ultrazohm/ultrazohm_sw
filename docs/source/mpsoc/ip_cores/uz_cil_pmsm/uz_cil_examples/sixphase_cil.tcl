@@ -89,6 +89,8 @@ connect_bd_net [get_bd_pins uz_system/trigger_converesions] [get_bd_pins uz_user
 connect_bd_net [get_bd_pins uz_user/uz_sixphase_VSD_tran_0/x_abc_1_0] [get_bd_pins uz_user/uz_inverter_3ph_0/i_abc_pl_0]
 connect_bd_net [get_bd_pins uz_user/uz_sixphase_VSD_tran_0/x_abc_2_0] [get_bd_pins uz_user/uz_inverter_3ph_1/i_abc_pl_0]
 connect_bd_net [get_bd_pins uz_user/uz_rs_flip_flop_0/ff_out] [get_bd_pins uz_user/uz_sixphase_VSD_tran_0/trigger_new_values]
+connect_bd_net [get_bd_pins uz_user/uz_rs_flip_flop_0/ff_reset] [get_bd_pins uz_user/uz_sixphase_VSD_tran_0/refresh_values]
+connect_bd_net [get_bd_pins uz_user/uz_pmsm_model_6ph_dq_0/voltage_input_dq_0] [get_bd_pins uz_user/uz_sixphase_VSD_tran_0/x_out_dq_0]
 endgroup
 
 regenerate_bd_layout

@@ -30,15 +30,15 @@ uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_c
 {
     uz_assert(divisor.real!=0.0f && divisor.imag!=0.0f);
     uz_complex_cartesian_t out;
-    out.real = (dividend.real*divisor.real + dividend.imag*divisor.imag)/(powf(divisor.real,2.0f) + powf(divisor.imag,2.0f));
-    out.imag = (dividend.imag*divisor.real - dividend.real*divisor.imag)/(powf(divisor.real,2.0f) + powf(divisor.imag,2.0f));
+    out.real = (dividend.real*divisor.real + dividend.imag*divisor.imag)/(divisor.real*divisor.real + divisor.imag*divisor.imag);
+    out.imag = (dividend.imag*divisor.real - dividend.real*divisor.imag)/(divisor.real*divisor.real + divisor.imag*divisor.imag);
     return out;
 }
 
 uz_complex_polar_t uz_complex_cartesian_to_polar(uz_complex_cartesian_t in)
 {
     uz_complex_polar_t out;
-    out.abs = sqrtf(powf(in.real,2.0f)+powf(in.imag,2.0f));
+    out.abs = sqrtf(in.real*in.real+in.imag*in.imag);
     out.angle = atan2f(in.imag,in.real);
     return out;
 }

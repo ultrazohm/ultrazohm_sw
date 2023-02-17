@@ -1,12 +1,12 @@
 .. _uz_complex:
 
-=======
-Complex
-=======
+====================
+Complex math library
+====================
 
-Several functions for complex mathematical operations are implemented here.
+The complex math library implements functions for mathematical operations on complex numbers.
 The functions are implemented for complex numbers in cartesian form.
-Transformation function from and to the polar form are implemented as well.
+Transformation functions to and from the polar form are provided.
 If only one part of the complex number is used (only real, only imaginary or only magnitude), the other part should still be set to zero!!
 
 

@@ -4,25 +4,28 @@
 
 uz_complex_cartesian_t uz_complex_multiplication(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2)
 {
-    uz_complex_cartesian_t out;
-    out.real = arg1.real*arg2.real - arg1.imag*arg2.imag;
-    out.imag = arg1.real*arg2.imag + arg1.imag*arg2.real;
+    uz_complex_cartesian_t out={
+        .real = (arg1.real*arg2.real) - (arg1.imag*arg2.imag),
+        .imag = (arg1.real*arg2.imag) + (arg1.imag*arg2.real)
+    };
     return out;
 }
 
 uz_complex_cartesian_t uz_complex_addition(uz_complex_cartesian_t arg1, uz_complex_cartesian_t arg2)
 {
-    uz_complex_cartesian_t out;
-    out.real = arg1.real + arg2.real;
-    out.imag = arg1.imag + arg2.imag;
+    uz_complex_cartesian_t out={
+        .real = arg1.real + arg2.real,
+        .imag = arg1.imag + arg2.imag
+    };
     return out;  
 }
 
 uz_complex_cartesian_t uz_complex_subtraction(uz_complex_cartesian_t subtrahend, uz_complex_cartesian_t minuend)
 {
-    uz_complex_cartesian_t out;
-    out.real = subtrahend.real - minuend.real;
-    out.imag = subtrahend.imag - minuend.imag;
+    uz_complex_cartesian_t out={
+    .real = subtrahend.real - minuend.real,
+    .imag = subtrahend.imag - minuend.imag
+    };
     return out; 
 }
 

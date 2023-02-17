@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.44
+ * Model version                  : 3.48
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Feb 13 11:54:04 2023
+ * C/C++ source code generated on : Fri Feb 17 08:00:25 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -95,6 +95,7 @@ static void LM_algorithm_i(const uz_ParaID_GlobalConfig_t *GlobalConfig,
   real32_T *R_est, real32_T *L_est, boolean_T *updateJ, real32_T *lambda,
   real32_T *e, const uint16_T *n_iters, real32_T H[4], real32_T i_est_e[2048],
   DW_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_DW);
+static real32_T wrap_to(real32_T angle, real32_T limit_up);
 static void DutyCycle_mod(real32_T ia_reg_in, ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
@@ -2373,6 +2374,38 @@ static void LM_algorithm_i(const uz_ParaID_GlobalConfig_t *GlobalConfig,
 
 /*
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
+ * function wrapped = wrap_to(angle, limit_up)
+ * wrap_to wraps angle between 0 and upper limit
+ *    warps like common wrap to 2pi functions but for custom upper limits
+ *    like fractions of 2pi
+ */
+static real32_T wrap_to(real32_T angle, real32_T limit_up)
+{
+  /* MATLAB Function 'wrap_to': '<S1>:1083' */
+  /* '<S1>:1083:5' if(angle>=limit_up) */
+  if (angle >= limit_up) {
+    /* '<S1>:1083:6' while angle>=limit_up */
+    while (angle >= limit_up) {
+      /* '<S1>:1083:7' angle = angle - limit_up; */
+      angle -= limit_up;
+    }
+  }
+
+  /* '<S1>:1083:10' if(angle<0) */
+  if (angle < 0.0F) {
+    /* '<S1>:1083:11' while angle<0 */
+    while (angle < 0.0F) {
+      /* '<S1>:1083:12' angle = angle + limit_up; */
+      angle += limit_up;
+    }
+  }
+
+  /* '<S1>:1083:15' wrapped = angle; */
+  return angle;
+}
+
+/*
+ * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
  * function DutyCycle_mod(ia_reg_in)
  */
 static void DutyCycle_mod(real32_T ia_reg_in, ExtU_ElectricalID_6ph_codegen_t
@@ -3458,9 +3491,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      *  Inport: '<Root>/ActualValues'
      */
     /* Exit 'alignRotor_d_off': '<S1>:53' */
-    /* '<S1>:53:10' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
-    rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
-      rtElectricalID_6ph_codegen_U->ActualValues.theta_m;
+    /* '<S1>:53:10' ElectricalID_output.thetaOffset = wrap_to(ActualValues.theta_m,single(2*pi/ElectricalID_output.PMSM_parameters.polePairs)); */
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset = wrap_to
+      (rtElectricalID_6ph_codegen_U->ActualValues.theta_m, 6.28318548F /
+       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs);
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -5479,9 +5513,10 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
          */
         /* Transition: '<S1>:411' */
         /* Exit 'alignRotor_d_off': '<S1>:53' */
-        /* '<S1>:53:10' ElectricalID_output.thetaOffset = ActualValues.theta_m; */
-        rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
-          rtElectricalID_6ph_codegen_U->ActualValues.theta_m;
+        /* '<S1>:53:10' ElectricalID_output.thetaOffset = wrap_to(ActualValues.theta_m,single(2*pi/ElectricalID_output.PMSM_parameters.polePairs)); */
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset = wrap_to
+          (rtElectricalID_6ph_codegen_U->ActualValues.theta_m, 6.28318548F /
+           rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs);
         rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_waitLock;
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */
@@ -5912,7 +5947,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* '<S1>:1047:6' f_cutoff = cutoff_frequency(GlobalConfig.voltage_measurement_Rp,GlobalConfig.voltage_measurement_Rs,GlobalConfig.voltage_measurement_C); */
       /* '<S1>:1047:7' setpoint_rpm = f_cutoff/single(highest_order)/ElectricalID_output.PMSM_parameters.polePairs*single(60); */
-      /* '<S1>:1047:8' setpoint_rpm = correct_setpoint(setpoint_rpm,GlobalConfig.ratSpeed); */
+      /* '<S1>:1047:8' setpoint_rpm = correct_setpoint(setpoint_rpm,GlobalConfig.ratSpeed,ElectricalID_output.PMSM_parameters.polePairs); */
       break;
 
      case IN_waitLock:

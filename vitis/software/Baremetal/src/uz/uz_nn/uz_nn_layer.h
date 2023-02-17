@@ -38,16 +38,14 @@ struct uz_nn_layer_config{
     uint32_t length_of_output;/**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
     uint32_t length_of_sumout; 
     uint32_t length_of_derivate_gradients; 
-    uint32_t length_of_gradients; 
+    uint32_t length_of_delta; 
     uint32_t length_of_error;
-    uint32_t length_of_delta;
     
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
     float *const output; /** Pointer to an array that holds the output / where the output is written to */
     float *const sumout;
     float *const derivate_gradients;
-    float *const gradients;
     float *const delta;
     float *const error;
 };
@@ -78,10 +76,10 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference);
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev, uz_matrix_t *const biasprev);
 float uz_nn_layer_delta(uz_nn_layer_t *const self,float error);
-uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
-uz_matrix_t* uz_nn_layer_get_sumout_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
-uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_localgradients(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self);

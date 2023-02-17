@@ -46,8 +46,8 @@ uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer);
-uz_matrix_t* uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer);
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
+uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer);
 #endif // UZ_NN_H

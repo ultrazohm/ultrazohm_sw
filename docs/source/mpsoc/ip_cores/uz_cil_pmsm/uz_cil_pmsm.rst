@@ -12,6 +12,11 @@ A general overview of the available IP-Cores is given here.
 Links to the individual Docs pages can be found below, as well as examples for the usage.
 Models are available for six-phase and nine-phase PMSM.
 
+.. note:: 
+
+   The multiphase CIL projects model machines with isolated neutral points, meaning 2N and 3N configurations for six-phase and nine-phase CIL.
+   Changing the neutral configuration is not possible at this moment.
+
 General setup
 =============
 

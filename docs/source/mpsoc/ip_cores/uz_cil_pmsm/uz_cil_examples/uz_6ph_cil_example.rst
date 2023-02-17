@@ -16,6 +16,14 @@ Their voltage outputs are connected with the respective inputs of the Transforma
 The transformation's transformed output is connected with the PMSM, while the PMSM's rotor angle and current outputs are connected with the Transformation.
 The trigger and refresh signals of the Transformation are connected with the RS-Flip-Flop as shown below.
 
+.. note:: 
+
+   To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP-Cores automatically and connects them.
+   To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
+   "cd [ get_property DIRECTORY [current_project] ]" 
+   "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil"
+
+
 .. figure:: vivado_6ph.jpg
 
     Vivado setup

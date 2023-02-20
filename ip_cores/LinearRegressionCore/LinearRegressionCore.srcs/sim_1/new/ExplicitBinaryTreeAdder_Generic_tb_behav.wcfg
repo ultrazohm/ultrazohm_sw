@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ExplicitBinaryTreeAdder_Generic_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="ExplicitBinaryTreeAdder_Generic_tb" />
+            <top_module name="syn_functions_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="20001fs"></ZoomEndTime>
+      <Cursor1Time time="1444fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="257"></NameColumnWidth>
+      <ValueColumnWidth column_width="153"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/clock" type="logic">
+      <obj_property name="ElementShortName">clock</obj_property>
+      <obj_property name="ObjectShortName">clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/clock_enable" type="logic">
+      <obj_property name="ElementShortName">clock_enable</obj_property>
+      <obj_property name="ObjectShortName">clock_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/input_term_concatenation" type="array">
+      <obj_property name="ElementShortName">input_term_concatenation[0:95]</obj_property>
+      <obj_property name="ObjectShortName">input_term_concatenation[0:95]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/output_sum" type="array">
+      <obj_property name="ElementShortName">output_sum[11:0]</obj_property>
+      <obj_property name="ObjectShortName">output_sum[11:0]</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider47">
+      <obj_property name="label">interna</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/UUT/binary_adder_tree" type="array">
+      <obj_property name="ElementShortName">binary_adder_tree[1:31][11:0]</obj_property>
+      <obj_property name="ObjectShortName">binary_adder_tree[1:31][11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/UUT/term_vector" type="array">
+      <obj_property name="ElementShortName">term_vector[0:11][7:0]</obj_property>
+      <obj_property name="ObjectShortName">term_vector[0:11][7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/UUT/sum" type="array">
+      <obj_property name="ElementShortName">sum[11:0]</obj_property>
+      <obj_property name="ObjectShortName">sum[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ExplicitBinaryTreeAdder_Generic_tb/UUT/reg_sum" type="array">
+      <obj_property name="ElementShortName">reg_sum[11:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_sum[11:0]</obj_property>
+   </wvobject>
+</wave_config>

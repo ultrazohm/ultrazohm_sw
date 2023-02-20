@@ -1,0 +1,1347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="RWM_SignalTimesSamples_TB_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="RWM_SignalTimesSamples_TB" />
+            <top_module name="syn_functions_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="14110001fs"></ZoomEndTime>
+      <Cursor1Time time="5800000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="349"></NameColumnWidth>
+      <ValueColumnWidth column_width="145"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="17" />
+   <wvobject type="divider" fp_name="divider101">
+      <obj_property name="label">TB-Signals</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="group102" type="group">
+      <obj_property name="label">Constants &amp; Signals</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DataWidth_TB" type="other">
+         <obj_property name="ElementShortName">DataWidth_TB</obj_property>
+         <obj_property name="ObjectShortName">DataWidth_TB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/Tabs_TB" type="other">
+         <obj_property name="ElementShortName">Tabs_TB</obj_property>
+         <obj_property name="ObjectShortName">Tabs_TB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/Fracbits_TB" type="other">
+         <obj_property name="ElementShortName">Fracbits_TB</obj_property>
+         <obj_property name="ObjectShortName">Fracbits_TB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/PERIOD" type="other">
+         <obj_property name="ElementShortName">PERIOD</obj_property>
+         <obj_property name="ObjectShortName">PERIOD</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/PERIOD_Trigger" type="other">
+         <obj_property name="ElementShortName">PERIOD_Trigger</obj_property>
+         <obj_property name="ObjectShortName">PERIOD_Trigger</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/clk_tb" type="logic">
+      <obj_property name="ElementShortName">clk_tb</obj_property>
+      <obj_property name="ObjectShortName">clk_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/rst_n_tb" type="logic">
+      <obj_property name="ElementShortName">rst_n_tb</obj_property>
+      <obj_property name="ObjectShortName">rst_n_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/Trigger_Calc_tb" type="logic">
+      <obj_property name="ElementShortName">Trigger_Calc_tb</obj_property>
+      <obj_property name="ObjectShortName">Trigger_Calc_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DataRMW_in_tb" type="array">
+      <obj_property name="ElementShortName">DataRMW_in_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_in_tb[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DataRMW_out_tb" type="array">
+      <obj_property name="ElementShortName">DataRMW_out_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_out_tb[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider114">
+      <obj_property name="label">Interna</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/DataRMW_in" type="array">
+      <obj_property name="ElementShortName">DataRMW_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_in[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/DataRMW_out" type="array">
+      <obj_property name="ElementShortName">DataRMW_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_out[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/TabsArray_s" type="array">
+      <obj_property name="ElementShortName">TabsArray_s[49:0][15:-16]</obj_property>
+      <obj_property name="ObjectShortName">TabsArray_s[49:0][15:-16]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s" type="array">
+      <obj_property name="ElementShortName">Mult_Constants_Array_s[49:0][15:-16]</obj_property>
+      <obj_property name="ObjectShortName">Mult_Constants_Array_s[49:0][15:-16]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[49]" type="array">
+         <obj_property name="ElementShortName">[49][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[49][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[48]" type="array">
+         <obj_property name="ElementShortName">[48][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[48][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[47]" type="array">
+         <obj_property name="ElementShortName">[47][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[47][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[46]" type="array">
+         <obj_property name="ElementShortName">[46][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[46][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[45]" type="array">
+         <obj_property name="ElementShortName">[45][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[45][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[44]" type="array">
+         <obj_property name="ElementShortName">[44][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[44][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[43]" type="array">
+         <obj_property name="ElementShortName">[43][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[43][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[42]" type="array">
+         <obj_property name="ElementShortName">[42][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[42][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[41]" type="array">
+         <obj_property name="ElementShortName">[41][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[41][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[40]" type="array">
+         <obj_property name="ElementShortName">[40][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[40][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[39]" type="array">
+         <obj_property name="ElementShortName">[39][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[39][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[38]" type="array">
+         <obj_property name="ElementShortName">[38][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[38][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[37]" type="array">
+         <obj_property name="ElementShortName">[37][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[37][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[36]" type="array">
+         <obj_property name="ElementShortName">[36][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[36][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[35]" type="array">
+         <obj_property name="ElementShortName">[35][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[35][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[34]" type="array">
+         <obj_property name="ElementShortName">[34][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[34][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[33]" type="array">
+         <obj_property name="ElementShortName">[33][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[33][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[32]" type="array">
+         <obj_property name="ElementShortName">[32][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[32][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[31]" type="array">
+         <obj_property name="ElementShortName">[31][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[31][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[30]" type="array">
+         <obj_property name="ElementShortName">[30][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[30][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[29]" type="array">
+         <obj_property name="ElementShortName">[29][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[29][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[28]" type="array">
+         <obj_property name="ElementShortName">[28][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[28][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[27]" type="array">
+         <obj_property name="ElementShortName">[27][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[27][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[26]" type="array">
+         <obj_property name="ElementShortName">[26][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[26][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[25]" type="array">
+         <obj_property name="ElementShortName">[25][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[25][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[24]" type="array">
+         <obj_property name="ElementShortName">[24][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[24][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[23]" type="array">
+         <obj_property name="ElementShortName">[23][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[23][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[22]" type="array">
+         <obj_property name="ElementShortName">[22][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[22][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[21]" type="array">
+         <obj_property name="ElementShortName">[21][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[21][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[20]" type="array">
+         <obj_property name="ElementShortName">[20][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[20][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[19]" type="array">
+         <obj_property name="ElementShortName">[19][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[19][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[18]" type="array">
+         <obj_property name="ElementShortName">[18][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[18][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[17]" type="array">
+         <obj_property name="ElementShortName">[17][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[17][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[16]" type="array">
+         <obj_property name="ElementShortName">[16][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[16][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[15]" type="array">
+         <obj_property name="ElementShortName">[15][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[15][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[14]" type="array">
+         <obj_property name="ElementShortName">[14][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[14][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[13]" type="array">
+         <obj_property name="ElementShortName">[13][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[13][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[12]" type="array">
+         <obj_property name="ElementShortName">[12][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[12][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[11]" type="array">
+         <obj_property name="ElementShortName">[11][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[11][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[10]" type="array">
+         <obj_property name="ElementShortName">[10][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[10][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[9]" type="array">
+         <obj_property name="ElementShortName">[9][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[9][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[8]" type="array">
+         <obj_property name="ElementShortName">[8][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[8][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[7]" type="array">
+         <obj_property name="ElementShortName">[7][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[7][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[6]" type="array">
+         <obj_property name="ElementShortName">[6][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[6][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[5]" type="array">
+         <obj_property name="ElementShortName">[5][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[5][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[4]" type="array">
+         <obj_property name="ElementShortName">[4][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[4][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[3]" type="array">
+         <obj_property name="ElementShortName">[3][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[3][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[2]" type="array">
+         <obj_property name="ElementShortName">[2][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[2][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[1]" type="array">
+         <obj_property name="ElementShortName">[1][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[1][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Constants_Array_s[0]" type="array">
+         <obj_property name="ElementShortName">[0][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[0][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s" type="array">
+      <obj_property name="ElementShortName">Mult_Results_long_Array_s[49:0][31:-32]</obj_property>
+      <obj_property name="ObjectShortName">Mult_Results_long_Array_s[49:0][31:-32]</obj_property>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[49]" type="array">
+         <obj_property name="ElementShortName">[49][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[49][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[48]" type="array">
+         <obj_property name="ElementShortName">[48][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[48][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[47]" type="array">
+         <obj_property name="ElementShortName">[47][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[47][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[46]" type="array">
+         <obj_property name="ElementShortName">[46][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[46][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[45]" type="array">
+         <obj_property name="ElementShortName">[45][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[45][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[44]" type="array">
+         <obj_property name="ElementShortName">[44][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[44][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[43]" type="array">
+         <obj_property name="ElementShortName">[43][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[43][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[42]" type="array">
+         <obj_property name="ElementShortName">[42][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[42][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[41]" type="array">
+         <obj_property name="ElementShortName">[41][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[41][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[40]" type="array">
+         <obj_property name="ElementShortName">[40][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[40][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[39]" type="array">
+         <obj_property name="ElementShortName">[39][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[39][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[38]" type="array">
+         <obj_property name="ElementShortName">[38][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[38][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[37]" type="array">
+         <obj_property name="ElementShortName">[37][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[37][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[36]" type="array">
+         <obj_property name="ElementShortName">[36][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[36][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[35]" type="array">
+         <obj_property name="ElementShortName">[35][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[35][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[34]" type="array">
+         <obj_property name="ElementShortName">[34][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[34][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[33]" type="array">
+         <obj_property name="ElementShortName">[33][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[33][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[32]" type="array">
+         <obj_property name="ElementShortName">[32][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[32][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[31]" type="array">
+         <obj_property name="ElementShortName">[31][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[31][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[30]" type="array">
+         <obj_property name="ElementShortName">[30][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[30][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[29]" type="array">
+         <obj_property name="ElementShortName">[29][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[29][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[28]" type="array">
+         <obj_property name="ElementShortName">[28][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[28][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[27]" type="array">
+         <obj_property name="ElementShortName">[27][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[27][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[26]" type="array">
+         <obj_property name="ElementShortName">[26][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[26][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[25]" type="array">
+         <obj_property name="ElementShortName">[25][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[25][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[24]" type="array">
+         <obj_property name="ElementShortName">[24][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[24][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[23]" type="array">
+         <obj_property name="ElementShortName">[23][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[23][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[22]" type="array">
+         <obj_property name="ElementShortName">[22][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[22][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[21]" type="array">
+         <obj_property name="ElementShortName">[21][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[21][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[20]" type="array">
+         <obj_property name="ElementShortName">[20][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[20][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[19]" type="array">
+         <obj_property name="ElementShortName">[19][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[19][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[18]" type="array">
+         <obj_property name="ElementShortName">[18][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[18][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[17]" type="array">
+         <obj_property name="ElementShortName">[17][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[17][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[16]" type="array">
+         <obj_property name="ElementShortName">[16][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[16][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[15]" type="array">
+         <obj_property name="ElementShortName">[15][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[15][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[14]" type="array">
+         <obj_property name="ElementShortName">[14][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[14][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[13]" type="array">
+         <obj_property name="ElementShortName">[13][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[13][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[12]" type="array">
+         <obj_property name="ElementShortName">[12][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[12][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[11]" type="array">
+         <obj_property name="ElementShortName">[11][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[11][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[10]" type="array">
+         <obj_property name="ElementShortName">[10][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[10][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[9]" type="array">
+         <obj_property name="ElementShortName">[9][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[9][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[8]" type="array">
+         <obj_property name="ElementShortName">[8][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[8][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[7]" type="array">
+         <obj_property name="ElementShortName">[7][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[7][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[6]" type="array">
+         <obj_property name="ElementShortName">[6][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[6][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[5]" type="array">
+         <obj_property name="ElementShortName">[5][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[5][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[4]" type="array">
+         <obj_property name="ElementShortName">[4][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[4][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[3]" type="array">
+         <obj_property name="ElementShortName">[3][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[3][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[2]" type="array">
+         <obj_property name="ElementShortName">[2][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[2][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[1]" type="array">
+         <obj_property name="ElementShortName">[1][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[1][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_long_Array_s[0]" type="array">
+         <obj_property name="ElementShortName">[0][31:-32]</obj_property>
+         <obj_property name="ObjectShortName">[0][31:-32]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">32</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s" type="array">
+      <obj_property name="ElementShortName">Mult_Results_Array_s[49:0][15:-16]</obj_property>
+      <obj_property name="ObjectShortName">Mult_Results_Array_s[49:0][15:-16]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[49]" type="array">
+         <obj_property name="ElementShortName">[49][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[49][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[48]" type="array">
+         <obj_property name="ElementShortName">[48][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[48][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[47]" type="array">
+         <obj_property name="ElementShortName">[47][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[47][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[46]" type="array">
+         <obj_property name="ElementShortName">[46][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[46][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[45]" type="array">
+         <obj_property name="ElementShortName">[45][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[45][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[44]" type="array">
+         <obj_property name="ElementShortName">[44][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[44][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[43]" type="array">
+         <obj_property name="ElementShortName">[43][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[43][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[42]" type="array">
+         <obj_property name="ElementShortName">[42][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[42][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[41]" type="array">
+         <obj_property name="ElementShortName">[41][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[41][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[40]" type="array">
+         <obj_property name="ElementShortName">[40][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[40][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[39]" type="array">
+         <obj_property name="ElementShortName">[39][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[39][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[38]" type="array">
+         <obj_property name="ElementShortName">[38][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[38][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[37]" type="array">
+         <obj_property name="ElementShortName">[37][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[37][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[36]" type="array">
+         <obj_property name="ElementShortName">[36][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[36][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[35]" type="array">
+         <obj_property name="ElementShortName">[35][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[35][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[34]" type="array">
+         <obj_property name="ElementShortName">[34][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[34][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[33]" type="array">
+         <obj_property name="ElementShortName">[33][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[33][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[32]" type="array">
+         <obj_property name="ElementShortName">[32][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[32][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[31]" type="array">
+         <obj_property name="ElementShortName">[31][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[31][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[30]" type="array">
+         <obj_property name="ElementShortName">[30][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[30][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[29]" type="array">
+         <obj_property name="ElementShortName">[29][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[29][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[28]" type="array">
+         <obj_property name="ElementShortName">[28][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[28][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[27]" type="array">
+         <obj_property name="ElementShortName">[27][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[27][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[26]" type="array">
+         <obj_property name="ElementShortName">[26][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[26][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[25]" type="array">
+         <obj_property name="ElementShortName">[25][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[25][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[24]" type="array">
+         <obj_property name="ElementShortName">[24][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[24][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[23]" type="array">
+         <obj_property name="ElementShortName">[23][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[23][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[22]" type="array">
+         <obj_property name="ElementShortName">[22][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[22][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[21]" type="array">
+         <obj_property name="ElementShortName">[21][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[21][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[20]" type="array">
+         <obj_property name="ElementShortName">[20][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[20][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[19]" type="array">
+         <obj_property name="ElementShortName">[19][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[19][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[18]" type="array">
+         <obj_property name="ElementShortName">[18][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[18][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[17]" type="array">
+         <obj_property name="ElementShortName">[17][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[17][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[16]" type="array">
+         <obj_property name="ElementShortName">[16][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[16][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[15]" type="array">
+         <obj_property name="ElementShortName">[15][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[15][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[14]" type="array">
+         <obj_property name="ElementShortName">[14][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[14][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[13]" type="array">
+         <obj_property name="ElementShortName">[13][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[13][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[12]" type="array">
+         <obj_property name="ElementShortName">[12][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[12][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[11]" type="array">
+         <obj_property name="ElementShortName">[11][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[11][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[10]" type="array">
+         <obj_property name="ElementShortName">[10][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[10][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[9]" type="array">
+         <obj_property name="ElementShortName">[9][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[9][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[8]" type="array">
+         <obj_property name="ElementShortName">[8][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[8][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[7]" type="array">
+         <obj_property name="ElementShortName">[7][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[7][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[6]" type="array">
+         <obj_property name="ElementShortName">[6][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[6][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[5]" type="array">
+         <obj_property name="ElementShortName">[5][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[5][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[4]" type="array">
+         <obj_property name="ElementShortName">[4][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[4][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[3]" type="array">
+         <obj_property name="ElementShortName">[3][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[3][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[2]" type="array">
+         <obj_property name="ElementShortName">[2][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[2][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[1]" type="array">
+         <obj_property name="ElementShortName">[1][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[1][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Mult_Results_Array_s[0]" type="array">
+         <obj_property name="ElementShortName">[0][15:-16]</obj_property>
+         <obj_property name="ObjectShortName">[0][15:-16]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Adder_input_s" type="array">
+      <obj_property name="ElementShortName">Adder_input_s[0:1599]</obj_property>
+      <obj_property name="ObjectShortName">Adder_input_s[0:1599]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/Adder_output_s" type="array">
+      <obj_property name="ElementShortName">Adder_output_s[37:0]</obj_property>
+      <obj_property name="ObjectShortName">Adder_output_s[37:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_SignalTimesSamples_TB/DUT/DataRMW_out_pipe" type="array">
+      <obj_property name="ElementShortName">DataRMW_out_pipe[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_out_pipe[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+</wave_config>

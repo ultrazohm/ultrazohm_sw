@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="RWM_Signal_TB_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="RWM_Signal_TB" />
+            <top_module name="syn_functions_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="4609978fs"></ZoomStartTime>
+      <ZoomEndTime time="4892341fs"></ZoomEndTime>
+      <Cursor1Time time="840000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="257"></NameColumnWidth>
+      <ValueColumnWidth column_width="149"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject type="divider" fp_name="divider257">
+      <obj_property name="label">TB</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/clk_tb" type="logic">
+      <obj_property name="ElementShortName">clk_tb</obj_property>
+      <obj_property name="ObjectShortName">clk_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/rst_n_tb" type="logic">
+      <obj_property name="ElementShortName">rst_n_tb</obj_property>
+      <obj_property name="ObjectShortName">rst_n_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/Trigger_Calc_tb" type="logic">
+      <obj_property name="ElementShortName">Trigger_Calc_tb</obj_property>
+      <obj_property name="ObjectShortName">Trigger_Calc_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DataRMW_in_tb" type="array">
+      <obj_property name="ElementShortName">DataRMW_in_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_in_tb[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DataRMW_out_tb" type="array">
+      <obj_property name="ElementShortName">DataRMW_out_tb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_out_tb[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="group258" type="group">
+      <obj_property name="label">Generic</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/RWM_Signal_TB/DataWidth_TB" type="other">
+         <obj_property name="ElementShortName">DataWidth_TB</obj_property>
+         <obj_property name="ObjectShortName">DataWidth_TB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_Signal_TB/Tabs_TB" type="other">
+         <obj_property name="ElementShortName">Tabs_TB</obj_property>
+         <obj_property name="ObjectShortName">Tabs_TB</obj_property>
+      </wvobject>
+      <wvobject fp_name="/RWM_Signal_TB/Fracbits_TB" type="other">
+         <obj_property name="ElementShortName">Fracbits_TB</obj_property>
+         <obj_property name="ObjectShortName">Fracbits_TB</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider259">
+      <obj_property name="label">Interna</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DUT/TabsArray_s" type="array">
+      <obj_property name="ElementShortName">TabsArray_s[49:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">TabsArray_s[49:0][31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DUT/Adder_output_FP_s" type="array">
+      <obj_property name="ElementShortName">Adder_output_FP_s[21:-16]</obj_property>
+      <obj_property name="ObjectShortName">Adder_output_FP_s[21:-16]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DUT/OneByTabs" type="array">
+      <obj_property name="ElementShortName">OneByTabs[21:-16]</obj_property>
+      <obj_property name="ObjectShortName">OneByTabs[21:-16]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DUT/Mult_output_s" type="array">
+      <obj_property name="ElementShortName">Mult_output_s[43:-32]</obj_property>
+      <obj_property name="ObjectShortName">Mult_output_s[43:-32]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">32</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/RWM_Signal_TB/DUT/DataRMW_out_s" type="array">
+      <obj_property name="ElementShortName">DataRMW_out_s[37:0]</obj_property>
+      <obj_property name="ObjectShortName">DataRMW_out_s[37:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+</wave_config>

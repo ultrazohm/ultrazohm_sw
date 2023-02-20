@@ -60,6 +60,12 @@ float omega_el_rad_per_sec = 0.0f;
 extern uz_ParameterID_Data_t ParaID_Data;
 extern uz_ParameterID_6ph_t* ParameterID;
 uz_6ph_dq_t paraid_temp_dq_currents = {0};
+//Next lines only needed, if the uz_FOC is used as the controller
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+extern uz_FOC* FOC_instance;
+extern uz_SpeedControl_t* SpeedControl_instance;
+uz_6ph_dq_t ParaID_v_dq = { 0 };
+struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 //RaraID end
 
 
@@ -273,17 +279,16 @@ void ISR_Control(void *data)
 
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output.enable_TriState[0], ParaID_Data.ElectricalID_Output.enable_TriState[1], ParaID_Data.ElectricalID_Output.enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output.enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[2]);
-		//ParaID end
-		//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
-		//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, true, true, true);
+		ParaID_v_dq = uz_ParameterID_6ph_Controller(&ParaID_Data, FOC_instance, SpeedControl_instance);
+		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, ParaID_v_dq);
 
 		//write duty-cycles
-    	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set2.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set2.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutyCycles_set2.DutyCycle_W;
-    	Global_Data.rasv.halfBridge7DutyCycle = dutyCycles_set1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge8DutyCycle = dutyCycles_set1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge9DutyCycle = dutyCycles_set1.DutyCycle_W;
+    	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_U;
+    	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_V;
+    	Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_W;
+    	Global_Data.rasv.halfBridge7DutyCycle = ParaID_DutyCycle.system1.DutyCycle_U;
+    	Global_Data.rasv.halfBridge8DutyCycle = ParaID_DutyCycle.system1.DutyCycle_V;
+    	Global_Data.rasv.halfBridge9DutyCycle = ParaID_DutyCycle.system1.DutyCycle_W;
     }
 
 

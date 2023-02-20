@@ -19,9 +19,13 @@
 
 //ParameterID Code
 #include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_math_constants.h"
 uz_ParameterID_6ph_t* ParameterID = NULL;
 uz_ParameterID_Data_t ParaID_Data = { 0 };
+//Objects below are only needed, if the uz_FOC is used as the controller
+uz_FOC* FOC_instance = NULL;
+uz_SpeedControl_t* SpeedControl_instance = NULL;
 //ParameterID end
 
 
@@ -74,7 +78,7 @@ DS_Data Global_Data = {
 float meas_array[10000];
 uz_ParaID_ElectricalID_fft_in_t uncorrected;
 uz_ParaID_ElectricalID_fft_in_t corrected;
-void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run);
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess);
 
 // Gan-Inverter:-----------------------------
 
@@ -126,6 +130,33 @@ int main(void)
             break;
         case init_software:
         	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
+        	//Code below is only needed, if the uz_FOC is used as the controller
+        	   struct uz_PI_Controller_config config_id = {
+        	        .Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	        .Ki = ParaID_Data.GlobalConfig.Ki_id,
+        	        .samplingTime_sec = 0.00005f,
+        	        .upper_limit = 15.0f,
+        	        .lower_limit = -15.0f };
+        	   struct uz_PI_Controller_config config_iq = {
+        	        .Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	        .Ki = ParaID_Data.GlobalConfig.Ki_iq,
+        	        .samplingTime_sec = 0.00005f,
+        	        .upper_limit = 15.0f,
+        	        .lower_limit = -15.0f };
+        	   struct uz_SpeedControl_config config_n = {
+        	        .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
+        	        .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n,
+        	        .config_controller.samplingTime_sec = 0.00005f,
+        	        .config_controller.upper_limit = 10.0f,
+        	        .config_controller.lower_limit = -10.0f,
+        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+        	        .is_field_weakening_active = false };
+        	   struct uz_FOC_config config_FOC = {
+        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+        	        .config_id = config_id,
+        	        .config_iq = config_iq };
+        	   FOC_instance = uz_FOC_init(config_FOC);
+        	   SpeedControl_instance = uz_SpeedControl_init(config_n);
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
@@ -184,7 +215,7 @@ int main(void)
         	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
         	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
         	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
-        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output, 2U);
+        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output);
 
 			ParaID_Data.ElectricalID_FFT = corrected;
         }
@@ -192,7 +223,7 @@ int main(void)
     return (status);
 }
 
-void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess, uint16_t run)
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess)
 {
 	printf("Rd:%f\n",mess.resistances_6ph.d);
 	printf("Rq:%f\n",mess.resistances_6ph.q);

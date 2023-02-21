@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores">
+	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests4/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -1967,6 +1967,40 @@
 			<Interface value="AXI4">
 			</Interface>
 		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="ki_power:user:Resolver_Interface_v1_0:1.0">
+		</VLNV>
+		<DisplayName value="Resolver_Interface_v1_0">
+		</DisplayName>
+		<Description value="Resolver_Interface_v1_0">
+		</Description>
+		<CoreRevision value="1">
+		</CoreRevision>
+		<ComponentPath value="uz_resolverIP/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/UserIP">
+			</Taxonomy>
+		</Taxonomies>
+		<UpgradesFrom>
+			<Upgrade value="xilinx.com:user:Resolver_Interface_v1_0:1.0">
+			</Upgrade>
+		</UpgradesFrom>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+		<VendorURL value="http://docs.ultrazohm.com">
+		</VendorURL>
 	</IP>
 	<IPInst>
 		<VLNV value="xilinx.com:xci:unknown:1.0">

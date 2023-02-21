@@ -46,6 +46,9 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
+	JSO_FOC_ENABLE_HC,
+	JSO_i_d_ref,
+	JSO_i_q_ref,
 	JSO_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
@@ -59,6 +62,9 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_Memory_d,
+	JSO_Memory_q,
+	JSO_Memory_step,
 	JSO_ENDMARKER
 };
 

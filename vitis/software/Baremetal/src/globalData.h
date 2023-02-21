@@ -113,6 +113,9 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	bool FOC_ENABLE_HC_onoff;
 	bool FOC_READ_ILR_MEMORY_onoff;
+	float i_d_ref;
+	float i_q_ref;
+	float HC_enable;
 } referenceAndSetValues;
 
 typedef struct{

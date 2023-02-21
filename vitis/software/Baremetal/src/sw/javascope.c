@@ -61,30 +61,26 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a1]		= &data->av.i_a1;
 	js_ch_observable[JSO_i_b1]		= &data->av.i_b1;
 	js_ch_observable[JSO_i_c1]		= &data->av.i_c1;
-	js_ch_observable[JSO_i_a1_filt]		= &data->av.i_a1_filt;
-	js_ch_observable[JSO_i_b1_filt]		= &data->av.i_b1_filt;
-	js_ch_observable[JSO_i_c1_filt]		= &data->av.i_c1_filt;
+	js_ch_observable[JSO_iq] 			= &data->av.i_q;
+	js_ch_observable[JSO_id] 			= &data->av.i_d;
+	js_ch_observable[JSO_i_d_ref]	= &data->rasv.i_d_ref;
+	js_ch_observable[JSO_i_q_ref]	= &data->rasv.i_q_ref;
 	js_ch_observable[JSO_u_dc1]		= &data->av.U_ZK;
-	js_ch_observable[JSO_i_a2]		= &data->av.i_a2;
-	js_ch_observable[JSO_i_b2]		= &data->av.i_b2;
-	js_ch_observable[JSO_i_c2]		= &data->av.i_c2;
-	js_ch_observable[JSO_i_a2_filt]		= &data->av.i_a2_filt;
-	js_ch_observable[JSO_i_b2_filt]		= &data->av.i_b2_filt;
-	js_ch_observable[JSO_i_c2_filt]		= &data->av.i_c2_filt;
 	js_ch_observable[JSO_u_dc2]		= &data->av.U_ZK2;
 	js_ch_observable[JSO_u_dc1_filt]= &data->av.U_ZK_filt;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_iq] 			= &data->av.i_q;
-	js_ch_observable[JSO_id] 			= &data->av.i_d;
 	js_ch_observable[JSO_i_alpha]		= &data->av.i_alpha;
 	js_ch_observable[JSO_i_beta]		= &data->av.i_beta;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;
 	js_ch_observable[JSO_uq]			= &data->av.u_q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
+	js_ch_observable[JSO_FOC_ENABLE_HC] = &data->rasv.HC_enable;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_Memory_d]		= &data->av.memoryd;
+	js_ch_observable[JSO_Memory_q]		= &data->av.memoryq;
+	js_ch_observable[JSO_Memory_step]		= &data->av.step;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

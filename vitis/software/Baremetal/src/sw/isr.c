@@ -123,6 +123,7 @@ void ISR_Control(void *data)
 	codegenInstance.input.FOC_READ_ILR_MEMORY = Global_Data.rasv.FOC_READ_ILR_MEMORY_onoff;
 	uz_codegen_step(&codegenInstance);
 
+	Global_Data.rasv.HC_enable = (float)Global_Data.rasv.FOC_ENABLE_HC_onoff;
 
 	if (Global_Data.rasv.FOC_ENABLE_HC_onoff == true) {
 	i_dq_ref.d = codegenInstance.output.Idq_ref_ILR[0];
@@ -131,6 +132,9 @@ void ISR_Control(void *data)
 		i_dq_ref.d = Global_Data.av.i_d_ref;
 		i_dq_ref.q = Global_Data.av.i_q_ref;
 	}
+
+	Global_Data.rasv.i_d_ref = i_dq_ref.d;
+	Global_Data.rasv.i_q_ref = i_dq_ref.q;
 
 	Global_Data.av.memoryd = codegenInstance.output.memoryd;
 	Global_Data.av.memoryq = codegenInstance.output.memoryq;
@@ -163,7 +167,7 @@ void ISR_Control(void *data)
     } else {
 
     	uz_FOC_reset(Global_Data.objects.foc_current);
-    	uz_FOC_reset(Global_Data.objects.foc_speed);
+    	//uz_FOC_reset(Global_Data.objects.foc_speed);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

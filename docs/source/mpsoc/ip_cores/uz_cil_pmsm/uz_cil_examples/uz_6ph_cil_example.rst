@@ -46,7 +46,7 @@ The init functions are called during the init process of all IP-cores.
 
   ...
   // includes
-  #include "IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
+  #include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
   #include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
   #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
   #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
@@ -158,7 +158,7 @@ Depending on the used controller, this might not be necessary.
 
   ...
   // Data for PMSM
-  #include "../IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
+  #include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
   extern uz_pmsm_model6ph_dq_t pmsm;
   float omega_mech = 100.0f;
   float load_torque = 0.0f;

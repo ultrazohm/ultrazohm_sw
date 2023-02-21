@@ -40,6 +40,7 @@ struct uz_nn_layer_config{
     uint32_t length_of_derivate_gradients; 
     uint32_t length_of_delta; 
     uint32_t length_of_error;
+    uint32_t length_of_gradients;
     
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
@@ -48,6 +49,7 @@ struct uz_nn_layer_config{
     float *const derivate_gradients;
     float *const delta;
     float *const error;
+    float *const gradients;
 };
 /**
  * @brief Initializes a layer of a neural network.

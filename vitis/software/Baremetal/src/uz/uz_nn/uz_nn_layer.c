@@ -29,6 +29,7 @@ struct uz_nn_layer_t
     uz_matrix_t *derivate_gradients;// wird benötigt für backprop
     uz_matrix_t *delta;// wird benötigt für backprop
     uz_matrix_t *error;//Speichern des zwischenwert für den Fehler
+    uz_matrix_t *gradients;
     struct uz_matrix_t weight_matrix;
     struct uz_matrix_t bias_matrix;
     struct uz_matrix_t output_matrix;
@@ -36,6 +37,7 @@ struct uz_nn_layer_t
     struct uz_matrix_t derivate_gradients_matrix;
     struct uz_matrix_t delta_matrix;
     struct uz_matrix_t error_matrix;
+    struct uz_matrix_t gradients_matrix;
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
@@ -65,6 +67,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.derivate_gradients);
     uz_assert_not_NULL(layer_config.delta);
     uz_assert_not_NULL(layer_config.error);
+    uz_assert_not_NULL(layer_config.gradients);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
     uz_assert((layer_config.length_of_sumout * layer_config.length_of_sumout) == layer_config.length_of_derivate_gradients);
@@ -72,6 +75,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_error);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
+    uz_assert(layer_config.length_of_weights+layer_config.length_of_bias == layer_config.length_of_gradients);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
     self->number_of_neurons = layer_config.number_of_neurons;
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
@@ -81,6 +85,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.length_of_sumout, layer_config.length_of_sumout);
     self->delta = uz_matrix_init(&self->delta_matrix, layer_config.delta, layer_config.length_of_delta,layer_config.number_of_neurons,1);
     self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
+    self->gradients = uz_matrix_init(&self->gradients_matrix,layer_config.gradients, layer_config.length_of_gradients,layer_config.length_of_gradients,1);
     switch (layer_config.activation_function)
     {
     case activation_linear:

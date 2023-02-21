@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.48
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Feb 17 08:00:25 2023
+ * C/C++ source code generated on : Mon Feb 20 21:43:33 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -39,17 +39,19 @@
 #define IN_Waiting                     ((uint8_T)2U)
 #define IN_alignRotor_d_off            ((uint8_T)7U)
 #define IN_alignRotor_d_on             ((uint8_T)8U)
-#define IN_endState                    ((uint8_T)9U)
-#define IN_findDutyCycle               ((uint8_T)10U)
-#define IN_measure_induced_voltage     ((uint8_T)11U)
-#define IN_rotorInertiaEstimation      ((uint8_T)12U)
-#define IN_stop                        ((uint8_T)13U)
-#define IN_waitAccept                  ((uint8_T)14U)
-#define IN_waitLock                    ((uint8_T)15U)
-#define IN_waitSetRPM                  ((uint8_T)16U)
-#define IN_waitState                   ((uint8_T)17U)
+#define IN_calculatePIcontroller       ((uint8_T)9U)
+#define IN_endState                    ((uint8_T)10U)
+#define IN_findDutyCycle               ((uint8_T)11U)
+#define IN_measure_induced_voltage     ((uint8_T)12U)
+#define IN_rotorInertiaEstimation      ((uint8_T)13U)
+#define IN_stop                        ((uint8_T)14U)
+#define IN_waitAccept                  ((uint8_T)15U)
+#define IN_waitLock                    ((uint8_T)16U)
+#define IN_waitSetRPM                  ((uint8_T)17U)
+#define IN_waitState                   ((uint8_T)18U)
 #define NumBitsPerChar                 8U
 
+extern real32_T rt_powf_snf(real32_T u0, real32_T u1);
 extern real32_T rt_hypotf_snf(real32_T u0, real32_T u1);
 
 /* Forward declaration for local functions */
@@ -103,6 +105,10 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
+static void ControllerParameter(uz_ParaID_Controller_Parameters_output_t
+  *FOC_out_old, real32_T bandwidthCurrentControl, real32_T PMSM_config_R_ph_Ohm,
+  real32_T PMSM_config_Ld_Henry, real32_T PMSM_config_Lq_Henry, real32_T
+  PMSM_config_polePairs, real32_T damping, real32_T psiOverJ);
 static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   DW_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_DW);
 static void goertzel(ExtU_ElectricalID_6ph_codegen_t
@@ -125,6 +131,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
+static real_T rtGetInf(void);
+static real32_T rtGetInfF(void);
+static real_T rtGetMinusInf(void);
+static real32_T rtGetMinusInfF(void);
+static real_T rtGetNaN(void);
+static real32_T rtGetNaNF(void);
 extern real_T rtInf;
 extern real_T rtMinusInf;
 extern real_T rtNaN;
@@ -163,70 +175,6 @@ real_T rtNaN;
 real32_T rtInfF;
 real32_T rtMinusInfF;
 real32_T rtNaNF;
-static real_T rtGetInf(void);
-static real32_T rtGetInfF(void);
-static real_T rtGetMinusInf(void);
-static real32_T rtGetMinusInfF(void);
-static real_T rtGetNaN(void);
-static real32_T rtGetNaNF(void);
-
-/*
- * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
- * generated code. NaN is initialized as non-signaling. Assumes IEEE.
- */
-static void rt_InitInfAndNaN(size_t realSize)
-{
-  (void) (realSize);
-  rtNaN = rtGetNaN();
-  rtNaNF = rtGetNaNF();
-  rtInf = rtGetInf();
-  rtInfF = rtGetInfF();
-  rtMinusInf = rtGetMinusInf();
-  rtMinusInfF = rtGetMinusInfF();
-}
-
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
-
-/* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value)
-{
-  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
-}
-
-/* Test if single-precision value is not a number */
-static boolean_T rtIsNaNF(real32_T value)
-{
-  IEEESingle tmp;
-  tmp.wordL.wordLreal = value;
-  return (boolean_T)( (tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 &&
-                     (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
-}
 
 /*
  * Initialize rtInf needed by the generated code.
@@ -332,6 +280,64 @@ static real32_T rtGetNaNF(void)
 
   nanF.wordL.wordLuint = 0xFFC00000U;
   return nanF.wordL.wordLreal;
+}
+
+/*
+ * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
+ * generated code. NaN is initialized as non-signaling. Assumes IEEE.
+ */
+static void rt_InitInfAndNaN(size_t realSize)
+{
+  (void) (realSize);
+  rtNaN = rtGetNaN();
+  rtNaNF = rtGetNaNF();
+  rtInf = rtGetInf();
+  rtInfF = rtGetInfF();
+  rtMinusInf = rtGetMinusInf();
+  rtMinusInfF = rtGetMinusInfF();
+}
+
+/* Test if value is infinite */
+static boolean_T rtIsInf(real_T value)
+{
+  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
+}
+
+/* Test if single-precision value is infinite */
+static boolean_T rtIsInfF(real32_T value)
+{
+  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+static boolean_T rtIsNaN(real_T value)
+{
+  boolean_T result = (boolean_T) 0;
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  if (bitsPerReal == 32U) {
+    result = rtIsNaNF((real32_T)value);
+  } else {
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
+
+    tmpVal.fltVal = value;
+    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
+                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
+                          (tmpVal.bitVal.words.wordL != 0) ));
+  }
+
+  return result;
+}
+
+/* Test if single-precision value is not a number */
+static boolean_T rtIsNaNF(real32_T value)
+{
+  IEEESingle tmp;
+  tmp.wordL.wordLreal = value;
+  return (boolean_T)( (tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 &&
+                     (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
 }
 
 /*
@@ -542,10 +548,13 @@ static void initParams(ExtU_ElectricalID_6ph_codegen_t
   /* 0.060 */
   /*  variables for controller calculation */
   /* '<S1>:88:92' bandwidthCurrentControl = single(1000); */
+  rtElectricalID_6ph_codegen_DW->bandwidthCurrentControl = 1000.0F;
+
   /* '<S1>:88:93' dampingFactor           = single(10.0); */
   rtElectricalID_6ph_codegen_DW->dampingFactor = 10.0F;
 
   /* '<S1>:88:94' psiOverJ                = single(5000); */
+  rtElectricalID_6ph_codegen_DW->psiOverJ = 5000.0F;
 }
 
 /*
@@ -2594,6 +2603,84 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
   }
 }
 
+real32_T rt_powf_snf(real32_T u0, real32_T u1)
+{
+  real32_T y;
+  if (rtIsNaNF(u0) || rtIsNaNF(u1)) {
+    y = (rtNaNF);
+  } else {
+    real32_T tmp;
+    real32_T tmp_0;
+    tmp = fabsf(u0);
+    tmp_0 = fabsf(u1);
+    if (rtIsInfF(u1)) {
+      if (tmp == 1.0F) {
+        y = 1.0F;
+      } else if (tmp > 1.0F) {
+        if (u1 > 0.0F) {
+          y = (rtInfF);
+        } else {
+          y = 0.0F;
+        }
+      } else if (u1 > 0.0F) {
+        y = 0.0F;
+      } else {
+        y = (rtInfF);
+      }
+    } else if (tmp_0 == 0.0F) {
+      y = 1.0F;
+    } else if (tmp_0 == 1.0F) {
+      if (u1 > 0.0F) {
+        y = u0;
+      } else {
+        y = 1.0F / u0;
+      }
+    } else if (u1 == 2.0F) {
+      y = u0 * u0;
+    } else if ((u1 == 0.5F) && (u0 >= 0.0F)) {
+      y = sqrtf(u0);
+    } else if ((u0 < 0.0F) && (u1 > floorf(u1))) {
+      y = (rtNaNF);
+    } else {
+      y = powf(u0, u1);
+    }
+  }
+
+  return y;
+}
+
+/*
+ * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
+ * function [FOC_out_new] = ControllerParameter(FOC_out_old,bandwidthCurrentControl,PMSM_config,damping,psiOverJ)
+ */
+static void ControllerParameter(uz_ParaID_Controller_Parameters_output_t
+  *FOC_out_old, real32_T bandwidthCurrentControl, real32_T PMSM_config_R_ph_Ohm,
+  real32_T PMSM_config_Ld_Henry, real32_T PMSM_config_Lq_Henry, real32_T
+  PMSM_config_polePairs, real32_T damping, real32_T psiOverJ)
+{
+  /* 'ControllerParameter:2' FOC_out_new = FOC_out_old; */
+  /* 'ControllerParameter:3' FOC_out_new.Kp_id_out = single(PMSM_config.Ld_Henry * bandwidthCurrentControl); */
+  FOC_out_old->Kp_id_out = PMSM_config_Ld_Henry * bandwidthCurrentControl;
+
+  /* 'ControllerParameter:4' FOC_out_new.Kp_iq_out = single(PMSM_config.Lq_Henry * bandwidthCurrentControl); */
+  FOC_out_old->Kp_iq_out = PMSM_config_Lq_Henry * bandwidthCurrentControl;
+
+  /* 'ControllerParameter:5' FOC_out_new.Ki_id_out = single(PMSM_config.R_ph_Ohm * bandwidthCurrentControl); */
+  FOC_out_old->Ki_id_out = PMSM_config_R_ph_Ohm * bandwidthCurrentControl;
+
+  /* 'ControllerParameter:6' FOC_out_new.Ki_iq_out = single(FOC_out_new.Ki_id_out); */
+  FOC_out_old->Ki_iq_out = FOC_out_old->Ki_id_out;
+
+  /* 'ControllerParameter:7' FOC_out_new.Kp_n_out = single(FOC_out_new.Ki_iq_out/(PMSM_config.Lq_Henry*damping*PMSM_config.polePairs*3.0/2.0*psiOverJ)); */
+  FOC_out_old->Kp_n_out = FOC_out_old->Ki_iq_out / (PMSM_config_Lq_Henry *
+    damping * PMSM_config_polePairs * 3.0F / 2.0F * psiOverJ);
+
+  /* 'ControllerParameter:8' FOC_out_new.Ki_n_out = single((FOC_out_new.Ki_iq_out)^2 / ((PMSM_config.Lq_Henry)^2 * damping^3 * PMSM_config.polePairs*3.0/2.0*psiOverJ)); */
+  FOC_out_old->Ki_n_out = FOC_out_old->Ki_iq_out * FOC_out_old->Ki_iq_out /
+    (PMSM_config_Lq_Henry * PMSM_config_Lq_Henry * rt_powf_snf(damping, 3.0F) *
+     PMSM_config_polePairs * 3.0F / 2.0F * psiOverJ);
+}
+
 /*
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
  * function y = SinusGenerator(Amp, Freq, sampleTime)
@@ -3556,6 +3643,19 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
     /* '<S1>:405:17' ElectricalID_output.PMSM_parameters.Psi_PM_Vs = ElectricalID_output.psi_pm(1); */
     rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.Psi_PM_Vs
       = rtElectricalID_6ph_codegen_DW->ElectricalID_output.psi_pm[0];
+
+    /* '<S1>:405:18' ElectricalID_output.enable_TriState = boolean([1 1 1]); */
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[0] = true;
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[1] = true;
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[2] = true;
+
+    /* '<S1>:405:19' ElectricalID_output.enable_TriState_set_2 = boolean([1 1 1]); */
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState_set_2[0] =
+      true;
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState_set_2[1] =
+      true;
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState_set_2[2] =
+      true;
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
@@ -5606,6 +5706,28 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       }
       break;
 
+     case IN_calculatePIcontroller:
+      /* During 'calculatePIcontroller': '<S1>:284' */
+      /* '<S1>:1087:1' sf_internal_predicateOutput = GlobalConfig.ACCEPT==1; */
+      if (rtElectricalID_6ph_codegen_U->GlobalConfig_out.ACCEPT) {
+        /* Transition: '<S1>:1087' */
+        rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_stop;
+
+        /* Outport: '<Root>/ElectricalID_FOC_output' */
+        /* Entry 'stop': '<S1>:361' */
+        /* state 10.1 */
+        /* '<S1>:361:3' ElectricalID_FOC_output.activeState = uint16(161); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 161U;
+
+        /* '<S1>:361:4' ElectricalID_FOC_output.n_ref_FOC = single(0); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.n_ref_FOC = 0.0F;
+
+        /* '<S1>:361:5' ElectricalID_FOC_output.resetIntegrator = boolean(1); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.resetIntegrator =
+          true;
+      }
+      break;
+
      case IN_endState:
       /* During 'endState': '<S1>:356' */
       /* '<S1>:425:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
@@ -5712,20 +5834,48 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* '<S1>:405:17' ElectricalID_output.PMSM_parameters.Psi_PM_Vs = ElectricalID_output.psi_pm(1); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.Psi_PM_Vs
           = rtElectricalID_6ph_codegen_DW->ElectricalID_output.psi_pm[0];
-        rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_stop;
+
+        /* '<S1>:405:18' ElectricalID_output.enable_TriState = boolean([1 1 1]); */
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[0] =
+          true;
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[1] =
+          true;
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.enable_TriState[2] =
+          true;
+
+        /* '<S1>:405:19' ElectricalID_output.enable_TriState_set_2 = boolean([1 1 1]); */
+        rtElectricalID_6ph_codegen_DW->
+          ElectricalID_output.enable_TriState_set_2[0] = true;
+        rtElectricalID_6ph_codegen_DW->
+          ElectricalID_output.enable_TriState_set_2[1] = true;
+        rtElectricalID_6ph_codegen_DW->
+          ElectricalID_output.enable_TriState_set_2[2] = true;
+        rtElectricalID_6ph_codegen_DW->is_ElectricalID =
+          IN_calculatePIcontroller;
 
         /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* Entry 'stop': '<S1>:361' */
-        /* state 10.1 */
-        /* '<S1>:361:3' ElectricalID_FOC_output.activeState = uint16(160); */
+        /* Entry 'calculatePIcontroller': '<S1>:284' */
+        /* '<S1>:284:4' ElectricalID_FOC_output.activeState = uint16(160); */
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 160U;
 
-        /* '<S1>:361:4' ElectricalID_FOC_output.n_ref_FOC = single(0); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.n_ref_FOC = 0.0F;
+        /* '<S1>:284:5' ElectricalID_FOC_output = ControllerParameter(ElectricalID_FOC_output,... */
+        /* '<S1>:284:6'     bandwidthCurrentControl,ElectricalID_output.PMSM_parameters,dampingFactor,psiOverJ); */
+        rtElectricalID_6ph_codegen_DW->b =
+          rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output;
 
-        /* '<S1>:361:5' ElectricalID_FOC_output.resetIntegrator = boolean(1); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.resetIntegrator =
-          true;
+        /* Merge: '<S1>/ Merge ' */
+        ControllerParameter(&rtElectricalID_6ph_codegen_DW->b,
+                            rtElectricalID_6ph_codegen_DW->bandwidthCurrentControl,
+                            rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.R_ph_Ohm,
+                            rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.Ld_Henry,
+                            rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.Lq_Henry,
+                            rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs,
+                            rtElectricalID_6ph_codegen_DW->dampingFactor,
+                            rtElectricalID_6ph_codegen_DW->psiOverJ);
+
+        /* Outport: '<Root>/ElectricalID_FOC_output' */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output =
+          rtElectricalID_6ph_codegen_DW->b;
 
         /* '<S1>:405:7' if(counter<=10000) */
       } else if (rtElectricalID_6ph_codegen_DW->counter <= 10000U) {
@@ -5888,8 +6038,8 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.resetIntegrator =
           false;
 
-        /* '<S1>:337:7' ElectricalID_FOC_output.activeState = uint16(161); */
-        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 161U;
+        /* '<S1>:337:7' ElectricalID_FOC_output.activeState = uint16(162); */
+        rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 162U;
 
         /* '<S1>:337:8' wait_count = uint32(3/GlobalConfig.sampleTimeISR); */
         rtElectricalID_6ph_codegen_DW->e_h4 = roundf(3.0F /

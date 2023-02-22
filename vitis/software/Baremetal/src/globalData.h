@@ -6,6 +6,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -66,7 +67,8 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
+	float mechanicalRotorSpeed_1; 		// in rpm
+	float mechanicalRotorSpeed_2; 		// in rpm
 	float mechanicalRotorSpeed_filtered; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
@@ -76,8 +78,10 @@ typedef struct _actualValues_ {
 	float I_q;
 	float U_d;
 	float U_q;
-	float theta_elec;
-	float theta_mech;
+	float theta_elec_1;
+	float theta_mech_1;
+	float theta_elec_2;
+	float theta_mech_2;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
@@ -108,6 +112,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_resolverIP_t* resolver_d5_1;
+	uz_resolverIP_t* resolver_d5_2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

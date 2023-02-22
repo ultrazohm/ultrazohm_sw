@@ -57,6 +57,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["inc_enc_v26:9470"] = "inc_enc_v26:2042";
     this.sidParentMap["inc_enc_v26:9471"] = "inc_enc_v26:2042";
     this.sidParentMap["inc_enc_v26:10196"] = "inc_enc_v26:2042";
+    this.sidParentMap["inc_enc_v26:10273"] = "inc_enc_v26:2042";
     this.sidParentMap["inc_enc_v26:10253"] = "inc_enc_v26:2042";
     this.sidParentMap["inc_enc_v26:10245"] = "inc_enc_v26:10242";
     this.sidParentMap["inc_enc_v26:10252"] = "inc_enc_v26:10242";

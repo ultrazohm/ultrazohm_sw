@@ -1,51 +1,51 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/AND */
-	this.urlHashMap["inc_enc_v26:10265"] = "IncEnc_src_IncEnc_V25.vhd:980";
+	this.urlHashMap["inc_enc_v26:10265"] = "IncEnc_src_IncEnc_V25.vhd:982";
 	/* <S1>/Abs */
-	this.urlHashMap["inc_enc_v26:4013"] = "IncEnc_src_IncEnc_V25.vhd:744,745,746";
+	this.urlHashMap["inc_enc_v26:4013"] = "IncEnc_src_IncEnc_V25.vhd:746,747,748";
 	/* <S1>/Check d-Axis-Hit */
-	this.urlHashMap["inc_enc_v26:10242"] = "IncEnc_src_IncEnc_V25.vhd:438,439,440,441,442,443,444";
+	this.urlHashMap["inc_enc_v26:10242"] = "IncEnc_src_IncEnc_V25.vhd:440,441,442,443,444,445,446";
 	/* <S1>/Counter */
-	this.urlHashMap["inc_enc_v26:3596"] = "IncEnc_src_IncEnc_V25.vhd:375,376,377,378,379,380,381,382,383";
+	this.urlHashMap["inc_enc_v26:3596"] = "IncEnc_src_IncEnc_V25.vhd:377,378,379,380,381,382,383,384,385";
 	/* <S1>/Counter_Theta_el_wOffset */
-	this.urlHashMap["inc_enc_v26:10197"] = "IncEnc_src_IncEnc_V25.vhd:385,386,387,388,389,390,391,392,393,394,395";
+	this.urlHashMap["inc_enc_v26:10197"] = "IncEnc_src_IncEnc_V25.vhd:387,388,389,390,391,392,393,394,395,396,397";
 	/* <S1>/Counter_position */
-	this.urlHashMap["inc_enc_v26:2109"] = "IncEnc_src_IncEnc_V25.vhd:397,398,399,400,401,402,403,404,405,406";
+	this.urlHashMap["inc_enc_v26:2109"] = "IncEnc_src_IncEnc_V25.vhd:399,400,401,402,403,404,405,406,407,408";
 	/* <S1>/Counter_position_wOffset */
-	this.urlHashMap["inc_enc_v26:9441"] = "IncEnc_src_IncEnc_V25.vhd:418,419,420,421,422,423,424,425,426,427,428";
+	this.urlHashMap["inc_enc_v26:9441"] = "IncEnc_src_IncEnc_V25.vhd:420,421,422,423,424,425,426,427,428,429,430";
 	/* <S1>/Data Type Conversion1 */
-	this.urlHashMap["inc_enc_v26:9469"] = "IncEnc_src_IncEnc_V25.vhd:950";
+	this.urlHashMap["inc_enc_v26:9469"] = "IncEnc_src_IncEnc_V25.vhd:952";
 	/* <S1>/Data Type Conversion3 */
-	this.urlHashMap["inc_enc_v26:4106"] = "IncEnc_src_IncEnc_V25.vhd:538";
+	this.urlHashMap["inc_enc_v26:4106"] = "IncEnc_src_IncEnc_V25.vhd:540";
 	/* <S1>/Data Type Conversion9 */
-	this.urlHashMap["inc_enc_v26:2187"] = "IncEnc_src_IncEnc_V25.vhd:723";
+	this.urlHashMap["inc_enc_v26:2187"] = "IncEnc_src_IncEnc_V25.vhd:725";
 	/* <S1>/Delay1 */
-	this.urlHashMap["inc_enc_v26:9325"] = "IncEnc_src_IncEnc_V25.vhd:484,485,486,487,488,489,490,491,492,493";
+	this.urlHashMap["inc_enc_v26:9325"] = "IncEnc_src_IncEnc_V25.vhd:486,487,488,489,490,491,492,493,494,495";
 	/* <S1>/Delay2 */
-	this.urlHashMap["inc_enc_v26:9619"] = "IncEnc_src_IncEnc_V25.vhd:610,611,612,613,614,615,616,617,618,619";
+	this.urlHashMap["inc_enc_v26:9619"] = "IncEnc_src_IncEnc_V25.vhd:612,613,614,615,616,617,618,619,620,621";
 	/* <S1>/Delay6 */
-	this.urlHashMap["inc_enc_v26:9324"] = "IncEnc_src_IncEnc_V25.vhd:460,461,462,463,464,465,466,467,468,469";
+	this.urlHashMap["inc_enc_v26:9324"] = "IncEnc_src_IncEnc_V25.vhd:462,463,464,465,466,467,468,469,470,471";
 	/* <S1>/Direction */
-	this.urlHashMap["inc_enc_v26:2052"] = "IncEnc_src_IncEnc_V25.vhd:345,346,347,348,349,350,351,352";
+	this.urlHashMap["inc_enc_v26:2052"] = "IncEnc_src_IncEnc_V25.vhd:347,348,349,350,351,352,353,354";
 	/* <S1>/Index_Latch */
-	this.urlHashMap["inc_enc_v26:10188"] = "IncEnc_src_IncEnc_V25.vhd:430,431,432,433,434,435,436";
+	this.urlHashMap["inc_enc_v26:10188"] = "IncEnc_src_IncEnc_V25.vhd:432,433,434,435,436,437,438";
 	/* <S1>/Logical1 */
-	this.urlHashMap["inc_enc_v26:2189"] = "IncEnc_src_IncEnc_V25.vhd:584";
+	this.urlHashMap["inc_enc_v26:2189"] = "IncEnc_src_IncEnc_V25.vhd:586";
 	/* <S1>/Pipeline7 */
-	this.urlHashMap["inc_enc_v26:4105"] = "IncEnc_src_IncEnc_V25.vhd:540,541,542,543,544,545,546,547,548,549";
+	this.urlHashMap["inc_enc_v26:4105"] = "IncEnc_src_IncEnc_V25.vhd:542,543,544,545,546,547,548,549,550,551";
 	/* <S1>/Pipeline8 */
-	this.urlHashMap["inc_enc_v26:6912"] = "IncEnc_src_IncEnc_V25.vhd:678,679,680,681,682,683,684,685,686,687";
+	this.urlHashMap["inc_enc_v26:6912"] = "IncEnc_src_IncEnc_V25.vhd:680,681,682,683,684,685,686,687,688,689";
 	/* <S1>/Pipeline9 */
-	this.urlHashMap["inc_enc_v26:6913"] = "IncEnc_src_IncEnc_V25.vhd:652,653,654,655,656,657,658,659,660,661";
+	this.urlHashMap["inc_enc_v26:6913"] = "IncEnc_src_IncEnc_V25.vhd:654,655,656,657,658,659,660,661,662,663";
 	/* <S1>/Product_theta_el */
-	this.urlHashMap["inc_enc_v26:2190"] = "IncEnc_src_IncEnc_V25.vhd:690,691";
+	this.urlHashMap["inc_enc_v26:2190"] = "IncEnc_src_IncEnc_V25.vhd:692,693";
 	/* <S1>/count_lines */
-	this.urlHashMap["inc_enc_v26:3723"] = "IncEnc_src_IncEnc_V25.vhd:408,409,410,411,412,413,414,415,416";
+	this.urlHashMap["inc_enc_v26:3723"] = "IncEnc_src_IncEnc_V25.vhd:410,411,412,413,414,415,416,417,418";
 	/* <S1>/hold1 */
-	this.urlHashMap["inc_enc_v26:2193"] = "IncEnc_src_IncEnc_V25.vhd:498,499,500,501,502,503,504,505,506,507";
+	this.urlHashMap["inc_enc_v26:2193"] = "IncEnc_src_IncEnc_V25.vhd:500,501,502,503,504,505,506,507,508,509";
 	/* <S1>/speed */
-	this.urlHashMap["inc_enc_v26:5485"] = "IncEnc_src_IncEnc_V25.vhd:354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373";
+	this.urlHashMap["inc_enc_v26:5485"] = "IncEnc_src_IncEnc_V25.vhd:356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375";
 	/* <S5>/Constant */
 	this.urlHashMap["inc_enc_v26:10252"] = "IncEnc_src_Check_d_Axis_Hit.vhd:50";
 	/* <S5>/Constant1 */
@@ -743,6 +743,8 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["inc_enc_v26:9471"] = {rtwname: "<S1>/position_AXI_wOffset"};
 	this.rtwnameHashMap["<S1>/Index_found"] = {sid: "inc_enc_v26:10196"};
 	this.sidHashMap["inc_enc_v26:10196"] = {rtwname: "<S1>/Index_found"};
+	this.rtwnameHashMap["<S1>/Index_found_AXI4"] = {sid: "inc_enc_v26:10273"};
+	this.sidHashMap["inc_enc_v26:10273"] = {rtwname: "<S1>/Index_found_AXI4"};
 	this.rtwnameHashMap["<S1>/d-Axis-Hit"] = {sid: "inc_enc_v26:10253"};
 	this.sidHashMap["inc_enc_v26:10253"] = {rtwname: "<S1>/d-Axis-Hit"};
 	this.rtwnameHashMap["<S5>/Count_in"] = {sid: "inc_enc_v26:10245"};

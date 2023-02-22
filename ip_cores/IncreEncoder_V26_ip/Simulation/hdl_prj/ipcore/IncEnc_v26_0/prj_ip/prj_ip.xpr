@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/hdl_prj/ipcore/IncEnc_v26_0/prj_ip/prj_ip.xpr">
+<Project Version="7" Minor="49" Path="E:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/IncEnc_v26_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="568aa323db7c442fb740675310e7874a"/>
+    <Option Name="Id" Val="df63330e1b10451cac7b3a41f75ac72a"/>
     <Option Name="Part" Val="xczu9cg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -221,11 +221,20 @@
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
       <Filter Type="Constrs"/>
+      <File Path="$PSRCDIR/constrs_1/imports/Desktop/Constrains.xdc">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="C:/Users/Admin/Desktop/Constrains.xdc"/>
+          <Attr Name="ImportTime" Val="1677076465"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="ConstrsType" Val="XDC"/>
       </Config>
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
+      <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="IncEnc"/>
@@ -270,7 +279,9 @@
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
           <Desc>Vivado Synthesis Defaults</Desc>
         </StratHandle>
-        <Step Id="synth_design"/>
+        <Step Id="synth_design">
+          <Option Id="MoreOptsStr"><![CDATA[-mode out_of_context]]></Option>
+        </Step>
       </Strategy>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
@@ -278,9 +289,7 @@
     </Run>
     <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu9cg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

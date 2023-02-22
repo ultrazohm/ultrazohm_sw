@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.48
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Feb 17 08:00:25 2023
+ * C/C++ source code generated on : Mon Feb 20 21:43:33 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,9 +64,12 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
+
+
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
+  uz_ParaID_Controller_Parameters_output_t b;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
@@ -124,7 +127,9 @@ typedef struct {
   real32_T L_est_a;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   real32_T R_est_d;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T L_est_e;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T psiOverJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID_6ph_codegen' */

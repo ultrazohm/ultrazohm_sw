@@ -18,6 +18,8 @@
 
 #include "../../globalData.h"
 #include "uz_ParameterID_data.h"
+#include "../uz_FOC/uz_FOC.h"
+#include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "ControlState/uz_ParaID_ControlState.h"
 #include "ElectricalID_6ph/uz_ParaID_ElectricalID_6ph.h"
 #include "FluxMapID/uz_ParaID_FluxMapID.h"
@@ -25,11 +27,17 @@
 #include "OnlineID/uz_ParaID_OnlineID.h"
 #include "TwoMassID/uz_ParaID_TwoMassID.h"
 
+
 /**
  * @brief Object definition for uz_ParameterID_6ph_t
  * 
  */
 typedef struct uz_ParameterID_6ph_t uz_ParameterID_6ph_t;
+
+struct uz_DutyCycle_2x3ph_t{
+    struct uz_DutyCycle_t system1;
+    struct uz_DutyCycle_t system2;
+};
 
 /**
  * @brief Initializes the uz_ParameterID_6ph_t object and its sub-objects
@@ -50,5 +58,9 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 
 void uz_ParameterID_transmit_measured_voltages(uz_ParameterID_6ph_t* self, float *destination);
+
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance);
+
+struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts);
 
 #endif // UZ_PARAMETERID_6PH_H

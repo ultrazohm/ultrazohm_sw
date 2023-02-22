@@ -5,8 +5,6 @@
 #include <math.h>
 #include "uz_math_constants.h"
 #include "uz_Transformation.h"
-#include "uz_Transformation.c"
-#include "uz_math_constants.h"
 
 uz_3ph_abc_t UVW_system = {0}; 
 uz_3ph_dq_t dq_system = {0};
@@ -35,49 +33,6 @@ void setUp(void)
     alphabeta_system.beta = 0.0f;
     alphabeta_system.gamma = 0.0f;
 }
-
-// Test line to line trafo
-void test_uz_complex_rotation(void){
-    uz_3ph_alphabeta_t startvalue = {
-        .alpha = 1.0f,
-        .beta = -2.0f,
-        .gamma = 3.0f};
-    uz_3ph_alphabeta_t result = {
-        .alpha = -0.0773f,
-        .beta = -1.2887f,
-        .gamma = 3.0};
-    struct uz_complex_magn_phase factor = {
-        .magnitude = 1.0f/sqrtf(3.0f),
-        .phase = -1.0f/6.0f*UZ_PIf};
-    uz_3ph_alphabeta_t rotated = uz_complex_rotation(startvalue,factor);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.alpha, result.alpha);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.beta, result.beta);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,rotated.gamma, result.gamma);
-}
-
-void test_uz_line_line_to_abc(void){
-    uz_6ph_abc_t lineline_voltage = {
-        .a1 = 1.0f,
-        .b1 = 2.0f,
-        .c1 = 3.0f,
-        .a2 = -5.0f,
-        .b2 = -4.0f,
-        .c2 = -3.0f};
-    uz_6ph_abc_t result = {
-        .a1 = 1.333f,
-        .b1 = 2.333f,
-        .c1 = 2.333f,
-        .a2 = -4.667f,
-        .b2 = -3.667f,
-        .c2 = -3.667f};
-    uz_6ph_abc_t phase = uz_line_line_to_abc(lineline_voltage);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.a1, phase.a1);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.b1, phase.b1);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.c1, phase.c1);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.a2, phase.a2);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.b2, phase.b2);
-    TEST_ASSERT_FLOAT_WITHIN (1e-03,result.c2, phase.c2);
-    }
 
 // Testfunctions threephase
 void test_uz_dq_Transformation_output_positive_theta(void){

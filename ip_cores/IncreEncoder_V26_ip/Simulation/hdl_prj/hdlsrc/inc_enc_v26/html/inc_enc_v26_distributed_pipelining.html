@@ -1,0 +1,327 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Distributed Pipelining Report for inc_enc_v26
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdDistPipe'); else local_onload();}} catch(err) {};">
+<font SIZE="+2" COLOR="#000066">
+Distributed Pipelining Report for inc_enc_v26
+</font>
+<br /><br /><br /><a name="Constrained Output Pipeline Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Constrained Output Pipeline Summary
+</b>
+
+</font>
+
+</a>
+<br /><br />No block found with 'ConstrainedOutputPipeline' turned 'on'.<br /><br /><a name="Distributed Pipelining Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Distributed Pipelining Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><b>
+<i>
+HDL Code Generation Parameter: 
+</i>
+
+</b>
+<i>
+HierarchicalDistPipelining: 'off'
+</i>
+<br /><br /><b>
+<i>
+Subsystems with 'DistributedPipelining' set 'on': 
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Subsystem
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+InputPipeline
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+OutputPipeline
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('inc_enc_v26:8249')" name="code2model" class="code2model">
+invt_mult
+</a>
+
+</td>
+<td align="left" valign="top" style="border-style: none">
+1
+</td>
+<td align="left" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('inc_enc_v26:8249')" name="code2model" class="code2model">
+invt_mult
+</a>
+
+</b>
+<br /><br /><b>
+<i>
+Implementation Parameters: 
+</i>
+
+</b>
+<i>
+DistributedPipelining: 'on'; 
+</i>
+<i>
+InputPipeline: 1; 
+</i>
+<i>
+OutputPipeline: 1
+</i>
+<br /><br /><p><hr /></p><b>
+Status: 
+</b>
+Distributed Pipelining successful.<br /><br />'DistributedPipeliningPriority' set to 'Numerical Integrity' is preventing movement of pipelines around certain blocks. Consider <a href="matlab:configset.internal.open('inc_enc_v26','DistributedPipeliningPriority')">changing the priority to 'Performance'</a> if numerical inaccuracies can be ignored. Note that this can lead to validation model mismatches during the initialization cycles or whole simulation time if the model has feedback loops.<br /><br /><a href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\highlightDistributedPipeliningBarriers.m')">
+Highlight blocks inhibiting distributed pipelining
+</a>
+<br /><br /><p><hr /></p><b>
+<u>
+Before Distributed Pipelining
+</u>
+
+</b>
+<b>
+: 96registers   
+</b>
+<b>
+<i>
+   (772flip-flops)
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Registers
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Count
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+24-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+1-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+44
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+32-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+38-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+16-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+6-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+
+</table>
+<br /><b>
+<u>
+After Distributed Pipelining
+</u>
+
+</b>
+<b>
+: 96registers   
+</b>
+<b>
+<i>
+   (772flip-flops)
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Registers
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Count
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+32-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+16-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+24-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+6-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+30-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+1-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+44
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+38-bit
+</td>
+<td align="left" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Generated Model">
+<font size="+1" color="#000066">
+<b class="midprod">
+Generated Model
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Generated model after the transformation:
+</td>
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_inc_enc_v26')" class="callMATLAB" name="callMATLAB">gm_inc_enc_v26</a>
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

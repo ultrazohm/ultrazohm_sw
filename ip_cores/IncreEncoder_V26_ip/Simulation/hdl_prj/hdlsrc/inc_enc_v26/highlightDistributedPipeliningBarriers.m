@@ -1,0 +1,10 @@
+open_system('inc_enc_v26');
+open_system('gm_inc_enc_v26');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_inc_enc_v26/IncEnc_V25/speed/calc_omega_instance4/invt_mult/Math Reciprocal', 'user1');
+annotate_port('gm_inc_enc_v26/IncEnc_V25/speed/calc_omega_instance4/invt_mult/Math Reciprocal', 0, 1, 'Potential numerical mismatch');
+hilite_system('inc_enc_v26/IncEnc_V25/speed/calc_omega/invt_mult/Math Reciprocal', 'user1');
+annotate_port('inc_enc_v26/IncEnc_V25/speed/calc_omega/invt_mult/Math Reciprocal', 0, 1, 'Potential numerical mismatch');

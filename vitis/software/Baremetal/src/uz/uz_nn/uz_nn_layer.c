@@ -139,7 +139,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     // float cache2 = uz_matrix_get_element_zero_based(cache,1,0);
     // float cache3 = uz_matrix_get_element_zero_based(cache,0,1);
     // float cache4 = uz_matrix_get_element_zero_based(cache,1,1);
-    // funktioniert bis hierhin, cache1 hat die richtigen Werte
+    // funktioniert bis hierhin, cache hat die richtigen Werte
     // mit copybefehl kein assert, die Frage ist warum, die Dimension ist laut debugger gleich
     // uz_matrix_copy würde auch in assert gehen wenn dimension ungleich
     // für layer 2 funktioniert es nur mit copy für layer 1 failt es logischerweise, da die Dimension anders ist
@@ -174,7 +174,7 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     uz_matrix_transpose(outputprev);
     uz_matrix_multiply(outputprev,self->delta,zwischenmatrix1);
     //matrizen zusammenbasteln und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
-    //uz_matrix_columnvec_concatenate_horizontal(zwischenmatrix1,self->delta,self->gradients);    
+    uz_matrix_columnvec_concatenate_horizontal(zwischenmatrix1,self->delta,self->gradients);    
 }
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
@@ -216,5 +216,10 @@ uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self)
 	return (self->delta);
 }
 
-
+uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const*const self)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (self->gradients);
+}
 #endif

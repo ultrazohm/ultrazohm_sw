@@ -84,8 +84,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .delta = delta_1,
         .gradients = g_1,
         .error = e_1},
-    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2),.length_of_delta = UZ_MATRIX_SIZE(delta_2), .length_of_gradients = UZ_MATRIX_SIZE(g_2),.length_of_error = UZ_MATRIX_SIZE(e_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .derivate_gradients = d_2, .delta = d_2, .gradients = g_2, .error=e_2},
-  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(s_3), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3),.length_of_delta = UZ_MATRIX_SIZE(delta_3), .length_of_gradients = UZ_MATRIX_SIZE(g_3), .length_of_error = UZ_MATRIX_SIZE(e_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3, .derivate_gradients = d_3,.delta = d_3,  .gradients = g_3, .error= e_3}};
+    [1] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .length_of_sumout = UZ_MATRIX_SIZE(s_2), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2),.length_of_delta = UZ_MATRIX_SIZE(delta_2), .length_of_gradients = UZ_MATRIX_SIZE(g_2),.length_of_error = UZ_MATRIX_SIZE(e_2), .weights = w_2, .bias = b_2, .output = y_2, .sumout = s_2, .derivate_gradients = d_2, .delta = delta_2, .gradients = g_2, .error=e_2},
+  [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .length_of_sumout = UZ_MATRIX_SIZE(s_3), .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3),.length_of_delta = UZ_MATRIX_SIZE(delta_3), .length_of_gradients = UZ_MATRIX_SIZE(g_3), .length_of_error = UZ_MATRIX_SIZE(e_3), .weights = w_3, .bias = b_3, .output = y_3, .sumout = s_3, .derivate_gradients = d_3,.delta = delta_3,  .gradients = g_3, .error= e_3}};
 
 void setUp(void)
 {
@@ -140,9 +140,9 @@ void test_uz_nn_schroeder(void)
     deltahelp[3] = uz_matrix_get_element_zero_based(deltahelper2,0,1);
     deltahelp[4] = uz_matrix_get_element_zero_based(deltahelper3,0,0);
     // check derivates
-    uz_matrix_t *helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t *helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern
-    uz_matrix_t *helper3 = uz_nn_get_derivate_data(test,3); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t* helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t* helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t* helper3 = uz_nn_get_derivate_data(test,3); // index 1-3 verwenden für nn mit 3 layern
     float derivatehelper[UZ_MATRIX_SIZE(d_1)+UZ_MATRIX_SIZE(d_2)+UZ_MATRIX_SIZE(d_3)];
     derivatehelper[0] = uz_matrix_get_element_zero_based(helper1,0,0);
     derivatehelper[1] = uz_matrix_get_element_zero_based(helper1,0,1);
@@ -153,8 +153,24 @@ void test_uz_nn_schroeder(void)
     derivatehelper[6] = uz_matrix_get_element_zero_based(helper2,1,0);
     derivatehelper[7] = uz_matrix_get_element_zero_based(helper2,1,1);
     derivatehelper[8] = uz_matrix_get_element_zero_based(helper3,0,0);
-    // Berechne zwischenwerte
-
+    // check gradients
+    uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t* gradhelp2 = uz_nn_get_gradient_data(test,2); // index 1-3 verwenden für nn mit 3 layern
+    uz_matrix_t* gradhelp3 = uz_nn_get_gradient_data(test,3); // index 1-3 verwenden für nn mit 3 layern
+    float gradhelper[UZ_MATRIX_SIZE(g_1)+UZ_MATRIX_SIZE(g_2)+UZ_MATRIX_SIZE(g_3)];
+    gradhelper[0] = uz_matrix_get_element_zero_based(gradhelp1,0,0);
+    gradhelper[1] = uz_matrix_get_element_zero_based(gradhelp1,1,0);
+    gradhelper[2] = uz_matrix_get_element_zero_based(gradhelp1,2,0);
+    gradhelper[3] = uz_matrix_get_element_zero_based(gradhelp1,3,0);
+    gradhelper[4] = uz_matrix_get_element_zero_based(gradhelp2,0,0);
+    gradhelper[5] = uz_matrix_get_element_zero_based(gradhelp2,1,0);
+    gradhelper[6] = uz_matrix_get_element_zero_based(gradhelp2,2,0);
+    gradhelper[7] = uz_matrix_get_element_zero_based(gradhelp2,3,0);
+    gradhelper[8] = uz_matrix_get_element_zero_based(gradhelp2,4,0);
+    gradhelper[9] = uz_matrix_get_element_zero_based(gradhelp2,5,0);
+    gradhelper[10] = uz_matrix_get_element_zero_based(gradhelp3,0,0);
+    gradhelper[11] = uz_matrix_get_element_zero_based(gradhelp3,1,0);
+    gradhelper[12] = uz_matrix_get_element_zero_based(gradhelp3,2,0);
     // Berechne lokale Gradienten
 
     // Trainiere einen step des Netzes 

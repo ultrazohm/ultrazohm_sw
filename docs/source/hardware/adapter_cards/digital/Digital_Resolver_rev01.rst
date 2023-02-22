@@ -33,10 +33,10 @@ Each resolver channel can be configured with several pull-up and pull-down resis
 
 With the Signals A0 and A1 the resolver`s operation mode can be configured. This is done through the ip-core driver:
 
-* A0 to HIGH and A1 to HIGH = Normal model - position output
+* A0 to LOW and A1 to LOW = Normal model - position output
 * A0 to LOW and A1 to HIGH = Normal model - velocity output
 * A0 to HIGH and A1 to LOW = Reserved (not used)
-* A0 to LOW and A1 to LOW = Configuration Mode
+* A0 to HIGH and A1 to HIGH = Configuration Mode
 
 In position and velocity mode the corresponding data can be obtained directly by toggling the clock line without sending the register addresses first. 
 Further access to the devices registers and configurations is possible in the configuration mode. 
@@ -71,6 +71,7 @@ Before first use
 
 * Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channels
 * Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
+* Attention: There are two different CPLD programms. One for usage of the adapter board in slots D1 to D4. And a special one for usage in slot D5.
 
 Known issues
 ------------
@@ -80,7 +81,7 @@ Known issues
 Compatibility 
 -------------
 
-* This Board is compatible with slots D1-D5
+* This Board is compatible with slots D1-D5. In Slot D5 only CH A/1 and CH B/2 are available. Also, there is a special CPLD programm needed for D5, D1 to D4 share a common CPLD programm
 
 Pinout
 ------

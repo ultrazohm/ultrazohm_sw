@@ -2,6 +2,9 @@
 %clear;
 %clc;
 
+%% Setup Toolchain
+hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:\Xilinx\Vivado\2020.1\bin');
+
 %% Setup Sim
 ADC_Freq            = 1e6;
 ADC_SampleTime      = 1/ADC_Freq;

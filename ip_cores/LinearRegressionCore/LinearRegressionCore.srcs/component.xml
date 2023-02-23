@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>LinearRegressionIP_TOP</spirit:name>
+  <spirit:name>LinearRegressionIP</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -282,7 +282,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>19436aba</spirit:value>
+            <spirit:value>78114a23</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -298,7 +298,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f8cef79d</spirit:value>
+            <spirit:value>8ad82593</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -313,7 +313,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e5730b88</spirit:value>
+            <spirit:value>892225d7</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -448,6 +448,19 @@
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
               <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>Data_valid</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
@@ -880,13 +893,17 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>sources_1/new/Valid_Generator.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>sources_1/imports/adder_tree_examples/explicit_binary_adder_tree_using_for_generate_alternative.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>sources_1/new/LinearRegressionIP_TOP.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_484ae706</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_8c5341e9</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -924,6 +941,10 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>sources_1/new/RWM_Signal.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>sources_1/new/Valid_Generator.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -973,18 +994,23 @@
         <spirit:fileType>unknown</spirit:fileType>
         <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
       </spirit:file>
+      <spirit:file>
+        <spirit:name>sim_1/imports/new/LinearRegressionIP_TB_Sines_behav.wcfg</spirit:name>
+        <spirit:fileType>unknown</spirit:fileType>
+        <spirit:userFileType>USED_IN_simulation</spirit:userFileType>
+      </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/LinearRegressionIP_TOP_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/LinearRegressionIP_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_c63671dd</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>LinearRegressionIP_TOP_v1_0</spirit:description>
+  <spirit:description>LinearRegressionIP_v1_0</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>DataWidth</spirit:name>
@@ -1056,10 +1082,10 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>LinearRegressionIP_TOP_v1_0</xilinx:displayName>
+      <xilinx:displayName>LinearRegressionIP_v1_0</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>6</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-02-20T10:59:00Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>7</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-02-23T09:08:03Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@4c87f99e_ARCHIVE_LOCATION">e:/01_repos/06_ultrazohm_hadek/ip_cores/linearregressioncore/linearregressioncore.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@7e7d6bd8_ARCHIVE_LOCATION">e:/01_repos/06_ultrazohm_hadek/ip_cores/linearregressioncore/linearregressioncore.srcs</xilinx:tag>
@@ -1145,14 +1171,31 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@26489b1f_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@6ea105c1_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@379b75a9_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@671df2f1_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24e2f99f_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f08be6a_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@77588cb7_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a5f7758_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ca8c6bf_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70586946_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@675f283e_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@32303c49_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1a5fd9b2_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@463d234d_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1b3871ae_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7be88b43_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71cf51e_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51ac734b_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c9f7325_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@59a904a0_ARCHIVE_LOCATION">e:/01_Repos/06_Ultrazohm_HADEK/ip_cores/LinearRegressionCore/LinearRegressionCore.srcs</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1_AR75502</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="c026746f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="871a59ce"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="98d38a1c"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="8b7ab4ee"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c38b2839"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="32baa2c7"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="f16c2061"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="b6d48296"/>
     </xilinx:packagingInfo>

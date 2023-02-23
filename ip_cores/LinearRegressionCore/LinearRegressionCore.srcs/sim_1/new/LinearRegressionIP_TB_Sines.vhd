@@ -52,6 +52,18 @@ Port(
 );
 end component;
 
+component Valid_Generator is
+Generic(
+    Wait_Cycles	    : integer	:= 11
+);
+Port (
+    clk             : in    std_logic;
+    rst_n           : in    std_logic;
+    Trigger_Calc    : in    std_logic;
+    Data_valid      : out   std_logic
+);
+end component Valid_Generator;
+
 -- Declaration SineSource
 component dds_compiler_SineAndCosine_1MHz is
   Port (
@@ -63,13 +75,14 @@ end component dds_compiler_SineAndCosine_1MHz;
 
 -- Constanten und Variablen
 constant PERIOD         : time := 10ns;  -- 100 MHz
-constant PERIOD_Trigger : time := 100ns; -- 1 MHz
+constant PERIOD_Trigger : time := 300ns; -- 1 MHz
 
 --Declaration TB-Signals
 signal clk_tb           : std_logic;
 signal rst_n_tb         : std_logic;
 signal Trigger_Calc_tb  : std_logic;
 signal Calc_enable_tb   : std_logic;
+signal Data_valid_tb    : std_logic;
 
 signal DDS_out_s_tb       : std_logic_vector(31 downto 0);
 signal Sine_s_tb          : signed(15 downto 0);
@@ -99,6 +112,14 @@ signal rand_sig           : real := 0.0;
 signal Noise_s_tb         : signed(31 downto 0);
 
 begin
+
+Valid_Gen:Valid_Generator
+Port map (
+    clk                 => clk_tb,
+    rst_n               => rst_n_tb,
+    Trigger_Calc        => Trigger_Calc_tb,
+    Data_valid          => Data_valid_tb
+);
 
 -- Create DUT with Sine-Input
 DUT1_Sine : LinearRegressionIP

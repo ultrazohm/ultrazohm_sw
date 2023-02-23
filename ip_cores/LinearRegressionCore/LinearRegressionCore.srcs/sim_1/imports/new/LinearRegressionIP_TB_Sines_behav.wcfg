@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="30775064fs"></ZoomStartTime>
-      <ZoomEndTime time="30954052fs"></ZoomEndTime>
-      <Cursor1Time time="30805103fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="6690000001fs"></ZoomEndTime>
+      <Cursor1Time time="760000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="227"></NameColumnWidth>
-      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+      <ValueColumnWidth column_width="106"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="19" />
+   <WVObjectSize size="18" />
    <wvobject type="divider" fp_name="divider2519">
       <obj_property name="label">TB</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -60,10 +60,6 @@
       <obj_property name="ElementShortName">Trigger_Calc_tb</obj_property>
       <obj_property name="ObjectShortName">Trigger_Calc_tb</obj_property>
    </wvobject>
-   <wvobject fp_name="/LinearRegressionIP_TB_Sines/Data_valid_tb" type="logic">
-      <obj_property name="ElementShortName">Data_valid_tb</obj_property>
-      <obj_property name="ObjectShortName">Data_valid_tb</obj_property>
-   </wvobject>
    <wvobject fp_name="/LinearRegressionIP_TB_Sines/Data_in_1_tb" type="array">
       <obj_property name="ElementShortName">Data_in_1_tb[31:0]</obj_property>
       <obj_property name="ObjectShortName">Data_in_1_tb[31:0]</obj_property>
@@ -82,8 +78,8 @@
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">200</obj_property>
       <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
-      <obj_property name="AnalogYRangeMin">-26.39</obj_property>
-      <obj_property name="AnalogYRRangeMax">10.7282</obj_property>
+      <obj_property name="AnalogYRangeMin">-40.000000</obj_property>
+      <obj_property name="AnalogYRRangeMax">40.000000</obj_property>
       <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>

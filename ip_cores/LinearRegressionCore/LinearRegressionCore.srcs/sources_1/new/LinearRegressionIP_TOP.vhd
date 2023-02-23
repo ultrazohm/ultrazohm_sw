@@ -41,6 +41,7 @@ Port(
     Alpha_0_out     : out   std_logic_vector((Channels*DataWidth)-1 downto 0);
     Alpha_1_out     : out   std_logic_vector((Channels*DataWidth)-1 downto 0);
     Data_out        : out   std_logic_vector((Channels*DataWidth)-1 downto 0);
+    Data_valid      : out   std_logic;
     -- AXI-Bus
     S_AXI_ACLK      : in std_logic;
     S_AXI_ARESETN   : in std_logic;
@@ -103,6 +104,18 @@ component AXI_Interface_v1_0_S00_AXI is
 		slv_reg_00_o  : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0)
 	);
 end component AXI_Interface_v1_0_S00_AXI;
+
+component Valid_Generator is
+Generic(
+    Wait_Cycles	    : integer	:= 11
+);
+Port (
+    clk             : in    std_logic;
+    rst_n           : in    std_logic;
+    Trigger_Calc    : in    std_logic;
+    Data_valid      : out   std_logic
+);
+end component Valid_Generator;
 
 component LinearRegressionIP is
 Generic(
@@ -180,6 +193,14 @@ GenerateCannel: for i in 1 to Channels generate
         Data_out       => Data_out_vec((DataWidth*(i))-1 downto (DataWidth)*(i-1))     
     );
 end generate;
+
+Valid_Gen:Valid_Generator
+Port map (
+    clk                 => clk,
+    rst_n               => rst_n,
+    Trigger_Calc        => Trigger_Calc,
+    Data_valid          => Data_valid
+);
 
 -- Mapping
  Alpha_0_out    <= Alpha_0_out_vec; 

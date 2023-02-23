@@ -12,7 +12,7 @@ Software Framework
     hardwareAbstractionLayer/hardwareAbstractionLayer
     array/array
     uz_Transformation/uz_Transformation
-    FOC/FOC
+    CurrentControl/CurrentControl
     ParameterID/ParameterID
     newton_raphson/newton_raphson
     movingAverage/movingAverage
@@ -24,6 +24,7 @@ Software Framework
     exponential_smoothing/uz_exp_smooth
     space_vector_limitation/space_vector_limitation
     SpeedControl/SpeedControl
+    SetPoint/SetPoint
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests

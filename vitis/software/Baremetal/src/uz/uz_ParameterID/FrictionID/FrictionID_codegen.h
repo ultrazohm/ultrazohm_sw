@@ -98,7 +98,7 @@ typedef struct {
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_ParaID_FrictionIDConfig_t FrictionConfigID;/* '<Root>/FrictionConfigID' */
+  uz_ParaID_FrictionIDConfig_t FrictionIDConfig;/* '<Root>/FrictionConfigID' */
   uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */

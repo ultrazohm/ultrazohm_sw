@@ -18,8 +18,9 @@
 
 #include "../../globalData.h"
 #include "uz_ParameterID_data.h"
-#include "../uz_FOC/uz_FOC.h"
+#include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz_setpoint/uz_setpoint.h"
 #include "ControlState/uz_ParaID_ControlState.h"
 #include "ElectricalID/uz_ParaID_ElectricalID.h"
 #include "FluxMapID/uz_ParaID_FluxMapID.h"
@@ -65,14 +66,15 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
  * This is meant as an example function, to ease the initial setup of the ParameterID. This function is however not essential to the ParamterID itself and can be replaced at will.
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
- * @param FOC_instance pointer to uz_FOC object
+ * @param CC_instance pointer to uz_CurrentControl_t object
  * @param Speed_instance pointer to uz_PI_Controller object
+ * @param SP_instance pointer to uz_SetPoint_t object
  * @return struct uz_3ph_dq_t reference voltages of controller
  */
-uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance);
+uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance);
 
 /**
- * @brief This function is cleaning the array storing the measurement values, which always consits of a d-q-current combination a winding temperature and a speed value such as a d-q-flux combination
+ * @brief This function is cleaning the array storing the measurement values, which always consists of a d-q-current combination a winding temperature and a speed value such as a d-q-flux combination
 The function is searching for measuring pairs which are closer than "eta_c" to their neighbors. In this case it is averaging these similar pairs to avoid measuring values containing the same information. 
  * 
  * @param self pointer to uz_ParameterID_t object

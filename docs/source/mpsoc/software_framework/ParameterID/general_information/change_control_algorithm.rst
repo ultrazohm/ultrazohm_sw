@@ -5,7 +5,7 @@ Change control algorithm for ParameterID
 ========================================
 
 The ParameterID does not have its own control algorithm. This is done externally, as shown in :numref:`ParaID_overview_schematic`.
-In the ParameterID library standard functions with the :ref:`uz_FOC` and :ref:`uz_SpeedControl` are included. 
+In the ParameterID library standard functions with the :ref:`uz_CurrentControl` and :ref:`uz_SpeedControl` are included. 
 If it is desired to change the used controller, these functions have to be adjusted.
 
 Following is the code of the function ``uz_ParameterID_Controller``, with the function calls to the ``uz_FOC`` and ``uz_SpeedController`` removed. 
@@ -91,7 +91,7 @@ This can be used as an template to include your new controller.
     return (v_dq_Volts);
   }
 
-The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It uses a continuous sinusoidal PWM (SPWM) modulation from :ref:`uz_FOC_DutyCycle` to generate the DutyCycles.
+The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It uses a continuous sinusoidal PWM (SPWM) modulation from `blank` to generate the DutyCycles.
 
 .. code-block:: c
   :linenos:

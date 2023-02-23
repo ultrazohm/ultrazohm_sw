@@ -22,13 +22,7 @@
  * @brief Object definition for uz_ParaID_TwoMassID_t
  * 
  */
-typedef struct uz_ParaID_TwoMassID_t{
-	ExtY_TwoMassID_t output;
-	ExtU_TwoMassID_t input;
-	DW_TwoMassID_t rtDW; /* Observable states */
-	RT_MODEL_TwoMassID_t modelData;
-	RT_MODEL_TwoMassID_t *PtrToModelData;
-} uz_ParaID_TwoMassID_t;
+typedef struct uz_ParaID_TwoMassID_t uz_ParaID_TwoMassID_t;
 
 /**
  * @brief Initializes the uz_ParaID_TwoMassID_t object
@@ -44,4 +38,13 @@ uz_ParaID_TwoMassID_t* uz_TwoMassID_init(void);
  */
 void uz_TwoMassID_step(uz_ParaID_TwoMassID_t *self);
 
+void uz_TwoMassID_set_Config(uz_ParaID_TwoMassID_t *self, uz_ParaID_TwoMassIDConfig_t Config);
+void uz_TwoMassID_set_ActualValues(uz_ParaID_TwoMassID_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_TwoMassID_set_GlobalConfig(uz_ParaID_TwoMassID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_TwoMassID_set_ControlFlags(uz_ParaID_TwoMassID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
+
+bool uz_TwoMassID_get_enteredTwoMassID(uz_ParaID_TwoMassID_t *self);
+bool uz_TwoMassID_get_finishedTwoMassID(uz_ParaID_TwoMassID_t *self);
+uz_ParaID_Controller_Parameters_output_t* uz_TwoMassID_get_FOC_output(uz_ParaID_TwoMassID_t *self);
+uz_ParaID_TwoMassID_output_t* uz_TwoMassID_get_output(uz_ParaID_TwoMassID_t *self);
 #endif

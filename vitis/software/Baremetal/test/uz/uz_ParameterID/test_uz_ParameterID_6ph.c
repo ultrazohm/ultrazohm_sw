@@ -4,6 +4,7 @@
 #include "test_assert_with_exception.h"
 
 #include "uz_ParameterID_6ph.h"
+#include "uz_ParameterID.h"
 
 #include "uz_ParaID_ControlState.h"
 #include "ControlState_codegen.h"
@@ -17,8 +18,14 @@
 #include "uz_ParaID_ElectricalID_6ph.h"
 #include "ElectricalID_6ph_codegen.h"
 
+#include "uz_ParaID_ElectricalID.h"
+#include "ElectricalID_codegen.h"
+
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
+
+#include "uz_ParaID_FluxMapID.h"
+#include "FluxMapID_codegen.h"
 
 #include "uz_ParaID_AutoRefCurrents.h"
 #include "uz_ParaID_CleanPsiArray.h"
@@ -38,7 +45,9 @@
 #include "uz_Transformation.h"
 #include "uz_space_vector_limitation.h"
 #include "uz_linear_decoupling.h"
-
+#include "mock_uz_PWM_SS_2L_hw.h"
+#include "uz_PWM_SS_2L.h" 
+#include "mock_uz_AXI.h" 
 
 #include "uz_signals.h"
 

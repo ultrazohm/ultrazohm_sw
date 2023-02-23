@@ -174,10 +174,10 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	uz_assert_not_NULL(PWM_Module);
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
-		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
-		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
-		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
-		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
+		//uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
+		//output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
+		//output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
+		//output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
 	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
 		uz_3ph_abc_t V_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
@@ -444,7 +444,7 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
 	return(theta_el_corr);
 }
-
+/*
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
 	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(activeState);
@@ -459,7 +459,7 @@ void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *a
 	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
 
 }
-
+*/
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
@@ -538,7 +538,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->OnlineID_Config.array_cleaned = false;
 
 	//Initialize Output data structs
-	Data->ElectricalID_Output = &self->ElectricalID->output.ElectricalID_output;
+//	Data->ElectricalID_Output = &self->ElectricalID->output.ElectricalID_output;
 	Data->FrictionID_Output = &self->FrictionID->output.FrictionID_output;
 	Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;
 	Data->TwoMassID_Output = &self->TwoMassID->output.TwoMassID_output;

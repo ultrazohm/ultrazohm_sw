@@ -119,6 +119,8 @@ void ISR_Control(void *data)
 
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, 0.0f);
+	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
+	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, 0.0f);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;

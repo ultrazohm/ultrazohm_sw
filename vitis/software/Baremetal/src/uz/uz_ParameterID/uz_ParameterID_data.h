@@ -22,6 +22,10 @@
 #include "rtwtypes.h"
 #include <stdbool.h>
 
+typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
+typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
+
+
 //----------------------------------------//
 //----------------------------------------//
 //------------GlobalStructs---------------//
@@ -375,7 +379,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_ElectricalID_output_t ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
 	uz_ParaID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
 	uz_ParaID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
-	uz_ParaID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
+	uz_ParaID_FluxMapID_output_t FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
 	uz_ParaID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
 	uz_ParaID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/

@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.48
+ * Model version                  : 3.50
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Feb 20 21:43:33 2023
+ * C/C++ source code generated on : Thu Feb 23 10:11:16 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #include "../uz_ParameterID_data.h"
@@ -32,7 +32,6 @@
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
 
-/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -60,11 +59,6 @@
 #endif
 
 #define ElectricalID_6ph_codegen_M     (rtElectricalID_6ph_codegen_M)
-
-/* Forward declaration for rtModel */
-typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-
-
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

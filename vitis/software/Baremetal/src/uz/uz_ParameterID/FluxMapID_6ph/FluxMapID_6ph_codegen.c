@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.49
+ * Model version                  : 3.50
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Feb 23 07:54:16 2023
+ * C/C++ source code generated on : Thu Feb 23 09:55:08 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #include "FluxMapID_6ph_codegen.h"
@@ -37,7 +37,6 @@
 /* Named constants for Chart: '<Root>/FluxMapID_6ph_codegen' */
 #define IN_AMMstate                    ((uint8_T)1U)
 #define IN_Waiting                     ((uint8_T)2U)
-#define NumBitsPerChar                 8U
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
@@ -50,214 +49,6 @@ static real32_T identRes(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U
 static void enter_atomic_AMMnewRef(uint16_T *activeState, real32_T *PI_d_ref,
   real32_T *PI_q_ref, const uz_ParaID_FluxMapIDConfig_t *FluxMapIDConfig,
   DW_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_DW);
-static real_T rtGetNaN(void);
-static real32_T rtGetNaNF(void);
-extern real_T rtInf;
-extern real_T rtMinusInf;
-extern real_T rtNaN;
-extern real32_T rtInfF;
-extern real32_T rtMinusInfF;
-extern real32_T rtNaNF;
-static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
-static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
-static boolean_T rtIsNaNF(real32_T value);
-typedef struct {
-  struct {
-    uint32_T wordH;
-    uint32_T wordL;
-  } words;
-} BigEndianIEEEDouble;
-
-typedef struct {
-  struct {
-    uint32_T wordL;
-    uint32_T wordH;
-  } words;
-} LittleEndianIEEEDouble;
-
-typedef struct {
-  union {
-    real32_T wordLreal;
-    uint32_T wordLuint;
-  } wordL;
-} IEEESingle;
-
-real_T rtInf;
-real_T rtMinusInf;
-real_T rtNaN;
-real32_T rtInfF;
-real32_T rtMinusInfF;
-real32_T rtNaNF;
-static real_T rtGetInf(void);
-static real32_T rtGetInfF(void);
-static real_T rtGetMinusInf(void);
-static real32_T rtGetMinusInfF(void);
-
-/*
- * Initialize rtNaN needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetNaN(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T nan = 0.0;
-  if (bitsPerReal == 32U) {
-    nan = rtGetNaNF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF80000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    nan = tmpVal.fltVal;
-  }
-
-  return nan;
-}
-
-/*
- * Initialize rtNaNF needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetNaNF(void)
-{
-  IEEESingle nanF = { { 0.0F } };
-
-  nanF.wordL.wordLuint = 0xFFC00000U;
-  return nanF.wordL.wordLreal;
-}
-
-/*
- * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
- * generated code. NaN is initialized as non-signaling. Assumes IEEE.
- */
-static void rt_InitInfAndNaN(size_t realSize)
-{
-  (void) (realSize);
-  rtNaN = rtGetNaN();
-  rtNaNF = rtGetNaNF();
-  rtInf = rtGetInf();
-  rtInfF = rtGetInfF();
-  rtMinusInf = rtGetMinusInf();
-  rtMinusInfF = rtGetMinusInfF();
-}
-
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
-
-/* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value)
-{
-  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
-}
-
-/* Test if single-precision value is not a number */
-static boolean_T rtIsNaNF(real32_T value)
-{
-  IEEESingle tmp;
-  tmp.wordL.wordLreal = value;
-  return (boolean_T)( (tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 &&
-                     (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
-}
-
-/*
- * Initialize rtInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T inf = 0.0;
-  if (bitsPerReal == 32U) {
-    inf = rtGetInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0x7FF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    inf = tmpVal.fltVal;
-  }
-
-  return inf;
-}
-
-/*
- * Initialize rtInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetInfF(void)
-{
-  IEEESingle infF;
-  infF.wordL.wordLuint = 0x7F800000U;
-  return infF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtMinusInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetMinusInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T minf = 0.0;
-  if (bitsPerReal == 32U) {
-    minf = rtGetMinusInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    minf = tmpVal.fltVal;
-  }
-
-  return minf;
-}
-
-/*
- * Initialize rtMinusInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetMinusInfF(void)
-{
-  IEEESingle minfF;
-  minfF.wordL.wordLuint = 0xFF800000U;
-  return minfF.wordL.wordLreal;
-}
 
 /*
  * Function for Chart: '<Root>/FluxMapID_6ph_codegen'
@@ -676,14 +467,8 @@ static void enter_atomic_AMMnewRef(uint16_T *activeState, real32_T *PI_d_ref,
       if (rtFluxMapID_6ph_codegen_DW->AMMn == 0.0F) {
         r = y;
       }
-    } else if (rtIsNaNF(y)) {
-      r = (rtNaNF);
     } else if (rtFluxMapID_6ph_codegen_DW->AMMn == 0.0F) {
       r = 0.0F / y;
-    } else if (rtIsInfF(y)) {
-      if (y < 0.0F) {
-        r = y;
-      }
     } else {
       boolean_T rEQ0;
       r = fmodf((real32_T)rtFluxMapID_6ph_codegen_DW->AMMn, y);
@@ -691,11 +476,11 @@ static void enter_atomic_AMMnewRef(uint16_T *activeState, real32_T *PI_d_ref,
       if ((!rEQ0) && (y > floorf(y))) {
         real32_T q;
         q = fabsf((real32_T)rtFluxMapID_6ph_codegen_DW->AMMn / y);
-        rEQ0 = !(fabsf(q - floorf(q + 0.5F)) > 1.1920929E-7F * q);
+        rEQ0 = (fabsf(q - floorf(q + 0.5F)) <= 1.1920929E-7F * q);
       }
 
       if (rEQ0) {
-        r = y * 0.0F;
+        r = 0.0F;
       } else if (y < 0.0F) {
         r += y;
       }
@@ -1491,11 +1276,6 @@ void FluxMapID_6ph_codegen_initialize(RT_MODEL_FluxMapID_6ph_codege_t *const
     rtFluxMapID_6ph_codegen_M->dwork;
   ExtY_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_Y =
     (ExtY_FluxMapID_6ph_codegen_t *) rtFluxMapID_6ph_codegen_M->outputs;
-
-  /* Registration code */
-
-  /* initialize non-finites */
-  rt_InitInfAndNaN(sizeof(real_T));
 
   /* SystemInitialize for Chart: '<Root>/FluxMapID_6ph_codegen' incorporates:
    *  Outport: '<Root>/FluxMapID_FOC_output'

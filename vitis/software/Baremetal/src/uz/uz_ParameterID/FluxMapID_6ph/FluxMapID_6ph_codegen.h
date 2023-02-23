@@ -7,18 +7,20 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.49
+ * Model version                  : 3.50
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Feb 23 07:54:16 2023
+ * C/C++ source code generated on : Thu Feb 23 09:55:08 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
+
+#include "../uz_ParameterID_data.h"
 
 #ifndef RTW_HEADER_FluxMapID_6ph_codegen_h_
 #define RTW_HEADER_FluxMapID_6ph_codegen_h_
@@ -27,13 +29,9 @@
 #include <string.h>
 #include <stddef.h>
 #ifndef FluxMapID_6ph_codegen_COMMON_INCLUDES_
-#define FluxMapID_6ph_codegen_COMMON_INCLUDES_
+#define FluxMapID_6ph_codegen_COMMON_INCLUDES
 #include "../rtwtypes.h"
 #endif                      /* FluxMapID_6ph_codegen_COMMON_INCLUDES_ */
-
-#include "../uz_ParameterID_data.h"
-
-/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -61,11 +59,6 @@
 #endif
 
 #define FluxMapID_6ph_codegen_M        (rtFluxMapID_6ph_codegen_M)
-
-/* Forward declaration for rtModel */
-typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
-
-
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

@@ -7,17 +7,18 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.48
+ * Model version                  : 3.50
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Feb 20 21:43:33 2023
+ * C/C++ source code generated on : Thu Feb 23 10:11:16 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
+
 
 #include "ElectricalID_6ph_codegen.h"
 #include "../../uz_global_configuration.h"
@@ -49,10 +50,8 @@
 #define IN_waitLock                    ((uint8_T)16U)
 #define IN_waitSetRPM                  ((uint8_T)17U)
 #define IN_waitState                   ((uint8_T)18U)
-#define NumBitsPerChar                 8U
 
-extern real32_T rt_powf_snf(real32_T u0, real32_T u1);
-extern real32_T rt_hypotf_snf(real32_T u0, real32_T u1);
+extern real32_T rt_hypotf(real32_T u0, real32_T u1);
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_ElectricalID_6ph_codegen_t
@@ -131,214 +130,6 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
-static real_T rtGetInf(void);
-static real32_T rtGetInfF(void);
-static real_T rtGetMinusInf(void);
-static real32_T rtGetMinusInfF(void);
-static real_T rtGetNaN(void);
-static real32_T rtGetNaNF(void);
-extern real_T rtInf;
-extern real_T rtMinusInf;
-extern real_T rtNaN;
-extern real32_T rtInfF;
-extern real32_T rtMinusInfF;
-extern real32_T rtNaNF;
-static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
-static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
-static boolean_T rtIsNaNF(real32_T value);
-typedef struct {
-  struct {
-    uint32_T wordH;
-    uint32_T wordL;
-  } words;
-} BigEndianIEEEDouble;
-
-typedef struct {
-  struct {
-    uint32_T wordL;
-    uint32_T wordH;
-  } words;
-} LittleEndianIEEEDouble;
-
-typedef struct {
-  union {
-    real32_T wordLreal;
-    uint32_T wordLuint;
-  } wordL;
-} IEEESingle;
-
-real_T rtInf;
-real_T rtMinusInf;
-real_T rtNaN;
-real32_T rtInfF;
-real32_T rtMinusInfF;
-real32_T rtNaNF;
-
-/*
- * Initialize rtInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T inf = 0.0;
-  if (bitsPerReal == 32U) {
-    inf = rtGetInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0x7FF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    inf = tmpVal.fltVal;
-  }
-
-  return inf;
-}
-
-/*
- * Initialize rtInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetInfF(void)
-{
-  IEEESingle infF;
-  infF.wordL.wordLuint = 0x7F800000U;
-  return infF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtMinusInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetMinusInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T minf = 0.0;
-  if (bitsPerReal == 32U) {
-    minf = rtGetMinusInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    minf = tmpVal.fltVal;
-  }
-
-  return minf;
-}
-
-/*
- * Initialize rtMinusInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetMinusInfF(void)
-{
-  IEEESingle minfF;
-  minfF.wordL.wordLuint = 0xFF800000U;
-  return minfF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtNaN needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetNaN(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T nan = 0.0;
-  if (bitsPerReal == 32U) {
-    nan = rtGetNaNF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF80000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    nan = tmpVal.fltVal;
-  }
-
-  return nan;
-}
-
-/*
- * Initialize rtNaNF needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetNaNF(void)
-{
-  IEEESingle nanF = { { 0.0F } };
-
-  nanF.wordL.wordLuint = 0xFFC00000U;
-  return nanF.wordL.wordLreal;
-}
-
-/*
- * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
- * generated code. NaN is initialized as non-signaling. Assumes IEEE.
- */
-static void rt_InitInfAndNaN(size_t realSize)
-{
-  (void) (realSize);
-  rtNaN = rtGetNaN();
-  rtNaNF = rtGetNaNF();
-  rtInf = rtGetInf();
-  rtInfF = rtGetInfF();
-  rtMinusInf = rtGetMinusInf();
-  rtMinusInfF = rtGetMinusInfF();
-}
-
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
-
-/* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value)
-{
-  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
-}
-
-/* Test if single-precision value is not a number */
-static boolean_T rtIsNaNF(real32_T value)
-{
-  IEEESingle tmp;
-  tmp.wordL.wordLreal = value;
-  return (boolean_T)( (tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 &&
-                     (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
-}
 
 /*
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
@@ -2603,52 +2394,6 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
   }
 }
 
-real32_T rt_powf_snf(real32_T u0, real32_T u1)
-{
-  real32_T y;
-  if (rtIsNaNF(u0) || rtIsNaNF(u1)) {
-    y = (rtNaNF);
-  } else {
-    real32_T tmp;
-    real32_T tmp_0;
-    tmp = fabsf(u0);
-    tmp_0 = fabsf(u1);
-    if (rtIsInfF(u1)) {
-      if (tmp == 1.0F) {
-        y = 1.0F;
-      } else if (tmp > 1.0F) {
-        if (u1 > 0.0F) {
-          y = (rtInfF);
-        } else {
-          y = 0.0F;
-        }
-      } else if (u1 > 0.0F) {
-        y = 0.0F;
-      } else {
-        y = (rtInfF);
-      }
-    } else if (tmp_0 == 0.0F) {
-      y = 1.0F;
-    } else if (tmp_0 == 1.0F) {
-      if (u1 > 0.0F) {
-        y = u0;
-      } else {
-        y = 1.0F / u0;
-      }
-    } else if (u1 == 2.0F) {
-      y = u0 * u0;
-    } else if ((u1 == 0.5F) && (u0 >= 0.0F)) {
-      y = sqrtf(u0);
-    } else if ((u0 < 0.0F) && (u1 > floorf(u1))) {
-      y = (rtNaNF);
-    } else {
-      y = powf(u0, u1);
-    }
-  }
-
-  return y;
-}
-
 /*
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
  * function [FOC_out_new] = ControllerParameter(FOC_out_old,bandwidthCurrentControl,PMSM_config,damping,psiOverJ)
@@ -2677,7 +2422,7 @@ static void ControllerParameter(uz_ParaID_Controller_Parameters_output_t
 
   /* 'ControllerParameter:8' FOC_out_new.Ki_n_out = single((FOC_out_new.Ki_iq_out)^2 / ((PMSM_config.Lq_Henry)^2 * damping^3 * PMSM_config.polePairs*3.0/2.0*psiOverJ)); */
   FOC_out_old->Ki_n_out = FOC_out_old->Ki_iq_out * FOC_out_old->Ki_iq_out /
-    (PMSM_config_Lq_Henry * PMSM_config_Lq_Henry * rt_powf_snf(damping, 3.0F) *
+    (PMSM_config_Lq_Henry * PMSM_config_Lq_Henry * powf(damping, 3.0F) *
      PMSM_config_polePairs * 3.0F / 2.0F * psiOverJ);
 }
 
@@ -2728,19 +2473,20 @@ static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   return y;
 }
 
-real32_T rt_hypotf_snf(real32_T u0, real32_T u1)
+real32_T rt_hypotf(real32_T u0, real32_T u1)
 {
   real32_T a;
+  real32_T b;
   real32_T y;
   a = fabsf(u0);
-  y = fabsf(u1);
-  if (a < y) {
-    a /= y;
-    y *= sqrtf(a * a + 1.0F);
-  } else if (a > y) {
-    y /= a;
-    y = sqrtf(y * y + 1.0F) * a;
-  } else if (!rtIsNaNF(y)) {
+  b = fabsf(u1);
+  if (a < b) {
+    a /= b;
+    y = sqrtf(a * a + 1.0F) * b;
+  } else if (a > b) {
+    b /= a;
+    y = sqrtf(b * b + 1.0F) * a;
+  } else {
     y = a * 1.41421354F;
   }
 
@@ -2799,14 +2545,12 @@ static void goertzel(ExtU_ElectricalID_6ph_codegen_t
   B = 2.0F * cosf(A);
 
   /* '<S1>:350:18' C = exp(-j*A); */
-  C_im = -A;
   if (-A == 0.0F) {
-    C_re = expf(A * 0.0F);
+    C_re = 1.0F;
     C_im = 0.0F;
   } else {
-    A = expf(A * 0.0F / 2.0F);
-    C_re = A * cosf(C_im) * A;
-    C_im = A * sinf(C_im) * A;
+    C_re = cosf(-A);
+    C_im = sinf(-A);
   }
 
   /* State variables */
@@ -2877,24 +2621,24 @@ static void goertzel(ExtU_ElectricalID_6ph_codegen_t
   if (b_y_im == 0.0F) {
     if (B == 0.0F) {
       C_im = C_re / b_y_re;
-      C_re = 0.0F;
+      b_y_im = 0.0F;
     } else if (C_re == 0.0F) {
       C_im = 0.0F;
-      C_re = B / b_y_re;
+      b_y_im = B / b_y_re;
     } else {
       C_im = C_re / b_y_re;
-      C_re = B / b_y_re;
+      b_y_im = B / b_y_re;
     }
   } else if (b_y_re == 0.0F) {
     if (C_re == 0.0F) {
       C_im = B / b_y_im;
-      C_re = 0.0F;
+      b_y_im = 0.0F;
     } else if (B == 0.0F) {
       C_im = 0.0F;
-      C_re = -(C_re / b_y_im);
+      b_y_im = -(C_re / b_y_im);
     } else {
       C_im = B / b_y_im;
-      C_re = -(C_re / b_y_im);
+      b_y_im = -(C_re / b_y_im);
     }
   } else {
     A = fabsf(b_y_re);
@@ -2903,52 +2647,50 @@ static void goertzel(ExtU_ElectricalID_6ph_codegen_t
       A = b_y_im / b_y_re;
       b_y_im = A * b_y_im + b_y_re;
       C_im = (A * B + C_re) / b_y_im;
-      C_re = (B - A * C_re) / b_y_im;
+      b_y_im = (B - A * C_re) / b_y_im;
     } else if (C_im == A) {
       b_y_re = b_y_re > 0.0F ? 0.5F : -0.5F;
       b_y_im = b_y_im > 0.0F ? 0.5F : -0.5F;
       C_im = (C_re * b_y_re + B * b_y_im) / A;
-      C_re = (B * b_y_re - C_re * b_y_im) / A;
+      b_y_im = (B * b_y_re - C_re * b_y_im) / A;
     } else {
       A = b_y_re / b_y_im;
       b_y_im += A * b_y_re;
       C_im = (A * C_re + B) / b_y_im;
-      C_re = (A * B - C_re) / b_y_im;
+      b_y_im = (A * B - C_re) / b_y_im;
     }
   }
 
-  b_y_im = (C_im * 0.0F - C_re) * 2.0F * 3.14159274F * 40.0F;
-  B = (C_re * 0.0F + C_im) * 2.0F * 3.14159274F * 40.0F;
-  if (B == 0.0F) {
+  b_y_im = (0.0F - b_y_im) * 2.0F * 3.14159274F * 40.0F;
+  b_y_re = 2.0F * C_im * 3.14159274F * 40.0F;
+  if (b_y_re == 0.0F) {
     C_re = 1.0F / b_y_im;
     C_im = 0.0F;
   } else if (b_y_im == 0.0F) {
     C_re = 0.0F;
-    C_im = -(1.0F / B);
+    C_im = -(1.0F / b_y_re);
   } else {
     A = fabsf(b_y_im);
-    C_im = fabsf(B);
+    C_im = fabsf(b_y_re);
     if (A > C_im) {
-      A = B / b_y_im;
-      b_y_im += A * B;
-      C_re = (A * 0.0F + 1.0F) / b_y_im;
+      A = b_y_re / b_y_im;
+      b_y_im += A * b_y_re;
+      C_re = 1.0F / b_y_im;
       C_im = (0.0F - A) / b_y_im;
     } else if (C_im == A) {
-      b_y_re = b_y_im > 0.0F ? 0.5F : -0.5F;
-      b_y_im = B > 0.0F ? 0.5F : -0.5F;
-      C_re = (0.0F * b_y_im + b_y_re) / A;
-      C_im = (0.0F * b_y_re - b_y_im) / A;
+      C_re = (b_y_im > 0.0F ? 0.5F : -0.5F) / A;
+      C_im = (0.0F - (b_y_re > 0.0F ? 0.5F : -0.5F)) / A;
     } else {
-      A = b_y_im / B;
-      b_y_im = A * b_y_im + B;
+      A = b_y_im / b_y_re;
+      b_y_im = A * b_y_im + b_y_re;
       C_re = A / b_y_im;
-      C_im = (A * 0.0F - 1.0F) / b_y_im;
+      C_im = -1.0F / b_y_im;
     }
   }
 
   /* Merge: '<S1>/ Merge ' */
   rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.J_kg_m_squared
-    = rt_hypotf_snf(C_re, C_im);
+    = rt_hypotf(C_re, C_im);
 
   /* without damping */
 }
@@ -6294,11 +6036,6 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_M->dwork;
   ExtY_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_Y =
     (ExtY_ElectricalID_6ph_codegen_t *) rtElectricalID_6ph_codegen_M->outputs;
-
-  /* Registration code */
-
-  /* initialize non-finites */
-  rt_InitInfAndNaN(sizeof(real_T));
 
   {
     int32_T i;

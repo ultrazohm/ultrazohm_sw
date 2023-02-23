@@ -26,7 +26,7 @@ typedef struct uz_ParameterID_6ph_t {
 	uz_ParaID_ElectricalID_6ph_t* ElectricalID;
 	uz_ParaID_TwoMassID_t* TwoMassID;
 	uz_ParaID_FrictionID_t* FrictionID;
-	uz_ParaID_FluxMapID_t* FluxMapID;
+	uz_ParaID_FluxMapID_6ph_t* FluxMapID;
 	uz_ParaID_OnlineID_t* OnlineID;
 } uz_ParameterID_6ph_t;
 
@@ -37,7 +37,7 @@ static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_Param
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
-static void uz_ParaID_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
+static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data);
 
 static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void);
@@ -58,7 +58,7 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 	self->ElectricalID = uz_ElectricalID_6ph_init();
 	self->TwoMassID = uz_TwoMassID_init();
 	self->FrictionID = uz_FrictionID_init();
-	self->FluxMapID = uz_FluxMapID_init();
+	self->FluxMapID = uz_FluxMapID_6ph_init();
 	self->OnlineID = uz_OnlineID_init();
 	uz_ParameterID_6ph_initialize_data_structs(self, Data);
 	return (self);
@@ -100,9 +100,9 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		}
 		//FluxMapID
 		if (self->ControlState->output.ControlFlags.transNr == 4U || self->ControlState->output.GlobalConfig_out.Reset == true) {
-			uz_ParaID_FluxMapID_step(self, Data);
-		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && self->FluxMapID->output.enteredFluxMapID == true) {
-			uz_ParaID_FluxMapID_step(self, Data);
+			uz_ParaID_6ph_FluxMapID_step(self, Data);
+		} else if (self->ControlState->output.GlobalConfig_out.FluxMapID == false && uz_get_FluxMapID_6ph_entered(self->FluxMapID)) {
+			uz_ParaID_6ph_FluxMapID_step(self, Data);
 		}
 
 	}
@@ -119,7 +119,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		Data->Controller_Parameters = self->FrictionID->output.FrictionID_FOC_output;
 		break;
 	case 4U:
-		Data->Controller_Parameters = self->FluxMapID->output.FluxMapID_FOC_output;
+		Data->Controller_Parameters = uz_get_FluxMapID_6ph_FOCoutput(self->FluxMapID);
 		break;
 	default:
 		break;
@@ -278,7 +278,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID,Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
+	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
 
 	//Update Control-State-inputs
 	self->ControlState->input.ElectricalID_FOC_output = uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
@@ -340,21 +340,15 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	self->ControlState->input.finishedTwoMassID = self->TwoMassID->output.finishedTwoMassID;
 }
 
-static void uz_ParaID_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	//Update State-Inputs
-	self->FluxMapID->input.ActualValues = Data->ActualValues;
-	self->FluxMapID->input.FluxMapIDConfig = Data->FluxMapID_Config;
-	self->FluxMapID->input.GlobalConfig_out = self->ControlState->output.GlobalConfig_out;
-	self->FluxMapID->input.ControlFlags = self->ControlState->output.ControlFlags;
-
 	//Step the function
-	uz_FluxMapID_step(self->FluxMapID);
+	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags);
 
 	//Update Control-State-inputs
-	self->ControlState->input.enteredFluxMapID = self->FluxMapID->output.enteredFluxMapID;
-	self->ControlState->input.finishedFluxMapID = self->FluxMapID->output.finishedFluxMapID;
+	self->ControlState->input.enteredFluxMapID = uz_get_FluxMapID_6ph_entered(self->FluxMapID);
+	self->ControlState->input.finishedFluxMapID = uz_get_FluxMapID_6ph_finished(self->FluxMapID);
 }
 
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
@@ -455,7 +449,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	//Initialize Output data structs
 	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	Data->FrictionID_Output = &self->FrictionID->output.FrictionID_output;
-	Data->FluxMapID_Output = &self->FluxMapID->output.FluxMapID_output;
+	Data->FluxMapID_Output = uz_get_FluxMapID_6ph_output(self->FluxMapID);
 	Data->TwoMassID_Output = &self->TwoMassID->output.TwoMassID_output;
 	//Data->OnlineID_Output = &self->OnlineID->output.OnlineID_output;
 	Data->ControlFlags = &self->ControlState->output.ControlFlags;

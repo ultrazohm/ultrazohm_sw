@@ -63,7 +63,7 @@ uz_ParaID_Controller_Parameters_output_t uz_get_FluxMapID_6ph_FOCoutput(uz_ParaI
     return self->output.FluxMapID_FOC_output;
 }
 
-uz_ParaID_FluxMapID_output_t uz_get_FluxMapID_6ph_FOC(uz_ParaID_FluxMapID_6ph_t* self)
+uz_ParaID_FluxMapID_output_t uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self)
 {
     return self->output.FluxMapID_output;
 }

@@ -22,7 +22,7 @@
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "ControlState/uz_ParaID_ControlState.h"
 #include "ElectricalID_6ph/uz_ParaID_ElectricalID_6ph.h"
-#include "FluxMapID/uz_ParaID_FluxMapID.h"
+#include "FluxMapID_6ph/uz_ParaID_FluxMapID_6ph.h"
 #include "FrictionID/uz_ParaID_FrictionID.h"
 #include "OnlineID/uz_ParaID_OnlineID.h"
 #include "TwoMassID/uz_ParaID_TwoMassID.h"

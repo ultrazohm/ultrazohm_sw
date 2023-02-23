@@ -59,6 +59,7 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 	self->TwoMassID = uz_TwoMassID_init();
 	self->FrictionID = uz_FrictionID_init();
 	self->FluxMapID = uz_FluxMapID_init();
+	self->OnlineID = uz_OnlineID_init();
 	uz_ParameterID_6ph_initialize_data_structs(self, Data);
 	return (self);
 }

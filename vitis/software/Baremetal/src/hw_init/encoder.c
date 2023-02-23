@@ -29,13 +29,15 @@ static uz_incrementalEncoder_t* encoder_D5;
 #define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
 #define IncEncoderLPF_freq 1000.0f
 
-void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
+void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset){
 	struct uz_incrementalEncoder_config encoder_D5_config={
 		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
 		.ip_core_frequency_Hz=50000000U,
 		.line_number_per_turn_mech=incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
+		.drive_pole_pair=motorPolePairNumber,
+		.Encoder_mech_Offset = (uint32_t) Mech_Offset,
+		.Encoder_elec_Offset = (uint32_t) Elec_Offset
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }

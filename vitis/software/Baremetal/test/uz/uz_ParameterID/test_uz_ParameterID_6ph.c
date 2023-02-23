@@ -20,6 +20,9 @@
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 
+#include "uz_ParaID_AutoRefCurrents.h"
+#include "uz_ParaID_CleanPsiArray.h"
+#include "uz_ParaID_InterpMeshGrid.h"
 #include "AutoRefCurrents_codegen.h"
 #include "CleanPsiArray_codegen.h"
 #include "InterpMeshGrid_codegen.h"
@@ -27,12 +30,16 @@
 #include "uz_ParaID_OnlineID.h"
 #include "OnlineID_codegen.h"
 
-#include "uz_FOC.h"
-#include "uz_speedcontrol.h"
+#include "uz_newton_raphson.h"
 #include "uz_piController.h"
+#include "uz_CurrentControl.h"
+#include "uz_speedcontrol.h"
+#include "uz_setpoint.h"
 #include "uz_Transformation.h"
 #include "uz_space_vector_limitation.h"
 #include "uz_linear_decoupling.h"
+
+
 #include "uz_signals.h"
 
 uz_ParameterID_Data_t Data_struct = {0};

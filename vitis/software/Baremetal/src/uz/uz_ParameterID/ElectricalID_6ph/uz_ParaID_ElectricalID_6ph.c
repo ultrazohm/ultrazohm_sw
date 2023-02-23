@@ -79,14 +79,18 @@ bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID
     return self->output.finished_voltage_measurement;
 }
 
-uz_ParaID_Controller_Parameters_output_t uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_Controller_Parameters_output_t* uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
 {
-    return self->output.ElectricalID_FOC_output;
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.ElectricalID_FOC_output);
 }
 
-uz_ParaID_ElectricalID_output_t uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
 {
-    return self->output.ElectricalID_output;
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.ElectricalID_output);
 }
 
 void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination)

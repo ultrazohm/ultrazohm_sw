@@ -58,14 +58,18 @@ bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self)
     return self->output.finishedFluxMapID;
 }
 
-uz_ParaID_Controller_Parameters_output_t uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self)
+uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self)
 {
-    return self->output.FluxMapID_FOC_output;
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.FluxMapID_FOC_output);
 }
 
-uz_ParaID_FluxMapID_output_t uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self)
+uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self)
 {
-    return self->output.FluxMapID_output;
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(&self->output.FluxMapID_output);
 }
 
 #endif

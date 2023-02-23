@@ -108,6 +108,7 @@ typedef struct {
   real32_T M_ref_FOC;  /**< reference torque for the setpoint function */
   uint16_T activeState; /**< activeState of the ID-states */
   real32_T n_ref_FOC; /**< reference speed for the speed controller */
+  boolean_T enableFOC_torque; /**<flag to enable torque controller */
   boolean_T enableFOC_speed; /**<flag to enable speed controller */
   boolean_T enableFOC_current; /**<flag to enable current controller */
   boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */
@@ -376,10 +377,10 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
 	uz_ParaID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
 	uz_ParaID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
-	uz_ParaID_ElectricalID_output_t ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
+	uz_ParaID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
 	uz_ParaID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
 	uz_ParaID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
-	uz_ParaID_FluxMapID_output_t FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
+	uz_ParaID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
 	uz_ParaID_OnlineID_output_t* OnlineID_Output; /**<Output: Pointer to output struct of OnlineID */
 	uz_ParaID_Controller_Parameters_output_t Controller_Parameters;/**<Output: output struct for control algorithm (i_dq_ref / n_ref etc.) */
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/

@@ -429,7 +429,7 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
 	return(theta_el_corr);
 }
-/**/
+/*
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
 	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(activeState);

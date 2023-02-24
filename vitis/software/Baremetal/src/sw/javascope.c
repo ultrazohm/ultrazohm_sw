@@ -74,6 +74,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia] = &(PID_Data.ActualValues.I_abc.b);
 	js_ch_observable[JSO_ib] = &(PID_Data.ActualValues.I_abc.b);
 	js_ch_observable[JSO_ic] = &(PID_Data.ActualValues.I_abc.c);
+	js_ch_observable[JSO_ua] = &(PID_Data.ActualValues.V_abc.a);
+		js_ch_observable[JSO_ub] = &(PID_Data.ActualValues.V_abc.b);
+		js_ch_observable[JSO_uc] = &(PID_Data.ActualValues.V_abc.c);
   js_ch_observable[JSO_Theta_el] = &PID_Data.ActualValues.theta_el;
   js_ch_observable[JSO_theta_mech] = &PID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);

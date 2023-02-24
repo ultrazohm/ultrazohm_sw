@@ -429,7 +429,7 @@ float uz_ParameterID_correct_LP1_filter(uz_ParameterID_Data_t* Data, float RC) {
 	float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
 	return(theta_el_corr);
 }
-/*
+
 void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
 	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(activeState);
@@ -443,14 +443,14 @@ void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *a
 	Data->MeasArraySpeed_pointer = Data->FrictionID_Output->measArraySpeed[Data->Array_counter];
 	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
 
-}*/
+}
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Initialize Global-Config
 	Data->GlobalConfig.ACCEPT = false;
 	Data->GlobalConfig.Reset = false;
-	/*Data->GlobalConfig.enableParameterID = false;
+	Data->GlobalConfig.enableParameterID = false;
 	Data->GlobalConfig.ElectricalID = false;
 	Data->GlobalConfig.FluxMapID = false;
 	Data->GlobalConfig.FrictionID = false;
@@ -534,7 +534,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->FluxMap_counter = 0.0f;
 	Data->Psi_D_pointer = 0.0f;
 	Data->Psi_Q_pointer = 0.0f;
-	Data->ParaID_Control_Selection = No_Control;*/
+	Data->ParaID_Control_Selection = No_Control;
 }
 
 #endif

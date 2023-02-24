@@ -37,7 +37,8 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
 		.drive_pole_pair=motorPolePairNumber,
 		.Encoder_mech_Offset = (uint32_t) Mech_Offset,
-		.Encoder_elec_Offset = (uint32_t) Elec_Offset
+		.Encoder_elec_Offset = (uint32_t) Elec_Offset,
+		.Counting_Direction = CW_Counting
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }

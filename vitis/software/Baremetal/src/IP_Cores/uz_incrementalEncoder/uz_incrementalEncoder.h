@@ -2,6 +2,12 @@
 #define UZ_INCREMENTALENCODER_H
 #include <stdint.h>
 
+// Some defines for easier configuration
+#define CW_Counting 	0x00000000
+#define CCW_Counting 	0x00000001
+// a 0 will have no effect to the Lines A and B /  a 1 will result in an internal change of the AB-Lines
+
+
 /**
  * @brief Object data type definition of the incremental encoder IP-Core driver
  * 
@@ -21,6 +27,7 @@ struct uz_incrementalEncoder_config{
     uint32_t drive_pole_pair; /**< Number of pole pairs of the electric drive that is attached to the encoder. Set to zero if no drive is attached or increments per mechanical turn is not an integer multiple of pole pairs */
     uint32_t Encoder_mech_Offset; /**< Set the Mechanical Encoder Offset */
     uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset */
+    uint32_t Counting_Direction; /**< Set the counting direction to CW or CCW */
 };
 
 /**

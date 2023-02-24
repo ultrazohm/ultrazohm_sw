@@ -57,6 +57,7 @@ static void set_inc_per_turn_elec(uz_incrementalEncoder_t* self);
 static bool check_if_theta_el_can_be_used(uint32_t inc_per_turn,uint32_t pole_pair);
 static void set_omega_per_over_sample(uz_incrementalEncoder_t* self);
 static void set_offset(uz_incrementalEncoder_t* self);
+static void set_counting_direction(uz_incrementalEncoder_t* self);
 static void set_configuration(uz_incrementalEncoder_t* self);
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
@@ -104,6 +105,7 @@ uint32_t uz_incrementalEncoder_get_Index_Found(uz_incrementalEncoder_t* self){
 
 static void set_configuration(uz_incrementalEncoder_t* self){
 	set_offset(self);
+	set_counting_direction(self);
 	set_pi2_inc(self);
     set_fpga_timer(self);
     set_inc_per_turn_mechanical(self);
@@ -126,6 +128,11 @@ static void set_offset(uz_incrementalEncoder_t* self){
 	 uz_assert(self->is_ready);
 	 uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
 	 uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
+}
+
+static void set_counting_direction(uz_incrementalEncoder_t* self){
+	 uz_assert(self->is_ready);
+	 uz_incrementalEncoder_hw_set_cw_ccw_direction(self->config.base_address, self->config.Counting_Direction);
 }
 
 void set_pi2_inc(uz_incrementalEncoder_t* self){

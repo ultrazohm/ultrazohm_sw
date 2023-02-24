@@ -33,8 +33,8 @@ Each resolver channel can be configured with several pull-up and pull-down resis
 
 With the Signals A0 and A1 the resolver`s operation mode can be configured. This is done through the ip-core driver:
 
-* ``A0`` to LOW and ``A1`` to LOW = Normal model - position output
-* ``A0`` to LOW and ``A1`` to HIGH = Normal model - velocity output
+* ``A0`` to LOW and ``A1`` to LOW = Normal mode - position output
+* ``A0`` to LOW and ``A1`` to HIGH = Normal mode - velocity output
 * ``A0`` to HIGH and ``A1`` to LOW = Reserved (not used)
 * ``A0`` to HIGH and ``A1`` to HIGH = Configuration Mode
 
@@ -71,12 +71,13 @@ Before first use
 
 * Determine correct placement options for correct function (Default is 16-bit resolution) and one common GND for all channels
 * Program CPLD with proper firmware, `uz_d_resolver CPLD program <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/uz_d_resolver/>`_. See :ref:`label_cpld_programming` for details.
-* Attention: There are two different CPLD programms in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
+
+.. warning:: There are two different CPLD programms in the ``cpld_lattice`` repository for ``uz_d_resolver``. One for usage of the adapter board in slots D1 to D4 (sub-folder: ``digital_D1_to_D4``). And a special one for usage in slot D5 (sub-folder: ``digital_D5``). Due to the limited number of pins at D5 there are only two resolver channels available (``Ch A/1`` and ``Ch B/2``).
 
 Known issues
 ------------
 
-.. warning:: N_SAMPLE is pulled to HIGH using 5V on Rev01. It should be 3V3 to ensure safe operation of the AD2S1210 IC. This has been fixed for Rev02. Before first use of Rev01 boards, carefully check, if resistors R14[A..C] are not placed.
+.. warning:: N_SAMPLE is pulled to HIGH using 5V on Rev01. It should be 3V3 to ensure safe operation of the AD2S1210 IC. This has been fixed for Rev02. Before first use of Rev01 boards, carefully check, if resistors R14[A..C] are **NOT** placed.
 
 Compatibility 
 -------------

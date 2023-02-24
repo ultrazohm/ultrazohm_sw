@@ -227,6 +227,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance) {
 	uz_6ph_dq_t out = {0};
+	//if(Data->)
 	uz_3ph_dq_t v_dq_Volts =  uz_ParameterID_Controller(Data, CC_instance, Speed_instance, SP_instance);
 	out.d = v_dq_Volts.d;
 	out.q = v_dq_Volts.q;
@@ -323,19 +324,9 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_finished(self->FluxMapID));
 }
 
-void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
-	uz_assert_not_NULL(Data);
-	uz_assert_not_NULL(activeState);
-	uz_assert_not_NULL(FluxMapCounter);
-	uz_assert_not_NULL(ArrayCounter);
-	*activeState = (float) Data->Controller_Parameters.activeState;
-	*FluxMapCounter = (float) Data->FluxMap_counter;
-	*ArrayCounter = (float) Data->Array_counter;
-    Data->Psi_D_pointer = Data->FluxMap_Data->psid_grid[Data->FluxMap_counter];
-	Data->Psi_Q_pointer =  Data->FluxMap_Data->psiq_grid[Data->FluxMap_counter];
-	Data->MeasArraySpeed_pointer = Data->FrictionID_Output->measArraySpeed[Data->Array_counter];
-	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
-
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter)
+{
+	uz_ParameterID_update_transmit_values(Data, activeState, FluxMapCounter, ArrayCounter);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {

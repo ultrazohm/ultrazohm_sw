@@ -203,6 +203,21 @@ typedef struct {
   real32_T WindingTemp; /**< identified winding temperature of the stator */
 } uz_ParaID_FluxMapID_output_t;
 
+typedef struct {
+  boolean_T active; /**< is this subspace ID active */
+  uz_3ph_dq_t i_dq_PI_ref; /**< reference currents for PI controller */
+  struct uz_CurrentControl_config config_PI;
+  real32_t theta_factor; /**< factor for theta_el for dq transfromation */
+  struct uz_resonantController_config config_Res;
+  real32_t omega_R; /**< omega_el of the resonant controller */
+} uz_ParaID_FluxMapID_controller_subsystem_t;
+
+typedef struct {
+  boolean_T control_active;
+  boolean_T controllers_running;
+  uz_ParaID_FluxMapID_controller_subsystem_t ab;
+  uz_ParaID_FluxMapID_controller_subsystem_t xy;
+} uz_ParaID_FluxMapID_extended_controller_output_t;
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -386,6 +401,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
 	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
   uz_ParaID_ElectricalID_fft_in_t ElectricalID_FFT;
+  uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */

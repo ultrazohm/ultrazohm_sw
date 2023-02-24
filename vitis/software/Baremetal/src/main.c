@@ -59,171 +59,7 @@ DS_Data Global_Data = {
 };
 
 
-// Resonant-Controller: ----------------------
-uz_resonantController_t* rc_2H_x;
-uz_resonantController_t* rc_2H_y;
-uz_resonantController_t* rc_5H_x;
-uz_resonantController_t* rc_5H_y;
-uz_resonantController_t* rc_7H_x;
-uz_resonantController_t* rc_7H_y;
 
-uz_resonantController_t* rc_6H_x;
-uz_resonantController_t* rc_6H_y;
-uz_resonantController_t* rc_2H_d;
-uz_resonantController_t* rc_2H_q;
-uz_resonantController_t* rc_8H_d;
-uz_resonantController_t* rc_8H_q;
-uz_resonantController_t* rc_12H_d;
-uz_resonantController_t* rc_12H_q;
-
-uz_resonantController_t* rc_1H_z1;
-uz_resonantController_t* rc_1H_z2;
-uz_resonantController_t* rc_3H_z1;
-uz_resonantController_t* rc_3H_z2;
-uz_resonantController_t* rc_9H_z1;
-uz_resonantController_t* rc_9H_z2;
-
-const struct uz_resonantController_config config_R = {
-		.sampling_time = 0.0001f,
-		.gain = 55.0f,
-		.harmonic_order = 2.0f,
-		.fundamental_frequency = 10.0f,
-		.lower_limit = -4.0f,
-		.upper_limit = 4.0f,
-		.antiwindup_gain = 10.0f,
-		.in_reference_value = 0.0f,
-		.in_measured_value = 0.0f,
-};
-
-// Moving-Average-Filter: ----------------------
-struct uz_movingAverageFilter_config movAvF_config = {
-    .filterLength = 450U
-};
-
-uz_movingAverageFilter_t* movAvFilter_R1;
-uz_movingAverageFilter_t* movAvFilter_R2;
-uz_movingAverageFilter_t* movAvFilter_R3;
-uz_movingAverageFilter_t* movAvFilter_R4;
-uz_movingAverageFilter_t* movAvFilter_R5;
-uz_movingAverageFilter_t* movAvFilter_R6;
-
-float dataR1 [500] = {0};
-uz_array_float_t circularBuffer_R1 = {
-   .length = UZ_ARRAY_SIZE(dataR1),
-   .data = &dataR1[0]
-};
-float dataR2 [500] = {0};
-uz_array_float_t circularBuffer_R2 = {
-   .length = UZ_ARRAY_SIZE(dataR2),
-   .data = &dataR2[0]
-};
-float dataR3 [500] = {0};
-uz_array_float_t circularBuffer_R3 = {
-   .length = UZ_ARRAY_SIZE(dataR3),
-   .data = &dataR3[0]
-};
-float dataR4 [500] = {0};
-uz_array_float_t circularBuffer_R4 = {
-   .length = UZ_ARRAY_SIZE(dataR4),
-   .data = &dataR4[0]
-};
-float dataR5 [500] = {0};
-uz_array_float_t circularBuffer_R5 = {
-   .length = UZ_ARRAY_SIZE(dataR5),
-   .data = &dataR5[0]
-};
-float dataR6 [500] = {0};
-uz_array_float_t circularBuffer_R6 = {
-   .length = UZ_ARRAY_SIZE(dataR6),
-   .data = &dataR6[0]
-};
-
-
-
-// FOC: ----------------------
-
-struct uz_FOC* FOC_dq;
-
-const struct uz_PMSM_t config_PMSM = {
-   .Ld_Henry = 0.0001473f,			//Richtige Parameter f�r den Motor einf�gen
-   .Lq_Henry = 0.0001484f,
-   .Psi_PM_Vs = 0.0048f,
-   .R_ph_Ohm = 0.1278f,
-   .polePairs = 5.0f,
-   .J_kg_m_squared = 0.0f,
-   .I_max_Ampere = 25.0f
-};
-
-const struct uz_PI_Controller_config config_id = {
-	.Kp = 0.37,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 20.0f,
-	.lower_limit = -20.0f
-};
-
-const struct uz_PI_Controller_config config_iq = {
-	.Kp = 0.37,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 20.0f,
-	.lower_limit = -20.0f
-};
-
-struct uz_FOC_config config_FOC = {
-   .decoupling_select = linear_decoupling, // no_decoupling, linear_decoupling
-   .config_PMSM = config_PMSM,
-   .config_id = config_id,
-   .config_iq = config_iq
-};
-
-
-// alphabeta -> dq & reverse
-void uz_park_transform(float* output, float* input, float theta_el_rad)
-{
-    float sin_coefficient = sinf(theta_el_rad);
-    float cos_coefficient = cosf(theta_el_rad);
-    output[0] = ( cos_coefficient * input[0]) + (sin_coefficient * input[1]);
-    output[1] =	(-sin_coefficient * input[0]) + (cos_coefficient * input[1]);
-}
-
-void uz_inv_park_transform(float* output, float* input, float theta_el_rad)
-{
-    float sin_coefficient = sinf(theta_el_rad);
-    float cos_coefficient = cosf(theta_el_rad);
-    output[0] = (cos_coefficient * input[0]) - (sin_coefficient * input[1]);
-    output[1] = (sin_coefficient * input[0]) + (cos_coefficient * input[1]);
-}
-
-// PI-Controller for xy- ans z1z2-System: ----------------------
-struct uz_PI_Controller* PI_x_n;
-struct uz_PI_Controller* PI_y_n;
-struct uz_PI_Controller* PI_z1;
-struct uz_PI_Controller* PI_z2;
-
-const struct uz_PI_Controller_config config_ix = {
-	.Kp = 0.14f ,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
-};
-
-const struct uz_PI_Controller_config config_iy = {
-	.Kp = 0.14,
-	.Ki = 880,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
-};
-
-const struct uz_PI_Controller_config config_iz1z2 = {
-	.Kp = 0.22,
-	.Ki = 0,
-	.samplingTime_sec = 0.0001f,
-	.upper_limit = 15.0f,
-	.lower_limit = -15.0f
-};
 
 
 
@@ -265,7 +101,6 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
 
-	movAvF_config.filterLength = 150;
 
 
     int status = UZ_SUCCESS;
@@ -290,71 +125,17 @@ int main(void)
             break;
         case init_FD:
 
-        	// init moving average filter:
-			movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R1);
-			movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R2);
-			movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R3);
-			movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
-			movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
-			movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
 
-            // all configs for the resonant controllers
-            struct uz_resonantController_config config_R_dq2H = config_R;
-            config_R_dq2H.harmonic_order = 2.0f;
-            config_R_dq2H.gain = 150.0f;
-            config_R_dq2H.upper_limit = 12.0f;
-            config_R_dq2H.lower_limit = -12.0f;
-            struct uz_resonantController_config config_R_dq12H = config_R;
-            config_R_dq12H.harmonic_order = 12.0f;
-            struct uz_resonantController_config config_R_xy2H = config_R;
-            config_R_xy2H.harmonic_order = 2.0f;
-            struct uz_resonantController_config config_R_xy6H = config_R;
-            config_R_xy6H.harmonic_order = 6.0f;
-            struct uz_resonantController_config config_R_z1z2_1H = config_R;
-            config_R_z1z2_1H.harmonic_order = 1.0f;
-            config_R_z1z2_1H.gain = 85.0f;
-            struct uz_resonantController_config config_R_z1z2_3H = config_R;
-            config_R_z1z2_3H.harmonic_order = 3.0f;
-            config_R_z1z2_3H.gain = 85.0f;
-            struct uz_resonantController_config config_R_z1z2_9H = config_R;
-            config_R_z1z2_9H.gain = 85.0f;
-            config_R_z1z2_9H.harmonic_order = 9.0f;
 
 
-            // init resonant-controllers:
-            rc_2H_x = uz_resonantController_init(config_R_xy2H);
-            rc_2H_y = uz_resonantController_init(config_R_xy2H);
-            rc_6H_x = uz_resonantController_init(config_R_xy6H);
-            rc_6H_y = uz_resonantController_init(config_R_xy6H);
-
-            rc_2H_d = uz_resonantController_init(config_R_dq2H);
-            rc_2H_q = uz_resonantController_init(config_R_dq2H);
-            rc_12H_d = uz_resonantController_init(config_R_dq12H);
-            rc_12H_q = uz_resonantController_init(config_R_dq12H);
-
-            rc_1H_z1 = uz_resonantController_init(config_R_z1z2_1H);
-            rc_1H_z2 = uz_resonantController_init(config_R_z1z2_1H);
-            rc_3H_z1 = uz_resonantController_init(config_R_z1z2_3H);
-            rc_3H_z2 = uz_resonantController_init(config_R_z1z2_3H);
-            rc_9H_z1 = uz_resonantController_init(config_R_z1z2_9H);
-            rc_9H_z2 = uz_resonantController_init(config_R_z1z2_9H);
 
             initialization_chain = init_FOC;
             break;
         case init_FOC:
 
-        	FOC_dq = uz_FOC_init(config_FOC);
 
-        	Global_Data.av.kp_d = config_FOC.config_id.Kp;
-        	Global_Data.av.ki_d = config_FOC.config_id.Ki;
-        	Global_Data.av.kp_q = config_FOC.config_iq.Kp;
-        	Global_Data.av.ki_q = config_FOC.config_iq.Ki;
 
-        	PI_x_n = uz_PI_Controller_init(config_ix);
-        	PI_y_n = uz_PI_Controller_init(config_iy);
-        	PI_z1 = uz_PI_Controller_init(config_iz1z2);
-        	PI_z2 = uz_PI_Controller_init(config_iz1z2);
 
 
             initialization_chain = init_ip_cores;

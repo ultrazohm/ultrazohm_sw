@@ -83,7 +83,12 @@ uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
 uz_3ph_alphabeta_t m_alphabeta_currents = {0};
 uz_3ph_dq_t m_dq_currents = {0};
 
-
+// voltage measurement
+uz_3ph_abc_t u_phase_UDC = {0};
+uz_3ph_abc_t u_phase = {0};
+float u_neutral = 0.0f;
+float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
+float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 
 // Inverter, PWM etc.:
 
@@ -152,15 +157,25 @@ void ISR_Control(void *data)
 		uz_assert(0);
 	}
 
+	// voltage measurement
+	u_phase_UDC.a = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor;
+	u_phase_UDC.b = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor;
+	u_phase_UDC.c = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor;
+	u_neutral = (u_phase_UDC.a + u_phase_UDC.b + u_phase_UDC.c) / 3.0f;
+
+	// calculate phase voltages
+	u_phase.a = (u_phase_UDC.a - u_neutral)*voltage_divider_factor;
+	u_phase.b = (u_phase_UDC.b - u_neutral)*voltage_divider_factor;
+	u_phase.c = (u_phase_UDC.c - u_neutral)*voltage_divider_factor;
 
 
-	PID_Data.ActualValues.I_abc.a = m_6ph_abc_currents.a1;
-	PID_Data.ActualValues.I_abc.b = m_6ph_abc_currents.b1;
-	PID_Data.ActualValues.I_abc.c = m_6ph_abc_currents.c1;
+	PID_Data.ActualValues.I_abc.a = m_6ph_abc_currents.a2;
+	PID_Data.ActualValues.I_abc.b = m_6ph_abc_currents.b2;
+	PID_Data.ActualValues.I_abc.c = m_6ph_abc_currents.c2;
 	PID_Data.ActualValues.V_DC = 36.0f;
-	PID_Data.ActualValues.V_abc.a = ....;
-	PID_Data.ActualValues.V_abc.b = ....;
-	PID_Data.ActualValues.V_abc.c = ....;
+	PID_Data.ActualValues.V_abc.a = u_phase.a;
+	PID_Data.ActualValues.V_abc.b = u_phase.b;
+	PID_Data.ActualValues.V_abc.c = u_phase.c;
 
 	PID_Data.ActualValues.omega_m = omega_el_rad_per_sec / PID_Data.GlobalConfig.PMSM_config.polePairs;
 	PID_Data.ActualValues.omega_el = omega_el_rad_per_sec;

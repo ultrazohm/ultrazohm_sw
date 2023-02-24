@@ -50,6 +50,7 @@ SamplesPhaseDelayB = (Phase_Delay_B/T_Generator);
 
 Offset_Position_mech    = 753 ;
 Offset_Position_elec    = 42 ;
+CW_CCW_Switch           = 0;        % 0 => Aout = Ain / Bout = Bin || 1 => Aout = Bin / Bout = Ain
 
 %% read ila data
 % opts = detectImportOptions('iladata_encoder.csv');

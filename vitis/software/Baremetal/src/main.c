@@ -90,8 +90,9 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.resolver_d5_1 = initialize_resolverIP_on_D5_1();
-            Global_Data.objects.resolver_d5_2 = initialize_resolverIP_on_D5_2();
+            Global_Data.objects.resolver_d4_1 = initialize_resolverIP_on_D4_1();
+            Global_Data.objects.resolver_d4_2 = initialize_resolverIP_on_D4_2();
+            Global_Data.objects.resolver_d4_3 = initialize_resolverIP_on_D4_3();
 //            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

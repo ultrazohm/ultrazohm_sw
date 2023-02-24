@@ -64,6 +64,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el_2] 		= &data->av.theta_elec_2;
 	js_ch_observable[JSO_theta_mech_2] 	= &data->av.theta_mech_2;
 	js_ch_observable[JSO_Speed_rpm_2]		= &data->av.mechanicalRotorSpeed_2;
+	js_ch_observable[JSO_Theta_el_3] 		= &data->av.theta_elec_3;
+	js_ch_observable[JSO_theta_mech_3] 	= &data->av.theta_mech_3;
+	js_ch_observable[JSO_Speed_rpm_3]		= &data->av.mechanicalRotorSpeed_3;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;

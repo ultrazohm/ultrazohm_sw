@@ -63,6 +63,14 @@ float theta_ = 0;
 float omega_el_rad_per_sec = 0.0f;
 
 
+#include "../uz/uz_ParameterID/uz_ParameterID.h"
+extern uz_ParameterID_Data_t PID_Data;
+extern uz_ParameterID_t* ParameterID;
+//Next lines only needed, if the uz_FOC is used as the controller
+extern uz_FOC* FOC_instance;
+extern uz_SpeedControl_t* SpeedControl_instance;
+uz_3ph_dq_t PID_v_dq = { 0 };
+struct uz_DutyCycle_t PID_DutyCycle = { 0 };
 
 
 
@@ -99,7 +107,7 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-	//omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polePairs*2.0f*M_PI/60;
+	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*PID_Data.GlobalConfig.PMSM_config.polePairs*2.0f*M_PI/60;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,36 +153,23 @@ void ISR_Control(void *data)
 	}
 
 
-	//write phase currents into global_data-struct
-	Global_Data.av.I_U = m_6ph_abc_currents.a1;
-	Global_Data.av.I_V = m_6ph_abc_currents.b1;
-	Global_Data.av.I_W = m_6ph_abc_currents.c1;
-	Global_Data.av.I_X = m_6ph_abc_currents.a2;
-	Global_Data.av.I_Y = m_6ph_abc_currents.b2;
-	Global_Data.av.I_Z = m_6ph_abc_currents.c2;
 
+	PID_Data.ActualValues.I_abc.a = m_6ph_abc_currents.a1;
+	PID_Data.ActualValues.I_abc.b = m_6ph_abc_currents.b1;
+	PID_Data.ActualValues.I_abc.c = m_6ph_abc_currents.c1;
+	PID_Data.ActualValues.V_DC = 36.0f;
+	PID_Data.ActualValues.V_abc.a = ....;
+	PID_Data.ActualValues.V_abc.b = ....;
+	PID_Data.ActualValues.V_abc.c = ....;
 
-	// VSD-Transform of currents:
-	//Transform phase-currents to alpha-beta-x-y-z1-z2 and write to global_data-struct
-	m_6ph_alphabeta_currents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(m_6ph_abc_currents);
+	PID_Data.ActualValues.omega_m = omega_el_rad_per_sec / PID_Data.GlobalConfig.PMSM_config.polePairs;
+	PID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
+	PID_Data.ActualValues.theta_el = Global_Data.av.theta_elec * PID_Data.GlobalConfig.PMSM_config.polePairs;
 
-	Global_Data.av.I_alpha = m_6ph_alphabeta_currents.alpha;
-	Global_Data.av.I_beta = m_6ph_alphabeta_currents.beta;
-	Global_Data.av.I_x = m_6ph_alphabeta_currents.x;
-	Global_Data.av.I_y = m_6ph_alphabeta_currents.y;
-	Global_Data.av.I_z1 = m_6ph_alphabeta_currents.z1;
-	Global_Data.av.I_z2 = m_6ph_alphabeta_currents.z2;
-
-	//calculate meassured dq-currents
-	m_alphabeta_currents.alpha = m_6ph_alphabeta_currents.alpha;
-	m_alphabeta_currents.beta = m_6ph_alphabeta_currents.beta;
-	m_dq_currents = uz_transformation_3ph_alphabeta_to_dq(m_alphabeta_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-	Global_Data.av.I_d = m_dq_currents.d;
-	Global_Data.av.I_q = m_dq_currents.q;
-
-
-
-
+	//Calculate missing ActualValues
+	PID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.I_abc, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(PID_Data.ActualValues.V_abc, PID_Data.ActualValues.theta_el);
+	PID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
 
 
 
@@ -223,22 +218,22 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-
-
-
-
-
-
-
-    //write duty-cycles
-    	Global_Data.rasv.halfBridge4DutyCycle = dutyCycles_set1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutyCycles_set1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutyCycles_set1.DutyCycle_W;
+    	 uz_ParameterID_step(ParameterID, &PID_Data);
+		//Next lines only needed, if the uz_FOC is used as the controller
+		PID_v_dq = uz_ParameterID_Controller(&PID_Data, FOC_instance, SpeedControl_instance);
+		PID_DutyCycle = uz_ParameterID_generate_DutyCycle(&PID_Data, PID_v_dq, Global_Data.objects.pwm_d1_pin_6_to_11);
+		//write duty-cycles
+    	Global_Data.rasv.halfBridge4DutyCycle = PID_DutyCycle.DutyCycle_U;
+    	Global_Data.rasv.halfBridge5DutyCycle = PID_DutyCycle.DutyCycle_V;
+    	Global_Data.rasv.halfBridge6DutyCycle = PID_DutyCycle.DutyCycle_W;
 
 
     }
     else{
     	// Reset Controllers if control-state is not active
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
 
 

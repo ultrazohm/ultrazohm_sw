@@ -16,6 +16,8 @@
 // Includes from own files
 #include "main.h"
 
+
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -59,7 +61,15 @@ DS_Data Global_Data = {
 };
 
 
+#include "uz/uz_ParameterID/uz_ParameterID.h"
+#include "uz/uz_math_constants.h"
 
+//ParameterID Code
+uz_ParameterID_t* ParameterID = NULL;
+uz_ParameterID_Data_t PID_Data = { 0 };
+//Objects below are only needed, if the uz_FOC is used as the controller
+uz_FOC* FOC_instance = NULL;
+uz_SpeedControl_t* SpeedControl_instance = NULL;
 
 
 
@@ -134,7 +144,32 @@ int main(void)
             break;
         case init_FOC:
 
-
+        	  ParameterID = uz_ParameterID_init(&PID_Data);
+        	 //Code below is only needed, if the uz_FOC is used as the controller
+        	   struct uz_PI_Controller_config config_id = {
+        	        .Kp = PID_Data.GlobalConfig.Kp_id,
+        	        .Ki = PID_Data.GlobalConfig.Ki_id,
+        	        .samplingTime_sec = 0.00005f,
+        	        .upper_limit = 15.0f,
+        	                          .lower_limit = -15.0f };
+        	   struct uz_PI_Controller_config config_iq = {
+        	        .Kp = PID_Data.GlobalConfig.Kp_iq,
+        	        .Ki = PID_Data.GlobalConfig.Ki_iq,
+        	        .samplingTime_sec = 0.00005f,
+        	        .upper_limit = 15.0f,
+        	                          .lower_limit = -15.0f };
+        	   struct uz_SpeedControl_config config_n = {
+        	        .config_controller.Kp = PID_Data.GlobalConfig.Kp_n,
+        	        .config_controller.Ki = PID_Data.GlobalConfig.Ki_n,
+        	        .config_controller.samplingTime_sec = 0.00005f,
+        	        .config_controller.upper_limit = 10.0f,
+        	        .config_controller.lower_limit = -10.0f};
+        	   struct uz_FOC_config config_FOC = {
+        	        .config_PMSM = PID_Data.GlobalConfig.PMSM_config,
+        	        .config_id = config_id,
+        	        .config_iq = config_iq };
+        	   FOC_instance = uz_FOC_init(config_FOC);
+        	   SpeedControl_instance = uz_SpeedControl_init(config_n);
 
 
 

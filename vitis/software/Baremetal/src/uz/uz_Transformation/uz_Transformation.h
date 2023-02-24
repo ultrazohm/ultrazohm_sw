@@ -134,7 +134,7 @@ uz_3ph_abc_t uz_transformation_3ph_alphabeta_to_abc(uz_3ph_alphabeta_t input);
  * 
  * @param input uz_3ph_alphabeta_t struct
  * @param theta_el_rad electrical rotor angle in rad
- * @return uz_dq_t outputs the calculated dq-components
+ * @return uz_3ph_dq_t outputs the calculated dq-components
  */
 uz_3ph_dq_t uz_transformation_3ph_alphabeta_to_dq(uz_3ph_alphabeta_t input, float theta_el_rad);
 

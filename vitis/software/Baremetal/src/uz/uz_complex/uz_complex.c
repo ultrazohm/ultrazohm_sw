@@ -33,8 +33,8 @@ uz_complex_cartesian_t uz_complex_division(uz_complex_cartesian_t dividend, uz_c
 {
     uz_assert( (divisor.real!=0.0f) && (divisor.imag!=0.0f) );
     uz_complex_cartesian_t out={
-        .real = (dividend.real*divisor.real + dividend.imag*divisor.imag)/(divisor.real*divisor.real + divisor.imag*divisor.imag),
-        .imag = (dividend.imag*divisor.real - dividend.real*divisor.imag)/(divisor.real*divisor.real + divisor.imag*divisor.imag)
+        .real = ( (dividend.real*divisor.real) +  (dividend.imag*divisor.imag) )/( (divisor.real*divisor.real) + (divisor.imag*divisor.imag) ),
+        .imag = ( (dividend.imag*divisor.real) - (dividend.real*divisor.imag) )/( (divisor.real*divisor.real) + (divisor.imag*divisor.imag) )
     };
     return out;
 }

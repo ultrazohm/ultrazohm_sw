@@ -33,6 +33,7 @@ struct uz_nn_layer_config{
     enum activation_function activation_function; /**< Activation function of all neurons in this layer */
     uint32_t number_of_neurons; /**< Number of neurons in the layer */
     uint32_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
+    uint32_t number_of_cachecolumns;
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
     uint32_t length_of_bias; /**< Number of bias in the layer, has to be calculated by UZ_MATRIX_SIZE(bias) */
     uint32_t length_of_output;/**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
@@ -40,16 +41,20 @@ struct uz_nn_layer_config{
     uint32_t length_of_derivate_gradients; 
     uint32_t length_of_delta; 
     uint32_t length_of_error;
+    uint32_t length_of_cachebackprop;
     uint32_t length_of_gradients;
-    
+    uint32_t length_of_cachegradients;
+
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
     float *const output; /** Pointer to an array that holds the output / where the output is written to */
     float *const sumout;
     float *const derivate_gradients;
     float *const delta;
+    float *const cachebackprop;
     float *const error;
     float *const gradients;
+    float *const cachegradients;
 };
 /**
  * @brief Initializes a layer of a neural network.
@@ -74,10 +79,9 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @param self 
  * @return uz_matrix* 
  */
-void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,  uz_matrix_t *const weightprev, uz_matrix_t *cache);
+void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference);
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev, uz_matrix_t *const biasprev);
-float uz_nn_layer_delta(uz_nn_layer_t *const self,float error);
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);

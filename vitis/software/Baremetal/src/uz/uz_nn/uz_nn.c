@@ -89,9 +89,11 @@ void uz_nn_backprop(uz_nn_t *self,float const reference_output, uz_matrix_t *con
     uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
-void uz_nn_update(uz_nn_t *self)
+void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS)
 {
-
+    const float *gradient1 = &THETA;
+    const float *gradient2 = &BIAS;
+    uz_nn_layer_update(self->layer[0],gradient1,gradient2);
 }
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {

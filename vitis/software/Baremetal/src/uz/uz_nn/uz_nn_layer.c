@@ -187,7 +187,11 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     //matrizen zusammenbasteln und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
     uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);    
 }
-
+void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias)
+{
+    self->weights->data[0] = self->weights->data[0] - 2.0f * *theta;
+    self->bias->data[0] = self->bias->data[0] - 2.0f * *bias;
+}
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);

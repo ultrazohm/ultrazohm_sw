@@ -395,7 +395,7 @@ uz_assert((A->rows + B->rows) == C_out->rows);
 uz_matrix_set_zero(C_out);
 uint32_t m = A->rows;
 uint32_t n = B->rows;
-// loop first through A, then through C
+// loop first through A, then through B
 for (uint32_t i = 0; i < m; i++)
 {
 C_out->data[i] = A->data[i];
@@ -403,5 +403,32 @@ C_out->data[i] = A->data[i];
 for (uint32_t k = 0; k < n; k++)
 {
  C_out->data[m + k] = B->data[k];
+}
+}
+
+void uz_matrix_reshape_1d(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+uz_matrix_set_zero(C_out);
+for (uint32_t row = 0; row < A->rows; row++)
+{
+        for (uint32_t column = 0; column < A->columns; column++)
+        {
+            C_out->data[(row * A->columns) + column] = A->data[(row * A->columns) + column];
+        }
+}
+
+for (uint32_t row2 = 0; row2 < B->rows; row2++)
+{
+for (uint32_t column2 = 0; column2 < B->columns; column2++)
+{
+    C_out->data[(A->rows*A->columns)+(row2 * B->columns) + column2] =  B->data[(row2 * B->columns) + column2];
+}
 }
 }

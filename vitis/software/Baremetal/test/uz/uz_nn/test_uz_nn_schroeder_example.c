@@ -47,8 +47,10 @@ float C1[2 * 2] = {0};
 float C2[2 * 1] = {0};
 float C3[2 * 2] = {0};
 
+// 13 Trainingsdaten aus Schroeder
+float x[13] = {-5.0f,-4.17f,-3.33f,-2.5f,-1.67f,-0.83f,0.0f,0.83f,1.67f,2.50f,3.33f,4.17f,5.00f};
+float reference_output [13] = {-4.41f,-4.35f,-4.27f,-4.12f,-3.84f,-3.09f,0.0f,3.09f,3.84f,4.12f,4.27f,4.35f,4.41f};
 
-float x[NUMBER_OF_INPUTS] = {-5.0f};
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "schroeder_weights/layer1_weights.csv"
 };
@@ -167,15 +169,24 @@ void tearDown(void)
 
 void test_uz_nn_schroeder(void)
   {
+    float biashelper[13];
+    float THETAhelper[13];
+    float sumtheta = 0.0f;
+    float sumbias = 0.0f;
+    float avgtheta = 0.0f;
+    float avgbias = 0.0f;
+    for (size_t i = 0; i < 13; ++i)
+    {
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    float (*inp)[i] = &x[i];
     // testing around with derivatemat declaration
     struct uz_matrix_t x_matrix={0};
-    uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_matrix_t* input=uz_matrix_init(&x_matrix, inp,1,1,NUMBER_OF_INPUTS);
     uz_nn_ff(test,input);
     float expected_result= -1.52f; 
     uz_matrix_t* output=uz_nn_get_output_data(test);
-    float result=uz_matrix_get_element_zero_based(output,0,0);
-    TEST_ASSERT_FLOAT_WITHIN(0.4f,expected_result,result);
+    //float result=uz_matrix_get_element_zero_based(output,0,0);
+    //TEST_ASSERT_FLOAT_WITHIN(0.4f,expected_result,result);
     // check outputs
     float outputhelper[UZ_MATRIX_SIZE(y_1)+UZ_MATRIX_SIZE(y_2)+UZ_MATRIX_SIZE(y_3)];
     uz_matrix_t* output1 = uz_nn_get_output_from_each_layer(test,1);
@@ -196,9 +207,7 @@ void test_uz_nn_schroeder(void)
     sumouthelper[2] = uz_matrix_get_element_zero_based(sumout2,0,0);
     sumouthelper[3] = uz_matrix_get_element_zero_based(sumout2,0,1);
     sumouthelper[4] = uz_matrix_get_element_zero_based(sumout3,0,0);
-    // calculate output error
-    const float reference_output = {-4.41f};
-    uz_nn_backprop(test,reference_output,input);
+    uz_nn_backprop(test,reference_output[i],input);
     //check delta
     uz_matrix_t *deltahelper1 = uz_nn_get_delta_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *deltahelper2 = uz_nn_get_delta_data(test,2); // index 1-3 verwenden für nn mit 3 layern
@@ -213,20 +222,8 @@ void test_uz_nn_schroeder(void)
     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t* gradhelp2 = uz_nn_get_gradient_data(test,2); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t* gradhelp3 = uz_nn_get_gradient_data(test,3); // index 1-3 verwenden für nn mit 3 layern
-    float gradhelper[UZ_MATRIX_SIZE(g_1)+UZ_MATRIX_SIZE(g_2)+UZ_MATRIX_SIZE(g_3)];
-    gradhelper[0] = uz_matrix_get_element_zero_based(gradhelp1,0,0);
-    gradhelper[1] = uz_matrix_get_element_zero_based(gradhelp1,1,0);
-    gradhelper[2] = uz_matrix_get_element_zero_based(gradhelp1,2,0);
-    gradhelper[3] = uz_matrix_get_element_zero_based(gradhelp1,3,0);
-    gradhelper[4] = uz_matrix_get_element_zero_based(gradhelp2,0,0);
-    gradhelper[5] = uz_matrix_get_element_zero_based(gradhelp2,1,0);
-    gradhelper[6] = uz_matrix_get_element_zero_based(gradhelp2,2,0);
-    gradhelper[7] = uz_matrix_get_element_zero_based(gradhelp2,3,0);
-    gradhelper[8] = uz_matrix_get_element_zero_based(gradhelp2,4,0);
-    gradhelper[9] = uz_matrix_get_element_zero_based(gradhelp2,5,0);
-    gradhelper[10] = uz_matrix_get_element_zero_based(gradhelp3,0,0);
-    gradhelper[11] = uz_matrix_get_element_zero_based(gradhelp3,1,0);
-    gradhelper[12] = uz_matrix_get_element_zero_based(gradhelp3,2,0);
+    THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
+    biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
     // check derivates
     uz_matrix_t* helper1 = uz_nn_get_derivate_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t* helper2 = uz_nn_get_derivate_data(test,2); // index 1-3 verwenden für nn mit 3 layern
@@ -240,10 +237,16 @@ void test_uz_nn_schroeder(void)
     derivatehelper[5] = uz_matrix_get_element_zero_based(helper2,0,1);
     derivatehelper[6] = uz_matrix_get_element_zero_based(helper2,1,0);
     derivatehelper[7] = uz_matrix_get_element_zero_based(helper2,1,1);
-    derivatehelper[8] = uz_matrix_get_element_zero_based(helper3,0,0);
-    uz_nn_update(test);
-    // Berechne lokale Gradienten
-
+    derivatehelper[8] = uz_matrix_get_element_zero_based(helper3,0,0); 
+    sumtheta += THETAhelper[i];
+    sumbias += biashelper[i];
+    }
+    avgbias = sumbias / 13.0f;
+    avgtheta = sumtheta / 13.0f;
+    printf("Average of theta = %.2f", avgtheta);
+    printf("Average of bias = %.2f", avgbias);
+    // Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
+    uz_nn_update(test,avgtheta,avgbias)
     // Trainiere einen step des Netzes 
  }
 

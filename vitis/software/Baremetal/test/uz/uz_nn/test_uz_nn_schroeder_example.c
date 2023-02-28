@@ -244,8 +244,8 @@ void test_uz_nn_schroeder(void)
     uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
-    printf("Average of theta = %.2f\n", avgtheta);
-    printf("Average of bias = %.2f\n", avgbias);
+    printf("Average of thetagrad = %.2f \n", avgtheta);
+    printf("Average of biasgrad = %.2f \n", avgbias);
     // Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
     uz_nn_update(test,avgtheta,avgbias);
     // Zeige Gewichte nach dem Trainingsschritt an
@@ -255,8 +255,8 @@ void test_uz_nn_schroeder(void)
     float x2 = 0.0f;
     x1 = uz_matrix_get_element_zero_based(weightshelper,0,0);
     x2 = uz_matrix_get_element_zero_based(biasoutput,0,0);
-    printf("Neuer Wert für THETA 1.1 ist %.2f\n", x1);
-    printf("Neuer Wert für BIAS 1.1 ist %.2f\n", x2);
+    printf("Neuer Wert für THETA 1.1 ist %.2f \n", x1);
+    printf("Neuer Wert für BIAS 1.1 ist %.2f \n", x2);
  }
 
 #endif // TEST

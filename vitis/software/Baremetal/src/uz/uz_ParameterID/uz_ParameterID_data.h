@@ -203,20 +203,12 @@ typedef struct {
   real32_T WindingTemp; /**< identified winding temperature of the stator */
 } uz_ParaID_FluxMapID_output_t;
 
-typedef struct {
-  boolean_T active; /**< is this subspace ID active */
-  uz_3ph_dq_t i_dq_PI_ref; /**< reference currents for PI controller */
-  struct uz_CurrentControl_config config_PI;
-  real32_t theta_factor; /**< factor for theta_el for dq transfromation */
-  struct uz_resonantController_config config_Res;
-  real32_t omega_R; /**< omega_el of the resonant controller */
-} uz_ParaID_FluxMapID_controller_subsystem_t;
 
 typedef struct {
   boolean_T control_active;
-  boolean_T controllers_running;
-  uz_ParaID_FluxMapID_controller_subsystem_t ab;
-  uz_ParaID_FluxMapID_controller_subsystem_t xy;
+  uint16_T selected_subsystem;
+  uz_3ph_dq_t ab_i_dq_PI_ref;
+  uz_3ph_dq_t xy_i_dq_PI_ref;
 } uz_ParaID_FluxMapID_extended_controller_output_t;
 //----------------------------------------//
 //----------------------------------------//

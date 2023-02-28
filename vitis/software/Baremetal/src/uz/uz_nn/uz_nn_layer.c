@@ -82,6 +82,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_assert(layer_config.length_of_weights+layer_config.length_of_bias == layer_config.length_of_gradients);
+    uz_assert(layer_config.number_of_cachegradrows * layer_config.number_of_cachegradcolumns == layer_config.length_of_cachegradients);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
     self->number_of_neurons = layer_config.number_of_neurons;
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
@@ -93,7 +94,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
     self->cachebackprop = uz_matrix_init(&self->cachebackprop_matrix,layer_config.cachebackprop, layer_config.length_of_cachebackprop,2,layer_config.number_of_cachecolumns);
     self->gradients = uz_matrix_init(&self->gradients_matrix,layer_config.gradients, layer_config.length_of_gradients,layer_config.length_of_gradients,1);
-    self->cachegradients = uz_matrix_init(&self->cachegradients_matrix,layer_config.cachegradients, layer_config.length_of_cachegradients,layer_config.length_of_cachegradients,1);
+    self->cachegradients = uz_matrix_init(&self->cachegradients_matrix,layer_config.cachegradients, layer_config.length_of_cachegradients,layer_config.number_of_cachegradrows,layer_config.number_of_cachegradcolumns);
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -143,15 +144,6 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,weightprev,self->cachebackprop);
-    // float cache1 = uz_matrix_get_element_zero_based(self->cachebackprop,0,0);
-    // float cache2 = uz_matrix_get_element_zero_based(self->cachebackprop,1,0);
-    // float cache3 = uz_matrix_get_element_zero_based(self->cachebackprop,0,1);
-    // float cache4 = uz_matrix_get_element_zero_based(self->cachebackprop,1,1);
-    // funktioniert bis hierhin, cache hat die richtigen Werte
-    // mit copybefehl kein assert, die Frage ist warum, die Dimension ist laut debugger gleich
-    // uz_matrix_copy würde auch in assert gehen wenn dimension ungleich
-    // für layer 2 funktioniert es nur mit copy für layer 1 failt es logischerweise, da die Dimension anders ist
-    //uz_matrix_copy(cache,self->gradientslocal);
     uz_matrix_multiply(self->cachebackprop,locgradprev,self->delta);
 }
 
@@ -171,18 +163,29 @@ void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const re
     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
 }
 
-void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev, uz_matrix_t *const biasprev)
+void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // float zw1[2] = {0}; // wie init float array  mit uint32_t als numel?
-    // //zuerst gradienten bezogen auf Gewichte bilden
-    // struct uz_matrix_t zw1_matrix={0};
-    // uz_matrix_t *zwischenmatrix1=uz_matrix_init(&zw1_matrix, zw1,UZ_MATRIX_SIZE(zw1),outputprev->length_of_data,1);
+    // check for the dimension of outputprev and delta, if necessary transpose outputprev
+    //layer 3
+    if (outputprev->rows==self->delta->columns && outputprev->columns == self->delta->rows)
+    {
+    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    uz_matrix_transpose(self->cachegradients);
+    }
+    //layer 1
+    else if(outputprev->rows==1 && outputprev->columns == 1){
+        uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    }
+    // layer 2
+    else{
     uz_matrix_transpose(outputprev);
     uz_matrix_multiply(outputprev,self->delta,self->cachegradients);
+    }
+
     //matrizen zusammenbasteln und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
-    uz_matrix_columnvec_concatenate_horizontal(self->cachegradients,self->delta,self->gradients);    
+    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);    
 }
 
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)

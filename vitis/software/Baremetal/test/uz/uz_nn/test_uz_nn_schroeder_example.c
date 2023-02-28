@@ -80,6 +80,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .activation_function = activation_tanh,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
+        .number_of_cachegradrows = 2,
+        .number_of_cachegradcolumns = 1,
         .number_of_cachecolumns = 2,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
@@ -105,6 +107,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .activation_function = activation_tanh, 
       .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+      .number_of_cachegradrows = 2,
+      .number_of_cachegradcolumns = 2,
       .number_of_cachecolumns = 1,
       .length_of_weights = UZ_MATRIX_SIZE(w_2),
       .length_of_bias = UZ_MATRIX_SIZE(b_2),
@@ -129,6 +133,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
   [2] = {.activation_function = activation_linear,
    .number_of_neurons = NUMBER_OF_OUTPUTS,
    .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+   .number_of_cachegradrows = 2,
+   .number_of_cachegradcolumns = 1,
    .number_of_cachecolumns = 2,
    .length_of_weights = UZ_MATRIX_SIZE(w_3),
    .length_of_bias = UZ_MATRIX_SIZE(b_3),
@@ -192,7 +198,7 @@ void test_uz_nn_schroeder(void)
     sumouthelper[4] = uz_matrix_get_element_zero_based(sumout3,0,0);
     // calculate output error
     const float reference_output = {-4.41f};
-    uz_nn_backprop(test,reference_output);
+    uz_nn_backprop(test,reference_output,input);
     //check delta
     uz_matrix_t *deltahelper1 = uz_nn_get_delta_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     uz_matrix_t *deltahelper2 = uz_nn_get_delta_data(test,2); // index 1-3 verwenden für nn mit 3 layern

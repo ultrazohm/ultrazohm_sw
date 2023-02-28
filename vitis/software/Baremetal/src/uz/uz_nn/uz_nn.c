@@ -74,7 +74,7 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 
 
 
-void uz_nn_backprop(uz_nn_t *self,float const reference_output)
+void uz_nn_backprop(uz_nn_t *self,float const reference_output, uz_matrix_t *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -84,9 +84,9 @@ void uz_nn_backprop(uz_nn_t *self,float const reference_output)
     uz_nn_layer_back(self->layer[1],uz_nn_get_delta_data(self,3),uz_nn_get_weight_matrix(self,3));
     uz_nn_layer_back(self->layer[0],uz_nn_get_delta_data(self,2),uz_nn_get_weight_matrix(self,2));
     //Berechne alle Gradienten
-    uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2),uz_nn_get_bias_matrix(self,2));
-    //uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1),uz_nn_get_bias_matrix(self,1));
-    //uz_nn_layer_calc_gradients(self->layer[0],uz_nn_get_output_from_each_layer(self,0),uz_nn_get_bias_matrix(self,0));
+    uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
+    uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+    uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
 void uz_nn_update(uz_nn_t *self)

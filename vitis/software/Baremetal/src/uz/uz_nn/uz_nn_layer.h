@@ -34,6 +34,8 @@ struct uz_nn_layer_config{
     uint32_t number_of_neurons; /**< Number of neurons in the layer */
     uint32_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
     uint32_t number_of_cachecolumns;
+    uint32_t number_of_cachegradcolumns;
+    uint32_t number_of_cachegradrows;
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
     uint32_t length_of_bias; /**< Number of bias in the layer, has to be calculated by UZ_MATRIX_SIZE(bias) */
     uint32_t length_of_output;/**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
@@ -81,7 +83,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  */
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference);
-void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev, uz_matrix_t *const biasprev);
+void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);

@@ -47,14 +47,14 @@ struct uz_DutyCycle_t output = {0};
 float theta_offset = -0.50f;
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
-float Kp_id = 4.11f;
-float Ki_id = 1500.0f;
-float Kp_iq = 4.11f;
-float Ki_iq = 1500.0f;
+float Kp_id = 5.65f;
+float Ki_id = 2715.0f;
+float Kp_iq = 7.11f;
+float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
 float adc_scaling = 9.5f/2.0f; // Refactoring actual ADC Values 19.05: durch 2, Ohmrichter umgelötet
-float action_current = 3.5f; // I_q für Agenten
+float action_current = 3.7f; // I_q für Agenten
 // speed control
 bool ext_clamping = false;
 
@@ -146,7 +146,7 @@ void ISR_Control(void *data)
     	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
     old_position=Global_Data.obs.dqn_chart_position;
-    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;
+    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI+0.5323f;// wegen funktionierender Refrenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle=sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle=cos(Global_Data.obs.dqn_angle);
     // calculate data pmsm for foc
@@ -242,7 +242,8 @@ void ISR_Control(void *data)
     	}
     	if (abs(position_abs) < 430)
     	{
-//    	dq_reference_current = uz_SpeedControl_sample(Speed_instance, omega_m_rad_per_sec,  Global_Data.rasv.n_ref_rpm, V_dc_volts, id_ref_Ampere);
+    	//Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
+    	//Global_Data.rasv.dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec,- Global_Data.rasv.n_ref_rpm, Global_Data.rasv.V_dc_volts, 0.0f);
     	Global_Data.rasv.dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, Global_Data.rasv.dq_reference_current, Global_Data.mv.dq_measurement_current, Global_Data.rasv.V_dc_volts, omega_el_rad_per_sec);
         Global_Data.rasv.uvw_ref = uz_transformation_3ph_dq_to_abc(Global_Data.rasv.dq_ref_Volts, Global_Data.av.theta_elec);
         output = uz_FOC_generate_DutyCycles(Global_Data.rasv.uvw_ref, Global_Data.rasv.V_dc_volts);

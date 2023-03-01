@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
- file_name = 'Log_2022-09-23_10-04-40_400Hz.csv';
+ file_name = 'Log_2022-05-19_7A_umgelötet.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

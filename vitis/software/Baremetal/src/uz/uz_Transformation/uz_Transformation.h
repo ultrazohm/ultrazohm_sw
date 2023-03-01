@@ -56,6 +56,18 @@ typedef struct uz_6ph_abc_t{
     float c2;   /**< Amplitude of the c2 phase */
 }uz_6ph_abc_t;
 
+/**
+ * @brief struct for variables of an alpha-beta-system six-phase-system
+ * 
+ */
+typedef struct uz_6ph_dq_t{
+    float d;        /**< Amplitude of the d component */
+    float q;        /**< Amplitude of the q component */
+    float x;        /**< Amplitude of the x component */
+    float y;        /**< Amplitude of the y component */
+    float z1;       /**< Amplitude of the z1 component */
+    float z2;       /**< Amplitude of the z2 component */
+}uz_6ph_dq_t;
 
 /**
  * @brief Struct for the variables of an alpha-beta nine-phase system
@@ -177,6 +189,42 @@ uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_abc_to_alphabeta(uz_6ph_abc_t
  * @return uz_6ph_abc_t outputs the calculated abc-phases
  */
 uz_6ph_abc_t uz_transformation_asym30deg_6ph_alphabeta_to_abc(uz_6ph_alphabeta_t input);
+
+/**
+ * @brief Calculates the dq components from alpha and beta and leaves the additional systems untouched
+ * 
+ * @param input uz_6ph_alphabeta_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_6ph_dq_t Outputs the calculated stationary and rotating reference frame values
+ */
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_to_dq(uz_6ph_alphabeta_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the alpha and beta components from the dq values and leaves the additional systems untouched
+ * 
+ * @param input uz_6ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_6ph_alphabeta_t Outputs the calculated stationary reference frame values
+ */
+ uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_dq_to_alphabeta(uz_6ph_dq_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the stationary reference frame values from the phase values using the VSD transformation. Afterwards calculates the dq components from alpha and beta only while leaving the additional stationary reference frame components untouched.
+ * 
+ * @param input uz_6ph_abc_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_6ph_dq_t Outputs the calculated stationary and rotating reference frame values
+ */
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq(uz_6ph_abc_t input, float theta_el_rad);
+
+/**
+ * @brief Calculates the alpha beta components from the dq components. Uses the stationary reference frame values to calculate the the abc values with the inverse VSD transformation.
+ * 
+ * @param input uz_6ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_6ph_abc_t Outputs the calculated abc-phases
+ */
+uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_to_abc(uz_6ph_dq_t input, float theta_el_rad);
 
 /**
  * @brief Calculates the stationary reference frame values from abc-phases using the ninephase VSD Transformation

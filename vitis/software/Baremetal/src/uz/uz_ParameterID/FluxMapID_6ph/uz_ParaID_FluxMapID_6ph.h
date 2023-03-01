@@ -20,9 +20,7 @@
 #include "../uz_ParameterID_data.h"
 #include "../../uz_CurrentControl/uz_CurrentControl.h"
 #include "../../uz_ResonantController/uz_resonant_controller.h"
-
-#define PARAMETERID6PH_FLUXMAP_LIMIT_PI 15.0f
-#define PARAMETERID6PH_FLUXMAP_BANDWITH_CC 1000.0f
+#include "../../uz_math_constants.h"
 
 typedef struct uz_ParaID_FluxMapID_6ph_t uz_ParaID_FluxMapID_6ph_t;
 
@@ -34,7 +32,7 @@ bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 
-void uz_FluxMapID_6ph_init_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
-void uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
+void uz_FluxMapID_6ph_init_controllers(uz_ParaID_GlobalConfig_t GlobalConfig, uz_CurrentControl_t** CC_instance_1, uz_CurrentControl_t** CC_instance_2, uz_resonantController_t** res_instance_1, uz_resonantController_t** res_instance_2);
+uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
 
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

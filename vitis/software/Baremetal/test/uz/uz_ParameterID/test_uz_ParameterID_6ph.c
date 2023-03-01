@@ -1,5 +1,6 @@
 #ifdef TEST
 
+
 #include "unity.h"
 #include "test_assert_with_exception.h"
 
@@ -48,6 +49,9 @@
 #include "mock_uz_PWM_SS_2L_hw.h"
 #include "uz_PWM_SS_2L.h" 
 #include "mock_uz_AXI.h" 
+
+#include "uz_resonant_controller.h"
+#include "../../../src/uz/uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
 
 #include "uz_signals.h"
 

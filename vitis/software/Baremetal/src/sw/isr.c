@@ -45,6 +45,7 @@ extern DS_Data Global_Data;
 
 struct uz_DutyCycle_t output = {0};
 float theta_offset = -0.50f;
+float theta_off_angle_pendulum = 0.5323f;
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 float Kp_id = 5.65f;
@@ -75,10 +76,6 @@ float angle_derv=0.0f;
 float position_derv=0.0f;
 uint32_t action=0;
 
-
-
-// ip core reset
-extern float offset_theta_pendulum;
 //=============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -107,7 +104,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
-//    Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum-offset_theta_pendulum;
+    Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum+theta_off_angle_pendulum;
     // calculate position
     globalposition = (int)Global_Data.av.position_pendulum;
 	// count reference signals
@@ -146,7 +143,7 @@ void ISR_Control(void *data)
     	Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
     old_position=Global_Data.obs.dqn_chart_position;
-    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI+0.5323f;// wegen funktionierender Refrenzspur muss jetzt offset hinzugerechnet werden
+    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;// wegen funktionierender Refrenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle=sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle=cos(Global_Data.obs.dqn_angle);
     // calculate data pmsm for foc

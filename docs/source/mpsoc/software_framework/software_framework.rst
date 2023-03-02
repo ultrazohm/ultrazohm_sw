@@ -11,6 +11,7 @@ Software Framework
     software_development_guidlines/software_development_guidlines
     hardwareAbstractionLayer/hardwareAbstractionLayer
     array/array
+    complex/uz_complex
     uz_Transformation/uz_Transformation
     CurrentControl/CurrentControl
     newton_raphson/newton_raphson

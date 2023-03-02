@@ -33,6 +33,7 @@
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
 #include "uz_space_vector_modulation.h"
+#include "rt_hypotf.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};

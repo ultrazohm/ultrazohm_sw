@@ -181,7 +181,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
 	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
-		uz_3ph_abc_t V_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
+		
 		//Generate DutyCylce
 	} else {
 		output_DutyCycle.DutyCycle_U = 0.0f;

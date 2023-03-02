@@ -228,7 +228,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 	if (Data->Controller_Parameters.resetIntegrator == true) {
 			uz_CurrentControl_reset(CC_instance);
 			uz_SpeedControl_reset(Speed_instance);
-		}
+	}
 	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_CurrentControl_set_decoupling_method(CC_instance, no_decoupling);
@@ -241,7 +241,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 		uz_CurrentControl_set_Ki_iq(CC_instance, Data->Controller_Parameters.Ki_iq_out);
 		uz_SpeedControl_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
 		uz_SpeedControl_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
-		}
+	}
 	
 	//This is the setup for the Controller for Online-ID-states
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
@@ -278,7 +278,6 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 			v_dq_Volts.q = 0.0f;
 			v_dq_Volts.zero = 0.0f;
 		}
-	}
 	return (v_dq_Volts);
 }
 

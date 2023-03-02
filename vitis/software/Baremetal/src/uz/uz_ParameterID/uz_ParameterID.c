@@ -176,22 +176,22 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 	struct uz_DutyCycle_t output_DutyCycle = { 0 };
 	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 143) {
 		uz_PWM_SS_2L_set_tristate(PWM_Module, Data->ElectricalID_Output->enable_TriState[0], Data->ElectricalID_Output->enable_TriState[1], Data->ElectricalID_Output->enable_TriState[2]);
-		output_DutyCycle.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
-		output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
-		output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
-	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
-		uz_3ph_abc_t V_abc_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
-		//Generate DutyCylce
+		output_DutyCycle.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
+		output_DutyCycle.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_2;
+		output_DutyCycle.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_4;
+	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true)
+	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control))) {		
+		//Generate DutyCylce if the Controller is used
+		output_DutyCycle = uz_Space_Vector_Modulation(v_dq_Volts, Data->ActualValues.V_DC, Data->ActualValues.theta_el);
 	} else {
-		output_DutyCycle.DutyCycle_U = 0.0f;
-		output_DutyCycle.DutyCycle_V = 0.0f;
-		output_DutyCycle.DutyCycle_W = 0.0f;
+		output_DutyCycle.DutyCycle_A = 0.0f;
+		output_DutyCycle.DutyCycle_B = 0.0f;
+		output_DutyCycle.DutyCycle_C = 0.0f;
 	}
 	if (Data->Controller_Parameters.resetIntegrator == true) {
-		output_DutyCycle.DutyCycle_U = 0.0f;
-		output_DutyCycle.DutyCycle_V = 0.0f;
-		output_DutyCycle.DutyCycle_W = 0.0f;
+		output_DutyCycle.DutyCycle_A = 0.0f;
+		output_DutyCycle.DutyCycle_B = 0.0f;
+		output_DutyCycle.DutyCycle_C = 0.0f;
 	}
 	return (output_DutyCycle);
 }
@@ -228,7 +228,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 	if (Data->Controller_Parameters.resetIntegrator == true) {
 			uz_CurrentControl_reset(CC_instance);
 			uz_SpeedControl_reset(Speed_instance);
-		}
+	}
 	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
 			uz_CurrentControl_set_decoupling_method(CC_instance, no_decoupling);
@@ -241,44 +241,43 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 		uz_CurrentControl_set_Ki_iq(CC_instance, Data->Controller_Parameters.Ki_iq_out);
 		uz_SpeedControl_set_Ki(Speed_instance, Data->Controller_Parameters.Ki_n_out);
 		uz_SpeedControl_set_Kp(Speed_instance, Data->Controller_Parameters.Kp_n_out);
-		}
+	}
 	
 	//This is the setup for the Controller for Online-ID-states
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
-		uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
+		uz_3ph_dq_t Online_current_ref = {0};
+		
+		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control) {
+			if (Data->ParaID_Control_Selection == Speed_Control) {
+				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_CurrentControl_get_ext_clamping(CC_instance));
+				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref);
+				Online_current_ref = uz_SetPoint_sample(SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);			
+			}
+			else if (Data->ParaID_Control_Selection == Torque_Control) {
+				Online_current_ref = uz_SetPoint_sample(SP_instance, Data->ActualValues.omega_m, Data->GlobalConfig.M_ref, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+			} else {
+				Online_current_ref = Data->GlobalConfig.i_dq_ref;
+			}
+		}
 		if (Data->OnlineID_Output->IdControlFlag == true) {
-
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true && Data->ParaID_Control_Selection == Current_Control) {//Overwrite dq-ref-currents when AutoRefCurrents is active
+				Online_current_ref.d = Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->AutoRefCurrents_Output.i_dq_ref.q;
 			} else {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 			}
 		} else {
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true && Data->ParaID_Control_Selection == Current_Control) {
+				Online_current_ref.d = Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->AutoRefCurrents_Output.i_dq_ref.q;
 			}
 		}
-		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
-			if (Data->ParaID_Control_Selection == Speed_Control) {
-				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_CurrentControl_get_ext_clamping(CC_instance));
-				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref);
-
-			}
-			if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
-				if (Data->ParaID_Control_Selection == Current_Control) {
-					v_dq_Volts = uz_CurrentControl_sample(CC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-				} else {
-					v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-				}
-			}
+		v_dq_Volts = uz_CurrentControl_sample(CC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);		
 		} else {
 			v_dq_Volts.d = 0.0f;
 			v_dq_Volts.q = 0.0f;
 			v_dq_Volts.zero = 0.0f;
 		}
-	}
 	return (v_dq_Volts);
 }
 

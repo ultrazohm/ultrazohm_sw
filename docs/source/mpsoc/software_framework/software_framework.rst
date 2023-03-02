@@ -11,6 +11,7 @@ Software Framework
     software_development_guidlines/software_development_guidlines
     hardwareAbstractionLayer/hardwareAbstractionLayer
     array/array
+    complex/uz_complex
     uz_Transformation/uz_Transformation
     CurrentControl/CurrentControl
     ParameterID/ParameterID
@@ -25,6 +26,7 @@ Software Framework
     space_vector_limitation/space_vector_limitation
     SpeedControl/SpeedControl
     SetPoint/SetPoint
+    space_vector_modulation/space_vector_modulation
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests

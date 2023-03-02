@@ -178,17 +178,4 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
 	return (decouple_voltage);
 }
 
-struct uz_DutyCycle_t uz_CurrentControl_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts) {
-	//Uses continuous sinusoidal PWM (SPWM) 
-	struct uz_DutyCycle_t output = {0};
-	output.DutyCycle_U = ( (input.a / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
-	output.DutyCycle_V = ( (input.b / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
-	output.DutyCycle_W = ( (input.c / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
-	output.DutyCycle_U = uz_signals_saturation(output.DutyCycle_U, 1.0f, 0.0f);
-	output.DutyCycle_V = uz_signals_saturation(output.DutyCycle_V, 1.0f, 0.0f);
-	output.DutyCycle_W = uz_signals_saturation(output.DutyCycle_W, 1.0f, 0.0f);
-	return(output);
-}
-
-
 #endif

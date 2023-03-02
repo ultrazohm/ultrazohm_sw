@@ -4,11 +4,15 @@
 Digital Voltage 3U 2v01
 =======================
 
-Designed by Thilo Wendt (TH Nürnberg), 08/2020
 
 .. image:: files_digital_voltage_2v01/pcb_second_complete.png
    :width: 500px
-   
+
+Source
+""""""
+
+- `Digital voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
+
 General description
 """""""""""""""""""
 
@@ -192,3 +196,8 @@ The following figures show the different assembly variants.
 	:alt: Digital Adapter Board: Table on the bottom side of the PCB.
 	
 	Table on the bottom side of the PCB.
+
+Designer
+""""""""
+
+Designed by Thilo Wendt (TH Nürnberg), 08/2020

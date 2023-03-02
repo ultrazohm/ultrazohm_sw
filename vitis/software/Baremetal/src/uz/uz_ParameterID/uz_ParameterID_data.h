@@ -70,6 +70,7 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
+  real32_T M_ref; /**< Not needed for ID-states. Can be used to transmit reference torque to a control algorithm*/
   uint32_T motor_type; /**< 0 = SMPMSM, 1 = IPMSM*/
 } uz_ParaID_GlobalConfig_t;
 
@@ -335,7 +336,7 @@ typedef struct {
 
 /*! enum for selection of control algorithm if all OfflineID states are finished */
 enum uz_ParaID_Control_selection {
-	No_Control = 0, Current_Control, Speed_Control
+	No_Control = 0, Current_Control, Speed_Control, Torque_Control
 };
 
 /**
@@ -371,9 +372,10 @@ typedef struct uz_ParameterID_Data_t {
 	float MeasArrayTorque_pointer; /**< current value of the MeasTorqueArray corresponding to the value of the array_counter*/
 	float FluxMap_MeasuringPoints; /**<amount of unique measuring points for the FluxMaps */
 	enum uz_ParaID_Control_selection ParaID_Control_Selection;/**< ParaID_Control_Selection \n
-													0 = No_Control \n
-													1 = Current_Control \n
-													2 = Speed_Control*/
+                                                            0 = No_Control \n
+                                                            1 = Current_Control \n
+                                                            2 = Speed_Control \n
+                                                            3 = Torque Control*/
 } uz_ParameterID_Data_t;
 
 #endif

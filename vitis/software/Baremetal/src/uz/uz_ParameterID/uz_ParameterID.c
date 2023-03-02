@@ -245,34 +245,34 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 	
 	//This is the setup for the Controller for Online-ID-states
 	if (Data->ControlFlags->finished_all_Offline_states == true) {
-		uz_3ph_dq_t Online_current_ref = Data->GlobalConfig.i_dq_ref;
+		uz_3ph_dq_t Online_current_ref = {0};
+		
+		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control) {
+			if (Data->ParaID_Control_Selection == Speed_Control) {
+				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_CurrentControl_get_ext_clamping(CC_instance));
+				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref);
+				Online_current_ref = uz_SetPoint_sample(SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);			
+			}
+			else if (Data->ParaID_Control_Selection == Torque_Control) {
+				Online_current_ref = uz_SetPoint_sample(SP_instance, Data->ActualValues.omega_m, Data->GlobalConfig.M_ref, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+			} else {
+				Online_current_ref = Data->GlobalConfig.i_dq_ref;
+			}
+		}
 		if (Data->OnlineID_Output->IdControlFlag == true) {
-
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true && Data->ParaID_Control_Selection == Current_Control) {//Overwrite dq-ref-currents when AutoRefCurrents is active
+				Online_current_ref.d = Data->OnlineID_Output->id_out + Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->AutoRefCurrents_Output.i_dq_ref.q;
 			} else {
 				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->OnlineID_Output->id_out;
 			}
 		} else {
-			if (Data->AutoRefCurrents_Config.enableCRS == true) {
-				Online_current_ref.d = Data->GlobalConfig.i_dq_ref.d + Data->AutoRefCurrents_Output.i_dq_ref.d;
-				Online_current_ref.q = Data->GlobalConfig.i_dq_ref.q + Data->AutoRefCurrents_Output.i_dq_ref.q;
+			if (Data->AutoRefCurrents_Config.enableCRS == true && Data->ParaID_Control_Selection == Current_Control) {
+				Online_current_ref.d = Data->AutoRefCurrents_Output.i_dq_ref.d;
+				Online_current_ref.q = Data->AutoRefCurrents_Output.i_dq_ref.q;
 			}
 		}
-		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
-			if (Data->ParaID_Control_Selection == Speed_Control) {
-				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_CurrentControl_get_ext_clamping(CC_instance));
-				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref);
-
-			}
-			if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control) {
-				if (Data->ParaID_Control_Selection == Current_Control) {
-					v_dq_Volts = uz_CurrentControl_sample(CC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-				} else {
-					v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-				}
-			}
+		v_dq_Volts = uz_CurrentControl_sample(CC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);		
 		} else {
 			v_dq_Volts.d = 0.0f;
 			v_dq_Volts.q = 0.0f;

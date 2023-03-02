@@ -32,6 +32,7 @@
 #include "uz_linear_decoupling.h"
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
+#include "uz_space_vector_modulation.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};

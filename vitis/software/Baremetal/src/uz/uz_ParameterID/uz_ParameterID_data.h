@@ -58,6 +58,7 @@ typedef struct {
  */
 typedef struct {
   uz_PMSM_t PMSM_config; /**< motor related parameters. Is needed, if ElectricalID should not be executed */
+  uz_6ph_dq_t PMSM_6ph_inductances;
   boolean_T enableParameterID; /**< flag to enable the entire ParameterID */
   boolean_T Reset; /**< flag to Reset the entire ParameterID*/
   real32_T Kp_id; /**< value for Kp_id, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */

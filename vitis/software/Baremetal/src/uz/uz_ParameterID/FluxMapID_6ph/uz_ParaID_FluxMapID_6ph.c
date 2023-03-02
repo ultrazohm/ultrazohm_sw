@@ -119,35 +119,37 @@ void uz_FluxMapID_6ph_init_controllers(uz_ParaID_GlobalConfig_t GlobalConfig, uz
         .config_id.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.Ld_Henry,
         .config_id.Kp = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.R_ph_Ohm,
         .config_id.samplingTime_sec = GlobalConfig.sampleTimeISR,
-        .config_id.type = parallel,
         .config_iq.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.Lq_Henry,
         .config_iq.Kp = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.R_ph_Ohm,
         .config_iq.samplingTime_sec = GlobalConfig.sampleTimeISR,
-        .config_iq.type = parallel};
+        .config_PMSM = GlobalConfig.PMSM_config};
 
     // copy and adapt config of xy system PI controller
     struct uz_CurrentControl_config cc_config_2 = cc_config_1;
 
-// USE CORRECT INDUCTANCE
+    // set sampletime to resontant controller config
+    resonant_config_1.sampling_time = GlobalConfig.sampleTimeISR;
+    resonant_config_2.sampling_time = GlobalConfig.sampleTimeISR;
 
-cc_config_2.config_id.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.Lq_Henry;
-cc_config_2.config_iq.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_config.Lq_Henry;
-
-// USE CORRECT INDUCTANCE
+    // set correct Ki for XY system
+    cc_config_2.config_id.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_6ph_inductances.x;
+    cc_config_2.config_iq.Ki = PARAMETERID6PH_FLUXMAP_BANDWITH_CC*GlobalConfig.PMSM_6ph_inductances.y;
 
     // calculate resonant controller gains
     kr_d = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*GlobalConfig.PMSM_config.Ld_Henry;
     kr_q = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*GlobalConfig.PMSM_config.Lq_Henry;
-// kr_x = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*Data->ElectricalID_Output->inductances_6ph.x;
-// kr_y = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*Data->ElectricalID_Output->inductances_6ph.y;
-    
+    kr_x = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*GlobalConfig.PMSM_6ph_inductances.x;
+    kr_y = 0.1f*PARAMETERID6PH_FLUXMAP_AC_SQUARED*GlobalConfig.PMSM_6ph_inductances.y;
+
     // initialize controllers
     *CC_instance_1 = uz_CurrentControl_init(cc_config_1);
     *CC_instance_2 = uz_CurrentControl_init(cc_config_2);
     *res_instance_1 = uz_resonantController_init(resonant_config_1);
     *res_instance_2 = uz_resonantController_init(resonant_config_2);
-    printf("\nadress true: %d", *CC_instance_1!=0);
     uz_assert_not_NULL(*CC_instance_1);
+    uz_assert_not_NULL(*CC_instance_2);
+    uz_assert_not_NULL(*res_instance_1);
+    uz_assert_not_NULL(*res_instance_2);
 }
 
 uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2)

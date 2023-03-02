@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: ControlState.h
+ * File: ControlState0.h
  *
- * Code generated for Simulink model 'ControlState'.
+ * Code generated for Simulink model 'ControlState0'.
  *
- * Model version                  : 2.60
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Nov 25 15:36:53 2021
+ * Model version                  : 3.57
+ * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
+ * C/C++ source code generated on : Thu Mar  2 14:32:51 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -57,10 +57,10 @@
 #define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
 #endif
 
-#define ControlState_M                 (rtControlState_M)
+#define ControlState0_M                (rtControlState0_M)
 
 /* Forward declaration for rtModel */
-typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
+typedef struct tag_RTM_ControlState0_t RT_MODEL_ControlState0_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
@@ -68,10 +68,10 @@ typedef struct {
   uint16_T finishedFrictionID_loc;     /* '<Root>/ControlState' */
   uint16_T finishedTwoMassID_loc;      /* '<Root>/ControlState' */
   uint16_T finishedFluxMapID_loc;      /* '<Root>/ControlState' */
-  uint8_T is_active_c8_ControlState;   /* '<Root>/ControlState' */
-  uint8_T is_c8_ControlState;          /* '<Root>/ControlState' */
+  uint8_T is_active_c8_ControlState0;  /* '<Root>/ControlState' */
+  uint8_T is_c8_ControlState0;         /* '<Root>/ControlState' */
   uint8_T is_ControlState;             /* '<Root>/ControlState' */
-} DW_ControlState_t;
+} DW_ControlState0_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
@@ -87,25 +87,25 @@ typedef struct {
   uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
   uz_ParaID_GlobalConfig_t GlobalConfig_in;/* '<Root>/GlobalConfig_in' */
   boolean_T enteredOnlineID;           /* '<Root>/enteredOnlineID' */
-} ExtU_ControlState_t;
+} ExtU_ControlState0_t;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig_out' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
-} ExtY_ControlState_t;
+} ExtY_ControlState0_t;
 
 /* Real-time Model Data Structure */
-struct tag_RTM_ControlState_t {
-  ExtU_ControlState_t *inputs;
-  ExtY_ControlState_t *outputs;
-  DW_ControlState_t *dwork;
+struct tag_RTM_ControlState0_t {
+  ExtU_ControlState0_t *inputs;
+  ExtY_ControlState0_t *outputs;
+  DW_ControlState0_t *dwork;
 };
 
 /* Model entry point functions */
-extern void ControlState_initialize(RT_MODEL_ControlState_t *const
-  rtControlState_M);
-extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
+extern void ControlState0_initialize(RT_MODEL_ControlState0_t *const
+  rtControlState0_M);
+extern void ControlState0_step(RT_MODEL_ControlState0_t *const rtControlState0_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -119,19 +119,19 @@ extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/ControlState')    - opens subsystem uz_ParameterID/ControlState
- * hilite_system('uz_ParameterID/ControlState/Kp') - opens and selects block Kp
+ * hilite_system('uz_ParameterID_6ph/Subsystem Reference2/ControlState')    - opens subsystem uz_ParameterID_6ph/Subsystem Reference2/ControlState
+ * hilite_system('uz_ParameterID_6ph/Subsystem Reference2/ControlState/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/ControlState'
+ * '<Root>' : 'uz_ParameterID_6ph/Subsystem Reference2'
+ * '<S1>'   : 'uz_ParameterID_6ph/Subsystem Reference2/ControlState'
  */
 
 /*-
- * Requirements for '<Root>': ControlState
+ * Requirements for '<Root>': ControlState0
  */
-#endif                                 /* RTW_HEADER_ControlState_h_ */
+#endif                                 /* RTW_HEADER_ControlState0_h_ */
 
 /*
  * File trailer for generated code.

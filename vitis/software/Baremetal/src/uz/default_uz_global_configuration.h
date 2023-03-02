@@ -47,7 +47,7 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
-#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
+#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES           10U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #endif

@@ -71,7 +71,7 @@ void uz_find_fft_peak_indices(uint16_t order[], const uint16_t n_order, float ff
 
 float uz_wrap_to_2pi(float angle)
 {
-    if(angle < 2.0f*UZ_PIf && angle >= 0.0f)
+    if((angle < 2.0f*UZ_PIf) && (angle >= 0.0f))
         return angle;
     else if(angle >= 2.0f*UZ_PIf)
         return uz_wrap_to_2pi(angle-2.0f*UZ_PIf);
@@ -137,26 +137,26 @@ uz_ParaID_ElectricalID_fft_in_t uz_correct_psi_pms_ElectricalID(uz_ParaID_Electr
     uz_complex_cartesian_t R_parallel;
     uz_complex_cartesian_t R_series;
     uz_complex_cartesian_t Z_parallel[n_order];
-    uz_complex_exponential_t factor[n_order];
+    uz_complex_polar_t factor[n_order];
     R_parallel.real = global_config.voltage_measurement_Rp;
-    R_parallel.imaginary = 0.0f;
+    R_parallel.imag = 0.0f;
     R_series.real = global_config.voltage_measurement_Rs;
-    R_series.imaginary = 0.0f;
+    R_series.imag = 0.0f;
 
     for(uint16_t i=0U;i<n_order;i++)
     {   
         Xc[i].real = 0.0f;
-        Xc[i].imaginary = -1.0f/(global_config.voltage_measurement_C*psi_pm_uncorrected.psi_pm_frequency[i]*2.0f*UZ_PIf);                
+        Xc[i].imag = -1.0f/(global_config.voltage_measurement_C*psi_pm_uncorrected.psi_pm_frequency[i]*2.0f*UZ_PIf);                
     }
     for(uint16_t i=0U;i<n_order;i++)
         Z_parallel[i] = uz_complex_division(uz_complex_multiplication(R_parallel,Xc[i]),uz_complex_addition(R_parallel,Xc[i]));
     for(uint16_t i=0U;i<n_order;i++)
-        factor[i] = uz_complex_cartesian_to_exponential(uz_complex_division(uz_complex_addition(Z_parallel[i],R_series),Z_parallel[i]));
+        factor[i] = uz_complex_cartesian_to_polar(uz_complex_division(uz_complex_addition(Z_parallel[i],R_series),Z_parallel[i]));
     for(uint16_t i=0U;i<n_order;i++)
     {
-        //printf("%f, %f\n", factor[i].absolute, factor[i].phase);
-        psi_pm_corrected.psi_pm_amplitude[i] = psi_pm_uncorrected.psi_pm_amplitude[i]*factor[i].absolute/factor[0].absolute;
-        psi_pm_corrected.psi_pm_angle[i] = psi_pm_uncorrected.psi_pm_angle[i] + factor[i].phase;
+        //printf("%f, %f\n", factor[i].abs, factor[i].angle);
+        psi_pm_corrected.psi_pm_amplitude[i] = psi_pm_uncorrected.psi_pm_amplitude[i]*factor[i].abs/factor[0].abs;
+        psi_pm_corrected.psi_pm_angle[i] = psi_pm_uncorrected.psi_pm_angle[i] + factor[i].angle;
         psi_pm_corrected.psi_pm_angle[i] = uz_wrap_to_2pi(psi_pm_corrected.psi_pm_angle[i] - psi_pm_corrected.psi_pm_angle[0]);
     }
     return psi_pm_corrected;

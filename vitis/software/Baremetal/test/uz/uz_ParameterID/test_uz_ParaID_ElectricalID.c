@@ -5,6 +5,7 @@
 #include "uz_ParaID_ElectricalID.h"
 #include "ElectricalID_codegen.h"
 #include "uz_Transformation.h"
+#include "rt_hypotf.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 

@@ -21,6 +21,7 @@
 
 #include "ElectricalID_codegen.h"
 #include "../../uz_global_configuration.h"
+#include "../rt_hypotf.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 
 /* Named constants for Chart: '<Root>/ElectricalID' */
@@ -43,7 +44,6 @@
 #define IN_stop                        ((uint8_T)14U)
 #define IN_waitState                   ((uint8_T)15U)
 
-extern real32_T rt_hypotf(real32_T u0, real32_T u1);
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_ElectricalID_t *rtElectricalID_U,
@@ -880,25 +880,6 @@ static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   return Amp * sinf(x);
 }
 
-real32_T rt_hypotf(real32_T u0, real32_T u1)
-{
-  real32_T a;
-  real32_T b;
-  real32_T y;
-  a = fabsf(u0);
-  b = fabsf(u1);
-  if (a < b) {
-    a /= b;
-    y = sqrtf(a * a + 1.0F) * b;
-  } else if (a > b) {
-    b /= a;
-    y = sqrtf(b * b + 1.0F) * a;
-  } else {
-    y = a * 1.41421354F;
-  }
-
-  return y;
-}
 
 /*
  * Function for Chart: '<Root>/ElectricalID'

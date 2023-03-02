@@ -1,4 +1,4 @@
-#include "../uz_global_configuration.h"
+#include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
 
 #include <stdbool.h>

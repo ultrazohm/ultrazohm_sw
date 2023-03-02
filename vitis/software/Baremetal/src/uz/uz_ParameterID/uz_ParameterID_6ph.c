@@ -188,12 +188,12 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	uz_3ph_abc_t system1 = {0};
 	uz_3ph_abc_t system2 = {0};
 	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
-		output_DutyCycle.system1.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_0;
-		output_DutyCycle.system1.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
-		output_DutyCycle.system1.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
-		output_DutyCycle.system2.DutyCycle_U = Data->ElectricalID_Output->PWM_Switch_a2;
-		output_DutyCycle.system2.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_b2;
-		output_DutyCycle.system2.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_c2;
+		output_DutyCycle.system1.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
+		output_DutyCycle.system1.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_2;
+		output_DutyCycle.system1.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_4;
+		output_DutyCycle.system2.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_a2;
+		output_DutyCycle.system2.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_b2;
+		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
 	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
 		uz_6ph_abc_t V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
@@ -203,23 +203,23 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		system2.a = V_abc_Volts.a2;
 		system2.b = V_abc_Volts.b2;
 		system2.c = V_abc_Volts.c2;
-		output_DutyCycle.system1 = uz_CurrentControl_generate_DutyCycles(system1, Data->ActualValues.V_DC);
-		output_DutyCycle.system2 = uz_CurrentControl_generate_DutyCycles(system2, Data->ActualValues.V_DC);
+		output_DutyCycle.system1 = uz_Space_Vector_Modulation(uz_transformation_3ph_abc_to_dq(system1, Data->ActualValues.theta_el), Data->ActualValues.V_DC, Data->ActualValues.theta_el); 
+		output_DutyCycle.system2 = uz_Space_Vector_Modulation(uz_transformation_3ph_abc_to_dq(system2, Data->ActualValues.theta_el), Data->ActualValues.V_DC, Data->ActualValues.theta_el); 
 	} else {
-		output_DutyCycle.system1.DutyCycle_U = 0.0f;
-		output_DutyCycle.system1.DutyCycle_V = 0.0f;
-		output_DutyCycle.system1.DutyCycle_W = 0.0f;
-		output_DutyCycle.system2.DutyCycle_U = 0.0f;
-		output_DutyCycle.system2.DutyCycle_V = 0.0f;
-		output_DutyCycle.system2.DutyCycle_W = 0.0f;
+		output_DutyCycle.system1.DutyCycle_A = 0.0f;
+		output_DutyCycle.system1.DutyCycle_B = 0.0f;
+		output_DutyCycle.system1.DutyCycle_C = 0.0f;
+		output_DutyCycle.system2.DutyCycle_A = 0.0f;
+		output_DutyCycle.system2.DutyCycle_B = 0.0f;
+		output_DutyCycle.system2.DutyCycle_C = 0.0f;
 	}
 	if (Data->Controller_Parameters.resetIntegrator == true) {
-		output_DutyCycle.system1.DutyCycle_U = 0.0f;
-		output_DutyCycle.system1.DutyCycle_V = 0.0f;
-		output_DutyCycle.system1.DutyCycle_W = 0.0f;
-		output_DutyCycle.system2.DutyCycle_U = 0.0f;
-		output_DutyCycle.system2.DutyCycle_V = 0.0f;
-		output_DutyCycle.system2.DutyCycle_W = 0.0f;
+		output_DutyCycle.system1.DutyCycle_A = 0.0f;
+		output_DutyCycle.system1.DutyCycle_B = 0.0f;
+		output_DutyCycle.system1.DutyCycle_C = 0.0f;
+		output_DutyCycle.system2.DutyCycle_A = 0.0f;
+		output_DutyCycle.system2.DutyCycle_B = 0.0f;
+		output_DutyCycle.system2.DutyCycle_C = 0.0f;
 	}
 	return (output_DutyCycle);
 }

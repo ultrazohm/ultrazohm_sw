@@ -21,6 +21,7 @@
 #include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz_setpoint/uz_setpoint.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "ControlState/uz_ParaID_ControlState.h"
 #include "ElectricalID_6ph/uz_ParaID_ElectricalID_6ph.h"
 #include "FluxMapID_6ph/uz_ParaID_FluxMapID_6ph.h"

@@ -262,12 +262,32 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller_FluxMapID(uz_ParameterID_Data_t* Data,
 }
 */
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t** CC_instance_1, uz_CurrentControl_t** CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t** res_instance_1, uz_resonantController_t** res_instance_2) {
 	uz_6ph_dq_t out = {0};
-	//if(Data->)
-	uz_3ph_dq_t v_dq_Volts =  uz_ParameterID_Controller(Data, CC_instance, Speed_instance, SP_instance);
-	out.d = v_dq_Volts.d;
-	out.q = v_dq_Volts.q;
+	static bool controllers_initialized = false;
+	if(Data->FluxmapID_extended_controller_Output->control_active == true)
+	{
+		if((Data->FluxmapID_extended_controller_Output->selected_subsystem == 0) && !controllers_initialized)
+		{
+			uz_FluxMapID_6ph_init_controllers(Data->GlobalConfig, &CC_instance_1, &CC_instance_2, &res_instance_1, &res_instance_2);
+			controllers_initialized = true;	
+		}
+		else
+		{
+			out = uz_FluxMapID_6ph_step_controllers(Data, *CC_instance_1, *CC_instance_2, *res_instance_1, *res_instance_2);
+		}
+	}
+	else
+	{
+		uz_3ph_dq_t v_dq_Volts =  uz_ParameterID_Controller(Data, CC_instance_1, Speed_instance, SP_instance);
+		out.d = v_dq_Volts.d;
+		out.q = v_dq_Volts.q;
+		out.x = 0.0f;
+		out.y = 0.0f;
+		out.z1 = 0.0f;
+		out.z2 = 0.0f;
+		controllers_initialized = false;
+	}
 	return (out);
 }
 

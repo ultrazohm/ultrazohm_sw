@@ -73,6 +73,14 @@ FrictionID functions
 
 .. doxygenfunction:: uz_FrictionID_init
 .. doxygenfunction:: uz_FrictionID_step
+.. doxygenfunction:: uz_FrictionID_set_Config
+.. doxygenfunction:: uz_FrictionID_set_ActualValues
+.. doxygenfunction:: uz_FrictionID_set_GlobalConfig
+.. doxygenfunction:: uz_FrictionID_set_ControlFlags
+.. doxygenfunction:: uz_FrictionID_get_enteredFrictionID
+.. doxygenfunction:: uz_FrictionID_get_finishedFrictionID
+.. doxygenfunction:: uz_FrictionID_get_FOC_output
+.. doxygenfunction:: uz_FrictionID_get_output
 
 Sources
 -------

@@ -48,4 +48,10 @@ AutoRefCurrents functions
 
 .. doxygenfunction:: uz_AutoRefCurrents_init
 .. doxygenfunction:: uz_AutoRefCurrents_step
+.. doxygenfunction:: uz_AutoRefCurrents_set_Config
+.. doxygenfunction:: uz_AutoRefCurrents_set_ActualValues
+.. doxygenfunction:: uz_AutoRefCurrents_set_GlobalConfig
+.. doxygenfunction:: uz_AutoRefCurrents_set_ControlFlags
+.. doxygenfunction:: uz_AutoRefCurrents_get_output
+
 

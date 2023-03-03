@@ -68,6 +68,14 @@ TwoMassID functions
 
 .. doxygenfunction:: uz_TwoMassID_init
 .. doxygenfunction:: uz_TwoMassID_step
+.. doxygenfunction:: uz_TwoMassID_set_Config
+.. doxygenfunction:: uz_TwoMassID_set_ActualValues
+.. doxygenfunction:: uz_TwoMassID_set_GlobalConfig
+.. doxygenfunction:: uz_TwoMassID_set_ControlFlags
+.. doxygenfunction:: uz_TwoMassID_get_enteredTwoMassID
+.. doxygenfunction:: uz_TwoMassID_get_finishedTwoMassID
+.. doxygenfunction:: uz_TwoMassID_get_FOC_output
+.. doxygenfunction:: uz_TwoMassID_get_output
 
 Sources
 -------

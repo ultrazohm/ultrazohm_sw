@@ -224,12 +224,12 @@ void test_uz_resolverIP_fail_assert_if_readMechanicalVelocity_is_called_with_NUL
 
 void test_uz_resolverIP_fail_assert_if_readElectricalPositionAndVelocity_is_called_with_NULL_pointer(void)
 {
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_readElectricalPositionAndVelocity(NULL,NULL,NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_readElectricalPositionAndVelocity(NULL));
 }
 
 void test_uz_resolverIP_fail_assert_if_readMechanicalPositionAndVelocity_is_called_with_NULL_pointer(void)
 {
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_readMechanicalPositionAndVelocity(NULL,NULL,NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_readMechanicalPositionAndVelocity(NULL));
 }
 
 void test_uz_resolverIP_fail_assert_if_readRegister_is_called_with_NULL_pointer(void)
@@ -447,23 +447,13 @@ void test_uz_resolverIP_pass_assert_if_setLOSThresh_is_called_with_valid_value(v
     uz_resolverIP_t* myIP = successful_init();
     float value = 4.f;
     int32_t val = (int) (value/0.038f) ;
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    
     //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,LOS_THRESHOLD_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
-
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,LOS_THRESHOLD_REG_ADR,val);
     
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setLOSThresh(myIP,value));
 }
@@ -472,24 +462,15 @@ void test_uz_resolverIP_pass_assert_if_setDOSOverrangeThresh_is_called_with_vali
 {
     uz_resolverIP_t* myIP = successful_init();
 
-       float value = 4.f;
+    float value = 4.f;
     int32_t val = (int) (value/0.038f) ;
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+   
     //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,DOS_OVERRANGE_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,DOS_OVERRANGE_REG_ADR,val);
 
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setDOSOverrangeThresh(myIP,value));
 }
@@ -500,22 +481,14 @@ void test_uz_resolverIP_pass_assert_if_setDOSMismatchThresh_is_called_with_valid
 
     float value = 4.f;
     int32_t val = (int) (value/0.038f) ;
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+   
     //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,DOS_MISMATCH_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,DOS_MISMATCH_REG_ADR,val);
+
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setDOSMismatchThresh(myIP,value));
 }
 
@@ -524,22 +497,14 @@ void test_uz_resolverIP_pass_assert_if_setDOSResetMin_is_called_with_valid_value
     uz_resolverIP_t* myIP = successful_init();
 
     float value = 4.f;
-    int32_t val = (int) (value/0.038f) ;
-    //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    int32_t val = (int) (value/0.038f) ;  
+
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
    
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,DOS_RESET_MIN_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    //mocking writeRegister
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,DOS_RESET_MIN_REG_ADR,val);
    
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setDOSResetMin(myIP,value));
 }
@@ -550,21 +515,14 @@ void test_uz_resolverIP_pass_assert_if_setDOSResetMax_is_called_with_valid_value
 
     float value = 4.f;
     int32_t val = (int) (value/0.038f) ;
-    //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    
+
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
    
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,DOS_RESET_MAX_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    //mocking writeRegister
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,DOS_RESET_MAX_REG_ADR,val);
    
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setDOSResetMax(myIP,value));
 }
@@ -575,22 +533,14 @@ void test_uz_resolverIP_pass_assert_if_setLOTHighThresh_is_called_with_valid_val
 
     float value = 5.f;
     int32_t val = (int) (value/0.09f) ;
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+   
     //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,LOT_HIGH_THRESH_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-   
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,LOT_HIGH_THRESH_REG_ADR,val);
+
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setLOTHighThresh(myIP,value));
 }
 
@@ -600,21 +550,13 @@ void test_uz_resolverIP_pass_assert_if_setLOTLowThresh_is_called_with_valid_valu
 
     float value = 5.f;
     int32_t val = (int) (value/0.09f) ;
-    //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
    
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,LOT_LOW_THRESH_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    //mocking writeRegister
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,LOT_LOW_THRESH_REG_ADR,val);
   
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setLOTLowThresh(myIP,value));
 }
@@ -625,23 +567,13 @@ void test_uz_resolverIP_pass_assert_if_setExcitationFrequency_is_called_with_val
 
     float value = 10000.f;
     int32_t val = (int32_t) (value*(1<<15)/TEST_IP_CORE_CLKIN);
-	
-    //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
    
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,EXIT_FREQ_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,val);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-  
+    //mocking writeRegister
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,EXIT_FREQ_REG_ADR,val);
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setExcitationFrequency(myIP,value));
 }
 
@@ -650,23 +582,13 @@ void test_uz_resolverIP_pass_assert_if_setCTRLReg_is_called_with_valid_value(voi
     uz_resolverIP_t* myIP = successful_init();
 
     int32_t value = 0xFF;
-
-    //mocking writeRegister
-        //mocking setConfig
-        uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-        uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    
+    //mocking setConfig
+    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
+    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
    
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-  
-    uz_resolverIP_hw_write_RESADR_Expect(TEST_BASE_ADDRESS,CONTROL_REG_ADR);
-    uz_resolverIP_hw_write_RESDAT_Expect(TEST_BASE_ADDRESS,value);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit | RESCON_Data_uz_axi_GO_bit);
-  
-    uz_resolverIP_hw_write_RESCON_Expect(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit | RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_read_RESCON_ExpectAndReturn(TEST_BASE_ADDRESS,RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
-  
+    //mocking writeRegister
+    uz_resolverIP_hw_writeRegister_Expect(TEST_BASE_ADDRESS,CONTROL_REG_ADR,value);
     TEST_ASSERT_PASS_ASSERT(uz_resolverIP_setCTRLReg(myIP,value));
 }
 

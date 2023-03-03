@@ -22,6 +22,55 @@
 #include "../../uz/uz_HAL.h"
 
 
+int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
+    uint8_t MSB = 128;
+    uz_assert(addr < 2*MSB);
+    uz_assert(addr >= 0);
+    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
+    
+    int32_t rescon = uz_resolverIP_hw_read_RESCON(base_address);
+    rescon &= ~(RESCON_Data_uz_axi_RW_bit);
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+
+    uz_resolverIP_hw_write_RESADR(base_address, addr);
+
+    rescon |= RESCON_Data_uz_axi_GO_bit;
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+    rescon &= ~(RESCON_Data_uz_axi_GO_bit);
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+
+    do{
+        rescon = uz_resolverIP_hw_read_RESCON(base_address);
+    } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
+    
+    return uz_resolverIP_hw_read_RESRDA(base_address);
+}
+
+void uz_resolverIP_hw_writeRegister(uint32_t base_address, int32_t addr, int32_t val){
+    uint8_t MSB = 128;
+    uz_assert(addr < 2*MSB);
+    uz_assert(addr >= 0);
+    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
+    uz_assert(val <= 0xFF);
+    uz_assert(val >= 0);
+
+    int32_t rescon = uz_resolverIP_hw_read_RESCON(base_address);
+    rescon |= RESCON_Data_uz_axi_RW_bit;
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+
+    uz_resolverIP_hw_write_RESADR(base_address, addr);
+    uz_resolverIP_hw_write_RESDAT(base_address, val);
+    
+    rescon |= RESCON_Data_uz_axi_GO_bit;
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+    rescon &= ~(RESCON_Data_uz_axi_GO_bit);
+    uz_resolverIP_hw_write_RESCON(base_address, rescon);
+
+    do{
+        rescon = uz_resolverIP_hw_read_RESCON(base_address);
+    } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
+}
+
 
 
 void uz_resolverIP_hw_write_RESCON(uint32_t base_address, int32_t val){

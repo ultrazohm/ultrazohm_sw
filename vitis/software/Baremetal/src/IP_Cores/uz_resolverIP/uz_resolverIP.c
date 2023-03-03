@@ -51,6 +51,10 @@ static uz_resolverIP_t* uz_resolverIP_allocation(void){
     return (self);
 }
 
+static float getRangeMax(uint32_t resolution);
+static float getLSBSize(uint32_t resolution);
+
+
 uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t configNew) {
 	 uz_assert_not_zero_uint32(configNew.base_address);
 	 uz_assert_not_zero_uint32(configNew.ip_clk_frequency_Hz);
@@ -66,6 +70,27 @@ uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t configNew) {
     self->pole_pairs_machine = configNew.pole_pairs_mach;
     self->pole_pairs_resolver = configNew.pole_pairs_res;
 	self->registerValue = 0;
+
+	switch (self->config.resolution){ //Factor is determined by tracking rate defined on p 4 of Datasheet, maps 2-complement value to rps value
+	 	 case 16:
+	 		self->config.bitToRpsFactor = uz_convert_sfixed_to_float(125,0) / uz_convert_sfixed_to_float(0x7FFF,0);
+	 		self->config.bit_offset = 0;
+	 		 break;
+	 	 case 14:
+	 		self->config.bitToRpsFactor = uz_convert_sfixed_to_float(500,0) / uz_convert_sfixed_to_float(0x1FFF,0);
+	 		self->config.bit_offset = 2;
+	 		 break;
+	 	 case 12:
+		 	self->config.bitToRpsFactor = uz_convert_sfixed_to_float(1000,0) / uz_convert_sfixed_to_float(0x7FF,0);
+		 	self->config.bit_offset = 4;
+	 		 break;
+	 	 case 10:
+		 	self->config.bitToRpsFactor = uz_convert_sfixed_to_float(2500,0) / uz_convert_sfixed_to_float(0x1FF,0);
+		 	self->config.bit_offset = 6;
+	 		 break;
+	 	 default:
+	 		 uz_assert(false);
+	 }
 
     uz_resolverIP_hw_write_RESCON(self->config.base_address, RESCON_Data_uz_axi_EN_bit | RESCON_Data_uz_axi_nRESET_bit);
 
@@ -158,8 +183,10 @@ void uz_resolverIP_setDataModePositionVelocity(uz_resolverIP_t* self){
 float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
-	 float position = uz_resolverIP_readMechanicalPosition(self);
-	 return (position * self->pole_pairs_machine) - (float)(2 * UZ_PIf * (float)(floor(position * self->pole_pairs_machine  / (2*UZ_PIf))));
+	 float mech_position = uz_resolverIP_readMechanicalPosition(self);
+	 float elec_position_wo_overflow = mech_position * self->pole_pairs_machine;
+	 float overflow = (2.0f * UZ_PIf * floorf(mech_position * self->pole_pairs_machine  / (2.0f*UZ_PIf)));
+	 return elec_position_wo_overflow - overflow;
 }
 float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
@@ -177,10 +204,10 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 
 	 	float position = uz_convert_sfixed_to_float(self->pos_Vel[0], (int)(self->config.resolution) - 1) * UZ_PIf;
 
-	 	uz_assert(position >= 0.F);
-	 	uz_assert(position <= 2.F *UZ_PIf);
+	 	uz_assert(position >= 0.0f);
+	 	uz_assert(position <= 2.0F *UZ_PIf);
 
-	 	if (position - self->zero_position_mechanical < 0){
+	 	if (position - self->zero_position_mechanical < 0.0f){
 	 		return 2*UZ_PIf + (position - self->zero_position_mechanical);
 	 	}
 	 	else {
@@ -204,54 +231,34 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
 	 if (self->mode != VELOCITY_MODE){
 		 uz_resolverIP_setDataModeVelocity(self);
 	 }
-	 int32_t rescon;
+	 int32_t rescon = 0;
 	 do{
 	      rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
 	  } while ((rescon & RESCON_Data_uz_axi_VALID_bit) == 0);
 
-	 self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
-
-	 float bitToRpsFactor = 0;
-	 int32_t bit_offset = 0;
-
-	 switch (self->config.resolution){ //Factor is determined by tracking rate defined on p 4 of Datasheet, maps 2-complement value to rps value
-	 	 case 16:
-	 		bitToRpsFactor = uz_convert_sfixed_to_float(125,0) / uz_convert_sfixed_to_float(0x7FFF,0);
-	 		bit_offset = 0;
-	 		 break;
-	 	 case 14:
-	 		bitToRpsFactor = uz_convert_sfixed_to_float(500,0) / uz_convert_sfixed_to_float(0x1FFF,0);
-	 		bit_offset = 2;
-	 		 break;
-	 	 case 12:
-		 	bitToRpsFactor = uz_convert_sfixed_to_float(1000,0) / uz_convert_sfixed_to_float(0x7FF,0);
-		 	bit_offset = 4;
-	 		 break;
-	 	 case 10:
-		 	bitToRpsFactor = uz_convert_sfixed_to_float(2500,0) / uz_convert_sfixed_to_float(0x1FF,0);
-		 	bit_offset = 6;
-	 		 break;
-	 	 default:
-	 		 uz_assert(false);
-	 }
-
-	 return uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->pole_pairs_resolver;
+	self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
+	float raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->config.bit_offset)),16+self->config.bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
+	return raw_value *self->config.bitToRpsFactor / self->pole_pairs_resolver;
 
 }
-void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f){
-	 uz_assert_not_NULL(self)
-	 uz_assert(self->is_ready);
-	 float position_mech = 0;
-	 float velocity_mech = 0;
-	 float* p_position_mech = &position_mech;
-	 float* p_velocity_mech = &velocity_mech;
-	 uz_resolverIP_readMechanicalPositionAndVelocity(self,p_position_mech, p_velocity_mech);
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self){
+	uz_assert_not_NULL(self)
+	uz_assert(self->is_ready);
 
-	 *position_f =  ((position_mech) * self->pole_pairs_machine) - (float)(2 * UZ_PIf * (float)(floor((position_mech) * self->pole_pairs_machine  / (2*UZ_PIf))));
-	 *velocity_f = velocity_mech * self->pole_pairs_machine;
+	struct uz_resolverIP_position_velocity_t mechanical = uz_resolverIP_readMechanicalPositionAndVelocity(self);
+
+	struct uz_resolverIP_position_velocity_t electrical;
+
+	float elec_position_wo_overflow = mechanical.position * self->pole_pairs_machine;
+	float overflow = (2.0f * UZ_PIf * floorf(mechanical.position * self->pole_pairs_machine  / (2.0f*UZ_PIf)));
+	electrical.position = elec_position_wo_overflow - overflow;
+
+	electrical.velocity = mechanical.velocity * self->pole_pairs_machine;
+
+	return electrical;
 }
 
-void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f){
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 
@@ -270,78 +277,42 @@ void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, floa
 	 uz_assert(position >= 0.F);
 	 uz_assert(position <= 2.F * UZ_PIf);
 
+	 struct uz_resolverIP_position_velocity_t mechanical;
+
 	 if (position - self->zero_position_mechanical < 0){
-		 *position_f = 2*UZ_PIf + (position - self->zero_position_mechanical);
+		 mechanical.position = 2*UZ_PIf + (position - self->zero_position_mechanical);
 	}
 	 else {
-		 *position_f = position- self->zero_position_mechanical;
+		 mechanical.position = position- self->zero_position_mechanical;
 	 }
 
-	 float bitToRpsFactor = 0;
-	 int32_t bit_offset = 0;
+	float velocity_raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->config.bit_offset)),16+self->config.bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
+	mechanical.velocity = velocity_raw_value *self->config.bitToRpsFactor / self->pole_pairs_resolver;
 
-	 switch (self->config.resolution){
-	 	 case 16:
-	 		bitToRpsFactor = uz_convert_sfixed_to_float(125,0) / uz_convert_sfixed_to_float(0x7FFF,0);
-	 		bit_offset = 0;
-	 		 break;
-	 	 case 14:
-	 		bitToRpsFactor = uz_convert_sfixed_to_float(500,0) / uz_convert_sfixed_to_float(0x1FFF,0);
-	 		bit_offset = 2;
-
-	 		 break;
-	 	 case 12:
-		 	bitToRpsFactor = uz_convert_sfixed_to_float(1000,0) / uz_convert_sfixed_to_float(0x7FF,0);
-		 	bit_offset = 4;
-	 		 break;
-	 	 case 10:
-		 	bitToRpsFactor = uz_convert_sfixed_to_float(2500,0) / uz_convert_sfixed_to_float(0x1FF,0);
-		 	bit_offset = 6;
-	 		 break;
-	 	 default:
-	 		 uz_assert(false);
-	 }
-
-	 *velocity_f = uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+bit_offset)),16+bit_offset)*bitToRpsFactor / self->pole_pairs_resolver;
-
-	}
-
-
-
-
+	return mechanical;
+}
 
 int32_t uz_resolverIP_readRegister(uz_resolverIP_t* self, int32_t addr){
+
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
-    uint8_t MSB = 128;
+	uint8_t MSB = 128;
     uz_assert(addr < 2*MSB);
     uz_assert(addr >= 0);
     uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
 
     uz_resolverIP_setConfigMode(self);
 
-    int32_t rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
-    rescon &= ~(RESCON_Data_uz_axi_RW_bit);
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
+	return uz_resolverIP_hw_readRegister(self->config.base_address, addr);
 
-    uz_resolverIP_hw_write_RESADR(self->config.base_address, addr);
-
-    rescon |= RESCON_Data_uz_axi_GO_bit;
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
-    rescon &= ~(RESCON_Data_uz_axi_GO_bit);
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
-
-    do{
-        rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
-    } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
-    
-    return uz_resolverIP_hw_read_RESRDA(self->config.base_address);
-}
+}	
 
 void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t val){
+
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
-     uint8_t MSB = 128;
+
+	uint8_t MSB = 128;
     uz_assert(addr < 2*MSB);
     uz_assert(addr >= 0);
     uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
@@ -350,21 +321,8 @@ void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t va
 
     uz_resolverIP_setConfigMode(self);
 
-    int32_t rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
-    rescon |= RESCON_Data_uz_axi_RW_bit;
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
+	uz_resolverIP_hw_writeRegister(self->config.base_address, addr, val);
 
-    uz_resolverIP_hw_write_RESADR(self->config.base_address, addr);
-    uz_resolverIP_hw_write_RESDAT(self->config.base_address, val);
-    
-    rescon |= RESCON_Data_uz_axi_GO_bit;
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
-    rescon &= ~(RESCON_Data_uz_axi_GO_bit);
-    uz_resolverIP_hw_write_RESCON(self->config.base_address, rescon);
-
-    do{
-        rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
-    } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
 }
 
 void uz_resolverIP_setLOSThresh(uz_resolverIP_t* self, float thresh){
@@ -516,7 +474,7 @@ void uz_resolverIP_setDOSResetMax(uz_resolverIP_t* self, float max){
 	int32_t addrMax = DOS_RESET_MAX_REG_ADR;
 
 
-	int32_t valMax = (int) (max/0.038f) ;
+	int32_t valMax = (int32_t) (max/0.038f) ;
 	uz_assert(valMax <= 127);
 	uz_assert(valMax >= 0);
 
@@ -547,34 +505,8 @@ void uz_resolverIP_setLOTHighThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);    
     uz_assert(self->is_ready);
     float rangeMin = 0.f;
-	float rangeMax = 0.f;
-	float LSBsize = 0.f;
-	switch(self->config.resolution){
-		case 10U:
-			rangeMax = 45.f;
-			LSBsize = 0.35f;
-			break;
-
-		case 12U:
-			rangeMax = 18.f;
-			LSBsize = 0.14f;
-				break;
-
-		case 14U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-		case 16U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-        
-        default:
-            uz_assert(false);
-	}
-
-
+	float rangeMax = getRangeMax(self->config.resolution);
+	float LSBsize = getLSBSize(self->config.resolution);
 
 	uz_assert(thresh <= rangeMax);
 	uz_assert(thresh >= rangeMin);
@@ -592,32 +524,8 @@ float uz_resolverIP_getLOTHighThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 	float rangeMin = 0.f;
-	float rangeMax = 0.f;
-	float LSBsize = 0.f;
-	switch(self->config.resolution){
-		case 10U:
-			rangeMax = 45.f;
-			LSBsize = 0.35f;
-			break;
-
-		case 12U:
-			rangeMax = 18.f;
-			LSBsize = 0.14f;
-				break;
-
-		case 14U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-		case 16U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-        default:
-            uz_assert(false);
-	}
+	float rangeMax = getRangeMax(self->config.resolution);
+	float LSBsize = getLSBSize(self->config.resolution);
 
 	int32_t addr = LOT_HIGH_THRESH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
@@ -638,33 +546,8 @@ void uz_resolverIP_setLOTLowThresh(uz_resolverIP_t* self, float thresh){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float rangeMin = 0.f;
-	float rangeMax = 0.f;
-	float LSBsize = 0.f;
-	switch(self->config.resolution){
-		case 10U:
-			rangeMax = 45.f;
-			LSBsize = 0.35f;
-			break;
-
-		case 12U:
-			rangeMax = 18.f;
-			LSBsize = 0.14f;
-				break;
-
-		case 14U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-		case 16U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-        default:
-            uz_assert(false);
-	}
-
+	float rangeMax = getRangeMax(self->config.resolution);
+	float LSBsize = getLSBSize(self->config.resolution);
 
 
 	uz_assert(thresh <= rangeMax);
@@ -683,32 +566,8 @@ float uz_resolverIP_getLOTLowThresh(uz_resolverIP_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 	float rangeMin = 0.f;
-	float rangeMax = 0.f;
-	float LSBsize = 0.f;
-	switch(self->config.resolution){
-		case 10U:
-			rangeMax = 45.f;
-			LSBsize = 0.35f;
-			break;
-
-		case 12U:
-			rangeMax = 18.f;
-			LSBsize = 0.14f;
-				break;
-
-		case 14U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-		case 16U:
-			rangeMax = 9.f;
-			LSBsize = 0.09f;
-				break;
-
-        default:
-            uz_assert(false);
-	}
+	float rangeMax = getRangeMax(self->config.resolution);
+	float LSBsize = getLSBSize(self->config.resolution);
 
 	int32_t addr = LOT_LOW_THRESH_REG_ADR;
 	int32_t val = uz_resolverIP_readRegister(self, addr);
@@ -807,6 +666,60 @@ int32_t uz_resolverIP_getFLTRegister(uz_resolverIP_t* self){
 
 	return register_value;
 
+}
+
+static float getRangeMax(uint32_t resolution)
+{
+	float rangeMax = 0.0f;
+
+	switch(resolution){
+		case 10U:
+			rangeMax = 45.f;
+			break;
+
+		case 12U:
+			rangeMax = 18.f;
+				break;
+
+		case 14U:
+			rangeMax = 9.f;
+				break;
+
+		case 16U:
+			rangeMax = 9.f;
+				break;
+        
+        default:
+            uz_assert(false);
+	}
+	return rangeMax;
+}
+
+static float getLSBSize(uint32_t resolution)
+{
+	float LSBSize = 0.0f;
+
+	switch(resolution){
+		case 10U:
+			LSBSize = 0.35f;
+			break;
+
+		case 12U:
+			LSBSize = 0.14f;
+				break;
+
+		case 14U:
+			LSBSize = 0.09f;
+				break;
+
+		case 16U:
+			LSBSize = 0.09f;
+				break;
+        
+        default:
+            uz_assert(false);
+	}
+	return LSBSize;
 }
 
 

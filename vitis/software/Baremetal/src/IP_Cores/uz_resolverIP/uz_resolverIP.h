@@ -32,8 +32,19 @@ struct uz_resolverIP_config_t{
     float zero_position_mech; /**< Mechanical zero position*/
     float pole_pairs_mach; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
     float pole_pairs_res; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
+    float bitToRpsFactor; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
+	  int bit_offset; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
 };
 
+/**
+ * @brief struct for returning both position and velocity (in float)
+ *
+ */
+
+struct uz_resolverIP_position_velocity_t{
+  float position;
+  float velocity;
+};
 
 
 
@@ -176,23 +187,30 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
 
 
 /**
-  * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float mechanical position value in range 0..2*PI
- * @param velocity_f pointer to float mechanical velocity value in revs per second
+ * 
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for mechanical position (0..2*PI) and velocity in revs per second
  */
-void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self);
 
 /**
   * @brief Reads Resolver Electrical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float electrical position value in range 0..2*PI
- * @param velocity_f pointer to float electrical velocity value in revs per second
+ * 
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for electrical position (0..2*PI) and velocity in revs per second
  */
-void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self);
 
+
+
+/*********************
+ *
+ * High Level Register Read/Write Functions
+ *
+ *********************/
 /**
  * @brief Reads Resolver Register
  *
@@ -211,13 +229,6 @@ int32_t uz_resolverIP_readRegister(uz_resolverIP_t* self, int32_t addr);
  * @param val Register write value
  */
 void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t val);
-
-
-/*********************
- *
- * High Level Register Read/Write Functions
- *
- *********************/
 
 /**
  * @brief Sets Loss Of Signal Threshold of AD2S1210.

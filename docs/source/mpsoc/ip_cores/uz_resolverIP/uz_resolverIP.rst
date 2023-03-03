@@ -36,33 +36,23 @@ To use the ResolverIP interface, set up your hardware as described in Encoder Bo
 Vivado Setup
 ************
 
-For successful SPI communication, make sure that the following signals are routed from the Encoder Board to the PL via the CPLD:
+For successful SPI communication, make sure that the following pins of the AD2S1210 are routed from the Encoder Board to the PL via the CPLD:
 
 .. list-table:: Connection Table for SPI Communication 
-   :widths: 25 25
+   :widths: 25
    :header-rows: 1
    :align: center
 
-   * - Signal
-     - Encoder Board Pin
+   * - AD2S1210 Pin
    * - SPI_MOSI
-     - DIG_IO_08
    * - SPI_MISO
-     - DIG_IO_09
    * - SPI_CLK
-     - DIG_IO_07
    * - SPI_SS
-     - DIG_IO_10
    * - N_SAMPLE
-     - DIG_IO_12
    * - N_RESET
-     - DIG_IO_13
    * - F_SYNC
-     - DIG_IO_11
    * - A0
-     - DIG_IO_15
    * - A1
-     - DIG_IO_14
 
 The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the project's block design. The source files can be found in ``ip_cores\uz_resolverIP\src``. 
 
@@ -249,9 +239,13 @@ The ResolverIP interface was designed for time critical applications like motor 
 
 .. doxygenfunction:: uz_resolverIP_readMechanicalVelocity
 
-.. doxygenfunction:: uz_resolverIP_readMechanicalPositionAndVelocity
+Note that the two functions above return the position or velocity value as float.
+The function ``uz_resolverIP_readMechanicalPositionAndVelocity`` returns a struct of type ``uz_resolverIP_position_velocity_t`` where position and velocity are stored in members.
 
-Note that while first two functions return the position or velocity value as float, the last function returns pointers to the float values of position and velocity.
+.. doxygenstruct:: uz_resolverIP_position_velocity_t
+  :members:
+
+.. doxygenfunction:: uz_resolverIP_readMechanicalPositionAndVelocity
 
 Note that similar functions for aquisition of electrical position and/or velocity are available:
 
@@ -261,7 +255,7 @@ Note that similar functions for aquisition of electrical position and/or velocit
 
 .. doxygenfunction:: uz_resolverIP_readElectricalPositionAndVelocity
 
-Exemplary implementations that write to the ``GlobalData`` struct are shown below and can be found in ``vitis\software\Baremetal\src\hw_init\uz_resolverIP_init.c`` : 
+Exemplary implementations for one connected resolver that write to the ``GlobalData`` struct are shown below and could be called in ``isr.c`` : 
 
 .. code-block:: c
 
@@ -275,15 +269,12 @@ Exemplary implementations that write to the ``GlobalData`` struct are shown belo
    }
    
    void update_position_and_speed_of_resolverIP(DS_Data* const data){
-   	float *position = &data->av.theta_mech;
-   	float *velocity = &data->av.mechanicalRotorSpeed;
-   	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
-   	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.F; //rpm
-   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
+   	uz_resolverIP_position_velocity_t  mechanical = uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP);
+   	data->av.theta_mech = mechanical.position;
+   	data->av.mechanicalRotorSpeed = mechanical.velocity * 60.F; //rpm
+   	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2.0f * UZ_PIf * floorf(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2.0f * UZ_PIf));
    }
 
-For the recommended timing setup as seen in figure :numref:`pic_timing3`, put the functions calls of the update functions in the respective ISR function, i.e. ``vitis\software\Baremetal\src\sw\isr.c``.
-	
 
 More functioniality
 ===================

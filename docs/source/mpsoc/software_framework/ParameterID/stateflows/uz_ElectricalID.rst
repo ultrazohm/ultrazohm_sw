@@ -110,6 +110,14 @@ ElectricalID functions
 
 .. doxygenfunction:: uz_ElectricalID_init
 .. doxygenfunction:: uz_ElectricalID_step
+.. doxygenfunction:: uz_ElectricalID_set_Config
+.. doxygenfunction:: uz_ElectricalID_set_ActualValues
+.. doxygenfunction:: uz_ElectricalID_set_GlobalConfig
+.. doxygenfunction:: uz_ElectricalID_set_ControlFlags
+.. doxygenfunction:: uz_ElectricalID_get_enteredElectricalID
+.. doxygenfunction:: uz_ElectricalID_get_finishedElectricalID
+.. doxygenfunction:: uz_ElectricalID_get_FOC_output
+.. doxygenfunction:: uz_ElectricalID_get_output
 
 Sources
 -------

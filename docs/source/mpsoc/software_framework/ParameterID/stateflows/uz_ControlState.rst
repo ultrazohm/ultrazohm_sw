@@ -27,3 +27,17 @@ ControlState functions
 
 .. doxygenfunction:: uz_ControlState_init
 .. doxygenfunction:: uz_ControlState_step
+.. doxygenfunction:: uz_ControlState_set_finishedFrictionID
+.. doxygenfunction:: uz_ControlState_set_finishedElectricalID
+.. doxygenfunction:: uz_ControlState_set_finishedTwoMassID
+.. doxygenfunction:: uz_ControlState_set_finishedFluxMapID
+.. doxygenfunction:: uz_ControlState_set_enteredFrictionID
+.. doxygenfunction:: uz_ControlState_set_enteredFluxMapID
+.. doxygenfunction:: uz_ControlState_set_enteredTwoMassID
+.. doxygenfunction:: uz_ControlState_set_enteredElectricalID
+.. doxygenfunction:: uz_ControlState_set_enteredOnlineID
+.. doxygenfunction:: uz_ControlState_set_ElectricalID_output
+.. doxygenfunction:: uz_ControlState_set_GlobalConfig
+.. doxygenfunction:: uz_ControlState_set_ElectricalID_FOC_output
+.. doxygenfunction:: uz_ControlState_get_GlobalConfig
+.. doxygenfunction:: uz_ControlState_get_ControlFlags

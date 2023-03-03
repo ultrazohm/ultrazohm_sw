@@ -122,7 +122,7 @@ void uz_OnlineID_set_AutoRefCurrents_GlobalConfig(uz_ParaID_OnlineID_t *self, uz
 /**
  * @brief Sets the ControlFlags struct for the AutoRefCurrents state embedded in the OnlineID state
  * 
- * @param self pointer to uz_ParaID_ElectricalID_t object
+ * @param self pointer to uz_ParaID_OnlineID_t object
  * @param ControlFlags pointer to the struct with the enable signals of the ParameterID
  */
 void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
@@ -130,7 +130,7 @@ void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz
 /**
  * @brief Gets the interpolated flux maps from the InterMeshGrid state embedded in the OnlineID state
  * 
- * @param self pointer to uz_ParaID_ElectricalID_t object
+ * @param self pointer to uz_ParaID_OnlineID_t object
  * @return uz_ParaID_FluxMapsData_t* interpolated flux maps
  */
 uz_ParaID_FluxMapsData_t* uz_OnlineID_get_InterpMeshGrid_FluxMapData(uz_ParaID_OnlineID_t *self);

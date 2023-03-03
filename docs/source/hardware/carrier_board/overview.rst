@@ -26,3 +26,7 @@ Useful things to buy
 * `Replaceable fuse **F1** on Carrier Board <https://de.rs-online.com/web/p/nicht-rueckstellende-sicherungen-smd/1740681/>`_
 * `Fuse in 230V mains connector <https://de.rs-online.com/web/p/feinsicherungen/5371004/>`_
 
+Source
+------
+
+- `carrier board repository <https://bitbucket.org/ultrazohm/uz_carrierboard>`_

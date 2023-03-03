@@ -1,0 +1,10 @@
+vlib work
+vcom  uz_d_inverter_adapter_src_uz_d_inverter_adapter_pkg.vhd
+vcom  uz_d_inverter_adapter_src_Detect_Rise_Positive1.vhd
+vcom  uz_d_inverter_adapter_src_Detect_Fall_Nonpositive1.vhd
+vcom  uz_d_inverter_adapter_src_NewtonPolynomialIVStage.vhd
+vcom  uz_d_inverter_adapter_src_Reciprocal_iv.vhd
+vcom  uz_d_inverter_adapter_src_Reciprocal_core.vhd
+vcom  uz_d_inverter_adapter_src_Reciprocal.vhd
+vcom  uz_d_inverter_adapter_src_PWMdutyFreqDetection.vhd
+vcom  uz_d_inverter_adapter_src_uz_d_inverter_adapter.vhd

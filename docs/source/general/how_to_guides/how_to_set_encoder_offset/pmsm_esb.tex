@@ -1,0 +1,35 @@
+% RUn with pdflatex_tikz_external in vscode remote container and latex workshop extension to generate .svg output file
+\documentclass[crop,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[]
+\usepackage{circuitikz}
+\begin{document}
+%\begin{center}
+\begin{circuitikz}[european, straight voltages]
+\draw
+  (0,0) to [short, *-] (6,0)
+  to [V_>=$\omega_{el} L_q I_{q0}$] (6,4) 
+  to [L, l_=$L_d$] (3,4) 
+  to [short, i_>=${I}_{d0}$] (4,4) 
+  (0,0) to [open, v^<=$U_d$] (0,4) 
+  to [short, *- ,i=$I_d$] (1,4) 
+  to [R, l=$R_1$] (3,4)
+  to [short, i_=$I_{dc}$] (3,3) 
+  to [R, l_=$R_c$] (3,0)
+
+  (9,0)  to [short, *-] (15,0)
+  to [V_<=$\omega_{el} \psi_{PM}$] (15,2) 
+  to [V_<=$\omega_{el} L_d I_{d0}$] (15,4) 
+  to [L, l_=$L_q$] (12,4) 
+  to [short, i_>=${I}_{q0}$] (13,4) 
+  (9,0) to [open, v^<=$U_q$] (9,4) 
+  to [short, *- ,i=$I_q$] (10,4) 
+  to [R, l=$R_1$] (12,4)
+  to [short, i_=$I_{qc}$] (12,3) 
+  to [R, l_=$R_c$] (12,0);
+\filldraw[black] (3,4) circle(2pt);
+\filldraw[black] (3,0) circle(2pt);
+\filldraw[black] (12,4) circle(2pt);
+\filldraw[black] (12,0) circle(2pt);
+\end{circuitikz}
+
+%\end{center}
+\end{document}

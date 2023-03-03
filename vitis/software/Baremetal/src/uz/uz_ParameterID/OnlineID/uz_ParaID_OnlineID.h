@@ -63,16 +63,92 @@ void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t*
  */
 void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
+/**
+ * @brief Sets the config struct for the OnlineID
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param Config configuration struct for OnlineID
+ */
 void uz_OnlineID_set_Config(uz_ParaID_OnlineID_t *self, uz_ParaID_OnlineIDConfig_t Config);
+
+/**
+ * @brief Sets the ActualValues struct for the OnlineID
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param ActualValues struct for the measurement values
+ */
 void uz_OnlineID_set_ActualValues(uz_ParaID_OnlineID_t *self, uz_ParaID_ActualValues_t ActualValues);
+
+/**
+ * @brief Sets the GlobalConfig struct for the OnlineID
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param GlobalConfig struct for the general settings of the ParameterID
+ */
 void uz_OnlineID_set_GlobalConfig(uz_ParaID_OnlineID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+
+/**
+ * @brief Sets the ControlFlags struct for the OnlineID
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param ControlFlags pointer to the struct with the enable signals of the ParameterID
+ */
 void uz_OnlineID_set_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+
+/**
+ * @brief Sets the cleaned_psi_array from the CleanPsiArray state
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param array_pointer pointer to the cleaned array
+ */
 void uz_OnlineID_set_cleaned_psi_array(uz_ParaID_OnlineID_t *self, float* array_pointer);
+
+/**
+ * @brief Sets config struct of the AutoRefCurrents state embedded in the OnlineID state
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param Config configuration struct for the AutoRefCurrents state
+ */
 void uz_OnlineID_set_AutoRefCurrents_Config(uz_ParaID_OnlineID_t *self, uz_ParaID_AutoRefCurrentsConfig_t Config);
+
+/**
+ * @brief Sets the GlobalConfig struct for the AutoRefCurrents state embedded in the OnlineID state
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @param GlobalConfig struct for the general settings of the ParameterID
+ */
 void uz_OnlineID_set_AutoRefCurrents_GlobalConfig(uz_ParaID_OnlineID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+
+/**
+ * @brief Sets the ControlFlags struct for the AutoRefCurrents state embedded in the OnlineID state
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_t object
+ * @param ControlFlags pointer to the struct with the enable signals of the ParameterID
+ */
 void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+
+/**
+ * @brief Gets the interpolated flux maps from the InterMeshGrid state embedded in the OnlineID state
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_t object
+ * @return uz_ParaID_FluxMapsData_t* interpolated flux maps
+ */
 uz_ParaID_FluxMapsData_t* uz_OnlineID_get_InterpMeshGrid_FluxMapData(uz_ParaID_OnlineID_t *self);
 
+/**
+ * @brief Gets the status of the enteredOnlineID flag
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @return true state has been entered
+ * @return false state hasn't been entered
+ */
 bool uz_OnlineID_get_enteredOnlineID(uz_ParaID_OnlineID_t *self);
+
+/**
+ * @brief Gets the pointer to the output struct of the OnlineID
+ * 
+ * @param self pointer to uz_ParaID_OnlineID_t object
+ * @return uz_ParaID_OnlineID_output_t* pointer to the output struct
+ */
 uz_ParaID_OnlineID_output_t* uz_OnlineID_get_output(uz_ParaID_OnlineID_t *self);
 #endif

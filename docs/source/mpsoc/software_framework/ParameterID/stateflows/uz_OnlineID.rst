@@ -102,6 +102,20 @@ OnlineID functions
 
 .. doxygenfunction:: uz_OnlineID_init
 .. doxygenfunction:: uz_OnlineID_step
+.. doxygenfunction:: uz_OnlineID_CleanPsiArray
+.. doxygenfunction:: uz_OnlineID_CalcFluxMaps
+.. doxygenfunction:: uz_OnlineID_AutoRefCurrents_step
+.. doxygenfunction:: uz_OnlineID_set_Config
+.. doxygenfunction:: uz_OnlineID_set_ActualValues
+.. doxygenfunction:: uz_OnlineID_set_GlobalConfig
+.. doxygenfunction:: uz_OnlineID_set_ControlFlags
+.. doxygenfunction:: uz_OnlineID_set_cleaned_psi_array
+.. doxygenfunction:: uz_OnlineID_set_AutoRefCurrents_Config
+.. doxygenfunction:: uz_OnlineID_set_AutoRefCurrents_GlobalConfig
+.. doxygenfunction:: uz_OnlineID_set_AutoRefCurrents_ControlFlags
+.. doxygenfunction:: uz_OnlineID_get_InterpMeshGrid_FluxMapData
+.. doxygenfunction:: uz_OnlineID_get_enteredOnlineID
+.. doxygenfunction:: uz_OnlineID_get_output
 
 Sources
 -------

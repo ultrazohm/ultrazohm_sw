@@ -93,6 +93,14 @@ FluxMapID functions
 
 .. doxygenfunction:: uz_FluxMapID_init
 .. doxygenfunction:: uz_FluxMapID_step
+.. doxygenfunction:: uz_FluxMapID_set_Config
+.. doxygenfunction:: uz_FluxMapID_set_ActualValues
+.. doxygenfunction:: uz_FluxMapID_set_GlobalConfig
+.. doxygenfunction:: uz_FluxMapID_set_ControlFlags
+.. doxygenfunction:: uz_FluxMapID_get_enteredFluxMapID
+.. doxygenfunction:: uz_FluxMapID_get_finishedFluxMapID
+.. doxygenfunction:: uz_FluxMapID_get_FOC_output
+.. doxygenfunction:: uz_FluxMapID_get_output
 
 Sources
 -------

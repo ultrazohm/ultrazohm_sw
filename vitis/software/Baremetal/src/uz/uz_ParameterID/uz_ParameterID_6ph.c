@@ -223,44 +223,6 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	}
 	return (output_DutyCycle);
 }
-/*
-uz_6ph_dq_t uz_ParameterID_6ph_Controller_FluxMapID(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_dq1, uz_CurrentControl_t* CC_instance_dq2, uz_resonantController_t* resonant_dq1, uz_resonantController_t* resonant_dq2)
-{
-	static uz_3ph_dq_t actual_dq1 = {0}; // actual values mapped to appropriate struct 
-	static uz_3ph_dq_t actual_dq2 = {0}; // actual values mapped to appropriate struct 
-	static uz_3ph_alphabeta_t actual_ab2 = {0}; // actual values mapped to appropriate struct 
-	actual_dq1.d = Data->ActualValues.i_dq_6ph.d; // mapping multiphase dq to threephase dq
-	actual_dq1.q = Data->ActualValues.i_dq_6ph.q; // mapping multiphase dq to threephase dq
-	actual_ab2.alpha = Data->ActualValues.i_dq_6ph.x;
-	actual_ab2.beta = Data->ActualValues.i_dq_6ph.y;
-	actual_dq2 = uz_transformation_3ph_alphabeta_to_dq(actual_ab2, Data->ActualValues.theta_el*Data->FluxmapID_extended_controller_Output.xy.theta_factor);
-	// set configs, flag will be reset after start of FluxMapID
-	if(Data->FluxmapID_extended_controller_Output.controllers_running)
-	{
-		// set configs for PI controllers fundamental
-		uz_CurrentControl_set_Kp_id(CC_instance_dq1, Data->FluxmapID_extended_controller_Output.ab.config_PI.config_id.Kp);
-		uz_CurrentControl_set_Ki_id(CC_instance_dq1, Data->FluxmapID_extended_controller_Output.ab.config_PI.config_id.Ki);
-		uz_CurrentControl_set_Kp_iq(CC_instance_dq1, Data->FluxmapID_extended_controller_Output.ab.config_PI.config_iq.Kp);
-		uz_CurrentControl_set_Ki_iq(CC_instance_dq1, Data->FluxmapID_extended_controller_Output.ab.config_PI.config_iq.Ki);
-		// set configs for PI controllers 3rd
-		uz_CurrentControl_set_Kp_id(CC_instance_dq2, Data->FluxmapID_extended_controller_Output.xy.config_PI.config_id.Kp);
-		uz_CurrentControl_set_Ki_id(CC_instance_dq2, Data->FluxmapID_extended_controller_Output.xy.config_PI.config_id.Ki);
-		uz_CurrentControl_set_Kp_iq(CC_instance_dq2, Data->FluxmapID_extended_controller_Output.xy.config_PI.config_iq.Kp);
-		uz_CurrentControl_set_Ki_iq(CC_instance_dq2, Data->FluxmapID_extended_controller_Output.xy.config_PI.config_iq.Ki);
-		// set configs for resonant controllers
-		uz_resonantController_set_config(resonant_dq1, Data->FluxmapID_extended_controller_Output.ab.config_Res);
-		uz_resonantController_set_config(resonant_dq2, Data->FluxmapID_extended_controller_Output.xy.config_Res);
-	}
-	// normal operation
-	else
-	{
-		uz_CurrentControl_sample(CC_instance_dq1, Data->FluxmapID_extended_controller_Output.ab.i_dq_PI_ref, actual_ab, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-		uz_CurrentControl_sample(CC_instance_dq2, Data->FluxmapID_extended_controller_Output.xy.i_dq_PI_ref, actual_xy, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-		uz_resonantController_step(resonant_dq1, Data->FluxmapID_extended_controller_Output.ab.i_dq_PI_ref, ,);
-
-	}
-}
-*/
 
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t** CC_instance_1, uz_CurrentControl_t** CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t** res_instance_1, uz_resonantController_t** res_instance_2) {
 	uz_6ph_dq_t out = {0};

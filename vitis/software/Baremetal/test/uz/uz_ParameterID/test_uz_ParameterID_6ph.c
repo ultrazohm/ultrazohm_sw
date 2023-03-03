@@ -55,6 +55,7 @@
 #include "../../../src/uz/uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
 
 #include "uz_signals.h"
+#include "rt_hypotf.h"
 
 uz_ParameterID_Data_t Data_struct = {0};
 

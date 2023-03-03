@@ -154,18 +154,24 @@ void uz_FluxMapID_6ph_init_controllers(uz_ParaID_GlobalConfig_t GlobalConfig, uz
 
 uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2)
 {
+    // assert input pointers
+        uz_assert_not_NULL(CC_instance_1);
+        uz_assert_not_NULL(CC_instance_2);
+        uz_assert_not_NULL(resonant_1);
+        uz_assert_not_NULL(resonant_2);
+
     // Initialize output struct
         static uz_6ph_dq_t out = {0};
 
     // Splitting up the six-phase struct to subsystem structs
         // actual rotating 1st reference frame
         uz_3ph_dq_t actual_ab_rotating = {
-            .d = Data->ActualValues.v_dq_6ph.d,
-            .q = Data->ActualValues.v_dq_6ph.q};
+            .d = Data->ActualValues.i_dq_6ph.d,
+            .q = Data->ActualValues.i_dq_6ph.q};
         // actual stationary 2nd reference frame
         uz_3ph_alphabeta_t actual_xy_stationary = {
-            .alpha = Data->ActualValues.v_dq_6ph.x,
-            .beta = Data->ActualValues.v_dq_6ph.y};
+            .alpha = Data->ActualValues.i_dq_6ph.x,
+            .beta = Data->ActualValues.i_dq_6ph.y};
         // actual rotating 2nd reference frame
         uz_3ph_dq_t actual_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(actual_xy_stationary, -1.0f*Data->ActualValues.theta_el);
 
@@ -189,8 +195,8 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
                 uz_resonantController_set_config(resonant_2, resonant_config_2);
             }
             // assign to output
-            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.v_dq_6ph.d, Data->ActualValues.omega_el);
-            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.v_dq_6ph.q, Data->ActualValues.omega_el);
+            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
             uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
             out.x = cc_out_xy_stationary.alpha;
             out.y = cc_out_xy_stationary.beta;

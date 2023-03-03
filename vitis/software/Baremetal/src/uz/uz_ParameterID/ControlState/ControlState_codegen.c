@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 2.60
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Nov 25 15:36:53 2021
+ * Model version                  : 3.59
+ * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
+ * C/C++ source code generated on : Thu Mar  2 15:57:55 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -658,6 +658,10 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
           /* '<S1>:624:17' GlobalConfig_out.Ki_n=ElectricalID_FOC_output.Ki_n_out; */
           rtControlState_Y->GlobalConfig_out.Ki_n =
             rtControlState_U->ElectricalID_FOC_output.Ki_n_out;
+
+          /* '<S1>:624:18' GlobalConfig_out.PMSM_6ph_inductances = ElectricalID_output.inductances_6ph; */
+          rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances =
+            rtControlState_U->ElectricalID_output.inductances_6ph;
         }
         break;
 
@@ -818,13 +822,35 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
 /* Model initialize function */
 void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
 {
+  DW_ControlState_t *rtControlState_DW = rtControlState_M->dwork;
   ExtY_ControlState_t *rtControlState_Y = (ExtY_ControlState_t *)
     rtControlState_M->outputs;
+  ExtU_ControlState_t *rtControlState_U = (ExtU_ControlState_t *)
+    rtControlState_M->inputs;
+
+  /* Registration code */
+
+  /* states (dwork) */
+  (void) memset((void *)rtControlState_DW, 0,
+                sizeof(DW_ControlState_t));
+
+  /* external inputs */
+  (void)memset(rtControlState_U, 0, sizeof(ExtU_ControlState_t));
+
+  /* external outputs */
+  (void)memset(rtControlState_Y, 0, sizeof(ExtY_ControlState_t));
 
   /* SystemInitialize for Chart: '<Root>/ControlState' incorporates:
    *  Outport: '<Root>/ControlFlags'
    *  Outport: '<Root>/GlobalConfig_out'
    */
+  rtControlState_DW->is_ControlState = IN_NO_ACTIVE_CHILD;
+  rtControlState_DW->is_active_c8_ControlState = 0U;
+  rtControlState_DW->is_c8_ControlState = IN_NO_ACTIVE_CHILD;
+  rtControlState_DW->finishedElectricalID_loc = 0U;
+  rtControlState_DW->finishedFrictionID_loc = 0U;
+  rtControlState_DW->finishedTwoMassID_loc = 0U;
+  rtControlState_DW->finishedFluxMapID_loc = 0U;
   rtControlState_Y->GlobalConfig_out.PMSM_config.R_ph_Ohm = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.Ld_Henry = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.Lq_Henry = 0.0F;
@@ -832,6 +858,12 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.PMSM_config.polePairs = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.J_kg_m_squared = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.I_max_Ampere = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.d = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.q = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.x = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.y = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.z1 = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.z2 = 0.0F;
   rtControlState_Y->GlobalConfig_out.enableParameterID = false;
   rtControlState_Y->GlobalConfig_out.Reset = false;
   rtControlState_Y->GlobalConfig_out.Kp_id = 0.0F;
@@ -848,12 +880,14 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.ACCEPT = false;
   rtControlState_Y->GlobalConfig_out.sampleTimeISR = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratCurrent = 0.0F;
-  rtControlState_Y->GlobalConfig_out.ratTorque = 0.0F;
   rtControlState_Y->GlobalConfig_out.ratSpeed = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.d = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.q = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.zero = 0.0F;
   rtControlState_Y->GlobalConfig_out.n_ref = 0.0F;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_C = 0.0F;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_Rp = 0.0F;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_Rs = 0.0F;
   rtControlState_Y->ControlFlags.startFrictionID = false;
   rtControlState_Y->ControlFlags.startElectricalID = false;
   rtControlState_Y->ControlFlags.startTwoMassID = false;
@@ -868,5 +902,4 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
  *
  * [EOF]
  */
-
 #endif

@@ -22,6 +22,10 @@
 #include "rtwtypes.h"
 #include <stdbool.h>
 
+typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
+typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
+
+
 //----------------------------------------//
 //----------------------------------------//
 //------------GlobalStructs---------------//
@@ -54,6 +58,7 @@ typedef struct {
  */
 typedef struct {
   uz_PMSM_t PMSM_config; /**< motor related parameters. Is needed, if ElectricalID should not be executed */
+  uz_6ph_dq_t PMSM_6ph_inductances;
   boolean_T enableParameterID; /**< flag to enable the entire ParameterID */
   boolean_T Reset; /**< flag to Reset the entire ParameterID*/
   real32_T Kp_id; /**< value for Kp_id, which is needed, if ElectricalID should not be executed. Can be left at 0, if no FOC control algorithm is used */
@@ -74,6 +79,7 @@ typedef struct {
   real32_T ratSpeed; /**< rated speed of the motor */
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
+  real32_T M_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
   real32_T voltage_measurement_C;
   real32_T voltage_measurement_Rp;
   real32_T voltage_measurement_Rs;
@@ -104,6 +110,7 @@ typedef struct {
   real32_T M_ref_FOC;  /**< reference torque for the setpoint function */
   uint16_T activeState; /**< activeState of the ID-states */
   real32_T n_ref_FOC; /**< reference speed for the speed controller */
+  boolean_T enableFOC_torque; /**<flag to enable torque controller */
   boolean_T enableFOC_speed; /**<flag to enable speed controller */
   boolean_T enableFOC_current; /**<flag to enable current controller */
   boolean_T resetIntegrator; /**<flag to reset the integrators used in the control algorithm */
@@ -198,6 +205,13 @@ typedef struct {
   real32_T WindingTemp; /**< identified winding temperature of the stator */
 } uz_ParaID_FluxMapID_output_t;
 
+
+typedef struct {
+  boolean_T control_active;
+  uint16_T selected_subsystem;
+  uz_3ph_dq_t ab_i_dq_PI_ref;
+  uz_3ph_dq_t xy_i_dq_PI_ref;
+} uz_ParaID_FluxMapID_extended_controller_output_t;
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -355,7 +369,7 @@ typedef struct {
 
 /*! enum for selection of control algorithm if all OfflineID states are finished */
 enum uz_ParaID_Control_selection {
-	No_Control = 0, Current_Control, Speed_Control
+	No_Control = 0, Current_Control, Speed_Control, Torque_Control
 };
 
 /**
@@ -372,7 +386,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_FluxMapIDConfig_t FluxMapID_Config; /**< Input:Configuration struct for FluxMapID */
 	uz_ParaID_OnlineIDConfig_t OnlineID_Config; /**<Input: Configuration struct for  OnlineID */
 	uz_ParaID_AutoRefCurrentsConfig_t AutoRefCurrents_Config; /**<Input: Configuration struct for AutoReference current generator */
-	uz_ParaID_ElectricalID_output_t ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
+	uz_ParaID_ElectricalID_output_t *ElectricalID_Output; /**<Output: Pointer to output struct of ElectricalID */
 	uz_ParaID_TwoMassID_output_t *TwoMassID_Output; /**<Output: Pointer to output struct of TwoMassID */
 	uz_ParaID_FrictionID_output_t *FrictionID_Output; /**<Output: Pointer to output struct of FrictionID */
 	uz_ParaID_FluxMapID_output_t *FluxMapID_Output; /**<Output: Pointer to output struct of FluxMapID */
@@ -381,6 +395,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
 	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
   uz_ParaID_ElectricalID_fft_in_t ElectricalID_FFT;
+  uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */

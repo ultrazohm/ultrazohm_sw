@@ -22,13 +22,7 @@
  * @brief Object definition for uz_ParaID_FrictionID_t
  * 
  */
-typedef struct uz_ParaID_FrictionID_t{
-	ExtY_FrictionID_t output;
-	ExtU_FrictionID_t input;
-	DW_FrictionID_t rtDW; /* Observable states */
-	RT_MODEL_FrictionID_t modelData;
-	RT_MODEL_FrictionID_t *PtrToModelData;
-} uz_ParaID_FrictionID_t;
+typedef struct uz_ParaID_FrictionID_t uz_ParaID_FrictionID_t;
 
 /**
  * @brief Initializes the uz_ParaID_FrictionID_t object
@@ -44,4 +38,13 @@ uz_ParaID_FrictionID_t* uz_FrictionID_init(void);
  */
 void uz_FrictionID_step(uz_ParaID_FrictionID_t *self);
 
+void uz_FrictionID_set_Config(uz_ParaID_FrictionID_t *self, uz_ParaID_FrictionIDConfig_t Config);
+void uz_FrictionID_set_ActualValues(uz_ParaID_FrictionID_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_FrictionID_set_GlobalConfig(uz_ParaID_FrictionID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_FrictionID_set_ControlFlags(uz_ParaID_FrictionID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
+
+bool uz_FrictionID_get_enteredFrictionID(uz_ParaID_FrictionID_t *self);
+bool uz_FrictionID_get_finishedFrictionID(uz_ParaID_FrictionID_t *self);
+uz_ParaID_Controller_Parameters_output_t* uz_FrictionID_get_FOC_output(uz_ParaID_FrictionID_t *self);
+uz_ParaID_FrictionID_output_t* uz_FrictionID_get_output(uz_ParaID_FrictionID_t *self);
 #endif

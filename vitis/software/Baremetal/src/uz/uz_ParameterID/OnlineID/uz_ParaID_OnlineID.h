@@ -25,16 +25,7 @@
  * @brief Object definition for uz_ParaID_OnlineID_t
  * 
  */
-typedef struct uz_ParaID_OnlineID_t{
-	ExtY_OnlineID_t output;
-	ExtU_OnlineID_t input;
-	DW_OnlineID_t rtDW; /* Observable states */
-	RT_MODEL_OnlineID_t modelData;
-	RT_MODEL_OnlineID_t *PtrToModelData;
-	uz_ParaID_CleanPsiArray_t* CleanPsiArray;
-	uz_ParaID_InterpMeshGrid_t* InterpMeshGrid;
-	uz_ParaID_AutoRefCurrents_t* AutoRefCurrents;
-} uz_ParaID_OnlineID_t;
+typedef struct uz_ParaID_OnlineID_t uz_ParaID_OnlineID_t;
 
 /**
  * @brief Initializes the uz_ParaID_OnlineID_t object
@@ -56,20 +47,32 @@ The function is searching for measuring pairs which are closer than "eta_c" to t
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
  */
-void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self);
+void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
 /**
  * @brief This function is calculating the regular flux maps out of the irregular scatter data array. The outputs is written onto the member FluxMap_Data of the uz_ParameterID_Data_t struct.
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
  */
-void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self);
+void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
 /**
  * @brief Calls an stateflow which automatically generates reference currents to speed up the measurement of the OnlineID flux maps. This is more like an extra and not needed for the OnlineID to work. 
  * 
  * @param self pointer to uz_ParaID_OnlineID_t object
  */
-void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self);
+void uz_OnlineID_AutoRefCurrents_step(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data);
 
+void uz_OnlineID_set_Config(uz_ParaID_OnlineID_t *self, uz_ParaID_OnlineIDConfig_t Config);
+void uz_OnlineID_set_ActualValues(uz_ParaID_OnlineID_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_OnlineID_set_GlobalConfig(uz_ParaID_OnlineID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_OnlineID_set_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+void uz_OnlineID_set_cleaned_psi_array(uz_ParaID_OnlineID_t *self, float* array_pointer);
+void uz_OnlineID_set_AutoRefCurrents_Config(uz_ParaID_OnlineID_t *self, uz_ParaID_AutoRefCurrentsConfig_t Config);
+void uz_OnlineID_set_AutoRefCurrents_GlobalConfig(uz_ParaID_OnlineID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_OnlineID_set_AutoRefCurrents_ControlFlags(uz_ParaID_OnlineID_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+uz_ParaID_FluxMapsData_t* uz_OnlineID_get_InterpMeshGrid_FluxMapData(uz_ParaID_OnlineID_t *self);
+
+bool uz_OnlineID_get_enteredOnlineID(uz_ParaID_OnlineID_t *self);
+uz_ParaID_OnlineID_output_t* uz_OnlineID_get_output(uz_ParaID_OnlineID_t *self);
 #endif

@@ -18,11 +18,13 @@
 
 #include "../../globalData.h"
 #include "uz_ParameterID_data.h"
-#include "../uz_FOC/uz_FOC.h"
+#include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz_setpoint/uz_setpoint.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "ControlState/uz_ParaID_ControlState.h"
 #include "ElectricalID_6ph/uz_ParaID_ElectricalID_6ph.h"
-#include "FluxMapID/uz_ParaID_FluxMapID.h"
+#include "FluxMapID_6ph/uz_ParaID_FluxMapID_6ph.h"
 #include "FrictionID/uz_ParaID_FrictionID.h"
 #include "OnlineID/uz_ParaID_OnlineID.h"
 #include "TwoMassID/uz_ParaID_TwoMassID.h"
@@ -55,12 +57,12 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data);
  */
 void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 
-void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 
-void uz_ParameterID_transmit_measured_voltages(uz_ParameterID_6ph_t* self, float *destination);
-
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_FOC* FOC_instance, uz_SpeedControl_t* Speed_instance);
+void uz_ParameterID_6ph_transmit_measured_voltages(uz_ParameterID_6ph_t* self, float *destination);
 
 struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts);
+
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t** CC_instance_1, uz_CurrentControl_t** CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t** res_instance_1, uz_resonantController_t** res_instance_2);
 
 #endif // UZ_PARAMETERID_6PH_H

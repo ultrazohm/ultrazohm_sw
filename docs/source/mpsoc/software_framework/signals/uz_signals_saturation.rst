@@ -1,3 +1,5 @@
+.. _uz_signals_saturation:
+
 ===================
 Saturation function
 ===================

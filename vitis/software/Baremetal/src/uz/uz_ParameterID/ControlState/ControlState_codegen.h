@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 2.60
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Nov 25 15:36:53 2021
+ * Model version                  : 3.59
+ * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
+ * C/C++ source code generated on : Thu Mar  2 15:57:55 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -119,13 +119,13 @@ extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/ControlState')    - opens subsystem uz_ParameterID/ControlState
- * hilite_system('uz_ParameterID/ControlState/Kp') - opens and selects block Kp
+ * hilite_system('uz_ParameterID_6ph/ControlState_refernce/ControlState')    - opens subsystem uz_ParameterID_6ph/ControlState_refernce/ControlState
+ * hilite_system('uz_ParameterID_6ph/ControlState_refernce/ControlState/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/ControlState'
+ * '<Root>' : 'uz_ParameterID_6ph/ControlState_refernce'
+ * '<S1>'   : 'uz_ParameterID_6ph/ControlState_refernce/ControlState'
  */
 
 /*-

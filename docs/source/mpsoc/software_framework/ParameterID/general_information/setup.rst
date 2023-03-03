@@ -65,7 +65,7 @@ The ID-state specific configuration values can later be configured via the uz_GU
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 463-554
+    :lines: 442-533
     :linenos:
     :emphasize-lines: 13,16-31
     :language: c
@@ -190,7 +190,6 @@ Every other ``ID-state`` is guarded behind if-statements. Furthermore it determi
 .. doxygenfunction:: uz_ParameterID_Controller
 .. doxygenfunction:: uz_ParameterID_CleanPsiArray
 .. doxygenfunction:: uz_ParameterID_CalcFluxMaps
-.. doxygenfunction:: uz_ParameterID_update_transmit_values
 
 References
 ==========

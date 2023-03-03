@@ -22,13 +22,7 @@
  * @brief Object definition for uz_ParaID_ElectricalID_t
  * 
  */
-typedef struct uz_ParaID_FluxMapID_t{
-	ExtY_FluxMapID_t output;
-	ExtU_FluxMapID_t input;
-	DW_FluxMapID_t rtDW; /* Observable states */
-	RT_MODEL_FluxMapID_t modelData;
-	RT_MODEL_FluxMapID_t *PtrToModelData;
-} uz_ParaID_FluxMapID_t;
+typedef struct uz_ParaID_FluxMapID_t uz_ParaID_FluxMapID_t;
 
 /**
  * @brief Initializes the uz_ParaID_FluxMapID_t object
@@ -44,4 +38,13 @@ uz_ParaID_FluxMapID_t* uz_FluxMapID_init(void);
  */
 void uz_FluxMapID_step(uz_ParaID_FluxMapID_t *self);
 
+void uz_FluxMapID_set_Config(uz_ParaID_FluxMapID_t *self, uz_ParaID_FluxMapIDConfig_t Config);
+void uz_FluxMapID_set_ActualValues(uz_ParaID_FluxMapID_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_FluxMapID_set_GlobalConfig(uz_ParaID_FluxMapID_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_FluxMapID_set_ControlFlags(uz_ParaID_FluxMapID_t *self, uz_ParaID_ControlFlags_t *ControlFlags);
+
+bool uz_FluxMapID_get_enteredFluxMapID(uz_ParaID_FluxMapID_t *self);
+bool uz_FluxMapID_get_finishedFluxMapID(uz_ParaID_FluxMapID_t *self);
+uz_ParaID_Controller_Parameters_output_t* uz_FluxMapID_get_FOC_output(uz_ParaID_FluxMapID_t *self);
+uz_ParaID_FluxMapID_output_t* uz_FluxMapID_get_output(uz_ParaID_FluxMapID_t *self);
 #endif

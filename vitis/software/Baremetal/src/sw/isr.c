@@ -34,7 +34,6 @@
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 
-#include "../uz/uz_FOC/uz_FOC.h"
 #include "../uz/uz_filter/uz_filter.h"
 
 
@@ -62,7 +61,6 @@ extern uz_ParameterID_6ph_t* ParameterID;
 uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //Next lines only needed, if the uz_FOC is used as the controller
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
-extern uz_FOC* FOC_instance;
 extern uz_SpeedControl_t* SpeedControl_instance;
 uz_6ph_dq_t ParaID_v_dq = { 0 };
 struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
@@ -98,7 +96,14 @@ float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
 float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
 
-
+// controller
+extern uz_CurrentControl_t* CC_instance_1;
+extern uz_CurrentControl_t* CC_instance_2;
+extern uz_SpeedControl_t* Speed_instace;
+extern uz_SetPoint_t* sp_instance;
+extern uz_resonantController_t* res_instance_1;
+extern uz_resonantController_t* res_instance_2;
+uz_6ph_dq_t controller_out = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -272,7 +277,12 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
+
+		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data, &CC_instance_1, &CC_instance_2, Speed_instace, sp_instance, &res_instance_1, &res_instance_2);
+
+		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+
+	/*	dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
 		dutyCycles_set1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
 		dutyCycles_set1.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
 		dutyCycles_set2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
@@ -283,14 +293,17 @@ void ISR_Control(void *data)
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output.enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[2]);
 		ParaID_v_dq = uz_ParameterID_6ph_Controller(&ParaID_Data, FOC_instance, SpeedControl_instance);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, ParaID_v_dq);
-
+*/
 		//write duty-cycles
-    	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_U;
-    	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_V;
-    	Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_W;
-    	Global_Data.rasv.halfBridge7DutyCycle = ParaID_DutyCycle.system1.DutyCycle_U;
-    	Global_Data.rasv.halfBridge8DutyCycle = ParaID_DutyCycle.system1.DutyCycle_V;
-    	Global_Data.rasv.halfBridge9DutyCycle = ParaID_DutyCycle.system1.DutyCycle_W;
+    	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
+    	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
+    	Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_C;
+    	Global_Data.rasv.halfBridge7DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
+    	Global_Data.rasv.halfBridge8DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
+    	Global_Data.rasv.halfBridge9DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
+
     }
 
 

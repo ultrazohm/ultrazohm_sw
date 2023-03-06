@@ -24,7 +24,7 @@
 uz_ParameterID_6ph_t* ParameterID = NULL;
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 //Objects below are only needed, if the uz_FOC is used as the controller
-uz_FOC* FOC_instance = NULL;
+//uz_FOC* FOC_instance = NULL;
 uz_SpeedControl_t* SpeedControl_instance = NULL;
 //ParameterID end
 
@@ -96,6 +96,30 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
 };
 
 
+// controller
+uz_CurrentControl_t* CC_instance_1 = NULL;
+uz_CurrentControl_t* CC_instance_2 = NULL;
+uz_SpeedControl_t* Speed_instace = NULL;
+uz_SetPoint_t* sp_instance = NULL;
+uz_resonantController_t* res_instance_1 = NULL;
+uz_resonantController_t* res_instance_2 = NULL;
+
+struct uz_SpeedControl_config speed_config = {
+		.config_controller.type = parallel,
+		.config_controller.Kp = 1.0f,
+		.config_controller.Ki = 1.0f,
+		.config_controller.samplingTime_sec = 0.0001f,
+		.config_controller.upper_limit = 10.0f,
+		.config_controller.lower_limit = -10.0f
+};
+
+struct uz_SetPoint_config sp_config = {
+		.id_ref_Ampere = 0.0f,
+		.is_field_weakening_enabled = false,
+		.motor_type = SMPMSM,
+		.control_type = FOC
+};
+
 // Init: --------------------------------------
 
 enum init_chain
@@ -131,32 +155,34 @@ int main(void)
         case init_software:
         	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
         	//Code below is only needed, if the uz_FOC is used as the controller
-        	   struct uz_PI_Controller_config config_id = {
-        	        .Kp = ParaID_Data.GlobalConfig.Kp_id,
-        	        .Ki = ParaID_Data.GlobalConfig.Ki_id,
-        	        .samplingTime_sec = 0.00005f,
-        	        .upper_limit = 15.0f,
-        	        .lower_limit = -15.0f };
-        	   struct uz_PI_Controller_config config_iq = {
-        	        .Kp = ParaID_Data.GlobalConfig.Kp_iq,
-        	        .Ki = ParaID_Data.GlobalConfig.Ki_iq,
-        	        .samplingTime_sec = 0.00005f,
-        	        .upper_limit = 15.0f,
-        	        .lower_limit = -15.0f };
-        	   struct uz_SpeedControl_config config_n = {
-        	        .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
-        	        .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n,
-        	        .config_controller.samplingTime_sec = 0.00005f,
-        	        .config_controller.upper_limit = 10.0f,
-        	        .config_controller.lower_limit = -10.0f,
-        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
-        	        .is_field_weakening_active = false };
-        	   struct uz_FOC_config config_FOC = {
-        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
-        	        .config_id = config_id,
-        	        .config_iq = config_iq };
-        	   FOC_instance = uz_FOC_init(config_FOC);
-        	   SpeedControl_instance = uz_SpeedControl_init(config_n);
+        	struct uz_CurrentControl_config cc_config = {
+        	        .decoupling_select = no_decoupling,
+        	        .config_id.Ki = ParaID_Data.GlobalConfig.Ki_id,
+        	        .config_id.Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	        .config_id.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .config_iq.Ki = ParaID_Data.GlobalConfig.Ki_iq,
+        	        .config_iq.Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	        .config_iq.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+        	struct uz_resonantController_config resonant_config = {
+        	        .sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .gain = 0.0f,
+        	        .harmonic_order = 1.0f,
+        	        .fundamental_frequency = 1.0f,
+        	        .lower_limit = -10.0f,
+        	        .upper_limit = 10.0f,
+        	        .antiwindup_gain = 0.0f,
+        	        .in_reference_value = 0.0f,
+        	        .in_measured_value = 0.0f};
+
+        	sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
+			Speed_instace = uz_SpeedControl_init(speed_config);
+			sp_instance = uz_SetPoint_init(sp_config);
+			CC_instance_1 = uz_CurrentControl_init(cc_config);
+			CC_instance_2 = uz_CurrentControl_init(cc_config);
+			res_instance_1 = uz_resonantController_init(resonant_config);
+			res_instance_2 = uz_resonantController_init(resonant_config);
+
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
@@ -212,10 +238,10 @@ int main(void)
 
         if(ParaID_Data.finished_voltage_measurement && !corrected.finished_flag)
         {
-        	uz_ParameterID_transmit_measured_voltages(ParameterID,meas_array);
+        	uz_ParameterID_6ph_transmit_measured_voltages(ParameterID,meas_array);
         	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
         	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
-        	print_paraID(uncorrected, corrected, ParaID_Data.ElectricalID_Output);
+        	//print_paraID(uncorrected, corrected, ParaID_Data->ElectricalID_Output);
 
 			ParaID_Data.ElectricalID_FFT = corrected;
         }

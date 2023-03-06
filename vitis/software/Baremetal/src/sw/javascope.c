@@ -44,7 +44,6 @@ float para_state = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
 
-#include "../uz/uz_FOC/uz_FOC.h"
 
 extern float temp_avg;
 extern struct uz_DutyCycle_t dutyCycles_set1;
@@ -114,18 +113,18 @@ int JavaScope_initalize(DS_Data* data)
 	    js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
 	    js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeed);
 	    js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalRotorSpeed);
-	    js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Psi_PM_Vs);
-	    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Lq_Henry);
-	    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.Ld_Henry);
-	    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.R_ph_Ohm);
-	    js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.polePairs);
-	    js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output.PMSM_parameters.J_kg_m_squared);
+	    js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+	    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
+	    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
+	    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+	    js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
+	    js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
 	    js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
 	    js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	    js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
 	    js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
 	    js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
-	    js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output.thetaOffset);
+	    js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output->thetaOffset);
 	    js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
 	    js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
 	    js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);

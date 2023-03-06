@@ -25,7 +25,6 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uz_ParameterID_Data_t ParaID_Data;
 //If FOC is used
-extern uz_FOC* FOC_instance;
 extern uz_SpeedControl_t* SpeedControl_instance;
 
 extern _Bool bNewControlMethodAvailable;

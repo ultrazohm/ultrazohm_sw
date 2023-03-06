@@ -13,9 +13,7 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include <stdio.h>
 #include <string.h>
-
 #include "lwip/sockets.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"

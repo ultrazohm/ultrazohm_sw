@@ -28,7 +28,6 @@ extern "C" {
 #include "xbasic_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
-#include <stdio.h>
 #include "uz/uz_HAL.h"
 
 // ========== Threads =========================================================================

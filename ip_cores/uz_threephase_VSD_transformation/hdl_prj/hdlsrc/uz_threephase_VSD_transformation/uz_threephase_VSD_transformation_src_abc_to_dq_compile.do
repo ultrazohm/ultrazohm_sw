@@ -1,0 +1,10 @@
+vlib work
+vmap -c
+vcom  uz_threephase_VSD_transformation_src_abc_to_dq_pkg.vhd
+vcom  uz_threephase_VSD_transformation_src_inverse_Clarke.vhd
+vcom  uz_threephase_VSD_transformation_src_Sine_HDL_Optimized.vhd
+vcom  uz_threephase_VSD_transformation_src_inverse_Park.vhd
+vcom  uz_threephase_VSD_transformation_src_Subsystem.vhd
+vcom  uz_threephase_VSD_transformation_src_SimpleDualPortRAM_generic.vhd
+vcom  uz_threephase_VSD_transformation_src_abc_to_dq_tc.vhd
+vcom  uz_threephase_VSD_transformation_src_abc_to_dq.vhd

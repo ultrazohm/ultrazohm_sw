@@ -16,6 +16,14 @@ Their voltage outputs are connected with the respective inputs of the Transforma
 The transformation's transformed output is connected with the PMSM, while the PMSM's rotor angle and current outputs are connected with the Transformation.
 The trigger and refresh signals of the Transformation are connected with the RS-Flip-Flop as shown below.
 
+.. note:: 
+
+   To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP-Cores automatically and connects them.
+   To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
+   "cd [ get_property DIRECTORY [current_project] ]" 
+   "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
+
+
 .. figure:: vivado_6ph.jpg
 
     Vivado setup
@@ -32,14 +40,13 @@ Vitis
 
 Each IP-core is initialized in ``main.c``, as well as a pointer with the respective type.
 The init functions are called during the init process of all IP-cores.
-Please check all MAX_INSTANCE defines, including the amount of PWM instances, if additional IP-cores are used.
 
 .. code-block:: c
   :caption: Changes in ``main.c`` (R5)
 
   ...
   // includes
-  #include "IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
+  #include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
   #include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
   #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
   #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
@@ -61,8 +68,8 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
       .friction_coefficient = 0.001f,
       .coulomb_friction_constant = 0.001f,
       .inertia = 0.001f,
-      .simulate_mechanical_system = false, //false: set fixed rpm, true: set load torque
-      .switch_pspl = false};               //false: voltage input from CIL, true: voltage input from AXI
+      .simulate_mechanical_system = true,
+      .switch_pspl = false};
 
   // Transformation
   uz_pmsm6ph_transformation_t *transformation = NULL;
@@ -128,7 +135,7 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
     ...
     case init_ip_cores:
       // init IP-cores
-      pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
+	  pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
       transformation = uz_pmsm6ph_transformation_init(cil_transformation_config);
       inverter1 = uz_inverter_3ph_init(cil_inverter1_config);
       inverter2 = uz_inverter_3ph_init(cil_inverter2_config);
@@ -152,7 +159,7 @@ Depending on the used controller, this might not be necessary.
 
   ...
   // Data for PMSM
-  #include "../IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
+  #include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
   extern uz_pmsm_model6ph_dq_t *pmsm;
   float omega_mech = 100.0f;
   float load_torque = 0.0f;
@@ -181,7 +188,7 @@ Depending on the used controller, this might not be necessary.
   #include "../uz/uz_FOC/uz_FOC.h"
   extern uz_PWM_SS_2L_t *PWM1;
   extern uz_PWM_SS_2L_t *PWM2;
-  float V_dc_volts = 100.0f;
+  float V_dc_volts = 500.0f;
   struct uz_DutyCycle_t duty_cycle_sys1 = {0};
   struct uz_DutyCycle_t duty_cycle_sys2 = {0};
   ...
@@ -207,8 +214,8 @@ Depending on the used controller, this might not be necessary.
     out_voltage_abc2.c = out_voltage_abc.c2;
 
     // Duty Cycles
-    duty_cycle_sys1 = uz_FOC_generate_DutyCycles(out_voltage_abc1, V_dc_volts); // create Duty-Cycles for subsets
-    duty_cycle_sys2 = uz_FOC_generate_DutyCycles(out_voltage_abc2, V_dc_volts); // create Duty-Cycles for subsets
+    duty_cycle_sys1 = uz_FOC_generate_DutyCycles(out_voltage_abc1, V_dc_volts); //create Duty-Cycles for subsets
+    duty_cycle_sys2 = uz_FOC_generate_DutyCycles(out_voltage_abc2, V_dc_volts); //create Duty-Cycles for subsets
     uz_PWM_SS_2L_set_duty_cycle(PWM1, duty_cycle_sys1.DutyCycle_U, duty_cycle_sys1.DutyCycle_V, duty_cycle_sys1.DutyCycle_W);
     uz_PWM_SS_2L_set_duty_cycle(PWM2, duty_cycle_sys2.DutyCycle_U, duty_cycle_sys2.DutyCycle_V, duty_cycle_sys2.DutyCycle_W);
     ...

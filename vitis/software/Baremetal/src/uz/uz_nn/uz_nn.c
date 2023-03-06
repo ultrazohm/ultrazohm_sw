@@ -74,18 +74,23 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 
 
 
-void uz_nn_backprop(uz_nn_t *self,float const reference_output, uz_matrix_t *const input)
+void uz_nn_calc_gradients(uz_nn_t *self,float const reference_output, uz_matrix_t *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // aus derivate matrix und nn zurückpropagieren und die lokalen gradienten Berechnen
     const float *reference = &reference_output;
-    uz_nn_layer_back_last_layer(self->layer[2], reference);
-    uz_nn_layer_back(self->layer[1],uz_nn_get_delta_data(self,3),uz_nn_get_weight_matrix(self,3));
-    uz_nn_layer_back(self->layer[0],uz_nn_get_delta_data(self,2),uz_nn_get_weight_matrix(self,2));
-    //Berechne alle Gradienten
-    uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
-    uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+    // lokale Gradienten zurückrechnen vom letzten layer
+    uz_nn_layer_back_last_layer(self->layer[self->number_of_layer - 1U], reference);
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+    {
+        uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
+    }
+    //Gradient output + alle hidden layer
+    for (uint32_t i = self->number_of_layer - 1U; i > 1; i--)
+    {
+            uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+    }
+    //Gradient erster layer
     uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
@@ -94,6 +99,35 @@ void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS)
     const float *gradient1 = &THETA;
     const float *gradient2 = &BIAS;
     uz_nn_layer_update(self->layer[0],gradient1,gradient2);
+}
+void uz_nn_export(uz_nn_t *self)
+{
+    // Zeige Gewichte nach dem Trainingsschritt an
+    uz_matrix_t* weightshelper = uz_nn_get_weight_matrix(self,1);
+    uz_matrix_t* biasoutput = uz_nn_get_bias_matrix(self,1);
+    float x11 = 0.0f;
+    float x12 = 0.0f;
+    float b11 = 0.0f;
+    float b12 = 0.0f;
+    x11 = uz_matrix_get_element_zero_based(weightshelper,0,0);
+    x12 = uz_matrix_get_element_zero_based(weightshelper,0,1);
+    b11 = uz_matrix_get_element_zero_based(biasoutput,0,0);
+    b12 = uz_matrix_get_element_zero_based(biasoutput,0,1);
+    printf("Neuer Wert für THETA 1.1 ist %.2f \n", x11);
+    printf("Neuer Wert für BIAS 1.1 ist %.2f \n", b11);
+// Daten in .csv datei überschreiben
+FILE* file1 = fopen("test/uz/uz_nn/schroeder_weights/layer1_weights.csv", "w");
+if (file1 != NULL)
+{
+    fprintf(file1, "%.2ff,%.2ff", x11, x12);
+}
+
+FILE* file2 = fopen("test/uz/uz_nn/schroeder_weights/layer1_bias.csv", "w");
+if (file2 != NULL)
+{
+    fprintf(file2, "%.2ff,%.2ff", b11, b12);
+}
+
 }
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {

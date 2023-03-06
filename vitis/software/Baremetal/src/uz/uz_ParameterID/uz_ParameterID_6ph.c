@@ -187,14 +187,14 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	struct uz_DutyCycle_2x3ph_t output_DutyCycle = { 0 };
 	uz_3ph_abc_t system1 = {0};
 	uz_3ph_abc_t system2 = {0};
-	if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
+    if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
 		output_DutyCycle.system1.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.system1.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.system1.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_4;
 		output_DutyCycle.system2.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_a2;
 		output_DutyCycle.system2.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_b2;
 		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
-	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+	} else if ((Data->FluxmapID_extended_controller_Output->control_active == true) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
 		uz_6ph_abc_t V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		system1.a = V_abc_Volts.a1;
@@ -224,20 +224,11 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	return (output_DutyCycle);
 }
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t** CC_instance_1, uz_CurrentControl_t** CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t** res_instance_1, uz_resonantController_t** res_instance_2) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t* res_instance_1, uz_resonantController_t* res_instance_2) {
 	uz_6ph_dq_t out = {0};
-	static bool controllers_initialized = false;
 	if(Data->FluxmapID_extended_controller_Output->control_active == true)
 	{
-		if((Data->FluxmapID_extended_controller_Output->selected_subsystem == 0) && !controllers_initialized)
-		{
-			uz_FluxMapID_6ph_init_controllers(Data->GlobalConfig, &CC_instance_1, &CC_instance_2, &res_instance_1, &res_instance_2);
-			controllers_initialized = true;	
-		}
-		else
-		{
-			out = uz_FluxMapID_6ph_step_controllers(Data, *CC_instance_1, *CC_instance_2, *res_instance_1, *res_instance_2);
-		}
+		out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 	}
 	else
 	{
@@ -248,7 +239,6 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 		out.y = 0.0f;
 		out.z1 = 0.0f;
 		out.z2 = 0.0f;
-		controllers_initialized = false;
 	}
 	return (out);
 }
@@ -432,6 +422,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	Data->FrictionID_Output = uz_FrictionID_get_output(self->FrictionID);
 	Data->FluxMapID_Output = uz_get_FluxMapID_6ph_output(self->FluxMapID);
+	Data->FluxmapID_extended_controller_Output = uz_get_FluxMapID_6ph_extended_controller_output(self->FluxMapID);
 	Data->TwoMassID_Output = uz_TwoMassID_get_output(self->TwoMassID);
 	Data->OnlineID_Output = uz_OnlineID_get_output(self->OnlineID);
 	Data->ControlFlags = uz_ControlState_get_ControlFlags(self->ControlState);

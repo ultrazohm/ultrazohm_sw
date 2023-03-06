@@ -58,40 +58,50 @@ uz_ParaID_FluxMapID_extended_controller_output_t FluxmapID_extended_controller_O
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 
+uz_CurrentControl_t* CC_instance_1 = NULL;
+uz_CurrentControl_t* CC_instance_2 = NULL;
+uz_resonantController_t* res_instance_1 = NULL;
+uz_resonantController_t* res_instance_2 = NULL;
+
 
 void setUp(void)
 {   
     ParaID_Data.GlobalConfig = GlobalConfig;
     ParaID_Data.FluxmapID_extended_controller_Output = &FluxmapID_extended_controller_Output;
     ParaID_Data.ActualValues = ActualValues;
+
+    struct uz_CurrentControl_config cc_config = {
+        	        .decoupling_select = no_decoupling,
+        	        .config_id.Ki = ParaID_Data.GlobalConfig.Ki_id,
+        	        .config_id.Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	        .config_id.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .config_iq.Ki = ParaID_Data.GlobalConfig.Ki_iq,
+        	        .config_iq.Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	        .config_iq.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+    struct uz_resonantController_config resonant_config = {
+            .sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
+            .gain = 0.0f,
+            .harmonic_order = 1.0f,
+            .fundamental_frequency = 1.0f,
+            .lower_limit = -10.0f,
+            .upper_limit = 10.0f,
+            .antiwindup_gain = 0.0f,
+            .in_reference_value = 0.0f,
+            .in_measured_value = 0.0f};
+    CC_instance_1 = uz_CurrentControl_init(cc_config);
+    CC_instance_2 = uz_CurrentControl_init(cc_config);
+    res_instance_1 = uz_resonantController_init(resonant_config);
+    res_instance_2 = uz_resonantController_init(resonant_config);
 }
 
 void tearDown(void)
 {
 }
 
-void test_uz_FluxMapID_6ph_init_controllers(void)
-{
-    uz_CurrentControl_t* CC_instance_1 = NULL;
-    uz_CurrentControl_t* CC_instance_2 = NULL;
-    uz_resonantController_t* resonant_1 = NULL;
-    uz_resonantController_t* resonant_2 = NULL;
-    uz_FluxMapID_6ph_init_controllers(GlobalConfig, &CC_instance_1, &CC_instance_2, &resonant_1, &resonant_2);
-    TEST_ASSERT_NOT_NULL(CC_instance_1);
-    TEST_ASSERT_NOT_NULL(CC_instance_2);
-    TEST_ASSERT_NOT_NULL(resonant_1);
-    TEST_ASSERT_NOT_NULL(resonant_2);
-}
-
 void test_uz_FluxMapID_6ph_step_controllers(void)
 {
-    uz_CurrentControl_t* CC_instance_1 = NULL;
-    uz_CurrentControl_t* CC_instance_2 = NULL;
-    uz_resonantController_t* resonant_1 = NULL;
-    uz_resonantController_t* resonant_2 = NULL;
-    uz_FluxMapID_6ph_init_controllers(GlobalConfig, &CC_instance_1, &CC_instance_2, &resonant_1, &resonant_2);
-    uz_6ph_dq_t flux_map_controller = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
-    TEST_ASSERT_NOT_NULL(CC_instance_1);
+    uz_6ph_dq_t flux_map_controller = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 }
 
 #endif // TEST

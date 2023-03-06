@@ -29,16 +29,17 @@ static uz_incrementalEncoder_t* encoder_D5;
 #define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
 #define IncEncoderLPF_freq 1000.0f
 
-void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset){
+void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset, float speed_timeout){
 	struct uz_incrementalEncoder_config encoder_D5_config={
 		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_0_BASEADDR,
-		.ip_core_frequency_Hz=50000000U,
-		.line_number_per_turn_mech=incrementalEncoderResolution,
+		.ip_core_frequency_Hz=100000000U,
+		.line_number_per_turn_mech=(uint32_t)incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber,
+		.drive_pole_pair=(uint32_t)motorPolePairNumber,
 		.Encoder_mech_Offset = (uint32_t) Mech_Offset,
 		.Encoder_elec_Offset = (uint32_t) Elec_Offset,
-		.Counting_Direction = CW_Counting
+		.Counting_Direction = CW_Counting,
+		.Speed_Timeout_s = speed_timeout
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }
@@ -46,6 +47,15 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);
 	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(encoder_D5) * 60.0f / (2.0f*M_PI);
+
+	// My style to get all values for my system, only for testing-purpose!!! (R.Zipprich)
+	// Get RAW-Values
+	//data->av.theta_elec_M			= uz_incrementalEncoder_get_theta_el(encoder_D5_M);
+	//data->av.mechanicalPosition_M	= uz_incrementalEncoder_get_position(encoder_D5_M);
+	//data->av.theta_mech_M 			= 0.0;
+	//data->av.omega_mech_M 			= uz_incrementalEncoder_get_omega_mech(encoder_D5_M);
+	//data->av.mechanicalRotorSpeed_M = data->av.omega_mech_M * 60.0f / (2.0f*M_PI);
+	//data->av.omega_elec_M			= data->av.omega_mech_M * UZ_D5_MOTOR_POLE_PAIR_NUMBER_M;
 
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;

@@ -23,7 +23,7 @@
 #define SPEED_BUF_SIZE  					2 //3== erster CCS-Versuch
 #define SPEED_BUF_SIZE_INVERS 				1/SPEED_BUF_SIZE
 
-void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset);  // Init Encoder
+void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset, float speed_timeout);  // Init Encoder
 void update_speed_and_position_of_encoder_on_D5(DS_Data *const data);	// update speed and position in global data struct
 
 #endif /* ENCODER_H_ */

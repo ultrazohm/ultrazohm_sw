@@ -19,7 +19,6 @@
 #include "lwip/sockets.h"
 #include "netif/xadapter.h"
 #include "lwipopts.h"
-#include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "APU_RPU_shared.h"
@@ -36,7 +35,7 @@ int i_LifeCheck_process_Ethernet = 0;
 //==============================================================================================================================================================
 void print_echo_app_header()
 {
-    xil_printf("%20s %6d %s\r\n", "echo server",
+    uz_printf("%20s %6d %s\r\n", "echo server",
     			TCPPORT,
 				"$ telnet <board_ip> 1000");
 }
@@ -61,7 +60,7 @@ void process_request_thread(void *p)
 	int nread = 0;
 	int nwrote = 0;
 
-	xil_printf("APU: Javascope connected 0x%x\n", clientfd);
+	uz_printf("APU: Javascope connected 0x%x\n", clientfd);
 	js_connection_established = clientfd;
 
 	xQueueReset(js_queue); //purge queue once new connection is established
@@ -109,9 +108,9 @@ void process_request_thread(void *p)
 		// write the data -> handle request /
 		// The data is sent here
 		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
-			xil_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
+			uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
 			__FUNCTION__, nread, nwrote);
-			xil_printf("APU: Closing socket %d\r\n", clientfd);
+			uz_printf("APU: Closing socket %d\r\n", clientfd);
 			js_connection_established = 0;
 			break;
 		}
@@ -122,7 +121,7 @@ void process_request_thread(void *p)
 			// read a max of RECV_BUF_SIZE bytes from socket /
 			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
 			if (nread < 0) {
-				xil_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+				uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
 				js_connection_established = 0;
 				break;
 			}

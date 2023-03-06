@@ -200,7 +200,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,

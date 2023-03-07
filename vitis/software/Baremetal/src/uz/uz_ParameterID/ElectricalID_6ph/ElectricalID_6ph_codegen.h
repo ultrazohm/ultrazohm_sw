@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.63
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Mar  6 15:51:54 2023
+ * C/C++ source code generated on : Tue Mar  7 11:44:40 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,7 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
+
 
 /* Model Code Variants */
 
@@ -63,8 +64,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-
-
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
@@ -72,8 +71,9 @@ typedef struct {
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T inv_VSD[36];                /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Vstep[205];         /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  real32_T inv_VSD[36];        /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T inv_VSD_n[36];      /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T current_meas_array[1024];
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T d_n[2048];          /* '<S1>/ElectricalID.Subchart_Step_Response5' */

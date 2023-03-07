@@ -33,8 +33,7 @@ struct uz_pmsm_model3ph_config_t
  */
 struct uz_pmsm_model3ph_outputs_t
 {
-    float i_d_A; /**< Current in d-axis in A */
-    float i_q_A; /**< Current in q-Axis in A */
+    uz_3ph_dq_t currents; /**< Current in d-axis in A */
     float torque_Nm; /**< Inner torque of PMSM in Nm*/
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
     float theta_el; /**<Electrical rotor angle*/
@@ -46,8 +45,7 @@ struct uz_pmsm_model3ph_outputs_t
  */
 struct uz_pmsm_model3ph_inputs_t
 {
-    float v_d_V; /**< Voltage in d-axis in V */
-    float v_q_V; /**< Voltage in q-axis in V */
+    uz_3ph_dq_t voltages; /**< Voltage in d-axis in V */
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s */
     float load_torque; /**< Applied load torque in Nm */
 };

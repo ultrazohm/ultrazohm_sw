@@ -127,23 +127,23 @@ void test_uz_pmsm_model3ph_normal_usage(void)
     uz_pmsm_model3ph_hw_read_theta_el_ExpectAndReturn(BASE_ADDRESS,theta_el_expect);
 
     struct uz_pmsm_model3ph_outputs_t out = uz_pmsm_model3ph_get_outputs(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(i_d_expect, out.i_d_A);
-    TEST_ASSERT_EQUAL_FLOAT(i_q_expect, out.i_q_A);
+    TEST_ASSERT_EQUAL_FLOAT(i_d_expect, out.currents.d);
+    TEST_ASSERT_EQUAL_FLOAT(i_q_expect, out.currents.q);
     TEST_ASSERT_EQUAL_FLOAT(torque_expect, out.torque_Nm);
-    TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
-    TEST_ASSERT_EQUAL_FLOAT(theta_el_expect,out.theta_el);
+    TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect, out.omega_mech_1_s);
+    TEST_ASSERT_EQUAL_FLOAT(theta_el_expect, out.theta_el);
 
     // Based on the new values, something can be calculated, e.g., a controller
     struct uz_pmsm_model3ph_inputs_t inputs = {
-        .v_d_V = 100.1f,
-        .v_q_V = -300.0f,
+        .voltages.d = 100.1f,
+        .voltages.q = -300.0f,
         .omega_mech_1_s = 312.123f,
         .load_torque=0.0f};
     // Write new input values to the shadow registers by AXI
-    uz_pmsm_model3ph_hw_write_v_d_Expect(BASE_ADDRESS, inputs.v_d_V);
-    uz_pmsm_model3ph_hw_write_v_q_Expect(BASE_ADDRESS, inputs.v_q_V);
+    uz_pmsm_model3ph_hw_write_v_d_Expect(BASE_ADDRESS, inputs.voltages.d);
+    uz_pmsm_model3ph_hw_write_v_q_Expect(BASE_ADDRESS, inputs.voltages.q);
     uz_pmsm_model3ph_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
-    uz_pmsm_model3ph_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
+    uz_pmsm_model3ph_hw_write_load_torque_Expect(BASE_ADDRESS, inputs.load_torque);
     uz_pmsm_model3ph_set_inputs(test_instance, inputs);
 
 }

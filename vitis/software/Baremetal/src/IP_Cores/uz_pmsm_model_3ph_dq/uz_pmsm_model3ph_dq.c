@@ -76,8 +76,8 @@ void uz_pmsm_model3ph_reset(uz_pmsm_model3ph_t *self)
     struct uz_pmsm_model3ph_inputs_t inputs = {
         .load_torque=0.0f,
         .omega_mech_1_s=0.0f,
-        .v_d_V=0.0f,
-        .v_q_V=0.0f
+        .voltages.d=0.0f,
+        .voltages.q=0.0f
     };
     uz_pmsm_model3ph_set_inputs(self, inputs);
     uz_pmsm_model3ph_hw_trigger_input_strobe(self->config.base_address);
@@ -93,8 +93,8 @@ void uz_pmsm_model3ph_set_inputs(uz_pmsm_model3ph_t *self, struct uz_pmsm_model3
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     //memcpy( (void *)(self->config.base_address+inputs_Data_uz_pmsm_model), &inputs,sizeof(struct uz_pmsm_model3ph_inputs_t) );
-    uz_pmsm_model3ph_hw_write_v_d(self->config.base_address, inputs.v_d_V);
-    uz_pmsm_model3ph_hw_write_v_q(self->config.base_address, inputs.v_q_V);
+    uz_pmsm_model3ph_hw_write_v_d(self->config.base_address, inputs.voltages.d);
+    uz_pmsm_model3ph_hw_write_v_q(self->config.base_address, inputs.voltages.q);
     uz_pmsm_model3ph_hw_write_omega_mech(self->config.base_address, inputs.omega_mech_1_s);
     uz_pmsm_model3ph_hw_write_load_torque(self->config.base_address, inputs.load_torque);
 }
@@ -104,13 +104,13 @@ struct uz_pmsm_model3ph_outputs_t uz_pmsm_model3ph_get_outputs(uz_pmsm_model3ph_
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     struct uz_pmsm_model3ph_outputs_t outputs = {
-        .i_d_A = 0.0f,
-        .i_q_A = 0.0f,
+        .currents.d = 0.0f,
+        .currents.q = 0.0f,
         .torque_Nm = 0.0f,
         .omega_mech_1_s = 0.0f,
         .theta_el = 0.0f};
-    outputs.i_d_A =uz_pmsm_model3ph_hw_read_i_d(self->config.base_address);
-    outputs.i_q_A =uz_pmsm_model3ph_hw_read_i_q(self->config.base_address);
+    outputs.currents.d =uz_pmsm_model3ph_hw_read_i_d(self->config.base_address);
+    outputs.currents.q =uz_pmsm_model3ph_hw_read_i_q(self->config.base_address);
     outputs.torque_Nm =uz_pmsm_model3ph_hw_read_torque(self->config.base_address);
     outputs.omega_mech_1_s =uz_pmsm_model3ph_hw_read_omega_mech(self->config.base_address);
     outputs.theta_el =uz_pmsm_model3ph_hw_read_theta_el(self->config.base_address);

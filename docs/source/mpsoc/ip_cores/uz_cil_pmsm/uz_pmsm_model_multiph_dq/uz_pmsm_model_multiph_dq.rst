@@ -94,6 +94,35 @@ In addition to the regular functions, *unsafe* versions of the driver exist (``_
 These functions are considerably faster than their safe counterparts but violate the software rules outlined in :ref:`software_development_guidelines`.
 It is strongly advised to manually test by comparing the safe and unsafe versions before using *_unsafe*!""
 
+Three-phase model
+-----------------
+.. doxygentypedef:: uz_pmsm_model3ph_dq_t
+
+.. doxygenstruct:: uz_pmsm_model3ph_dq_config_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_model3ph_outputs_t
+  :members:
+
+.. doxygenstruct:: uz_pmsm_model3ph_inputs_t
+  :members:
+
+.. doxygenfunction:: uz_pmsm_model3ph_init
+
+.. doxygenfunction:: uz_pmsm_model3ph_trigger_input_strobe
+
+.. doxygenfunction:: uz_pmsm_model3ph_trigger_output_strobe
+
+.. doxygenfunction:: uz_pmsm_model3ph_set_inputs
+
+.. doxygenfunction:: uz_pmsm_model3ph_get_outputs
+
+.. doxygenfunction:: uz_pmsm_model3ph_reset
+
+.. doxygenfunction:: uz_pmsm_model_dq_set_use_axi_input
+
+.. doxygenfunction:: uz_pmsm_model3ph_dq_get_input_voltages
+
 Six-phase model
 ---------------
 .. doxygentypedef:: uz_pmsm_model6ph_dq_t

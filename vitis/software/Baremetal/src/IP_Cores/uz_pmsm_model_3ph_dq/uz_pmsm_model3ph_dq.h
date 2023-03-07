@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../../uz/uz_Transformation/uz_Transformation.h"
+#include "../../uz/uz_PMSM_config/uz_PMSM_config.h"
 
 /**
  * @brief Object data type definition of the PMSM model IP-Core driver
@@ -19,14 +20,9 @@ struct uz_pmsm_model3ph_config_t
 {
     uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_core_frequency_Hz; /**< Clock frequency of IP-Core */
-    float polepairs; /**< Pole pairs of the PMSM */
-    float r_1; /**< Stator resistance in ohm */
-    float L_d; /**< Direct inductance in Henry */
-    float L_q; /**< Quadrature inductance in Henry */
-    float psi_pm; /**< Linked magnetic flux of PM magnets */
+    uz_PMSM_t pmsm; /**< PMSM Config with necessary parameters */
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
-    float inertia; /**< Inertia of the PMSM */
     bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
     bool switch_pspl; /**< true: input voltage from AXI, false: input voltage from PL */
 };

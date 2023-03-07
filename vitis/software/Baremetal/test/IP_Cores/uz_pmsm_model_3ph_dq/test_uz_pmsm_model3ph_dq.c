@@ -3,6 +3,7 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_pmsm_model3ph_dq.h"
+#include "uz_PMSM_config.h"
 #include "mock_uz_pmsm_model3ph_dq_hw.h"
 
 #define BASE_ADDRESS 0x0000000FU
@@ -13,12 +14,13 @@ struct uz_pmsm_model3ph_config_t config = {
     .ip_core_frequency_Hz = IP_FRQ,
     .simulate_mechanical_system = true,
     .switch_pspl = true,
-    .r_1 = 2.1f,
-    .L_d = 0.00005f,
-    .L_q = 0.00005f,
-    .psi_pm = 0.05f,
-    .polepairs = 2.0f,
-    .inertia = 0.001f,
+    .pmsm.R_ph_Ohm = 2.1f,
+    .pmsm.Ld_Henry = 0.00005f,
+    .pmsm.Lq_Henry = 0.00005f,
+    .pmsm.Psi_PM_Vs = 0.05f,
+    .pmsm.polePairs = 2.0f,
+    .pmsm.J_kg_m_squared = 0.001f,
+    .pmsm.I_max_Ampere = 10.f,
     .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f};
 
@@ -34,16 +36,16 @@ uz_pmsm_model3ph_t *successful_init(struct uz_pmsm_model3ph_config_t configurati
 uz_pmsm_model3ph_t *successful_init(struct uz_pmsm_model3ph_config_t configuration)
 {
     // This function is called by tests who require an successful initialized instance
-    uz_pmsm_model3ph_hw_write_polepairs_Expect(BASE_ADDRESS, configuration.polepairs);
-    uz_pmsm_model3ph_hw_write_r_1_Expect(BASE_ADDRESS, configuration.r_1);
-    uz_pmsm_model3ph_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.psi_pm);
-    uz_pmsm_model3ph_hw_write_L_d_Expect(BASE_ADDRESS, configuration.L_d);
-    uz_pmsm_model3ph_hw_write_L_q_Expect(BASE_ADDRESS, configuration.L_q);
+    uz_pmsm_model3ph_hw_write_polepairs_Expect(BASE_ADDRESS, configuration.pmsm.polePairs);
+    uz_pmsm_model3ph_hw_write_r_1_Expect(BASE_ADDRESS, configuration.pmsm.R_ph_Ohm);
+    uz_pmsm_model3ph_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.pmsm.Psi_PM_Vs);
+    uz_pmsm_model3ph_hw_write_L_d_Expect(BASE_ADDRESS, configuration.pmsm.Ld_Henry);
+    uz_pmsm_model3ph_hw_write_L_q_Expect(BASE_ADDRESS, configuration.pmsm.Lq_Henry);
     if (configuration.simulate_mechanical_system)
     {
         uz_pmsm_model3ph_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
         uz_pmsm_model3ph_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, configuration.coulomb_friction_constant);
-        uz_pmsm_model3ph_hw_write_inertia_Expect(BASE_ADDRESS, configuration.inertia);
+        uz_pmsm_model3ph_hw_write_inertia_Expect(BASE_ADDRESS, configuration.pmsm.J_kg_m_squared);
     }
     else
     {

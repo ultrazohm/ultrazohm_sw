@@ -50,19 +50,14 @@ uz_pmsm_model3ph_t *uz_pmsm_model3ph_init(struct uz_pmsm_model3ph_config_t confi
 {
     uz_assert(0U != config.base_address);
     uz_assert(0U != config.ip_core_frequency_Hz);
-    uz_assert(config.r_1 > 0.0f);
-    uz_assert(config.L_d > 0.0f);
-    uz_assert(config.L_q > 0.0f);
-    uz_assert(config.psi_pm >= 0.0f);
-    uz_assert(config.polepairs > 0.0f);
     // If the mechanical system is not simulated, set default values
     if (!config.simulate_mechanical_system)
     {
-        config.inertia = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
+        config.pmsm.J_kg_m_squared = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
         config.friction_coefficient = 1.0f; // Random default values
         config.coulomb_friction_constant = 0.0f;
     }
-    uz_assert(config.inertia > 0.0f);
+    uz_PMSM_config_assert(config.pmsm);
     uz_assert(config.coulomb_friction_constant >= 0.0f);
     uz_assert(config.friction_coefficient >= 0.0f);
 
@@ -140,14 +135,14 @@ static void write_config_to_pl(uz_pmsm_model3ph_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_pmsm_model3ph_hw_write_polepairs(self->config.base_address, self->config.polepairs);
-    uz_pmsm_model3ph_hw_write_r_1(self->config.base_address, self->config.r_1);
-    uz_pmsm_model3ph_hw_write_psi_pm(self->config.base_address, self->config.psi_pm);
-    uz_pmsm_model3ph_hw_write_L_d(self->config.base_address, self->config.L_d);
-    uz_pmsm_model3ph_hw_write_L_q(self->config.base_address, self->config.L_q);
+    uz_pmsm_model3ph_hw_write_polepairs(self->config.base_address, self->config.pmsm.polePairs);
+    uz_pmsm_model3ph_hw_write_r_1(self->config.base_address, self->config.pmsm.R_ph_Ohm);
+    uz_pmsm_model3ph_hw_write_psi_pm(self->config.base_address, self->config.pmsm.Psi_PM_Vs);
+    uz_pmsm_model3ph_hw_write_L_d(self->config.base_address, self->config.pmsm.Ld_Henry);
+    uz_pmsm_model3ph_hw_write_L_q(self->config.base_address, self->config.pmsm.Lq_Henry);
     uz_pmsm_model3ph_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
     uz_pmsm_model3ph_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
-    uz_pmsm_model3ph_hw_write_inertia(self->config.base_address, self->config.inertia);
+    uz_pmsm_model3ph_hw_write_inertia(self->config.base_address, self->config.pmsm.J_kg_m_squared);
     uz_pmsm_model3ph_hw_write_simulate_mechanical(self->config.base_address, self->config.simulate_mechanical_system);
     uz_pmsm_model3ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
 }

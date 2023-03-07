@@ -21,7 +21,7 @@ struct uz_6ph_MLMT_kparameter{
     float k6;   /**< k6 parameter, for calculating i_z1_ref = k5 * i_alpha_ref + k6 * i_beta_ref*/
     float k7;   /**< k7 parameter, for calculating i_z2_ref = k7 * i_alpha_ref + k8 * i_beta_ref*/
     float k8;   /**< k8 parameter, for calculating i_z2_ref = k7 * i_alpha_ref + k8 * i_beta_ref*/
-    float a;    /**< derating factor*/
+    float deratingFaktor;    /**< derating factor*/
 };
 
 /**

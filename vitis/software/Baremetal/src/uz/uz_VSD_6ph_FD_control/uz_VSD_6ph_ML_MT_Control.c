@@ -18,7 +18,7 @@
 #include "uz_VSD_6ph_ML_MT_Control.h"
 
 /**
- * @brief helper function for get_k_parameter, returns indexes of LUT
+ * @brief helper function for get_k_parameter, returns indices of LUT
  * @param p1 Index of first Phase with OPF
  * @param p2 Index of second Phase with OPF
  * @return int corresponding index in lookup-table for fault-scenario
@@ -26,7 +26,7 @@
 int get_index_OPF_2(int p1, int p2);
 
 /**
- * @brief helper function for get_k_parameter, returns indexes of LUT
+ * @brief helper function for get_k_parameter, returns indices of LUT
  * @param p1 Index of fist Phase with OPF
  * @param p2 Index of second Phase with OPF
  * @param p3 Index of third Phase with OPF
@@ -50,12 +50,12 @@ typedef struct uz_6phFD_opf{
 
 
 /**
- * @brief helper function: creates struct with number of open phases and indices of faulted phases from uz_6phFD_indices fault-indices struct
- * 
+ * @brief helper function: analyses the uz_6phFD_indices struct with fault indices and returns the number of faulted phases and the phasenumer of these faulted phases in ascending order
+ *  * 
  * @param input uz_6phFD_indices struct with fault indices
- * @return uz_6phFD_opf struct with number of opnen phases and orderd indices of faulted phases
+ * @return uz_6phFD_opf struct with number of open phases and ordered phasenumer of faulted phases
  */
-uz_6phFD_opf uz_num_opf(uz_6phFD_indices input);
+uz_6phFD_opf uz_get_numbers_and_order_of_faulted_phases(uz_6phFD_indices input);
 
 
 const uz_6ph_MLMT_kparameter k_1OPF_2N_ML[6] = { 
@@ -185,86 +185,120 @@ const uz_6ph_MLMT_kparameter k_3OPF_1N[20] = {
 };
 
 
-uz_6ph_MLMT_kparameter get_k_parameter(uz_6phFD_indices input, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
+/**
+ * @brief Returns the k-parameters according to the fault scenario, the selected neutral point configuration and ML-MT optimization
+ * 
+ * @param input_faultindices
+ * @param neutral_point_configuration 
+ * @param ML_MT_optimization 
+ * @return uz_6ph_MLMT_kparameter 
+ */
+uz_6ph_MLMT_kparameter get_k_parameter(uz_6phFD_indices input_faultindices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
 
-uz_6phFD_opf helpstruct;
-helpstruct = uz_num_opf(input);
+uz_6phFD_opf helpstruct = uz_get_numbers_and_order_of_faulted_phases(input_faultindices);
 
-int p1 = helpstruct.opf1;
-int p2 = helpstruct.opf2;
-int p3 = helpstruct.opf3;
-int num_OPF = helpstruct.num_opf;
+
+int phasenumber_opf1 = helpstruct.opf1;       // index of first phase with an open phase fault
+int phasenumber_opf2 = helpstruct.opf2;       // index of second phase with an open phase fault
+int phasenumber_opf3 = helpstruct.opf3;       // index of third phase with an open phase fault
+int num_OPF = helpstruct.num_opf;       // number of faulted phases
+
+int index = 0;
 
 //check input values
-uz_6ph_MLMT_kparameter k = {0};
-int i = 0;
+uz_6ph_MLMT_kparameter k_parameter = {0};
 
-uz_6ph_MLMT_kparameter k_error = {0};
+uz_6ph_MLMT_kparameter k_parameter_default = {0};
+k_parameter_default.deratingFaktor = 1.0f;
 
 // check parameter:
 
-if(num_OPF == 0){
-	k.a = 1.0f;
-	return k;
-}
 
-if(neutral_point_configuration == 2){
-    if(num_OPF == 1){
-            if(ML == ML_MT_optimization){
-                k = k_1OPF_2N_ML[p1-1];
-            }
-            else{   //MT
-                k = k_1OPF_2N_MT[p1-1];
-            }
-    }
-    else if(num_OPF == 2){
-    	i = get_index_OPF_2(p1, p2);
-        k = k_2OPF_2N[i];
-    }
-    else if(num_OPF == 3){
-        if( (p1 == 1) && (p2 == 2) && (p3 == 3) ){
-            k = k_3OPF_2N[0];
+switch(neutral_point_configuration){
+
+    case N2:    // N2-Neutral point configuration
+
+        switch(num_OPF){
+
+                case 0:         // no faulted phase
+                        k_parameter = k_parameter_default;
+                        break;
+                
+                case 1:         // one faulted phase
+
+                        if(ML == ML_MT_optimization){
+                                k_parameter = k_1OPF_2N_ML[phasenumber_opf1-1];
+                        }
+                        else{   //MT
+                                k_parameter = k_1OPF_2N_MT[phasenumber_opf1-1];
+                        }
+                        break;  
+
+                case 2:         // two faulted phases
+                        index = get_index_OPF_2(phasenumber_opf1, phasenumber_opf2);
+                        k_parameter = k_2OPF_2N[index];
+                        break;  
+
+                case 3:         // three faulted phases
+                        if( (phasenumber_opf1 == 1) && (phasenumber_opf2 == 2) && (phasenumber_opf3 == 3) ){
+                                k_parameter = k_3OPF_2N[0];
+                        }
+                        else if( (phasenumber_opf1 == 4) && (phasenumber_opf2 == 5) && (phasenumber_opf3 == 6) ){
+                                k_parameter = k_3OPF_2N[1];
+                        }
+                        break;  
+
+                default:        // more than three faulted phases
+                        k_parameter = k_parameter_default;     
+                        break;               
         }
-        else if( (p1 == 4) && (p2 == 5) && (p3 == 6) ){
-            k = k_3OPF_2N[1];
+        break;
+
+    case N1:    // N1-Neutral point configuration
+
+        switch(num_OPF){
+
+                case 0:         // no faulted phase
+                        k_parameter = k_parameter_default;
+                        break;
+
+                case 1:         // one faulted phase
+                        if(ML == ML_MT_optimization){
+                                k_parameter = k_1OPF_1N_ML[phasenumber_opf1-1];
+                        }
+                        else{   //MT
+                                k_parameter = k_1OPF_1N_MT[phasenumber_opf1-1];
+                        }     
+                        break;       
+
+                case 2:         // two faulted phases
+                        if(ML == ML_MT_optimization){
+                                index =get_index_OPF_2(phasenumber_opf1, phasenumber_opf2);
+                                k_parameter = k_2OPF_1N_ML[index];
+                        }
+                        else{   //MT
+                                index = get_index_OPF_2(phasenumber_opf1, phasenumber_opf2);
+                                k_parameter = k_2OPF_1N_MT[index];
+                        } 
+                        break;       
+
+                case 3:         // three faulted phases
+                        index = get_index_OPF_3(phasenumber_opf1,phasenumber_opf2,phasenumber_opf3);
+                        k_parameter = k_3OPF_1N[index];
+                        break;
+
+                        default:        // more than three faulted phases
+                        k_parameter = k_parameter_default;     
+                        break;   
         }
-    }
-    else{
-        // more than 3 OPF
-        k = k_error;
-    }
+        break;
+
+    default:    // neither N1 nor N2 configuration
+        k_parameter = k_parameter_default;
+        break;
 
 }
-else if( neutral_point_configuration ==1){
-    if( num_OPF == 1){
-            if(ML == ML_MT_optimization){
-                k = k_1OPF_1N_ML[p1-1];
-            }
-            else{   //MT
-                k = k_1OPF_1N_MT[p1-1];
-            }
-    }
-    else if(num_OPF == 2){
-            if(ML == ML_MT_optimization){
-            	i =get_index_OPF_2(p1, p2);
-                k = k_2OPF_1N_ML[i];
-            }
-            else{   //MT
-            	i = get_index_OPF_2(p1, p2);
-                k = k_2OPF_1N_MT[i];
-            }
-    }
-    else if(num_OPF == 3){
-    			i = get_index_OPF_3(p1,p2,p3);
-                k = k_3OPF_1N[i];
-    }
-    else{
-        // more than 3 OPF
-        k = k_error;
-    }
-
-}
-return k;
+return k_parameter;
 }
 
 
@@ -328,7 +362,10 @@ int get_index_OPF_2(int p1, int p2){
     return index;
 }
 
+
 int get_index_OPF_3(int p1, int p2, int p3){
+    // returns the index for the Look-up-Table of k-Parameters according to p1, p2, p3 the phasenumbers of the faulted phases
+
     int index = 0;
 
         if(p1 == 1){
@@ -417,44 +454,53 @@ int get_index_OPF_3(int p1, int p2, int p3){
 
 
 
-uz_6phFD_opf uz_num_opf(uz_6phFD_indices input){
+uz_6phFD_opf uz_get_numbers_and_order_of_faulted_phases(uz_6phFD_indices input){
 
 	uz_6phFD_opf output;
 
-	int opf_phases[6] = {0};
-	int num_OPF = 0;
+	int opf_phases_ascending[6] = {0}; // array for phasenumbers of faulted phases in ascending order
+	int number_of_OPF = 0;         // number of faulted phases
 
+        // evaluate phase 1
 	if (input.R1 == 1){
-		opf_phases[num_OPF] = 1;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 1;
+		number_of_OPF += 1;
 	}
+        // evaluate phase 2
 	if (input.R2 == 1){
-		opf_phases[num_OPF] = 2;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 2;
+		number_of_OPF += 1;
 	}
+        // evaluate phase 3
 	if (input.R3 == 1){
-		opf_phases[num_OPF] = 3;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 3;
+		number_of_OPF += 1;
 	}
+        // evaluate phase 4
 	if (input.R4 == 1){
-		opf_phases[num_OPF] = 4;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 4;
+		number_of_OPF += 1;
 	}
+        // evaluate phase 5
 	if (input.R5 == 1){
-		opf_phases[num_OPF] = 5;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 5;
+		number_of_OPF += 1;
 	}
+        // evaluate phase 6
 	if (input.R6 == 1){
-		opf_phases[num_OPF] = 6;
-		num_OPF += 1;
+		opf_phases_ascending[number_of_OPF] = 6;
+		number_of_OPF += 1;
 	}
-	output.opf1 = opf_phases[0];
-	output.opf2 = opf_phases[1];
-	output.opf3 = opf_phases[2];
-	output.opf4 = opf_phases[3];
-	output.opf5 = opf_phases[4];
-	output.opf6 = opf_phases[5];
-	output.num_opf = num_OPF;
+
+        // write into output struct
+	output.opf1 = opf_phases_ascending[0];
+	output.opf2 = opf_phases_ascending[1];
+	output.opf3 = opf_phases_ascending[2];
+	output.opf4 = opf_phases_ascending[3];
+	output.opf5 = opf_phases_ascending[4];
+	output.opf6 = opf_phases_ascending[5];
+	output.num_opf = number_of_OPF;
+
 	return output;
 
 }

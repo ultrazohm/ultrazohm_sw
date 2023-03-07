@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.51
+ * Model version                  : 3.63
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Feb 23 16:55:15 2023
+ * C/C++ source code generated on : Tue Mar  7 11:44:40 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,7 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
+
 
 /* Model Code Variants */
 
@@ -61,7 +62,8 @@
 
 #define ElectricalID_6ph_codegen_M     (rtElectricalID_6ph_codegen_M)
 
-
+/* Forward declaration for rtModel */
+typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
@@ -69,8 +71,9 @@ typedef struct {
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T inv_VSD[36];                /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Vstep[205];         /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  real32_T inv_VSD[36];        /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T inv_VSD_n[36];      /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T current_meas_array[1024];
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T d_n[2048];          /* '<S1>/ElectricalID.Subchart_Step_Response5' */
@@ -108,8 +111,8 @@ typedef struct {
   real32_T i_est_n[2048];
   real32_T setp_abc[6];
   real32_T setp_dq[6];
-  real32_T setp_abc_k[6];
-  real32_T setp_dq_c[6];
+  real32_T setp_abc_c[6];
+  real32_T setp_dq_b[6];
   real32_T H_bn[4];
   real32_T R_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T L_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
@@ -141,19 +144,25 @@ typedef struct {
   real32_T lambda_c;
   real32_T e_h4;
   int32_T i;
+  uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_j;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_a;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_m;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_l;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_a1;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T counter;                    /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T sineCounter;                /* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_k;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T exitPortIndex_m;    /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint32_T counter_i;          /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint32_T exitPortIndex_d;    /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint32_T counter_j;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint32_T exitPortIndex_b;    /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  uint32_T exitPortIndex_b5;   /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T counter_g;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T exitPortIndex_a;    /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T counter_f;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint32_T exitPortIndex_j;    /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  uint32_T exitPortIndex_ji;   /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T counter_o;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T exitPortIndex_p;     /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint32_T counter_n;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
@@ -173,17 +182,17 @@ typedef struct {
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_;
+  uint8_T is_c14_sfYtI3dVphCWj0yeGcQTjEC_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_sFTU40wEamfDHpngeAPrO2F_;
+  uint8_T is_c14_sy7XjnHxVYbhMov5BLWtwrG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_sheOU9F0ciP5xluREMNqviH_;
+  uint8_T is_c14_sgw9yoTrZ3r553R29sM9SRG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_s89sl6dy7jxtKuHOz6RNlsC_;
+  uint8_T is_c14_sGmfjfuJTpCF9MYHJTzBOhD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_s3ilL2Pptbnh1NNa2bfdZqD_;
+  uint8_T is_c14_sl959dG5iVvEfF2XuoR7heD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_sbnthKuD2l2oMiHXMcCagvD_;
+  uint8_T is_c14_sTmeVn9UMjbgIW9tERLCiND_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;

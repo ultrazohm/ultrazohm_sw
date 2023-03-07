@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.51
+ * Model version                  : 3.63
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Feb 23 16:55:15 2023
+ * C/C++ source code generated on : Tue Mar  7 11:44:40 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,7 +23,6 @@
 #include "../rt_hypotf.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
-
 /* Named constants for Chart: '<S1>/ElectricalID.Subchart_Step_Response' */
 #define IN_Levenberg_Marquardt         ((uint8_T)1U)
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
@@ -95,6 +94,8 @@ static void LM_algorithm_i(const uz_ParaID_GlobalConfig_t *GlobalConfig,
   real32_T *e, const uint16_T *n_iters, real32_T H[4], real32_T i_est_e[2048],
   DW_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_DW);
 static real32_T wrap_to(real32_T angle, real32_T limit_up);
+static void SetpVectorToDutyCycle6ph(uz_ParaID_ElectricalID_output_t
+  *ElectricalID_output_in, real32_T VDC, const real32_T SetpVector[6]);
 static void DutyCycle_mod(real32_T ia_reg_in, ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
@@ -149,12 +150,13 @@ static void initParams(ExtU_ElectricalID_6ph_codegen_t
                rtElectricalID_6ph_codegen_U->GlobalConfig_out.sampleTimeISR);
   if (tmp < 4.2949673E+9F) {
     if (tmp >= 0.0F) {
-      rtElectricalID_6ph_codegen_DW->one_sec_transition_counter = (uint32_T)tmp;
+      rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k = (uint32_T)
+        tmp;
     } else {
-      rtElectricalID_6ph_codegen_DW->one_sec_transition_counter = 0U;
+      rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k = 0U;
     }
   } else {
-    rtElectricalID_6ph_codegen_DW->one_sec_transition_counter = MAX_uint32_T;
+    rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k = MAX_uint32_T;
   }
 
   /*  initialize variables */
@@ -398,7 +400,7 @@ static void Subchart_St_MeasureStepRespon_n(real32_T v_dq_d, real32_T i_dq_d,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sbnthKuD2l2oMiHXMcCagvD_Subchart_Step_Response': '<S2>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sTmeVn9UMjbgIW9tERLCiND_Subchart_Step_Response': '<S2>:39' */
   /* '<S2>:39:2' fns = fieldnames(i_dq); */
   /* '<S2>:39:3' current = i_dq.(fns{index}); */
   /* '<S2>:39:4' voltage = v_dq.(fns{index}); */
@@ -695,7 +697,7 @@ static void Subchart__b_MeasureStepRespon_g(real32_T v_dq_x, real32_T i_dq_x,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_s3ilL2Pptbnh1NNa2bfdZqD_Subchart_Step_Response': '<S3>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sl959dG5iVvEfF2XuoR7heD_Subchart_Step_Response': '<S3>:39' */
   /* '<S3>:39:2' fns = fieldnames(i_dq); */
   /* '<S3>:39:3' current = i_dq.(fns{index}); */
   /* '<S3>:39:4' voltage = v_dq.(fns{index}); */
@@ -992,7 +994,7 @@ static void Subchart_bt_MeasureStepRespon_p(real32_T v_dq_y, real32_T i_dq_y,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_s89sl6dy7jxtKuHOz6RNlsC_Subchart_Step_Response': '<S4>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sGmfjfuJTpCF9MYHJTzBOhD_Subchart_Step_Response': '<S4>:39' */
   /* '<S4>:39:2' fns = fieldnames(i_dq); */
   /* '<S4>:39:3' current = i_dq.(fns{index}); */
   /* '<S4>:39:4' voltage = v_dq.(fns{index}); */
@@ -1289,7 +1291,7 @@ static void Subchar_btw_MeasureStepRespon_k(real32_T v_dq_z1, real32_T i_dq_z1,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sheOU9F0ciP5xluREMNqviH_Subchart_Step_Response': '<S5>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sgw9yoTrZ3r553R29sM9SRG_Subchart_Step_Response': '<S5>:39' */
   /* '<S5>:39:2' fns = fieldnames(i_dq); */
   /* '<S5>:39:3' current = i_dq.(fns{index}); */
   /* '<S5>:39:4' voltage = v_dq.(fns{index}); */
@@ -1586,7 +1588,7 @@ static void Subcha_btw5_MeasureStepRespon_g(real32_T v_dq_z2, real32_T i_dq_z2,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sFTU40wEamfDHpngeAPrO2F_Subchart_Step_Response': '<S6>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sy7XjnHxVYbhMov5BLWtwrG_Subchart_Step_Response': '<S6>:39' */
   /* '<S6>:39:2' fns = fieldnames(i_dq); */
   /* '<S6>:39:3' current = i_dq.(fns{index}); */
   /* '<S6>:39:4' voltage = v_dq.(fns{index}); */
@@ -1883,7 +1885,7 @@ static void Subch_btw5m_MeasureStepRespon_e(real32_T v_dq_q, real32_T i_dq_q,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sRRbuuHq6eQ6vR3JKNYCPnG_Subchart_Step_Response': '<S7>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sfYtI3dVphCWj0yeGcQTjEC_Subchart_Step_Response': '<S7>:39' */
   /* '<S7>:39:2' fns = fieldnames(i_dq); */
   /* '<S7>:39:3' current = i_dq.(fns{index}); */
   /* '<S7>:39:4' voltage = v_dq.(fns{index}); */
@@ -2200,6 +2202,127 @@ static real32_T wrap_to(real32_T angle, real32_T limit_up)
 
   /* '<S1>:1083:15' wrapped = angle; */
   return angle;
+}
+
+/*
+ * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
+ * function [ElectricalID_output] = SetpVectorToDutyCycle6ph(ElectricalID_output_in,VDC,SetpVector)
+ * Copy ElectricalID_output
+ */
+static void SetpVectorToDutyCycle6ph(uz_ParaID_ElectricalID_output_t
+  *ElectricalID_output_in, real32_T VDC, const real32_T SetpVector[6])
+{
+  real32_T DutyCycle;
+
+  /* 'SetpVectorToDutyCycle6ph:3' ElectricalID_output = ElectricalID_output_in; */
+  /* Write DutyCycle to ElectricalID_output */
+  /* 'SetpVectorToDutyCycle6ph:5' ElectricalID_output.PWM_Switch_0 = GenerateDutyCycle(VDC,SetpVector(1)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[0] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_0 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_0 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_0 = DutyCycle;
+  }
+
+  /* 'SetpVectorToDutyCycle6ph:6' ElectricalID_output.PWM_Switch_2 = GenerateDutyCycle(VDC,SetpVector(2)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[1] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_2 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_2 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_2 = DutyCycle;
+  }
+
+  /* 'SetpVectorToDutyCycle6ph:7' ElectricalID_output.PWM_Switch_4 = GenerateDutyCycle(VDC,SetpVector(3)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[2] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_4 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_4 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_4 = DutyCycle;
+  }
+
+  /* 'SetpVectorToDutyCycle6ph:8' ElectricalID_output.PWM_Switch_a2 = GenerateDutyCycle(VDC,SetpVector(4)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[3] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_a2 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_a2 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_a2 = DutyCycle;
+  }
+
+  /* 'SetpVectorToDutyCycle6ph:9' ElectricalID_output.PWM_Switch_b2 = GenerateDutyCycle(VDC,SetpVector(5)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[4] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_b2 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_b2 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_b2 = DutyCycle;
+  }
+
+  /* 'SetpVectorToDutyCycle6ph:10' ElectricalID_output.PWM_Switch_c2 = GenerateDutyCycle(VDC,SetpVector(6)); */
+  /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
+  DutyCycle = (SetpVector[5] / (VDC / 2.0F) + 1.0F) / 2.0F;
+
+  /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
+  if (DutyCycle < 0.0F) {
+    /* 'GenerateDutyCycle:4' out = single(0); */
+    ElectricalID_output_in->PWM_Switch_c2 = 0.0F;
+  } else if (DutyCycle > 1.0F) {
+    /* 'GenerateDutyCycle:5' elseif (DutyCycle > 1) */
+    /* 'GenerateDutyCycle:6' out = single(1); */
+    ElectricalID_output_in->PWM_Switch_c2 = 1.0F;
+  } else {
+    /* 'GenerateDutyCycle:7' else */
+    /* 'GenerateDutyCycle:8' out = DutyCycle; */
+    ElectricalID_output_in->PWM_Switch_c2 = DutyCycle;
+  }
 }
 
 /*
@@ -2711,29 +2834,29 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
     /* Entry: Subchart_Step_Response_6ph */
     /* Entry Internal: Subchart_Step_Response_6ph */
     /* Transition: '<S7>:31' */
-    rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
       IN_stepResponse;
 
     /* Entry 'stepResponse': '<S7>:35' */
     for (i = 0; i < 6; i++) {
-      rtElectricalID_6ph_codegen_DW->setp_dq_c[i] = 0.0F;
+      rtElectricalID_6ph_codegen_DW->setp_dq_b[i] = 0.0F;
     }
 
     /* '<S7>:35:3' activeState = uint16(130)+index; */
     rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 132U;
 
     /* '<S7>:35:4' setp_dq(index)=ref_amplitude; */
-    rtElectricalID_6ph_codegen_DW->setp_dq_c[1] =
+    rtElectricalID_6ph_codegen_DW->setp_dq_b[1] =
       rtElectricalID_6ph_codegen_DW->ref_amplitude;
 
     /* setpoints in dq */
     /* '<S7>:35:5' setp_abc = inv_VSD*setp_dq; */
     for (i = 0; i < 6; i++) {
-      rtElectricalID_6ph_codegen_DW->setp_abc_k[i] = 0.0F;
+      rtElectricalID_6ph_codegen_DW->setp_abc_c[i] = 0.0F;
       for (i_0 = 0; i_0 < 6; i_0++) {
-        rtElectricalID_6ph_codegen_DW->setp_abc_k[i] +=
-          rtElectricalID_6ph_codegen_DW->inv_VSD[6 * i_0 + i] *
-          rtElectricalID_6ph_codegen_DW->setp_dq_c[i_0];
+        rtElectricalID_6ph_codegen_DW->setp_abc_c[i] +=
+          rtElectricalID_6ph_codegen_DW->inv_VSD_n[6 * i_0 + i] *
+          rtElectricalID_6ph_codegen_DW->setp_dq_b[i_0];
       }
     }
 
@@ -2745,7 +2868,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
     /* 'SetpVectorToDutyCycle6ph:5' ElectricalID_output.PWM_Switch_0 = GenerateDutyCycle(VDC,SetpVector(1)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
     DutyCycle_tmp = rtElectricalID_6ph_codegen_U->ActualValues.V_DC / 2.0F;
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[0] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[0] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2765,7 +2888,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:6' ElectricalID_output.PWM_Switch_2 = GenerateDutyCycle(VDC,SetpVector(2)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[1] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[1] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2785,7 +2908,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:7' ElectricalID_output.PWM_Switch_4 = GenerateDutyCycle(VDC,SetpVector(3)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[2] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[2] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2805,7 +2928,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:8' ElectricalID_output.PWM_Switch_a2 = GenerateDutyCycle(VDC,SetpVector(4)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[3] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[3] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2825,7 +2948,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:9' ElectricalID_output.PWM_Switch_b2 = GenerateDutyCycle(VDC,SetpVector(5)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[4] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[4] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2845,7 +2968,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:10' ElectricalID_output.PWM_Switch_c2 = GenerateDutyCycle(VDC,SetpVector(6)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[5] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[5] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2889,29 +3012,29 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
     /* Entry: Subchart_Step_Response_6ph */
     /* Entry Internal: Subchart_Step_Response_6ph */
     /* Transition: '<S2>:31' */
-    rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
       IN_stepResponse;
 
     /* Entry 'stepResponse': '<S2>:35' */
     for (i = 0; i < 6; i++) {
-      rtElectricalID_6ph_codegen_DW->setp_dq_c[i] = 0.0F;
+      rtElectricalID_6ph_codegen_DW->setp_dq_b[i] = 0.0F;
     }
 
     /* '<S2>:35:3' activeState = uint16(130)+index; */
     rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 131U;
 
     /* '<S2>:35:4' setp_dq(index)=ref_amplitude; */
-    rtElectricalID_6ph_codegen_DW->setp_dq_c[0] =
+    rtElectricalID_6ph_codegen_DW->setp_dq_b[0] =
       rtElectricalID_6ph_codegen_DW->ref_amplitude;
 
     /* setpoints in dq */
     /* '<S2>:35:5' setp_abc = inv_VSD*setp_dq; */
     for (i = 0; i < 6; i++) {
-      rtElectricalID_6ph_codegen_DW->setp_abc_k[i] = 0.0F;
+      rtElectricalID_6ph_codegen_DW->setp_abc_c[i] = 0.0F;
       for (i_0 = 0; i_0 < 6; i_0++) {
-        rtElectricalID_6ph_codegen_DW->setp_abc_k[i] +=
+        rtElectricalID_6ph_codegen_DW->setp_abc_c[i] +=
           rtElectricalID_6ph_codegen_DW->inv_VSD_p[6 * i_0 + i] *
-          rtElectricalID_6ph_codegen_DW->setp_dq_c[i_0];
+          rtElectricalID_6ph_codegen_DW->setp_dq_b[i_0];
       }
     }
 
@@ -2923,7 +3046,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
     /* 'SetpVectorToDutyCycle6ph:5' ElectricalID_output.PWM_Switch_0 = GenerateDutyCycle(VDC,SetpVector(1)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
     DutyCycle_tmp = rtElectricalID_6ph_codegen_U->ActualValues.V_DC / 2.0F;
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[0] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[0] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2943,7 +3066,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:6' ElectricalID_output.PWM_Switch_2 = GenerateDutyCycle(VDC,SetpVector(2)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[1] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[1] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2963,7 +3086,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:7' ElectricalID_output.PWM_Switch_4 = GenerateDutyCycle(VDC,SetpVector(3)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[2] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[2] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -2983,7 +3106,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:8' ElectricalID_output.PWM_Switch_a2 = GenerateDutyCycle(VDC,SetpVector(4)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[3] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[3] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -3003,7 +3126,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:9' ElectricalID_output.PWM_Switch_b2 = GenerateDutyCycle(VDC,SetpVector(5)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[4] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[4] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -3023,7 +3146,7 @@ static void waitLock(ExtU_ElectricalID_6ph_codegen_t
 
     /* 'SetpVectorToDutyCycle6ph:10' ElectricalID_output.PWM_Switch_c2 = GenerateDutyCycle(VDC,SetpVector(6)); */
     /* 'GenerateDutyCycle:2' DutyCycle  = ( (voltage / (VDC/single(2)) + single(1)) /single(2)); */
-    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_k[5] / DutyCycle_tmp +
+    DutyCycle = (rtElectricalID_6ph_codegen_DW->setp_abc_c[5] / DutyCycle_tmp +
                  1.0F) / 2.0F;
 
     /* 'GenerateDutyCycle:3' if(DutyCycle < 0) */
@@ -3061,10 +3184,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
   switch (rtElectricalID_6ph_codegen_DW->is_ElectricalID) {
    case IN_Subchart_Step_Response:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S2>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3090,12 +3213,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3105,10 +3228,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
    case IN_Subchart_Step_Response1:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S3>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3134,12 +3257,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3149,10 +3272,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
    case IN_Subchart_Step_Response2:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S4>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3178,12 +3301,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3193,10 +3316,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
    case IN_Subchart_Step_Response3:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S5>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3222,12 +3345,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3237,10 +3360,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
    case IN_Subchart_Step_Response4:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S6>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3266,12 +3389,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3281,10 +3404,10 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
    case IN_Subchart_Step_Response5:
     /* Exit Internal: Subchart_Step_Response_6ph */
-    switch (rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_) {
+    switch (rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_) {
      case IN_Levenberg_Marquardt:
       /* Exit 'Levenberg_Marquardt': '<S7>:40' */
-      rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
@@ -3310,12 +3433,12 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
       /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-      rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
         IN_NO_ACTIVE_CHILD;
       break;
 
      default:
-      rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+      rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
         IN_NO_ACTIVE_CHILD;
       break;
     }
@@ -3475,14 +3598,15 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response:
       /* During 'Subchart_Step_Response': '<S1>:994' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S2>:40' */
-        /* '<S2>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_n == 500U) {
+        /* '<S2>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_n ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S2>:61' */
           /* Exit 'Levenberg_Marquardt': '<S2>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
             IN_NO_ACTIVE_CHILD;
           rtElectricalID_6ph_codegen_DW->exitPortIndex_p = 2U;
         } else {
@@ -3523,7 +3647,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S2>:40' */
@@ -3591,11 +3715,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S2>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -3609,12 +3733,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:6' ElectricalID_output.PWM_Switch_a2 = single(0); */
           /* 'ResetDutyCycle:7' ElectricalID_output.PWM_Switch_b2 = single(0); */
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
-          rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -3637,7 +3761,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* Entry: Subchart_Step_Response_6ph */
         /* Entry Internal: Subchart_Step_Response_6ph */
         /* Transition: '<S3>:31' */
-        rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
           IN_stepResponse;
 
         /* Entry 'stepResponse': '<S3>:35' */
@@ -3818,16 +3942,17 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response1:
       /* During 'Subchart_Step_Response1': '<S1>:1001' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S3>:40' */
-        /* '<S3>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_o == 500U) {
+        /* '<S3>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_o ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S3>:61' */
           /* Exit 'Levenberg_Marquardt': '<S3>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
             IN_NO_ACTIVE_CHILD;
-          rtElectricalID_6ph_codegen_DW->exitPortIndex_j = 2U;
+          rtElectricalID_6ph_codegen_DW->exitPortIndex_ji = 2U;
         } else {
           /* '<S3>:40:7' counter = counter +1; */
           rtElectricalID_6ph_codegen_DW->exitPortIndex =
@@ -3866,7 +3991,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S3>:40' */
@@ -3920,8 +4045,8 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       }
 
       rtElectricalID_6ph_codegen_DW->exitPortIndex =
-        rtElectricalID_6ph_codegen_DW->exitPortIndex_j;
-      rtElectricalID_6ph_codegen_DW->exitPortIndex_j = 0U;
+        rtElectricalID_6ph_codegen_DW->exitPortIndex_ji;
+      rtElectricalID_6ph_codegen_DW->exitPortIndex_ji = 0U;
       if (rtElectricalID_6ph_codegen_DW->exitPortIndex == 2U) {
         /* Merge: '<S1>/ Merge ' */
         /* Transition: '<S1>:1018' */
@@ -3934,11 +4059,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S3>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -3952,12 +4077,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:6' ElectricalID_output.PWM_Switch_a2 = single(0); */
           /* 'ResetDutyCycle:7' ElectricalID_output.PWM_Switch_b2 = single(0); */
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
-          rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -3980,7 +4105,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* Entry: Subchart_Step_Response_6ph */
         /* Entry Internal: Subchart_Step_Response_6ph */
         /* Transition: '<S4>:31' */
-        rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
           IN_stepResponse;
 
         /* Entry 'stepResponse': '<S4>:35' */
@@ -4161,14 +4286,15 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response2:
       /* During 'Subchart_Step_Response2': '<S1>:1009' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S4>:40' */
-        /* '<S4>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_f == 500U) {
+        /* '<S4>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_f ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S4>:61' */
           /* Exit 'Levenberg_Marquardt': '<S4>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
             IN_NO_ACTIVE_CHILD;
           rtElectricalID_6ph_codegen_DW->exitPortIndex_a = 2U;
         } else {
@@ -4209,7 +4335,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S4>:40' */
@@ -4277,11 +4403,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S4>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -4295,12 +4421,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:6' ElectricalID_output.PWM_Switch_a2 = single(0); */
           /* 'ResetDutyCycle:7' ElectricalID_output.PWM_Switch_b2 = single(0); */
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
-          rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -4323,7 +4449,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* Entry: Subchart_Step_Response_6ph */
         /* Entry Internal: Subchart_Step_Response_6ph */
         /* Transition: '<S5>:31' */
-        rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
           IN_stepResponse;
 
         /* Entry 'stepResponse': '<S5>:35' */
@@ -4504,16 +4630,17 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response3:
       /* During 'Subchart_Step_Response3': '<S1>:1013' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S5>:40' */
-        /* '<S5>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_g == 500U) {
+        /* '<S5>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_g ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S5>:61' */
           /* Exit 'Levenberg_Marquardt': '<S5>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
             IN_NO_ACTIVE_CHILD;
-          rtElectricalID_6ph_codegen_DW->exitPortIndex_b = 2U;
+          rtElectricalID_6ph_codegen_DW->exitPortIndex_b5 = 2U;
         } else {
           /* '<S5>:40:7' counter = counter +1; */
           rtElectricalID_6ph_codegen_DW->exitPortIndex =
@@ -4552,7 +4679,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S5>:40' */
@@ -4606,8 +4733,8 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       }
 
       rtElectricalID_6ph_codegen_DW->exitPortIndex =
-        rtElectricalID_6ph_codegen_DW->exitPortIndex_b;
-      rtElectricalID_6ph_codegen_DW->exitPortIndex_b = 0U;
+        rtElectricalID_6ph_codegen_DW->exitPortIndex_b5;
+      rtElectricalID_6ph_codegen_DW->exitPortIndex_b5 = 0U;
       if (rtElectricalID_6ph_codegen_DW->exitPortIndex == 2U) {
         /* Merge: '<S1>/ Merge ' */
         /* Transition: '<S1>:1020' */
@@ -4620,11 +4747,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S5>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -4638,12 +4765,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:6' ElectricalID_output.PWM_Switch_a2 = single(0); */
           /* 'ResetDutyCycle:7' ElectricalID_output.PWM_Switch_b2 = single(0); */
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
-          rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -4666,7 +4793,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* Entry: Subchart_Step_Response_6ph */
         /* Entry Internal: Subchart_Step_Response_6ph */
         /* Transition: '<S6>:31' */
-        rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
           IN_stepResponse;
 
         /* Entry 'stepResponse': '<S6>:35' */
@@ -4847,14 +4974,15 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response4:
       /* During 'Subchart_Step_Response4': '<S1>:1017' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S6>:40' */
-        /* '<S6>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_j == 500U) {
+        /* '<S6>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_j ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S6>:61' */
           /* Exit 'Levenberg_Marquardt': '<S6>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
             IN_NO_ACTIVE_CHILD;
           rtElectricalID_6ph_codegen_DW->exitPortIndex_d = 2U;
         } else {
@@ -4895,7 +5023,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S6>:40' */
@@ -4963,11 +5091,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S6>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -4996,12 +5124,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
           rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 =
             0.0F;
-          rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -5044,14 +5172,15 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_Subchart_Step_Response5:
       /* During 'Subchart_Step_Response5': '<S1>:1025' */
       /* During: Subchart_Step_Response_6ph */
-      if (rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ ==
+      if (rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ ==
           IN_Levenberg_Marquardt) {
         /* During 'Levenberg_Marquardt': '<S7>:40' */
-        /* '<S7>:61:1' sf_internal_predicateOutput = counter == 500; */
-        if (rtElectricalID_6ph_codegen_DW->counter_i == 500U) {
+        /* '<S7>:61:1' sf_internal_predicateOutput = counter == one_sec_transition_counter; */
+        if (rtElectricalID_6ph_codegen_DW->counter_i ==
+            rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k) {
           /* Transition: '<S7>:61' */
           /* Exit 'Levenberg_Marquardt': '<S7>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
             IN_NO_ACTIVE_CHILD;
           rtElectricalID_6ph_codegen_DW->exitPortIndex_m = 2U;
         } else {
@@ -5092,7 +5221,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
 
         /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
         rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_c2 = 0.0F;
-        rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
           IN_Levenberg_Marquardt;
 
         /* Entry 'Levenberg_Marquardt': '<S7>:40' */
@@ -5159,11 +5288,11 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           rtElectricalID_6ph_codegen_DW->R_est_c;
 
         /* Exit Internal: Subchart_Step_Response_6ph */
-        switch (rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_)
+        switch (rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_)
         {
          case IN_Levenberg_Marquardt:
           /* Exit 'Levenberg_Marquardt': '<S7>:40' */
-          rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
@@ -5177,12 +5306,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
           /* 'ResetDutyCycle:6' ElectricalID_output.PWM_Switch_a2 = single(0); */
           /* 'ResetDutyCycle:7' ElectricalID_output.PWM_Switch_b2 = single(0); */
           /* 'ResetDutyCycle:8' ElectricalID_output.PWM_Switch_c2 = single(0); */
-          rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
             IN_NO_ACTIVE_CHILD;
           break;
 
          default:
-          rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+          rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
             IN_NO_ACTIVE_CHILD;
           break;
         }
@@ -5205,7 +5334,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* Entry: Subchart_Step_Response_6ph */
         /* Entry Internal: Subchart_Step_Response_6ph */
         /* Transition: '<S2>:31' */
-        rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+        rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
           IN_stepResponse;
 
         /* Entry 'stepResponse': '<S2>:35' */
@@ -5386,7 +5515,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_alignRotor_d_off:
       /* During 'alignRotor_d_off': '<S1>:53' */
       /* '<S1>:411:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
-      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter ==
+      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k ==
           rtElectricalID_6ph_codegen_DW->counter) {
         /* Merge: '<S1>/ Merge ' incorporates:
          *  Inport: '<Root>/ActualValues'
@@ -5420,7 +5549,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_alignRotor_d_on:
       /* During 'alignRotor_d_on': '<S1>:3' */
       /* '<S1>:164:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
-      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter ==
+      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k ==
           rtElectricalID_6ph_codegen_DW->counter) {
         /* Merge: '<S1>/ Merge ' */
         /* Transition: '<S1>:164' */
@@ -5457,22 +5586,38 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 121U;
       } else {
         /* '<S1>:3:7' DutyCycle_filt = single(single(counter)*GlobalConfig.sampleTimeISR*2); */
-        rtElectricalID_6ph_codegen_DW->e_h4 = (real32_T)
-          rtElectricalID_6ph_codegen_DW->counter *
-          rtElectricalID_6ph_codegen_U->GlobalConfig_out.sampleTimeISR * 2.0F;
-
         /* '<S1>:3:8' if(DutyCycle_filt > 1) */
-        if (rtElectricalID_6ph_codegen_DW->e_h4 > 1.0F) {
-          /* '<S1>:3:9' DutyCycle_filt = single(1.0); */
-          rtElectricalID_6ph_codegen_DW->e_h4 = 1.0F;
+        /* '<S1>:3:11' ElectricalID_output = SetpVectorToDutyCycle6ph(ElectricalID_output,ActualValues.V_DC,inv_VSD*[ref_amplitude;0;0;0;0;0]); */
+        rtElectricalID_6ph_codegen_DW->setp_dq[0] =
+          rtElectricalID_6ph_codegen_DW->ref_amplitude;
+        rtElectricalID_6ph_codegen_DW->setp_dq[1] = 0.0F;
+        rtElectricalID_6ph_codegen_DW->setp_dq[2] = 0.0F;
+        rtElectricalID_6ph_codegen_DW->setp_dq[3] = 0.0F;
+        rtElectricalID_6ph_codegen_DW->setp_dq[4] = 0.0F;
+        rtElectricalID_6ph_codegen_DW->setp_dq[5] = 0.0F;
+        for (rtElectricalID_6ph_codegen_DW->i = 0;
+             rtElectricalID_6ph_codegen_DW->i < 6;
+             rtElectricalID_6ph_codegen_DW->i++) {
+          rtElectricalID_6ph_codegen_DW->setp_abc
+            [rtElectricalID_6ph_codegen_DW->i] = 0.0F;
+          for (i = 0; i < 6; i++) {
+            rtElectricalID_6ph_codegen_DW->
+              setp_abc[rtElectricalID_6ph_codegen_DW->i] +=
+              rtElectricalID_6ph_codegen_DW->inv_VSD[6 * i +
+              rtElectricalID_6ph_codegen_DW->i] *
+              rtElectricalID_6ph_codegen_DW->setp_dq[i];
+          }
         }
 
-        /* Merge: '<S1>/ Merge ' */
-        /* '<S1>:3:11' ElectricalID_output.PWM_Switch_0 = single(DutyCycle*DutyCycle_filt); */
-        rtElectricalID_6ph_codegen_DW->ElectricalID_output.PWM_Switch_0 =
-          rtElectricalID_6ph_codegen_DW->DutyCycle *
-          rtElectricalID_6ph_codegen_DW->e_h4;
+        /* Merge: '<S1>/ Merge ' incorporates:
+         *  Inport: '<Root>/ActualValues'
+         */
+        SetpVectorToDutyCycle6ph
+          (&rtElectricalID_6ph_codegen_DW->ElectricalID_output,
+           rtElectricalID_6ph_codegen_U->ActualValues.V_DC,
+           rtElectricalID_6ph_codegen_DW->setp_abc);
 
+        /* set DutyCycles */
         /* '<S1>:3:12' counter  = counter +1; */
         rtElectricalID_6ph_codegen_DW->exitPortIndex =
           rtElectricalID_6ph_codegen_DW->counter + /*MW:OvSatOk*/ 1U;
@@ -5511,7 +5656,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_endState:
       /* During 'endState': '<S1>:356' */
       /* '<S1>:425:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
-      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter ==
+      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k ==
           rtElectricalID_6ph_codegen_DW->counter) {
         /* Transition: '<S1>:425' */
         rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_waitState;
@@ -5792,10 +5937,10 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      case IN_stop:
       /* Inport: '<Root>/ActualValues' */
       /* During 'stop': '<S1>:361' */
-      /* '<S1>:362:1' sf_internal_predicateOutput = one_sec_transition_counter == counter && ActualValues.omega_m==single(0); */
-      if ((rtElectricalID_6ph_codegen_DW->one_sec_transition_counter ==
+      /* '<S1>:362:1' sf_internal_predicateOutput = one_sec_transition_counter == counter && ActualValues.omega_m<single(1); */
+      if ((rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k ==
            rtElectricalID_6ph_codegen_DW->counter) &&
-          (rtElectricalID_6ph_codegen_U->ActualValues.omega_m == 0.0F)) {
+          (rtElectricalID_6ph_codegen_U->ActualValues.omega_m < 1.0F)) {
         /* Transition: '<S1>:362' */
         rtElectricalID_6ph_codegen_DW->is_ElectricalID =
           IN_rotorInertiaEstimation;
@@ -5908,7 +6053,7 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
      default:
       /* During 'waitState': '<S1>:428' */
       /* '<S1>:905:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
-      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter ==
+      if (rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k ==
           rtElectricalID_6ph_codegen_DW->counter) {
         /* Outport: '<Root>/finishedElectricalID' */
         /* Transition: '<S1>:905' */
@@ -6093,7 +6238,7 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
 
   {
     int32_T i;
-    static const real32_T tmp[36] = { 1.0F, -0.5F, -0.5F, 0.866025388F,
+    static const real32_T b[36] = { 1.0F, -0.5F, -0.5F, 0.866025388F,
       -0.866025388F, -2.22044605E-16F, 4.0292992E-16F, 0.866025388F,
       -0.866025388F, 0.5F, 0.5F, -1.0F, 1.0F, -0.5F, -0.5F, -0.866025388F,
       0.866025388F, -8.11506533E-16F, -1.47195872E-15F, -0.866025388F,
@@ -6102,9 +6247,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
       -1.27277098E-15F, 1.0F, 1.0F, 1.0F };
 
     /* SystemInitialize for Chart: '<Root>/ElectricalID_6ph_codegen' */
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_n[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_sRRbuuHq6eQ6vR3JKNYCPnG_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sfYtI3dVphCWj0yeGcQTjEC_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_i = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep[0], 0, 205U * sizeof(real32_T));
@@ -6114,9 +6259,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->V0 = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->d_n[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_6ph_codegen_DW->J[0], 0, sizeof(real32_T) << 12U);
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_p[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_p[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_sbnthKuD2l2oMiHXMcCagvD_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sTmeVn9UMjbgIW9tERLCiND_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_n = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep_k[0], 0, 205U * sizeof(real32_T));
@@ -6126,9 +6271,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->V0_a = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->d_m[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_6ph_codegen_DW->J_o[0], 0, sizeof(real32_T) << 12U);
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_l[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_l[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_s3ilL2Pptbnh1NNa2bfdZqD_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sl959dG5iVvEfF2XuoR7heD_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_o = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep_e[0], 0, 205U * sizeof(real32_T));
@@ -6138,9 +6283,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->V0_nx = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->d_o[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_6ph_codegen_DW->J_h[0], 0, sizeof(real32_T) << 12U);
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_m[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_m[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_s89sl6dy7jxtKuHOz6RNlsC_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sGmfjfuJTpCF9MYHJTzBOhD_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_f = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep_gw[0], 0, 205U * sizeof
@@ -6151,9 +6296,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->V0_n = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->d_l[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_6ph_codegen_DW->J_cu[0], 0, sizeof(real32_T) << 12U);
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_a[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_a[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_sheOU9F0ciP5xluREMNqviH_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sgw9yoTrZ3r553R29sM9SRG_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_g = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep_j[0], 0, 205U * sizeof(real32_T));
@@ -6163,9 +6308,9 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->V0_k = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->d_h[0], 0, sizeof(real32_T) << 11U);
     memset(&rtElectricalID_6ph_codegen_DW->J_p[0], 0, sizeof(real32_T) << 12U);
-    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_i[0], &tmp[0], 36U * sizeof
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD_i[0], &b[0], 36U * sizeof
            (real32_T));
-    rtElectricalID_6ph_codegen_DW->is_c14_sFTU40wEamfDHpngeAPrO2F_ =
+    rtElectricalID_6ph_codegen_DW->is_c14_sy7XjnHxVYbhMov5BLWtwrG_ =
       IN_NO_ACTIVE_CHILD;
     rtElectricalID_6ph_codegen_DW->counter_j = 1U;
     memset(&rtElectricalID_6ph_codegen_DW->Vstep_g[0], 0, 205U * sizeof(real32_T));
@@ -6188,7 +6333,7 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     memset(&rtElectricalID_6ph_codegen_DW->d[0], 0, sizeof(real32_T) << 11U);
     rtElectricalID_6ph_codegen_DW->DutyCycle = 0.0F;
     rtElectricalID_6ph_codegen_DW->wait_count = 0U;
-    rtElectricalID_6ph_codegen_DW->one_sec_transition_counter = 0U;
+    rtElectricalID_6ph_codegen_DW->one_sec_transition_counter_k = 0U;
     rtElectricalID_6ph_codegen_DW->ref_amplitude = 0.0F;
     memset(&rtElectricalID_6ph_codegen_DW->measArray1[0], 0, sizeof(real32_T) <<
            10U);
@@ -6196,6 +6341,8 @@ void ElectricalID_6ph_codegen_initialize(RT_MODEL_ElectricalID_6ph_cod_t *const
     rtElectricalID_6ph_codegen_DW->R_est_c = 0.0F;
     rtElectricalID_6ph_codegen_DW->L_est_mb = 0.0F;
     rtElectricalID_6ph_codegen_DW->DC_valid = false;
+    memcpy(&rtElectricalID_6ph_codegen_DW->inv_VSD[0], &b[0], 36U * sizeof
+           (real32_T));
 
     /* SystemInitialize for Outport: '<Root>/enteredElectricalID' incorporates:
      *  Chart: '<Root>/ElectricalID_6ph_codegen'

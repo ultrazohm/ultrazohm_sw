@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
---Date        : Thu Apr 14 15:33:54 2022
---Host        : DESKTOP-E3UJO9V running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
+--Date        : Tue Mar  7 16:46:38 2023
+--Host        : enc177112 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -40,20 +40,16 @@ entity zusys_wrapper is
     D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_07_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_08_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_00_Ch4 : out STD_LOGIC;
+    Dig_01_Ch4 : out STD_LOGIC;
+    Dig_02_Ch4 : out STD_LOGIC;
+    Dig_03_Ch4 : out STD_LOGIC;
+    Dig_04_Ch4 : out STD_LOGIC;
+    Dig_05_Ch4 : out STD_LOGIC;
+    Dig_06_Ch4 : out STD_LOGIC;
+    Dig_07_Ch4 : out STD_LOGIC;
+    Dig_08_Ch4 : in STD_LOGIC;
     Dig_09_Ch5 : in STD_LOGIC;
-    Dig_10_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_11_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_12_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_13_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_14_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_15_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch5 : in STD_LOGIC;
     Dig_18_Ch5 : in STD_LOGIC;
@@ -95,11 +91,6 @@ architecture STRUCTURE of zusys_wrapper is
     D3_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
     D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_30 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
-    D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 5 downto 0 );
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
@@ -110,15 +101,16 @@ architecture STRUCTURE of zusys_wrapper is
     A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    Dig_08_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_12_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_07_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_10_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_13_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_11_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_15_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_14_Ch5 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_09_Ch5 : in STD_LOGIC
+    Dig_09_Ch5 : in STD_LOGIC;
+    Dig_00_Ch4 : out STD_LOGIC;
+    Dig_02_Ch4 : out STD_LOGIC;
+    Dig_03_Ch4 : out STD_LOGIC;
+    Dig_04_Ch4 : out STD_LOGIC;
+    Dig_05_Ch4 : out STD_LOGIC;
+    Dig_06_Ch4 : out STD_LOGIC;
+    Dig_07_Ch4 : out STD_LOGIC;
+    Dig_01_Ch4 : out STD_LOGIC;
+    Dig_08_Ch4 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -151,20 +143,16 @@ zusys_i: component zusys
       D3_OUT_28(0) => D3_OUT_28(0),
       D3_OUT_29(0) => D3_OUT_29(0),
       D3_OUT_30(0) => D3_OUT_30(0),
-      D4_OUT(7 downto 0) => D4_OUT(7 downto 0),
-      D4_OUT_27(0) => D4_OUT_27(0),
-      D4_OUT_28(0) => D4_OUT_28(0),
-      D4_OUT_29(0) => D4_OUT_29(0),
-      D4_OUT_30(0) => D4_OUT_30(0),
-      Dig_07_Ch5(0) => Dig_07_Ch5(0),
-      Dig_08_Ch5(0) => Dig_08_Ch5(0),
+      Dig_00_Ch4 => Dig_00_Ch4,
+      Dig_01_Ch4 => Dig_01_Ch4,
+      Dig_02_Ch4 => Dig_02_Ch4,
+      Dig_03_Ch4 => Dig_03_Ch4,
+      Dig_04_Ch4 => Dig_04_Ch4,
+      Dig_05_Ch4 => Dig_05_Ch4,
+      Dig_06_Ch4 => Dig_06_Ch4,
+      Dig_07_Ch4 => Dig_07_Ch4,
+      Dig_08_Ch4 => Dig_08_Ch4,
       Dig_09_Ch5 => Dig_09_Ch5,
-      Dig_10_Ch5(0) => Dig_10_Ch5(0),
-      Dig_11_Ch5(0) => Dig_11_Ch5(0),
-      Dig_12_Ch5(0) => Dig_12_Ch5(0),
-      Dig_13_Ch5(0) => Dig_13_Ch5(0),
-      Dig_14_Ch5(0) => Dig_14_Ch5(0),
-      Dig_15_Ch5(0) => Dig_15_Ch5(0),
       Dig_16_Ch5 => Dig_16_Ch5,
       Dig_17_Ch5 => Dig_17_Ch5,
       Dig_18_Ch5 => Dig_18_Ch5,

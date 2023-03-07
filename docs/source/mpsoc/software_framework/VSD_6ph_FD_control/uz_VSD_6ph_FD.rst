@@ -2,9 +2,13 @@
 VSD Open-phase-fault detection
 ==============================
 
-This module provides functions for open phase fault (OPF) detection based on Vector-Space-Decompositon (VSD) für an asymmetric six phase machine.
+This module provides functions for open phase fault (OPF) detection based on Vector-Space-Decompositon (VSD) for an asymmetric six phase machine.
+The stator of an asymmetric six phase phase machine consists of two three-phase windig sets shifted by :math:`\gamma = \pi/6`.
+Since the VSD transformation can be used for both PMSM and asynchronous machines, this module can be used for both machine types.
+The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines. However, this is not included in this module.
+
 The detection is based on six fault indices, one for each phase of the machine.
-The fault indices are calculated based on the measured VSD-currents with the following equations.
+The fault indices are calculated based on the measured VSD-currents with the following equations:
 
 .. math::
 
@@ -28,10 +32,16 @@ The fault indices are calculated based on the measured VSD-currents with the fol
 
 .. math::
 
-	R_{c2} =-\frac{i_y}{i\beta-i_{02}}\\
+	R_{c2} =-\frac{i_y}{i_\beta-i_{02}}\\
 
-The fault indices are in pre-fault operation zero. If there is an error in one phase, the corresponding fault index becomes one.
-Because of disturbances extensive filtering of the fault indices is necessary, for example with an hysteresis band filter followed by an moving average filter. [[#DuranGonzalez]_]
+The fault indices are in pre-fault operation zero. 
+After a phase failure, the fault indices are no longer zero.
+The fault index of the failed phase is on average one.
+The remaining fault indices follow different non-zero functions depending on the fault scenario.
+
+By filtering the fault indices, they can be converted so that only the fault indices of the faulted phases are constant one, while all other fault indices are zero.
+For the filtering an hysteresis band filter followed by an moving average filter is used. 
+After the filtering the fault indices have two possible states and are either 0 (no fault in the corresponding phase) or 1 (fault in the corresponding phase) and can therefore be used for OPF detection. [[#DuranGonzalez]_]
 
 The following module contains functions for calculating the fault indices, applying hysteresis band filtering and evaluating the filtered fault indices.
 A moving average filter is not included. The obtained results of the evaluated fault indices can be used for an control scheme during OPF.

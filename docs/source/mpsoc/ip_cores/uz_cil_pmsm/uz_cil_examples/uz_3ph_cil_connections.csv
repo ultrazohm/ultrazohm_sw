@@ -14,11 +14,11 @@ In,voltage_input_dq,uz_threephase_VSD_tran,x_out_dq
 Out,theta_el_out,uz_threephase_VSD_tran,theta_el
 Out,currents_dq_out,uz_threephase_VSD_tran,x_in_dq
 Out,omega_mech_out,unconnected,unconnected
-PWM 1/2,,,
+PWM,,,
 In,AXI4_Lite,smartconnect_1,M03_AXI
 In,triangle_in,../uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V0,triangle_out
 Out,SS[0-5]_OUT,uz_inverter_3ph,gate_pl (use Concat)
-Inverter 1/2,,,
+Inverter,,,
 In,AXI4,smartconnect_1,M02_AXI
 In,i_abc_pl,uz_threephase_VSD_tran,x_abc
 In,gate_pl,PWM_and_SS_control_V0,SS[0-5]_OUT (use concat)

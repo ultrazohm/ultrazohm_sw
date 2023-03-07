@@ -22,6 +22,8 @@ The trigger and refresh signals of the Transformation are connected with the RS-
    To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
+   Do not forget to assign the addresses afterwards, as this is not included in the tcl-script!
+   During the validation in Vivado, a warning for the unconnected PWM IP-core's inputs will show up, which can be ignored.
 
 
 .. figure:: vivado_6ph.jpg

@@ -123,16 +123,16 @@ void ISR_Control(void *data)
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polepairs*2.0f*M_PI/60;
 
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, 0.0f);
+	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
-	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, 0.0f);
+	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec + ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs;
 	//ParaID ende
 
 
@@ -277,23 +277,9 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-
-		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data, &CC_instance_1, &CC_instance_2, Speed_instace, sp_instance, &res_instance_1, &res_instance_2);
-
+		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data, CC_instance_1, CC_instance_2, Speed_instace, sp_instance, res_instance_1, res_instance_2);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
 
-	/*	dutyCycles_set1.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_0;
-		dutyCycles_set1.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_2;
-		dutyCycles_set1.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_4;
-		dutyCycles_set2.DutyCycle_U = ParaID_Data.ElectricalID_Output.PWM_Switch_a2;
-		dutyCycles_set2.DutyCycle_V = ParaID_Data.ElectricalID_Output.PWM_Switch_b2;
-		dutyCycles_set2.DutyCycle_W = ParaID_Data.ElectricalID_Output.PWM_Switch_c2;
-
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output.enable_TriState[0], ParaID_Data.ElectricalID_Output.enable_TriState[1], ParaID_Data.ElectricalID_Output.enable_TriState[2]);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output.enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output.enable_TriState_set_2[2]);
-		ParaID_v_dq = uz_ParameterID_6ph_Controller(&ParaID_Data, FOC_instance, SpeedControl_instance);
-		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, ParaID_v_dq);
-*/
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
@@ -303,7 +289,6 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge9DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
-
     }
 
 

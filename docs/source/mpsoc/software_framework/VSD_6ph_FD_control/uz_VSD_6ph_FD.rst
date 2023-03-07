@@ -8,31 +8,33 @@ Since the VSD transformation can be used for both PMSM and asynchronous machines
 The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines. However, this is not included in this module.
 
 The detection is based on six fault indices, one for each phase of the machine.
-The fault indices are calculated based on the measured VSD-currents with the following equations:
+The fault indices are calculated based on the measured VSD-currents with the following equations.
+:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 - 6.
+:math:`i_\alpha, i_\beta, i_x, i_y, i_{01}, i_{02}` are the VSD-currents calculated with the VSD transformation.
 
 .. math::
 
-	{R_{a1}} =-\frac{i_x}{i_\alpha+i_{01}} 
+	{R_{1}} =-\frac{i_x}{i_\alpha+i_{01}} 
 
 .. math::
 
-	R_{b1} =\frac{i_x}{-i_\alpha+\sqrt3\ i_\beta-\sqrt3\ i_y+2\ i_{01}}\\
+	R_{2} =\frac{i_x}{-i_\alpha+\sqrt3\ i_\beta-\sqrt3\ i_y+2\ i_{01}}\\
 
 .. math::
 
-	R_{c1} =\frac{i_x}{-i_\alpha-\sqrt3\ i_\beta+\sqrt3\ i_y+2\ i_{01}}\\
+	R_{3} =\frac{i_x}{-i_\alpha-\sqrt3\ i_\beta+\sqrt3\ i_y+2\ i_{01}}\\
 
 .. math::
 
-	R_{a2} =\frac{i_x}{i_\alpha+\frac{1}{\sqrt3}\ i_\beta+\frac{1}{\sqrt3}\ i_y+\frac{2}{\sqrt3}\ i_{02}}\\
+	R_{4} =\frac{i_x}{i_\alpha+\frac{1}{\sqrt3}\ i_\beta+\frac{1}{\sqrt3}\ i_y+\frac{2}{\sqrt3}\ i_{02}}\\
 
 .. math::
 
-	R_{b2} = \frac{i_x}{i_\alpha-\frac{1}{\sqrt3}\ i_\beta-\frac{1}{\sqrt3}\ i_y-\frac{2}{\sqrt3}\ i_{02}}\\
+	R_{5} = \frac{i_x}{i_\alpha-\frac{1}{\sqrt3}\ i_\beta-\frac{1}{\sqrt3}\ i_y-\frac{2}{\sqrt3}\ i_{02}}\\
 
 .. math::
 
-	R_{c2} =-\frac{i_y}{i_\beta-i_{02}}\\
+	R_{6} =-\frac{i_y}{i_\beta-i_{02}}\\
 
 The fault indices are in pre-fault operation zero. 
 After a phase failure, the fault indices are no longer zero.

@@ -54,6 +54,14 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    Global_Data.av.d4_1_mech = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolverD4_1);
+    Global_Data.av.theta_mech = Global_Data.av.d4_1_mech.position;
+    Global_Data.av.mechanicalRotorSpeed = Global_Data.av.d4_1_mech.velocity;
+
+    Global_Data.av.d4_1_elec = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolverD4_1);
+    Global_Data.av.theta_elec = Global_Data.av.d4_1_elec.position;
+    Global_Data.av.electricalRotorSpeed = Global_Data.av.d4_1_elec.velocity;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

@@ -30,9 +30,8 @@ struct uz_resolverIP_t {
     bool is_ready;/**< Boolean that indicates successful initialization */
     struct uz_resolverIP_config_t config;/**< Configuration struct with members seen below */
     uz_resolverIP_mode mode;/**< enum that indicates current mode of AD2S1210 between Configuration Mode, Position Mode, Velocity Mode or PositionAndVelocityMode */
-    float zero_position_mechanical; /** Mechanical zero position*/
-    float pole_pairs_machine;/** Number of machine pole pairs (for conversion from mechanical to electrical position)*/
-    float pole_pairs_resolver;/** Number of resolver pole pairs (for conversion from mechanical to electrical position)*/
+    float bitToRpsFactor; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
+	int32_t bit_offset; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
 	union{
  		int32_t registerValue; /** RESDAT Value 32bit*/
   		uint16_t pos_Vel[2]; /** 16bit position value in pos_Vel[0], 16bit velocity value in pos_Vel[1]*/
@@ -55,38 +54,38 @@ static float getRangeMax(uint32_t resolution);
 static float getLSBSize(uint32_t resolution);
 
 
-uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t configNew) {
-	 uz_assert_not_zero_uint32(configNew.base_address);
-	 uz_assert_not_zero_uint32(configNew.ip_clk_frequency_Hz);
-     uz_assert(configNew.resolution == 10 || configNew.resolution == 12 || configNew.resolution == 14 || configNew.resolution == 16);
-     uz_assert(configNew.freq_clockin >= 6144000U && configNew.freq_clockin <= 10240000U);
-     uz_assert(configNew.zero_position_mech >= 0 && configNew.zero_position_mech < 2*UZ_PIf);
-     uz_assert(configNew.pole_pairs_mach > 0);
-     uz_assert(configNew.pole_pairs_res > 0);
+uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t config) {
+	 uz_assert_not_zero_uint32(config.base_address);
+	 uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
+     uz_assert(config.resolution == 10 || config.resolution == 12 || config.resolution == 14 || config.resolution == 16);
+     uz_assert(config.freq_clockin >= 6144000U && config.freq_clockin <= 10240000U);
+     uz_assert(config.zero_position_mechanical >= 0 && config.zero_position_mechanical < 2*UZ_PIf);
+     uz_assert(config.pole_pairs_machine > 0);
+     uz_assert(config.pole_pairs_resolver > 0);
 	uz_resolverIP_t* self = uz_resolverIP_allocation();
-	self->config =configNew;
+	self->config =config;
     self->is_ready = true;
-    self->zero_position_mechanical = configNew.zero_position_mech;
-    self->pole_pairs_machine = configNew.pole_pairs_mach;
-    self->pole_pairs_resolver = configNew.pole_pairs_res;
+    self->config.zero_position_mechanical = config.zero_position_mechanical;
+    self->config.pole_pairs_machine = config.pole_pairs_machine;
+    self->config.pole_pairs_resolver = config.pole_pairs_resolver;
 	self->registerValue = 0;
 
 	switch (self->config.resolution){ //Factor is determined by tracking rate defined on p 4 of Datasheet, maps 2-complement value to rps value
 	 	 case 16:
-	 		self->config.bitToRpsFactor = uz_convert_sfixed_to_float(125,0) / uz_convert_sfixed_to_float(0x7FFF,0);
-	 		self->config.bit_offset = 0;
+	 		self->bitToRpsFactor = uz_convert_sfixed_to_float(125,0) / uz_convert_sfixed_to_float(0x7FFF,0);
+	 		self->bit_offset = 0;
 	 		 break;
 	 	 case 14:
-	 		self->config.bitToRpsFactor = uz_convert_sfixed_to_float(500,0) / uz_convert_sfixed_to_float(0x1FFF,0);
-	 		self->config.bit_offset = 2;
+	 		self->bitToRpsFactor = uz_convert_sfixed_to_float(500,0) / uz_convert_sfixed_to_float(0x1FFF,0);
+	 		self->bit_offset = 2;
 	 		 break;
 	 	 case 12:
-		 	self->config.bitToRpsFactor = uz_convert_sfixed_to_float(1000,0) / uz_convert_sfixed_to_float(0x7FF,0);
-		 	self->config.bit_offset = 4;
+		 	self->bitToRpsFactor = uz_convert_sfixed_to_float(1000,0) / uz_convert_sfixed_to_float(0x7FF,0);
+		 	self->bit_offset = 4;
 	 		 break;
 	 	 case 10:
-		 	self->config.bitToRpsFactor = uz_convert_sfixed_to_float(2500,0) / uz_convert_sfixed_to_float(0x1FF,0);
-		 	self->config.bit_offset = 6;
+		 	self->bitToRpsFactor = uz_convert_sfixed_to_float(2500,0) / uz_convert_sfixed_to_float(0x1FF,0);
+		 	self->bit_offset = 6;
 	 		 break;
 	 	 default:
 	 		 uz_assert(false);
@@ -120,7 +119,7 @@ void uz_resolverIP_setZeroPosition(uz_resolverIP_t* self, float zero_pos){
     uz_assert(zero_pos >= 0.F);
     uz_assert(zero_pos <= 2.F * UZ_PIf);
 
-    self->zero_position_mechanical = zero_pos;
+    self->config.zero_position_mechanical = zero_pos;
 }
 
 void uz_resolverIP_setMachinePolePairs(uz_resolverIP_t* self, float pole_pairs_machine){
@@ -128,13 +127,13 @@ void uz_resolverIP_setMachinePolePairs(uz_resolverIP_t* self, float pole_pairs_m
     uz_assert(self->is_ready);
     uz_assert(pole_pairs_machine > 0);
 
-    self->pole_pairs_machine = pole_pairs_machine;
+    self->config.pole_pairs_machine = pole_pairs_machine;
 }
 
 float uz_resolverIP_getMachinePolePairs(uz_resolverIP_t* self){
     uz_assert_not_NULL(self)
 	uz_assert(self->is_ready);
-    return self->pole_pairs_machine;
+    return self->config.pole_pairs_machine;
 }
 
 void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_pairs_resolver){
@@ -142,13 +141,13 @@ void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_pairs_
     uz_assert(self->is_ready);
     uz_assert(pole_pairs_resolver > 0);
 
-    self->pole_pairs_resolver = pole_pairs_resolver;
+    self->config.pole_pairs_resolver = pole_pairs_resolver;
 }
 
 float uz_resolverIP_getResolverPolePairs(uz_resolverIP_t* self){
     uz_assert_not_NULL(self)
 	uz_assert(self->is_ready);
-    return self->pole_pairs_resolver;
+    return self->config.pole_pairs_resolver;
 }
 
 void uz_resolverIP_setDataModeVelocity(uz_resolverIP_t* self){
@@ -184,8 +183,8 @@ float uz_resolverIP_readElectricalPosition(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 	 float mech_position = uz_resolverIP_readMechanicalPosition(self);
-	 float elec_position_wo_overflow = mech_position * self->pole_pairs_machine;
-	 float overflow = (2.0f * UZ_PIf * floorf(mech_position * self->pole_pairs_machine  / (2.0f*UZ_PIf)));
+	 float elec_position_wo_overflow = mech_position * self->config.pole_pairs_machine;
+	 float overflow = (2.0f * UZ_PIf * floorf(mech_position * self->config.pole_pairs_machine  / (2.0f*UZ_PIf)));
 	 return elec_position_wo_overflow - overflow;
 }
 float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
@@ -207,11 +206,11 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self){
 	 	uz_assert(position >= 0.0f);
 	 	uz_assert(position <= 2.0F *UZ_PIf);
 
-	 	if (position - self->zero_position_mechanical < 0.0f){
-	 		return 2*UZ_PIf + (position - self->zero_position_mechanical);
+	 	if (position - self->config.zero_position_mechanical < 0.0f){
+	 		return 2*UZ_PIf + (position - self->config.zero_position_mechanical);
 	 	}
 	 	else {
-	 		return position- self->zero_position_mechanical;
+	 		return position- self->config.zero_position_mechanical;
 	 	}
 
 
@@ -221,7 +220,7 @@ float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self){
 	 uz_assert_not_NULL(self)
 	 uz_assert(self->is_ready);
 
-	 return uz_resolverIP_readMechanicalVelocity(self) * self->pole_pairs_machine;
+	 return uz_resolverIP_readMechanicalVelocity(self) * self->config.pole_pairs_machine;
 }
 
 float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
@@ -237,8 +236,8 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
 	  } while ((rescon & RESCON_Data_uz_axi_VALID_bit) == 0);
 
 	self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
-	float raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->config.bit_offset)),16+self->config.bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
-	return raw_value *self->config.bitToRpsFactor / self->pole_pairs_resolver;
+	float raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->bit_offset)),16+self->bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
+	return raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver;
 
 }
 struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self){
@@ -249,11 +248,11 @@ struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAnd
 
 	struct uz_resolverIP_position_velocity_t electrical;
 
-	float elec_position_wo_overflow = mechanical.position * self->pole_pairs_machine;
-	float overflow = (2.0f * UZ_PIf * floorf(mechanical.position * self->pole_pairs_machine  / (2.0f*UZ_PIf)));
+	float elec_position_wo_overflow = mechanical.position * self->config.pole_pairs_machine;
+	float overflow = (2.0f * UZ_PIf * floorf(mechanical.position * self->config.pole_pairs_machine  / (2.0f*UZ_PIf)));
 	electrical.position = elec_position_wo_overflow - overflow;
 
-	electrical.velocity = mechanical.velocity * self->pole_pairs_machine;
+	electrical.velocity = mechanical.velocity * self->config.pole_pairs_machine;
 
 	return electrical;
 }
@@ -279,15 +278,15 @@ struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAnd
 
 	 struct uz_resolverIP_position_velocity_t mechanical;
 
-	 if (position - self->zero_position_mechanical < 0){
-		 mechanical.position = 2*UZ_PIf + (position - self->zero_position_mechanical);
+	 if (position - self->config.zero_position_mechanical < 0){
+		 mechanical.position = 2*UZ_PIf + (position - self->config.zero_position_mechanical);
 	}
 	 else {
-		 mechanical.position = position- self->zero_position_mechanical;
+		 mechanical.position = position- self->config.zero_position_mechanical;
 	 }
 
-	float velocity_raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->config.bit_offset)),16+self->config.bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
-	mechanical.velocity = velocity_raw_value *self->config.bitToRpsFactor / self->pole_pairs_resolver;
+	float velocity_raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->bit_offset)),16+self->bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
+	mechanical.velocity = velocity_raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver;
 
 	return mechanical;
 }

@@ -18,9 +18,9 @@ struct uz_resolverIP_config_t testconfig={
 	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 	.resolution = TEST_IP_CORE_RES,
     .freq_clockin = TEST_IP_CORE_CLKIN,
-    .zero_position_mech = 0,
-	.pole_pairs_mach = 1,
-	.pole_pairs_res = 1
+    .zero_position_mechanical = 0,
+	.pole_pairs_machine = 1,
+	.pole_pairs_resolver = 1
 };
     
 void setUp(void)
@@ -56,9 +56,9 @@ void test_uz_resolverIP_fail_assert_if_base_address_is_zero(void)
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
 		.freq_clockin = TEST_IP_CORE_CLKIN,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config));
 }
@@ -69,9 +69,9 @@ void test_uz_resolverIP_fail_assert_if_ip_clk_freq_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
 		.resolution = TEST_IP_CORE_RES,
 		.freq_clockin = TEST_IP_CORE_CLKIN,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config));
 }
@@ -82,9 +82,9 @@ void test_uz_resolverIP_fail_assert_if_ip_resolution_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.freq_clockin = TEST_IP_CORE_CLKIN,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -95,9 +95,9 @@ void test_uz_resolverIP_fail_assert_if_freq_clockin_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -108,9 +108,9 @@ void test_uz_resolverIP_fail_assert_if_pole_pairs_mach_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 0,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 0,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -121,9 +121,9 @@ void test_uz_resolverIP_fail_assert_if_pole_pairs_res_is_zero(void)
         .base_address=TEST_BASE_ADDRESS,
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 0
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 0
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -135,9 +135,9 @@ void test_uz_resolverIP_fail_assert_if_resolution_is_implausible(void)
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = 11,
         .freq_clockin = TEST_IP_CORE_CLKIN,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }
@@ -149,9 +149,9 @@ void test_uz_resolverIP_fail_assert_if_freq_clockin_is_implausible(void)
     	.ip_clk_frequency_Hz=TEST_IP_CORE_FRQ,
 		.resolution = TEST_IP_CORE_RES,
         .freq_clockin = 100U,
-        .zero_position_mech = 0,
-	    .pole_pairs_mach = 1,
-	    .pole_pairs_res = 1        
+        .zero_position_mechanical = 0,
+	    .pole_pairs_machine = 1,
+	    .pole_pairs_resolver = 1        
     };
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_init(config) );
 }

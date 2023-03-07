@@ -192,9 +192,8 @@ Because doxygen can't display nested structs, here is the declaration of ``uz_re
     	bool is_ready;/**< Boolean that indicates successful initialization */
     	struct uz_resolverIP_config_t config;/**< Configuration struct with members seen below */
     	uz_resolverIP_mode mode;/**< enum that indicates current mode of AD2S1210 between Configuration Mode, Position Mode, Velocity Mode or PositionAndVelocityMode */
-    	float zero_position_mechanical; /** Mechanical zero position*/
-    	float pole_pairs_machine;/** Number of machine pole pairs (for conversion from mechanical to electrical position)*/
-    	float pole_pairs_resolver;/** Number of resolver pole pairs (for conversion from mechanical to electrical position)*/
+      float bitToRpsFactor = 0;
+      uint32_t bit_offset = 0;
     	union{
     		int32_t registerValue; /** RESDAT Value 32bit*/
     		uint16_t pos_Vel[2]; /** 16bit position value in pos_Vel[0], 16bit velocity value in pos_Vel[1]*/

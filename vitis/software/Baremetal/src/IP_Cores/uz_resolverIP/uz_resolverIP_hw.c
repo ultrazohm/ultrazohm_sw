@@ -21,7 +21,7 @@
 
 #include "../../uz/uz_HAL.h"
 
-
+//TO DO: see PR comment TS
 int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
     uint8_t MSB = 128;
     uz_assert(addr < 2*MSB);

@@ -29,11 +29,9 @@ struct uz_resolverIP_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core, tested for 100MHz*/
     uint32_t resolution; /**< Resolution setting of AD2S1210. Determined by RES pins, tested for 16bit */
     float freq_clockin; /**< External Clock of AD2S1210. Determined by Crystal Frequency, tested for 8.192MHz */
-    float zero_position_mech; /**< Mechanical zero position*/
-    float pole_pairs_mach; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
-    float pole_pairs_res; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
-    float bitToRpsFactor; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
-	  int bit_offset; /**< Value derived during initialization from resolution; maps raw value to revs per second value*/
+    float zero_position_mechanical; /**< Mechanical zero position*/
+    float pole_pairs_machine; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
+    float pole_pairs_resolver; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
 };
 
 /**

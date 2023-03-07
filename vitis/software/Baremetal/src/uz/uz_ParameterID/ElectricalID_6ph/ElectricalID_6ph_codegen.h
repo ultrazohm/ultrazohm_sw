@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.63
+ * Model version                  : 3.64
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Mar  7 11:44:40 2023
+ * C/C++ source code generated on : Tue Mar  7 15:07:46 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,7 +31,6 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
-
 
 /* Model Code Variants */
 
@@ -64,6 +63,7 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
+
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
@@ -184,9 +184,9 @@ typedef struct {
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c14_sfYtI3dVphCWj0yeGcQTjEC_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_sy7XjnHxVYbhMov5BLWtwrG_;
-                               /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint8_T is_c14_sgw9yoTrZ3r553R29sM9SRG_;
+                               /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  uint8_T is_c14_sy7XjnHxVYbhMov5BLWtwrG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint8_T is_c14_sGmfjfuJTpCF9MYHJTzBOhD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */

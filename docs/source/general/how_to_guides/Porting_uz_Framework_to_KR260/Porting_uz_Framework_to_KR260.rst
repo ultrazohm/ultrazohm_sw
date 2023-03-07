@@ -66,7 +66,7 @@ Creating Fresh Project
 #.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
 
-#.  Some VHDL-files were missing. You have to add them manually as design sources to the Vivado-Project. Those files actually were located in the folder ``ip_cores``. You can use ``ultrazohm_sw/uz_kria_sw/vivado/hdl`` path to get folder which contains all or search for
+#.  Some VHDL-files were missing. You have to add them manually as design sources to the Vivado-Project. Those files actually were located in the folder ``ip_cores``. You can use ``ultrazohm_sw/vivado_kria/hdl`` path to get folder which contains all or search for
     
     *  top_npc_state_machine.vhd
     *  npc_phase_state_machine.vhd
@@ -159,7 +159,7 @@ Project with TCL Scripts:
 ----------------------------
 
 #. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
-#. Add the missing VHDL-files from ``ultrazohm_sw/uz_kria_sw/vivado/hdl`` path:
+#. Add the missing VHDL-files from ``ultrazohm_sw/vivado_kria/hdl`` path:
    
     .. code-block::
         
@@ -170,7 +170,8 @@ Project with TCL Scripts:
         iobufds_inst.vhd
 
 #. Add UltraZohm IP Core Library.
-#. If you created a new workspace different than ``uz_kria_sw/vivado`` , change the path to the folder using ``cd``.
+#. Add a new Block design and name with ``kr260sys``.
+#. Switch with the TCL Console to the current working folder with:
    
     .. code-block::
         
@@ -183,9 +184,9 @@ Project with TCL Scripts:
         source ../tcl_scripts/kr260sys_ps_generaton.tcl 
         source ../tcl_scripts/kr260sys_hd_generaton.tcl
 
-#. Create VHDL wrapper `kr260sys` and set as top manually. 
+#. Create VHDL wrapper for `kr260sys` and set as top manually. 
 
-#. With this step, you have current UltraZohm project for Kria as implemented. If you want to see the detailed steps, check out the tcl files from `uz_kria_sw/vivado/tcl_scripts`:
+#. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl files from `uz_kria_sw/vivado/tcl_scripts`:
 
     * kr260sys_ps_generation → PS 
     * kr260sys_hd_generation → IP-Cores, Connections
@@ -219,7 +220,14 @@ To create a suited software for the KR260, follow these steps:
 #.  Build the "UZ-Plattform-Project".
 #.  Changes for the Baremetal-Project:
 
-    #.  Addresses of dead IP-Cores have to be tied to a fixed address. I used 0x0123456789 to prevent errors during compiling and ensure that those addresses never getting called!
+    #.  Addresses of dead IP-Cores have to be tied to a fixed address at `parameter.h` file. Use 0x0123456789 as address to prevent errors during compiling and ensure that those addresses never getting called! 
+
+        * #define XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR 0x0123456789
+        * #define XPAR_UZ_DIGITAL_ADAPTER_D2_ADAPTER_GATES_3L_PWM_SS_3L_IP_0_BASEADDR 0x0123456789
+        * #define XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
+        * #define XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
+        * #define XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_LTC2311_S00_AXI_BASEADDR 0x0123456789
+
     #.  In the ``main.c - case init_ip_cores``, comment out the Init-routines of the removed IP-Cores 
      
         * uz_adcLtc2311_ip_core_init();

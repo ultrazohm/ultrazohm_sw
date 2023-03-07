@@ -96,9 +96,9 @@ It is strongly advised to manually test by comparing the safe and unsafe version
 
 Three-phase model
 -----------------
-.. doxygentypedef:: uz_pmsm_model3ph_dq_t
+.. doxygentypedef:: uz_pmsm_model3ph_t
 
-.. doxygenstruct:: uz_pmsm_model3ph_dq_config_t
+.. doxygenstruct:: uz_pmsm_model3ph_config_t
   :members:
 
 .. doxygenstruct:: uz_pmsm_model3ph_outputs_t

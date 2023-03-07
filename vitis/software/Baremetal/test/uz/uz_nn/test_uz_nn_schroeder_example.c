@@ -175,28 +175,31 @@ void test_uz_nn_schroeder(void)
     float sumbias = 0.0f;
     float avgtheta = 0.0f;
     float avgbias = 0.0f;
-
+    //init nn
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     for (size_t i = 0; i < 13; ++i)
     {
-    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t* testlooper = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     // testing around with derivatemat declaration
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix,&x[i],1,1,NUMBER_OF_INPUTS);
-    uz_nn_ff(test,input);
-    uz_nn_calc_gradients(test,reference_output[i],input);
+    uz_nn_ff(testlooper,input);
+    uz_nn_calc_gradients(testlooper,reference_output[i],input);
     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
     sumtheta += THETAhelper[i];
     sumbias += biashelper[i];
     }
+    //uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
     printf("Average of thetagrad = %.2f \n", avgtheta);
     printf("Average of biasgrad = %.2f \n", avgbias);
+    // Lernrate festlegen
+    float lernrate = 2.0f;
     // Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
-    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
-    uz_nn_update(test,avgtheta,avgbias);
+    uz_nn_update(test,avgtheta,avgbias,lernrate);
     // Funktion die die daten exportiert und in die .csv Dateien überschreibt
     uz_nn_export(test);
 }

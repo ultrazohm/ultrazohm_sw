@@ -94,11 +94,12 @@ void uz_nn_calc_gradients(uz_nn_t *self,float const reference_output, uz_matrix_
     uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
-void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS)
+void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate)
 {
     const float *gradient1 = &THETA;
     const float *gradient2 = &BIAS;
-    uz_nn_layer_update(self->layer[0],gradient1,gradient2);
+    const float *lernratelayer0 = &Lernrate;
+    uz_nn_layer_update(self->layer[0],gradient1,gradient2,lernratelayer0);
 }
 void uz_nn_export(uz_nn_t *self)
 {

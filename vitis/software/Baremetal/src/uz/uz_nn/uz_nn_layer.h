@@ -84,7 +84,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference);
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
-void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias);
+void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias, float *const lernrate);
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);

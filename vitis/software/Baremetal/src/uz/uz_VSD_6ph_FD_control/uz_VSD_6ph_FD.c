@@ -16,12 +16,13 @@
 
 #include "uz_VSD_6ph_FD.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include <math.h>
 
 
 
 
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, float upperlimit, float lowerlimit, float threshold){
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, float upperlimit, float lowerlimit, float threshold, u_int_32_t mov_average_filter_length, float percent_of_el_period, float omega_el_rad_per_sec, uz_movingAverageFilter_t* movingAverageFilter_R1, uz_movingAverageFilter_t* movingAverageFilter_R2 uz_movingAverageFilter_t* movingAverageFilter_R3 uz_movingAverageFilter_t* movingAverageFilter_R4 uz_movingAverageFilter_t* movingAverageFilter_R5 uz_movingAverageFilter_t* movingAverageFilter_R6 ){
 
 	uz_6phFD_indices indices = {0};
 
@@ -31,8 +32,28 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, f
 	// filter with hysteresis filter
 	indices = uz_vsd_fd_hysteresis_filter(indices, lowerlimit, upperlimit);
 
+	// set filterlength of moving average filter according to current omega_el
+	uint32_t new_filterLength = 1;
+	if (omega_el_rad_per_sec != 0){
+		new_filterLength = (uint32_t)(percent_of_el_period*sample_frequency*2*M_PI/abs(omega_el_rad_per_sec));
+	}
+	new_filterLength = (uint32_t)uz_signals_saturation(new_filterLength, mov_average_filter_length, 1);
+
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R1, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R2, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R3, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R4, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R5, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R6, new_filterLength);
+
 	// moving average filter
-	// Add Moving-AVerage-Filtering here
+	indices.R1 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R1, indices.R1);
+	indices.R2 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R2, indices.R2);
+	indices.R3 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R3, indices.R3);
+	indices.R4 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R4, indices.R4);
+	indices.R5 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R5, indices.R5);
+	indices.R6 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R6, indices.R6);
+
 
 	// evaluation of fault indices
 	indices = uz_vsd_fd_evaluation(indices, threshold);

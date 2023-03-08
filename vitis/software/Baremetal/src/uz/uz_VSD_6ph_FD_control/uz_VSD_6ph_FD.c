@@ -18,24 +18,27 @@
 #include "../uz_signals/uz_signals.h"
 #include <math.h>
 
-/**
- * @brief helper function for hysteresis filter
- * 
- * @param input value to be filtered
- * @param lowerlimit lower limit of hysteresis band
- * @param upperlimit upper limit of hysteresis band
- * @return float output of filter
- */
-float uz_hysteresisband_filter(float input, float lowerlimit, float upperlimit);
 
-/**
- * @brief helper function for evaluation function
- * 
- * @param input fault index value to be evaluated
- * @param threshold threshold value for the evaluation
- * @return float output of the evaluation
- */
-float uz_thresholdEvaluation(float input, float threshold);
+
+
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, float upperlimit, float lowerlimit, float threshold){
+
+	uz_6phFD_indices indices = {0};
+
+	// calculate fault indices
+	indices = uz_vsd_opf_6ph_fault_indices_calculation(vsdcurrents);
+
+	// filter with hysteresis filter
+	indices = uz_vsd_fd_hysteresis_filter(indices, lowerlimit, upperlimit);
+
+	// moving average filter
+	// Add Moving-AVerage-Filtering here
+
+	// evaluation of fault indices
+	indices = uz_vsd_fd_evaluation(indices, threshold);
+
+	return indices;
+}
 
 
 /**

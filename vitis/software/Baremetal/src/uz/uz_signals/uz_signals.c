@@ -68,4 +68,16 @@ float uz_signals_hysteresisband_filter(float input, float upper_limit, float low
 	return output;	
 }
 
+
+
+float uz_signals_threshold_Evaluation(float input, float threshold){
+	float output = 0.0f;
+	if(input > threshold){
+		output = 1.0f;
+	}else{
+		output = 0.0f;
+	}
+	return output;
+}
+
 #endif

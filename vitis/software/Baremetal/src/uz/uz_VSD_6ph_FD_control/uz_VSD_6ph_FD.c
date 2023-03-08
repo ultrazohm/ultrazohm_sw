@@ -93,29 +93,16 @@ uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lower
 
 
 uz_6phFD_indices uz_vsd_fd_evaluation(uz_6phFD_indices input, float threshold){
-	input.R1 = uz_thresholdEvaluation(input.R1, threshold);
-	input.R2 = uz_thresholdEvaluation(input.R2, threshold);
-	input.R3 = uz_thresholdEvaluation(input.R3, threshold);
-	input.R4 = uz_thresholdEvaluation(input.R4, threshold);
-	input.R5 = uz_thresholdEvaluation(input.R5, threshold);
-	input.R6 = uz_thresholdEvaluation(input.R6, threshold);
+	input.R1 = uz_signals_threshold_Evaluation(input.R1, threshold);
+	input.R2 = uz_signals_threshold_Evaluation(input.R2, threshold);
+	input.R3 = uz_signals_threshold_Evaluation(input.R3, threshold);
+	input.R4 = uz_signals_threshold_Evaluation(input.R4, threshold);
+	input.R5 = uz_signals_threshold_Evaluation(input.R5, threshold);
+	input.R6 = uz_signals_threshold_Evaluation(input.R6, threshold);
 	return input;
 }
 
-/**
- * @brief evaluates the input. sets the output to one if the input is bigger than the threshold value
- * 
- * @param input 
- * @param threshold 
- * @return float 
- */
-float uz_thresholdEvaluation(float input, float threshold){
-	if(input > threshold){
-		return 1.0f;
-	}else{
-		return 0.0f;
-	}
-}
+
 
 
 

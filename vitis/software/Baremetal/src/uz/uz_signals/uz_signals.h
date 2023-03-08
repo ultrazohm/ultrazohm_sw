@@ -53,7 +53,7 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit);
  * @param input Any input signal
  * @param upper_limit Upper limit of the hysteresis band
  * @param lower_limit Lower limit of the hysteresis band (needs to be smaller than the upper limit)
- * @return float 
+ * @return float filtered signal
  */
 float uz_signals_hysteresisband_filter(float input, float upper_limit, float lower_limit);
 
@@ -83,3 +83,12 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
 #endif // UZ_SIGNALS_H
+
+/**
+ * @brief Evaluates the input. sets the output to one if the input is bigger than the threshold value otherwise to zero
+ * 
+ * @param input Any input signal
+ * @param threshold Threshold value for evaluation
+ * @return float evaluation value (0 or 1)
+ */
+float uz_signals_threshold_Evaluation(float input, float threshold);

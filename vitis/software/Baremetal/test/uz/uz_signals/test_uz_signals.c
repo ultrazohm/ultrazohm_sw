@@ -109,4 +109,17 @@ void test_uz_signals_hysteresisband_filter_limits(void){
     TEST_ASSERT_FAIL_ASSERT(uz_signals_hysteresisband_filter(input, upper_limit, lower_limit));
 }
 
+void test_uz_signals_threshold_Evaluation(void){
+    float input = 4.7f;
+    float threshold = 3.5f;
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, uz_signals_threshold_Evaluation(input, threshold)); 
+    input = 0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold));  
+    input = -0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold)); 
+    input = 1.7f;
+    threshold = input;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold));    
+}
+
 #endif // TEST

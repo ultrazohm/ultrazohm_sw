@@ -226,7 +226,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t* res_instance_1, uz_resonantController_t* res_instance_2) {
 	uz_6ph_dq_t out = {0};
-	if(Data->FluxmapID_extended_controller_Output->control_active == true)
+	if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 1)
 	{
 		out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 	}
@@ -331,6 +331,8 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	//Update Control-State-inputs
 	uz_ControlState_set_enteredFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_entered(self->FluxMapID));
 	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_finished(self->FluxMapID));
+
+	Data->FluxmapID_extended_controller_Output = uz_get_FluxMapID_6ph_extended_controller_output(self->FluxMapID);
 }
 
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter)
@@ -370,6 +372,10 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->GlobalConfig.PMSM_config.polePairs = 5.0f;
 	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
 	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
+	Data->GlobalConfig.PMSM_6ph_inductances.d = Data->GlobalConfig.PMSM_config.Ld_Henry;
+	Data->GlobalConfig.PMSM_6ph_inductances.q = Data->GlobalConfig.PMSM_config.Lq_Henry;
+	Data->GlobalConfig.PMSM_6ph_inductances.x = 0.02e-3f;
+	Data->GlobalConfig.PMSM_6ph_inductances.y = 0.02e-3f;
 	Data->GlobalConfig.ratCurrent = 8.0f;
 	Data->GlobalConfig.ratTorque = 3.0f;
 	Data->GlobalConfig.ratSpeed = 1000.0f;

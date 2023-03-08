@@ -236,13 +236,14 @@ int main(void)
             break;
         }
 
+        uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
+
         if(ParaID_Data.finished_voltage_measurement && !corrected.finished_flag)
         {
         	uz_ParameterID_6ph_transmit_measured_voltages(ParameterID,meas_array);
-        	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array,ParaID_Data.GlobalConfig.sampleTimeISR);
+        	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, ParaID_Data.GlobalConfig.sampleTimeISR);
         	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
-        	//print_paraID(uncorrected, corrected, ParaID_Data->ElectricalID_Output);
-
+        	print_paraID(uncorrected, corrected, *ParaID_Data.ElectricalID_Output);
 			ParaID_Data.ElectricalID_FFT = corrected;
         }
     }

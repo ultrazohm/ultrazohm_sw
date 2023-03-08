@@ -3,7 +3,6 @@
 #include "unity.h"
 
 #include "uz_VSD_6ph_ML_MT_Control.h"
-#include "uz_VSD_6ph_FD.h"
 #include "uz_VSD_6ph_ML_MT_Control.c"
 
 void setUp(void)
@@ -236,4 +235,7 @@ void test_uz_get_k_parameter_get_index_OPF_2(void){
     index = get_index_OPF_2(p1, p2);
     TEST_ASSERT_EQUAL_INT(index, 14);
 }   
+
+
+
 #endif // TEST

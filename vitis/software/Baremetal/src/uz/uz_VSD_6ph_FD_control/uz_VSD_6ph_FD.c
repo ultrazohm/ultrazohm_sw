@@ -17,7 +17,7 @@
 #include "uz_VSD_6ph_FD.h"
 #include "../uz_signals/uz_signals.h"
 #include <math.h>
-
+#include "../uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 
 

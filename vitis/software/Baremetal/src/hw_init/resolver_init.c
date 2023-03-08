@@ -26,9 +26,9 @@ static struct uz_resolverIP_config_t d4_1_config = {
     .ip_clk_frequency_Hz = IP_CLK_FREQ,
     .resolution = 16,
     .freq_clockin = CRYSTAL_FREQUENCY,
-    .zero_position_mechanical = 0,
-    .pole_pairs_machine = 5,
-    .pole_pairs_resolver = 3,
+    .zero_position_mechanical = 0.0f,
+    .pole_pairs_machine = 5.0f,
+    .pole_pairs_resolver = 3.0f,
 };
 
 uz_resolverIP_t* init_resolver_d4_1(void) {

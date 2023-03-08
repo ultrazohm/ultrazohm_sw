@@ -237,7 +237,7 @@ float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self){
 
 	self->registerValue = uz_resolverIP_hw_read_RESDAT(self->config.base_address);
 	float raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->bit_offset)),16+self->bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
-	return raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver;
+	return raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver * 2.0f*UZ_PIf;
 
 }
 struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self){
@@ -286,7 +286,7 @@ struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAnd
 	 }
 
 	float velocity_raw_value =  uz_convert_sfixed_to_float((self->pos_Vel[1]  << (16+self->bit_offset)),16+self->bit_offset); // AD2S1210 Datasheet: The value stored in the velocity register is 16 bits regardless of resolution. At lower resolutions, the LSBs of the 16-bit digital output should be ignored
-	mechanical.velocity = velocity_raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver;
+	mechanical.velocity = velocity_raw_value *self->bitToRpsFactor / self->config.pole_pairs_resolver * 2.0f*UZ_PIf;
 
 	return mechanical;
 }

@@ -60,7 +60,7 @@ void ISR_Control(void *data)
 
     Global_Data.av.d4_1_elec = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolverD4_1);
     Global_Data.av.theta_elec = Global_Data.av.d4_1_elec.position;
-    Global_Data.av.electricalRotorSpeed = Global_Data.av.d4_1_elec.velocity;
+    Global_Data.av.electricalRotorSpeed = Global_Data.av.d4_1_elec.velocity;//uz_resolverIP_readElectricalVelocity(Global_Data.objects.resolverD4_1);// Global_Data.av.d4_1_elec.velocity;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

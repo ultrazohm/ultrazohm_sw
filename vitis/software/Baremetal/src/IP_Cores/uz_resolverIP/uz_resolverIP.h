@@ -150,7 +150,7 @@ void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_Pairs)
  *
  * @param self instance of uz_resolverIP_t
  *
- *  @return Float Electrical Velocity Data in revs per second
+ *  @return Float Electrical Velocity Data in rad per second
  */
 float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self);
 
@@ -159,7 +159,7 @@ float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self);
  *
  * @param self instance of uz_resolverIP_t
  *
- * @return Float Mechanical Velocity Data in revs per second
+ * @return Float Mechanical Velocity Data in rad per second
  */
 float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self);
 
@@ -189,7 +189,7 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
  *
  * @param self instance of uz_resolverIP_t
  * 
- * @return Struct of type uz_resolverIP_position_velocity_t with float members for mechanical position (0..2*PI) and velocity in revs per second
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for mechanical position (0..2*PI) and velocity in rad per second
  */
 struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self);
 
@@ -198,7 +198,7 @@ struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAnd
  *
  * @param self instance of uz_resolverIP_t
  * 
- * @return Struct of type uz_resolverIP_position_velocity_t with float members for electrical position (0..2*PI) and velocity in revs per second
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for electrical position (0..2*PI) and velocity in rad per second
  */
 struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self);
 

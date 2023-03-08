@@ -29,7 +29,7 @@ typedef struct uz_ParaID_ControlState_t uz_ParaID_ControlState_t;
  *
  * @return uz_ParaID_ControlState_t pointer to object
  */
-uz_ParaID_ControlState_t uz_ControlState_init(void);
+uz_ParaID_ControlState_t* uz_ControlState_init(void);
 
 /**
  * @brief steps the uz_ParaID_ControlState_t state once

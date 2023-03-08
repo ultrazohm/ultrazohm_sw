@@ -29,7 +29,7 @@ typedef struct uz_ParaID_ElectricalID_t uz_ParaID_ElectricalID_t;
  * 
  * @return uz_ParaID_ElectricalID_t pointer to object
  */
-uz_ParaID_ElectricalID_t uz_ElectricalID_init(void);
+uz_ParaID_ElectricalID_t* uz_ElectricalID_init(void);
 
 /**
  * @brief steps the ElectricalID state once

@@ -7,27 +7,27 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.28
- * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 18:26:20 2021
+ * Model version                  : 1.29
+ * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+ * C/C++ source code generated on : Thu Oct 13 09:55:19 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: All passed
+ * Validation result: Passed (12), Warning (1), Error (0)
  */
 
 #ifndef RTW_HEADER_uz_codegen0_h_
 #define RTW_HEADER_uz_codegen0_h_
-#include <math.h>
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
 #endif                                 /* uz_codegen0_COMMON_INCLUDES_ */
 
-/* Model Code Variants */
+#include <stddef.h>
+#include <string.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -62,26 +62,28 @@ typedef struct tag_RTM RT_MODEL;
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   real32_T DiscreteTimeIntegrator_DSTATE;/* '<S1>/Discrete-Time Integrator' */
-  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S1>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator2_DSTATE;/* '<S1>/Discrete-Time Integrator2' */
   int8_T DiscreteTimeIntegrator_PrevRese;/* '<S1>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator2_PrevRes;/* '<S1>/Discrete-Time Integrator2' */
 } DW;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T Sum1;                       /* '<Root>/Sum1' */
-  real32_T Sum2;                       /* '<Root>/Sum2' */
-  real32_T reset_integrator;           /* '<Root>/reset_integrator' */
+  real32_T summand1;                   /* '<Root>/summand1' */
+  real32_T summand2;                   /* '<Root>/summand2' */
+  real32_T reset_SumIntegrator;        /* '<Root>/reset_SumIntegrator' */
   real32_T time;                       /* '<Root>/time' */
-  real32_T Sum4;                       /* '<Root>/Sum4' */
+  real32_T summand3;                   /* '<Root>/summand3' */
+  real32_T reset_TimeIntegrator;       /* '<Root>/reset_TimeIntegrator' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  real32_T SumOut;                     /* '<Root>/SumOut' */
-  real32_T integrator;                 /* '<Root>/integrator' */
-  real32_T sineOut;                    /* '<Root>/sineOut' */
-  real32_T SumOut1;                    /* '<Root>/SumOut1' */
-  real32_T timeFeedback;               /* '<Root>/timeFeedback' */
+  real32_T sum;                        /* '<Root>/sum' */
+  real32_T IntegrationOfSum;           /* '<Root>/IntegrationOfSum' */
+  real32_T ChirpSine;                  /* '<Root>/ChirpSine' */
+  real32_T fb_summand1;                /* '<Root>/fb_summand1' */
+  real32_T fb_time;                    /* '<Root>/fb_time' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -94,14 +96,6 @@ struct tag_RTM {
 /* Model entry point functions */
 extern void uz_codegen0_initialize(RT_MODEL *const rtM);
 extern void uz_codegen0_step(RT_MODEL *const rtM);
-
-/*-
- * These blocks were eliminated from the model due to optimizations:
- *
- * Block '<S1>/Constant1' : Unused code path elimination
- * Block '<S1>/Product' : Unused code path elimination
- * Block '<S1>/Product1' : Unused code path elimination
- */
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -126,6 +120,7 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
 
 /*-
  * Requirements for '<Root>': uz_codegen0
+
  */
 #endif                                 /* RTW_HEADER_uz_codegen0_h_ */
 

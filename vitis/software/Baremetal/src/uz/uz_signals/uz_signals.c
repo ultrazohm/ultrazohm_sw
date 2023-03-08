@@ -59,4 +59,13 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 	return (output);
 }
 
+float uz_signals_hysteresisband_filter(float input, float upper_limit, float lower_limit){
+	uz_assert(upper_limit > lower_limit);
+	float output = input;
+	if((input > upper_limit) || (input < lower_limit)){
+		output = 0.0f;
+	}
+	return output;	
+}
+
 #endif

@@ -15,6 +15,7 @@
 ******************************************************************************/
 
 #include "uz_VSD_6ph_FD.h"
+#include "../uz_signals/uz_signals.h"
 #include <math.h>
 
 /**
@@ -52,7 +53,7 @@ static float uz_divide(float num, float denom){
 	return result;
 }
 
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
+uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t input){
 
 	uz_6phFD_indices output = {0};
 
@@ -80,30 +81,16 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input){
 
 
 uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lowerlimit, float upperlimit){
-	input.R1 = uz_hysteresisband_filter(input.R1, lowerlimit, upperlimit);
-	input.R2 = uz_hysteresisband_filter(input.R2, lowerlimit, upperlimit);
-	input.R3 = uz_hysteresisband_filter(input.R3, lowerlimit, upperlimit);
-	input.R4 = uz_hysteresisband_filter(input.R4, lowerlimit, upperlimit);
-	input.R5 = uz_hysteresisband_filter(input.R5, lowerlimit, upperlimit);
-	input.R6 = uz_hysteresisband_filter(input.R6, lowerlimit, upperlimit);
+
+	input.R1 = uz_signals_hysteresisband_filter(input.R1, upperlimit, lowerlimit);
+	input.R2 = uz_signals_hysteresisband_filter(input.R2, upperlimit, lowerlimit);
+	input.R3 = uz_signals_hysteresisband_filter(input.R3, upperlimit, lowerlimit);
+	input.R4 = uz_signals_hysteresisband_filter(input.R4, upperlimit, lowerlimit);
+	input.R5 = uz_signals_hysteresisband_filter(input.R5, upperlimit, lowerlimit);
+	input.R6 = uz_signals_hysteresisband_filter(input.R6, upperlimit, lowerlimit);
 	return input;
 }
 
-
-/**
- * @brief hysteresis filter sets all values outside of the hysteresisband to zero
- * 
- * @param input filter input
- * @param lowerlimit lower limit of the hysteresis band
- * @param upperlimit upper limit of the hysteresis band
- * @return float filter output
- */
-float uz_hysteresisband_filter(float input, float lowerlimit, float upperlimit){
-	if((input > upperlimit) || (input < lowerlimit)){
-		input = 0.0f;
-	}
-	return input;
-}
 
 uz_6phFD_indices uz_vsd_fd_evaluation(uz_6phFD_indices input, float threshold){
 	input.R1 = uz_thresholdEvaluation(input.R1, threshold);

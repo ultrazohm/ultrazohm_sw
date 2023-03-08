@@ -4,21 +4,22 @@
 
 #include "uz_VSD_6ph_FD.h"
 #include "uz_Transformation.h"
+#include "uz_signals.h"
 
 
-void test_uz_vsd_opf_6ph_faultdetection(void)
+void test_uz_vsd_opf_6ph_fault_indices_calculation(void)
 {
     uz_6phFD_indices indices = {0};
     uz_6ph_alphabeta_t currents = {0};
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents);
 
-    TEST_ASSERT_EQUAL_FLOAT(indices.R1, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices.R2, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices.R3, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices.R4, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices.R5, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices.R6, 0.0f);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R3);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R4);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R5);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R6);
 
     currents.alpha = 1.0f;
     currents.beta = 2.0f;
@@ -27,7 +28,7 @@ void test_uz_vsd_opf_6ph_faultdetection(void)
     currents.z1 = 0.0f;
     currents.z2 = 0.0f;
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents);
 
     TEST_ASSERT_FLOAT_WITHIN(0.0f -0.001f, 0.0f +0.001f, indices.R1);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.7029f, indices.R2);
@@ -57,9 +58,9 @@ void test_uz_vsd_opf_6ph_no_fault(void)
 
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={0};
 
     TEST_ASSERT_FLOAT_WITHIN(0.001,expected_indices.R1,indices.R1);
@@ -92,9 +93,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_1(void)
     currents_abc.a1=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=1.0f,
         .R2=0.0f,
@@ -116,9 +117,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_2(void)
     currents_abc.b1=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=0.0f,
         .R2=1.0f,
@@ -139,9 +140,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_3(void)
     currents_abc.c1=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=0.0f,
         .R2=0.0f,
@@ -163,9 +164,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_4(void)
     currents_abc.a2=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=0.0f,
         .R2=0.0f,
@@ -187,9 +188,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_5(void)
     currents_abc.b2=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=0.0f,
         .R2=0.0f,
@@ -211,9 +212,9 @@ void test_uz_vsd_opf_6ph_fault_on_phase_6(void)
     currents_abc.c2=0.0f; // open phase fault one phase 1
 
     uz_6ph_alphabeta_t currents_ab = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-    uz_6phFD_indices indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    uz_6phFD_indices indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
 
-    indices = uz_vsd_opf_6ph_faultdetection(currents_ab);
+    indices = uz_vsd_opf_6ph_fault_indices_calculation(currents_ab);
     uz_6phFD_indices expected_indices={
         .R1=0.0f,
         .R2=0.0f,
@@ -244,12 +245,12 @@ void test_uz_vsd_fd_hysteresis_filter(void)
 
     indices_filtered = uz_vsd_fd_hysteresis_filter(indices_input, lowerlimit, upperlimit);
 
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R1, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R2, indices_input.R2);
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R3, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R4, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R5, 0.0f);
-    TEST_ASSERT_EQUAL_FLOAT(indices_filtered.R6, indices_input.R6);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices_filtered.R1);
+    TEST_ASSERT_EQUAL_FLOAT(indices_input.R2, indices_filtered.R2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices_filtered.R3);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices_filtered.R4);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices_filtered.R5);
+    TEST_ASSERT_EQUAL_FLOAT(indices_input.R6, indices_filtered.R6);
 }
 
 

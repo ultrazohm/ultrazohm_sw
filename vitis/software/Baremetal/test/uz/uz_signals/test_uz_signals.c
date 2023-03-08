@@ -80,4 +80,33 @@ void test_uz_signals_saturation_output(void){
     input = -0.7f;
     TEST_ASSERT_EQUAL_FLOAT(lower_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
 }
+
+// test output if input is outside of hysteresis-band
+void test_uz_signals_hysteresisband_filter_output_limit(void){
+    float input = 2.5f;
+    float upper_limit = 0.5f;
+    float lower_limit = 0.2f;  
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_hysteresisband_filter(input, upper_limit, lower_limit)); 
+    input = -0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_hysteresisband_filter(input, upper_limit, lower_limit)); 
+}
+
+// test output if input is inside of hysteresis-band
+void test_uz_signals_hysteresisband_filter_output_within_band(void){
+    float input = 2.5f;
+    float upper_limit = 3.5f;
+    float lower_limit = -1.2f;  
+    TEST_ASSERT_EQUAL_FLOAT(input, uz_signals_hysteresisband_filter(input, upper_limit, lower_limit)); 
+    input = -0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(input, uz_signals_hysteresisband_filter(input, upper_limit, lower_limit)); 
+}
+
+// test assert if upper limit < lower limit
+void test_uz_signals_hysteresisband_filter_limits(void){
+    float input = 1.1f;
+    float upper_limit = 0.5f;
+    float lower_limit = 1.6f;
+    TEST_ASSERT_FAIL_ASSERT(uz_signals_hysteresisband_filter(input, upper_limit, lower_limit));
+}
+
 #endif // TEST

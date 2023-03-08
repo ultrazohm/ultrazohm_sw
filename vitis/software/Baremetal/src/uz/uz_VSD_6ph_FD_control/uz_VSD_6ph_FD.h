@@ -19,10 +19,22 @@ typedef struct uz_6phFD_indices{
 
 /**
  * @brief Function for 6-phase open-phase-fault detection
- * @param input uz_6ph_alphabeta_t struct, vsd currents of 6-phase system
+ * @param vsdcurrents uz_6ph_alphabeta_t struct, vsd currents of 6-phase system
+ * @param upperlimit upper limit of hysteresis band
+ * @param lowerlimit lower limit of hysteresis band
+ * @param threshold value from which a fault index is judged as an error
+ * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated
+ */
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, float upperlimit, float lowerlimit, float threshold);
+
+
+/**
+ * @brief Function to calculate the fault indices (unfiltered) for 6-phase open-phase-fault detection
+ * @param vsdcurrents uz_6ph_alphabeta_t struct, vsd currents of 6-phase system
  * @return uz_6phFD_indices fault indices for the six phases
  */
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t input);
+uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t vsdcurrents);
+
 
 /**
  * @brief hysteresis filter function for the vsd open phase fault detection procedure. values

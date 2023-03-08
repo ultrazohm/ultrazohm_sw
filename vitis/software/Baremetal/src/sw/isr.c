@@ -131,7 +131,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec + ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec - ParaID_Data.ElectricalID_Output->thetaOffset;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs;
 	//ParaID ende
 

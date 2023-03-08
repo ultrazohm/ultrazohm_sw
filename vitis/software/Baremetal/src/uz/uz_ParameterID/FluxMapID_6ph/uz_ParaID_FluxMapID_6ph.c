@@ -52,11 +52,12 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
     return (self);
 }
 
-void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags){
+void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, bool feedback_printed){
     self->input.FluxMapIDConfig=ID_config;
     self->input.ActualValues=actual;
     self->input.GlobalConfig_out=global_config;
     self->input.ControlFlags=flags;
+    self->input.feedback_printed=feedback_printed;
     FluxMapID_6ph_codegen_step(self->PtrToModelData);
 }
 

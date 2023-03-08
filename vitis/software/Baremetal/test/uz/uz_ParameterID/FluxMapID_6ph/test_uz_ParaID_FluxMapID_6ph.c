@@ -21,6 +21,9 @@
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
 
+#include "mean_GqoxPyM9.h"
+
+
 
 uz_ParaID_GlobalConfig_t GlobalConfig = {
     .PMSM_config.Ld_Henry = 0.001f,

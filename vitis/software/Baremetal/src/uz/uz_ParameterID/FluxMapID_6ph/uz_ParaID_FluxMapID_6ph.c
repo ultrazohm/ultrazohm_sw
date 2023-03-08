@@ -52,11 +52,12 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
     return (self);
 }
 
-void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags){
+void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, bool feedback_printed){
     self->input.FluxMapIDConfig=ID_config;
     self->input.ActualValues=actual;
     self->input.GlobalConfig_out=global_config;
     self->input.ControlFlags=flags;
+    self->input.feedback_printed=feedback_printed;
     FluxMapID_6ph_codegen_step(self->PtrToModelData);
 }
 
@@ -177,6 +178,20 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         }
     } 
     return out;
+}
+
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data){
+    static bool old_finished_calculation = false;
+    bool feedback = false;
+    if(data.finished_calculation && !old_finished_calculation)
+    {
+        if(printf("%f, %f, %f, %f\n", data.psi_array[0], data.psi_array[1], data.psi_array[2], data.psi_array[3]) > 0)
+        {
+            feedback = true;
+        }  
+    }
+    old_finished_calculation = data.finished_calculation;
+    return feedback;
 }
 
 #endif

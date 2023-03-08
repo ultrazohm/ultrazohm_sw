@@ -211,7 +211,9 @@ typedef struct {
   uint16_T selected_subsystem;
   uz_3ph_dq_t ab_i_dq_PI_ref;
   uz_3ph_dq_t xy_i_dq_PI_ref;
-} uz_ParaID_FluxMapID_extended_controller_output_t;
+  boolean_T finished_calculation;
+  real32_T psi_array[4];
+  } uz_ParaID_FluxMapID_extended_controller_output_t;
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -398,6 +400,7 @@ typedef struct uz_ParameterID_Data_t {
   uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
+  bool feedback_printed;
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
 	float Psi_D_pointer; /**<current value of the FluxMap array corresponding to the value of the FluxMap_counter*/

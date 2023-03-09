@@ -23,6 +23,8 @@ struct uz_DutyCycle_t {
  */
 struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad);
 
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts);
+
 #endif // UZ_SPACE_VECTOR_LIMITATION_H
 
 

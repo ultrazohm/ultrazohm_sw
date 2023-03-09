@@ -72,13 +72,22 @@ struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
+uz_6ph_dq_t m_6ph_dq_currents = {0};
+
 
 uz_3ph_alphabeta_t m_alphabeta_currents = {0};
 uz_3ph_dq_t m_dq_currents = {0};
 
+uz_6ph_abc_t ref_volage_combined = {0};
+
 uz_3ph_abc_t ref_volage_phase_set1 = {0};
 uz_3ph_abc_t ref_volage_phase_set2 = {0};
 
+float theta_el = 0.0f;
+
+uz_3ph_dq_t ref_pi = {0};
+uz_6ph_dq_t ref_all = {0};
+uz_3ph_dq_t setp_pi = {0};
 
 // Inverter, PWM etc.:
 
@@ -105,6 +114,11 @@ extern uz_resonantController_t* res_instance_1;
 extern uz_resonantController_t* res_instance_2;
 uz_6ph_dq_t controller_out = {0};
 
+
+//nice controller
+extern uz_PI_Controller* PI_d;
+extern uz_PI_Controller* PI_q;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -122,6 +136,14 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polepairs*2.0f*M_PI/60;
 
+	theta_el = (Global_Data.av.theta_elec - 1.1f) * 5.0f;
+
+	m_6ph_alphabeta_currents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(m_6ph_abc_currents);
+	m_6ph_dq_currents = uz_transformation_asym30deg_6ph_abc_to_dq(m_6ph_abc_currents, theta_el);
+
+	m_dq_currents.d = m_6ph_dq_currents.d;
+	m_dq_currents.q = m_6ph_dq_currents.q;
+
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
@@ -131,7 +153,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec - ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec - 1.1f;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs;
 	//ParaID ende
 
@@ -276,10 +298,19 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	//ParaID
-		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data, CC_instance_1, CC_instance_2, Speed_instace, sp_instance, res_instance_1, res_instance_2);
-		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+    	ref_all.d = uz_PI_Controller_sample(PI_d, setp_pi.d, m_dq_currents.d, false);//+ uz_resonantController_step(res_instance_1, 0.0f, m_6ph_dq_currents.d, omega_el_rad_per_sec);
+    	ref_all.q = uz_PI_Controller_sample(PI_q, setp_pi.q, m_dq_currents.q, false); ;//+ uz_resonantController_step(res_instance_2, 0.0f, m_6ph_dq_currents.q, omega_el_rad_per_sec);
 
+    	ref_volage_combined = uz_transformation_asym30deg_6ph_dq_to_abc(ref_all, theta_el);
+    	ref_volage_phase_set1.a = ref_volage_combined.a1;
+    	ref_volage_phase_set1.b = ref_volage_combined.b1;
+    	ref_volage_phase_set1.c = ref_volage_combined.c1;
+    	ref_volage_phase_set2.a = ref_volage_combined.a2;
+		ref_volage_phase_set2.b = ref_volage_combined.b2;
+		ref_volage_phase_set2.c = ref_volage_combined.c2;
+
+    	ParaID_DutyCycle.system1 = uz_FOC_generate_DutyCycles(ref_volage_phase_set1, 36.0f);
+    	ParaID_DutyCycle.system2 = uz_FOC_generate_DutyCycles(ref_volage_phase_set2, 36.0f);
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
@@ -287,10 +318,8 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge7DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
     	Global_Data.rasv.halfBridge8DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
     	Global_Data.rasv.halfBridge9DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
-    }
 
+    }
 
 
 

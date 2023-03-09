@@ -120,6 +120,38 @@ struct uz_SetPoint_config sp_config = {
 		.control_type = FOC
 };
 
+
+// real contrl
+const float tau_sum = 2*(1.0f/10.0e3f);
+const uz_PMSM_t pmsm_struct = {
+		.R_ph_Ohm = 0.07f,
+		.Ld_Henry = 0.092e-3f,
+		.Lq_Henry = 0.078e-3f,
+		.Psi_PM_Vs = 0.048f,
+		.polePairs = 5.0f,
+};
+
+const struct uz_PI_Controller_config PI_d_config = {
+		.Ki = pmsm_struct.R_ph_Ohm/(2.0f*tau_sum)/10.0f,
+		.Kp = pmsm_struct.Ld_Henry/(2.0f*tau_sum)/10.0f,
+		.lower_limit = -3.0f,
+		.upper_limit = 3.0f,
+		.samplingTime_sec = 1.0f/10.0e3f,
+		.type = parallel
+};
+
+const struct uz_PI_Controller_config PI_q_config = {
+		.Ki = pmsm_struct.R_ph_Ohm/(2.0f*tau_sum)/10.0f,
+		.Kp = pmsm_struct.Lq_Henry/(2.0f*tau_sum)/10.0f,
+		.lower_limit = -3.0f,
+		.upper_limit = 3.0f,
+		.samplingTime_sec = 1.0f/10.0e3f,
+		.type = parallel
+};
+
+uz_PI_Controller* PI_d = NULL;
+uz_PI_Controller* PI_q = NULL;
+
 // Init: --------------------------------------
 
 enum init_chain
@@ -156,22 +188,22 @@ int main(void)
         	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
         	//Code below is only needed, if the uz_FOC is used as the controller
         	struct uz_CurrentControl_config cc_config = {
-        	        .decoupling_select = no_decoupling,
-        	        .config_id.Ki = ParaID_Data.GlobalConfig.Ki_id,
-        	        .config_id.Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	        .decoupling_select = linear_decoupling,
+        	        .config_id.Ki = ParaID_Data.GlobalConfig.Ki_id/50.0f,
+        	        .config_id.Kp = ParaID_Data.GlobalConfig.Kp_id/50.0f,
         	        .config_id.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
-        	        .config_iq.Ki = ParaID_Data.GlobalConfig.Ki_iq,
-        	        .config_iq.Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	        .config_iq.Ki = ParaID_Data.GlobalConfig.Ki_iq/50.0f,
+        	        .config_iq.Kp = ParaID_Data.GlobalConfig.Kp_iq/50.0f,
         	        .config_iq.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
         	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
         	struct uz_resonantController_config resonant_config = {
         	        .sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
-        	        .gain = 0.0f,
-        	        .harmonic_order = 1.0f,
+        	        .gain = 0.001f,
+        	        .harmonic_order = 2.0f,
         	        .fundamental_frequency = 1.0f,
         	        .lower_limit = -10.0f,
         	        .upper_limit = 10.0f,
-        	        .antiwindup_gain = 0.0f,
+        	        .antiwindup_gain = 0.001f,
         	        .in_reference_value = 0.0f,
         	        .in_measured_value = 0.0f};
 
@@ -215,6 +247,9 @@ int main(void)
             gan_inverter_D3 = uz_d_gan_inverter_init(config_gan_inverter_D3, Global_Data.objects.gan_inverter_outputs_D3);
             gan_inverter_D4 = uz_d_gan_inverter_init(config_gan_inverter_D4, Global_Data.objects.gan_inverter_outputs_D4);
 
+
+            PI_d = uz_PI_Controller_init(PI_d_config);
+            PI_q = uz_PI_Controller_init(PI_q_config);
 
             initialization_chain = print_msg;
             break;

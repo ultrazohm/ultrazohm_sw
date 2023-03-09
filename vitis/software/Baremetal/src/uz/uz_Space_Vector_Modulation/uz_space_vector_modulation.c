@@ -137,3 +137,15 @@ struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float
     return (output);
 }
 
+struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts) {
+	//Uses continuous sinusoidal PWM (SPWM)
+	struct uz_DutyCycle_t output = {0};
+	output.DutyCycle_A = ( (input.a / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_B = ( (input.b / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_C = ( (input.c / (0.5f * V_dc_volts) ) +1.0f) * 0.5f;
+	output.DutyCycle_A = uz_signals_saturation(output.DutyCycle_A, 1.0f, 0.0f);
+	output.DutyCycle_B = uz_signals_saturation(output.DutyCycle_B, 1.0f, 0.0f);
+	output.DutyCycle_C = uz_signals_saturation(output.DutyCycle_C, 1.0f, 0.0f);
+	return(output);
+}
+

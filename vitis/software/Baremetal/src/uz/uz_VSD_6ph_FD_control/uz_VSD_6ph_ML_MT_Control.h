@@ -28,7 +28,7 @@ struct uz_6ph_MLMT_kparameter{
  * @brief Enum for the neutral point connection
  * 
  */
-typedef enum {
+typedef enum neutral_point_configuration {
     N1 = 1,     /**< single neutral point*/
     N2 = 2,     /**< two separated neutral points*/
 }neutral_point_configuration;
@@ -37,7 +37,7 @@ typedef enum {
  * @brief Enum for the optimization strategies
  * 
  */
-typedef enum {
+typedef enum ML_MT_optimization {
     MT = 0,     /**< Minimum Loss optimization*/
     ML = 1,     /**< Maximum Torque optimization*/
 }ML_MT_optimization;

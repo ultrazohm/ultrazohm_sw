@@ -40,7 +40,7 @@ Since all VSD-currents are no longer independent in post-fault operation, the re
 The k-parameters in these equations depend on the fault scenario and can either be calculated or optimized depending on the avaiable degrees of freedom in the system.
 Frequently used for determining the k-parameters are the Minimum Loss (ML) and Maximum Torque (MT) optimization strategies, optimizing for minimal copper losses and maximum torque operation range respectively.[[#Munim]_] [[#Che_Duran]_]
 
-The following module with the function ``get_k_parameter`` contains the ML and MT optimized k-parameters for up to 3 OPFs of an asymmetric six-phase PMSM with one (1N) or two (2N) neutral points.
+The following module with the function ``uz_get_k_parameter`` contains the ML and MT optimized k-parameters for up to 3 OPFs of an asymmetric six-phase PMSM with one (1N) or two (2N) neutral points.
 Based on these parameters a fault tolerant control system for asymmetric six-phase PMSM can be created by controlling the VSD-Currents with the calculated reference values.
 
 .. _kparameter:
@@ -61,7 +61,7 @@ Parameter for calculating the reference values for the vsd-control during OPF in
 Get k parameter function
 ------------------------
 
-.. doxygenfunction:: get_k_parameter
+.. doxygenfunction:: uz_get_k_parameter
 
 
 Description
@@ -75,7 +75,7 @@ Example
 
 .. code-block:: c
   :linenos:
-  :caption: Example function call of get_k_parameter()
+  :caption: Example function call of uz_get_k_parameter()
 
   int main(void) {
 
@@ -85,14 +85,14 @@ Example
 	uz_6ph_MLMT_kparameter k_parameter;
 
     // get k-parameters according to the fault indices
-	k_parameter = get_k_parameter(FD_indices, N1, ML);
+	k_parameter = uz_get_k_parameter(FD_indices, N1, ML);
     
   }
 
 Enums
 ^^^^^
 
-Enumerations for input parameters of the function ``get_k_parameter``.
+Enumerations for input parameters of the function ``uz_get_k_parameter``.
 
   .. doxygenenum:: neutral_point_configuration
 

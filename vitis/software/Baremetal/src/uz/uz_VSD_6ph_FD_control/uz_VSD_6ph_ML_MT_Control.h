@@ -56,7 +56,7 @@ typedef struct uz_6ph_MLMT_kparameter uz_6ph_MLMT_kparameter;
  * @param ML_MT_optimization enum (MT -> Maximum Torque (MT) optimization, ML -> Minimum Loss (MT) optimization)
  * @return uz_6ph_MLMT_kparameter struct with kparameters and derating factor
  */
-uz_6ph_MLMT_kparameter get_k_parameter(uz_6phFD_indices FD_indices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization);
+uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices FD_indices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization);
 
 
 

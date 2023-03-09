@@ -9,7 +9,7 @@ void setUp(void)
 {
 }
 
-void test_get_k_parameter(void)
+void test_uz_get_k_parameter(void)
 {
     // check for some selected fault scenarios if the correct k-parameters are selected
 
@@ -19,7 +19,7 @@ void test_get_k_parameter(void)
     uz_6phFD_indices FD_indices = {0};
 
     // no phase faulted 1N MT:
-    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 1.0f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, 0.0f);
@@ -33,7 +33,7 @@ void test_get_k_parameter(void)
 
     // 1 OPF 1N ML:
     FD_indices.R1 = 1.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 0.694444);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, -0.641110f);
@@ -49,7 +49,7 @@ void test_get_k_parameter(void)
     FD_indices.R2 = 1.0f;
     FD_indices.R3 = 1.0f;
     FD_indices.R4 = 1.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 1.0f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, 0.0f);
@@ -69,7 +69,7 @@ void test_get_k_parameter(void)
     FD_indices.R4 = 0.0f;
     FD_indices.R5 = 0.0f;
     FD_indices.R6 = 0.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N2, ML);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N2, ML);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 0.554700f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, -0.250000f);
@@ -88,7 +88,7 @@ void test_get_k_parameter(void)
     FD_indices.R4 = 0.0f;
     FD_indices.R5 = 0.0f;
     FD_indices.R6 = 0.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N2, ML);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N2, ML);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 0.5f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, -1.0f);
@@ -107,7 +107,7 @@ void test_get_k_parameter(void)
     FD_indices.R4 = 0.0f;
     FD_indices.R5 = 0.0f;
     FD_indices.R6 = 0.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N2, MT);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N2, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 0.5f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, -1.0f);
@@ -126,7 +126,7 @@ void test_get_k_parameter(void)
     FD_indices.R4 = 0.0f;
     FD_indices.R5 = 1.0f;
     FD_indices.R6 = 1.0f;
-    test_k_parameter = get_k_parameter(FD_indices, N1, MT);
+    test_k_parameter = uz_get_k_parameter(FD_indices, N1, MT);
 
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.deratingFaktor, 0.557668f);
     TEST_ASSERT_EQUAL_FLOAT(test_k_parameter.k1, 0.543660f);

@@ -108,19 +108,18 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     static float frequencies[5001];
     static float amplitudes[5001];
     static float angles[5001];
-    const uint16_t n_order = 5U;
     uint16_t order[] = {1U, 3U, 5U, 7U, 9U};    // orders to determine (5 in total)
-    uint16_t indices_real[n_order];             // array to save indices of psi_psm orders
-    float psi_pms[n_order][3];                  // array holding psi pms
+    uint16_t indices_real[PARAMETERID6PH_ELECTRICAL_N_ORDER];             // array to save indices of psi_psm orders
+    float psi_pms[PARAMETERID6PH_ELECTRICAL_N_ORDER][3];                  // array holding psi pms
     uz_ParaID_ElectricalID_fft_in_t output;     // output struct for ParaID
     // calculate FFT
     FFTRecordedVoltage(induced_voltage, ISR_sampletime, 100e-6, frequencies, amplitudes, angles);
     // find fft peaks for psi_pm orders
-    uz_find_fft_peak_indices(order, n_order, amplitudes, 5001U, indices_real);
+    uz_find_fft_peak_indices(order, PARAMETERID6PH_ELECTRICAL_N_ORDER, amplitudes, 5001U, indices_real);
     // calculate psi_pms
-    uz_calculate_psi_pms(psi_pms, indices_real, n_order, frequencies, amplitudes, angles);
+    uz_calculate_psi_pms(psi_pms, indices_real, PARAMETERID6PH_ELECTRICAL_N_ORDER, frequencies, amplitudes, angles);
     // write to output struct
-    for(uint16_t i=0U;i<n_order;i++)
+    for(uint16_t i=0U;i<PARAMETERID6PH_ELECTRICAL_N_ORDER;i++)
     {
         output.psi_pm_frequency[i] = psi_pms[i][0];
         output.psi_pm_amplitude[i] = psi_pms[i][1];

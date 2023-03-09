@@ -273,11 +273,6 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	Data->finished_voltage_measurement = uz_get_ElectricalID_6ph_finished_voltage_measurement(self->ElectricalID);
 }
 
-void uz_ParameterID_6ph_transmit_measured_voltages(uz_ParameterID_6ph_t* self, float *destination){
-	uz_assert_not_NULL(self);
-	uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, destination);
-}
-
 static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
@@ -336,6 +331,17 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter)
 {
 	uz_ParameterID_update_transmit_values(Data, activeState, FluxMapCounter, ArrayCounter);
+}
+
+void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array){
+	uz_assert_not_NULL(self);
+	if(Data->finished_voltage_measurement && !Data->ElectricalID_FFT.finished_flag)
+        {
+			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
+        	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
+        	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig, PARAMETERID6PH_ELECTRICAL_N_ORDER);
+        	//print_paraID(uncorrected, Data->ElectricalID_FFT, Data->ElectricalID_Output);
+        }
 }
 
 void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){

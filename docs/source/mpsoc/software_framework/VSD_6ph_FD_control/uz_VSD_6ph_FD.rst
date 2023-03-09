@@ -2,15 +2,18 @@
 VSD Open-phase-fault detection
 ==============================
 
-This module provides functions for open phase fault (OPF) detection based on Vector-Space-Decompositon (VSD) for an asymmetric six phase machine.
+This module provides functions for open phase fault (OPF) detection based on Vector Space Decompositon (VSD) for an asymmetric six phase machine.
 The stator of an asymmetric six phase phase machine consists of two three-phase windig sets shifted by :math:`\gamma = \pi/6`.
 Since the VSD transformation can be used for both PMSM and asynchronous machines, this module can be used for both machine types.
-The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines. However, this is not included in this module.
+The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines.
+However, this is not included in this module, since the underlying equations for the fault indices have to be adjusted for it according to the stator arrangement.
 
-The detection is based on six fault indices, one for each phase of the machine.
+The fault detection is based on six fault indices, one for each phase of the machine.
 The fault indices are calculated based on the measured VSD-currents with the following equations.
-:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 - 6.
-:math:`i_\alpha, i_\beta, i_x, i_y, i_{01}, i_{02}` are the VSD-currents calculated with the VSD transformation.
+:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 to 6.
+:math:`i_\alpha, i_\beta, i_x, i_y, i_{01}, i_{02}` are the VSD-currents calculated with the :ref:`VSD-Transformation <6ph_abc_to_alphabeta>`.
+
+.. _fault_indices:
 
 .. math::
 
@@ -43,10 +46,12 @@ The remaining fault indices follow different non-zero functions depending on the
 
 By filtering the fault indices, they can be converted so that only the fault indices of the faulted phases are constant one, while all other fault indices are zero.
 For the filtering an hysteresis band filter followed by an moving average filter is used. 
-After the filtering the fault indices have two possible states and are either 0 (no fault in the corresponding phase) or 1 (fault in the corresponding phase) and can therefore be used for OPF detection. [[#DuranGonzalez]_]
+After the filtering the fault indices have two possible states and are either 0 (no fault in the corresponding phase) or 1 (fault in the corresponding phase) and can therefore be used for OPF detection.
 
-The following module contains functions for calculating the fault indices, applying hysteresis band filtering and evaluating the filtered fault indices.
-A moving average filter is not included. The obtained results of the evaluated fault indices can be used for an control scheme during OPF.
+The open phase fault detection is described in detail in [[#DuranGonzalez]_].
+
+The following module contains functions for calculating the fault indices, applying hysteresis band and moving average filtering and evaluating the filtered fault indices.
+The obtained results of the evaluated fault indices can be used for an control scheme during OPF.
 
 
 
@@ -96,7 +101,7 @@ Calculation of the fault indices
 Description
 ^^^^^^^^^^^
 
-Function for calculating the fault indices from the six VSD-currents of the machine. 
+Function for calculating the raw fault indices from the six VSD-currents of the machine according to the :ref:`equations <fault_indices>`. 
 
 
 .. _uz_vsd_fd_hysteresis_filter:
@@ -111,6 +116,7 @@ Description
 ^^^^^^^^^^^
 
 Function for filtering the raw fault indices calculated by ``_uz_vsd_opf_6ph_fault_indices_calculation`` with a hysteresis band specified by the input values. 
+The fault indices are set to zero if they are outside the hysteresis band bounded by the upper and lower limit.
 
 
 .. _uz_vsd_fd_evaluation:
@@ -126,6 +132,7 @@ Description
 ^^^^^^^^^^^
 
 Function for evaluating the filtered fault indices with a threshold value, deciding if a fault index indicates an open phase fault or not. 
+A open phase fault is detected when a fault index is above the set threshold value.
 
 Example of complete open phase fault detection
 ----------------------------------------------

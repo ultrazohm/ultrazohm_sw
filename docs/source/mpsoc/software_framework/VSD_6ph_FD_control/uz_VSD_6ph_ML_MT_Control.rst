@@ -3,7 +3,7 @@
 ML-MT-Optimized control during OPF
 ==================================
 
-The VSD-currents during pre-fault operation are independent from each other and can be controlled separately.
+The VSD-currents during pre-fault operation in multiphase machines are independent from each other and can be controlled separately.
 During one or more open-phase-faults (OPF) the vsd-currents are no longer independent from each other, as the system looses a degree of freedom per faulted phase.
 The generated torque depends only on the alpha-beta current. To generate constant torque in the post-fault case the alpha-beta-currents have to be controlled accordingly.
 In a PMSM the alpha-beta-currents should take the following form
@@ -22,6 +22,7 @@ to reach constant torque, just like in the pre-fault case.
 
 Since all VSD-currents are no longer independent in post-fault operation, the reference values for the other VSD-currents have to be specified as a function of the alpha-beta currents.
 
+
 .. math::
     \begin{bmatrix}
     i_{ref}^x \\
@@ -36,9 +37,8 @@ Since all VSD-currents are no longer independent in post-fault operation, the re
     k_7 \cdot i^{\alpha} + k_8 \cdot i^{\beta} \\
   \end{bmatrix}
 
-The k-parameters of these functions are not identical for all fault scenarios and can be optimized if there are degrees of freedom available. Otherwise they can be calculated.
-
-Frequently used are the Minimum Loss (ML) and Maximum Torque (MT) optimization strategies, optimizing for minimal copper losses and maximum torque operation range respectively.[[#Munim]_] [[#Che_Duran]_]
+The k-parameters in these equations depend on the fault scenario and can either be calculated or optimized depending on the avaiable degrees of freedom in the system.
+Frequently used for determining the k-parameters are the Minimum Loss (ML) and Maximum Torque (MT) optimization strategies, optimizing for minimal copper losses and maximum torque operation range respectively.[[#Munim]_] [[#Che_Duran]_]
 
 The following module with the function ``get_k_parameter`` contains the ML and MT optimized k-parameters for up to 3 OPFs of an asymmetric six-phase PMSM with one (1N) or two (2N) neutral points.
 Based on these parameters a fault tolerant control system for asymmetric six-phase PMSM can be created by controlling the VSD-Currents with the calculated reference values.

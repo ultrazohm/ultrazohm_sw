@@ -1,0 +1,10 @@
+#ifndef UZ_INVERTER_ADAPTER_HW_H
+#define UZ_PWM_DUTY_FREQ_DETECTION_HW_H
+#include <stdint.h>
+
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWMFreqTicks(uint32_t base_address);
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWMhightimeTicks(uint32_t base_address);
+uint32_t uz_PWM_duty_freq_detection_hw_get_PWMlowtimeTicks(uint32_t base_address);
+float uz_PWM_duty_freq_detection_hw_get_PWMdutyCycNormalized(uint32_t base_address);
+
+#endif // UZ_PWM_DUTY_FREQ_DETECTION_HW_H

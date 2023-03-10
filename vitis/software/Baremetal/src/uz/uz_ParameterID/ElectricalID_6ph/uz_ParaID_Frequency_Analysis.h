@@ -21,6 +21,8 @@
 #include "../../uz_math_constants.h"
 #include <stdint.h>
 
+#define PARAMETERID6PH_ELECTRICAL_N_ORDER 5U
+
 
 /**
  * @brief find the index of the highest value in an array of floats

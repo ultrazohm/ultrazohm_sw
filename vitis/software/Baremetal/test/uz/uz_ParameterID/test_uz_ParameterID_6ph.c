@@ -22,7 +22,16 @@
 #include "uz_ParaID_ElectricalID.h"
 #include "ElectricalID_codegen.h"
 
+#include "uz_ParaID_Frequency_Analysis.h"
+#include "FFTImplementationCallback.h"
+#include "rt_nonfinite.h"
+#include "rt_defines.h"
+#include "rt_nonfinite.h"
+#include "FFTRecordedVoltage.h"
+#include "uz_complex.h"
+
 #include "uz_ParaID_FluxMapID_6ph.h"
+#include "mean_GqoxPyM9.h"
 #include "FluxMapID_6ph_codegen.h"
 
 #include "uz_ParaID_FluxMapID.h"

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.67
+ * Model version                  : 3.68
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Mar 10 13:09:24 2023
+ * C/C++ source code generated on : Fri Mar 10 14:22:15 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,8 +31,7 @@
 #define IN_AMMheating                  ((uint8_T)4U)
 #define IN_AMMnewRef                   ((uint8_T)5U)
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
-#define IN_calculatePsiAndNextStep     ((uint8_T)6U)
-#define IN_initAMM                     ((uint8_T)7U)
+#define IN_initAMM                     ((uint8_T)6U)
 
 /* Named constants for Chart: '<Root>/FluxMapID_6ph_codegen' */
 #define IN_AMMstate                    ((uint8_T)1U)
@@ -175,128 +174,145 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
                     DW_AMMstateIdentificationDQFl_t *localDW)
 {
   int32_T i;
+  uint32_T qY;
+  boolean_T guard1 = false;
 
   /* During: Fluxmap */
+  guard1 = false;
   switch (localDW->is_c14_Subchart_FluxMapID_refer) {
    case IN_AMMcollectData:
-    {
-      /* During 'AMMcollectData': '<S2>:99' */
-      /* '<S2>:91:1' sf_internal_predicateOutput = feedback_printed == true; */
-      if (feedback_printed) {
-        /* Transition: '<S2>:91' */
+    /* During 'AMMcollectData': '<S2>:99' */
+    /* '<S2>:91:1' sf_internal_predicateOutput = feedback_printed == true; */
+    if (feedback_printed) {
+      /* Transition: '<S2>:91' */
+      /* '<S2>:107:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp > 70; */
+      if (FluxMapID_output->WindingTemp > 70.0F) {
+        /* Transition: '<S2>:107' */
         /* Exit 'AMMcollectData': '<S2>:99' */
         /* '<S2>:99:29' FluxMapID_output.external_Measurement_Flag=boolean(0); */
         FluxMapID_output->external_Measurement_Flag = false;
 
         /* '<S2>:99:30' finished_calculation = false; */
         *finished_calculation = false;
-        localDW->is_c14_Subchart_FluxMapID_refer = IN_calculatePsiAndNextStep;
+        localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcooling;
 
-        /* Entry 'calculatePsiAndNextStep': '<S2>:103' */
-        /* '<S2>:103:3' activeState = uint16(404); */
-        *activeState = 404U;
+        /* Entry 'AMMcooling': '<S2>:94' */
+        /* '<S2>:94:4' activeState = uint16(410); */
+        *activeState = 410U;
 
-        /* '<S2>:103:4' i_d_ref_AMM_loc = PI_d_ref; */
+        /* '<S2>:94:5' i_d_ref_AMM_loc = PI_d_ref; */
+        localDW->i_d_ref_AMM_loc_p = *PI_d_ref;
+
+        /* '<S2>:94:6' i_q_ref_AMM_loc = PI_q_ref; */
+        localDW->i_q_ref_AMM_loc_l = *PI_q_ref;
+
+        /* '<S2>:94:7' PI_d_ref = single(0.0); */
+        *PI_d_ref = 0.0F;
+
+        /* '<S2>:94:8' PI_q_ref = single(0.0); */
+        *PI_q_ref = 0.0F;
+
+        /* '<S2>:104:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp >=60 && FluxMapID_output.WindingTemp <= 70; */
+      } else if ((FluxMapID_output->WindingTemp >= 60.0F) &&
+                 (FluxMapID_output->WindingTemp <= 70.0F)) {
+        /* Transition: '<S2>:104' */
+        /* Exit 'AMMcollectData': '<S2>:99' */
+        /* '<S2>:99:29' FluxMapID_output.external_Measurement_Flag=boolean(0); */
+        FluxMapID_output->external_Measurement_Flag = false;
+
+        /* '<S2>:99:30' finished_calculation = false; */
+        *finished_calculation = false;
+        localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMnewRef;
+        enter_atomic_AMMnewRef(activeState, PI_d_ref, PI_q_ref, FluxMapIDConfig,
+          localDW);
+
+        /* '<S2>:101:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp < 60; */
+      } else if (FluxMapID_output->WindingTemp < 60.0F) {
+        /* Transition: '<S2>:101' */
+        /* Exit 'AMMcollectData': '<S2>:99' */
+        /* '<S2>:99:29' FluxMapID_output.external_Measurement_Flag=boolean(0); */
+        FluxMapID_output->external_Measurement_Flag = false;
+
+        /* '<S2>:99:30' finished_calculation = false; */
+        *finished_calculation = false;
+        localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMheating;
+
+        /* Entry 'AMMheating': '<S2>:88' */
+        /* '<S2>:88:4' activeState = uint16(420); */
+        *activeState = 420U;
+
+        /* '<S2>:88:5' i_d_ref_AMM_loc = PI_d_ref; */
         localDW->i_d_ref_AMM_loc = *PI_d_ref;
 
-        /* '<S2>:103:5' i_q_ref_AMM_loc = PI_q_ref; */
+        /* '<S2>:88:6' i_q_ref_AMM_loc = PI_q_ref; */
         localDW->i_q_ref_AMM_loc = *PI_q_ref;
+
+        /* '<S2>:88:7' PI_q_ref = single(FluxMapIDConfig.IQstop); */
+        *PI_q_ref = FluxMapIDConfig->IQstop;
+
+        /* '<S2>:88:8' PI_d_ref = single(FluxMapIDConfig.IDstart); */
+        *PI_d_ref = FluxMapIDConfig->IDstart;
+
+        /* '<S2>:108:1' sf_internal_predicateOutput = repetitionCounter >= NumberOfPoints; */
+      } else if (localDW->repetitionCounter >= localDW->NumberOfPoints) {
+        /* Transition: '<S2>:108' */
+        /* Exit 'AMMcollectData': '<S2>:99' */
+        /* '<S2>:99:29' FluxMapID_output.external_Measurement_Flag=boolean(0); */
+        FluxMapID_output->external_Measurement_Flag = false;
+
+        /* '<S2>:99:30' finished_calculation = false; */
+        *finished_calculation = false;
+        localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcompleted;
+
+        /* Entry 'AMMcompleted': '<S2>:95' */
+        /* '<S2>:95:4' counter_time = uint32(1); */
+        localDW->counter_time = 1U;
+
+        /* '<S2>:95:5' activeState = uint16(450); */
+        *activeState = 450U;
+
+        /* '<S2>:95:6' AMMn = uint32(0); */
+        localDW->AMMn = 0U;
+
+        /* '<S2>:95:7' AMMj = uint32(0); */
+        localDW->AMMj = 0U;
+
+        /* '<S2>:95:8' repetitionCounter = uint32(0); */
+        localDW->repetitionCounter = 0U;
+
+        /* '<S2>:95:9' PI_d_ref = single(0.0); */
+        *PI_d_ref = 0.0F;
+
+        /* '<S2>:95:10' PI_q_ref = single(0.0); */
+        *PI_q_ref = 0.0F;
       } else {
-        uint32_T qY;
-
-        /* '<S2>:99:14' counter_time = counter_time +1; */
-        qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
-        if (localDW->counter_time + 1U < localDW->counter_time) {
-          qY = MAX_uint32_T;
-        }
-
-        localDW->counter_time = qY;
-
-        /* '<S2>:99:15' if((mod(counter_time,20)==0)&&i<=array_size) */
-        if ((localDW->counter_time - localDW->counter_time / 20U * 20U == 0U) &&
-            (localDW->i <= 1000U)) {
-          /* '<S2>:99:16' u_d_array(i) = u_d; */
-          localDW->u_d_array[(int32_T)localDW->i - 1] = u_d;
-
-          /* '<S2>:99:17' u_q_array(i) = u_q; */
-          localDW->u_q_array[(int32_T)localDW->i - 1] = u_q;
-
-          /* '<S2>:99:18' omega_el_array(i) = omega_el; */
-          localDW->omega_el_array[(int32_T)localDW->i - 1] = omega_el;
-
-          /* '<S2>:99:19' i = i+1; */
-          qY = localDW->i + /*MW:OvSatOk*/ 1U;
-          if (localDW->i + 1U < localDW->i) {
-            qY = MAX_uint32_T;
-          }
-
-          localDW->i = qY;
-        }
-
-        /* '<S2>:99:21' if(i==array_size) */
-        if (localDW->i == 1000U) {
-          real32_T b_x;
-          real32_T x;
-
-          /* '<S2>:99:22' psi_out_array(1)=PI_d_ref; */
-          psi_out_array[0] = *PI_d_ref;
-
-          /* '<S2>:99:23' psi_out_array(2)=PI_q_ref; */
-          psi_out_array[1] = *PI_q_ref;
-
-          /* '<S2>:99:24' psi_out_array(3)=(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
-          x = localDW->u_d_array[0];
-          b_x = localDW->omega_el_array[0];
-          for (i = 0; i < 999; i++) {
-            x += localDW->u_d_array[i + 1];
-            b_x += localDW->omega_el_array[i + 1];
-          }
-
-          psi_out_array[2] = (x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
-            (b_x / 1000.0F);
-
-          /* '<S2>:99:25' psi_out_array(4)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
-          x = localDW->u_q_array[0];
-          b_x = localDW->omega_el_array[0];
-          for (i = 0; i < 999; i++) {
-            x += localDW->u_q_array[i + 1];
-            b_x += localDW->omega_el_array[i + 1];
-          }
-
-          psi_out_array[3] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
-            (b_x / 1000.0F);
-
-          /* '<S2>:99:26' finished_calculation = true; */
-          *finished_calculation = true;
-        }
+        guard1 = true;
       }
+    } else {
+      guard1 = true;
     }
     break;
 
    case IN_AMMcompleted:
-    {
-      /* During 'AMMcompleted': '<S2>:95' */
-      /* '<S2>:92:1' sf_internal_predicateOutput = one_sec_transition_counter == counter_time; */
-      if (one_sec_transition_counter == localDW->counter_time) {
-        /* Transition: '<S2>:92' */
-        /* Exit 'AMMcompleted': '<S2>:95' */
-        /* '<S2>:95:15' reset_FOC_output */
-        localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
-        localDW->exitPortIndex = 2U;
-      } else {
-        uint32_T qY;
-
-        /* '<S2>:95:12' counter_time = counter_time +1; */
-        qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
-        if (localDW->counter_time + 1U < localDW->counter_time) {
-          qY = MAX_uint32_T;
-        }
-
-        localDW->counter_time = qY;
-
-        /* '<S2>:95:13' resetIntegrator=boolean(1); */
-        *resetIntegrator = true;
+    /* During 'AMMcompleted': '<S2>:95' */
+    /* '<S2>:92:1' sf_internal_predicateOutput = one_sec_transition_counter == counter_time; */
+    if (one_sec_transition_counter == localDW->counter_time) {
+      /* Transition: '<S2>:92' */
+      /* Exit 'AMMcompleted': '<S2>:95' */
+      /* '<S2>:95:15' reset_FOC_output */
+      localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
+      localDW->exitPortIndex = 2U;
+    } else {
+      /* '<S2>:95:12' counter_time = counter_time +1; */
+      qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
+      if (localDW->counter_time + 1U < localDW->counter_time) {
+        qY = MAX_uint32_T;
       }
+
+      localDW->counter_time = qY;
+
+      /* '<S2>:95:13' resetIntegrator=boolean(1); */
+      *resetIntegrator = true;
     }
     break;
 
@@ -306,11 +322,11 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
     if (FluxMapID_output->WindingTemp <= 60.0F) {
       /* Transition: '<S2>:105' */
       /* Exit 'AMMcooling': '<S2>:94' */
-      /* '<S2>:94:8' PI_d_ref = i_d_ref_AMM_loc; */
-      *PI_d_ref = localDW->i_d_ref_AMM_loc;
+      /* '<S2>:94:10' PI_d_ref = i_d_ref_AMM_loc; */
+      *PI_d_ref = localDW->i_d_ref_AMM_loc_p;
 
-      /* '<S2>:94:9' PI_q_ref = i_q_ref_AMM_loc; */
-      *PI_q_ref = localDW->i_q_ref_AMM_loc;
+      /* '<S2>:94:11' PI_q_ref = i_q_ref_AMM_loc; */
+      *PI_q_ref = localDW->i_q_ref_AMM_loc_l;
       localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMnewRef;
       enter_atomic_AMMnewRef(activeState, PI_d_ref, PI_q_ref, FluxMapIDConfig,
         localDW);
@@ -323,10 +339,10 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
     if (FluxMapID_output->WindingTemp >= 60.0F) {
       /* Transition: '<S2>:106' */
       /* Exit 'AMMheating': '<S2>:88' */
-      /* '<S2>:88:8' PI_d_ref = i_d_ref_AMM_loc; */
+      /* '<S2>:88:10' PI_d_ref = i_d_ref_AMM_loc; */
       *PI_d_ref = localDW->i_d_ref_AMM_loc;
 
-      /* '<S2>:88:9' PI_q_ref = i_q_ref_AMM_loc; */
+      /* '<S2>:88:11' PI_q_ref = i_q_ref_AMM_loc; */
       *PI_q_ref = localDW->i_q_ref_AMM_loc;
       localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMnewRef;
       enter_atomic_AMMnewRef(activeState, PI_d_ref, PI_q_ref, FluxMapIDConfig,
@@ -335,138 +351,63 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
     break;
 
    case IN_AMMnewRef:
-    {
-      /* During 'AMMnewRef': '<S2>:93' */
-      /* '<S2>:109:1' sf_internal_predicateOutput = three_sec_transition_counter == counter_time; */
-      if (three_sec_transition_counter == localDW->counter_time) {
-        uint32_T qY;
+    /* During 'AMMnewRef': '<S2>:93' */
+    /* '<S2>:109:1' sf_internal_predicateOutput = three_sec_transition_counter == counter_time; */
+    if (three_sec_transition_counter == localDW->counter_time) {
+      /* Transition: '<S2>:109' */
+      localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcollectData;
 
-        /* Transition: '<S2>:109' */
-        localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcollectData;
+      /* Entry 'AMMcollectData': '<S2>:99' */
+      localDW->i = 1U;
+      memset(&localDW->u_d_array[0], 0, 1000U * sizeof(real32_T));
+      memset(&localDW->u_q_array[0], 0, 1000U * sizeof(real32_T));
+      memset(&localDW->omega_el_array[0], 0, 1000U * sizeof(real32_T));
 
-        /* Entry 'AMMcollectData': '<S2>:99' */
-        localDW->i = 1U;
-        memset(&localDW->u_d_array[0], 0, 1000U * sizeof(real32_T));
-        memset(&localDW->u_q_array[0], 0, 1000U * sizeof(real32_T));
-        memset(&localDW->omega_el_array[0], 0, 1000U * sizeof(real32_T));
-
-        /* '<S2>:99:3' counter_time = uint32(1); */
-        localDW->counter_time = 1U;
-
-        /* '<S2>:99:4' activeState = uint16(403); */
-        *activeState = 403U;
-
-        /* '<S2>:99:5' repetitionCounter = repetitionCounter + 1; */
-        qY = localDW->repetitionCounter + /*MW:OvSatOk*/ 1U;
-        if (localDW->repetitionCounter + 1U < localDW->repetitionCounter) {
-          qY = MAX_uint32_T;
-        }
-
-        localDW->repetitionCounter = qY;
-
-        /* i_d_R_online = single(0.0); */
-        /* '<S2>:99:7' if(AMMn >= (NumberOfIDpoints-1)) */
-        qY = localDW->NumberOfIDpoints - /*MW:OvSatOk*/ 1U;
-        if (localDW->NumberOfIDpoints - 1U > localDW->NumberOfIDpoints) {
-          qY = 0U;
-        }
-
-        if (localDW->AMMn >= qY) {
-          /* '<S2>:99:8' AMMn = uint32(0); */
-          localDW->AMMn = 0U;
-        } else {
-          /* '<S2>:99:9' else */
-          /* '<S2>:99:10' AMMn = AMMn + 1; */
-          qY = localDW->AMMn + /*MW:OvSatOk*/ 1U;
-          if (localDW->AMMn + 1U < localDW->AMMn) {
-            qY = MAX_uint32_T;
-          }
-
-          localDW->AMMn = qY;
-        }
-
-        /* '<S2>:99:12' FluxMapID_output.external_Measurement_Flag=boolean(1); */
-        FluxMapID_output->external_Measurement_Flag = true;
-      } else {
-        uint32_T qY;
-
-        /* '<S2>:93:18' counter_time = counter_time +1; */
-        qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
-        if (localDW->counter_time + 1U < localDW->counter_time) {
-          qY = MAX_uint32_T;
-        }
-
-        localDW->counter_time = qY;
-      }
-    }
-    break;
-
-   case IN_calculatePsiAndNextStep:
-    /* During 'calculatePsiAndNextStep': '<S2>:103' */
-    /* '<S2>:108:1' sf_internal_predicateOutput = repetitionCounter >= NumberOfPoints; */
-    if (localDW->repetitionCounter >= localDW->NumberOfPoints) {
-      /* Transition: '<S2>:108' */
-      localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcompleted;
-
-      /* Entry 'AMMcompleted': '<S2>:95' */
-      /* '<S2>:95:4' counter_time = uint32(1); */
+      /* '<S2>:99:3' counter_time = uint32(1); */
       localDW->counter_time = 1U;
 
-      /* '<S2>:95:5' activeState = uint16(450); */
-      *activeState = 450U;
+      /* '<S2>:99:4' activeState = uint16(403); */
+      *activeState = 403U;
 
-      /* '<S2>:95:6' AMMn = uint32(0); */
-      localDW->AMMn = 0U;
+      /* '<S2>:99:5' repetitionCounter = repetitionCounter + 1; */
+      qY = localDW->repetitionCounter + /*MW:OvSatOk*/ 1U;
+      if (localDW->repetitionCounter + 1U < localDW->repetitionCounter) {
+        qY = MAX_uint32_T;
+      }
 
-      /* '<S2>:95:7' AMMj = uint32(0); */
-      localDW->AMMj = 0U;
+      localDW->repetitionCounter = qY;
 
-      /* '<S2>:95:8' repetitionCounter = uint32(0); */
-      localDW->repetitionCounter = 0U;
+      /* i_d_R_online = single(0.0); */
+      /* '<S2>:99:7' if(AMMn >= (NumberOfIDpoints-1)) */
+      qY = localDW->NumberOfIDpoints - /*MW:OvSatOk*/ 1U;
+      if (localDW->NumberOfIDpoints - 1U > localDW->NumberOfIDpoints) {
+        qY = 0U;
+      }
 
-      /* '<S2>:95:9' PI_d_ref = single(0.0); */
-      *PI_d_ref = 0.0F;
+      if (localDW->AMMn >= qY) {
+        /* '<S2>:99:8' AMMn = uint32(0); */
+        localDW->AMMn = 0U;
+      } else {
+        /* '<S2>:99:9' else */
+        /* '<S2>:99:10' AMMn = AMMn + 1; */
+        qY = localDW->AMMn + /*MW:OvSatOk*/ 1U;
+        if (localDW->AMMn + 1U < localDW->AMMn) {
+          qY = MAX_uint32_T;
+        }
 
-      /* '<S2>:95:10' PI_q_ref = single(0.0); */
-      *PI_q_ref = 0.0F;
+        localDW->AMMn = qY;
+      }
 
-      /* '<S2>:107:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp > 70; */
-    } else if (FluxMapID_output->WindingTemp > 70.0F) {
-      /* Transition: '<S2>:107' */
-      localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMcooling;
+      /* '<S2>:99:12' FluxMapID_output.external_Measurement_Flag=boolean(1); */
+      FluxMapID_output->external_Measurement_Flag = true;
+    } else {
+      /* '<S2>:93:18' counter_time = counter_time +1; */
+      qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
+      if (localDW->counter_time + 1U < localDW->counter_time) {
+        qY = MAX_uint32_T;
+      }
 
-      /* Entry 'AMMcooling': '<S2>:94' */
-      /* '<S2>:94:4' activeState = uint16(410); */
-      *activeState = 410U;
-
-      /* '<S2>:94:5' PI_d_ref = single(0.0); */
-      *PI_d_ref = 0.0F;
-
-      /* '<S2>:94:6' PI_q_ref = single(0.0); */
-      *PI_q_ref = 0.0F;
-
-      /* '<S2>:101:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp < 60; */
-    } else if (FluxMapID_output->WindingTemp < 60.0F) {
-      /* Transition: '<S2>:101' */
-      localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMheating;
-
-      /* Entry 'AMMheating': '<S2>:88' */
-      /* '<S2>:88:4' activeState = uint16(420); */
-      *activeState = 420U;
-
-      /* '<S2>:88:5' PI_q_ref = single(FluxMapIDConfig.IQstop); */
-      *PI_q_ref = FluxMapIDConfig->IQstop;
-
-      /* '<S2>:88:6' PI_d_ref = single(FluxMapIDConfig.IDstart); */
-      *PI_d_ref = FluxMapIDConfig->IDstart;
-
-      /* '<S2>:104:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp >=60 && FluxMapID_output.WindingTemp <= 70; */
-    } else if ((FluxMapID_output->WindingTemp >= 60.0F) &&
-               (FluxMapID_output->WindingTemp <= 70.0F)) {
-      /* Transition: '<S2>:104' */
-      localDW->is_c14_Subchart_FluxMapID_refer = IN_AMMnewRef;
-      enter_atomic_AMMnewRef(activeState, PI_d_ref, PI_q_ref, FluxMapIDConfig,
-        localDW);
+      localDW->counter_time = qY;
     }
     break;
 
@@ -484,10 +425,16 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
       /* '<S2>:94:4' activeState = uint16(410); */
       *activeState = 410U;
 
-      /* '<S2>:94:5' PI_d_ref = single(0.0); */
+      /* '<S2>:94:5' i_d_ref_AMM_loc = PI_d_ref; */
+      localDW->i_d_ref_AMM_loc_p = *PI_d_ref;
+
+      /* '<S2>:94:6' i_q_ref_AMM_loc = PI_q_ref; */
+      localDW->i_q_ref_AMM_loc_l = *PI_q_ref;
+
+      /* '<S2>:94:7' PI_d_ref = single(0.0); */
       *PI_d_ref = 0.0F;
 
-      /* '<S2>:94:6' PI_q_ref = single(0.0); */
+      /* '<S2>:94:8' PI_q_ref = single(0.0); */
       *PI_q_ref = 0.0F;
 
       /* '<S2>:100:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp < 60 && .... */
@@ -502,10 +449,16 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
       /* '<S2>:88:4' activeState = uint16(420); */
       *activeState = 420U;
 
-      /* '<S2>:88:5' PI_q_ref = single(FluxMapIDConfig.IQstop); */
+      /* '<S2>:88:5' i_d_ref_AMM_loc = PI_d_ref; */
+      localDW->i_d_ref_AMM_loc = *PI_d_ref;
+
+      /* '<S2>:88:6' i_q_ref_AMM_loc = PI_q_ref; */
+      localDW->i_q_ref_AMM_loc = *PI_q_ref;
+
+      /* '<S2>:88:7' PI_q_ref = single(FluxMapIDConfig.IQstop); */
       *PI_q_ref = FluxMapIDConfig->IQstop;
 
-      /* '<S2>:88:6' PI_d_ref = single(FluxMapIDConfig.IDstart); */
+      /* '<S2>:88:8' PI_d_ref = single(FluxMapIDConfig.IDstart); */
       *PI_d_ref = FluxMapIDConfig->IDstart;
 
       /* '<S2>:102:1' sf_internal_predicateOutput = FluxMapID_output.WindingTemp >=60 && .... */
@@ -522,6 +475,74 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
     }
     break;
   }
+
+  if (guard1) {
+    /* '<S2>:99:14' counter_time = counter_time +1; */
+    qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
+    if (localDW->counter_time + 1U < localDW->counter_time) {
+      qY = MAX_uint32_T;
+    }
+
+    localDW->counter_time = qY;
+
+    /* '<S2>:99:15' if((mod(counter_time,20)==0)&&i<=array_size) */
+    if ((localDW->counter_time - localDW->counter_time / 20U * 20U == 0U) &&
+        (localDW->i <= 1000U)) {
+      /* '<S2>:99:16' u_d_array(i) = u_d; */
+      localDW->u_d_array[(int32_T)localDW->i - 1] = u_d;
+
+      /* '<S2>:99:17' u_q_array(i) = u_q; */
+      localDW->u_q_array[(int32_T)localDW->i - 1] = u_q;
+
+      /* '<S2>:99:18' omega_el_array(i) = omega_el; */
+      localDW->omega_el_array[(int32_T)localDW->i - 1] = omega_el;
+
+      /* '<S2>:99:19' i = i+1; */
+      qY = localDW->i + /*MW:OvSatOk*/ 1U;
+      if (localDW->i + 1U < localDW->i) {
+        qY = MAX_uint32_T;
+      }
+
+      localDW->i = qY;
+    }
+
+    /* '<S2>:99:21' if(i==array_size) */
+    if (localDW->i == 1000U) {
+      real32_T b_x;
+      real32_T x;
+
+      /* '<S2>:99:22' psi_out_array(1)=PI_d_ref; */
+      psi_out_array[0] = *PI_d_ref;
+
+      /* '<S2>:99:23' psi_out_array(2)=PI_q_ref; */
+      psi_out_array[1] = *PI_q_ref;
+
+      /* '<S2>:99:24' psi_out_array(3)=(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      x = localDW->u_d_array[0];
+      b_x = localDW->omega_el_array[0];
+      for (i = 0; i < 999; i++) {
+        x += localDW->u_d_array[i + 1];
+        b_x += localDW->omega_el_array[i + 1];
+      }
+
+      psi_out_array[2] = (x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
+        (b_x / 1000.0F);
+
+      /* '<S2>:99:25' psi_out_array(4)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      x = localDW->u_q_array[0];
+      b_x = localDW->omega_el_array[0];
+      for (i = 0; i < 999; i++) {
+        x += localDW->u_q_array[i + 1];
+        b_x += localDW->omega_el_array[i + 1];
+      }
+
+      psi_out_array[3] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
+        (b_x / 1000.0F);
+
+      /* '<S2>:99:26' finished_calculation = true; */
+      *finished_calculation = true;
+    }
+  }
 }
 
 /* Function for Chart: '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -533,12 +554,8 @@ void Fluxmap_enter(uint16_T *activeState, const uz_ParaID_FluxMapIDConfig_t
   uint32_T tmp_1;
   localDW->repetitionCounter = 0U;
   localDW->counter_time = 0U;
-  localDW->i_d_ref_AMM_loc = 0.0F;
-  localDW->i_q_ref_AMM_loc = 0.0F;
   localDW->AMMn = 0U;
   localDW->AMMj = 0U;
-  localDW->IQstepsize_loc = 0.0F;
-  localDW->IDstepsize_loc = 0.0F;
 
   /* Chart: '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   /* Entry: Fluxmap */
@@ -550,19 +567,13 @@ void Fluxmap_enter(uint16_T *activeState, const uz_ParaID_FluxMapIDConfig_t
   /* '<S2>:90:4' activeState = uint16(401); */
   *activeState = 401U;
 
-  /* '<S2>:90:5' if(FluxMapIDConfig.IDstepsize==0) */
-  if (FluxMapIDConfig->IDstepsize == 0.0F) {
-    /* '<S2>:90:6' IDstepsize_loc = single(1.0); */
-    localDW->IDstepsize_loc = 1.0F;
-  }
+  /* '<S2>:90:5' IDstepsize_loc = FluxMapIDConfig.IDstepsize; */
+  localDW->IDstepsize_loc = FluxMapIDConfig->IDstepsize;
 
-  /* '<S2>:90:8' if(FluxMapIDConfig.IQstepsize==0) */
-  if (FluxMapIDConfig->IQstepsize == 0.0F) {
-    /* '<S2>:90:9' IQstepsize_loc = single(1.0); */
-    localDW->IQstepsize_loc = 1.0F;
-  }
+  /* '<S2>:90:6' IQstepsize_loc = FluxMapIDConfig.IQstepsize; */
+  localDW->IQstepsize_loc = FluxMapIDConfig->IQstepsize;
 
-  /* '<S2>:90:11' NumberOfIDpoints = uint32(abs(FluxMapIDConfig.IDstop-FluxMapIDConfig.IDstart)/IDstepsize_loc+1); */
+  /* '<S2>:90:7' NumberOfIDpoints = uint32(abs(FluxMapIDConfig.IDstop-FluxMapIDConfig.IDstart)/IDstepsize_loc+1); */
   tmp_0 = roundf(fabsf(FluxMapIDConfig->IDstop - FluxMapIDConfig->IDstart) /
                  localDW->IDstepsize_loc + 1.0F);
   if (tmp_0 < 4.2949673E+9F) {
@@ -575,8 +586,8 @@ void Fluxmap_enter(uint16_T *activeState, const uz_ParaID_FluxMapIDConfig_t
     localDW->NumberOfIDpoints = MAX_uint32_T;
   }
 
-  /* '<S2>:90:12' NumberOfIQpoints = uint32(abs(FluxMapIDConfig.IQstop-FluxMapIDConfig.IQstart)/IQstepsize_loc+1); */
-  /* '<S2>:90:13' NumberOfPoints = uint32(NumberOfIDpoints*NumberOfIQpoints); */
+  /* '<S2>:90:8' NumberOfIQpoints = uint32(abs(FluxMapIDConfig.IQstop-FluxMapIDConfig.IQstart)/IQstepsize_loc+1); */
+  /* '<S2>:90:9' NumberOfPoints = uint32(NumberOfIDpoints*NumberOfIQpoints); */
   tmp_0 = roundf(fabsf(FluxMapIDConfig->IQstop - FluxMapIDConfig->IQstart) /
                  localDW->IQstepsize_loc + 1.0F);
   if (tmp_0 < 4.2949673E+9F) {
@@ -625,20 +636,20 @@ void Fluxmap_exit(real32_T *PI_d_ref, real32_T *PI_q_ref,
 
    case IN_AMMcooling:
     /* Exit 'AMMcooling': '<S2>:94' */
-    /* '<S2>:94:8' PI_d_ref = i_d_ref_AMM_loc; */
-    *PI_d_ref = localDW->i_d_ref_AMM_loc;
+    /* '<S2>:94:10' PI_d_ref = i_d_ref_AMM_loc; */
+    *PI_d_ref = localDW->i_d_ref_AMM_loc_p;
 
-    /* '<S2>:94:9' PI_q_ref = i_q_ref_AMM_loc; */
-    *PI_q_ref = localDW->i_q_ref_AMM_loc;
+    /* '<S2>:94:11' PI_q_ref = i_q_ref_AMM_loc; */
+    *PI_q_ref = localDW->i_q_ref_AMM_loc_l;
     localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
     break;
 
    case IN_AMMheating:
     /* Exit 'AMMheating': '<S2>:88' */
-    /* '<S2>:88:8' PI_d_ref = i_d_ref_AMM_loc; */
+    /* '<S2>:88:10' PI_d_ref = i_d_ref_AMM_loc; */
     *PI_d_ref = localDW->i_d_ref_AMM_loc;
 
-    /* '<S2>:88:9' PI_q_ref = i_q_ref_AMM_loc; */
+    /* '<S2>:88:11' PI_q_ref = i_q_ref_AMM_loc; */
     *PI_q_ref = localDW->i_q_ref_AMM_loc;
     localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
     break;
@@ -657,12 +668,14 @@ void Fluxmap_init(DW_AMMstateIdentificationDQFl_t *localDW)
   localDW->NumberOfIDpoints = 0U;
   localDW->NumberOfPoints = 0U;
   localDW->counter_time = 0U;
-  localDW->i_d_ref_AMM_loc = 0.0F;
-  localDW->i_q_ref_AMM_loc = 0.0F;
   localDW->AMMn = 0U;
   localDW->AMMj = 0U;
   localDW->IQstepsize_loc = 0.0F;
   localDW->IDstepsize_loc = 0.0F;
+  localDW->i_d_ref_AMM_loc = 0.0F;
+  localDW->i_q_ref_AMM_loc = 0.0F;
+  localDW->i_d_ref_AMM_loc_p = 0.0F;
+  localDW->i_q_ref_AMM_loc_l = 0.0F;
   localDW->i = 1U;
   memset(&localDW->u_d_array[0], 0, 1000U * sizeof(real32_T));
   memset(&localDW->u_q_array[0], 0, 1000U * sizeof(real32_T));

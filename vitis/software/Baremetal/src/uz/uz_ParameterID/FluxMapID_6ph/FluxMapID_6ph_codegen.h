@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.67
+ * Model version                  : 3.68
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Mar 10 13:09:24 2023
+ * C/C++ source code generated on : Fri Mar 10 14:22:15 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,16 +64,17 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
 
-
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {
   real32_T u_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T u_q_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T omega_el_array[1000];  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  real32_T i_d_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  real32_T i_q_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T IQstepsize_loc;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T IDstepsize_loc;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_d_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_q_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_d_ref_AMM_loc_p;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_q_ref_AMM_loc_l;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T exitPortIndex;         /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T repetitionCounter;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfIDpoints;      /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */

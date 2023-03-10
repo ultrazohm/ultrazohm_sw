@@ -151,7 +151,7 @@ struct uz_DutyCycle_t uz_FOC_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_
 
 
 struct uz_DutyCycle_2x3ph_t uz_FOC_generate_DutyCycles_6ph(uz_6ph_abc_t input, float V_dc_volts){
-	struct uz_DutyCycle_t output = {0};
+	struct uz_DutyCycle_2x3ph_t output = {0};
 	uz_3ph_abc_t abc_system1 = {
 		.a = input.a1,
 		.b = input.b1,
@@ -160,9 +160,7 @@ struct uz_DutyCycle_2x3ph_t uz_FOC_generate_DutyCycles_6ph(uz_6ph_abc_t input, f
 		.a = input.a2,
 		.b = input.b2,
 		.c = input.c2};
-			
-	output.system1 = uz_FOC_generate_DutyCycles(abc_system1, v_dc_volts);
-	output.system2 = uz_FOC_generate_DutyCycles(abc_system2, v_dc_volts);
-
+	output.system1 = uz_FOC_generate_DutyCycles(abc_system1, V_dc_volts);
+	output.system2 = uz_FOC_generate_DutyCycles(abc_system2, V_dc_volts);
 	return output;
 }

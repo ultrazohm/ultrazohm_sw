@@ -104,6 +104,9 @@ uz_SetPoint_t* sp_instance = NULL;
 uz_resonantController_t* res_instance_1 = NULL;
 uz_resonantController_t* res_instance_2 = NULL;
 
+const float isr_ts = 0.0001f;
+const float tau_sum = 2*isr_ts;
+
 struct uz_SpeedControl_config speed_config = {
 		.config_controller.type = parallel,
 		.config_controller.Kp = 1.0f,
@@ -155,14 +158,19 @@ int main(void)
         case init_software:
         	ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
         	//Code below is only needed, if the uz_FOC is used as the controller
+
+        	struct uz_PI_Controller_config PI_config = {
+        			.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum)*100.f,
+					.samplingTime_sec = isr_ts,
+					.lower_limit = -20.0f,
+					.upper_limit = 20.0f
+        	};
+
         	struct uz_CurrentControl_config cc_config = {
-        	        .decoupling_select = no_decoupling,
-        	        .config_id.Ki = ParaID_Data.GlobalConfig.Ki_id,
-        	        .config_id.Kp = ParaID_Data.GlobalConfig.Kp_id,
-        	        .config_id.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
-        	        .config_iq.Ki = ParaID_Data.GlobalConfig.Ki_iq,
-        	        .config_iq.Kp = ParaID_Data.GlobalConfig.Kp_iq,
-        	        .config_iq.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+        	        .decoupling_select = linear_decoupling,
+        	        .config_id = PI_config,
+					.config_iq = PI_config,
         	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
         	struct uz_resonantController_config resonant_config = {
         	        .sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
@@ -231,21 +239,25 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
+			uz_ParameterID_6ph_calculate_PsiPMs(ParameterID, &ParaID_Data, meas_array);
             break;
         default:
             break;
         }
 
-        uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
 
-        if(ParaID_Data.finished_voltage_measurement && !corrected.finished_flag)
+
+
+
+    /*    if(ParaID_Data.finished_voltage_measurement && !corrected.finished_flag)
         {
         	uz_ParameterID_6ph_transmit_measured_voltages(ParameterID,meas_array);
         	uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, ParaID_Data.GlobalConfig.sampleTimeISR);
         	corrected = uz_correct_psi_pms_ElectricalID(uncorrected, ParaID_Data.GlobalConfig, 5U);
         	print_paraID(uncorrected, corrected, *ParaID_Data.ElectricalID_Output);
 			ParaID_Data.ElectricalID_FFT = corrected;
-        }
+        }*/
     }
     return (status);
 }

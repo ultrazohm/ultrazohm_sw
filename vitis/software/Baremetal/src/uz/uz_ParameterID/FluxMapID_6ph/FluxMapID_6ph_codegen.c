@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.66
+ * Model version                  : 3.67
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Mar  8 12:42:46 2023
+ * C/C++ source code generated on : Fri Mar 10 13:09:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -174,7 +174,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
                     psi_out_array[4], boolean_T *finished_calculation,
                     DW_AMMstateIdentificationDQFl_t *localDW)
 {
-  boolean_T x[2];
+  int32_T i;
 
   /* During: Fluxmap */
   switch (localDW->is_c14_Subchart_FluxMapID_refer) {
@@ -202,10 +202,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
         /* '<S2>:103:5' i_q_ref_AMM_loc = PI_q_ref; */
         localDW->i_q_ref_AMM_loc = *PI_q_ref;
       } else {
-        int32_T i;
         uint32_T qY;
-        boolean_T exitg1;
-        boolean_T y;
 
         /* '<S2>:99:14' counter_time = counter_time +1; */
         qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
@@ -215,9 +212,9 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
 
         localDW->counter_time = qY;
 
-        /* '<S2>:99:15' if((mod(counter_time,20)==0)&&i<=10000) */
+        /* '<S2>:99:15' if((mod(counter_time,20)==0)&&i<=array_size) */
         if ((localDW->counter_time - localDW->counter_time / 20U * 20U == 0U) &&
-            (localDW->i <= 10000U)) {
+            (localDW->i <= 1000U)) {
           /* '<S2>:99:16' u_d_array(i) = u_d; */
           localDW->u_d_array[(int32_T)localDW->i - 1] = u_d;
 
@@ -236,23 +233,10 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
           localDW->i = qY;
         }
 
-        /* '<S2>:99:21' if(i==size(u_d_array)) */
-        x[0] = (localDW->i == 10000U);
-        x[1] = (localDW->i == 1U);
-        y = true;
-        i = 0;
-        exitg1 = false;
-        while ((!exitg1) && (i < 2)) {
-          if (!x[i]) {
-            y = false;
-            exitg1 = true;
-          } else {
-            i++;
-          }
-        }
-
-        if (y) {
-          real32_T y_tmp;
+        /* '<S2>:99:21' if(i==array_size) */
+        if (localDW->i == 1000U) {
+          real32_T b_x;
+          real32_T x;
 
           /* '<S2>:99:22' psi_out_array(1)=PI_d_ref; */
           psi_out_array[0] = *PI_d_ref;
@@ -261,13 +245,26 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
           psi_out_array[1] = *PI_q_ref;
 
           /* '<S2>:99:24' psi_out_array(3)=(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
-          y_tmp = mean_GqoxPyM9(localDW->omega_el_array);
-          psi_out_array[2] = (mean_GqoxPyM9(localDW->u_d_array) - *PI_d_ref *
-                              FluxMapID_output->R_s) / y_tmp;
+          x = localDW->u_d_array[0];
+          b_x = localDW->omega_el_array[0];
+          for (i = 0; i < 999; i++) {
+            x += localDW->u_d_array[i + 1];
+            b_x += localDW->omega_el_array[i + 1];
+          }
+
+          psi_out_array[2] = (x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
+            (b_x / 1000.0F);
 
           /* '<S2>:99:25' psi_out_array(4)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
-          psi_out_array[3] = (mean_GqoxPyM9(localDW->u_q_array) - *PI_q_ref *
-                              FluxMapID_output->R_s) / y_tmp;
+          x = localDW->u_q_array[0];
+          b_x = localDW->omega_el_array[0];
+          for (i = 0; i < 999; i++) {
+            x += localDW->u_q_array[i + 1];
+            b_x += localDW->omega_el_array[i + 1];
+          }
+
+          psi_out_array[3] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
+            (b_x / 1000.0F);
 
           /* '<S2>:99:26' finished_calculation = true; */
           *finished_calculation = true;
@@ -349,9 +346,9 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
 
         /* Entry 'AMMcollectData': '<S2>:99' */
         localDW->i = 1U;
-        memset(&localDW->u_d_array[0], 0, 10000U * sizeof(real32_T));
-        memset(&localDW->u_q_array[0], 0, 10000U * sizeof(real32_T));
-        memset(&localDW->omega_el_array[0], 0, 10000U * sizeof(real32_T));
+        memset(&localDW->u_d_array[0], 0, 1000U * sizeof(real32_T));
+        memset(&localDW->u_q_array[0], 0, 1000U * sizeof(real32_T));
+        memset(&localDW->omega_el_array[0], 0, 1000U * sizeof(real32_T));
 
         /* '<S2>:99:3' counter_time = uint32(1); */
         localDW->counter_time = 1U;
@@ -667,9 +664,9 @@ void Fluxmap_init(DW_AMMstateIdentificationDQFl_t *localDW)
   localDW->IQstepsize_loc = 0.0F;
   localDW->IDstepsize_loc = 0.0F;
   localDW->i = 1U;
-  memset(&localDW->u_d_array[0], 0, 10000U * sizeof(real32_T));
-  memset(&localDW->u_q_array[0], 0, 10000U * sizeof(real32_T));
-  memset(&localDW->omega_el_array[0], 0, 10000U * sizeof(real32_T));
+  memset(&localDW->u_d_array[0], 0, 1000U * sizeof(real32_T));
+  memset(&localDW->u_q_array[0], 0, 1000U * sizeof(real32_T));
+  memset(&localDW->omega_el_array[0], 0, 1000U * sizeof(real32_T));
 }
 
 /*

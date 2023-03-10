@@ -18,11 +18,11 @@ void uz_PWM_SS_2L_hw_SetExternalCounterSource(uint32_t base_address, bool use_ex
  *        when PWM_mode is set to 0 (references set via AXI).
  * 
  * @param base_address  //base address of the instance
- * @param dutyCyc_A     //duty cycle of channel A
- * @param dutyCyc_B     //duty cycle of channel B
- * @param dutyCyc_C     //duty cycle of channel C
+ * @param dutyCyc_HB1   //duty cycle of half-bridge 1
+ * @param dutyCyc_HB2   //duty cycle of half-bridge 2
+ * @param dutyCyc_HB3   //duty cycle of half-bridge 3
  */
-void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_A, float dutyCyc_B, float dutyCyc_C);
+void uz_PWM_SS_2L_hw_SetDutyCycle(uint32_t base_address, float dutyCyc_HB1, float dutyCyc_HB2, float dutyCyc_HB3);
 
 /**
  * @brief turns the whole PWM_SS_2L module on or off
@@ -71,5 +71,15 @@ void uz_PWM_SS_2L_hw_SetTristate(uint32_t base_address, uint32_t halfBridgeNumbe
  * @param min_pulse_width_percent   //minimum pulse width in percent, e.g. 0.01
  */
 void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse_width_percent);
+
+/**
+ * @brief sets the shift of the carrier triangle signal to enable interleaved operation.
+ * 
+ * @param base_address              //base address of the instance
+ * @param triangle_shift_HB1        //shift of HB1 fixed to 0-1, e.g. 0.25.  0 represents no shift and 1 represents a shift by an entire period.
+ * @param triangle_shift_HB2        //shift of HB2 fixed to 0-1, e.g. 0.25.  0 represents no shift and 1 represents a shift by an entire period.
+ * @param triangle_shift_HB3        //shift of HB3 fixed to 0-1, e.g. 0.25.  0 represents no shift and 1 represents a shift by an entire period.
+ */
+void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3);
 
 #endif // UZ_PWM_SS_2L_HW_H

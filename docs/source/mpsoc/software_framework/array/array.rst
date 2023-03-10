@@ -52,7 +52,7 @@ Take the `storage duration <https://iso-9899.info/wiki/Storage_Duration>`_ into 
     float sum_over_array(uz_array_float_t array){
         float sum=0.0f;
         for(uint32_t i=0;i<array.length;i++){
-            sum+=array[i];
+            sum+=array.data[i];
         }
         return sum;
     }

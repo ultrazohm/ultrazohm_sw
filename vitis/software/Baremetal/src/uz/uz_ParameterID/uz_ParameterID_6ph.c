@@ -221,7 +221,7 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 	{
 		out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 	}
-	else
+	/*else
 	{
 		uz_3ph_dq_t v_dq_Volts =  uz_ParameterID_Controller(Data, CC_instance_1, Speed_instance, SP_instance);
 		out.d = v_dq_Volts.d;
@@ -230,7 +230,7 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 		out.y = 0.0f;
 		out.z1 = 0.0f;
 		out.z2 = 0.0f;
-	}
+	}*/
 	return (out);
 }
 
@@ -338,7 +338,7 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 }
 
 void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){
-	Data->feedback_printed = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output);
+	Data->feedback_printed = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {

@@ -14,6 +14,7 @@ Features
 * ADC `LTC2311-16 <https://www.analog.com/media/en/technical-documentation/data-sheets/231116fa.pdf>`_
 * ADCs are triggered in groups of 4 or 8
 * Usage of up to three cards possible
+* `UZ_A_LTC2311-16 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_ltc2311-16>`_
 
 
 Revisions
@@ -92,7 +93,7 @@ In_P and In_N are fully differential signals, meaning they inverted signals with
 
 * For 0V input voltage, both In_P and In_N are 2.5V
 * For +1V input voltage, In_P is 3V and In_N is 2V
-* For -3V input voltage, In_P is 1V and In_N is 3V 
+* For -3V input voltage, In_P is 1V and In_N is 4V 
 
 .. figure:: LTC2311_16_v2/differential_signal.png
    :width: 500

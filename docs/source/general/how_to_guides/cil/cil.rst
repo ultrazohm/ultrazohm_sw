@@ -91,6 +91,49 @@ This is mitigated by using aMATLAB HDL Coder, allowing easy integration into the
 
 Simulating the plant model in the PL can also be used for control algorithms which are mapped to the PS as well as the PL to improve the usable computational performance, as shown in Fig. :numref:`cil_controller_in_both`.
 
+Hardware in the loop
+--------------------
+
+Additionally to the CIL setup that closes the loop inside of the FPGA, Hardware in the Loop (HIL) closes the loop outside of the system.
+Specifically, the UltraZohm HIL concept uses the :ref:`uz_dac8831_pcb` adapter card to close the loop directly with the ADC.
+See the following docs pages for more information:
+
+- :ref:`uz_dac8831_pcb`
+- :ref:`uz_dac_ip_interface`
+
+.. _hil_plant_in_pl:
+
+.. tikz:: Plant in PS, Control algorithm in PL
+  :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
+
+  \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+  \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
+  \node(mpsoc) {MPSoC};
+  \node[name=ps, below = 0.1cm of mpsoc] {PS};
+  \node[block,name=plant, below = 0.2cm of ps,drop shadow] {Controller};
+  \node[block,name=controller, below of=plant,drop shadow] {Plant model};
+  \node[block,name=dacip, right=1.0cm of controller,drop shadow] {DAC IP-Core};
+  \node[block,name=adcip, right=1.0cm of dacip,drop shadow] {ADC IP-Core};
+  \node[block,name=adc, below=1.2cm of adcip,drop shadow] {ADC};
+  \node[block,name=dac, below=1.2cm of dacip,drop shadow] {DAC};
+  \node[name=pl, below = 0.1cm of controller] {PL};
+  \begin{scope}[on background layer]
+    \node[draw,fill=blue!10,rounded corners,fit=(mpsoc) (adcip),inner sep=25pt,minimum width=8.5cm] {};
+    \node[draw,fill=yellow!20,rounded corners,fit=(controller) (adcip) (pl),inner sep=5pt,minimum width=2.5cm] {};
+    \node[draw,fill=green!10,rounded corners,fit=(ps) (plant),inner sep=5pt,minimum width=2.5cm] {};
+  \end{scope}
+  \draw[->] (plant) -- (controller);
+  \draw[->] (controller) -- (dacip);
+  \draw[->] (dacip) -- (dac);
+  \draw[->] (dac) -- (adc);
+  \draw[->] (adc) -- (adcip);
+  \draw[->] (adcip) |-  (plant);
+
+
+  \end{tikzpicture}
+
+
+
 Implemented PL Plant models
 ---------------------------
 

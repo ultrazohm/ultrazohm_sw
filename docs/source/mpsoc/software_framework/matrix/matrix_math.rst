@@ -162,6 +162,10 @@ Reference
 
 .. warning:: uz_matrix_transpose uses a `variable length array (VLA) <https://en.wikipedia.org/wiki/Variable-length_array>`_, which does not comply to the coding rules.
 
+.. doxygenfunction:: uz_matrix_copy
+
+
+
 Performance estimation
 ======================
 

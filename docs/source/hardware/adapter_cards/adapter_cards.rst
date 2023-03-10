@@ -10,6 +10,7 @@ Adapter Cards
 	   
 	analog/index
 	digital/index
+	external/index
 	
 
 .. image:: adapter_cards.png

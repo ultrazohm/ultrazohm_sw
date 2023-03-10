@@ -37,10 +37,6 @@
  */
 typedef struct uz_ParameterID_6ph_t uz_ParameterID_6ph_t;
 
-struct uz_DutyCycle_2x3ph_t{
-    struct uz_DutyCycle_t system1;
-    struct uz_DutyCycle_t system2;
-};
 
 /**
  * @brief Initializes the uz_ParameterID_6ph_t object and its sub-objects

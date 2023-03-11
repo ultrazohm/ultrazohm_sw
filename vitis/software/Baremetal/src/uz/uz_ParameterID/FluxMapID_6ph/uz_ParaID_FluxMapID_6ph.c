@@ -101,6 +101,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
     // calculate resonant controller gains
         static uint16_t initialized_controllers = 0U;
+        static float tau_sum = 2*0.0001f;
 
     // map outputs and step resonant controllers depending on current state inside FluxMapID
     switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
@@ -133,7 +134,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
                 uz_resonantController_set_gain(resonant_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
-                initialized_res_controller = 1U;
+                initialized_controllers = 1U;
             }
             // assign to output
             out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
@@ -145,7 +146,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         }
         default:
         {
-            initialized_res_controller = 0U;
+        	initialized_controllers = 0U;
             out.d = 0.0f;
             out.q = 0.0f;
             out.x = 0.0f;

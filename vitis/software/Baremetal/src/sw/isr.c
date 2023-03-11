@@ -290,9 +290,9 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_FluxMapID_6ph_step_controllers(setp_temp, &ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-		ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), 36.0f);
+		//ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), 36.0f);
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;

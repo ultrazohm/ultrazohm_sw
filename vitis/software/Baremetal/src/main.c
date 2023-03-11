@@ -161,33 +161,48 @@ int main(void)
 
         	struct uz_PI_Controller_config PI_config = {
         			.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
-					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum)*100.f,
+					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum),
 					.samplingTime_sec = isr_ts,
 					.lower_limit = -20.0f,
 					.upper_limit = 20.0f
         	};
+        	struct uz_PI_Controller_config PI_config_xy = {
+        	        			.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+        						.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
+        						.samplingTime_sec = isr_ts,
+        						.lower_limit = -20.0f,
+        						.upper_limit = 20.0f
+        	        	};
 
-        	struct uz_CurrentControl_config cc_config = {
+        	struct uz_CurrentControl_config cc_config_1 = {
         	        .decoupling_select = linear_decoupling,
         	        .config_id = PI_config,
 					.config_iq = PI_config,
         	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+
+
+        	struct uz_CurrentControl_config cc_config_2 = {
+        	        	        .decoupling_select = linear_decoupling,
+        	        	        .config_id = PI_config_xy,
+        						.config_iq = PI_config_xy,
+        	        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+
         	struct uz_resonantController_config resonant_config = {
         	        .sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
-        	        .gain = 0.0f,
-        	        .harmonic_order = 1.0f,
+        	        .gain = PI_config.Ki,
+        	        .harmonic_order = 2.0f,
         	        .fundamental_frequency = 1.0f,
         	        .lower_limit = -10.0f,
         	        .upper_limit = 10.0f,
-        	        .antiwindup_gain = 0.0f,
+        	        .antiwindup_gain = 10.0f,
         	        .in_reference_value = 0.0f,
         	        .in_measured_value = 0.0f};
 
         	sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
 			Speed_instace = uz_SpeedControl_init(speed_config);
 			sp_instance = uz_SetPoint_init(sp_config);
-			CC_instance_1 = uz_CurrentControl_init(cc_config);
-			CC_instance_2 = uz_CurrentControl_init(cc_config);
+			CC_instance_1 = uz_CurrentControl_init(cc_config_1);
+			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
 

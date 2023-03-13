@@ -146,7 +146,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         }
         default:
         {
-        	initialized_controllers = 0U;
+            initialized_controllers = 0U;
             out.d = 0.0f;
             out.q = 0.0f;
             out.x = 0.0f;

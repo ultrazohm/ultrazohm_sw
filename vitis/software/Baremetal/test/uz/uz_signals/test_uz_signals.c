@@ -80,4 +80,15 @@ void test_uz_signals_saturation_output(void){
     input = -0.7f;
     TEST_ASSERT_EQUAL_FLOAT(lower_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
 }
+
+void uz_test_wrap_to_2pi(void)
+{
+    float angle1 = 40.0f;
+    float angle2 = -30.0f;
+    float angle3 = 1.0f;
+    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_wrap_to_2pi(angle1), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_wrap_to_2pi(angle2), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_wrap_to_2pi(angle3), 0.0001);
+}
+
 #endif // TEST

@@ -40,7 +40,12 @@ float g_2[UZ_MATRIX_SIZE(delta_2)+UZ_MATRIX_SIZE(cacheg_2)] = {0};
 float g_3[UZ_MATRIX_SIZE(delta_3)+UZ_MATRIX_SIZE(cacheg_3)] = {0};
 
 // 13 Trainingsdaten aus Matlab(1-13)
-float x[NUMBER_OF_INPUTS] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
+float x[NUMBER_OF_INPUTS] = {
+#include "matlab_weights/X_input.csv"
+};
+float reference_output[NUMBER_OF_OUTPUTS]= {
+#include "matlab_weights/T_output.csv"
+};
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "matlab_weights/layer1_weights.csv"
@@ -188,7 +193,7 @@ void test_uz_nn_matlab(void)
        uz_nn_ff(test,input);
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
-//     uz_nn_calc_gradients(testlooper,reference_output[i],input);
+//       uz_nn_calc_gradients(test,reference_output,input);
 //     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
 //     THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
 //     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
@@ -208,7 +213,7 @@ void test_uz_nn_matlab(void)
 //     Funktion die die daten exportiert und in die .csv Dateien überschreibt
 //     uz_nn_export(test);
 //     /*Do something*/
-//     float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-//     printf("Zeit des Tests = %.6f \n", seconds);
+    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    printf("Zeit des Tests = %.6f \n", seconds);
  }
 #endif // TEST

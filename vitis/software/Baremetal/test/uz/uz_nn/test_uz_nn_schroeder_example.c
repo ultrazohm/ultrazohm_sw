@@ -30,25 +30,16 @@ float d_3[UZ_MATRIX_SIZE(s_3)] = {0};
 float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float delta_3[NUMBER_OF_OUTPUTS] = {0};
+
+//cache gradients, Gräße entspricht delta des aktuellen layers * größe des Outputs des vorherigen layers
+float cacheg_1[UZ_MATRIX_SIZE(delta_1) * NUMBER_OF_INPUTS] = {0};
+float cacheg_2[UZ_MATRIX_SIZE(delta_2) * UZ_MATRIX_SIZE(s_1)] = {0};
+float cacheg_3[UZ_MATRIX_SIZE(delta_3) * UZ_MATRIX_SIZE(s_2)] = {0};
+
 //Gradienten
-float g_1[4] = {0};
-float g_2[6] = {0};
-float g_3[3] = {0};
-
-//cache gradients
-float cacheg_1[2] = {0};
-float cacheg_2[4] = {0};
-float cacheg_3[2] = {0};
-
-// error
-float e_1[2]={1.0f};
-float e_2[2]={1.0f};
-float e_3[1]={1.0f};
-// Cachebackprop
-
-float C1[2 * 2] = {0};
-float C2[2 * 1] = {0};
-float C3[2 * 2] = {0};
+float g_1[UZ_MATRIX_SIZE(delta_1)+UZ_MATRIX_SIZE(cacheg_1)] = {0};
+float g_2[UZ_MATRIX_SIZE(delta_2)+UZ_MATRIX_SIZE(cacheg_2)] = {0};
+float g_3[UZ_MATRIX_SIZE(delta_3)+UZ_MATRIX_SIZE(cacheg_3)] = {0};
 
 // 13 Trainingsdaten aus Schroeder
 float x[13] = {-5.0f,-4.17f,-3.33f,-2.5f,-1.67f,-0.83f,0.0f,0.83f,1.67f,2.50f,3.33f,4.17f,5.00f};
@@ -79,7 +70,15 @@ float b_3[NUMBER_OF_OUTPUTS] = {
 #include "schroeder_weights/layer3_bias.csv"
 };
 float y_3[NUMBER_OF_OUTPUTS] = {0};
+// error
+float e_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER]={0.0f};
+float e_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER]={0.0f};
+float e_3[NUMBER_OF_OUTPUTS]={0.0f};
+// Cachebackprop
 
+float C1[UZ_MATRIX_SIZE(w_2)] = {0};
+float C2[UZ_MATRIX_SIZE(w_3)] = {0};
+float C3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,

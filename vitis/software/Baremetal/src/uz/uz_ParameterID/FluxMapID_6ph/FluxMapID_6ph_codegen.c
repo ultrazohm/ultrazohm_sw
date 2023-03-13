@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.68
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Mar 13 14:50:28 2023
+ * C/C++ source code generated on : Mon Mar 13 16:11:52 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -511,7 +511,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
       /* '<S2>:99:23' psi_out_array(2)=PI_q_ref; */
       psi_out_array[1] = *PI_q_ref;
 
-      /* '<S2>:99:24' psi_out_array(3)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      /* '<S2>:99:24' psi_out_array(3)=single(-1)*(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
       x = localDW->u_q_array[0];
       b_x = localDW->omega_el_array[0];
       for (i = 0; i < 999; i++) {
@@ -519,10 +519,10 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
         b_x += localDW->omega_el_array[i + 1];
       }
 
-      psi_out_array[2] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
+      psi_out_array[2] = -(x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
         (b_x / 1000.0F);
 
-      /* '<S2>:99:25' psi_out_array(4)=single(-1)*(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      /* '<S2>:99:25' psi_out_array(4)=(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
       x = localDW->u_d_array[0];
       b_x = localDW->omega_el_array[0];
       for (i = 0; i < 999; i++) {
@@ -530,7 +530,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
         b_x += localDW->omega_el_array[i + 1];
       }
 
-      psi_out_array[3] = -(x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
+      psi_out_array[3] = (x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
         (b_x / 1000.0F);
 
       /* '<S2>:99:26' finished_calculation = true; */
@@ -1377,8 +1377,8 @@ void FluxMapID_6ph_codegen_step(RT_MODEL_FluxMapID_6ph_codege_t *const
              rtFluxMapID_6ph_codegen_DW->three_sec_transition_counter_c,
              &rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resetIntegrator,
              &rtFluxMapID_6ph_codegen_DW->FluxMapID_output,
-             rtFluxMapID_6ph_codegen_U->ActualValues.v_dq_6ph.d,
-             rtFluxMapID_6ph_codegen_U->ActualValues.v_dq_6ph.q,
+             rtFluxMapID_6ph_codegen_U->ActualValues.v_dq.d,
+             rtFluxMapID_6ph_codegen_U->ActualValues.v_dq.q,
              rtFluxMapID_6ph_codegen_U->ActualValues.omega_el,
              rtFluxMapID_6ph_codegen_U->feedback_printed,
              rtFluxMapID_6ph_codegen_Y->extended_controller_output.psi_array,

@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.68
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Mar 13 14:16:36 2023
+ * C/C++ source code generated on : Mon Mar 13 14:50:28 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -200,22 +200,10 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
         /* '<S2>:95:4' counter_time = uint32(1); */
         localDW->counter_time = 1U;
 
-        /* '<S2>:95:5' activeState = uint16(450); */
-        *activeState = 450U;
-
-        /* '<S2>:95:6' AMMn = uint32(0); */
-        localDW->AMMn = 0U;
-
-        /* '<S2>:95:7' AMMj = uint32(0); */
-        localDW->AMMj = 0U;
-
-        /* '<S2>:95:8' repetitionCounter = uint32(0); */
-        localDW->repetitionCounter = 0U;
-
-        /* '<S2>:95:9' PI_d_ref = single(0.0); */
+        /* '<S2>:95:5' PI_d_ref = single(0.0); */
         *PI_d_ref = 0.0F;
 
-        /* '<S2>:95:10' PI_q_ref = single(0.0); */
+        /* '<S2>:95:6' PI_q_ref = single(0.0); */
         *PI_q_ref = 0.0F;
 
         /* '<S2>:154:1' sf_internal_predicateOutput = repetitionCounter < NumberOfPoints; */
@@ -305,11 +293,11 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
     if (one_sec_transition_counter == localDW->counter_time) {
       /* Transition: '<S2>:92' */
       /* Exit 'AMMcompleted': '<S2>:95' */
-      /* '<S2>:95:15' reset_FOC_output */
+      /* '<S2>:95:11' reset_FOC_output */
       localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
       localDW->exitPortIndex = 2U;
     } else {
-      /* '<S2>:95:12' counter_time = counter_time +1; */
+      /* '<S2>:95:8' counter_time = counter_time +1; */
       qY = localDW->counter_time + /*MW:OvSatOk*/ 1U;
       if (localDW->counter_time + 1U < localDW->counter_time) {
         qY = MAX_uint32_T;
@@ -317,7 +305,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
 
       localDW->counter_time = qY;
 
-      /* '<S2>:95:13' resetIntegrator=boolean(1); */
+      /* '<S2>:95:9' resetIntegrator=boolean(1); */
       *resetIntegrator = true;
     }
     break;
@@ -636,7 +624,7 @@ void Fluxmap_exit(real32_T *PI_d_ref, real32_T *PI_q_ref,
 
    case IN_AMMcompleted:
     /* Exit 'AMMcompleted': '<S2>:95' */
-    /* '<S2>:95:15' reset_FOC_output */
+    /* '<S2>:95:11' reset_FOC_output */
     localDW->is_c14_Subchart_FluxMapID_refer = IN_NO_ACTIVE_CHILD;
     break;
 

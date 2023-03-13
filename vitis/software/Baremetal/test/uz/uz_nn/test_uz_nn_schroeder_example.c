@@ -23,9 +23,9 @@ float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float s_3[NUMBER_OF_OUTPUTS] = {0};
 
 //derivate matrix activation, Dimension muss noch angepasst werden
-float d_1[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_2)] = {0};
-float d_2[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_2)] = {0};
-float d_3[UZ_MATRIX_SIZE(s_3)] = {0};
+float d_1[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_1)] = {0};
+float d_2[UZ_MATRIX_SIZE(s_2) * UZ_MATRIX_SIZE(s_2)] = {0};
+float d_3[UZ_MATRIX_SIZE(s_3) * UZ_MATRIX_SIZE(s_3)] = {0};
 //deltas
 float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};

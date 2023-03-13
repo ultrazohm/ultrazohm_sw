@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.68
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Mar 10 14:22:15 2023
+ * C/C++ source code generated on : Mon Mar 13 12:28:56 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -517,18 +517,7 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
       /* '<S2>:99:23' psi_out_array(2)=PI_q_ref; */
       psi_out_array[1] = *PI_q_ref;
 
-      /* '<S2>:99:24' psi_out_array(3)=(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
-      x = localDW->u_d_array[0];
-      b_x = localDW->omega_el_array[0];
-      for (i = 0; i < 999; i++) {
-        x += localDW->u_d_array[i + 1];
-        b_x += localDW->omega_el_array[i + 1];
-      }
-
-      psi_out_array[2] = (x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
-        (b_x / 1000.0F);
-
-      /* '<S2>:99:25' psi_out_array(4)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      /* '<S2>:99:24' psi_out_array(3)=(mean(u_q_array)-PI_q_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
       x = localDW->u_q_array[0];
       b_x = localDW->omega_el_array[0];
       for (i = 0; i < 999; i++) {
@@ -536,7 +525,18 @@ void Fluxmap_during(uint16_T *activeState, real32_T *PI_d_ref, real32_T
         b_x += localDW->omega_el_array[i + 1];
       }
 
-      psi_out_array[3] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
+      psi_out_array[2] = (x / 1000.0F - *PI_q_ref * FluxMapID_output->R_s) /
+        (b_x / 1000.0F);
+
+      /* '<S2>:99:25' psi_out_array(4)=single(-1)*(mean(u_d_array)-PI_d_ref*FluxMapID_output.R_s)/mean(omega_el_array); */
+      x = localDW->u_d_array[0];
+      b_x = localDW->omega_el_array[0];
+      for (i = 0; i < 999; i++) {
+        x += localDW->u_d_array[i + 1];
+        b_x += localDW->omega_el_array[i + 1];
+      }
+
+      psi_out_array[3] = -(x / 1000.0F - *PI_d_ref * FluxMapID_output->R_s) /
         (b_x / 1000.0F);
 
       /* '<S2>:99:26' finished_calculation = true; */

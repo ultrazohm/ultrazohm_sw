@@ -59,8 +59,7 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 	return (output);
 }
 
-float uz_wrap_to_2pi(float angle)
-{
+float uz_wrap_to_2pi(float angle){
     if((angle < 2.0f*UZ_PIf) && (angle >= 0.0f))
         return angle;
     else if(angle >= 2.0f*UZ_PIf)

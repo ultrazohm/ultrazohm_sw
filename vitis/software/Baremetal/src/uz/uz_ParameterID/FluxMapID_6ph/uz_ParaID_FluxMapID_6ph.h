@@ -21,6 +21,7 @@
 #include "../../uz_CurrentControl/uz_CurrentControl.h"
 #include "../../uz_ResonantController/uz_resonant_controller.h"
 #include "../../uz_math_constants.h"
+#include <stdio.h>
 
 typedef struct uz_ParaID_FluxMapID_6ph_t uz_ParaID_FluxMapID_6ph_t;
 

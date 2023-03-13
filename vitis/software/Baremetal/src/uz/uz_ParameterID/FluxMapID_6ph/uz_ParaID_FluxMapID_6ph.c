@@ -114,6 +114,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             // update resonant controller gain and harmonic order if it is not correct yet
             if(initialized_controllers != 1U)
             {
+                printf("\nIdentify Psi dq\ni_d,i_q,psi_d,psi_q\n");
                 uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
@@ -135,6 +136,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             // update resonant controller gain and harmonic order if it is not correct yet
             if(initialized_controllers != 2U)
             {
+                printf("\nIdentify Psi xy\ni_d,i_q,psi_d,psi_q\n");
                 uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);

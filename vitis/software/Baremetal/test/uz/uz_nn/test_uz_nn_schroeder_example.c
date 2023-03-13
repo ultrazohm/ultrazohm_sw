@@ -1,4 +1,5 @@
 #ifdef TEST
+#pragma GCC optimize("02")
 
 #include "unity.h"
 
@@ -6,6 +7,8 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
+#include <time.h>
+
 
 #define NUMBER_OF_INPUTS 1
 #define NUMBER_OF_OUTPUTS 1
@@ -169,6 +172,7 @@ void tearDown(void)
 
 void test_uz_nn_schroeder(void)
   {
+    clock_t start = clock();
     float biashelper[13];
     float THETAhelper[13];
     float sumtheta = 0.0f;
@@ -194,13 +198,17 @@ void test_uz_nn_schroeder(void)
     //uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
-    printf("Average of thetagrad = %.2f \n", avgtheta);
-    printf("Average of biasgrad = %.2f \n", avgbias);
+    printf("Mittelwert von thetagrad = %.2f \n", avgtheta);
+    printf("Mittelwert von biasgrad = %.2f \n", avgbias);
     // Lernrate festlegen
     float lernrate = 2.0f;
     // Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
     uz_nn_update(test,avgtheta,avgbias,lernrate);
+    clock_t end = clock();
     // Funktion die die daten exportiert und in die .csv Dateien überschreibt
-    uz_nn_export(test);
+    //uz_nn_export(test);
+    /*Do something*/
+    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    printf("Zeit des Tests = %.6f \n", seconds);
 }
 #endif // TEST

@@ -68,8 +68,8 @@ typedef struct {
   real32_T measArray2[6144];           /* '<Root>/FrictionID' */
   real32_T Ustep[103];                 /* '<Root>/FrictionID' */
   real32_T meas_sum[3];                /* '<Root>/FrictionID' */
-  real32_T line[2];
-  real32_T line_m[2];
+  real32_T b_line[2];
+  real32_T b_line_m[2];
   real32_T M_Brk;                      /* '<Root>/FrictionID' */
   real32_T M_eva;                      /* '<Root>/FrictionID' */
   real32_T M_eva_step;                 /* '<Root>/FrictionID' */
@@ -88,17 +88,17 @@ typedef struct {
   uint32_T qY;
   uint16_T meas_count;                 /* '<Root>/FrictionID' */
   uint16_T nextstate;                  /* '<Root>/FrictionID' */
-  uint8_T is_active_c7_FrictionID;     /* '<Root>/FrictionID' */
   uint8_T is_c7_FrictionID;            /* '<Root>/FrictionID' */
   uint8_T is_frictionID;               /* '<Root>/FrictionID' */
   uint8_T is_CoulombFrictionTorqueEstimat;/* '<Root>/FrictionID' */
   uint8_T is_BreakawayTorqueEstimation;/* '<Root>/FrictionID' */
+  uint8_T is_active_c7_FrictionID;     /* '<Root>/FrictionID' */
   boolean_T switcher;                  /* '<Root>/FrictionID' */
 } DW_FrictionID_t;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  uz_ParaID_FrictionIDConfig_t FrictionIDConfig;/* '<Root>/FrictionConfigID' */
+  uz_ParaID_FrictionIDConfig_t FrictionIDConfig;/* '<Root>/FrictionIDConfig' */
   uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
@@ -135,17 +135,18 @@ extern void FrictionID_step(RT_MODEL_FrictionID_t *const rtFrictionID_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/FrictionID')    - opens subsystem uz_ParameterID/FrictionID
- * hilite_system('uz_ParameterID/FrictionID/Kp') - opens and selects block Kp
+ * hilite_system('FrictionID_ref/FrictionID')    - opens subsystem FrictionID_ref/FrictionID
+ * hilite_system('FrictionID_ref/FrictionID/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/FrictionID'
+ * '<Root>' : 'FrictionID_ref'
+ * '<S1>'   : 'FrictionID_ref/FrictionID'
  */
 
 /*-
  * Requirements for '<Root>': FrictionID
+
  */
 #endif                                 /* RTW_HEADER_FrictionID_h_ */
 

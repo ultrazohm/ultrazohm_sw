@@ -204,14 +204,14 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle.system2.DutyCycle_B = 0.0f;
 		output_DutyCycle.system2.DutyCycle_C = 0.0f;
 	}
-	if (Data->Controller_Parameters.resetIntegrator == true) {
+	/*if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.system1.DutyCycle_A = 0.0f;
 		output_DutyCycle.system1.DutyCycle_B = 0.0f;
 		output_DutyCycle.system1.DutyCycle_C = 0.0f;
 		output_DutyCycle.system2.DutyCycle_A = 0.0f;
 		output_DutyCycle.system2.DutyCycle_B = 0.0f;
 		output_DutyCycle.system2.DutyCycle_C = 0.0f;
-	}
+	}*/
 	return (output_DutyCycle);
 }
 

@@ -108,9 +108,12 @@ uz_6ph_dq_t controller_out = {0};
 // rotate xy
 uz_3ph_alphabeta_t actual_xy_stationary = {0};
 uz_3ph_dq_t actual_xy_rotating = {0};
+uz_3ph_alphabeta_t voltage_stationary_xy = {0};
 
 //setp test
 uz_3ph_dq_t setp_temp = {0};
+
+float temp_theta_off = -0.78f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -135,11 +138,14 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
+	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
+	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
 	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
-	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - 5.4f;// ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;// ParaID_Data.ElectricalID_Output->thetaOffset;
 	//ParaID ende
 
 

@@ -72,4 +72,13 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  * @return float unfiltered signal
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+
+/**
+ * @brief wraps an angle to the range from 0-2pi
+ * 
+ * @param angle angle to wrap
+ * @return wrapped angle
+ */
+float uz_wrap_to_2pi(float angle);
+
 #endif // UZ_SIGNALS_H

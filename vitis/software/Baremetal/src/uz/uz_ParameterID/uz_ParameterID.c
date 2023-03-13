@@ -250,7 +250,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control) {
 			if (Data->ParaID_Control_Selection == Speed_Control) {
 				uz_SpeedControl_set_ext_clamping(Speed_instance, uz_CurrentControl_get_ext_clamping(CC_instance));
-				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_el, Data->GlobalConfig.n_ref);
+				SpeedControl_reference_torque = uz_SpeedControl_sample(Speed_instance, Data->ActualValues.omega_m, Data->GlobalConfig.n_ref);
 				Online_current_ref = uz_SetPoint_sample(SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);			
 			}
 			else if (Data->ParaID_Control_Selection == Torque_Control) {

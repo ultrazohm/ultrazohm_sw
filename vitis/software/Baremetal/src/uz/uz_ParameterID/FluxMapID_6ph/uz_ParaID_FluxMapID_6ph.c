@@ -24,6 +24,7 @@ static uint32_t instance_counter = 0U;
 static uz_ParaID_FluxMapID_6ph_t instances[UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_allocation(void);
+static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
 
 static uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_allocation(void){
     uz_assert(instance_counter < UZ_PARAMETERID_6PH_MAX_INSTANCES);
@@ -101,7 +102,6 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
     // calculate resonant controller gains
         static uint16_t initialized_controllers = 0U;
-        static float tau_sum = 2*0.0001f;
 
     // map outputs and step resonant controllers depending on current state inside FluxMapID
     switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
@@ -114,27 +114,31 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             // update resonant controller gain and harmonic order if it is not correct yet
             if(initialized_controllers != 1U)
             {
-                // reset all
-                uz_CurrentControl_reset(CC_instance_1);
-                uz_CurrentControl_reset(CC_instance_2);
-                uz_resonantController_reset(resonant_1);
-                uz_resonantController_reset(resonant_2);
-                // set cc1
-                uz_CurrentControl_set_Kp_id(CC_instance_1, Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum));
-                uz_CurrentControl_set_Kp_iq(CC_instance_1, Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum));
-                uz_CurrentControl_set_Ki_id(CC_instance_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
-                uz_CurrentControl_set_Ki_iq(CC_instance_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
-                // set cc2
-                uz_CurrentControl_set_Kp_id(CC_instance_2, Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum)/2.0f);
-                uz_CurrentControl_set_Kp_iq(CC_instance_2, Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum)/2.0f);
-                uz_CurrentControl_set_Ki_id(CC_instance_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
-                uz_CurrentControl_set_Ki_iq(CC_instance_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
-                //set resonant
-                uz_resonantController_set_gain(resonant_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+                uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
-                uz_resonantController_set_gain(resonant_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
                 initialized_controllers = 1U;
+            }
+            // assign to output
+            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+            uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
+            out.x = cc_out_xy_stationary.alpha;
+            out.y = cc_out_xy_stationary.beta;
+            break;
+        }
+        case 2: // control x y system
+        {
+            uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, actual_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+
+            // update resonant controller gain and harmonic order if it is not correct yet
+            if(initialized_controllers != 2U)
+            {
+                uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
+                uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
+                uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
+                initialized_controllers = 2U;
             }
             // assign to output
             out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
@@ -270,5 +274,28 @@ bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_co
     old_finished_calculation = data.finished_calculation;
     return feedback;
 }
+
+static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2){
+    float tau_sum = Data->GlobalConfig.sampleTimeISR*2.0f;
+    // reset all
+    uz_CurrentControl_reset(CC_instance_1);
+    uz_CurrentControl_reset(CC_instance_2);
+    uz_resonantController_reset(resonant_1);
+    uz_resonantController_reset(resonant_2);
+    // set cc1
+    uz_CurrentControl_set_Kp_id(CC_instance_1, Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum));
+    uz_CurrentControl_set_Kp_iq(CC_instance_1, Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum));
+    uz_CurrentControl_set_Ki_id(CC_instance_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+    uz_CurrentControl_set_Ki_iq(CC_instance_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+    // set cc2
+    uz_CurrentControl_set_Kp_id(CC_instance_2, Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum)/2.0f);
+    uz_CurrentControl_set_Kp_iq(CC_instance_2, Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum)/2.0f);
+    uz_CurrentControl_set_Ki_id(CC_instance_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+    uz_CurrentControl_set_Ki_iq(CC_instance_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+    //set resonant
+    uz_resonantController_set_gain(resonant_1, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+    uz_resonantController_set_gain(resonant_2, Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
+}
+
 
 #endif

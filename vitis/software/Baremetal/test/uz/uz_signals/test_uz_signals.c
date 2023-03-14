@@ -88,9 +88,9 @@ void uz_test_wrap_to_2pi(void)
     float angle1 = 40.0f;
     float angle2 = -30.0f;
     float angle3 = 1.0f;
-    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_signals_wrap(angle1, 2*UZ_PIf), 0.0001);
-    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_signals_wrap(angle2, 2*UZ_PIf), 0.0001);
-    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_signals_wrap(angle3, 2*UZ_PIf), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_signals_wrap(angle1, 2.0f*UZ_PIf), 0.0001f);
+    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_signals_wrap(angle2, 2.0f*UZ_PIf), 0.0001f);
+    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_signals_wrap(angle3, 2.0f*UZ_PIf), 0.0001f);
 }
 
 #endif // TEST

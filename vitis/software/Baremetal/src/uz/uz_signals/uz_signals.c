@@ -61,18 +61,18 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 }
 
 float uz_signals_wrap(float number, float limit){
-	uz_assert(limit > 0);
-    if((number < limit) && (number >= 0.0f))
-	{
-        return number;
+	uz_assert(limit > 0.0f);
+    if((number < limit) && (number >= 0.0f)){
+        return (number);
 	}
-    else 
-	{
+    else {
 		float rem = remainderf(number, limit);
-		if((rem < limit) && (rem >= 0.0f))
-			return rem;
-		else
-			return rem + limit;
+		if((rem < limit) && (rem >= 0.0f)){
+			return (rem);
+		}
+		else{
+			return (rem + limit);
+		}
 	}
 }
 

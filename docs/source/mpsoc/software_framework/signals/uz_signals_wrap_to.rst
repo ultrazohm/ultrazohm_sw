@@ -14,7 +14,7 @@ Example
   #include "uz_signals.h"
   int main(void) {
      theta = 13.0f;
-     float theta_wrapped = uz_signals_wrap(theta, 2*UZ_PIf);
+     float theta_wrapped = uz_signals_wrap(theta, 2.0f*UZ_PIf);
   }
 
 Description

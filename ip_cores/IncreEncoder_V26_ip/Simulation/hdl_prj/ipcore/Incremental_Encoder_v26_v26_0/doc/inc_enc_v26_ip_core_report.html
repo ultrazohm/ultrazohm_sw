@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">11.142
+<td class="summaryTableSndColOddRow">11.145
 </td>
 </tr>
 <tr>
@@ -112,13 +112,13 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">06-Mar-2023 13:40:37
+<td class="summaryTableSndColOddRow">07-Mar-2023 12:48:59
 </td>
 </tr>
 <tr>
 <td>IP core generated for
 </td>
-<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('inc_enc_v26:2042')">IncEnc_V25</a>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('inc_enc_v26:2042')">IncEnc_V26</a>
 </td>
 </tr>
 </tbody>
@@ -711,7 +711,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2303061340
+<td>contains unique IP timestamp (yymmddHHMM): 2303071248
 </td>
 </tr>
 <tr>
@@ -853,7 +853,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </tbody>
 </table>
 <br/>
-The AXI4 slave write register readback is OFF for the IP core.
+The AXI4 slave write register readback is ON for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
@@ -879,7 +879,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 9, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 19, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -931,7 +931,7 @@ Following files are generated under this folder:
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd')">hdl\Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd')">hdl\Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_AB_Line_Switch.vhd')">hdl\Incremental_Encoder_v26_src_AB_Line_Switch.vhd</a>
 <br/>
@@ -957,17 +957,17 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_Average.vhd')">hdl\Incremental_Encoder_v26_src_Average.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd')">hdl\Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd')">hdl\Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_Math_Reciprocal.vhd')">hdl\Incremental_Encoder_v26_src_Math_Reciprocal.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_HDL_Reciprocal.vhd')">hdl\Incremental_Encoder_v26_src_HDL_Reciprocal.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_invt_mult.vhd')">hdl\Incremental_Encoder_v26_src_invt_mult.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_calc_omega.vhd')">hdl\Incremental_Encoder_v26_src_calc_omega.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_speed.vhd')">hdl\Incremental_Encoder_v26_src_speed.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_speed1.vhd')">hdl\Incremental_Encoder_v26_src_speed1.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_IncEnc_V25.vhd')">hdl\Incremental_Encoder_v26_src_IncEnc_V25.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_src_IncEnc_V26.vhd')">hdl\Incremental_Encoder_v26_src_IncEnc_V26.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\hdl\Incremental_Encoder_v26_reset_sync.vhd')">hdl\Incremental_Encoder_v26_reset_sync.vhd</a>
 <br/>

@@ -4,8 +4,8 @@ clc;        % command window löschen
 clear;      % alle Variablen löschen 
 close all; % alle Fenster schließen
 
-hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
- 'C:\Xilinx\Vivado\2020.1\bin\vivado.bat'); % Hierdruch wird dem HDL-Coder gesagt welches Synthesetool er für die HDL-Generierung nutzen soll.
+%hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
+% 'C:\Xilinx\Vivado\2020.1\bin\vivado.bat'); % Hierdruch wird dem HDL-Coder gesagt welches Synthesetool er für die HDL-Generierung nutzen soll.
 
 %% Times
 SimulationsDauer = 0.03 %1.7e-3%0.3; %0.2%0.02
@@ -28,7 +28,7 @@ TestDrehzahl_rpm = 5987; %[rpm]
 
 OmegaPerOverSampl = 1500*((2*pi)/60); %in diesen Schritten wird der OversaplingFactor erhöht!
 n_max = 6000; %maximum speed - not used in IP Core
-IncPerTurn = 2500; % e.g. number of positive A edges
+IncPerTurn = 4100; % e.g. number of positive A edges
 PolePair = 10;
 QuadratureFactor = 4; %This Factor comes from the fact, that we have an A and B line with rising and falling edge respectively.
 

@@ -645,7 +645,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112916343">
+		<CoreRevision value="2112932328">
 		</CoreRevision>
 		<ComponentPath value="IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/component.xml">
 		</ComponentPath>

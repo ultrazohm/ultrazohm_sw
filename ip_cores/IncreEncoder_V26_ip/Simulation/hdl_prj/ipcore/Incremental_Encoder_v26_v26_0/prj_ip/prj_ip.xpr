@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="d514e819f99f4a7aaa769e32401243e9"/>
+    <Option Name="Id" Val="a0d660603b1247df9a13f5258a3d0ebf"/>
     <Option Name="Part" Val="xczu9cg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -103,7 +103,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd">
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -127,13 +127,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd">
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd">
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -157,7 +157,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_speed.vhd">
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_speed1.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -199,7 +199,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd">
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

@@ -2,8 +2,8 @@
 # Vivado v2020.1.1_AR75502 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Mon Mar  6 13:40:46 2023
-# Process ID: 10784
+# Start of session at: Tue Mar  7 12:49:08 2023
+# Process ID: 9504
 # Current directory: E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip/vivado.log

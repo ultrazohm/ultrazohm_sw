@@ -2,7 +2,7 @@ create_project prj_ip {} -part xczu9cg-ffvc900-1-e -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
-add_files -norecurse {../hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Counter.vhd}
@@ -15,12 +15,12 @@ add_files -norecurse {../hdl/Incremental_Encoder_v26_src_align_oversamples.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_oversample_factor.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_OS_factor_logic.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Average.vhd}
-add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd}
-add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_invt_mult.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_calc_omega.vhd}
-add_files -norecurse {../hdl/Incremental_Encoder_v26_src_speed.vhd}
-add_files -norecurse {../hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_speed1.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_reset_sync.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_dut.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_addr_decoder.vhd}
@@ -46,13 +46,13 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112930940 [ipx::current_core]
+set_property core_revision 2112932328 [ipx::current_core]
 
 # Add HDL source files to IP
-ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -101,14 +101,14 @@ ipx::add_file {hdl/Incremental_Encoder_v26_src_Average.vhd} [ipx::get_file_group
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Average.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_Average.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Average.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_invt_mult.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_invt_mult.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_invt_mult.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -117,14 +117,14 @@ ipx::add_file {hdl/Incremental_Encoder_v26_src_calc_omega.vhd} [ipx::get_file_gr
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_calc_omega.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_calc_omega.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_calc_omega.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_speed.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_speed.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_speed.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_speed.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_speed1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_speed1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_speed1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_speed1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_reset_sync.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_reset_sync.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

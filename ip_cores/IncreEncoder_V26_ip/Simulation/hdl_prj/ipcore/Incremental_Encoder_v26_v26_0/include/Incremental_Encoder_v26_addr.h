@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\Incremental_Encoder_v26_v26_0\include\Incremental_Encoder_v26_addr.h
  * Description:       C Header File
- * Created:           2023-03-06 13:40:41
+ * Created:           2023-03-07 12:49:03
 */
 
 #ifndef INCREMENTAL_ENCODER_V26_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_Incremental_Encoder_v26                  0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_Incremental_Encoder_v26                 0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_Incremental_Encoder_v26              0x8  //contains unique IP timestamp (yymmddHHMM): 2303061340
+#define  IPCore_Timestamp_Incremental_Encoder_v26              0x8  //contains unique IP timestamp (yymmddHHMM): 2303071248
 #define  Position_offset_AXI4_Data_Incremental_Encoder_v26     0x100  //data register for Inport Position_offset_AXI4
 #define  Timer_FPGA_ms_AXI4_Data_Incremental_Encoder_v26       0x104  //data register for Inport Timer_FPGA_ms_AXI4
 #define  PI2_Inc_AXI4_Data_Incremental_Encoder_v26             0x108  //data register for Inport PI2_Inc_AXI4

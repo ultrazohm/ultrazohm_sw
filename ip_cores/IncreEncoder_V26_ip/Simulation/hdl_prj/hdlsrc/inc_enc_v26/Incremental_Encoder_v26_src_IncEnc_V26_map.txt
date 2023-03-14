@@ -1,0 +1,19 @@
+ --> Incremental_Encoder_v26_src_IncEnc_V26_pac
+inc_enc_v26/IncEnc_V26/AB-Line-Switch --> Incremental_Encoder_v26_src_AB_Line_Switch
+inc_enc_v26/IncEnc_V26/Check d-Axis-Hit --> Incremental_Encoder_v26_src_Check_d_Axis_Hit
+inc_enc_v26/IncEnc_V26/Counter --> Incremental_Encoder_v26_src_Counter
+inc_enc_v26/IncEnc_V26/Counter_Theta_el_wOffset --> Incremental_Encoder_v26_src_Counter_Theta_el_wOffset
+inc_enc_v26/IncEnc_V26/Counter_position --> Incremental_Encoder_v26_src_Counter_position
+inc_enc_v26/IncEnc_V26/Direction --> Incremental_Encoder_v26_src_Direction
+inc_enc_v26/IncEnc_V26/Index_Latch --> Incremental_Encoder_v26_src_Index_Latch
+inc_enc_v26/IncEnc_V26/count_lines --> Incremental_Encoder_v26_src_count_lines
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/align_oversamples --> Incremental_Encoder_v26_src_align_oversamples
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/oversample_factor --> Incremental_Encoder_v26_src_oversample_factor
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic --> Incremental_Encoder_v26_src_OS_factor_logic
+inc_enc_v26/IncEnc_V26/speed1/Average --> Incremental_Encoder_v26_src_Average
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal/HDL Reciprocal_core --> Incremental_Encoder_v26_src_HDL_Reciprocal_core
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal --> Incremental_Encoder_v26_src_HDL_Reciprocal
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult --> Incremental_Encoder_v26_src_invt_mult
+inc_enc_v26/IncEnc_V26/speed1/calc_omega --> Incremental_Encoder_v26_src_calc_omega
+inc_enc_v26/IncEnc_V26/speed1 --> Incremental_Encoder_v26_src_speed1
+inc_enc_v26/IncEnc_V26 --> Incremental_Encoder_v26_src_IncEnc_V26

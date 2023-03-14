@@ -2022,10 +2022,26 @@
                                 "id": 55,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 3,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/probe5_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe4",
+                                "id": 56,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
                                 "rightIndex": 23,
-                                "portIndex": 3,
+                                "portIndex": 4,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega",
@@ -2108,14 +2124,14 @@
                                 ]
                             },
                             {
-                                "name": "probe4",
-                                "id": 56,
+                                "name": "probe5",
+                                "id": 57,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
                                 "rightIndex": 23,
-                                "portIndex": 4,
+                                "portIndex": 5,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_theta_el",
@@ -2198,22 +2214,6 @@
                                 ]
                             },
                             {
-                                "name": "probe5",
-                                "id": 57,
-                                "type": "DATA_TRIGGER",
-                                "direction": "IN",
-                                "isVector": false,
-                                "leftIndex": 0,
-                                "rightIndex": 0,
-                                "portIndex": 5,
-                                "nets": [
-                                    {
-                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Interrupt_muxed",
-                                        "isBus": false
-                                    }
-                                ]
-                            },
-                            {
                                 "name": "probe6",
                                 "id": 58,
                                 "type": "DATA_TRIGGER",
@@ -2284,10 +2284,42 @@
                                 "id": 59,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 7,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_edge_rsvd",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe8",
+                                "id": 60,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 8,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_count",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe9",
+                                "id": 61,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
                                 "rightIndex": 15,
-                                "portIndex": 7,
+                                "portIndex": 9,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_OverSamplFactor",
@@ -2346,14 +2378,496 @@
                                 ]
                             },
                             {
-                                "name": "probe8",
-                                "id": 60,
+                                "name": "probe10",
+                                "id": 62,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 23,
+                                "portIndex": 10,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omega_MA_N4[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe11",
+                                "id": 63,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 11,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_timeout_active",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe12",
+                                "id": 64,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 23,
+                                "portIndex": 12,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaA[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe13",
+                                "id": 65,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 23,
+                                "portIndex": 13,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTA[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe14",
+                                "id": 66,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 23,
+                                "portIndex": 14,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaB[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe15",
+                                "id": 67,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 23,
+                                "portIndex": 15,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[23]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[22]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[21]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[20]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[19]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[18]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[17]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[16]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[15]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[14]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[13]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[12]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[11]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[10]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[9]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[8]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_omegaNOTB[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe16",
+                                "id": 68,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 16,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_new_measurement",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe17",
+                                "id": 69,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
                                 "leftIndex": 0,
                                 "rightIndex": 15,
-                                "portIndex": 8,
+                                "portIndex": 17,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_position_wOffset",
@@ -2412,14 +2926,14 @@
                                 ]
                             },
                             {
-                                "name": "probe9",
-                                "id": 61,
+                                "name": "probe18",
+                                "id": 70,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
                                 "leftIndex": 0,
                                 "rightIndex": 0,
-                                "portIndex": 9,
+                                "portIndex": 18,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_Index_found",
@@ -2428,14 +2942,14 @@
                                 ]
                             },
                             {
-                                "name": "probe10",
-                                "id": 62,
+                                "name": "probe19",
+                                "id": 71,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
                                 "leftIndex": 0,
                                 "rightIndex": 0,
-                                "portIndex": 10,
+                                "portIndex": 19,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D5_adapter/Incremental_Encoder_0_d_Axis_Hit",
@@ -2459,7 +2973,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 63,
+                                "id": 72,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3629,7 +4143,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 64,
+                                "id": 73,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3645,7 +4159,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 65,
+                                "id": 74,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3661,7 +4175,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 66,
+                                "id": 75,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3677,7 +4191,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 67,
+                                "id": 76,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3707,7 +4221,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 68,
+                                "id": 77,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": true,
@@ -3772,7 +4286,7 @@
                         "pins": [
                             {
                                 "name": "probe0",
-                                "id": 69,
+                                "id": 78,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3788,7 +4302,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "id": 70,
+                                "id": 79,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3804,7 +4318,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "id": 71,
+                                "id": 80,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3820,7 +4334,7 @@
                             },
                             {
                                 "name": "probe3",
-                                "id": 72,
+                                "id": 81,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3836,7 +4350,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "id": 73,
+                                "id": 82,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3852,7 +4366,7 @@
                             },
                             {
                                 "name": "probe5",
-                                "id": 74,
+                                "id": 83,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3868,7 +4382,7 @@
                             },
                             {
                                 "name": "probe6",
-                                "id": 75,
+                                "id": 84,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3884,7 +4398,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "id": 76,
+                                "id": 85,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3900,7 +4414,7 @@
                             },
                             {
                                 "name": "probe8",
-                                "id": 77,
+                                "id": 86,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": true,
@@ -3930,7 +4444,7 @@
                             },
                             {
                                 "name": "probe9",
-                                "id": 78,
+                                "id": 87,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
                                 "isVector": false,
@@ -3960,7 +4474,7 @@
                         "pins": [
                             {
                                 "name": "probe_out0",
-                                "id": 79,
+                                "id": 88,
                                 "type": "DATA",
                                 "direction": "OUT",
                                 "isVector": false,

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c46d744a</spirit:value>
+            <spirit:value>a7f56b2d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c46d744a</spirit:value>
+            <spirit:value>a7f56b2d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -979,7 +979,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -995,11 +995,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1015,7 +1015,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_speed.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_speed1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1043,7 +1043,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1053,7 +1053,7 @@
       <spirit:file>
         <spirit:name>hdl/Incremental_Encoder_v26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_79197307</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_0a6bc314</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1089,7 +1089,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V25_pac.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1109,12 +1109,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_Math_Reciprocal_core.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_Math_Reciprocal.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1134,7 +1134,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_speed.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_speed1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1169,7 +1169,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V25.vhd</spirit:name>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1255,14 +1255,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Incremental_Encoder_v26</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112930940</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-03-06T12:40:58Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112932328</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-03-07T11:49:21Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1_AR75502</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="54fb9a60"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="28355fbc"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="dbad6901"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="859704dd"/>
     </xilinx:packagingInfo>

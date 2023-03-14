@@ -179,7 +179,6 @@ void ISR_Control(void *data)
 	            	gradient=uz_signals_saturation(gradient, 0.5f, -0.5f);
 	            	theta_old=theta_offset;
 	            	theta_offset=theta_offset-alpha*gradient;
-
 	            	posneg=6;
 	            	break;
 				case 6:

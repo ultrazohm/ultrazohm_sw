@@ -45,6 +45,7 @@
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           10U
+    #define UZ_ENCOFFEST_MAX_INSTANCES                  1U
 
 #endif
 
@@ -77,4 +78,5 @@
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_FILTER_EMA_MAX_INSTANCES                     10U
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           10U
+    #define UZ_ENCOFFEST_MAX_INSTANCES                      10U
 #endif

@@ -57,6 +57,12 @@ typedef struct _actualValues_ {
 	float i_a1;
 	float i_b1;
 	float i_c1;
+	float u_a1;
+	float u_b1;
+	float u_c1;
+	float u_a2;
+	float u_b2;
+	float u_c2;
 	float i_a2;
 	float i_b2;
 	float i_c2;
@@ -79,6 +85,8 @@ typedef struct _actualValues_ {
 	float rpm_ref_filt;
 	float i_alpha;
 	float i_beta;
+	float i_dc1;
+	float i_dc2;
 	float u_d;
 	float u_q;
 	float u_d_ref;

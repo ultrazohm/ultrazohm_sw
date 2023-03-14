@@ -31,6 +31,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 #define MAX_PHASE_CURRENT_AMP  13.0f
 
@@ -73,9 +74,14 @@ struct uz_DutyCycle_t output2 = {0};
 
 uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
 
-#define PHASE_CURRENT_CONV	37.735/7.0f/1.19f
-#define DC_VOLT_CONV		250
-#define DC_VOLT_OFF			250
+float amplitude = 0.06f;
+float frequency = 50.0f;
+float offset = 0.5f;
+uz_3ph_abc_t three_phase_sine;
+
+#define PHASE_CURRENT_CONV	11.999f
+#define DC_VOLT_CONV		140.16f
+#define DC_VOLT_OFF			449.69f
 
 const struct uz_PMSM_t config_PMSM1 = {
 	.R_ph_Ohm = 0.2f,
@@ -106,36 +112,36 @@ void ISR_Control(void *data)
     //readRegister_of_resolverIP(&Global_Data);
 
     // convert ADC readings to currents in Amps
-    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c1 = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_CURRENT_CONV;
-    Global_Data.av.i_c2 = -1.0f * Global_Data.aa.A2.me.ADC_B6 * PHASE_CURRENT_CONV;
-    // convert ADC readings to dc link voltages
-    Global_Data.av.U_ZK = -1.0f * Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
-    Global_Data.av.U_ZK2 = -1.0f * Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV - DC_VOLT_OFF;
+    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+    // convert ADC readings to voltages
+    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.U_ZK2 =Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV + DC_VOLT_OFF;
+    Global_Data.av.u_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV + DC_VOLT_OFF;
 
-    // filter values
-    Global_Data.av.i_a1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a1, Global_Data.av.i_a1);
-    Global_Data.av.i_b1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b1, Global_Data.av.i_b1);
-    Global_Data.av.i_c1_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c1, Global_Data.av.i_c1);
-    Global_Data.av.i_a2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_a2, Global_Data.av.i_a2);
-    Global_Data.av.i_b2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_b2, Global_Data.av.i_b2);
-    Global_Data.av.i_c2_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_c2, Global_Data.av.i_c2);
-    Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
     Global_Data.av.rpm_ref_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_rpm_ref, Global_Data.av.rpm_ref);
     // theta offset and scaling to el. angle
     Global_Data.av.theta_m_offset_comp = theta_mech_calc_from_resolver - Global_Data.av.theta_offset;
     Global_Data.av.theta_elec = Global_Data.av.theta_m_offset_comp * Global_Data.av.polepairs;
 
     // transform phase currents
-    six_ph_currents.a1 = Global_Data.av.i_a1_filt;
-    six_ph_currents.b1 = Global_Data.av.i_b1_filt;
-    six_ph_currents.c1 = Global_Data.av.i_c1_filt;
-    six_ph_currents.a2 = Global_Data.av.i_a2_filt;
-    six_ph_currents.b2 = Global_Data.av.i_b2_filt;
-    six_ph_currents.c2 = Global_Data.av.i_c2_filt;
+    six_ph_currents.a1 = Global_Data.av.i_a1;
+    six_ph_currents.b1 = Global_Data.av.i_b1;
+    six_ph_currents.c1 = Global_Data.av.i_c1;
+    six_ph_currents.a2 = Global_Data.av.i_a2;
+    six_ph_currents.b2 = Global_Data.av.i_b2;
+    six_ph_currents.c2 = Global_Data.av.i_c2;
     six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
 
 
@@ -154,7 +160,7 @@ void ISR_Control(void *data)
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
 	if(fabs(six_ph_currents.a1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b1) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c1) > MAX_PHASE_CURRENT_AMP ||
-	   fabs(six_ph_currents.a2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c2) > MAX_PHASE_CURRENT_AMP) {
+			fabs(six_ph_currents.a2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.b2) > MAX_PHASE_CURRENT_AMP || fabs(six_ph_currents.c2) > MAX_PHASE_CURRENT_AMP) {
 		uz_assert(0);
 	}
 
@@ -164,8 +170,10 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 //    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
+//    	three_phase_sine = uz_wavegen_three_phase_sample(amplitude, frequency, offset);
+
 //    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
-    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.U_ZK, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
     	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
@@ -178,8 +186,12 @@ void ISR_Control(void *data)
     	input2.b = phase_ref_volts.b2;
     	input2.c = phase_ref_volts.c2;
 
-    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK_filt);
-    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK_filt);
+    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.U_ZK);
+    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.U_ZK2);
+
+//    	Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.a;
+//    	Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
+//    	Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.c;
 
     	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
     	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
@@ -188,6 +200,14 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
     	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
 
+    } else {
+
+	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

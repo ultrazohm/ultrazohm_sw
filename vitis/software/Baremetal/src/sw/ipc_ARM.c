@@ -213,55 +213,55 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_1):
 			data->rasv.halfBridge1DutyCycle = 0.043f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.01f;
+			data->rasv.halfBridge3DutyCycle = 0.01f;
+			data->rasv.halfBridge4DutyCycle = 0.01f;
+			data->rasv.halfBridge5DutyCycle = 0.01f;
+			data->rasv.halfBridge6DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_2):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.01f;
 			data->rasv.halfBridge2DutyCycle = 0.043f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.01f;
+			data->rasv.halfBridge4DutyCycle = 0.01f;
+			data->rasv.halfBridge5DutyCycle = 0.01f;
+			data->rasv.halfBridge6DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_3):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.01f;
+			data->rasv.halfBridge2DutyCycle = 0.01f;
 			data->rasv.halfBridge3DutyCycle = 0.043f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			data->rasv.halfBridge4DutyCycle = 0.01f;
+			data->rasv.halfBridge5DutyCycle = 0.01f;
+			data->rasv.halfBridge6DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_4):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.01f;
+			data->rasv.halfBridge2DutyCycle = 0.01f;
+			data->rasv.halfBridge3DutyCycle = 0.01f;
 			data->rasv.halfBridge4DutyCycle = 0.043f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			data->rasv.halfBridge5DutyCycle = 0.01f;
+			data->rasv.halfBridge6DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_5):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.01f;
+			data->rasv.halfBridge2DutyCycle = 0.01f;
+			data->rasv.halfBridge3DutyCycle = 0.01f;
+			data->rasv.halfBridge4DutyCycle = 0.01f;
 			data->rasv.halfBridge5DutyCycle = 0.043f;
-			data->rasv.halfBridge6DutyCycle = 0.0f;
+			data->rasv.halfBridge6DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_6):
-			data->rasv.halfBridge1DutyCycle = 0.0f;
-			data->rasv.halfBridge2DutyCycle = 0.0f;
-			data->rasv.halfBridge3DutyCycle = 0.0f;
-			data->rasv.halfBridge4DutyCycle = 0.0f;
-			data->rasv.halfBridge5DutyCycle = 0.0f;
+			data->rasv.halfBridge1DutyCycle = 0.01f;
+			data->rasv.halfBridge2DutyCycle = 0.01f;
+			data->rasv.halfBridge3DutyCycle = 0.01f;
+			data->rasv.halfBridge4DutyCycle = 0.01f;
+			data->rasv.halfBridge5DutyCycle = 0.01f;
 			data->rasv.halfBridge6DutyCycle = 0.043f;
 			break;
 

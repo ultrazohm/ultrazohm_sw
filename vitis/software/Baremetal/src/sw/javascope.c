@@ -38,6 +38,8 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float theta_mech_calc_from_resolver;
 
+extern uz_3ph_abc_t three_phase_sine;
+
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -61,24 +63,25 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a1]		= &data->av.i_a1;
 	js_ch_observable[JSO_i_b1]		= &data->av.i_b1;
 	js_ch_observable[JSO_i_c1]		= &data->av.i_c1;
-	js_ch_observable[JSO_i_a1_filt]		= &data->av.i_a1_filt;
-	js_ch_observable[JSO_i_b1_filt]		= &data->av.i_b1_filt;
-	js_ch_observable[JSO_i_c1_filt]		= &data->av.i_c1_filt;
+	js_ch_observable[JSO_i_dc1]		= &data->av.i_dc1;
+	js_ch_observable[JSO_u_a1]		= &data->av.u_a1;
+	js_ch_observable[JSO_u_b1]		= &data->av.u_b1;
+	js_ch_observable[JSO_u_c1]		= &data->av.u_c1;
 	js_ch_observable[JSO_u_dc1]		= &data->av.U_ZK;
 	js_ch_observable[JSO_i_a2]		= &data->av.i_a2;
 	js_ch_observable[JSO_i_b2]		= &data->av.i_b2;
 	js_ch_observable[JSO_i_c2]		= &data->av.i_c2;
-	js_ch_observable[JSO_i_a2_filt]		= &data->av.i_a2_filt;
-	js_ch_observable[JSO_i_b2_filt]		= &data->av.i_b2_filt;
-	js_ch_observable[JSO_i_c2_filt]		= &data->av.i_c2_filt;
+	js_ch_observable[JSO_i_dc2]		= &data->av.i_dc2;
+	js_ch_observable[JSO_u_a2]		= &data->av.u_a2;
+	js_ch_observable[JSO_u_b2]		= &data->av.u_b2;
+	js_ch_observable[JSO_u_c2]		= &data->av.u_c2;
 	js_ch_observable[JSO_u_dc2]		= &data->av.U_ZK2;
-	js_ch_observable[JSO_u_dc1_filt]= &data->av.U_ZK_filt;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_iq] 			= &data->av.i_q;
 	js_ch_observable[JSO_id] 			= &data->av.i_d;
 	js_ch_observable[JSO_i_alpha]		= &data->av.i_alpha;
 	js_ch_observable[JSO_i_beta]		= &data->av.i_beta;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_elec] 	= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &theta_mech_calc_from_resolver;
 	js_ch_observable[JSO_ud]			= &data->av.u_d;
 	js_ch_observable[JSO_uq]			= &data->av.u_q;
@@ -100,7 +103,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK_filt);
+	js_slowDataArray[JSSD_FLOAT_u_dc1]					= &(data->av.U_ZK);
 	js_slowDataArray[JSSD_FLOAT_u_dc2]					= &(data->av.U_ZK2);
 	js_slowDataArray[JSSD_FLOAT_speed]					= &data->av.mechanicalRotorSpeed;
 

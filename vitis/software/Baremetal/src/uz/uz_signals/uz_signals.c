@@ -64,13 +64,11 @@ float uz_signals_wrap(float number, float limit){
 	uz_assert(limit > 0.0f);
     if((number < limit) && (number >= 0.0f)){
         return (number);
-	}
-    else {
+	} else {
 		float rem = remainderf(number, limit);
 		if((rem < limit) && (rem >= 0.0f)){
 			return (rem);
-		}
-		else{
+		} else{
 			return (rem + limit);
 		}
 	}

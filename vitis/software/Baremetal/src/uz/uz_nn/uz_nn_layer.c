@@ -29,7 +29,7 @@ struct uz_nn_layer_t
     uz_matrix_t *derivate_gradients;// wird benötigt für backprop
     uz_matrix_t *delta;// wird benötigt für backprop
     uz_matrix_t *error;//Speichern des zwischenwert für den Fehler
-    uz_matrix_t *cachebackprop;
+    uz_matrix_t *temporarybackprop;
     uz_matrix_t *gradients;
     uz_matrix_t *cachegradients;
     struct uz_matrix_t weight_matrix;
@@ -39,7 +39,7 @@ struct uz_nn_layer_t
     struct uz_matrix_t derivate_gradients_matrix;
     struct uz_matrix_t delta_matrix;
     struct uz_matrix_t error_matrix;
-    struct uz_matrix_t cachebackprop_matrix;
+    struct uz_matrix_t temporarybackprop_matrix;
     struct uz_matrix_t gradients_matrix;
     struct uz_matrix_t cachegradients_matrix;
     float (*activation_function)(float);
@@ -71,7 +71,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.derivate_gradients);
     uz_assert_not_NULL(layer_config.delta);
     uz_assert_not_NULL(layer_config.error);
-    uz_assert_not_NULL(layer_config.cachebackprop);
+    uz_assert_not_NULL(layer_config.temporarybackprop);
     uz_assert_not_NULL(layer_config.gradients);
     uz_assert_not_NULL(layer_config.cachegradients);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
@@ -92,7 +92,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.length_of_sumout, layer_config.length_of_sumout);
     self->delta = uz_matrix_init(&self->delta_matrix, layer_config.delta, layer_config.length_of_delta,layer_config.number_of_neurons,1);
     self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
-    self->cachebackprop = uz_matrix_init(&self->cachebackprop_matrix,layer_config.cachebackprop, layer_config.length_of_cachebackprop,2,layer_config.number_of_cachecolumns);
+    self->temporarybackprop = uz_matrix_init(&self->temporarybackprop_matrix,layer_config.temporarybackprop, layer_config.length_of_temporarybackprop,2,layer_config.number_of_temporarycolumns);
     self->gradients = uz_matrix_init(&self->gradients_matrix,layer_config.gradients, layer_config.length_of_gradients,layer_config.length_of_gradients,1);
     self->cachegradients = uz_matrix_init(&self->cachegradients_matrix,layer_config.cachegradients, layer_config.length_of_cachegradients,layer_config.number_of_cachegradrows,layer_config.number_of_cachegradcolumns);
     switch (layer_config.activation_function)
@@ -143,9 +143,26 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_assert(self->is_ready);
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    uz_matrix_multiply(self->derivate_gradients,weightprev,self->cachebackprop);
-    uz_matrix_multiply(self->cachebackprop,locgradprev,self->delta);
+    uz_matrix_multiply(self->derivate_gradients,weightprev,self->temporarybackprop);
+    uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
 }
+
+// void uz_nn_layer_back_last_layer_matrix(uz_nn_layer_t *const self,uz_matrix_t *const reference)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     // loop to calculate error in the last layer
+//     for(size_t i=0;i<self->output->length_of_data;i++){
+
+//         self->error->data[i]=reference[i]-self->output->data[i];
+
+//     }
+//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
+//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
+//     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
+//     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
+// }
+
 
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference)
 {

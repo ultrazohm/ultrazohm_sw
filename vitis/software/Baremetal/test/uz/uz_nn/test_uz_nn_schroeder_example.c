@@ -74,11 +74,12 @@ float y_3[NUMBER_OF_OUTPUTS] = {0};
 float e_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER]={0.0f};
 float e_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER]={0.0f};
 float e_3[NUMBER_OF_OUTPUTS]={0.0f};
-// Cachebackprop
 
-float C1[UZ_MATRIX_SIZE(w_2)] = {0};
-float C2[UZ_MATRIX_SIZE(w_3)] = {0};
-float C3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
+// Temporary buffer storage
+
+float T1[UZ_MATRIX_SIZE(w_2)] = {0};
+float T2[UZ_MATRIX_SIZE(w_3)] = {0};
+float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -86,7 +87,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .number_of_inputs = NUMBER_OF_INPUTS,
         .number_of_cachegradrows = 2,
         .number_of_cachegradcolumns = 1,
-        .number_of_cachecolumns = 2,
+        .number_of_temporarycolumns = 2,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
@@ -95,7 +96,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_delta = UZ_MATRIX_SIZE(delta_1),
         .length_of_error = UZ_MATRIX_SIZE(e_1),
         .length_of_gradients = UZ_MATRIX_SIZE(g_1),
-        .length_of_cachebackprop = UZ_MATRIX_SIZE(C1),
+        .length_of_temporarybackprop = UZ_MATRIX_SIZE(T1),
         .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_1),
         .weights = w_1,
         .bias = b_1,
@@ -103,7 +104,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .sumout = s_1,
         .derivate_gradients = d_1,
         .delta = delta_1,
-        .cachebackprop = C1,
+        .temporarybackprop = T1,
         .gradients = g_1,
         .cachegradients = cacheg_1,
         .error = e_1},
@@ -113,7 +114,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
       .number_of_cachegradrows = 2,
       .number_of_cachegradcolumns = 2,
-      .number_of_cachecolumns = 1,
+      .number_of_temporarycolumns = 1,
       .length_of_weights = UZ_MATRIX_SIZE(w_2),
       .length_of_bias = UZ_MATRIX_SIZE(b_2),
       .length_of_output = UZ_MATRIX_SIZE(y_2),
@@ -122,7 +123,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .length_of_delta = UZ_MATRIX_SIZE(delta_2),
       .length_of_gradients = UZ_MATRIX_SIZE(g_2),
       .length_of_error = UZ_MATRIX_SIZE(e_2),
-      .length_of_cachebackprop = UZ_MATRIX_SIZE(C2),
+      .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2),
       .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2),
       .weights = w_2,
       .bias = b_2,
@@ -130,7 +131,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .sumout = s_2,
       .derivate_gradients = d_2,
       .delta = delta_2,
-      .cachebackprop = C2,
+      .temporarybackprop = T2,
       .gradients = g_2,
       .cachegradients = cacheg_2,
       .error=e_2},
@@ -139,7 +140,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
    .number_of_cachegradrows = 2,
    .number_of_cachegradcolumns = 1,
-   .number_of_cachecolumns = 2,
+   .number_of_temporarycolumns = 2,
    .length_of_weights = UZ_MATRIX_SIZE(w_3),
    .length_of_bias = UZ_MATRIX_SIZE(b_3),
    .length_of_output = UZ_MATRIX_SIZE(y_3),
@@ -148,7 +149,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .length_of_delta = UZ_MATRIX_SIZE(delta_3),
    .length_of_gradients = UZ_MATRIX_SIZE(g_3),
    .length_of_error = UZ_MATRIX_SIZE(e_3),
-   .length_of_cachebackprop = UZ_MATRIX_SIZE(C3),
+   .length_of_temporarybackprop = UZ_MATRIX_SIZE(T3),
    .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_3),
    .weights = w_3,
    .bias = b_3,
@@ -156,7 +157,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .sumout = s_3,
    .derivate_gradients = d_3,
    .delta = delta_3, 
-   .cachebackprop = C3,
+   .temporarybackprop = T3,
    .gradients = g_3,
    .cachegradients = cacheg_3,
    .error= e_3}};
@@ -194,19 +195,17 @@ void test_uz_nn_schroeder(void)
     sumtheta += THETAhelper[i];
     sumbias += biashelper[i];
     }
-    //uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
     printf("Mittelwert von thetagrad = %.2f \n", avgtheta);
     printf("Mittelwert von biasgrad = %.2f \n", avgbias);
     // Lernrate festlegen
     float lernrate = 2.0f;
-    // Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
+    // Update THETA 1,1 und bias 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
     uz_nn_update(test,avgtheta,avgbias,lernrate);
     clock_t end = clock();
     // Funktion die die daten exportiert und in die .csv Dateien überschreibt
     //uz_nn_export(test);
-    /*Do something*/
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;
     printf("Zeit des Tests = %.6f \n", seconds);
 }

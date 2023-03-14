@@ -71,7 +71,24 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
     }
 }
 
-
+// void uz_nn_calc_gradients_matrix(uz_nn_t *self,uz_matrix_t *const reference, uz_matrix_t *const input)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     // lokale Gradienten zurückrechnen vom letzten layer
+//     uz_nn_layer_back_last_layer_matrix(self->layer[self->number_of_layer - 1U], reference);
+//     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+//     {
+//         uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
+//     }
+//     //Gradient output + alle hidden layer
+//     for (uint32_t i = self->number_of_layer - 1U; i > 1; i--)
+//     {
+//             uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+//     }
+//     //Gradient erster layer
+//     uz_nn_layer_calc_gradients(self->layer[0],input);
+// }
 
 
 void uz_nn_calc_gradients(uz_nn_t *self,float const reference_output, uz_matrix_t *const input)

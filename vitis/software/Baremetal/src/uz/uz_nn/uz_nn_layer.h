@@ -33,7 +33,7 @@ struct uz_nn_layer_config{
     enum activation_function activation_function; /**< Activation function of all neurons in this layer */
     uint32_t number_of_neurons; /**< Number of neurons in the layer */
     uint32_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
-    uint32_t number_of_cachecolumns;
+    uint32_t number_of_temporarycolumns;
     uint32_t number_of_cachegradcolumns;
     uint32_t number_of_cachegradrows;
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
@@ -43,7 +43,7 @@ struct uz_nn_layer_config{
     uint32_t length_of_derivate_gradients; 
     uint32_t length_of_delta; 
     uint32_t length_of_error;
-    uint32_t length_of_cachebackprop;
+    uint32_t length_of_temporarybackprop;
     uint32_t length_of_gradients;
     uint32_t length_of_cachegradients;
 
@@ -53,7 +53,7 @@ struct uz_nn_layer_config{
     float *const sumout;
     float *const derivate_gradients;
     float *const delta;
-    float *const cachebackprop;
+    float *const temporarybackprop;
     float *const error;
     float *const gradients;
     float *const cachegradients;

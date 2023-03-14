@@ -20,6 +20,7 @@
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
+#include <math.h>
 
 float uz_signals_dead_zone(float input, float upper_threshold, float lower_threshold) {
 	uz_assert(upper_threshold > lower_threshold);
@@ -59,15 +60,20 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 	return (output);
 }
 
-float uz_wrap_to_2pi(float angle){
-    if((angle < 2.0f*UZ_PIf) && (angle >= 0.0f))
-        return angle;
-    else if(angle >= 2.0f*UZ_PIf)
-        return uz_wrap_to_2pi(angle-2.0f*UZ_PIf);
-    else if(angle < 0.0f)
-        return uz_wrap_to_2pi(angle+2.0f*UZ_PIf);
-    else
-        return 0.0f;
+float uz_signals_wrap(float number, float limit){
+	uz_assert(limit > 0);
+    if((number < limit) && (number >= 0.0f))
+	{
+        return number;
+	}
+    else 
+	{
+		float rem = remainderf(number, limit);
+		if((rem < limit) && (rem >= 0.0f))
+			return rem;
+		else
+			return rem + limit;
+	}
 }
 
 #endif

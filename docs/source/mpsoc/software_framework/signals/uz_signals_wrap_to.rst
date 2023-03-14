@@ -2,7 +2,7 @@
 Wrap angle function
 ===================
 
-.. doxygenfunction:: uz_wrap_to_2pi
+.. doxygenfunction:: uz_signals_wrap
 
 Example
 =======
@@ -14,13 +14,15 @@ Example
   #include "uz_signals.h"
   int main(void) {
      theta = 13.0f;
-     float theta_wrapped = uz_wrap_to_2pi(theta);
+     float theta_wrapped = uz_signals_wrap(theta, 2*UZ_PIf);
   }
 
 Description
 ===========
 
-Wraps the input angle to the range of 0 to :math:`2\pi` by using recursion.
-If the angle is already in the range, it will be unchanged.
-If it is grater than :math:`2\pi`, the function call reduces the angle by :math:`2\pi` and calls itself again, until the angle is smaller than :math:`2\pi`.
-If the angle is negative, the functions adds :math:`2\pi` and calls itself again, until the angle is positive.
+Wraps the input number to the range of :math:`[0, limit]` by using the ``remainderf`` function.
+Only limits greater than 0 are allowed!
+If the number is already in the range, it will be unchanged.
+If it is not in the range, ``remainderf`` will be applied.
+if the result is positive, it is in the range and will be returned.
+Otherwise, the limit is added to the remainder and returned.

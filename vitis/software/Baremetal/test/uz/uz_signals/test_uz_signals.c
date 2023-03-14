@@ -4,6 +4,8 @@
 
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
+#include <math.h>
+#include "uz_math_constants.h"
 
 void setUp(void)
 {
@@ -86,9 +88,9 @@ void uz_test_wrap_to_2pi(void)
     float angle1 = 40.0f;
     float angle2 = -30.0f;
     float angle3 = 1.0f;
-    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_wrap_to_2pi(angle1), 0.0001);
-    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_wrap_to_2pi(angle2), 0.0001);
-    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_wrap_to_2pi(angle3), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_signals_wrap(angle1, 2*UZ_PIf), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_signals_wrap(angle2, 2*UZ_PIf), 0.0001);
+    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_signals_wrap(angle3, 2*UZ_PIf), 0.0001);
 }
 
 #endif // TEST

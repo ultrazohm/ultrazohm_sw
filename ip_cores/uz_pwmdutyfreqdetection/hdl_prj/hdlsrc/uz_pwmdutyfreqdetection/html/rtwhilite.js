@@ -1,4 +1,4 @@
-// Copyright 2006-2019 The MathWorks, Inc.
+// Copyright 2006-2021 The MathWorks, Inc.
 
 // Class RTW_Hash ------------------------------------------------------------
 // Internal web browser doesn't change window.location.hash if the link points
@@ -1365,7 +1365,7 @@ function rtwHilite(aBlock,aParentSID) {
     top.HiliteCodeStatus = true;
     
     // webview 2 defines an interface api, call slwebview.
-    if (top.slwebview) {
+    if (top.slwebview || window.slwebview || document.getElementById("rtw_webview").contentWindow.slwebview) {
         // webview 2.x
         if (top.codeToWebView(aBlock, aParentSID) === -1) {
             alert("Cannot highlight block in model Web view. It may not be exported.");
@@ -1383,7 +1383,7 @@ function rtwHilite(aBlock,aParentSID) {
 
 function rtwHiliteMultiple(sids, action) {
 	//For new Code Gen report
-	if (top.slwebview) {
+	if (top.slwebview || window.slwebview || document.getElementById("rtw_webview").contentWindow.slwebview) {
         // webview 2.x
         if (top.codeToWebViewArray(sids, action) === -1) {
             alert("Cannot highlight block(s) in model Web view. It may not be exported.");

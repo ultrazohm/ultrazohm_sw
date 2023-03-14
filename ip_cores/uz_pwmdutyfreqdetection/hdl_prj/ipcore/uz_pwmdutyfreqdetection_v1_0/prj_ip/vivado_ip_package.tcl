@@ -1,10 +1,10 @@
-create_project prj_ip {} -part xczu9eg-ffvc900-1-e -force
+create_project prj_ip {} -part xczu9eg-ffvc900-1L-i -force
 set_property ip_repo_paths {../../} [current_fileset]
 
 # Add HDL source files to project
 add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd}
-add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd}
-add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd}
+add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd}
+add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd}
 add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd}
 add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Reciprocal_iv.vhd}
 add_files -norecurse {../hdl/vhdl/uz_pwmdutyfreqdetection_src_Reciprocal_core.vhd}
@@ -35,21 +35,21 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112520332 [ipx::current_core]
+set_property core_revision 2112942475 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

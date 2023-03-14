@@ -8,10 +8,10 @@ Generated logfile:
 
 source vivado_ip_package.tcl -notrace
 INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
-Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore/uz_pwmdutyfreqdetection_v1_0/prj_ip'
+Current project path is 'C:/uz_sw/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore/uz_pwmdutyfreqdetection_v1_0/prj_ip'
 INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore'.
-WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore/uz_pwmdutyfreqdetection_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/uz_sw/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/uz_sw/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/uz_sw/ip_cores/uz_pwmdutyfreqdetection/hdl_prj/ipcore/uz_pwmdutyfreqdetection_v1_0/prj_ip'.)
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
 INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
@@ -28,10 +28,10 @@ INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
 INFO: [IP_Flow 19-2187] The Product Guide file is missing.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_src_Reciprocal_iv.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -54,6 +54,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_axi_lite
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/uz_pwmdutyfreqdetection.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed May 25 10:12:42 2022...
+INFO: [Common 17-206] Exiting Vivado at Tue Mar 14 13:55:54 2023...
 
-Elapsed time is 14.0997 seconds.
+Elapsed time is 15.3006 seconds.

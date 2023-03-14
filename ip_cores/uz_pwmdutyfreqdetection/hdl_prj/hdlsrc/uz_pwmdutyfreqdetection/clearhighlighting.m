@@ -1,0 +1,13 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_pwmdutyfreqdetection', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_pwmdutyfreqdetection', 'handle'));
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Delay14', 1, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/HDL Counter1', 1, 1, '');
+annotate_port('uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/HDL Counter1', 1, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/HDL Counter1', 1, 1, '');
+annotate_port('uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/HDL Counter1', 1, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Product1', 0, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Reciprocal', 1, 1, '');
+annotate_port('uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Reciprocal', 1, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Reciprocal', 1, 1, '');
+annotate_port('uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/Reciprocal', 1, 1, '');
+annotate_port('gm_uz_pwmdutyfreqdetection/uz_pwmdutyfreqdetection/delayMatch', 0, 1, '');

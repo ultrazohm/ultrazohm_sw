@@ -56,62 +56,42 @@ static void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self);
 static void set_inc_per_turn_elec(uz_incrementalEncoder_t* self);
 static bool check_if_theta_el_can_be_used(uint32_t inc_per_turn,uint32_t pole_pair);
 static void set_omega_per_over_sample(uz_incrementalEncoder_t* self);
-static void set_timeout(uz_incrementalEncoder_t* self);
-static void set_offset(uz_incrementalEncoder_t* self);
-static void set_counting_direction(uz_incrementalEncoder_t* self);
 static void set_configuration(uz_incrementalEncoder_t* self);
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
     uz_assert_not_zero_uint32(config.base_address);
-    uz_assert(config.ip_core_frequency_Hz == 100000000U); // IP-Core has to be used with 100 MHz! (V24 needs 50 MHz, V26 can use 100 MHz!)
+    uz_assert(config.ip_core_frequency_Hz == 50000000U); // IP-Core has to be used with 50 MHz!
     uz_assert_not_zero_uint32(config.line_number_per_turn_mech);
     uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
-    uz_assert(config.Encoder_mech_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
-    uz_assert(config.Encoder_elec_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
-    uz_assert(config.Speed_Timeout_s > 0); // Check if timeout-Value > 0
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;
     self->use_theta_el=check_if_theta_el_can_be_used(self->config.line_number_per_turn_mech,self->config.drive_pole_pair);
-    uz_incrementalEncoder_hw_reset_ip_core(config.base_address);
     set_configuration(self);
     return (self);
 }
 
 float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return uz_incrementalEncoder_hw_get_omega_MA_N4(self->config.base_address);
-    //return uz_incrementalEncoder_hw_get_omega(self->config.base_address);
+    return uz_incrementalEncoder_hw_get_omega(self->config.base_address);
 }
 
 float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(self->use_theta_el);
     return uz_incrementalEncoder_hw_get_theta_electric(self->config.base_address);
 }
 
 uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_incrementalEncoder_hw_get_position(self->config.base_address);
 }
 
-uint32_t uz_incrementalEncoder_get_position_wOffset(uz_incrementalEncoder_t* self){
-    uz_assert(self->is_ready);
-    return uz_incrementalEncoder_hw_get_position_wOffset(self->config.base_address);
-}
-
-uint32_t uz_incrementalEncoder_get_Index_Found(uz_incrementalEncoder_t* self){
-    uz_assert(self->is_ready);
-    return uz_incrementalEncoder_hw_get_Index_found(self->config.base_address);
-}
-
-// ----------------------------------------------------------- INTERNA BELOW ---------------------------------------------
-
-
 static void set_configuration(uz_incrementalEncoder_t* self){
-	set_offset(self);
-    set_timeout(self);
-	set_counting_direction(self);
-	set_pi2_inc(self);
+    uz_assert_not_NULL(self);
+    set_pi2_inc(self);
     set_fpga_timer(self);
     set_inc_per_turn_mechanical(self);
     set_inc_per_turn_elec(self);
@@ -129,43 +109,30 @@ bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){
     return use_theta_el;
 }
 
-static void set_timeout(uz_incrementalEncoder_t* self){
-    uz_assert(self->is_ready);
-    uint32_t speed_timeout = self->config.Speed_Timeout_s * self->config.ip_core_frequency_Hz;
-    uz_incrementalEncoder_hw_set_speed_timeout_value(self->config.base_address,speed_timeout);
-}
-
-static void set_offset(uz_incrementalEncoder_t* self){
-	 uz_assert(self->is_ready);
-	 uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
-	 uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
-}
-
-static void set_counting_direction(uz_incrementalEncoder_t* self){
-	 uz_assert(self->is_ready);
-	 uz_incrementalEncoder_hw_set_cw_ccw_direction(self->config.base_address, self->config.Counting_Direction);
-}
-
 void set_pi2_inc(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float pi2_inc=( (2.0f*UZ_PIf) /( (float)self->config.line_number_per_turn_mech * (float)QUADRATURE_FACTOR) ) * (float)self->config.drive_pole_pair;
     uz_incrementalEncoder_hw_set_pi2_inc(self->config.base_address,pi2_inc);
 }
 
 void set_fpga_timer(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float fpga_timer= (float)self->config.line_number_per_turn_mech/(2.0f*UZ_PIf* (float)self->config.ip_core_frequency_Hz);
-    fpga_timer=fpga_timer; // No Correction factor
+    fpga_timer=fpga_timer*2.0f; // Correction factor of 2 due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms(self->config.base_address,fpga_timer);
 }
 
 void set_inc_per_turn_mechanical(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uint32_t inc_per_turn=self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical(self->config.base_address,inc_per_turn);
 }
 
 void set_inc_per_turn_elec(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     if(self->use_theta_el){ // prevents division by zero if drive_pole_pair is 0 and thus theta_el is not used
         uint32_t inc_per_turn_el=(self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
@@ -176,6 +143,7 @@ void set_inc_per_turn_elec(uz_incrementalEncoder_t* self){
 }
 
 static void set_omega_per_over_sample(uz_incrementalEncoder_t* self){
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float omega_per_over_sample=self->config.OmegaPerOverSample_in_rpm*((2.0f*UZ_PIf)/60.0f);
     uz_incrementalEncoder_hw_set_omegaPerOverSample(self->config.base_address,omega_per_over_sample);

@@ -16,11 +16,11 @@
 #include <stdint.h>
 #include <math.h>
 #include "../include/encoder.h"
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "../IP_Cores/uz_incrementalEncoder_V26/uz_incrementalEncoder_V26.h"
 #include "xparameters.h"
 
 // Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
-static uz_incrementalEncoder_t* encoder_D5;
+static uz_incrementalEncoder_t_V26* encoder_D5;
 
 //----------------------------------------------------
 // INITIALIZE & SET THE ENCODER
@@ -30,32 +30,23 @@ static uz_incrementalEncoder_t* encoder_D5;
 #define IncEncoderLPF_freq 1000.0f
 
 void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber, uint32_t Mech_Offset, uint32_t Elec_Offset, float speed_timeout){
-	struct uz_incrementalEncoder_config encoder_D5_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_0_BASEADDR,
-		.ip_core_frequency_Hz=100000000U,
-		.line_number_per_turn_mech=(uint32_t)incrementalEncoderResolution,
-		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=(uint32_t)motorPolePairNumber,
-		.Encoder_mech_Offset = (uint32_t) Mech_Offset,
-		.Encoder_elec_Offset = (uint32_t) Elec_Offset,
+	struct uz_incrementalEncoder_config_V26 encoder_D5_config={
+		.base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_0_BASEADDR,
+		.ip_core_frequency_Hz = 50000000U,
+		.line_number_per_turn_mech = incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
+		.drive_pole_pair = motorPolePairNumber,
+		.Encoder_mech_Offset = Mech_Offset,
+		.Encoder_elec_Offset = Elec_Offset,
 		.Counting_Direction = CW_Counting,
 		.Speed_Timeout_s = speed_timeout
 	};
-	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
+	encoder_D5=uz_incrementalEncoder_init_V26(encoder_D5_config);
 }
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
-	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);
-	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(encoder_D5) * 60.0f / (2.0f*M_PI);
-
-	// My style to get all values for my system, only for testing-purpose!!! (R.Zipprich)
-	// Get RAW-Values
-	//data->av.theta_elec_M			= uz_incrementalEncoder_get_theta_el(encoder_D5_M);
-	//data->av.mechanicalPosition_M	= uz_incrementalEncoder_get_position(encoder_D5_M);
-	//data->av.theta_mech_M 			= 0.0;
-	//data->av.omega_mech_M 			= uz_incrementalEncoder_get_omega_mech(encoder_D5_M);
-	//data->av.mechanicalRotorSpeed_M = data->av.omega_mech_M * 60.0f / (2.0f*M_PI);
-	//data->av.omega_elec_M			= data->av.omega_mech_M * UZ_D5_MOTOR_POLE_PAIR_NUMBER_M;
+	data->av.theta_elec=uz_incrementalEncoder_get_theta_el_V26(encoder_D5);
+	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech_V26(encoder_D5) * 60.0f / (2.0f*M_PI);
 
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
@@ -63,4 +54,9 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
+}
+
+void update_encoder_offsets(uint32_t Mech_Offset, uint32_t Elec_Offset){
+	uz_incrementalEncoder_set_new_mechanical_Offset_V26(encoder_D5, Mech_Offset);
+	uz_incrementalEncoder_set_new_electrical_Offset_V26(encoder_D5, Elec_Offset);
 }

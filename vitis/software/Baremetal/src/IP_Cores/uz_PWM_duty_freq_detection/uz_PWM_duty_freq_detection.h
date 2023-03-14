@@ -16,10 +16,10 @@ typedef struct uz_PWM_duty_freq_detection_t uz_PWM_duty_freq_detection_t;
  * @param a Gradient
  * @param b Offset
  */
-typedef struct linear_interpolation_params_t{
+typedef struct linear_interpolation_parameters_t{
     float a;
     float b;
-} linear_interpolation_params_t;
+} linear_interpolation_parameters_t;
 
 /**
  * @brief Configuration struct for uz_PWM_duty_freq_detection
@@ -28,7 +28,7 @@ typedef struct linear_interpolation_params_t{
 struct uz_PWM_duty_freq_detection_config_t{
     uint32_t base_address;                                      /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_clk_frequency_Hz;                               /**< Clock frequency of the IP-Core */
-    linear_interpolation_params_t linear_interpolation_params;  /**< Parameters for linear interpolation of temperature measurement */
+    linear_interpolation_parameters_t linear_interpolation_parameters_t;  /**< Parameters for linear interpolation of temperature measurement */
 };
 
 /**

@@ -21,8 +21,8 @@ bool debug_output = false;
 struct uz_PWM_duty_freq_detection_config_t test_config = {
     .base_address = TEST_BASE_ADDRESS,
     .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-    .linear_interpolation_params.a = 162.35f,
-    .linear_interpolation_params.b = 20.107f      
+    .linear_interpolation_parameters_t.a = 162.35f,
+    .linear_interpolation_parameters_t.b = 20.107f      
 };
 
 struct uz_PWM_duty_freq_detection_outputs_t test_outputs = {
@@ -61,8 +61,8 @@ void test_uz_PWM_duty_freq_detection_init_with_zero_base_Address(void)
     struct uz_PWM_duty_freq_detection_config_t config={
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .linear_interpolation_params.a = 162.35f,
-        .linear_interpolation_params.b = 20.107f      
+        .linear_interpolation_parameters_t.a = 162.35f,
+        .linear_interpolation_parameters_t.b = 20.107f      
     };
     config.base_address = 0;
     TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(config, test_outputs));
@@ -73,8 +73,8 @@ void test_uz_PWM_duty_freq_detection_with_zero_ip_clk(void)
     struct uz_PWM_duty_freq_detection_config_t config={
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
-        .linear_interpolation_params.a = 162.35f,
-        .linear_interpolation_params.b = 20.107f      
+        .linear_interpolation_parameters_t.a = 162.35f,
+        .linear_interpolation_parameters_t.b = 20.107f      
     };
     config.ip_clk_frequency_Hz = 0;
     TEST_ASSERT_FAIL_ASSERT(uz_PWM_duty_freq_detection_init(config, test_outputs));

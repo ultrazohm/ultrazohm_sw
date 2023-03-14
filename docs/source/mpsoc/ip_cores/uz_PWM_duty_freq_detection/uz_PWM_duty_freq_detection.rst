@@ -17,7 +17,7 @@ Software driver
 
 .. doxygentypedef:: uz_PWM_duty_freq_detection_t
 
-.. doxygenstruct:: linear_interpolation_params_t
+.. doxygenstruct:: linear_interpolation_parameters_t
   :members:
 
 .. doxygenstruct:: uz_PWM_duty_freq_detection_config_t
@@ -56,8 +56,8 @@ Example for using the ip-core with the software driver
   struct uz_PWM_duty_freq_detection_config_t config = {
       .base_address = XPAR_UZ_PWMDUTYFREQDETECTION_BASEADDR,
       .ip_clk_frequency_Hz = 100000000,
-      .linear_interpolation_params.a = 162.35f,
-      .linear_interpolation_params.b = 20.107f      
+      .linear_interpolation_parameters_t.a = 162.35f,
+      .linear_interpolation_parameters_t.b = 20.107f      
   };
 
   // output struct

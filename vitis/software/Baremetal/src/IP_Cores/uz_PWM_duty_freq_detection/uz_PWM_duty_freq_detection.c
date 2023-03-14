@@ -45,8 +45,8 @@ float uz_PWM_duty_freq_detection_PWMdutyCycNormalized_to_DegreesCelsius(uz_PWM_d
     // local variables for readability in the return statement below
     float a;
     float b;
-    a = self->config.linear_interpolation_params.a;
-    b = self->config.linear_interpolation_params.b;
+    a = self->config.linear_interpolation_parameters_t.a;
+    b = self->config.linear_interpolation_parameters_t.b;
     // linear interpolation of duty cycle to temperature function
     return(dutyCycleNormalized*a+b);
 }

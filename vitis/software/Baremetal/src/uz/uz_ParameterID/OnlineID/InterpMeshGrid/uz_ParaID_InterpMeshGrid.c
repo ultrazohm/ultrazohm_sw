@@ -59,7 +59,7 @@ void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self) {
 void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float* psi_array_pointer) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	for (uint32_t i = 0U; i < sizeof(self->input.psi_array_in); i++) {
+	for (uint32_t i = 0U; i < (sizeof(self->input.psi_array_in)/sizeof(self->input.psi_array_in[0])); i++) {
 		self->input.psi_array_in[i] = psi_array_pointer[i];
 	}
 }

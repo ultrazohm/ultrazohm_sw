@@ -115,8 +115,8 @@ void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t
 	uz_CleanPsiArray_step(self->CleanPsiArray);
 	if (Data->OnlineID_Config.OnlineID_Reset == false) {
 		float* array_pointer = uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray);
-		for (uint32_t i = 0U; i < sizeof(self->input.cleaned_psi_array); i++) {			
-			self->input.cleaned_psi_array[0] = array_pointer[0];
+		for (uint32_t i = 0U; i < (sizeof(self->input.cleaned_psi_array)/sizeof(self->input.cleaned_psi_array[0])); i++) {
+			self->input.cleaned_psi_array[i] = array_pointer[i];
 		}
 	} else {
 		memcpy(self->input.cleaned_psi_array, self->output.OnlineID_output.psi_array, sizeof(self->input.cleaned_psi_array));

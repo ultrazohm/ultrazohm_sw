@@ -100,19 +100,19 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">7.11
+<td class="summaryTableSndColOddRow">9.1
 </td>
 </tr>
 <tr>
 <td>HDL Coder version
 </td>
-<td class="summaryTableSndColEvenRow">3.18
+<td class="summaryTableSndColEvenRow">3.20
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">25-May-2022 10:12:25
+<td class="summaryTableSndColOddRow">14-Mar-2023 13:55:35
 </td>
 </tr>
 <tr>
@@ -154,7 +154,7 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:130')">PWMin</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:203')">pwm_in</a>
 </td>
 <td>Inport
 </td>
@@ -168,7 +168,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:154')">AXI_period</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:228')">AXI_period</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -182,7 +182,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:155')">AXI_hightime</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:229')">AXI_hightime</a>
 </td>
 <td>Outport
 </td>
@@ -196,7 +196,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:156')">AXI_lowtime</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:230')">AXI_lowtime</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -210,7 +210,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:157')">AXI_dutycyc</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pwmdutyfreqdetection:231')">AXI_dutycyc</a>
 </td>
 <td>Outport
 </td>
@@ -263,7 +263,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2205251012
+<td>contains unique IP timestamp (yymmddHHMM): 2303141355
 </td>
 </tr>
 <tr>
@@ -349,7 +349,7 @@ This IP Core is generated for the Xilinx Vivado environment. The following steps
 <br/>
 4. In the Vivado project, find the generated IP core in the IP Catalog under category "HDL Coder Generated IP". In you have a Vivado block design open, you can add the generated IP into your block design.
 <br/>
-5. Connect the AXI4_Lite port of the IP core to the embedded processor's AXI master port.
+5. Connect the AXI4-Lite port of the IP core to the embedded processor's AXI master port.
 <br/>
 6. Connect the clock and reset ports of the IP core to the global clock and reset signals.
 <br/>
@@ -381,9 +381,9 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Rise_Positive.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\uz_pwmdutyfreqdetection_v1_0\hdl\vhdl\uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd')">hdl\vhdl\uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd</a>
 <br/>

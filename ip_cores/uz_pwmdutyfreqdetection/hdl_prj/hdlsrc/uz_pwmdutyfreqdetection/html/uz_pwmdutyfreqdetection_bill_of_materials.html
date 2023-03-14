@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pwmdutyfreqdetection
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-90
+163
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1832
+4137
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-13
+16
 </td>
 
 </tr>
@@ -263,7 +263,7 @@ Multipliers (13)
 <span name="Multiply_1_3" id="Multiply_1_3">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:169')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:216')" name="code2model" class="code2model">
 Product1
 </a>
 
@@ -284,13 +284,7 @@ Adders/Subtractors (20)
 <span name="Adder_1_1" id="Adder_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:143')" name="code2model" class="code2model">
-HDL Counter
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:166')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:219')" name="code2model" class="code2model">
 Sum1
 </a>
 
@@ -306,19 +300,19 @@ Sum1
 32x32-bit Subtractor 							: 3
 </span>
 <br /><h5>
-Registers (88)
+Registers (161)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 17
+1-bit Register 							: 18
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:160')" name="code2model" class="code2model">
-Delay7
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:210')" name="code2model" class="code2model">
+Delay15
 </a>
 
 </li>
@@ -330,24 +324,48 @@ Delay7
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 54
+32-bit Register 							: 126
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:143')" name="code2model" class="code2model">
-HDL Counter
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:214')" name="code2model" class="code2model">
+HDL Counter1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:135')" name="code2model" class="code2model">
-Delay2
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:211')" name="code2model" class="code2model">
+Delay9
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:168')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:206')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:205')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:207')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:208')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:209')" name="code2model" class="code2model">
 Delay14
 </a>
 
@@ -360,46 +378,28 @@ Delay14
 5-bit Register 							: 17
 </span>
 <br /><h5>
-Multiplexers (9)
+Multiplexers (12)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 3
+1-bit 2-to-1 Multiplexer 							: 4
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit 3-to-1 Multiplexer 							: 1
+32-bit 2-to-1 Multiplexer 							: 7
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:143')" name="code2model" class="code2model">
-HDL Counter
-</a>
-
-</li>
-
-</ul>
-
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
-[+]
-</span>
-<span style="font-family:monospace">
-32-bit 2-to-1 Multiplexer 							: 4
-</span>
-<span name="Multiplexer_1_3" id="Multiplexer_1_3">
-<ul>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:148')" name="code2model" class="code2model">
-Switch
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:220')" name="code2model" class="code2model">
+Switch10
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:149')" name="code2model" class="code2model">
-Switch1
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:221')" name="code2model" class="code2model">
+Switch11
 </a>
 
 </li>
@@ -446,8 +446,8 @@ reset: 1 bit
 clk_enable: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:130')" name="code2model" class="code2model">
-PWMin
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:203')" name="code2model" class="code2model">
+pwm_in
 </a>
 : 1 bit
 </li>
@@ -467,25 +467,25 @@ Number of Output Bits: 129
 ce_out: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:154')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:228')" name="code2model" class="code2model">
 AXI_period
 </a>
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:155')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:229')" name="code2model" class="code2model">
 AXI_hightime
 </a>
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:156')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:230')" name="code2model" class="code2model">
 AXI_lowtime
 </a>
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:157')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:231')" name="code2model" class="code2model">
 AXI_dutycyc
 </a>
 : 32 bits
@@ -495,9 +495,9 @@ AXI_dutycyc
 
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:141')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:213')" name="code2model" class="code2model">
 Detect Rise
-Positive
+Positive1
 </a>
 
 </h5>
@@ -514,9 +514,9 @@ Multiplexers (2)
 1-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:140')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pwmdutyfreqdetection:212')" name="code2model" class="code2model">
 Detect Fall
-Nonpositive
+Nonpositive1
 </a>
 
 </h5>

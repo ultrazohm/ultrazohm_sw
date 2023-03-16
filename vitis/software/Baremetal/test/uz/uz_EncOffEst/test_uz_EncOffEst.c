@@ -4,6 +4,12 @@
 
 #include "uz_EncOffEst.h"
 
+#include "mock_uz_SystemTime.h"
+#include "uz_filter_cumulativeavg.h"
+#include "globalData.h"
+#include "uz_Transformation.h"
+#include "uz_HAL.h"
+
 void setUp(void)
 {
 }

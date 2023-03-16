@@ -295,10 +295,6 @@ int32_t uz_resolverIP_readRegister(uz_resolverIP_t* self, int32_t addr){
 
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
-	uint8_t MSB = 128;
-    uz_assert(addr < 2*MSB);
-    uz_assert(addr >= 0);
-    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
 
     uz_resolverIP_setConfigMode(self);
 
@@ -310,11 +306,6 @@ void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t va
 
     uz_assert_not_NULL(self)
     uz_assert(self->is_ready);
-
-	uint8_t MSB = 128;
-    uz_assert(addr < 2*MSB);
-    uz_assert(addr >= 0);
-    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
     uz_assert(val <= 0xFF);
     uz_assert(val >= 0);
 

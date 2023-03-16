@@ -16,17 +16,17 @@
 
 #include "uz_resolverIP_hw.h"
 #include "uz_resolverIP_hwAddresses.h"
-
 #include "../../uz/uz_AXI.h"
-
 #include "../../uz/uz_HAL.h"
+
+// valid register address range according to datasheet of AD2S1210 p.21, table 10
+static int32_t REGISTER_ADDR_MIN = 0x80;
+static int32_t REGISTER_ADDR_MAX = 0xFF;
 
 //TO DO: see PR comment TS
 int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
-    uint8_t MSB = 128;
-    uz_assert(addr < 2*MSB);
-    uz_assert(addr >= 0);
-    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
+
+    uz_assert(addr >= REGISTER_ADDR_MIN && addr < REGISTER_ADDR_MAX);
     
     int32_t rescon = uz_resolverIP_hw_read_RESCON(base_address);
     rescon &= ~(RESCON_Data_uz_axi_RW_bit);
@@ -47,10 +47,8 @@ int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
 }
 
 void uz_resolverIP_hw_writeRegister(uint32_t base_address, int32_t addr, int32_t val){
-    uint8_t MSB = 128;
-    uz_assert(addr < 2*MSB);
-    uz_assert(addr >= 0);
-    uz_assert_not_zero((uint8_t)(addr) & MSB); // check for MSB == 1 in address
+    
+    uz_assert(addr >= REGISTER_ADDR_MIN && addr < REGISTER_ADDR_MAX);
     uz_assert(val <= 0xFF);
     uz_assert(val >= 0);
 

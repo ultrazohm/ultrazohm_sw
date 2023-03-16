@@ -13,10 +13,8 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include <stdio.h>
 #include "xparameters.h"
 #include "netif/xadapter.h"
-#include "xil_printf.h"
 
 //Includes for Ethernet
 #if LWIP_DHCP==1
@@ -31,6 +29,8 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+#include "uz/uz_PHY_reset/uz_phy_reset.h"
+
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -47,8 +47,8 @@ A53_Data Global_Data_A53;
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
 {
-	xil_printf(msg);
-	xil_printf("%d.%d.%d.%d\n\r", ip4_addr1(ip), ip4_addr2(ip),
+	uz_printf(msg);
+	uz_printf("%d.%d.%d.%d\n\r", ip4_addr1(ip), ip4_addr2(ip),
 			ip4_addr3(ip), ip4_addr4(ip));
 }
 
@@ -79,7 +79,7 @@ int main()
 	                DEFAULT_THREAD_PRIO);
 	vTaskStartScheduler();
 
-	xil_printf("APU: Error in scheduler");
+	uz_printf("APU: Error in scheduler");
 
 	return 0;
 }
@@ -112,8 +112,8 @@ void network_thread(void *p)
 
     netif = &server_netif;
 
-    xil_printf("\r\n\r\n");
-    xil_printf("APU: Network thread started\r\n");
+    uz_printf("\r\n\r\n");
+    uz_printf("APU: Network thread started\r\n");
 
 #if LWIP_IPV6==0
 #if LWIP_DHCP==0
@@ -139,7 +139,7 @@ void network_thread(void *p)
 
     /* Add network interface to the netif_list, and set it as default */
     if (!xemac_add(netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
-	xil_printf("APU: Error adding N/W interface\r\n");
+	uz_printf("APU: Error adding N/W interface\r\n");
 	return;
     }
 
@@ -154,7 +154,7 @@ void network_thread(void *p)
             DEFAULT_THREAD_PRIO);
 
 #if CAN_ACTIVE==1
-	xil_printf(" Init CAN \n\r"); //CAN interface
+	uz_printf(" Init CAN \n\r"); //CAN interface
 	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
 	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
 
@@ -178,7 +178,7 @@ void network_thread(void *p)
 				} else {
 
 					//hal_can_debug_print_frame(&can_frame_rx);
-					//xil_printf("received a not XCP related CAN frame \n\r");
+					//uz_printf("received a not XCP related CAN frame \n\r");
 				}
 				//usleep(1000 * 500);
 			}else{
@@ -201,12 +201,12 @@ void network_thread(void *p)
 		}
 	}
 #else
-    xil_printf("\r\n");
-    xil_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-    xil_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
+    uz_printf("\r\n");
+    uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
+    uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
     print_echo_app_header();
-    xil_printf("\r\n");
+    uz_printf("\r\n");
     sys_thread_new("echod", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
@@ -237,9 +237,10 @@ int main_thread()
 	int mscnt = 0;
 #endif
 
-#ifdef XPS_BOARD_ZCU102
-	IicPhyReset();
-#endif
+	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+
+	// reset phy
+	uz_phy_reset();
 
 	/* initialize lwIP before calling sys_thread_new */
     lwip_init();
@@ -261,10 +262,10 @@ int main_thread()
 
 	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		if (server_netif.ip_addr.addr) {
-			xil_printf("APU: DHCP request success\r\n");
+			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 			print_echo_app_header();
-			xil_printf("\r\n");
+			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
@@ -272,19 +273,19 @@ int main_thread()
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
 		if (mscnt >=1000) { // define timeout time here
-			xil_printf("APU: DHCP request timed out\r\n");
-			xil_printf("APU: Configuring default IP of 192.168.1.233\r\n");
+			uz_printf("APU: DHCP request timed out\r\n");
+			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
 			IP4_ADDR(&(server_netif.gw),  192, 168, 1, 1);
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 			/* print all application headers */
-			xil_printf("\r\n");
-			xil_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-			xil_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
+			uz_printf("\r\n");
+			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
+			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
 			print_echo_app_header();
-			xil_printf("\r\n");
+			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
@@ -308,7 +309,7 @@ int main_thread()
  *---------------------------------------------------------------------------*/
 void hal_can_debug_print_frame(can_frame_t *can_frame_p)
 {
-	xil_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
 			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
 }
 
@@ -328,7 +329,7 @@ void can_send_1(void)
 		tick =0;
 	}
 
-	//xil_printf("tick: 0x%02X \n\r", tick);
+	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
 	can_frame_t can_frame_tx;
@@ -356,7 +357,7 @@ void can_send_2(void)
 		tick =0;
 	}
 
-	//xil_printf("tick: 0x%02X \n\r", tick);
+	//uz_printf("tick: 0x%02X \n\r", tick);
 	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
 
 	can_frame_t can_frame_tx;

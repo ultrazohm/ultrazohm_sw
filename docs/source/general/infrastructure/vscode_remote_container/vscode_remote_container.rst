@@ -27,7 +27,7 @@ Setup
 
 The performance of using the remote container in VSCode on Windows is relatively slow. To speed this up significantly we will setup up the remote container and VSCode to run directly in the WSL2.
 
-.. note:: For Windows user this is highly recommended. Running VSCode on Windows all unit tests took over **10 minutes**. On Ubuntu it took **8.2 seconds**.
+.. note:: For Windows users, this is highly recommended. Running VSCode on Windows all unit tests took over **10 minutes**. On Ubuntu, it took **8.2 seconds**.
 
 
 #. Install the programs listed in the prerequisites.
@@ -104,7 +104,7 @@ Usage
     
     .. image:: open_vscode.png
 
-#. VSCode will start. A prompt will pop up asking, if the folder should be reopened in Container. Accept this.
+#. VSCode will start. A prompt will pop up asking if the folder should be reopened in Container. Accept this.
 
     .. image::  reopen_container.png
 
@@ -121,33 +121,18 @@ Usage
 .. note:: Sourcetree can not be natively installed in the Ubuntu distribution. The repository in the Ubuntu distro can be added to Sourctree. However, this is not advised since the performance is bad.
           It is recommended to either use the Ubuntu shell with the standard git-commands or the :ref:`git lense extension <vscode_remote_container_gitlense>`. 
 
-Podman instead of Docker
-------------------------
-
-Using remote container with Docker might lead to unwanted problems with file permissions on Linux and Docker runs as root by default.
-`Podman <https://github.com/containers/podman>`_ can be used as a rootless alternative to Docker.
-
-- `Podman installation <https://podman.io/getting-started/installation>`_
-- `VS Code documentation to use podman instead of Docker <https://code.visualstudio.com/docs/remote/containers>`_
-- To use, install Podman and write ``podman`` in the VS Code Setting ``Remote -> Container -> Docker Path``
-
-.. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
-
-.. _Gitpod_chapter:
-
-Alternative: Gitpod
+Known issues in WSL
 -------------------
 
-`Gitpod <https://gitpod.io>`_ can be used to start a VS Code workspace in the browser without any local installations required.
+.. note:: If you have issues with your git credentials in WSL, it is possible to link your WSL git installation to the windows git credential manager. As explained here: https://stackoverflow.com/questions/45925964/how-to-use-git-credential-store-on-wsl-ubuntu-on-windows Run this command in your wsl terminal.
 
-- `Open UltraZohm workspace in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_
-- Login with your Bitbucket account
-- The complete development environment as outlined in this document is automatically loaded (sphinx, ceedling)
-- Just click the link and start development
+    .. code-block:: console
 
-.. figure:: gitpod_preview.gif
+        git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-manager-core.exe"
+    
+    
+.. note:: On some machines the error ``error: RPC failed; curl 56 GnuTLS recv error (-24): Decryption has failed`` appears during ``git clone`` when connected via WiFi. This can be related to an out-of-date wifi driver https://github.com/microsoft/WSL/issues/4253#issuecomment-799902628. If updating the driver does not solve the issue, try to connect via VPN or LAN as a workaround. 
 
-  Open repository in Gitpod workspace.
 
 Usage
 *****
@@ -174,7 +159,7 @@ In VS Code:
 - ``cd docs``
 - ``make livehtml``
 - A new browser window opens with a live preview of the documentation opens
-- If you change the documentation an save, the live preview rebuilds automatically
+- If you change the documentation and save it, the live preview rebuilds automatically
 - Alternative: use ``make clean html`` to build manually
 
 .. figure:: container_livehtml.gif
@@ -195,3 +180,35 @@ VS Code features a git extension (`gitlens <https://marketplace.visualstudio.com
 .. figure:: container_gitlense.gif
 
   Use gitlense to inspect commits on a file
+
+
+Alternatives 
+************
+
+Podman instead of Docker
+------------------------
+
+Using the remote container with Docker might lead to unwanted problems with file permissions on Linux and Docker runs as root by default.
+`Podman <https://github.com/containers/podman>`_ can be used as a rootless alternative to Docker.
+
+- `Podman installation <https://podman.io/getting-started/installation>`_
+- `VS Code documentation to use podman instead of Docker <https://code.visualstudio.com/docs/remote/containers>`_
+- To use, install Podman and write ``podman`` in the VS Code Setting ``Remote -> Container -> Docker Path``
+
+.. note:: It might be possible to use Podman with WSL2 on Windows, yet this is not tested. See https://www.redhat.com/sysadmin/podman-windows-wsl2 
+
+.. _Gitpod_chapter:
+
+Cloud solution: Gitpod
+----------------------
+
+`Gitpod <https://gitpod.io>`_ can be used to start a VS Code workspace in the browser without any local installations required.
+
+- `Open UltraZohm workspace in Gitpod <https://gitpod.io/#https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_
+- Login with your Bitbucket account
+- The complete development environment as outlined in this document is automatically loaded (sphinx, ceedling)
+- Just click the link and start development
+
+.. figure:: gitpod_preview.gif
+
+  Open repository in Gitpod workspace.

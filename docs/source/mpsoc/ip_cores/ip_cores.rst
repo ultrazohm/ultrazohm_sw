@@ -20,6 +20,12 @@ IP Cores
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1
     uz_pmsmModel/uz_pmsmModel
+    uz_inverter_3ph/uz_inverter_3ph
     uz_dataMover/uz_dataMover
     uz_dq_transformation/uz_dq_transformation
+    uz_mlp_three_layer/uz_mlp_three_layer
+    uz_dac_interface/uz_dac_interface
+    uz_rs_flip_flop/uz_rs_flip_flop
+    uz_inverter_adapter/uz_inverter_adapter
+    uz_cil_pmsm/uz_cil_pmsm
     uz_resolverIP/uz_resolverIP

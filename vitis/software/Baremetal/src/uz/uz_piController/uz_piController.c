@@ -27,12 +27,15 @@ struct uz_PI_Controller {
 	bool is_ready;
 	bool internal_clamping;
 	float I_sum;
+	float preIntegrator;
 	struct uz_PI_Controller_config config;
 };
 
-static size_t instances_counter_PI_Controller = 0;
+static uint32_t instances_counter_PI_Controller = 0;
 static uz_PI_Controller instances_PI_Controller[UZ_PI_CONTROLLER_MAX_INSTANCES] = { 0 };
 static uz_PI_Controller* uz_PI_Controller_allocation(void);
+static float uz_PI_Controller_parallel_calculation(uz_PI_Controller* self, float error);
+static float uz_PI_Controller_ideal_calculation(uz_PI_Controller* self, float error);
 
 static uz_PI_Controller* uz_PI_Controller_allocation(void) {
 	uz_assert(instances_counter_PI_Controller < UZ_PI_CONTROLLER_MAX_INSTANCES);
@@ -50,6 +53,7 @@ uz_PI_Controller* uz_PI_Controller_init(struct uz_PI_Controller_config config) {
     uz_assert(config.samplingTime_sec > 0.0f);
     uz_assert(config.upper_limit > config.lower_limit);
 	uz_assert(config.lower_limit < config.upper_limit);
+	uz_assert(config.type <= 1);//Asserts if neither parallel=0 nor ideal=1 has been selected
 	self->config = config;
 	return (self);
 }
@@ -71,21 +75,22 @@ float uz_PI_Controller_sample(uz_PI_Controller* self, float referenceValue, floa
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	float error = referenceValue - actualValue;
-	float old_I_sum = self->I_sum;
-	float preIntegrator = error * self->config.Ki;
-	float P_sum = error * self->config.Kp;
-	float output_before_saturation = old_I_sum + P_sum;
-	self->internal_clamping = uz_PI_Controller_Clamping_Circuit(preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
+	float output_before_saturation = 0.0f;
+	if (self->config.type == parallel) {
+		output_before_saturation = uz_PI_Controller_parallel_calculation(self, error);
+	} else {
+		output_before_saturation = uz_PI_Controller_ideal_calculation(self, error);
+	}
+	self->internal_clamping = uz_PI_Controller_Clamping_Circuit(self->preIntegrator, output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	bool clamping_active=(ext_clamping == true) || (self->internal_clamping == true); // clamping is active if internal clamping or external clamping is true
 	if ( clamping_active ) {
 		self->I_sum += 0.0f;
 	} else {
-		self->I_sum += preIntegrator * self->config.samplingTime_sec;
+		self->I_sum += self->preIntegrator * self->config.samplingTime_sec;
 	}
 	float output = uz_signals_saturation(output_before_saturation, self->config.upper_limit, self->config.lower_limit);
 	return (output);
 }
-
 
 void uz_PI_Controller_reset(uz_PI_Controller* self){
     uz_assert_not_NULL(self);
@@ -116,4 +121,23 @@ void uz_PI_Controller_update_limits(uz_PI_Controller* self, float upper_limit, f
 	self->config.upper_limit = upper_limit;
 	self->config.lower_limit = lower_limit;
 }
+
+static float uz_PI_Controller_parallel_calculation(uz_PI_Controller* self, float error) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	float old_I_sum = self->I_sum;
+	float P_sum = error * self->config.Kp;
+	self->preIntegrator = error * self->config.Ki;
+	return(old_I_sum + P_sum);
+}
+
+static float uz_PI_Controller_ideal_calculation(uz_PI_Controller* self, float error) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	float old_I_sum = self->I_sum;
+	float P_sum = error * self->config.Kp;
+	self->preIntegrator = self->config.Ki * P_sum;
+	return(old_I_sum + P_sum);
+}
+
 #endif

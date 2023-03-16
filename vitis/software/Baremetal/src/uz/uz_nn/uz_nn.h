@@ -3,7 +3,7 @@
 #include "uz_nn_layer.h"
 
 /**
- * @brief Arbitrarily defined maximum number of layers for the module. Affect alls instances of the module.
+ * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
  * 
  */
 #define UZ_NN_MAX_LAYER 10U
@@ -22,7 +22,7 @@ typedef struct uz_nn_t uz_nn_t;
  * @param number_of_layer Number of layers including hidden layer and output layer (but not input layer)
  * @return uz_nn_t* 
  */
-uz_nn_t* uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], size_t number_of_layer);
+uz_nn_t* uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer);
 
 /**
  * @brief Calculates one forward pass of the neural network.
@@ -40,5 +40,10 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  */
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 
+uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, uint32_t layer);
+uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, uint32_t layer);
+uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
+uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
+uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
 
 #endif // UZ_NN_H

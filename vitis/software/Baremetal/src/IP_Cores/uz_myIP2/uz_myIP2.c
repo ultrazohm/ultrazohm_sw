@@ -11,7 +11,7 @@ struct uz_myIP2_t
     struct uz_myIP2_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_myIP2_t instances[UZ_MYIP2_MAX_INSTANCES] = {0};
 
 static uz_myIP2_t *uz_myIP2_allocation(void);

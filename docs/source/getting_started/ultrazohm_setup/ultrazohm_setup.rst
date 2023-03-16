@@ -10,11 +10,11 @@ UltraZohm Setup
 Requirements
 ************
 
-- Installed Xilinx Toolchain (Vivado and Vitis)
+- Installed Xilinx toolchain (Vivado and Vitis)
 - Installed Java 
-- Vivado License
+- Vivado license
 - Installed git
-- Bitbucket Account
+- Bitbucket account
 - (Optional) Sourcetree
 
 Aim
@@ -91,14 +91,14 @@ Generate Bitstream
 
 - Click on ``Generate Bitstream``
 - Click ``Yes`` to launch synthesis and implementation
-- Choose the number of CPU-Jobs which are used by Vivado
-- Launch the run by clicking ``Ok``
+- Choose the number of CPU jobs/cores that should be used by Vivado (leave a few unused, e.g., for your OS etc.)
+- Launch the run(s) by clicking ``Ok``
 - The bitstream is generated. This takes **20 to 60 minutes**, depending on your PC!
 - Open the implemented design after the bitstream generation is completed
 
 .. note::
 
-  More CPU-Jobs decrease the time Vivado needs to generate the bitstream. However, Vivado requires more RAM for a higher number of jobs. If you run out of RAM and your OS writes to the disc (paging file or swap), decrease the number of jobs!
+  More CPU jobs decrease the time Vivado needs to generate the bitstream. However, Vivado requires more RAM for a higher number of jobs. If you run out of RAM and your OS writes to the disk (paging file or swap), decrease the number of jobs!
 
 
 .. image:: ./img_gen_bitstream/1_gen_bitstream.png
@@ -173,7 +173,7 @@ Generate the Vitis workspace
 
 - Check that the configuration file matches your setup (see :ref:`global_configuration` for details)
 
-.. important:: You probably have to adjust the UltraZohm version in uz_global_configuration.h by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``,...)
+.. important:: You probably have to adjust the UltraZohm version in uz_global_configuration.h by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``, ...)
 
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace
@@ -193,9 +193,9 @@ Generate the Vitis workspace
 
 .. image:: ./img_vitis_import/2_workspace.png
 
-.. image:: ./img_vitis_import/3_show_view.png
-
 .. image:: ./img_vitis_import/4_xstc_console.png
+
+.. note:: If the XSCT console is still not visible, press the *restore* button.
 
 .. image:: ./img_vitis_import/5_build_workspace.png
 
@@ -208,8 +208,8 @@ Physical Setup of the UltraZohm
 - Connect the UltraZohm to the grid
 - Connect the Ethernet to your PC
 - Connect the USB (JTAG) to your PC
-- For UltraZohm :ref:`carrier_board_rev3`: plug an external stop or the external stop dummy into the front plane
-- For UltraZohm :ref:`carrier_board_rev4`: external stop / dummy is not required
+- For UltraZohm :ref:`carrier_board_rev3`: Plug an external stop or the external stop dummy into the front panel
+- For UltraZohm :ref:`carrier_board_rev4`: An external stop / dummy is not required
 - Turn on the UltraZohm
 - All four LEDs are turned on
 
@@ -218,7 +218,7 @@ Physical Setup of the UltraZohm
 Program (Debug)
 ***************
 
-- Click on the red-marked windows to see the design view in Vivado
+- Click on the red-marked windows to see the design perspective in Vitis
 - Click the arrow next to the debug-icon and choose ``Debug Configurations``
 - Choose ``Debug_FreeRTOS_Baremetal_FPGA``
 - Click on ``Debug``

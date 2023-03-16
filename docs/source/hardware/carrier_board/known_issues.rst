@@ -5,6 +5,43 @@ Known issues
 ============
 
 
+Ethernet PHY Reset pins
+-----------------------
+**Problem description**
+
+The Ethernet PHYs (one or two, dependant on the HW version) own a reset pin ``RESETn`` which should be toggled by an GPIO after power-up. Due to a design mistake, those 
+``RESETn`` pins were not connected to any GPIO. Therefore, on some UltraZohm systems the PHYs might end up in an undefined state after power-up und not reachable via ethernet connection.
+
+**Remedy**
+
+Hardware revision ``Rev04`` (two PHYs):
+Replace resistors ``R210`` and ``R230`` with a 10kOhm resistor (package 0603).
+
+Hardware revision ``< Rev04`` (one PHY):
+Replace resistor ``R210`` with a 10kOhm resistor (package 0603).
+
+Solder some proper jumper wires to the pads of the resistors as shown below and wrap them around the edge of the carrier board to the bottom side.
+
+.. image:: pictures/PHYfixResistors.png
+   :width: 800
+
+.. image:: pictures/PHYfixTOP.png
+   :width: 800
+
+Next, attach them to the respective pads of X9 as shown below.
+
+.. image:: pictures/PHYfixMIOs.png
+   :width: 600
+
+.. image:: pictures/PHYfixBOT.png
+   :width: 600
+
+A proper software driver for toggeling the PHY reset pins is shipped by default with ultrazohm_sw ``v1.0.2`` and newer.
+
+This issues is present in version ``1v5`` to ``Rev04`` and is resolved in revisions newer than that. 
+For further technical details, see `Carrier Board Issue 122 <https://bitbucket.org/ultrazohm/ultrazohm_carrierboard/issues/122/gpio-to-toggle-phy-reset-might-solve-phy>`_
+
+
 Manual Reset (MR) pin
 ---------------------
 **Problem description**

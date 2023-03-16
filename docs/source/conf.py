@@ -38,6 +38,7 @@ extensions = [
     'sphinx_issues',
     'sphinx_copybutton',
     'sphinxcontrib.tikz',
+    'sphinx.ext.mathjax',
     'breathe'
 ]
 tikz_proc_suite='GhostScript'
@@ -70,6 +71,10 @@ exclude_patterns = [
 #
 html_theme = 'sphinx_rtd_theme'
 
+# Not sure if required, used for math equation numbering on the right according to https://stackoverflow.com/questions/14110790/numbered-math-equations-in-restructuredtext/52509369#52509369
+def setup(app):
+    app.add_css_file('css/custom.css')
+    
 # The RTD theme is included in custom.css
 html_style = 'css/custom.css'
 
@@ -94,7 +99,7 @@ html_context = {
     "conf_py_path": "/docs/source/", # Path in the checkout to the docs root
 }
 
-html_favicon = 'favicon.png'
+html_favicon = 'favicon.svg'
 
 # -- RST settings ------------------------------------------------------------
 
@@ -116,6 +121,17 @@ rst_prolog = """
 
 # enables numbered figures
 numfig = True
+# For numbering equations directly with sphinx
+# https://stackoverflow.com/questions/50631942/how-does-equation-numbering-work-for-sphinx
+math_numfig = True
+numfig_secnum_depth = 2
+math_eqref_format = "Eq.{number}"
+
+# For Mathjax rendering instead of picture, according to 
+mathjax_config = {
+    'TeX': {'equationNumbers': {'autoNumber': 'AMS', 'useLabelIds': True}},
+}
+mathjax_path="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
 # https://github.com/michaeljones/breathe/issues/696
 nitpick_ignore = [

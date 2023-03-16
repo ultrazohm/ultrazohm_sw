@@ -27,7 +27,7 @@ struct uz_pmsmModel_t
     struct uz_pmsmModel_config_t config;
 };
 
-static size_t instance_counter = 0U;
+static uint32_t instance_counter = 0U;
 static uz_pmsmModel_t instances[UZ_PMSMMODEL_MAX_INSTANCES] = {0};
 
 static uz_pmsmModel_t *uz_pmsmModel_allocation(void);

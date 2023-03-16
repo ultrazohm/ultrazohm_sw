@@ -1,0 +1,9 @@
+vlib work
+vcom  uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection_pkg.vhd
+vcom  uz_pwmdutyfreqdetection_src_Detect_Fall_Nonpositive1.vhd
+vcom  uz_pwmdutyfreqdetection_src_Detect_Rise_Positive1.vhd
+vcom  uz_pwmdutyfreqdetection_src_NewtonPolynomialIVStage.vhd
+vcom  uz_pwmdutyfreqdetection_src_Reciprocal_iv.vhd
+vcom  uz_pwmdutyfreqdetection_src_Reciprocal_core.vhd
+vcom  uz_pwmdutyfreqdetection_src_Reciprocal.vhd
+vcom  uz_pwmdutyfreqdetection_src_uz_pwmdutyfreqdetection.vhd

@@ -28,4 +28,5 @@ IP Cores
     uz_rs_flip_flop/uz_rs_flip_flop
     uz_inverter_adapter/uz_inverter_adapter
     uz_cil_pmsm/uz_cil_pmsm
+    uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection    
     uz_resolverIP/uz_resolverIP

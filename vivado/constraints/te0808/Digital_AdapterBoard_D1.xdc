@@ -21,31 +21,31 @@ set_property PACKAGE_PIN AJ11  [get_ports Dig_04_Ch1]
 #Digital_06_Ch1 = B64_L5_N                    
 set_property PACKAGE_PIN AK11  [get_ports Dig_05_Ch1]
 ##Digital_07_Ch1 = B65_L10_N                  
-#set_property PACKAGE_PIN AA7  [get_ports Dig_06_Ch1]
+set_property PACKAGE_PIN AA7  [get_ports Dig_06_Ch1]
 ##Digital_08_Ch1 = B65_L10_P]                 
-#set_property PACKAGE_PIN AA8  [get_ports Dig_07_Ch1]
+set_property PACKAGE_PIN AA8  [get_ports Dig_07_Ch1]
 ##Digital_09_Ch1 = B65_L9_N                   
-#set_property PACKAGE_PIN AE9  [get_ports Dig_08_Ch1]
+set_property PACKAGE_PIN AE9  [get_ports Dig_08_Ch1]
 ##Digital_10_Ch1 = B65_L9_P                   
-#set_property PACKAGE_PIN AD9  [get_ports Dig_09_Ch1]
+set_property PACKAGE_PIN AD9  [get_ports Dig_09_Ch1]
 ##Digital_11_Ch1 = B65_L4_N                   
-#set_property PACKAGE_PIN AD11 [get_ports Dig_10_Ch1]
+set_property PACKAGE_PIN AD11 [get_ports Dig_10_Ch1]
 ##Digital_12_Ch1 = B65_L4_P                   
-#set_property PACKAGE_PIN AC11 [get_ports Dig_11_Ch1]
+set_property PACKAGE_PIN AC11 [get_ports Dig_11_Ch1]
 ##Digital_13_Ch1 = B65_L14_N                  
-#set_property PACKAGE_PIN AD6  [get_ports Dig_12_Ch1]
+set_property PACKAGE_PIN AD6  [get_ports Dig_12_Ch1]
 ##Digital_14_Ch1 = B65_L14_P                  
-#set_property PACKAGE_PIN AC6  [get_ports Dig_13_Ch1]
+set_property PACKAGE_PIN AC6  [get_ports Dig_13_Ch1]
 ##Digital_15_Ch1 = B65_L8_P                   
-#set_property PACKAGE_PIN AD10 [get_ports Dig_14_Ch1]
+set_property PACKAGE_PIN AD10 [get_ports Dig_14_Ch1]
 ##Digital_16_Ch1 = B65_L8_N                   
-#set_property PACKAGE_PIN AE10 [get_ports Dig_15_Ch1]
+set_property PACKAGE_PIN AE10 [get_ports Dig_15_Ch1]
 ##Digital_17_Ch1 = B65_L2_N                   
-#set_property PACKAGE_PIN AF13 [get_ports Dig_16_Ch1]
+set_property PACKAGE_PIN AF13 [get_ports Dig_16_Ch1]
 ##Digital_18_Ch1 = 65_L2_P                    
-#set_property PACKAGE_PIN AE13 [get_ports Dig_17_Ch1]
+set_property PACKAGE_PIN AE13 [get_ports Dig_17_Ch1]
 ##Digital_19_Ch1 = B65_L3_N                   
-#set_property PACKAGE_PIN AE12 [get_ports Dig_18_Ch1]
+set_property PACKAGE_PIN AE12 [get_ports Dig_18_Ch1]
 #Digital_20_Ch1 = B65_L3_P                    
 set_property PACKAGE_PIN AD12  [get_ports Dig_19_Ch1]
 #Digital_21_Ch1 = B65_L1_P                    
@@ -74,34 +74,4 @@ set_property PACKAGE_PIN AA6   [get_ports Dig_29_Ch1]
 ##Set voltage level
 ##Set Pin in CMOS Mode for single-ended Signal
 
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_00_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_01_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_02_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_03_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_04_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_05_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_06_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_07_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_08_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_09_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_10_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_11_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_12_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_13_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_14_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_15_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_16_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_17_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_18_Ch1]
-#set_property IOSTANDARD LVCMOS18 [get_ports Dig_19_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_20_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_21_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_22_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_23_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_24_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_25_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_26_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_27_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_28_Ch1]
-set_property IOSTANDARD LVCMOS18 [get_ports Dig_29_Ch1]
-
+set_property IOSTANDARD LVCMOS18 [get_ports Dig*]

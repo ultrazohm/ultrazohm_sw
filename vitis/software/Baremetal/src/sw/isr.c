@@ -51,8 +51,10 @@ XTmrCtr Timer_Interrupt;
 extern DS_Data Global_Data;
 
 // omega and theta
-float theta = 0;
 float omega_el_rad_per_sec = 0.0f;
+
+volatile bool test = false;
+float time = 0.0f;
 
 //ParaID
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
@@ -60,10 +62,8 @@ extern uz_ParameterID_Data_t ParaID_Data;
 extern uz_ParameterID_6ph_t* ParameterID;
 uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //Next lines only needed, if the uz_FOC is used as the controller
-#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
-extern uz_SpeedControl_t* SpeedControl_instance;
-uz_6ph_dq_t ParaID_v_dq = { 0 };
 struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
+uz_3ph_alphabeta_t voltage_stationary_xy = {0};
 //RaraID end
 
 
@@ -73,18 +73,9 @@ struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
 
-uz_3ph_alphabeta_t m_alphabeta_currents = {0};
-uz_3ph_dq_t m_dq_currents = {0};
-
-uz_3ph_abc_t ref_volage_phase_set1 = {0};
-uz_3ph_abc_t ref_volage_phase_set2 = {0};
 
 
 // Inverter, PWM etc.:
-
-struct uz_DutyCycle_t dutyCycles_set1 = {0};
-struct uz_DutyCycle_t dutyCycles_set2 = {0};
-
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;
 extern struct uz_d_gan_inverter_t* gan_inverter_D4;
 
@@ -105,13 +96,6 @@ extern uz_resonantController_t* res_instance_1;
 extern uz_resonantController_t* res_instance_2;
 uz_6ph_dq_t controller_out = {0};
 
-// rotate xy
-uz_3ph_alphabeta_t actual_xy_stationary = {0};
-uz_3ph_dq_t actual_xy_rotating = {0};
-uz_3ph_alphabeta_t voltage_stationary_xy = {0};
-
-//setp test
-uz_3ph_dq_t setp_temp = {0};
 
 float temp_theta_off = -0.78f;
 
@@ -126,6 +110,8 @@ static void ReadAllADC();
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+
+
 
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -147,12 +133,6 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;// ParaID_Data.ElectricalID_Output->thetaOffset;
 	//ParaID ende
-
-
-	//rotate xy
-	actual_xy_stationary.alpha =  ParaID_Data.ActualValues.i_dq_6ph.x;
-	actual_xy_stationary.beta =  ParaID_Data.ActualValues.i_dq_6ph.y;
-	actual_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(actual_xy_stationary, -1.0f*ParaID_Data.ActualValues.theta_el);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,36 +192,6 @@ void ISR_Control(void *data)
 
 		uz_assert(0);
 	}
-
-
-	//write phase currents into global_data-struct
-	Global_Data.av.I_U = m_6ph_abc_currents.a1;
-	Global_Data.av.I_V = m_6ph_abc_currents.b1;
-	Global_Data.av.I_W = m_6ph_abc_currents.c1;
-	Global_Data.av.I_X = m_6ph_abc_currents.a2;
-	Global_Data.av.I_Y = m_6ph_abc_currents.b2;
-	Global_Data.av.I_Z = m_6ph_abc_currents.c2;
-
-
-	// VSD-Transform of currents:
-	//Transform phase-currents to alpha-beta-x-y-z1-z2 and write to global_data-struct
-	m_6ph_alphabeta_currents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(m_6ph_abc_currents);
-
-	Global_Data.av.I_alpha = m_6ph_alphabeta_currents.alpha;
-	Global_Data.av.I_beta = m_6ph_alphabeta_currents.beta;
-	Global_Data.av.I_x = m_6ph_alphabeta_currents.x;
-	Global_Data.av.I_y = m_6ph_alphabeta_currents.y;
-	Global_Data.av.I_z1 = m_6ph_alphabeta_currents.z1;
-	Global_Data.av.I_z2 = m_6ph_alphabeta_currents.z2;
-
-	//calculate meassured dq-currents
-	m_alphabeta_currents.alpha = m_6ph_alphabeta_currents.alpha;
-	m_alphabeta_currents.beta = m_6ph_alphabeta_currents.beta;
-	m_dq_currents = uz_transformation_3ph_alphabeta_to_dq(m_alphabeta_currents, Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-
-	Global_Data.av.I_d = m_dq_currents.d;
-	Global_Data.av.I_q = m_dq_currents.q;
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

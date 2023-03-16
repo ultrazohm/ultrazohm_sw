@@ -93,12 +93,18 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         static uz_6ph_dq_t out = {0};
 
     // Splitting up the six-phase struct to subsystem structs
-        // actual stationary 2nd reference frame
+        // actual stationary xy system
         uz_3ph_alphabeta_t actual_xy_stationary = {
             .alpha = Data->ActualValues.i_dq_6ph.x,
             .beta = Data->ActualValues.i_dq_6ph.y};
-        // actual rotating 2nd reference frame
+        // actual rotating xy system
         uz_3ph_dq_t actual_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(actual_xy_stationary, -1.0f*Data->ActualValues.theta_el);
+        // actual stationary zero system 
+        uz_3ph_alphabeta_t actual_zero_stationary = {
+            .alpha = Data->ActualValues.i_abc_6ph.a1,
+            .beta = Data->ActualValues.i_abc_6ph.a2};
+        // actual rotating zero system 
+        uz_3ph_dq_t actual_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(actual_zero_stationary, 3.0f*Data->ActualValues.theta_el);
 
     // calculate resonant controller gains
         static uint16_t initialized_controllers = 0U;
@@ -108,10 +114,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
     {
         case 1: // control alpha beta system
         {
-            uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-            uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, actual_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-
-            // update resonant controller gain and harmonic order if it is not correct yet
+            // update controllers if it was not done yet
             if(initialized_controllers != 1U)
             {
                 printf("\nIdentify Psi dq\ni_d,i_q,psi_d,psi_q\n");
@@ -120,6 +123,11 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
                 initialized_controllers = 1U;
             }
+
+            // step PI controller
+            uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, actual_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            
             // assign to output
             out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
             out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
@@ -128,12 +136,9 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             out.y = cc_out_xy_stationary.beta;
             break;
         }
-        case 2: // control x y system
+        case 2: // control xy system
         {
-            uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-            uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, actual_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-
-            // update resonant controller gain and harmonic order if it is not correct yet
+            // update controllers if it was not done yet
             if(initialized_controllers != 2U)
             {
                 printf("\nIdentify Psi xy\ni_d,i_q,psi_d,psi_q\n");
@@ -142,6 +147,11 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
                 initialized_controllers = 2U;
             }
+
+            // step PI controller
+            uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, actual_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+
             // assign to output
             out.d = cc_out_ab_rotating.d;
             out.q = cc_out_ab_rotating.q;
@@ -150,6 +160,29 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
             out.x = cc_out_xy_stationary.alpha;
             out.y = cc_out_xy_stationary.beta;
+            break;
+        }
+        case 3: // control zero system
+        {
+            // update controllers if it was not done yet
+            if(initialized_controllers != 3U)
+            {
+                printf("\nIdentify Psi zero\ni_d,i_q,psi_d,psi_q\n");
+                uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
+                uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
+                uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
+                initialized_controllers = 3U;
+            }
+
+            // step PI controller
+            uz_3ph_dq_t cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->zero_i_dq_PI_ref, actual_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+
+            // assign to output
+            cc_out_zero_rotating.d = uz_resonantController_step(resonant_1, 0.0f, actual_zero_rotating.d, Data->ActualValues.omega_el);
+            cc_out_zero_rotating.q = uz_resonantController_step(resonant_2, 0.0f, actual_zero_rotating.q, Data->ActualValues.omega_el);
+            uz_3ph_alphabeta_t cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
+            out.z1 = cc_out_zero_stationary.alpha;
+            out.z2 = cc_out_zero_stationary.beta;
             break;
         }
         default:

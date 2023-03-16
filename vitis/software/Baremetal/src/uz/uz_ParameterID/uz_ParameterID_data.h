@@ -43,6 +43,7 @@ typedef struct {
   uz_3ph_dq_t v_dq; /**< measured dq currents */
   uz_6ph_abc_t v_abc_6ph; /**< measured six-phase voltages */
   uz_6ph_abc_t i_abc_6ph; /**< measured six-phase currents */
+  uz_3ph_dq_t v_dq_zero; /**< measured dq currents */
   uz_6ph_dq_t i_dq_6ph; /**< measured dq voltages */
   uz_6ph_dq_t v_dq_6ph; /**< measured dq currents */
   real32_T omega_m; /**< measured mechanical omega */
@@ -211,6 +212,7 @@ typedef struct {
   uint16_T selected_subsystem;
   uz_3ph_dq_t ab_i_dq_PI_ref;
   uz_3ph_dq_t xy_i_dq_PI_ref;
+  uz_3ph_dq_t zero_i_dq_PI_ref;
   boolean_T finished_calculation;
   real32_T psi_array[4];
   } uz_ParaID_FluxMapID_extended_controller_output_t;

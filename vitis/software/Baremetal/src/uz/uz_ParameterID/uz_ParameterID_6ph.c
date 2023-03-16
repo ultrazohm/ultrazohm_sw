@@ -184,6 +184,7 @@ static void uz_ParaID_6ph_AutoRefCurrents_step(uz_ParameterID_6ph_t* self, uz_Pa
 
 struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts) {
 	uz_assert_not_NULL(Data);
+	uz_6ph_abc_t V_abc_Volts = {0};
 	struct uz_DutyCycle_2x3ph_t output_DutyCycle = { 0 };
     if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
 		output_DutyCycle.system1.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
@@ -192,9 +193,16 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle.system2.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_a2;
 		output_DutyCycle.system2.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_b2;
 		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
+	else if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 3){
+		V_abc_Volts.a1 = 3.0f/2.0f*v_dq_Volts.z1;
+		V_abc_Volts.c1 = -V_abc_Volts.a1;
+		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
+		V_abc_Volts.c2 = -V_abc_Volts.a2;
+		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
+	}
 	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem >= 1) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
-		uz_6ph_abc_t V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
+		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	} else {
 		output_DutyCycle.system1.DutyCycle_A = 0.0f;

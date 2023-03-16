@@ -71,6 +71,32 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
+            struct uz_PMSM_t config_PMSM = {
+            		.Ld_Henry = 0.0003f,
+					.Lq_Henry = 0.0003f,
+					.Psi_PM_Vs = 0.0075f
+            };//these parameters are only needed if linear decoupling is selected
+            struct uz_PI_Controller_config config_id = {
+            		.Kp = 0.369f,
+					.Ki = 162.47f,
+					.samplingTime_sec = 0.00005f,
+					.upper_limit = 10.0f,
+					.lower_limit = -10.0f
+            };
+            struct uz_PI_Controller_config config_iq = {
+            		.Kp = 0.369f,
+					.Ki = 162.47f,
+					.samplingTime_sec = 0.00005f,
+					.upper_limit = 10.0f,
+					.lower_limit = -10.0f
+            };
+            struct uz_FOC_config config_FOC = {
+            		.decoupling_select = linear_decoupling,
+					.config_PMSM = config_PMSM,
+					.config_id = config_id,
+					.config_iq = config_iq
+            };
+            Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -88,6 +114,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

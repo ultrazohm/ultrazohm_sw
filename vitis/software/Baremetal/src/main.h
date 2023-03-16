@@ -53,7 +53,9 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+#include "uz/uz_FOC/uz_FOC.h"
 
 //----------------------------------------------------
 // FUNCTIONS

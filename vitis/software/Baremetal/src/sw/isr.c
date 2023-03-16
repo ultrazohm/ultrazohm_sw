@@ -40,7 +40,14 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+struct uz_3ph_abc_t i_abc_actual_Ampere = {0};
+struct uz_3ph_abc_t v_abc_actualVolts = {0};
+struct uz_3ph_dq_t i_dq_actual_Ampere = {0};
+struct uz_3ph_dq_t i_reference_Ampere = {0};
+struct uz_3ph_dq_t v_dq_actual_Volts = {0};
+struct uz_3ph_abc_t v_abc_Volts = {0};
+struct uz_DutyCycle_t output = {0};
+float n_ref = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -54,11 +61,48 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    Global_Data.av.omega_elec = Global_Data.av.omega_m * 4.0f;
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    Global_Data.av.I_W = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    Global_Data.av.I_DC = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_actual_Ampere.a = Global_Data.av.I_U;
+    i_abc_actual_Ampere.b = Global_Data.av.I_V;
+    i_abc_actual_Ampere.c = Global_Data.av.I_W;
+    v_abc_actualVolts.a = Global_Data.av.U_U;
+    v_abc_actualVolts.b = Global_Data.av.U_V;
+    v_abc_actualVolts.c = Global_Data.av.U_W;
+    i_dq_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_abc_actual_Ampere, Global_Data.av.theta_elec);
+    v_dq_actual_Volts = uz_transformation_3ph_abc_to_dq(v_abc_actualVolts, Global_Data.av.theta_elec);
+    Global_Data.av.I_d = i_dq_actual_Ampere.d;
+    Global_Data.av.I_q = i_dq_actual_Ampere.q;
+    Global_Data.av.U_d = v_dq_actual_Volts.d;
+    Global_Data.av.U_q = v_dq_actual_Volts.q;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (current_state==running_state || current_state==control_state) {
+        	// enable inverter adapter hardware
+        	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+        } else {
+        	// disable inverter adapter hardware
+        	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        }
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	v_abc_Volts = uz_FOC_sample_abc(Global_Data.objects.FOC_instance, i_reference_Ampere, i_dq_actual_Ampere, Global_Data.av.U_ZK, Global_Data.av.omega_elec, Global_Data.av.theta_elec);
+    	output = uz_FOC_generate_DutyCycles(v_abc_Volts, Global_Data.av.U_ZK);
+    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_U;
+    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_V;
+    	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_W;
+    } else {
+    	uz_FOC_reset(Global_Data.objects.FOC_instance);
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

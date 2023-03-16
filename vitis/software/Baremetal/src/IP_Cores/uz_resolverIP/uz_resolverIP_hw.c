@@ -23,7 +23,6 @@
 static int32_t REGISTER_ADDR_MIN = 0x80;
 static int32_t REGISTER_ADDR_MAX = 0xFF;
 
-//TO DO: see PR comment TS
 int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr){
 
     uz_assert(addr >= REGISTER_ADDR_MIN && addr < REGISTER_ADDR_MAX);

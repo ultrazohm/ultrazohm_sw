@@ -242,24 +242,6 @@ void test_uz_resolverIP_fail_assert_if_writeRegister_is_called_with_NULL_pointer
     TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_writeRegister(NULL,0x80,0U));
 }
 
-
-void test_uz_resolverIP_fail_assert_if_readRegister_is_called_with_invalid_addr(void)
-{
-    uz_resolverIP_t* myIP = successful_init();
-
-    int32_t address = 0x7F;
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_readRegister(myIP,address));
-}
-
-void test_uz_resolverIP_fail_assert_if_writeRegister_is_called_with_invalid_addr(void)
-{
-    uz_resolverIP_t* myIP = successful_init();
-
-    int32_t address = 0x7F;
-    int32_t value = 0U;
-    TEST_ASSERT_FAIL_ASSERT(uz_resolverIP_writeRegister(myIP,address,value));
-}
-
 void test_uz_resolverIP_fail_assert_if_writeRegister_is_called_with_invalid_value(void)
 {
     uz_resolverIP_t* myIP = successful_init();

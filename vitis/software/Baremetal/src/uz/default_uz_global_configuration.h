@@ -48,8 +48,8 @@
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
-#define UZ_RESOLVERIP_MAX_INSTANCES                     3U
-#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        0U
+#define UZ_RESOLVERIP_MAX_INSTANCES                     1U
+#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        2U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

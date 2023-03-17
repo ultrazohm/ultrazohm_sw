@@ -17,6 +17,7 @@
 #include "xgpio.h"
 
 #define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_BASEADDR /* GPIO device that GPIO is connected to output*/
+#define invEn_ID XPAR_UZ_USER_AXI_GPIO_INVEN_DEVICE_ID
 
 #define AXI_GPIO_CHANNEL 1
 
@@ -35,6 +36,7 @@
 
 // Initialize the  GPIO structure
 static XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
+static XGpio invEn_gpio;
 
 //----------------------------------------------------
 // INITIALIZE & SET DIRECTIONS OF GPIOs that are instanced on the FPGA
@@ -44,15 +46,27 @@ void Initialize_AXI_GPIO(void)
     int status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
     uz_assert(XST_SUCCESS == status);
     XGpio_SetDataDirection(&Gpio_OUT, AXI_GPIO_CHANNEL, 0x00U); //SW: First eight signals are outputs by setting the bitmask to zero for these
+
+    // inverter enable sic1 and sic2
+    int status_inv = XGpio_Initialize(&invEn_gpio, invEn_ID);
+    uz_assert(XST_SUCCESS == status_inv);
+    XGpio_SetDataDirection(&invEn_gpio, AXI_GPIO_CHANNEL, 0x00U); //SW: First eight signals are outputs by setting the bitmask to zero for these
+
 }
 
 void uz_axigpio_disable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteClear(&Gpio_OUT, AXI_GPIO_CHANNEL, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+
+    // inverter disable sic1 and sic2
+    XGpio_DiscreteClear(&invEn_gpio, AXI_GPIO_CHANNEL, (AXI_BIT_0 | AXI_BIT_1));
 }
 void uz_axigpio_enable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+
+    // inverter enable sic1 and sic2
+    XGpio_DiscreteWrite(&invEn_gpio, AXI_GPIO_CHANNEL, (AXI_BIT_0 | AXI_BIT_1));
 }
 void uz_axigpio_disable_datamover(void)
 {

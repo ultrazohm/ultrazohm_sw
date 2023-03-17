@@ -22,10 +22,10 @@
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-#include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../uz/uz_math_constants.h"
 #include "../include/uz_platform_state_machine.h"
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
@@ -38,9 +38,30 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Initialize the Timer structure
 XTmrCtr Timer_Interrupt;
 
+// Data for determination of mechanical resolver angle
+float theta_mech_old=0.0f;
+int32_t cnt = 0U;
+bool cnt_reset = 0;
+float cnt_float=0.0f;
+float cnt_reset_float=0.0f;
+float theta_mech_calc_from_resolver = 0.0f;
+float theta_m_max = 0.0f;
+float theta_m_min = 0.0f;
+
 // Global variable structure
 extern DS_Data Global_Data;
 
+// conversion defines for ADC readings
+#define PHASE_CURRENT_CONV	16.75f
+#define DC_VOLT_CONV_1		140.27f
+#define DC_VOLT_OFF_1		450.25f
+#define DC_VOLT_CONV_2		141.28f
+#define DC_VOLT_OFF_2		452.17f
+
+// software current limit
+#define MAX_PHASE_CURRENT_AMP  18.0f
+
+bool first_ISR = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -53,6 +74,54 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    // read resolver
+    Global_Data.av.posVel_mech = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
+    Global_Data.av.posVel_el = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
+
+    // save raw angles to variables
+    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
+    Global_Data.av.theta_elec_rad = Global_Data.av.posVel_el.position;
+
+    Global_Data.av.theta_mech_calculated = theta_mech_calc_from_resolver-Global_Data.av.theta_mech_offset_rad;
+
+    // save speeds in rad/s to variables
+    Global_Data.av.mechanicalRotorSpeedRADpS = Global_Data.av.posVel_mech.velocity;
+    Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.posVel_el.velocity;
+
+    // calculate speeds in rpm
+    Global_Data.av.mechanicalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRADpS * 30.0f/UZ_PIf;
+    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.electricalRotorSpeedRADpS * 30.0f/UZ_PIf;
+
+    // convert ADC readings to currents in Amps
+    Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_CURRENT_CONV;
+    Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+    // convert ADC readings to voltages
+    Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+    Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+    Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+    Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+    Global_Data.av.v_dc2 =Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+
+    // check current limit
+	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
+			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
+		uz_assert(0);
+	}
+
+	// read temperature values from inverters
+	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
+	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
+	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
+	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -69,6 +138,52 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    // Determine mechanical angle of resolver
+    if(theta_mech_old-Global_Data.av.theta_mech_rad > 4.0f) {
+    	cnt++;
+    	cnt_float=(float)cnt;
+    } else if (theta_mech_old-Global_Data.av.theta_mech_rad < -4.0f) {
+    	cnt--;
+    	cnt_float=(float)cnt;
+    }
+
+    if(cnt > 1 || cnt < -1) {
+    	cnt = 0;
+    	cnt_float = 0.0f;
+    }
+
+    if(cnt_reset == 1) {
+    	cnt = 0;
+    	cnt_float = 0;
+    	cnt_reset = 0;
+    	cnt_reset_float=0;
+    }
+
+
+    if(cnt >= 0){
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_d5_1) + cnt*2*UZ_PIf/2.0f;
+    } else {
+    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/2.0f + (2+cnt)*2*UZ_PIf/2.0f;
+    }
+
+    theta_mech_old = Global_Data.av.theta_mech_rad;
+
+    // reset SW and FPGA resolver calculation counter for having defined init state
+	if (first_ISR == true) {
+		cnt = 0;
+		cnt_float = 0.0f;
+		first_ISR = false;
+	}
+
+    if (Global_Data.av.theta_mech_rad <= theta_m_min) {
+    	theta_m_min = Global_Data.av.theta_mech_rad;
+    }
+
+    if (Global_Data.av.theta_mech_rad >= theta_m_max) {
+    	theta_m_max = Global_Data.av.theta_mech_rad;
+    }
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

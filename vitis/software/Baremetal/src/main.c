@@ -72,6 +72,10 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+//            Global_Data.av.theta_offset = 1.120014f; //!!! if cnt is reset to zero at init we have to add pi to 1.120014 = 4.261607
+//            Global_Data.av.theta_offset = 4.261607f;
+            Global_Data.av.theta_mech_offset_rad = 6.1205;
+            Global_Data.av.polepairs = 5.0f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -90,7 +94,9 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
+            Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
+            Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

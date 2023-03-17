@@ -64,6 +64,7 @@ uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //Next lines only needed, if the uz_FOC is used as the controller
 struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 uz_3ph_alphabeta_t voltage_stationary_xy = {0};
+uz_3ph_alphabeta_t voltage_stationary_zero = {0};
 //RaraID end
 
 
@@ -124,6 +125,9 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
+	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
+	ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
 	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
 	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
 	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);

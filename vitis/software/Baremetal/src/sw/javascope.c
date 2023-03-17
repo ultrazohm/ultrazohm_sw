@@ -71,9 +71,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_ISR_ExecTime_us] = &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_lifecheck]   	= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_ISR_Period_us]	= &data->rasv.halfBridge3DutyCycle;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

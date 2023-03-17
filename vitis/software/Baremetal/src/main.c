@@ -52,6 +52,52 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
+
+//ParameterID Code
+#include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_math_constants.h"
+uz_ParameterID_6ph_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
+// controller
+uz_CurrentControl_t* CC_instance_1 = NULL;
+uz_CurrentControl_t* CC_instance_2 = NULL;
+uz_SpeedControl_t* Speed_instace = NULL;
+uz_SetPoint_t* sp_instance = NULL;
+uz_resonantController_t* res_instance_1 = NULL;
+uz_resonantController_t* res_instance_2 = NULL;
+//ParameterID end
+
+// controller configs
+const float isr_ts = 0.0001f;
+const float tau_sum = 2*isr_ts;
+struct uz_SpeedControl_config speed_config = {
+		.config_controller.type = parallel,
+		.config_controller.Kp = 1.0f,
+		.config_controller.Ki = 1.0f,
+		.config_controller.samplingTime_sec = 0.0001f,
+		.config_controller.upper_limit = 10.0f,
+		.config_controller.lower_limit = -10.0f
+};
+
+struct uz_SetPoint_config sp_config = {
+		.id_ref_Ampere = 0.0f,
+		.is_field_weakening_enabled = false,
+		.motor_type = SMPMSM,
+		.control_type = FOC
+};
+//end
+
+// Psi calc, remove maybe
+#include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
+float meas_array[10000];
+uz_ParaID_ElectricalID_fft_in_t uncorrected;
+uz_ParaID_ElectricalID_fft_in_t corrected;
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess);
+
+
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -76,6 +122,57 @@ int main(void)
 //            Global_Data.av.theta_offset = 4.261607f;
             Global_Data.av.theta_mech_offset_rad = 6.1205;
             Global_Data.av.polepairs = 5.0f;
+
+
+			ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
+			//Code below is only needed, if the uz_FOC is used as the controller
+
+			struct uz_PI_Controller_config PI_config = {
+				.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+				.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum),
+				.samplingTime_sec = isr_ts,
+				.lower_limit = -20.0f,
+				.upper_limit = 20.0f
+			};
+			struct uz_PI_Controller_config PI_config_xy = {
+							.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+							.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
+							.samplingTime_sec = isr_ts,
+							.lower_limit = -20.0f,
+							.upper_limit = 20.0f
+					};
+
+			struct uz_CurrentControl_config cc_config_1 = {
+				.decoupling_select = linear_decoupling,
+				.config_id = PI_config,
+				.config_iq = PI_config,
+				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+
+			struct uz_CurrentControl_config cc_config_2 = {
+							.decoupling_select = linear_decoupling,
+							.config_id = PI_config_xy,
+							.config_iq = PI_config_xy,
+							.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+
+			struct uz_resonantController_config resonant_config = {
+				.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
+				.gain = PI_config.Ki,
+				.harmonic_order = 2.0f,
+				.fundamental_frequency = 1.0f,
+				.lower_limit = -10.0f,
+				.upper_limit = 10.0f,
+				.antiwindup_gain = 10.0f,
+				.in_reference_value = 0.0f,
+				.in_measured_value = 0.0f};
+
+			sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
+			Speed_instace = uz_SpeedControl_init(speed_config);
+			sp_instance = uz_SetPoint_init(sp_config);
+			CC_instance_1 = uz_CurrentControl_init(cc_config_1);
+			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
+			res_instance_1 = uz_resonantController_init(resonant_config);
+			res_instance_2 = uz_resonantController_init(resonant_config);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -114,6 +211,8 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
+			uz_ParameterID_6ph_calculate_PsiPMs(ParameterID, &ParaID_Data, meas_array);
             break;
         default:
             break;
@@ -121,3 +220,42 @@ int main(void)
     }
     return (status);
 }
+
+
+void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess)
+{
+	printf("Rd:%f\n",mess.resistances_6ph.d);
+	printf("Rq:%f\n",mess.resistances_6ph.q);
+	printf("Rx:%f\n",mess.resistances_6ph.x);
+	printf("Ry:%f\n",mess.resistances_6ph.y);
+	printf("Rz1:%f\n",mess.resistances_6ph.z1);
+	printf("Rz2:%f\n",mess.resistances_6ph.z2);
+
+	printf("Ld:%f\n",mess.inductances_6ph.d*1000.0f);
+	printf("Lq:%f\n",mess.inductances_6ph.q*1000.0f);
+	printf("Lx:%f\n",mess.inductances_6ph.x*1000.0f);
+	printf("Ly:%f\n",mess.inductances_6ph.y*1000.0f);
+	printf("Lz1:%f\n",mess.inductances_6ph.z1*1000.0f);
+	printf("Lz2:%f\n",mess.inductances_6ph.z2*1000.0f);
+
+	printf("Psi_f1:%f\n",corrected.psi_pm_frequency[0]);
+	printf("Psi_f2:%f\n",corrected.psi_pm_frequency[1]);
+	printf("Psi_f3:%f\n",corrected.psi_pm_frequency[2]);
+	printf("Psi_f4:%f\n",corrected.psi_pm_frequency[3]);
+	printf("Psi_f5:%f\n",corrected.psi_pm_frequency[4]);
+
+	printf("Psi_m1:%f\n",corrected.psi_pm_amplitude[0]*1000.0f);
+	printf("Psi_m2:%f\n",corrected.psi_pm_amplitude[1]*1000.0f);
+	printf("Psi_m3:%f\n",corrected.psi_pm_amplitude[2]*1000.0f);
+	printf("Psi_m4:%f\n",corrected.psi_pm_amplitude[3]*1000.0f);
+	printf("Psi_m5:%f\n",corrected.psi_pm_amplitude[4]*1000.0f);
+
+	printf("Psi_a1:%f\n",corrected.psi_pm_angle[0]);
+	printf("Psi_a2:%f\n",corrected.psi_pm_angle[1]);
+	printf("Psi_a3:%f\n",corrected.psi_pm_angle[2]);
+	printf("Psi_a4:%f\n",corrected.psi_pm_angle[3]);
+	printf("Psi_a5:%f\n",corrected.psi_pm_angle[4]);
+
+	printf("theta:%f\n", mess.thetaOffset);
+}
+

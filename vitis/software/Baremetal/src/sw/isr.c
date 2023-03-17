@@ -62,6 +62,36 @@ extern DS_Data Global_Data;
 #define MAX_PHASE_CURRENT_AMP  18.0f
 
 bool first_ISR = false;
+
+
+
+
+//ParaID
+#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+extern uz_ParameterID_Data_t ParaID_Data;
+extern uz_ParameterID_6ph_t* ParameterID;
+uz_6ph_dq_t paraid_temp_dq_currents = {0};
+//Next lines only needed, if the uz_FOC is used as the controller
+struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
+uz_3ph_alphabeta_t voltage_stationary_xy = {0};
+uz_3ph_alphabeta_t voltage_stationary_zero = {0};
+uz_6ph_abc_t m_6ph_abc_currents = {0};
+uz_6ph_abc_t m_6ph_abc_voltage = {0};
+float u_neutral = 0.0f;
+//RaraID end
+
+
+// controller
+extern uz_CurrentControl_t* CC_instance_1;
+extern uz_CurrentControl_t* CC_instance_2;
+extern uz_SpeedControl_t* Speed_instace;
+extern uz_SetPoint_t* sp_instance;
+extern uz_resonantController_t* res_instance_1;
+extern uz_resonantController_t* res_instance_2;
+uz_6ph_dq_t controller_out = {0};
+
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -106,7 +136,7 @@ void ISR_Control(void *data)
     Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
     Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
     Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-    Global_Data.av.v_dc2 =Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
@@ -123,10 +153,67 @@ void ISR_Control(void *data)
 	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
 	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
 
+
+
+	////////////write to structs
+	m_6ph_abc_currents.a1 = Global_Data.av.i_a1;
+	m_6ph_abc_currents.b1 = Global_Data.av.i_b1;
+	m_6ph_abc_currents.c1 = Global_Data.av.i_c1;
+	m_6ph_abc_currents.a2 = Global_Data.av.i_a2;
+	m_6ph_abc_currents.b2 = Global_Data.av.i_b2;
+	m_6ph_abc_currents.c2 = Global_Data.av.i_c2;
+
+	u_neutral = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+
+	m_6ph_abc_voltage.a1 = Global_Data.av.v_a1 - u_neutral;
+	m_6ph_abc_voltage.b1 = Global_Data.av.v_b1 - u_neutral;
+	m_6ph_abc_voltage.c1 = Global_Data.av.v_c1 - u_neutral;
+	m_6ph_abc_voltage.a2 = Global_Data.av.v_a2 - u_neutral;
+	m_6ph_abc_voltage.b2 = Global_Data.av.v_b2 - u_neutral;
+	m_6ph_abc_voltage.c2 = Global_Data.av.v_c2 - u_neutral;
+
+
+	////////////Para ID actual
+	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
+	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
+	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
+	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;
+	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
+	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
+	ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
+	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
+	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
+	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
+	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
+	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
+	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech_rad;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
+	//////////////ParaID ende
+
+
+
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+		controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+
+		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
+		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
+		Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
+		Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
+		Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
+		Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_C;
+
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ADC_max11331_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="ADC_max11331_tb" />
+            <top_module name="adc_max11331_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="28980001fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="592"></NameColumnWidth>
+      <ValueColumnWidth column_width="291"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/ADC_max11331_tb/uut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/sclk" type="logic">
+      <obj_property name="ElementShortName">sclk</obj_property>
+      <obj_property name="ObjectShortName">sclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/enable_measure" type="logic">
+      <obj_property name="ElementShortName">enable_measure</obj_property>
+      <obj_property name="ObjectShortName">enable_measure</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/state" type="other">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ss_n" type="logic">
+      <obj_property name="ElementShortName">ss_n</obj_property>
+      <obj_property name="ObjectShortName">ss_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/meas_done" type="logic">
+      <obj_property name="ElementShortName">meas_done</obj_property>
+      <obj_property name="ObjectShortName">meas_done</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/new_data" type="logic">
+      <obj_property name="ElementShortName">new_data</obj_property>
+      <obj_property name="ObjectShortName">new_data</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/error" type="logic">
+      <obj_property name="ElementShortName">error</obj_property>
+      <obj_property name="ObjectShortName">error</obj_property>
+   </wvobject>
+   <wvobject fp_name="group217" type="group">
+      <obj_property name="label">outputs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/ADC_max11331_tb/ch0" type="array">
+         <obj_property name="ElementShortName">ch0[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch0[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch1" type="array">
+         <obj_property name="ElementShortName">ch1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch1[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch2" type="array">
+         <obj_property name="ElementShortName">ch2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch2[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch3" type="array">
+         <obj_property name="ElementShortName">ch3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch3[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch4" type="array">
+         <obj_property name="ElementShortName">ch4[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch4[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch5" type="array">
+         <obj_property name="ElementShortName">ch5[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch5[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch6" type="array">
+         <obj_property name="ElementShortName">ch6[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch6[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch7" type="array">
+         <obj_property name="ElementShortName">ch7[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch7[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch8" type="array">
+         <obj_property name="ElementShortName">ch8[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch8[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch9" type="array">
+         <obj_property name="ElementShortName">ch9[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch9[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch10" type="array">
+         <obj_property name="ElementShortName">ch10[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch10[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch11" type="array">
+         <obj_property name="ElementShortName">ch11[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch11[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch12" type="array">
+         <obj_property name="ElementShortName">ch12[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch12[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch13" type="array">
+         <obj_property name="ElementShortName">ch13[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch13[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch14" type="array">
+         <obj_property name="ElementShortName">ch14[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch14[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch15" type="array">
+         <obj_property name="ElementShortName">ch15[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch15[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/miso" type="array">
+      <obj_property name="ElementShortName">miso[2:1]</obj_property>
+      <obj_property name="ObjectShortName">miso[2:1]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/rx_data" type="array">
+      <obj_property name="ElementShortName">rx_data[2:1][15:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_data[2:1][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/rx_buffer" type="array">
+      <obj_property name="ElementShortName">rx_buffer[2:1][15:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_buffer[2:1][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/tx_buffer" type="array">
+      <obj_property name="ElementShortName">tx_buffer[15:0]</obj_property>
+      <obj_property name="ObjectShortName">tx_buffer[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/rx_data" type="array">
+      <obj_property name="ElementShortName">rx_data[2:1][15:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_data[2:1][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="group1850" type="group">
+      <obj_property name="label">verify echo bipolar</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/verify_echo_bipolar" type="logic">
+         <obj_property name="ElementShortName">verify_echo_bipolar</obj_property>
+         <obj_property name="ObjectShortName">verify_echo_bipolar</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_echoed_bipolar_S" type="array">
+         <obj_property name="ElementShortName">adc_echoed_bipolar_S[2:1]</obj_property>
+         <obj_property name="ObjectShortName">adc_echoed_bipolar_S[2:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/verify_echo_bipolar_detail" type="array">
+         <obj_property name="ElementShortName">verify_echo_bipolar_detail[2:1]</obj_property>
+         <obj_property name="ObjectShortName">verify_echo_bipolar_detail[2:1]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group1851" type="group">
+      <obj_property name="label">verify echo unipolar</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/verify_echo_unipolar" type="logic">
+         <obj_property name="ElementShortName">verify_echo_unipolar</obj_property>
+         <obj_property name="ObjectShortName">verify_echo_unipolar</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_echoed_unipolar_S" type="array">
+         <obj_property name="ElementShortName">adc_echoed_unipolar_S[2:1]</obj_property>
+         <obj_property name="ObjectShortName">adc_echoed_unipolar_S[2:1]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/verify_echo_unipolar_detail" type="array">
+         <obj_property name="ElementShortName">verify_echo_unipolar_detail[2:1]</obj_property>
+         <obj_property name="ObjectShortName">verify_echo_unipolar_detail[2:1]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group59" type="group">
+      <obj_property name="label">outputs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/ADC_max11331_tb/ch0" type="array">
+         <obj_property name="ElementShortName">ch0[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch0[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch1" type="array">
+         <obj_property name="ElementShortName">ch1[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch1[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch2" type="array">
+         <obj_property name="ElementShortName">ch2[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch2[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch3" type="array">
+         <obj_property name="ElementShortName">ch3[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch3[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch4" type="array">
+         <obj_property name="ElementShortName">ch4[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch4[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch5" type="array">
+         <obj_property name="ElementShortName">ch5[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch5[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch6" type="array">
+         <obj_property name="ElementShortName">ch6[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch6[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch7" type="array">
+         <obj_property name="ElementShortName">ch7[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch7[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch8" type="array">
+         <obj_property name="ElementShortName">ch8[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch8[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch9" type="array">
+         <obj_property name="ElementShortName">ch9[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch9[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch10" type="array">
+         <obj_property name="ElementShortName">ch10[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch10[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch11" type="array">
+         <obj_property name="ElementShortName">ch11[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch11[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch12" type="array">
+         <obj_property name="ElementShortName">ch12[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch12[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch13" type="array">
+         <obj_property name="ElementShortName">ch13[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch13[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch14" type="array">
+         <obj_property name="ElementShortName">ch14[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch14[15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/ch15" type="array">
+         <obj_property name="ElementShortName">ch15[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ch15[15:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/data_all_channels_out" type="array">
+      <obj_property name="ElementShortName">data_all_channels_out[2:1,7:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_all_channels_out[2:1,7:0][15:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/data_all_channels_out[2]" type="array">
+         <obj_property name="ElementShortName">[2,7:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[2,7:0][15:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/data_all_channels_out[1]" type="array">
+         <obj_property name="ElementShortName">[1,7:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">[1,7:0][15:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/data_ouput_register" type="array">
+      <obj_property name="ElementShortName">data_ouput_register[2:1,7:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_ouput_register[2:1,7:0][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels" type="array">
+      <obj_property name="ElementShortName">adc_channels[2:1,7:0][15:0]</obj_property>
+      <obj_property name="ObjectShortName">adc_channels[2:1,7:0][15:0]</obj_property>
+   </wvobject>
+</wave_config>

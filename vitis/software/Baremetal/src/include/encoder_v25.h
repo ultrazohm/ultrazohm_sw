@@ -16,7 +16,7 @@
 #ifndef ENCODER_V25_H_
 #define ENCODER_V25_H_
 
-#include "../control/toolbox.h"
+#include "../uz/controlToolbox/control_toolbox.h"
 #include "../main.h"
 
 void initialize_incremental_encoder_ipcore_v25_on_D5(float incrementalEncoderResolution, float motorPolePairNumber,float speed_timeout);

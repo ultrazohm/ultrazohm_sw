@@ -32,6 +32,7 @@ entity ADC_MAX11331_top is
 		meas_done 						: out STD_LOGIC;
 		new_data 						: out STD_LOGIC;
 		error 							: out STD_LOGIC;
+		raw_measured_data     			: out STD_LOGIC_VECTOR(NUMBER_OF_ADCS * C_NUM_CHANNELS * OUTPUT_WORD_WIDTH -1 downto 0);
 		ch0	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
 		ch1	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
 		ch2	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
@@ -280,6 +281,14 @@ begin
 	init_done			<= init_done_S;
 	meas_done			<= meas_done_S;
 	error				<= error_S;
+	
+	-- vivado block design cannot handle arrays, therefore we have to unfold it here
+    unfold_ADCs : for ii in 0 to NUMBER_OF_ADCS-1 generate
+        unfold_Ch : for jj in 0 to C_NUM_CHANNELS-1 generate
+            raw_measured_data( (ii*C_NUM_CHANNELS*OUTPUT_WORD_WIDTH) + (OUTPUT_WORD_WIDTH*(jj+1)-1) downto (ii*C_NUM_CHANNELS*OUTPUT_WORD_WIDTH) + (OUTPUT_WORD_WIDTH*jj)   ) <= all_differential_channels(ii+1,jj);
+        end generate;
+    end generate;
+	--raw_measured_data <= all_differential_channels;
 	-- User logic ends
 	
 	-- Instantiation of Axi Bus Interface S_AXI_Lite

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define XPAR_A1_ADC_MAX11331_IP_CORE_FREQUENCY 100000000U
+#define XPAR_A3_ADC_MAX11331_IP_CORE_FREQUENCY 100000000U
 #define DEFAULT_MAX11331_CONVERSION_FACTOR 1.0f
 #define DEFAULT_MAX11331_INTEGER_BITS 14
 #define DEFAULT_MAX11331_FRACTIONAL_BITS 4
@@ -15,8 +15,8 @@ void uz_adcMax11331_ip_core_init(void)
 {
    //Parameter set for one MAX11331 chip, thus one master
    struct uz_adcMax11331_config_t default_configuration = {
-        .base_address = XPAR_MAX11_ADC_MAX11331_TOP_0_BASEADDR,
-        .ip_clk_frequency_Hz = XPAR_A1_ADC_MAX11331_IP_CORE_FREQUENCY,
+        .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR,
+        .ip_clk_frequency_Hz = XPAR_A3_ADC_MAX11331_IP_CORE_FREQUENCY,
         .channel_config = {
             .conversion_factor = DEFAULT_MAX11331_CONVERSION_FACTOR,
             .conversion_factor_definition = {

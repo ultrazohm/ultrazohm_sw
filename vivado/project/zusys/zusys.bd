@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1"
+      "tool_version": "2020.1.1",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -34,9 +35,9 @@
         "A3_adapter": {
           "A3_ADC_MAX11331": "",
           "ila_max11": "",
-          "duplicate_0": "",
           "duplicate_1": "",
-          "duplicate_2": ""
+          "duplicate_2": "",
+          "duplicate_0": ""
         }
       },
       "uz_digital_adapter": {
@@ -162,7 +163,13 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "24",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -187,7 +194,13 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -237,7 +250,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -1447,11 +1466,31 @@
                 "ports": {
                   "clk": {
                     "type": "clk",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "ASSOCIATED_BUSIF": {
+                        "value": "s_axi_lite",
+                        "value_src": "constant"
+                      },
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      },
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      }
+                    }
                   },
                   "reset_n": {
                     "type": "rst",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "POLARITY": {
+                        "value": "ACTIVE_LOW",
+                        "value_src": "const_prop"
+                      }
+                    }
                   },
                   "enable_measure": {
                     "direction": "I"
@@ -1569,11 +1608,31 @@
                   },
                   "s_axi_lite_aclk": {
                     "type": "clk",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "ASSOCIATED_RESET": {
+                        "value": "s_axi_lite_aresetn",
+                        "value_src": "constant"
+                      },
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      },
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      }
+                    }
                   },
                   "s_axi_lite_aresetn": {
                     "type": "rst",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "POLARITY": {
+                        "value": "ACTIVE_LOW",
+                        "value_src": "constant"
+                      }
+                    }
                   }
                 }
               },
@@ -1589,25 +1648,6 @@
                   },
                   "C_NUM_OF_PROBES": {
                     "value": "19"
-                  }
-                }
-              },
-              "duplicate_0": {
-                "vlnv": "xilinx.com:module_ref:duplicate:1.0",
-                "xci_name": "zusys_duplicate_0_0",
-                "reference_info": {
-                  "ref_type": "hdl",
-                  "ref_name": "duplicate",
-                  "boundary_crc": "0x0"
-                },
-                "ports": {
-                  "inp": {
-                    "direction": "I"
-                  },
-                  "outp": {
-                    "direction": "O",
-                    "left": "2",
-                    "right": "0"
                   }
                 }
               },
@@ -1633,6 +1673,25 @@
               "duplicate_2": {
                 "vlnv": "xilinx.com:module_ref:duplicate:1.0",
                 "xci_name": "zusys_duplicate_1_0",
+                "reference_info": {
+                  "ref_type": "hdl",
+                  "ref_name": "duplicate",
+                  "boundary_crc": "0x0"
+                },
+                "ports": {
+                  "inp": {
+                    "direction": "I"
+                  },
+                  "outp": {
+                    "direction": "O",
+                    "left": "2",
+                    "right": "0"
+                  }
+                }
+              },
+              "duplicate_0": {
+                "vlnv": "xilinx.com:module_ref:duplicate:1.0",
+                "xci_name": "zusys_duplicate_0_0",
                 "reference_info": {
                   "ref_type": "hdl",
                   "ref_name": "duplicate",
@@ -3034,7 +3093,17 @@
                     "ports": {
                       "clock": {
                         "type": "clk",
-                        "direction": "I"
+                        "direction": "I",
+                        "parameters": {
+                          "CLK_DOMAIN": {
+                            "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                            "value_src": "default_prop"
+                          },
+                          "FREQ_HZ": {
+                            "value": "100000000",
+                            "value_src": "user_prop"
+                          }
+                        }
                       },
                       "enable": {
                         "direction": "I"
@@ -3042,7 +3111,13 @@
                       "switching_signals": {
                         "direction": "I",
                         "left": "5",
-                        "right": "0"
+                        "right": "0",
+                        "parameters": {
+                          "PortWidth": {
+                            "value": "6",
+                            "value_src": "ip_prop"
+                          }
+                        }
                       },
                       "deadtime": {
                         "direction": "I",
@@ -4303,7 +4378,17 @@
                 "ports": {
                   "clk": {
                     "type": "clk",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      },
+                      "FREQ_HZ": {
+                        "value": "100000000",
+                        "value_src": "user_prop"
+                      }
+                    }
                   },
                   "delay_cycles": {
                     "direction": "I",

@@ -41,7 +41,7 @@ uz_adcMax11331_t *uz_adcMax11331_init(struct uz_adcMax11331_config_t config)
     uz_adcMax11331_hw_write_spi_cfgr(self->config.base_address, self->config.clk_div);
 
     //Start MAX11331 ADC in continuous sampling mode
-    uz_axigpio_enable_MAX11331();
+   // uz_axigpio_enable_MAX11331(); // not defined yet
 
     return (self);
 }

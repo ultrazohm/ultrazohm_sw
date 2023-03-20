@@ -92,7 +92,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.length_of_sumout, layer_config.length_of_sumout);
     self->delta = uz_matrix_init(&self->delta_matrix, layer_config.delta, layer_config.length_of_delta,layer_config.number_of_neurons,1);
     self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
-    self->temporarybackprop = uz_matrix_init(&self->temporarybackprop_matrix,layer_config.temporarybackprop, layer_config.length_of_temporarybackprop,2,layer_config.number_of_temporarycolumns);
+    self->temporarybackprop = uz_matrix_init(&self->temporarybackprop_matrix,layer_config.temporarybackprop, layer_config.length_of_temporarybackprop,layer_config.number_of_temporaryrows,layer_config.number_of_temporarycolumns);
     self->gradients = uz_matrix_init(&self->gradients_matrix,layer_config.gradients, layer_config.length_of_gradients,layer_config.length_of_gradients,1);
     self->cachegradients = uz_matrix_init(&self->cachegradients_matrix,layer_config.cachegradients, layer_config.length_of_cachegradients,layer_config.number_of_cachegradrows,layer_config.number_of_cachegradcolumns);
     switch (layer_config.activation_function)
@@ -184,35 +184,37 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);
     // if else statement macht probleme => switch case
      // check for the dimension of outputprev and delta, if necessary transpose outputprev
     //layer 2
-    if (outputprev->rows==self->delta->columns && outputprev->columns==self->delta->rows)
-    {
-    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_transpose(self->cachegradients); 
+    // if (outputprev->rows==self->delta->columns && outputprev->columns==self->delta->rows)
+    // {
+    // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    // uz_matrix_transpose(self->cachegradients); 
     
-    /* diese Zeile ist nur damit am Schluss der Gradient gleich ist wie im Example, an sich ist es ja nicht nötig, da der Mittelwert
-    über alle Gradienten gebildet wird */
-    }
-    //layer 1
-    else if(outputprev->rows==1 && outputprev->columns == 1){
-        uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    }
-    // layer 3
-    else if (self->delta->columns==1 && self->delta->rows==1)
-    {
-    /* in der uz_matrix_multiply funktion ist es nicht möglich einen float mit einem Zeilenvektor zu multiplizieren,
-    ist durch uz_assert festgelegt 
-    20.03.23: Problem behoben, indem in der Config self->cachegradients als Zeilenvektor angelegt wurde,
-    somit gibt es auch kein Problem mehr in der Loop in schroeder_example und es muss nur eine instanz initialisiert werden,
-    damit die 13 Trainingspaare berechnet werden können*/
-    //uz_matrix_transpose(outputprev);
-    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    }
+    // /* diese Zeile ist nur damit am Schluss der Gradient gleich ist wie im Example, an sich ist es ja nicht nötig, da der Mittelwert
+    // über alle Gradienten gebildet wird */
+    // }
+    // //layer 1
+    // else if(outputprev->rows==1 && outputprev->columns == 1){
+    //     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    // }
+    // // layer 3
+    // else if (self->delta->columns==1 && self->delta->rows==1)
+    // {
+    // /* in der uz_matrix_multiply funktion ist es nicht möglich einen float mit einem Zeilenvektor zu multiplizieren,
+    // ist durch uz_assert festgelegt 
+    // 20.03.23: Problem behoben, indem in der Config self->cachegradients als Zeilenvektor angelegt wurde,
+    // somit gibt es auch kein Problem mehr in der Loop in schroeder_example und es muss nur eine instanz initialisiert werden,
+    // damit die 13 Trainingspaare berechnet werden können*/
+    // //uz_matrix_transpose(outputprev);
+    // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    // }
 
     //matrizen zusammenstellen und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
-    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);    
+    
 }
 
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias, float *const lernrate)

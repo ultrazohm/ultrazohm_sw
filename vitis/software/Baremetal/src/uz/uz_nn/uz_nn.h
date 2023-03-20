@@ -39,7 +39,7 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  * @return uz_matrix_t* 
  */
 
-void uz_nn_calc_gradients(uz_nn_t *self,float const reference_output, uz_matrix_t *const input);
+void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input);
 void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate);
 void uz_nn_export(uz_nn_t *self);
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);

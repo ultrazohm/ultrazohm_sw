@@ -21,23 +21,23 @@ float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float s_3[NUMBER_OF_OUTPUTS] = {0};
 
 //derivate matrix activation, Dimension = Sumout x Sumout 50x50=2500 z.B.
-float d_1[UZ_MATRIX_SIZE(s_1) * UZ_MATRIX_SIZE(s_1)] = {0};
-float d_2[UZ_MATRIX_SIZE(s_2) * UZ_MATRIX_SIZE(s_2)] = {0};
-float d_3[UZ_MATRIX_SIZE(s_3) * UZ_MATRIX_SIZE(s_3)] = {0};
+float d_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float d_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float d_3[NUMBER_OF_OUTPUTS * NUMBER_OF_OUTPUTS] = {0};
 //deltas
 float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float delta_3[NUMBER_OF_OUTPUTS] = {0};
 
 //cache gradients, Gräße entspricht delta des aktuellen layers * größe des Outputs des vorherigen layers
-float cacheg_1[UZ_MATRIX_SIZE(delta_1) * NUMBER_OF_INPUTS] = {0};
-float cacheg_2[UZ_MATRIX_SIZE(delta_2) * UZ_MATRIX_SIZE(s_1)] = {0};
-float cacheg_3[UZ_MATRIX_SIZE(delta_3) * UZ_MATRIX_SIZE(s_2)] = {0};
+float cacheg_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
+float cacheg_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float cacheg_3[NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
 //Gradienten
-float g_1[UZ_MATRIX_SIZE(delta_1)+UZ_MATRIX_SIZE(cacheg_1)] = {0};
-float g_2[UZ_MATRIX_SIZE(delta_2)+UZ_MATRIX_SIZE(cacheg_2)] = {0};
-float g_3[UZ_MATRIX_SIZE(delta_3)+UZ_MATRIX_SIZE(cacheg_3)] = {0};
+float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
+float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
 // 13 Trainingsdaten aus Matlab(1-13)
 float x[NUMBER_OF_INPUTS] = {
@@ -76,19 +76,22 @@ float y_3[NUMBER_OF_OUTPUTS] = {0};
 float e_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER]={0.0f};
 float e_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER]={0.0f};
 float e_3[NUMBER_OF_OUTPUTS]={0.0f};
+
 // Temporary buffer storage
 
-float T1[UZ_MATRIX_SIZE(w_2)] = {0};
-float T2[UZ_MATRIX_SIZE(w_3)] = {0};
+float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
+
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
-        .number_of_cachegradrows = 650,
-        .number_of_cachegradcolumns = 1,
-        .number_of_temporarycolumns = 500,
+        .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_cachegradcolumns = NUMBER_OF_INPUTS,
+        .number_of_temporaryrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_temporarycolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
@@ -113,9 +116,10 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .activation_function = activation_tanh, 
       .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-      .number_of_cachegradrows = 1000,
-      .number_of_cachegradcolumns = 1,
-      .number_of_temporarycolumns = 10,
+      .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+      .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+      .number_of_temporaryrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+      .number_of_temporarycolumns = NUMBER_OF_OUTPUTS,
       .length_of_weights = UZ_MATRIX_SIZE(w_2),
       .length_of_bias = UZ_MATRIX_SIZE(b_2),
       .length_of_output = UZ_MATRIX_SIZE(y_2),
@@ -139,9 +143,10 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
   [2] = {.activation_function = activation_linear,
    .number_of_neurons = NUMBER_OF_OUTPUTS,
    .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
-   .number_of_cachegradrows = 20,
-   .number_of_cachegradcolumns = 1,
+   .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
+   .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
    .number_of_temporarycolumns = 2,
+   .number_of_temporaryrows = 2,
    .length_of_weights = UZ_MATRIX_SIZE(w_3),
    .length_of_bias = UZ_MATRIX_SIZE(b_3),
    .length_of_output = UZ_MATRIX_SIZE(y_3),
@@ -193,7 +198,7 @@ void test_uz_nn_matlab(void)
        uz_nn_ff(test,input);
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
-//       uz_nn_calc_gradients(test,*reference_output,input);
+       uz_nn_calc_gradients(test,&reference_output[0],input);
 //     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
 //     THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
 //     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1

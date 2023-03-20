@@ -88,6 +88,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
         .number_of_cachegradcolumns = NUMBER_OF_INPUTS,
         .number_of_temporarycolumns = 2,
+        .number_of_temporaryrows = 2,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
@@ -115,6 +116,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
       .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
       .number_of_temporarycolumns = 1,
+      .number_of_temporaryrows = 2,
       .length_of_weights = UZ_MATRIX_SIZE(w_2),
       .length_of_bias = UZ_MATRIX_SIZE(b_2),
       .length_of_output = UZ_MATRIX_SIZE(y_2),
@@ -141,6 +143,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
    .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
    .number_of_temporarycolumns = 2,
+   .number_of_temporaryrows = 2,
    .length_of_weights = UZ_MATRIX_SIZE(w_3),
    .length_of_bias = UZ_MATRIX_SIZE(b_3),
    .length_of_output = UZ_MATRIX_SIZE(y_3),
@@ -201,13 +204,13 @@ void test_uz_nn_schroeder(void)
     avgtheta = sumtheta / 13.0f;
     printf("Mittelwert von thetagrad = %.2f \n", avgtheta);
     printf("Mittelwert von biasgrad = %.2f \n", avgbias);
-    // // Lernrate festlegen
-    // float lernrate = 2.0f;
-    // // Update THETA 1,1 und bias 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
-    // uz_nn_update(test,avgtheta,avgbias,lernrate);
+    //Lernrate festlegen
+    float lernrate = 2.0f;
+    //Update THETA 1,1 und bias 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
+    uz_nn_update(test,avgtheta,avgbias,lernrate);
     
-    // // // Funktion die die daten exportiert und in die .csv Dateien überschreibt
-    // // //uz_nn_export(test);
+    //Funktion die die daten exportiert und in die .csv Dateien überschreibt
+    uz_nn_export(test);
     uz_matrix_t* check = uz_nn_get_output_from_each_layer(test,1);
     clock_t end = clock();
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;

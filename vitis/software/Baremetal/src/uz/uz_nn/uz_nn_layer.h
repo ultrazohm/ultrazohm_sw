@@ -34,6 +34,7 @@ struct uz_nn_layer_config{
     uint32_t number_of_neurons; /**< Number of neurons in the layer */
     uint32_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
     uint32_t number_of_temporarycolumns;
+    uint32_t number_of_temporaryrows;
     uint32_t number_of_cachegradcolumns;
     uint32_t number_of_cachegradrows;
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */

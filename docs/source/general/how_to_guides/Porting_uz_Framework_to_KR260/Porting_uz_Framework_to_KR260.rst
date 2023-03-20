@@ -204,7 +204,21 @@ This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII
 
 To create a suited software for the KR260, follow these steps:
 
-#.  Open Vitis and create the Workspace according to :ref:`genvitis`.
+#.  Open Vitis 2022.2 and create the Workspace according to Ultrazohm Setup.
+    
+    .. tip::  
+        
+        * Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
+        * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
+
+    #. Open the XSCT Console in Vitis
+    #. Type the following commands
+
+    .. code-block:: 
+
+        cd [getws]
+        source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
+
 #.  The script **WILL FAIL**, but this is okay for our use case.
 #.  Clean the "UZ-Plattform-Project" and both "C-Projects".
 #.  Open the BSP-Packages for the "FreeRTOS_domain" and "Baremetal_domain" and ensure that ``stdin`` and ``stdout`` points to ``ps_uart_1``.
@@ -247,11 +261,11 @@ To create a suited software for the KR260, follow these steps:
         * update_speed_and_position_of_encoder_on_D5(&Global_Data); 
         * PWM_3L_SetDutyCycle(); 
 
-    #. Comment out the Assertion in ``uz_gpio.c`` line 44. We disabled the Outputs from the PS-GPIO, so this assertion will fire!
+    #. Comment out the Assertion in ``uz / uz_GPIO / uz_gpio.c`` line 44. We disabled the Outputs from the PS-GPIO, so this assertion will fire!
 
         * uz_assert( uz_gpio_get_enable_output(self) ); 
 
-    #. Fixing the Stop-Flag in ``nw_init / uz_platform_state_machine.c``  line 277 to 0. With no PS-GPIO enabled, we can't get any buttons.
+    #. Fixing the Stop-Flag in ``hw_init / uz_platform_state_machine.c``  line 277 to 0. With no PS-GPIO enabled, we can't get any buttons.
 
 #. Changes for the FreeRTOS-Project:
 
@@ -261,16 +275,22 @@ To create a suited software for the KR260, follow these steps:
 
         * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
 
-    #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
+    #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis_kria\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
 
         * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
 
 #. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
-    * ``\vitis\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches``
+    * ``\vitis_kria\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
 #. Restart Vitis to make the. launches-files accessible
-#. Build both C-Projects and run them on the KR260.
+#. Build both C-Projects 
+#. Control the Debug Configuration and run the project on the KR260.
+    
+    * Control the Debug Configuration - Application and Target Setup.
+    * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
+    * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
+
 
 Known Issues
 ============

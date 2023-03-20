@@ -45,6 +45,9 @@ float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
 
 
+extern float temp_avg;
+extern struct uz_DutyCycle_t dutyCycles_set1;
+extern struct uz_DutyCycle_t dutyCycles_set2;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -66,28 +69,29 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_mech_Speed_rpm]	= &data->av.mechanicalRotorSpeedRPM;
-	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeedRPM;
-	js_ch_observable[JSO_i_a1] 				= &data->av.i_a1;
-	js_ch_observable[JSO_i_b1] 				= &data->av.i_b1;
-	js_ch_observable[JSO_i_c1] 				= &data->av.i_c1;
-	js_ch_observable[JSO_i_a2] 				= &data->av.i_a2;
-	js_ch_observable[JSO_i_b2] 				= &data->av.i_b2;
-	js_ch_observable[JSO_i_c2] 				= &data->av.i_c2;
-	js_ch_observable[JSO_v_a1] 				= &data->av.v_a1;
-	js_ch_observable[JSO_v_b1] 				= &data->av.v_b1;
-	js_ch_observable[JSO_v_c1] 				= &data->av.v_c1;
-	js_ch_observable[JSO_v_a2] 				= &data->av.v_a2;
-	js_ch_observable[JSO_v_b2] 				= &data->av.v_b2;
-	js_ch_observable[JSO_v_c2] 				= &data->av.v_c2;
-	js_ch_observable[JSO_i_dc1]				= &data->av.i_dc1;
-	js_ch_observable[JSO_i_dc2]				= &data->av.i_dc2;
-	js_ch_observable[JSO_iq] 				= &data->av.i_d;
-	js_ch_observable[JSO_id] 				= &data->av.i_q;
-	js_ch_observable[JSO_theta_el] 			= &data->av.theta_elec_rad;
-	js_ch_observable[JSO_theta_mech] 		= &data->av.theta_mech_calculated;
-	js_ch_observable[JSO_v_d]				= &data->av.v_d;
-	js_ch_observable[JSO_v_q]				= &data->av.v_q;
+	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeedRPM;
+	js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq_6ph.d;
+	js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq_6ph.q;
+	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_dq_6ph.x;
+	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_dq_6ph.y;
+	js_ch_observable[JSO_uz1] = &ParaID_Data.ActualValues.v_dq_6ph.z1;
+	js_ch_observable[JSO_uz2] = &ParaID_Data.ActualValues.v_dq_6ph.z2;
+	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
+	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
+	js_ch_observable[JSO_ix] = &ParaID_Data.ActualValues.i_dq_6ph.x;
+	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
+	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
+	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
+	js_ch_observable[JSO_ua1] = &(ParaID_Data.ActualValues.v_abc_6ph.a1);
+	js_ch_observable[JSO_ib1] = &(ParaID_Data.ActualValues.i_abc_6ph.b1);
+	js_ch_observable[JSO_ic1] = &(ParaID_Data.ActualValues.i_abc_6ph.c1);
+	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);
+	js_ch_observable[JSO_ib2] = &(ParaID_Data.ActualValues.i_abc_6ph.b2);
+	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
+  js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
+  js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
+	js_ch_observable[JSO_state] = &(para_state);
+
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -97,70 +101,54 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_v_d] 			        = &(data->av.v_d);
-	js_slowDataArray[JSSD_FLOAT_v_q] 			        = &(data->av.v_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
-	js_slowDataArray[JSSD_FLOAT_speed_RPM] 		       	= &(data->av.mechanicalRotorSpeedRPM);
-	js_slowDataArray[JSSD_FLOAT_invTemp1]				= &(data->av.temperature_inv_1);
-	js_slowDataArray[JSSD_FLOAT_invTemp2]				= &(data->av.temperature_inv_2);
-	js_slowDataArray[JSSD_FLOAT_v_dc1]					= &(data->av.v_dc1);
-	js_slowDataArray[JSSD_FLOAT_v_dc2]					= &(data->av.v_dc2);
-	js_slowDataArray[JSSD_FLOAT_v_dc1_ADC]				= &(data->aa.A1.me.ADC_A4);
-	js_slowDataArray[JSSD_FLOAT_v_dc2_ADC]				= &(data->aa.A2.me.ADC_A4);
-	js_slowDataArray[JSSD_FLOAT_i_a1_ADC]				= &(data->aa.A1.me.ADC_A3);
-	js_slowDataArray[JSSD_FLOAT_i_b1_ADC]				= &(data->aa.A1.me.ADC_A2);
-	js_slowDataArray[JSSD_FLOAT_i_c1_ADC]				= &(data->aa.A1.me.ADC_A1);
-	js_slowDataArray[JSSD_FLOAT_i_a2_ADC]				= &(data->aa.A2.me.ADC_A3);
-	js_slowDataArray[JSSD_FLOAT_i_b2_ADC]				= &(data->aa.A2.me.ADC_A2);
-	js_slowDataArray[JSSD_FLOAT_i_c2_ADC]				= &(data->aa.A2.me.ADC_A1);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeedRPM);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalRotorSpeedRPM);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(ParaID_Data.ActualValues.v_dq.d);
-		    js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
-		    js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);
-		    js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
-		    js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeedRPM);
-		    js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalRotorSpeedRPM);
-		    js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
-		    js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
-		    js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
-		    js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
-		    js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
-		    js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
-		    js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
-		    js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
-		    js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
-		    js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
-		    js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
-		    js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output->thetaOffset);
-		    js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
-		    js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
-		    js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);
-		    js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]    = &(ArrayCounter);
-		    js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
-		    js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
-		    js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
-		    js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(ParaID_Data.TwoMassID_Output->TrainInertia);
-		    js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(ParaID_Data.TwoMassID_Output->LoadInertia);
-		    js_slowDataArray[JSSD_FLOAT_c_est]                  = &(ParaID_Data.TwoMassID_Output->c_est_out);
-		    js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
-		    js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
-		    js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
-		    js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
-		    js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
-		    js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);
-		    js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(ParaID_Data.OnlineID_Output->Rph_out);
-		    js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
-		    js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
-		    js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
-		    js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
-		    js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
-		    js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
-		    js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
-
+	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
+	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);
+	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq.q);
+	js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeedRPM);
+	js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalRotorSpeedRPM);
+	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+	js_slowDataArray[JSSD_FLOAT_Lq_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Lq_Henry);
+	js_slowDataArray[JSSD_FLOAT_Ld_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Ld_Henry);
+	js_slowDataArray[JSSD_FLOAT_Rs_Offline]             = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+	js_slowDataArray[JSSD_FLOAT_polePairs]              = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.polePairs);
+	js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
+	js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
+	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us]        = &ISR_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us]          = &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]           = &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output->thetaOffset);
+	js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
+	js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
+	js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);
+	js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]    = &(ArrayCounter);
+	js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
+	js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
+	js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
+	js_slowDataArray[JSSD_FLOAT_TrainInertia]           = &(ParaID_Data.TwoMassID_Output->TrainInertia);
+	js_slowDataArray[JSSD_FLOAT_LoadInertia]            = &(ParaID_Data.TwoMassID_Output->LoadInertia);
+	js_slowDataArray[JSSD_FLOAT_c_est]                  = &(ParaID_Data.TwoMassID_Output->c_est_out);
+	js_slowDataArray[JSSD_FLOAT_d_est]                  = &(ParaID_Data.TwoMassID_Output->d_est_out);
+	js_slowDataArray[JSSD_FLOAT_I_rated]                = &(ParaID_Data.GlobalConfig.ratCurrent);
+	js_slowDataArray[JSSD_FLOAT_totalRotorInertia]      = &(ParaID_Data.TwoMassID_Output->rotorInertia);
+	js_slowDataArray[JSSD_FLOAT_Ld_Online]              = &(ParaID_Data.OnlineID_Output->Ld_out);
+	js_slowDataArray[JSSD_FLOAT_Lq_Online]              = &(ParaID_Data.OnlineID_Output->Lq_out);
+	js_slowDataArray[JSSD_FLOAT_PsiPM_Online]           = &(ParaID_Data.OnlineID_Output->psi_pm_out);
+	js_slowDataArray[JSSD_FLOAT_Rs_Online]              = &(ParaID_Data.OnlineID_Output->Rph_out);
+	js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
+	js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
+	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
+	js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
+	js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
+	js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
+	js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 
 	return Status;
 }
@@ -175,6 +163,8 @@ void JavaScope_update(DS_Data* data){
 
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+	para_state = activeState;
+	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

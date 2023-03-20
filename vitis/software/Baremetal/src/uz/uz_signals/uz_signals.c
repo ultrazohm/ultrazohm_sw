@@ -19,7 +19,6 @@
 #include "uz_signals.h"
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
-#include "../uz_math_constants.h"
 #include <math.h>
 
 float uz_signals_dead_zone(float input, float upper_threshold, float lower_threshold) {

@@ -1,5 +1,6 @@
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
+#include "../uz_math_constants.h"
 
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {

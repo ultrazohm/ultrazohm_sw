@@ -115,12 +115,10 @@ int main(void)
             initialization_chain = init_software;
             break;
         case init_software:
-            Initialize_Timer();
-            uz_SystemTime_init();
-            JavaScope_initalize(&Global_Data);
+
 //            Global_Data.av.theta_offset = 1.120014f; //!!! if cnt is reset to zero at init we have to add pi to 1.120014 = 4.261607
 //            Global_Data.av.theta_offset = 4.261607f;
-            Global_Data.av.theta_mech_offset_rad = 6.1205;
+            Global_Data.av.theta_mech_offset_rad = 6.14;
             Global_Data.av.polepairs = 5.0f;
 
 
@@ -172,7 +170,9 @@ int main(void)
 			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
-
+			Initialize_Timer();
+			            uz_SystemTime_init();
+			            JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -220,6 +220,9 @@ int main(void)
     }
     return (status);
 }
+
+
+
 
 
 void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess)

@@ -58,12 +58,12 @@ extern DS_Data Global_Data;
 #define DC_VOLT_CONV_2		141.28f
 #define DC_VOLT_OFF_2		452.17f
 
-// software current limit
+// software limits
 #define MAX_PHASE_CURRENT_AMP  18.0f
+#define MAX_DC_VOLT 610.0f
+#define MAX_TEMP_DEG 100.0f
 
 bool first_ISR = false;
-
-
 
 
 //ParaID
@@ -90,6 +90,44 @@ extern uz_resonantController_t* res_instance_1;
 extern uz_resonantController_t* res_instance_2;
 uz_6ph_dq_t controller_out = {0};
 
+// temp controller
+uz_3ph_dq_t cc_3ph_dq = {0};
+uz_3ph_dq_t cc_setp = {0};
+uz_6ph_dq_t cc_6ph_dq = {0};
+
+// zeroing
+uz_6ph_abc_t zero_offset = {0};
+bool zero_finished = false;
+
+uz_6ph_abc_t zero_offset_function(bool* flag){
+	static uz_6ph_abc_t data[1000];
+	static uz_6ph_abc_t sum = {0};
+	static int i = 0;
+	uz_6ph_abc_t out = {0};
+	data[i].a1 = Global_Data.av.v_a1;
+	sum.a1 = sum.a1 + data[i].a1;
+	data[i].b1 = Global_Data.av.v_b1;
+	sum.b1 = sum.b1 + data[i].b1;
+	data[i].c1 = Global_Data.av.v_c1;
+	sum.c1 = sum.c1 + data[i].c1;
+	data[i].a2 = Global_Data.av.v_a2;
+	sum.a2 = sum.a2 + data[i].a2;
+	data[i].b2 = Global_Data.av.v_b2;
+	sum.b2 = sum.b2 + data[i].b2;
+	data[i].c2 = Global_Data.av.v_c2;
+	sum.c2 = sum.c2 + data[i].c2;
+	i++;
+	if(i==999){
+		out.a1 = sum.a1/i;
+		out.b1 = sum.b1/i;
+		out.c1 = sum.c1/i;
+		out.a2 = sum.a2/i;
+		out.b2 = sum.b2/i;
+		out.c2 = sum.c2/i;
+		*flag = true;
+	}
+	return out;
+}
 
 
 //==============================================================================================================================================================
@@ -133,19 +171,31 @@ void ISR_Control(void *data)
     Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
     // convert ADC readings to voltages
     Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-    Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-    Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-    Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+    Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1 - zero_offset.a1;
+    Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1 - zero_offset.b1;
+    Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1 - zero_offset.c1;
     Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-    Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-    Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-    Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2 - zero_offset.a2;
+    Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2 - zero_offset.b2;
+    Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2 - zero_offset.c2;
+
+    if(!zero_finished){
+    	zero_offset = zero_offset_function(&zero_finished);
+    }
 
     // check current limit
 	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
 		uz_assert(0);
 	}
+	// check DC Bus
+	if(fabs(Global_Data.av.i_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.i_dc2) > MAX_DC_VOLT) {
+			uz_assert(0);
+		}
+	// check inverter temp
+		if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
+				uz_assert(0);
+			}
 
 	// read temperature values from inverters
 	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
@@ -172,7 +222,6 @@ void ISR_Control(void *data)
 	m_6ph_abc_voltage.b2 = Global_Data.av.v_b2 - u_neutral;
 	m_6ph_abc_voltage.c2 = Global_Data.av.v_c2 - u_neutral;
 
-
 	////////////Para ID actual
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
@@ -189,8 +238,11 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_mech_rad;
-	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
+	//ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;//Global_Data.av.theta_mech_rad;
+	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
+	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
+
 	//////////////ParaID ende
 
 
@@ -201,9 +253,14 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+    //	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+	//	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+	//	ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+
+        cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+        cc_6ph_dq.d = cc_3ph_dq.d;
+        cc_6ph_dq.q = cc_3ph_dq.q;
+        ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
 
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;

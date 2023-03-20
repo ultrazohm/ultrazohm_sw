@@ -82,7 +82,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
-	js_ch_observable[JSO_ua1] = &(ParaID_Data.ActualValues.v_abc_6ph.a1);
+	js_ch_observable[JSO_ia1] = &(ParaID_Data.ActualValues.i_abc_6ph.a1);
 	js_ch_observable[JSO_ib1] = &(ParaID_Data.ActualValues.i_abc_6ph.b1);
 	js_ch_observable[JSO_ic1] = &(ParaID_Data.ActualValues.i_abc_6ph.c1);
 	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);
@@ -107,6 +107,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_temp_inv1]				= &(data->av.temperature_inv_1);
+	js_slowDataArray[JSSD_FLOAT_temp_inv2]				= &(data->av.temperature_inv_2);
 	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(ParaID_Data.ActualValues.v_dq.d);
 	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq.q);
 	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq.d);

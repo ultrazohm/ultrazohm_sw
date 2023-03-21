@@ -13,7 +13,7 @@
  * 
  */
 struct uz_EncOffEst_config {
-    actualValues *actual;       /**< Poitner to global data actual values */
+    actualValues *actual;       /**< Pointer to global data actual values */
     float polepair;             /**< Polepairs of maschine */
     float setpoint_current;     /**< Setpoint current for tests */
 };

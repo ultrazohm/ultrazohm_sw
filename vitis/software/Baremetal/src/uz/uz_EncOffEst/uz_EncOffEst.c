@@ -21,6 +21,8 @@
 #define OFFSET_RANGE_RAD 0.5f
 #define OFFSET_STEP_RAD 0.1f
 #define OFFSET_ARRAYSIZE ((uint16_t) (2U*OFFSET_RANGE_RAD/OFFSET_STEP_RAD))
+#define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f
+#define OFFSET_DELAY_REACH_SPEED_SEC 1.0f
 
 enum encoderoffset_states_low_level
 {
@@ -51,25 +53,27 @@ static const uz_3ph_dq_t zero_dq_struct = {
     .q = 0.0f,
     .zero = 0.0f};
 
-static const struct measurement zero_meas_struct = {
-    .theta_offset = 0.0f,
-    .psi_d_positive = 0.0f,
-    .psi_d_negative = 0.0f};
-
 typedef struct uz_EncOffEst_t {
-    bool is_ready;
-    uz_filter_cumulativeavg_t *filter_u_q;
-    uz_filter_cumulativeavg_t *filter_omega_el;
+    // general variables
+    bool is_ready;                                                          // is ready
+    uz_filter_cumulativeavg_t *filter_u_q;                                  // pointer to filter instance
+    uz_filter_cumulativeavg_t *filter_omega_el;                             // pointer to filter instance
+    enum encoderoffset_states_low_level encoderoffset_current_state_ll;     // current state of substatemaschine
+    enum encoderoffset_states_high_level encoderoffset_current_state_hl;    // current state of main statemaschine
+    // inputs from config
     actualValues *actual;
-    float u_q_filtered;
-    float omega_el_filtered;
-    uz_3ph_dq_t i_reference_Ampere;
-    enum encoderoffset_states_low_level encoderoffset_current_state_ll;
-    enum encoderoffset_states_high_level encoderoffset_current_state_hl;
-    float setpoint_current;
-    float theta_offset_inital;
-    struct measurement measurement[OFFSET_ARRAYSIZE];
     float polepair;
+    float setpoint_current;
+    // mainstate variables
+    uz_3ph_dq_t i_reference_Ampere;                                         // seetpoint current to controller
+    float theta_offset_inital;                                              // initially predetermined encoder offset
+    struct measurement meas_array[OFFSET_ARRAYSIZE];                        // measurement array
+    uint32_t meas_array_counter;                                            // index for measurements array
+    // substate variables
+    float sub_init_time;                                                    // init time, set in several states
+    float sub_max_speed;                                                    // maximum speed with given current
+    float sub_u_q_filtered;                                                 // filtered uq
+    float sub_omega_el_filtered;                                            // filtered omega electric
 }uz_EncOffEst_t;
 
 
@@ -103,8 +107,6 @@ uz_EncOffEst_t* uz_EncOffEst_init(struct uz_EncOffEst_config config) {
 }
 
 uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
-    static struct measurement temp = {0};
-    static uint16_t i = 0U;
     switch(self->encoderoffset_current_state_hl){
         case init_theta:{
             self->theta_offset_inital = self->actual->theta_elec;                               // safe inital determined offset
@@ -114,7 +116,7 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
             break;
         }
         case positive_setpoint:{
-            temp.psi_d_positive = uz_EncOffEst_single_direction(self, self->setpoint_current);  // get psi with positive direction rotation
+            self->meas_array[self->meas_array_counter].psi_d_positive = uz_EncOffEst_single_direction(self, self->setpoint_current);  // get psi with positive direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){              // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back to init
                 self->encoderoffset_current_state_hl = negative_setpoint;                       // activate next step
@@ -122,24 +124,22 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
             break;
         }
         case negative_setpoint:{
-            temp.psi_d_negative = uz_EncOffEst_single_direction(self, -self->setpoint_current); // get psi with negative direction rotation
+            self->meas_array[self->meas_array_counter].psi_d_negative = uz_EncOffEst_single_direction(self, -self->setpoint_current); // get psi with negative direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){              // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back to init
                 self->encoderoffset_current_state_hl = change_theta;                            // activate next step
             }
             break;
         }
-        case change_theta:{
-            temp.theta_offset = self->actual->theta_offset;                                     // safe theta
-            self->measurement[i] = temp;                                                        // safe measurement to array
-            if(i < OFFSET_ARRAYSIZE){                                                           // if not all points are measured yet
+        case change_theta:{                               
+            self->meas_array[self->meas_array_counter].theta_offset = self->actual->theta_offset;   // safe theta
+            if(self->meas_array_counter < OFFSET_ARRAYSIZE){                                    // if not all points are measured yet
                 self->actual->theta_offset = self->actual->theta_offset + OFFSET_STEP_RAD;      // step up theta offset
-                i++;                                                                            // step up index
-                temp = zero_meas_struct;                                                        // clean measurement struct
+                self->meas_array_counter++;                                                     // step up index                                                      
                 self->encoderoffset_current_state_hl = positive_setpoint;                       // back to positive speed
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back init
             } else{
-                self->actual->theta_offset = uz_EncOffEst_find_best_theta(self->measurement);
+                self->actual->theta_offset = uz_EncOffEst_find_best_theta(self->meas_array);
                 self->encoderoffset_current_state_hl = encoderoffset_finished;                  // if all points are measured, get to finished state
             }
             break;
@@ -171,33 +171,35 @@ static float uz_EncOffEst_find_best_theta(const struct measurement meas_struct[O
 
 static float uz_EncOffEst_single_direction(uz_EncOffEst_t* self, const float setp_current){
     float psi_d = 0.0f;
-    static float init_time = 0.0f;
-    static float max_speed = 0.0f;
     switch (self->encoderoffset_current_state_ll){
         case encoderoffset_ll_init:{
             uz_filter_cumulativeavg_reset(self->filter_u_q);                    // reset filter
             uz_filter_cumulativeavg_reset(self->filter_omega_el);               // reset filter
             self->i_reference_Ampere = zero_dq_struct;                          // reset reference
-            init_time = uz_SystemTime_GetGlobalTimeInSec();                     // get init time
+            self->sub_init_time = uz_SystemTime_GetGlobalTimeInSec();                     // get init time
             self->encoderoffset_current_state_ll = encoderoffset_ll_accelerate; // set next state
             break;
         }
         case encoderoffset_ll_accelerate:{
             self->i_reference_Ampere.q = setp_current;                               // set reference current
-            if((uz_SystemTime_GetGlobalTimeInSec()-init_time) > 1.0f && (fabsf(self->actual->mechanicalRotorSpeed)>100.0f)){ //after 1 second and when speed is high enough
-                max_speed = fabsf(self->actual->mechanicalRotorSpeed);               // measure max speed
+            if((uz_SystemTime_GetGlobalTimeInSec()-self->sub_init_time) > OFFSET_DELAY_REACH_SPEED_SEC && (fabsf(self->actual->mechanicalRotorSpeed)>100.0f)){ //after 1 second and when speed is high enough
+                self->sub_max_speed = fabsf(self->actual->mechanicalRotorSpeed);     // measure max speed
                 self->encoderoffset_current_state_ll = encoderoffset_ll_measurement; // set next state
             }
             break;
         }
         case encoderoffset_ll_measurement:{
             self->i_reference_Ampere = zero_dq_struct;                                                  // reset reference
-            if ((fabsf(self->actual->mechanicalRotorSpeed) > 0.3f*max_speed) && (fabsf(self->actual->mechanicalRotorSpeed) < 0.8f*max_speed)  ) {// measure as long as omega_el is not zero
-                self->u_q_filtered = uz_filter_cumulativeavg_step(self->filter_u_q, self->actual->U_q); // measure
-                self->omega_el_filtered = uz_filter_cumulativeavg_step(self->filter_omega_el, self->actual->mechanicalRotorSpeed * self->polepair * 2.0f * UZ_PIf / 60.0f);    // measure
-            }else if(fabsf(self->actual->mechanicalRotorSpeed) < 0.15f*max_speed){
-                psi_d = self->u_q_filtered/self->omega_el_filtered;                                     // calculate psi_d
-                self->encoderoffset_current_state_ll = encoderoffset_ll_finished;                       // set finished state
+            self->sub_init_time = 0.0f;                                                                 // reset init time
+            if ((fabsf(self->actual->mechanicalRotorSpeed) > 0.3f*self->sub_max_speed) && (fabsf(self->actual->mechanicalRotorSpeed) < 0.8f*self->sub_max_speed)  ) {// measure as long as omega_el is not zero
+                self->sub_u_q_filtered = uz_filter_cumulativeavg_step(self->filter_u_q, self->actual->U_q); // measure
+                self->sub_omega_el_filtered = uz_filter_cumulativeavg_step(self->filter_omega_el, self->actual->mechanicalRotorSpeed * self->polepair * 2.0f * UZ_PIf / 60.0f);    // measure
+            }else if(fabsf(self->actual->mechanicalRotorSpeed) < 0.15f*self->sub_max_speed){
+                psi_d = self->sub_u_q_filtered/self->sub_omega_el_filtered;                                     // calculate psi_d
+                self->sub_init_time = uz_SystemTime_GetGlobalTimeInSec();                               // get init time
+            }
+            if(((uz_SystemTime_GetGlobalTimeInSec()-self->sub_init_time) > OFFSET_DELAY_BETWEEN_SETPOINTS_SEC) && self->sub_init_time != 0.0f){                                                     // wait before next step
+                    self->encoderoffset_current_state_ll = encoderoffset_ll_finished;                   // set finished state
             }
             break;
         }

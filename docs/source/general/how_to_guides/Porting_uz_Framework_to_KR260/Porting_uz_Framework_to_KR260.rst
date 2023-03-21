@@ -31,7 +31,6 @@ Vivado
 
 To get the UltraZohm-Framework running on the KR260, first of all a valid Hardware-Design is needed.
 This can be done with the create a project from scratch or using mainly scripts. 
-You can use uz_kria_sw as main folder for new project, the folder has required files.
 
 Creating Fresh Project
 -----------------------
@@ -91,7 +90,7 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_KR260_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
 
 #.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
 
@@ -182,8 +181,8 @@ Project with TCL Scripts:
 
     .. code-block::
 
-        source ../tcl_scripts/kr260sys_ps_generaton.tcl 
-        source ../tcl_scripts/kr260sys_hd_generaton.tcl
+        source ../tcl_scripts/k26sys_ps_generaton.tcl 
+        source ../tcl_scripts/k26sys_hd_generaton.tcl
 
 #. Create VHDL wrapper for `kr260sys` and set as top manually. 
 
@@ -273,13 +272,13 @@ To create a suited software for the KR260, follow these steps:
 
         * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
 
-    #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis_kria\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
+    #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
 
         * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
 
 #. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
-    * ``\vitis_kria\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
+    * ``\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
 #. Restart Vitis to make the. launches-files accessible
 #. Build both C-Projects 

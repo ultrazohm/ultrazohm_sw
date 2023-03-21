@@ -3,9 +3,6 @@
 !/vitis/workspace/create_Vitis_workspace_here.txt
 
 /vitis_kria/workspace
-/vivado_kria/*
-!/vivado_kria/constraints
-!/vivado_kria/hdl
 
 ip_cores/*/simulation/slprj/*
 

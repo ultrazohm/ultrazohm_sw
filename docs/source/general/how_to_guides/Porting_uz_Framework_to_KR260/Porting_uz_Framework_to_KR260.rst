@@ -66,13 +66,13 @@ Creating Fresh Project
 #.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
 
-#.  Some VHDL-files were missing. You have to add them manually as design sources to the Vivado-Project. Those files actually were located in the folder ``ip_cores``. You can use ``ultrazohm_sw/vivado_kria/hdl`` path to get folder which contains all or search for
+#.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
     
-    *  top_npc_state_machine.vhd
-    *  npc_phase_state_machine.vhd
-    *  delay_trigger.vhd
-    *  extend_interrupt.vhd
-    *  iobufds_inst.vhd
+    *  ip_cores \ Interlock_Module_3L \ top_npc_state_machine.vhd
+    *  ip_cores \ Interlock_Module_3L \ npc_phase_state_machine.vhd
+    *  ip_cores\ Delay_signal \ delay_trigger.vhd
+    *  ip_cores \ Extend_Interrupt \ extend_interrupt.vhd
+    *  vivado \ src \ hdl \ iobufds_inst.vhd
 
     .. tip:: ``Add sources → Add or Create design sources → Add Files → Choose the files → Finish``
 
@@ -154,12 +154,13 @@ Following those steps should lead to an HW-Design like this:
     :align: center
 
     Vivado-Project Hardware-Design KR260.
+    
 
 Project with TCL Scripts: 
 ----------------------------
 
 #. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
-#. Add the missing VHDL-files from ``ultrazohm_sw/vivado_kria/hdl`` path:
+#. Add the missing VHDL-files:
    
     .. code-block::
         
@@ -169,7 +170,7 @@ Project with TCL Scripts:
         extend_interrupt.vhd
         iobufds_inst.vhd
 
-#. Add UltraZohm IP Core Library.
+#. Add the UltraZohm IP-Repository to the project. 
 #. Add a new Block design and name with ``kr260sys``.
 #. Switch with the TCL Console to the current working folder with:
    
@@ -186,12 +187,15 @@ Project with TCL Scripts:
 
 #. Create VHDL wrapper for `kr260sys` and set as top manually. 
 
-#. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl files from `uz_kria_sw/vivado/tcl_scripts`:
+#. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
     * kr260sys_ps_generation → PS 
     * kr260sys_hd_generation → IP-Cores, Connections
 
-.. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw/uz_kria_sw as main location.  
+.. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
+
+#.  Generate the Bitstream and export the `.xsa`.
+
 
 Vitis
 =====
@@ -205,14 +209,8 @@ This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII
 To create a suited software for the KR260, follow these steps:
 
 #.  Open Vitis 2022.2 and create the Workspace according to Ultrazohm Setup.
-    
-    .. tip::  
-        
-        * Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
-        * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
 
-    #. Open the XSCT Console in Vitis
-    #. Type the following commands
+    * Open the XSCT Console in Vitis. Type the following commands:
 
     .. code-block:: 
 
@@ -291,10 +289,14 @@ To create a suited software for the KR260, follow these steps:
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
     * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
 
+#. Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
 Known Issues
 ============
 * The applied BSP-Hack is done in generated source files. This means regenerating the BSP **WILL DELETE THE HACK** and the FreeRTOS won't initialize the PHY properly. If the error "autonegation failed" show's up during the start, check if the hack is still present.
+* Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
+    * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
+
 
 Discussion
 ==========

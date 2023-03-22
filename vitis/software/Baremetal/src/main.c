@@ -16,6 +16,8 @@
 // Includes from own files
 #include "main.h"
 
+uz_codegen codegenInstance;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -28,8 +30,11 @@ DS_Data Global_Data = {
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+    .av.I_U = 1.0f,
 };
+
+
 
 enum init_chain
 {
@@ -39,8 +44,11 @@ enum init_chain
     init_ip_cores,
     print_msg,
     init_interrupts,
-    infinite_loop
+    infinite_loop,
+	init_foc_pmsm
 };
+uz_pmsmModel_t *pmsm=NULL;
+uz_FOC* FOC_instance = NULL;
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -63,8 +71,48 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_foc_pmsm;
             break;
+        case init_foc_pmsm:;
+		   struct uz_PMSM_t config_PMSM = {
+			   .Ld_Henry = 3.00e-04f,
+			   .Lq_Henry = 3.00e-04f,
+			   .Psi_PM_Vs = 0.0075f};
+		   struct uz_PI_Controller_config config_id = {
+			   .Kp = 3.0f,
+			   .Ki = 0.0f,
+			   .samplingTime_sec = 0.00005f,
+			   .upper_limit = 10.0f,
+			   .lower_limit = -10.0f};
+		   struct uz_PI_Controller_config config_iq = {
+			   .Kp = 3.0f,
+			   .Ki = 0.0f,
+			   .samplingTime_sec = 0.00005f,
+			   .upper_limit = 10.0f,
+			   .lower_limit = -10.0f};
+		   struct uz_FOC_config config_FOC = {
+			   .decoupling_select = no_decoupling,
+			   .config_PMSM = config_PMSM,
+			   .config_id = config_id,
+			   .config_iq = config_iq};
+		   FOC_instance = uz_FOC_init(config_FOC);
+		   struct uz_pmsmModel_config_t pmsm_config={
+			   .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+			   .ip_core_frequency_Hz=100000000,
+			   .simulate_mechanical_system = true,
+			   .r_1 = 0.085f,
+			   .L_d = 3.00e-04f,
+			   .L_q = 3.00e-04f,
+			   .psi_pm = 0.0075f,
+			   .polepairs = 4.0f,
+			   .inertia = 3.24e-05f,
+			   .coulomb_friction_constant = 0.01f,
+			   .friction_coefficient = 0.001f};
+		   pmsm=uz_pmsmModel_init(pmsm_config);
+		   uz_codegen_init(&codegenInstance);
+		   initialization_chain = init_ip_cores;
+
+
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1 = uz_interlockDeadtime2L_staticAllocator_slotD1();

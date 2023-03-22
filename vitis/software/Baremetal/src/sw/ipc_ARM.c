@@ -24,6 +24,11 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+extern bool is_three_phase_active;
+extern float amplitude;
+extern float frequency;
+extern float offset;
+extern uz_3ph_dq_t reference_currents_Amp;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -187,11 +192,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+				reference_currents_Amp.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+				reference_currents_Amp.d = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -223,10 +228,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
+			is_three_phase_active = true;
+		    ultrazohm_state_machine_set_userLED(true);
 
 			break;
 
 		case (My_Button_5):
+			is_three_phase_active = false;
+		    ultrazohm_state_machine_set_userLED(false);
 
 			break;
 
@@ -300,11 +309,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
+	if (is_three_phase_active) {
+	   js_status_BareToRTOS |= 1 << 7;
+	} else {
+	   js_status_BareToRTOS &= ~(1 << 7);
+	}
 	// js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
+	if (!is_three_phase_active) {
+	   js_status_BareToRTOS |= 1 << 8;
+	} else {
+	   js_status_BareToRTOS &= ~(1 << 8);
+		 }
 	// js_status_BareToRTOS &= ~(1 << 8);
-
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
 

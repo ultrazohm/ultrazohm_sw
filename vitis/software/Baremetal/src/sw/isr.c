@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_FOC/uz_FOC.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -40,6 +40,17 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern uz_codegen codegenInstance;
+
+#define CURRENT_CONV_FACTOR 3.2f
+
+uz_3ph_abc_t three_phase_output = {0};
+bool is_three_phase_active = false;
+float amplitude = 0.5f;
+float frequency = 1.0f;
+float offset = 0.0f;
+//float link = 48.0f;
+struct uz_DutyCycle_t duty_cycles={0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -49,16 +60,78 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+extern uz_pmsmModel_t *pmsm;
+extern uz_FOC* FOC_instance;
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t FOC_output_Volts = {0};
+uz_3ph_abc_t output_current_uvw = {0};
+uz_3ph_abc_t output_uvw = {0};
+uz_3ph_dq_t output_dq = {0};
+float omega_el_rad_per_sec = 0.0f;
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+  .omega_mech_1_s=0.0f,
+  .v_d_V=0.0f,
+  .v_q_V=0.0f,
+  .load_torque=0.0f
+};
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+  .i_d_A=0.0f,
+  .i_q_A=0.0f,
+  .torque_Nm=0.0f,
+  .omega_mech_1_s=0.0f
+};
+float theta_el_rad = 0.0f;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    uz_codegen_step(&codegenInstance);
+
+    Global_Data.av.I_U = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
+    Global_Data.av.I_V = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
+    Global_Data.av.I_W = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    theta_el_rad = (Global_Data.av.theta_elec - 5.4f) * 3.0f;
+
+    output_current_uvw.a = Global_Data.av.I_U;
+	output_current_uvw.b = Global_Data.av.I_V;
+	output_current_uvw.c = Global_Data.av.I_W;
+	output_dq = uz_transformation_3ph_abc_to_dq(output_current_uvw, theta_el_rad);
+	measured_currents_Amp.d = output_dq.d;
+	measured_currents_Amp.q = output_dq.q;
+	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * 3.0f;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+ /*   	uz_pmsmModel_trigger_input_strobe(pmsm);
+    	uz_pmsmModel_trigger_output_strobe(pmsm);
+    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm); */
+
+
+    	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 48.0f, omega_el_rad_per_sec);
+    	output_uvw = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, theta_el_rad);
+
+
+
+    	/*pmsm_inputs.v_q_V=FOC_output_Volts.q;
+    	pmsm_inputs.v_d_V=FOC_output_Volts.d;
+    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);*/
+
+    	/*if (is_three_phase_active) {
+    	       three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset);*/
+
+    	 duty_cycles=	   uz_FOC_generate_DutyCycles(output_uvw, 48.0f);
+    	 Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.DutyCycle_U;
+    	 Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.DutyCycle_V;
+    	 Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
+
+	 } else { //if (current_state!=control_state || !is_three_phase_active) {
+		 Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		 Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		 Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator

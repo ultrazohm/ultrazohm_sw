@@ -53,7 +53,12 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "Codegen/uz_codegen.h"
 
 //----------------------------------------------------
 // FUNCTIONS

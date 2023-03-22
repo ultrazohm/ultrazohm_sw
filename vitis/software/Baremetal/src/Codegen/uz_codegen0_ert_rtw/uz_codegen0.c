@@ -7,147 +7,231 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 1.28
- * Simulink Coder version         : 9.4 (R2020b) 29-Jul-2020
- * C/C++ source code generated on : Thu Jan 14 18:26:20 2021
+ * Model version                  : 5.3
+ * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+ * C/C++ source code generated on : Wed Mar 22 13:05:01 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: All passed
+ * Validation result: Passed (11), Warnings (2), Error (0)
  */
 
 #include "uz_codegen0.h"
+#include <string.h>
+#include "rtwtypes.h"
 
-/*===========*
- * Constants *
- *===========*/
-#define RT_PI                          3.14159265358979323846
-#define RT_PIF                         3.1415927F
-#define RT_LN_10                       2.30258509299404568402
-#define RT_LN_10F                      2.3025851F
-#define RT_LOG10E                      0.43429448190325182765
-#define RT_LOG10EF                     0.43429449F
-#define RT_E                           2.7182818284590452354
-#define RT_EF                          2.7182817F
+static real32_T look2_iflf_binlx(real32_T u0, real32_T u1, const real32_T bp0[],
+  const real32_T bp1[], const real32_T table[], const uint32_T maxIndex[],
+  uint32_T stride);
+static real32_T look1_iflf_binlx(real32_T u0, const real32_T bp0[], const
+  real32_T table[], uint32_T maxIndex);
+static real32_T look2_iflf_binlx(real32_T u0, real32_T u1, const real32_T bp0[],
+  const real32_T bp1[], const real32_T table[], const uint32_T maxIndex[],
+  uint32_T stride)
+{
+  real32_T fractions[2];
+  real32_T frac;
+  real32_T yL_0d0;
+  real32_T yL_0d1;
+  uint32_T bpIndices[2];
+  uint32_T bpIdx;
+  uint32_T iLeft;
+  uint32_T iRght;
 
-/*
- * UNUSED_PARAMETER(x)
- *   Used to specify that a function parameter (argument) is required but not
- *   accessed by the function body.
- */
-#ifndef UNUSED_PARAMETER
-#if defined(__LCC__)
-#define UNUSED_PARAMETER(x)                                      /* do nothing */
-#else
+  /* Column-major Lookup 2-D
+     Search method: 'binary'
+     Use previous index: 'off'
+     Interpolation method: 'Linear point-slope'
+     Extrapolation method: 'Linear'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  /* Prelookup - Index and Fraction
+     Index Search method: 'binary'
+     Extrapolation method: 'Linear'
+     Use previous index: 'off'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  if (u0 <= bp0[0U]) {
+    iLeft = 0U;
+    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
+  } else if (u0 < bp0[maxIndex[0U]]) {
+    /* Binary Search */
+    bpIdx = maxIndex[0U] >> 1U;
+    iLeft = 0U;
+    iRght = maxIndex[0U];
+    while (iRght - iLeft > 1U) {
+      if (u0 < bp0[bpIdx]) {
+        iRght = bpIdx;
+      } else {
+        iLeft = bpIdx;
+      }
 
-/*
- * This is the semi-ANSI standard way of indicating that an
- * unused function parameter is required.
- */
-#define UNUSED_PARAMETER(x)            (void) (x)
-#endif
-#endif
+      bpIdx = (iRght + iLeft) >> 1U;
+    }
+
+    frac = (u0 - bp0[iLeft]) / (bp0[iLeft + 1U] - bp0[iLeft]);
+  } else {
+    iLeft = maxIndex[0U] - 1U;
+    frac = (u0 - bp0[maxIndex[0U] - 1U]) / (bp0[maxIndex[0U]] - bp0[maxIndex[0U]
+      - 1U]);
+  }
+
+  fractions[0U] = frac;
+  bpIndices[0U] = iLeft;
+
+  /* Prelookup - Index and Fraction
+     Index Search method: 'binary'
+     Extrapolation method: 'Linear'
+     Use previous index: 'off'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  if (u1 <= bp1[0U]) {
+    iLeft = 0U;
+    frac = (u1 - bp1[0U]) / (bp1[1U] - bp1[0U]);
+  } else if (u1 < bp1[maxIndex[1U]]) {
+    /* Binary Search */
+    bpIdx = maxIndex[1U] >> 1U;
+    iLeft = 0U;
+    iRght = maxIndex[1U];
+    while (iRght - iLeft > 1U) {
+      if (u1 < bp1[bpIdx]) {
+        iRght = bpIdx;
+      } else {
+        iLeft = bpIdx;
+      }
+
+      bpIdx = (iRght + iLeft) >> 1U;
+    }
+
+    frac = (u1 - bp1[iLeft]) / (bp1[iLeft + 1U] - bp1[iLeft]);
+  } else {
+    iLeft = maxIndex[1U] - 1U;
+    frac = (u1 - bp1[maxIndex[1U] - 1U]) / (bp1[maxIndex[1U]] - bp1[maxIndex[1U]
+      - 1U]);
+  }
+
+  /* Column-major Interpolation 2-D
+     Interpolation method: 'Linear point-slope'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Overflow mode: 'wrapping'
+   */
+  bpIdx = iLeft * stride + bpIndices[0U];
+  yL_0d0 = table[bpIdx];
+  yL_0d0 += (table[bpIdx + 1U] - yL_0d0) * fractions[0U];
+  bpIdx += stride;
+  yL_0d1 = table[bpIdx];
+  return (((table[bpIdx + 1U] - yL_0d1) * fractions[0U] + yL_0d1) - yL_0d0) *
+    frac + yL_0d0;
+}
+
+static real32_T look1_iflf_binlx(real32_T u0, const real32_T bp0[], const
+  real32_T table[], uint32_T maxIndex)
+{
+  real32_T frac;
+  real32_T yL_0d0;
+  uint32_T iLeft;
+
+  /* Column-major Lookup 1-D
+     Search method: 'binary'
+     Use previous index: 'off'
+     Interpolation method: 'Linear point-slope'
+     Extrapolation method: 'Linear'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  /* Prelookup - Index and Fraction
+     Index Search method: 'binary'
+     Extrapolation method: 'Linear'
+     Use previous index: 'off'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Remove protection against out-of-range input in generated code: 'off'
+   */
+  if (u0 <= bp0[0U]) {
+    iLeft = 0U;
+    frac = (u0 - bp0[0U]) / (bp0[1U] - bp0[0U]);
+  } else if (u0 < bp0[maxIndex]) {
+    uint32_T bpIdx;
+    uint32_T iRght;
+
+    /* Binary Search */
+    bpIdx = maxIndex >> 1U;
+    iLeft = 0U;
+    iRght = maxIndex;
+    while (iRght - iLeft > 1U) {
+      if (u0 < bp0[bpIdx]) {
+        iRght = bpIdx;
+      } else {
+        iLeft = bpIdx;
+      }
+
+      bpIdx = (iRght + iLeft) >> 1U;
+    }
+
+    frac = (u0 - bp0[iLeft]) / (bp0[iLeft + 1U] - bp0[iLeft]);
+  } else {
+    iLeft = maxIndex - 1U;
+    frac = (u0 - bp0[maxIndex - 1U]) / (bp0[maxIndex] - bp0[maxIndex - 1U]);
+  }
+
+  /* Column-major Interpolation 1-D
+     Interpolation method: 'Linear point-slope'
+     Use last breakpoint for index at or above upper limit: 'off'
+     Overflow mode: 'wrapping'
+   */
+  yL_0d0 = table[iLeft];
+  return (table[iLeft + 1U] - yL_0d0) * frac + yL_0d0;
+}
 
 /* Model step function */
 void uz_codegen0_step(RT_MODEL *const rtM)
 {
-  DW *rtDW = rtM->dwork;
   ExtU *rtU = (ExtU *) rtM->inputs;
   ExtY *rtY = (ExtY *) rtM->outputs;
-  real32_T rtb_Sum;
 
-  /* Sum: '<S1>/Sum' incorporates:
-   *  Inport: '<Root>/Sum1'
-   *  Inport: '<Root>/Sum2'
-   *  Inport: '<Root>/Sum4'
+  /* Outport: '<Root>/ME_id' incorporates:
+   *  Lookup_n-D: '<S1>/MEid'
    */
-  rtb_Sum = (rtU->Sum1 + rtU->Sum2) + rtU->Sum4;
+  rtY->ME_id = look2_iflf_binlx(rtU->omega, rtU->torque, rtConstP.pooled1,
+    rtConstP.pooled2, rtConstP.MEid_tableData, rtConstP.pooled3, 4U);
 
-  /* Outport: '<Root>/SumOut' incorporates:
-   *  Gain: '<S1>/Gain'
+  /* Outport: '<Root>/ME_iq' incorporates:
+   *  Lookup_n-D: '<S1>/MEiq'
    */
-  rtY->SumOut = 5.0F * rtb_Sum;
+  rtY->ME_iq = look2_iflf_binlx(rtU->omega, rtU->torque, rtConstP.pooled1,
+    rtConstP.pooled2, rtConstP.MEiq_tableData, rtConstP.pooled3, 4U);
 
-  /* DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
-   *  Inport: '<Root>/reset_integrator'
+  /* Outport: '<Root>/MTPA_id' incorporates:
+   *  Lookup_n-D: '<S1>/MTPAid'
    */
-  if ((rtU->reset_integrator != 0.0F) || (rtDW->DiscreteTimeIntegrator_PrevRese
-       != 0)) {
-    rtDW->DiscreteTimeIntegrator_DSTATE = 0.0F;
-  }
+  rtY->MTPA_id = look1_iflf_binlx(rtU->torque, rtConstP.pooled2,
+    rtConstP.MTPAid_tableData, 40U);
 
-  if (rtDW->DiscreteTimeIntegrator_DSTATE >= 1000.0F) {
-    rtDW->DiscreteTimeIntegrator_DSTATE = 1000.0F;
-  } else {
-    if (rtDW->DiscreteTimeIntegrator_DSTATE <= -1000.0F) {
-      rtDW->DiscreteTimeIntegrator_DSTATE = -1000.0F;
-    }
-  }
-
-  /* Outport: '<Root>/integrator' incorporates:
-   *  DiscreteIntegrator: '<S1>/Discrete-Time Integrator'
+  /* Outport: '<Root>/MTPA_iq' incorporates:
+   *  Lookup_n-D: '<S1>/MTPAiq'
    */
-  rtY->integrator = rtDW->DiscreteTimeIntegrator_DSTATE;
-
-  /* Outport: '<Root>/sineOut' incorporates:
-   *  Constant: '<S1>/Constant'
-   *  DiscreteIntegrator: '<S1>/Discrete-Time Integrator1'
-   *  Gain: '<S1>/Gain1'
-   *  Gain: '<S1>/Gain2'
-   *  Sum: '<S1>/Sum3'
-   *  Trigonometry: '<S1>/Trigonometric Function'
-   */
-  rtY->sineOut = sinf(6.28318548F * rtDW->DiscreteTimeIntegrator1_DSTATE) * 0.5F
-    + 0.5F;
-
-  /* Outport: '<Root>/SumOut1' incorporates:
-   *  Inport: '<Root>/Sum1'
-   */
-  rtY->SumOut1 = rtU->Sum1;
-
-  /* Outport: '<Root>/timeFeedback' incorporates:
-   *  Inport: '<Root>/time'
-   */
-  rtY->timeFeedback = rtU->time;
-
-  /* Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator' incorporates:
-   *  Inport: '<Root>/reset_integrator'
-   */
-  rtDW->DiscreteTimeIntegrator_DSTATE += 0.0001F * rtb_Sum;
-  if (rtDW->DiscreteTimeIntegrator_DSTATE >= 1000.0F) {
-    rtDW->DiscreteTimeIntegrator_DSTATE = 1000.0F;
-  } else {
-    if (rtDW->DiscreteTimeIntegrator_DSTATE <= -1000.0F) {
-      rtDW->DiscreteTimeIntegrator_DSTATE = -1000.0F;
-    }
-  }
-
-  if (rtU->reset_integrator > 0.0F) {
-    rtDW->DiscreteTimeIntegrator_PrevRese = 1;
-  } else if (rtU->reset_integrator < 0.0F) {
-    rtDW->DiscreteTimeIntegrator_PrevRese = -1;
-  } else if (rtU->reset_integrator == 0.0F) {
-    rtDW->DiscreteTimeIntegrator_PrevRese = 0;
-  } else {
-    rtDW->DiscreteTimeIntegrator_PrevRese = 2;
-  }
-
-  /* End of Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator' */
-
-  /* Update for DiscreteIntegrator: '<S1>/Discrete-Time Integrator1' incorporates:
-   *  Inport: '<Root>/time'
-   */
-  rtDW->DiscreteTimeIntegrator1_DSTATE += 0.0001F * rtU->time;
+  rtY->MTPA_iq = look1_iflf_binlx(rtU->torque, rtConstP.pooled2,
+    rtConstP.MTPAiq_tableData, 40U);
 }
 
 /* Model initialize function */
 void uz_codegen0_initialize(RT_MODEL *const rtM)
 {
-  /* (no initialization code required) */
-  UNUSED_PARAMETER(rtM);
+  ExtU *rtU = (ExtU *) rtM->inputs;
+  ExtY *rtY = (ExtY *) rtM->outputs;
+
+  /* Registration code */
+
+  /* external inputs */
+  (void)memset(rtU, 0, sizeof(ExtU));
+
+  /* external outputs */
+  (void)memset(rtY, 0, sizeof(ExtY));
 }
 
 /*

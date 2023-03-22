@@ -20,6 +20,9 @@
 #include <stdbool.h>
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
 
+extern DS_Data Global_Data;
+
+
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -50,10 +53,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			        case (Set_Send_Field_2):
 			            ParaID_Data.GlobalConfig.i_dq_ref.d = value;
+			        	//Global_Data.rasv.xy_i_dq_PI_ref.d = value;
 			            break;
 
 			        case (Set_Send_Field_3):
 			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
+		        		//Global_Data.rasv.xy_i_dq_PI_ref.q = value;
+
 			            break;
 
 		case (201): // SELECT_DATA_CH1_bits
@@ -206,15 +212,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-				data->av.theta_mech_offset_rad = value;
+			Global_Data.rasv.kp_dq = value;
 
 			break;
 
 		case (Set_Send_Field_5):
+		Global_Data.rasv.ki_dq = value;
 
 			break;
 
 		case (Set_Send_Field_6):
+		Global_Data.rasv.res_gain_scope = value;
 
 			break;
 

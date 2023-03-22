@@ -60,7 +60,7 @@ extern DS_Data Global_Data;
 
 // software limits
 #define MAX_PHASE_CURRENT_AMP  18.0f
-#define MAX_DC_VOLT 610.0f
+#define MAX_DC_VOLT 590.0f
 #define MAX_TEMP_DEG 100.0f
 
 bool first_ISR = false;
@@ -94,6 +94,12 @@ uz_6ph_dq_t controller_out = {0};
 uz_3ph_dq_t cc_3ph_dq = {0};
 uz_3ph_dq_t cc_setp = {0};
 uz_6ph_dq_t cc_6ph_dq = {0};
+uz_3ph_alphabeta_t current_stationary_xy = {0};
+uz_3ph_dq_t current_rotating_xy = {0};
+uz_3ph_dq_t cc_3ph_xy_rotating = {0};
+uz_3ph_alphabeta_t cc_3ph_xy_stationary = {0};
+extern float res_gain_scope;
+
 
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
@@ -189,12 +195,12 @@ void ISR_Control(void *data)
 		uz_assert(0);
 	}
 	// check DC Bus
-	if(fabs(Global_Data.av.i_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.i_dc2) > MAX_DC_VOLT) {
+	if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
 			uz_assert(0);
 		}
 	// check inverter temp
 		if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
-				uz_assert(0);
+		//		uz_assert(0);
 			}
 
 	// read temperature values from inverters
@@ -245,21 +251,40 @@ void ISR_Control(void *data)
 
 	//////////////ParaID ende
 
+	current_stationary_xy.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
+	current_stationary_xy.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
+	current_rotating_xy = uz_transformation_3ph_alphabeta_to_dq(current_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
 
+	uz_CurrentControl_set_Kp_id(CC_instance_1, Global_Data.rasv.kp_dq);
+	uz_CurrentControl_set_Kp_iq(CC_instance_1, Global_Data.rasv.kp_dq);
+	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
+	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
 
-
+	uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.res_gain_scope);
+	uz_resonantController_set_harmonic_order(res_instance_1, 2.0f);
+	uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.res_gain_scope);
+	uz_resonantController_set_harmonic_order(res_instance_2, 2.0f);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    //	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-	//	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-	//	ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+    	//uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+
+    	//uz_FluxMapID_6ph_mock_for_controller_testing(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+    	//controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		//ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
 
         cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        cc_6ph_dq.d = cc_3ph_dq.d;
-        cc_6ph_dq.q = cc_3ph_dq.q;
+        cc_6ph_dq.d = cc_3ph_dq.d + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.d, ParaID_Data.ActualValues.omega_el);
+        cc_6ph_dq.q = cc_3ph_dq.q + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.q, ParaID_Data.ActualValues.omega_el);
+
+
+        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, cc_setp, current_rotating_xy, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+         cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
+        cc_6ph_dq.x = cc_3ph_xy_stationary.alpha;
+        cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
+
         ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
 
@@ -272,6 +297,11 @@ void ISR_Control(void *data)
 
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
+    }
+    else
+    {
+    	uz_resonantController_reset(res_instance_1);
+    	uz_resonantController_reset(res_instance_2);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

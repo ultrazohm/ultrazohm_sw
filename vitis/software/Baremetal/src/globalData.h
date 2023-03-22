@@ -8,7 +8,7 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
-
+#include "uz/uz_Transformation/uz_Transformation.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -111,6 +111,15 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float res_gain_scope;
+	uint16_t selected_subsystem;
+	uz_3ph_dq_t ab_i_dq_PI_ref;
+	uz_3ph_dq_t xy_i_dq_PI_ref;
+	float resonant_order;
+	float kp_dq;
+	float ki_dq;
+	float kp_xy;
+	float ki_xy;
 } referenceAndSetValues;
 
 typedef struct{

@@ -96,8 +96,6 @@ uz_ParaID_ElectricalID_fft_in_t uncorrected;
 uz_ParaID_ElectricalID_fft_in_t corrected;
 void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess);
 
-
-
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -120,21 +118,24 @@ int main(void)
 //            Global_Data.av.theta_offset = 4.261607f;
             Global_Data.av.theta_mech_offset_rad = 6.14;
             Global_Data.av.polepairs = 5.0f;
-
+            Global_Data.rasv.xy_i_dq_PI_ref.d = 0.0f;
+            Global_Data.rasv.xy_i_dq_PI_ref.q = 0.0F;
+            Global_Data.rasv.ab_i_dq_PI_ref.d = 0.0f;
+            Global_Data.rasv.ab_i_dq_PI_ref.q = 0.0f;
 
 			ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
 			//Code below is only needed, if the uz_FOC is used as the controller
 
 			struct uz_PI_Controller_config PI_config = {
-				.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
-				.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum),
+				.Ki = 1500.0f,//ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(tau_sum),
+				.Kp = 10.0f,//ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(tau_sum),
 				.samplingTime_sec = isr_ts,
 				.lower_limit = -20.0f,
 				.upper_limit = 20.0f
 			};
 			struct uz_PI_Controller_config PI_config_xy = {
-							.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
-							.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
+							.Ki = 500.0f,//ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+							.Kp = 15.0f,//ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
 							.samplingTime_sec = isr_ts,
 							.lower_limit = -20.0f,
 							.upper_limit = 20.0f
@@ -147,21 +148,25 @@ int main(void)
 				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
 
 			struct uz_CurrentControl_config cc_config_2 = {
-							.decoupling_select = linear_decoupling,
+							.decoupling_select = no_decoupling,
 							.config_id = PI_config_xy,
 							.config_iq = PI_config_xy,
 							.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
 
 			struct uz_resonantController_config resonant_config = {
 				.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
-				.gain = PI_config.Ki,
-				.harmonic_order = 2.0f,
+				.gain = 1000.0f,//PI_config.Ki,
+				.harmonic_order = 6.0f,
 				.fundamental_frequency = 1.0f,
-				.lower_limit = -10.0f,
-				.upper_limit = 10.0f,
-				.antiwindup_gain = 10.0f,
+				.lower_limit = -5.0f,
+				.upper_limit = 5.0f,
+				.antiwindup_gain = 100.0f,
 				.in_reference_value = 0.0f,
 				.in_measured_value = 0.0f};
+
+			Global_Data.rasv.res_gain_scope = resonant_config.gain;
+			 Global_Data.rasv.kp_dq = PI_config_xy.Kp;
+			 Global_Data.rasv.ki_dq = PI_config_xy.Ki;
 
 			sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
 			Speed_instace = uz_SpeedControl_init(speed_config);

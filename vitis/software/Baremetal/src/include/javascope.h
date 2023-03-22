@@ -23,8 +23,8 @@ enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
 	JSO_id,
 	JSO_iq,
-	JSO_ixd,
-	JSO_ixq,
+	JSO_x_rot,
+	JSO_y_rot,
 	JSO_ix,
 	JSO_iy,
 	JSO_iz1,
@@ -41,6 +41,8 @@ enum JS_OberservableData {
 	JSO_uy,
 	JSO_uz1,
 	JSO_uz2,
+	JSO_x_rot_set,
+	JSO_y_rot_set,
 	JSO_theta_mech,
 	JSO_state,
 	JSO_ISR_ExecTime_us,
@@ -73,8 +75,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_temp_inv1,
-	JSSD_FLOAT_temp_inv2,
 	JSSD_FLOAT_Rs_Offline,
 	JSSD_FLOAT_Ld_Offline,
 	JSSD_FLOAT_Lq_Offline,
@@ -117,6 +117,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_totalRotorInertia,
 	JSSD_FLOAT_MapControlCounter,
 	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_temp_inv1,
+	JSSD_FLOAT_temp_inv2,
 	JSSD_ENDMARKER
 };
 
@@ -229,9 +231,9 @@ SND_FLD_ZEROVALUE=0,
 n_ref,
 i_d_ref,
 i_q_ref,
-send_field_4,
-send_field_5,
-send_field_6,
+kp_dq,
+ki_dq,
+res_gain,
 SND_FLD_ENDMARKER
 
 
@@ -242,9 +244,9 @@ SND_LABELS_ZEROVALUE=0,
 RPM,
 A,
 A,
-A,
-A,
-A,
+Ohm,
+Ohm,
+Ohm,
 SND_LABELS_ENDMARKER
 
 

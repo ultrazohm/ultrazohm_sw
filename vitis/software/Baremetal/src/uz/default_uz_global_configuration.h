@@ -50,6 +50,7 @@
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     1U
 #define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        2U
+#define UZ_TEMPERATURE_CARD_MAX_INSTANCES               1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -86,5 +87,6 @@
     #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
     #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
-    #define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        5U    
+    #define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        5U
+	#define UZ_TEMPERATURE_CARD_MAX_INSTANCES               10U    
 #endif

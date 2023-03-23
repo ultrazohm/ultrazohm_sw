@@ -91,23 +91,25 @@ Example
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,
-        .upper_limit = 10.0f,
-        .lower_limit = -10.0f
      };
      struct uz_PI_Controller_config config_iq = {
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,
-        .upper_limit = 10.0f,
-        .lower_limit = -10.0f
      };
-     struct uz_CurrentControl_config config_CurrentControl = {
+     struct uz_CurrentControl_config CC_config = {
         .decoupling_select = linear_decoupling,
         .config_PMSM = config_PMSM,
         .config_id = config_id,
-        .config_iq = config_iq
+        .config_iq = config_iq,
+        .max_modulation_index = 1.0f / sqrtf(3.0f)
      };
   }
+
+.. note::
+
+  The limitation of the internal PI-Controllers are deactivated, since only the :ref:`uz_spacevectorlimiation` will be used. The limits can be left at 0 in the config.  
+
 
 Description
 ^^^^^^^^^^^
@@ -134,7 +136,7 @@ Example
   :caption: Example function call to init a CurrentControl instance. ``config_CurrentControl`` according to :ref:`configuration section<uz_CurrentControl_config>`
 
   int main(void) {
-     uz_CurrentControl_t* CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+     uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(CC_config);
   }
 
 Description
@@ -158,7 +160,7 @@ Example
   :caption: Example function call to reset the CurrentControl. CurrentControl-Instance via :ref:`init-function <uz_CurrentControl_init>`
 
   int main(void) {
-     uz_CurrentControl_reset(CurrentControl_instance);
+     uz_CurrentControl_reset(CC_instance);
   }
 
 Description

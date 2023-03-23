@@ -15,7 +15,7 @@ Example
 
   int main(void) {
     bool field_weakening = true;
-    uz_SetPoint_set_field_weakening(instance, field_weakening);
+    uz_SetPoint_set_field_weakening(SP_instance, field_weakening);
   }
 
 

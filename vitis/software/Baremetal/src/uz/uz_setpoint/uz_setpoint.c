@@ -1,6 +1,6 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
-* Copyright 2021 Dennis Hufnagel
+* Copyright 2022 Dennis Hufnagel
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -33,15 +33,11 @@ typedef struct uz_SetPoint_t {
 	struct uz_SetPoint_config config;
     struct uz_newton_raphson_config newton_MTPA;
     struct uz_newton_raphson_config newton_FW;
+    float coefficients_MTPA[5];
+    float derivate_poly_coefficients_MTPA[4];
+    float coefficients_FW[5];
+    float derivate_poly_coefficients_FW[4];
 }uz_SetPoint_t;
-
-//Declare arrays for newton_MTPA raphson
-static float derivate_poly_coefficients_MTPA[4] = {1.0f, 0.0f, 0.0f, 4.0f};
-static float coefficients_MTPA[5] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-
-//Declare arrays for newton_FW raphson
-static float derivate_poly_coefficients_FW[4] = {1.0f, 2.0f, 0.0f, 4.0f};
-static float coefficients_FW[5] = {0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
 static uint32_t instance_counter = 0U;
 static uz_SetPoint_t instances[UZ_SETPOINT_MAX_INSTANCES] = { 0 };
@@ -69,17 +65,24 @@ static uz_SetPoint_t* uz_SetPoint_allocation(void){
 uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     uz_SetPoint_t* self = uz_SetPoint_allocation();
     uz_SetPoint_assert_motor_parameters(config.config_PMSM, config.motor_type);
-	self->newton_MTPA.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_MTPA);
-	self->newton_MTPA.derivate_poly_coefficients.data = &derivate_poly_coefficients_MTPA[0];
-	self->newton_MTPA.coefficients.length = UZ_ARRAY_SIZE(coefficients_MTPA);
-	self->newton_MTPA.coefficients.data = &coefficients_MTPA[0];
+	self->newton_MTPA.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(self->derivate_poly_coefficients_MTPA);
+	self->newton_MTPA.derivate_poly_coefficients.data = &self->derivate_poly_coefficients_MTPA[0];
+    self->newton_MTPA.derivate_poly_coefficients.data[0] = 1.0f; //1*x0
+    self->newton_MTPA.derivate_poly_coefficients.data[3] = 4.0f; //4*x3
+	self->newton_MTPA.coefficients.length = UZ_ARRAY_SIZE(self->coefficients_MTPA);
+	self->newton_MTPA.coefficients.data = &self->coefficients_MTPA[0];
+    self->newton_MTPA.coefficients.data[4] = 1.0f; //1*x4
 	self->newton_MTPA.initial_value = 0.0f;
 	self->newton_MTPA.root_absolute_tolerance = 0.25f;
 	self->newton_MTPA.iterations = 12U;
-	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(derivate_poly_coefficients_FW);
-	self->newton_FW.derivate_poly_coefficients.data = &derivate_poly_coefficients_FW[0];
-	self->newton_FW.coefficients.length = UZ_ARRAY_SIZE(coefficients_FW);
-	self->newton_FW.coefficients.data = &coefficients_FW[0];
+	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(self->derivate_poly_coefficients_FW);
+	self->newton_FW.derivate_poly_coefficients.data = &self->derivate_poly_coefficients_FW[0];
+    self->newton_FW.derivate_poly_coefficients.data[0] = 1.0f; //1*x0
+    self->newton_FW.derivate_poly_coefficients.data[1] = 2.0f; //2*x1
+    self->newton_FW.derivate_poly_coefficients.data[3] = 4.0f; //4*x3
+	self->newton_FW.coefficients.length = UZ_ARRAY_SIZE(self->coefficients_FW);
+	self->newton_FW.coefficients.data = &self->coefficients_FW[0];
+    self->newton_FW.coefficients.data[4] = 1.0f; //1*x4
 	self->newton_FW.initial_value = 0.0f;
 	self->newton_FW.iterations = 12U;
 	self->newton_FW.root_absolute_tolerance = 0.25f;
@@ -179,7 +182,7 @@ static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_
             output.q = uz_signals_saturation(im_ref, id_limit, -id_limit);//new max. ampere limit for q-axis current
             break;
 
-        case (IPMSM):;
+        case (IPMSM):
             output.q = uz_SetPoint_newton_FW_raphson_iq_approximation(self, M_ref_Nm, V_FE_max, omega_el_rad_per_sec);
             float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
             float iq_fw_squared = output.q * output.q;

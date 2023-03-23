@@ -36,6 +36,7 @@ void setUp(void)
     config.config_PMSM.Ld_Henry = 0.00027f;
     config.config_PMSM.Lq_Henry = 0.00027f;
     config.config_PMSM.Psi_PM_Vs = 0.0082f;
+    config.max_modulation_index = 1.0f / sqrtf(3.0f);
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;
@@ -264,5 +265,28 @@ void test_uz_CurrentControl_set_decoupling_method(void) {
     uz_CurrentControl_set_decoupling_method(instance, linear_decoupling);
     //Assertion should trigger now, since for the linear_decoupling Ld/Lq must be greater than 0.0f
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec));
+}
+
+void test_uz_CurrentControl_sample_output_PI_Controller_limit_deactivated(void){
+    //Values for comparision from simulation
+    //Limit of the PI-Controllers are "deactivated" and should not limit the signal
+    config.config_id.lower_limit = 0.0f;
+    config.config_id.upper_limit = 0.0f;
+    config.config_iq.lower_limit = 0.0f;
+    config.config_iq.upper_limit = 0.0f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.76f, 0.819f, 0.863f, 0.895f, 0.919f, 0.937f};
+    float values_id[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.899f, 0.924f, 0.943f};
+	float values_omega[11]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f, 0.622f, 1.26f, 2.29f, 3.85f, 6.08f, 9.13f};
+    float ud_out[11]={6.75f, 5.09f, 3.84f, 2.9f, 2.2f, 1.67f, 1.28f, 0.98f, 0.756f, 0.588f, 0.461f};
+    float uq_out[11]={6.75f, 5.09f, 3.84f, 2.91f, 2.21f, 1.68f, 1.3f, 1.01f, 0.811f, 0.671f, 0.581f}; 
+    for(int i=0;i<11;i++){
+        i_actual_Ampere.q = values_iq[i];
+        i_actual_Ampere.d = values_id[i];
+        omega_el_rad_per_sec = values_omega[i];
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
+    }
 }
 #endif // TEST

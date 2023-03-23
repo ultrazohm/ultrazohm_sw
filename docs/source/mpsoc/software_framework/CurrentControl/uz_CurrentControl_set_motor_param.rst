@@ -19,7 +19,7 @@ Example
       .Lq_Henry = 0.00027f,
       .Psi_PM_Vs = 0.0082f,
      };
-     uz_CurrentControl_set_PMSM_parameters(CurrentControl_instance, config_PMSM );
+     uz_CurrentControl_set_PMSM_parameters(CC_instance, config_PMSM );
   }
 
 Description

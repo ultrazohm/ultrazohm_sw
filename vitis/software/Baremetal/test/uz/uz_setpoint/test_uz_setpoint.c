@@ -408,5 +408,33 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.5209f, output.d);  
 }
 
+void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_two_instances(void){
+    //Results for comparision from simulation
+    config.is_field_weakening_enabled = true;
+    config.config_PMSM.Ld_Henry = 0.0002f;
+    config.motor_type = IPMSM;
+    currents.d = -6.65f;
+    currents.q = 1.9f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+
+    //instance2 has different Ld
+    config.config_PMSM.Ld_Henry = 0.00015f;
+    uz_SetPoint_t* instance2 = uz_SetPoint_init(config);
+    M_ref_Nm = 0.095f;
+    omega_m_rad_per_sec = 430.13f;
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    uz_3ph_dq_t output2 = uz_SetPoint_sample(instance2, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0165f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.5209f, output.d);
+    //instance2 with different Ld should lead to different currents
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9304f, output2.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.6795f, output2.d);
+    //recalculating instance1 should lead to no different results than before for output. 
+    //No mixup with the coefficient array addresses exist
+    output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0165f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.5209f, output.d);
+}
+
 
 #endif // TEST

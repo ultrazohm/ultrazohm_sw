@@ -14,7 +14,7 @@ Example
   :caption: Example function call to change decoupling during runtime. CurrentControl-Instance via :ref:`init-function <uz_CurrentControl_init>`
 
   int main(void) {
-     uz_CurrentControl_set_decoupling_method(CurrentControl_instance, linear_decoupling);
+     uz_CurrentControl_set_decoupling_method(CC_instance, linear_decoupling);
   }
 
 Description

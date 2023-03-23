@@ -47,12 +47,62 @@ struct uz_PMSM_t config_PMSM = {
 					.polePairs = 3.0f,
 					.J_kg_m_squared = 1.48e-05f,
 					.I_max_Ampere = 5.0f,
-            };
+};
+// config structs neural network
+// read in weights and bias from .csv
+float x[NUMBER_OF_INPUTS] = {0};
+static float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+	#include "ac_layer1_weights.csv"
+};
+
+static float b_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+	#include "ac_layer1_bias.csv"
+};
+
+static float y_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+	#include "ac_layer2_weights.csv"
+};
+static float b_2[NUMBER_OF_OUTPUTS] = {
+	#include "ac_layer2_bias.csv"
+};
+static float y_2[NUMBER_OF_OUTPUTS] = {0};
+
+// initialize config struct and activation function
+struct uz_nn_layer_config config[3] = {
+[0] = {
+    .activation_function = activation_ReLU,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS,
+    .length_of_weights = UZ_MATRIX_SIZE(w_1),
+    .length_of_bias = UZ_MATRIX_SIZE(b_1),
+    .length_of_output = UZ_MATRIX_SIZE(y_1),
+    .weights = w_1,
+    .bias = b_1,
+    .output = y_1},
+[1] = {
+	.activation_function = activation_tanh,
+    .number_of_neurons = NUMBER_OF_OUTPUTS,
+    .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+    .length_of_weights = UZ_MATRIX_SIZE(w_2),
+    .length_of_bias = UZ_MATRIX_SIZE(b_2),
+    .length_of_output = UZ_MATRIX_SIZE(y_2),
+    .weights = w_2,
+    .bias = b_2,
+    .output = y_2}
+};
+
+struct uz_matrix_t input_matrix={0};
+
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_nn,
+	init_FOC,
+	init_PMSM_IP_Core,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -79,56 +129,54 @@ int main(void)
         case init_software:
             Initialize_Timer();
             uz_SystemTime_init();
-
-            struct uz_PI_Controller_config config_id = {
-            		.Kp = 3.767f, // 0.5f
-					.Ki = 1810.0f, //158.8f,
-					.samplingTime_sec = 0.0001f,
-            };
-            struct uz_PI_Controller_config config_iq = {
-            		.Kp = 4.733f, //0.5f,
+            JavaScope_initalize(&Global_Data);
+            initialization_chain = init_nn;
+            break;
+        case init_nn:
+            Global_Data.objects.matrix_input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
+            Global_Data.objects.nn_layer = uz_nn_init(config, 2);
+        	initialization_chain = init_FOC;
+        	break;
+        case init_FOC:;
+        	struct uz_PI_Controller_config config_id = {
+        			.Kp = 3.767f, // 0.5f
+        			.Ki = 1810.0f, //158.8f,
+        			.samplingTime_sec = 0.0001f,
+        	};
+        	struct uz_PI_Controller_config config_iq = {
+        	   		.Kp = 4.733f, //0.5f,
 					.Ki = 1810.0f,//158.8f,
-					.samplingTime_sec = 0.0001f,
-            };
-            struct uz_CurrentControl_config CC_config = {
-            		.decoupling_select = linear_decoupling,
+        			.samplingTime_sec = 0.0001f,
+        	};
+        	struct uz_CurrentControl_config CC_config = {
+        	   		.decoupling_select = linear_decoupling,
 					.config_PMSM = config_PMSM,
 					.config_id = config_id,
-					.config_iq = config_iq,
-					.max_modulation_index = 1.0f / sqrtf(3.0f)
-            };
-            struct uz_SetPoint_config SP_config = {
-            		.config_PMSM = config_PMSM,
-					.control_type = FOC,
-					.motor_type = IPMSM,
-					.is_field_weakening_enabled = false,
-					.id_ref_Ampere = 0.0f
-            };
-            struct uz_SpeedControl_config SC_config = {
-            		.config_controller.Kp = 0.0207f,
+        			.config_iq = config_iq,
+        			.max_modulation_index = 1.0f / sqrtf(3.0f)
+        	};
+        	struct uz_SetPoint_config SP_config = {
+        			.config_PMSM = config_PMSM,
+        			.control_type = FOC,
+        			.motor_type = IPMSM,
+        			.is_field_weakening_enabled = false,
+        			.id_ref_Ampere = 0.0f
+        	};
+        	struct uz_SpeedControl_config SC_config = {
+        			.config_controller.Kp = 0.0207f,
 					.config_controller.Ki = 0.207f,
 					.config_controller.samplingTime_sec = 0.0001f,
 					.config_controller.upper_limit = 2.0f,
 					.config_controller.lower_limit = -2.0f,
-            };
-            Global_Data.objects.CC_instance = uz_CurrentControl_init(CC_config);
-            Global_Data.objects.SP_instance = uz_SetPoint_init(SP_config);
-            Global_Data.objects.SC_instance = uz_SpeedControl_init(SC_config);
-            JavaScope_initalize(&Global_Data);
-            initialization_chain = init_ip_cores;
-            break;
-        case init_ip_cores:
-            uz_adcLtc2311_ip_core_init();
-            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
-            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            struct uz_pmsmModel_config_t pmsm_IPCore_config = {
-            		.base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+        	};
+        	Global_Data.objects.CC_instance = uz_CurrentControl_init(CC_config);
+        	Global_Data.objects.SP_instance = uz_SetPoint_init(SP_config);
+        	Global_Data.objects.SC_instance = uz_SpeedControl_init(SC_config);
+        	initialization_chain = init_PMSM_IP_Core;
+        	break;
+        case init_PMSM_IP_Core:;
+        	struct uz_pmsmModel_config_t pmsm_IPCore_config = {
+        			.base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
 					.ip_core_frequency_Hz=100000000,
 					.simulate_mechanical_system = true,
 					.r_1 = config_PMSM.R_ph_Ohm,
@@ -139,8 +187,20 @@ int main(void)
 					.inertia = 1.48e-05f,
 					.coulomb_friction_constant = 0.01f,
 					.friction_coefficient = 0.001f
-            };
-            Global_Data.objects.pmsm_IP_core = uz_pmsmModel_init(pmsm_IPCore_config);
+        	};
+        	Global_Data.objects.pmsm_IP_core = uz_pmsmModel_init(pmsm_IPCore_config);
+        	initialization_chain = init_ip_cores;
+        	break;
+        case init_ip_cores:
+            uz_adcLtc2311_ip_core_init();
+            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
+            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
+            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
+            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();

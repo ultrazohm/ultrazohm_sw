@@ -27,7 +27,8 @@ extern uint32_t js_status_BareToRTOS;
 bool select_CurrentControl = false;
 bool select_SpeedControl = false;
 bool select_CIL = false;
-bool select_DDPG = false;
+bool select_DDPG_1 = false;
+bool select_DDPG_2 = false;
 bool select_Real = false;
 extern float n_ref_rpm;
 extern float M_ref_Nm;
@@ -239,7 +240,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				if(!select_CurrentControl) {
 					select_CurrentControl = true;
 					select_SpeedControl = false;
-					select_DDPG = false;
+					select_DDPG_1 = false;
+					select_DDPG_2 = false;
 				} else {
 					select_CurrentControl = false;
 				}
@@ -248,25 +250,34 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_4):
 				if(!select_SpeedControl) {
 					select_SpeedControl = true;
-					select_DDPG = false;
+					select_DDPG_1 = false;
 					select_CurrentControl = false;
+					select_DDPG_2 = false;
 				} else {
 					select_SpeedControl = false;
 				}
 			break;
 
 		case (My_Button_5):
-				if(!select_DDPG) {
-					select_DDPG = true;
+				if(!select_DDPG_1) {
+					select_DDPG_1 = true;
 					select_CurrentControl = false;
 					select_SpeedControl = false;
+					select_DDPG_2 = false;
 				} else {
-					select_DDPG = false;
+					select_DDPG_1 = false;
 				}
 			break;
 
 		case (My_Button_6):
-
+				if(!select_DDPG_2) {
+					select_DDPG_2 = true;
+					select_CurrentControl = false;
+					select_SpeedControl = false;
+					select_DDPG_1 = false;
+				} else {
+					select_DDPG_2 = false;
+				}
 			break;
 
 		case (My_Button_7):
@@ -349,15 +360,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 8 - My_Button_5 */
-	if (select_DDPG == true) {
+	if (select_DDPG_1 == true) {
 		js_status_BareToRTOS |= (1 << 8);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 8);
 	}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
-
+	if (select_DDPG_2 == true) {
+			js_status_BareToRTOS |= (1 << 9);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 9);
+		}
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);
 

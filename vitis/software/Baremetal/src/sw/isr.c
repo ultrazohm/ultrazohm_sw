@@ -67,10 +67,28 @@ float M_ref_Nm = 0.0f;
 float SC_torque_out = 0.0f;
 float PMSM_IP_Core_V_DC = 48.0f;
 extern bool select_CurrentControl;
-extern bool select_DDPG;
+extern bool select_DDPG_1;
+extern bool select_DDPG_2;
 extern bool select_Real;
 extern bool select_SpeedControl;
 extern bool select_CIL;
+
+// Variables for NN
+
+uz_matrix_t* matrix_output;
+extern uz_matrix_t input_matrix;
+struct uz_3ph_dq_t i_dq_integrated_error_Amp = {0};
+struct uz_3ph_dq_t i_dq_error_Amp = {0};
+struct uz_3ph_dq_t v_dq_limited_Volts = {0};
+struct uz_3ph_dq_t v_dq_non_limited_Volts = {0};
+float observation_ip[NUMBER_OF_INPUTS] = {0};
+float integrated_error_weight = UZ_PWM_FREQUENCY;
+float rated_current = 4.2f;
+float rated_Speed_rpm = 3000.0f;
+float U_max = 48.0f / 1.732050808f; // sqrt(3) Because of SpaceVetorLimitation
+float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
+bool ext_clamping = false;
+float max_modulation_index = 1.0f / 1.732050808f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -93,6 +111,7 @@ void ISR_Control(void *data)
 		Global_Data.av.I_q = pmsm_outputs.i_q_A;
 		Global_Data.av.omega_m = pmsm_outputs.omega_mech_1_s;
 		Global_Data.av.mechanicalRotorSpeed = pmsm_outputs.omega_mech_1_s * 60.0f / (2.0f*M_PI);
+		Global_Data.av.omega_elec = pmsm_outputs.omega_mech_1_s * 3.0f;
     	if (current_state==control_state) {
     		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_IP_core);
     		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_IP_core);
@@ -101,17 +120,45 @@ void ISR_Control(void *data)
     				SC_torque_out = uz_SpeedControl_sample(Global_Data.objects.SC_instance, pmsm_outputs.omega_mech_1_s, n_ref_rpm);
     				Global_Data.av.mechanicalTorque = SC_torque_out;
     				i_dq_SetPoint_currents_amp = uz_SetPoint_sample(Global_Data.objects.SP_instance, pmsm_outputs.omega_mech_1_s, SC_torque_out, PMSM_IP_Core_V_DC, i_dq_CIL_Ampere);
-    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_SetPoint_currents_amp, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_m * 3.0f);
+    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_SetPoint_currents_amp, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_elec);
     			}
     			if(select_CurrentControl) {
-    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_reference_Ampere, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_m * 3.0f);
+    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_reference_Ampere, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_elec);
     			}
     			pmsm_inputs.v_d_V = v_dq_CurrentControl_Volts.d;
     			pmsm_inputs.v_q_V = v_dq_CurrentControl_Volts.q;
 
     		}
-    		if(select_DDPG) {
-    			//DDPG Code
+    		if(select_DDPG_1) {
+    			if(ext_clamping == true) {
+    				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY; // use Forward-Euler with error of previous timestep for integration
+    				i_dq_integrated_error_Amp.q = ( i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY;
+    			} else {
+    				i_dq_integrated_error_Amp.d += 0.0f;
+    				i_dq_integrated_error_Amp.q += 0.0f;
+    			}
+    			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_actual_Ampere.d) / rated_current;
+    			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_actual_Ampere.q) / rated_current;
+    			observation_ip[0] = i_dq_error_Amp.d;
+    			observation_ip[1] = integrated_error_weight * i_dq_integrated_error_Amp.d;
+    			observation_ip[2] = i_dq_error_Amp.q;
+    			observation_ip[3] = integrated_error_weight * i_dq_integrated_error_Amp.q;
+    			observation_ip[4] = i_dq_actual_Ampere.d / rated_current;
+    			observation_ip[5] = i_dq_actual_Ampere.q / rated_current;
+    			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed * rated_Speed_rpm;
+    			observation_ip[7] = pmsm_inputs.v_d_V * Voltage_Scaling;
+    			observation_ip[8] = pmsm_inputs.v_q_V * Voltage_Scaling;
+    	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
+    	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+    	        }
+    	        uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
+    	        matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+    	        uz_matrix_multiply_by_scalar(matrix_output,U_max); // scaling layer of nn
+    	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
+    	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
+    	        v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, PMSM_IP_Core_V_DC, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
+    	        pmsm_inputs.v_d_V = v_dq_limited_Volts.d;
+    	        pmsm_inputs.v_q_V = v_dq_limited_Volts.q;
     		}
     	} else {
         	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
@@ -173,7 +220,7 @@ void ISR_Control(void *data)
     	   		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	   		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}
-    	  	if(select_DDPG) {
+    	  	if(select_DDPG_1) {
     	  		//DDPG Code
     	  	}
    	    } else {

@@ -12,6 +12,8 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "xparameters.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -124,6 +126,8 @@ typedef struct{
 	uz_SetPoint_t* SP_instance;
 	uz_SpeedControl_t* SC_instance;
 	uz_pmsmModel_t* pmsm_IP_core;
+	uz_matrix_t* matrix_input;
+	uz_nn_t* nn_layer;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

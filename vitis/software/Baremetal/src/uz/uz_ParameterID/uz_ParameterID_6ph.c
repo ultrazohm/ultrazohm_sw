@@ -235,7 +235,7 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 	uz_6ph_dq_t out = {0};
 	if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 1)
 	{
-		out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		//out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 	}
 	/*else
 	{
@@ -351,8 +351,8 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
         }
 }
 
-void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){
-	Data->feedback_printed = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag);
+void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, bool* logging, int js_cnt_slowData){
+	Data->feedback_printed = bool uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag, logging, js_cnt_slowData);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {

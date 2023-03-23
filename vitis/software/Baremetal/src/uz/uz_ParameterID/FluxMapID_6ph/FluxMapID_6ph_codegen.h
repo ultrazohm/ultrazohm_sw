@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.69
+ * Model version                  : 3.71
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Mar 21 15:52:32 2023
+ * C/C++ source code generated on : Thu Mar 23 09:09:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -69,14 +69,15 @@ typedef struct {
   real32_T u_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T u_q_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T omega_el_array[1000];  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_q_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T IQstepsize_loc;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T IDstepsize_loc;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T i_d_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T i_q_ref_AMM_loc;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  real32_T i_d_ref_AMM_loc_p;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  real32_T i_q_ref_AMM_loc_l;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_d_ref_AMM_loc_h;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T i_q_ref_AMM_loc_p;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T exitPortIndex;         /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  uint32_T repetitionCounter;     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfIDpoints;      /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfPoints;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T counter_time;          /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -95,21 +96,25 @@ typedef struct {
                                   /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   DW_AMMstateIdentificationDQFl_t sf_AMMstateIdentificationDQFlux;
                                   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  uz_3ph_dq_t actual_voltages;         /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_currents;         /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_voltages_j;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_currents_n;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_voltages_k;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_currents_p;       /* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t mean_voltages;     /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
+  uz_3ph_dq_t mean_currents;     /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
   uz_3ph_dq_t mean_voltages_a;    /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
+  uz_3ph_dq_t mean_currents_i;    /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   uz_3ph_dq_t mean_voltages_o;    /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  uz_3ph_dq_t mean_currents_g;    /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uz_ParaID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_6ph_codegen' */
-  uz_3ph_dq_t mean_voltages_m;         /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t mean_currents_m;         /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t mean_voltages_c;         /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T R_s_array[50];              /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_d;                        /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_q;                        /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T omega_el;                   /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_d_b;                      /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_q_j;                      /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T omega_el_k;                 /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_d_d;                      /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T u_q_k;                      /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T omega_el_l;                 /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T omega_el_n;                 /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T PI_d_ref;             /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
   real32_T PI_q_ref;             /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
   real32_T mean_omega_el;        /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
@@ -126,19 +131,23 @@ typedef struct {
   real32_T id1_counter;                /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T i_d_ref_AMM;                /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T i_q_ref_AMM;                /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T mean_omega_el_c;            /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T mean_omega_el_k;            /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T one_sec_transition_counter; /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T three_sec_transition_counter;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_k;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T three_sec_transition_counter_o;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_c;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T three_sec_transition_counter_e;/* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T one_sec_transition_counter_n;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T three_sec_transition_counter_l;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T three_sec_transition_counter_p;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T repetitionCounter;    /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
+  uint32_T repetitionCounter_i;   /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
+  uint32_T repetitionCounter_p;   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T exitPortIndex;              /* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T exitPortIndex_e;            /* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T exitPortIndex_p;            /* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T exitPortIndex_d;            /* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T exitPortIndex_c;            /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T counter;                    /* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_kk;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T three_sec_transition_counter_c;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_cx;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T repetition_counter;         /* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T three_sec_transition_counter_b;/* '<Root>/FluxMapID_6ph_codegen' */
   uint16_T activeState;          /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
   uint16_T activeState_m;         /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   uint16_T activeState_l;         /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -156,7 +165,7 @@ typedef struct {
   boolean_T finished_ab;               /* '<Root>/FluxMapID_6ph_codegen' */
   boolean_T finished_xy;               /* '<Root>/FluxMapID_6ph_codegen' */
   boolean_T finished_zero;             /* '<Root>/FluxMapID_6ph_codegen' */
-  boolean_T finished_calculation_b;    /* '<Root>/FluxMapID_6ph_codegen' */
+  boolean_T finished_calculation_p;    /* '<Root>/FluxMapID_6ph_codegen' */
 } DW_FluxMapID_6ph_codegen_t;
 
 /* External inputs (root inport signals with default storage) */

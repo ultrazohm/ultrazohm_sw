@@ -21,6 +21,7 @@
 #include "../../uz_CurrentControl/uz_CurrentControl.h"
 #include "../../uz_ResonantController/uz_resonant_controller.h"
 #include "../../uz_math_constants.h"
+#include "../../uz_signals/uz_signals.h"
 #include <stdio.h>
 
 typedef struct uz_ParaID_FluxMapID_6ph_t uz_ParaID_FluxMapID_6ph_t;
@@ -34,8 +35,8 @@ uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_Para
 uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_FluxMapID_extended_controller_output_t* uz_get_FluxMapID_6ph_extended_controller_output(uz_ParaID_FluxMapID_6ph_t* self);
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag);
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* logging, int js_cnt_slowData);
 
-uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
+uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2, uz_IIR_Filter_t* filter_1,  uz_IIR_Filter_t* filter_2);
 
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

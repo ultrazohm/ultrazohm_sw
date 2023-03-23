@@ -17,8 +17,8 @@ Example
   int main(void) {
      float V_dc_volts = 24.0f;
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
+     uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
+     uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
      bool ext_clamping = false;
      float max_modulation_index = 1.0f / sqrtf(3.0f);
      struct uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);

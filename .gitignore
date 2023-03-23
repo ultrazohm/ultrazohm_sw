@@ -2,8 +2,6 @@
 /vitis/workspace/*
 !/vitis/workspace/create_Vitis_workspace_here.txt
 
-/vitis_kria/workspace
-
 ip_cores/*/simulation/slprj/*
 
 vitis/software/Baremetal/src/uz/uz_global_configuration.h

@@ -47,7 +47,7 @@ Creating Fresh Project
 
         Boardselection UZ-KR260.
 
-#.  Add a new Block design and name with ``kr260sys``
+#.  Add a new Block design and name with ``k26sys``
 
 #.  Add the UltraZohm IP-Repository to the project. 
 
@@ -170,7 +170,7 @@ Project with TCL Scripts:
         iobufds_inst.vhd
 
 #. Add the UltraZohm IP-Repository to the project. 
-#. Add a new Block design and name with ``kr260sys``.
+#. Add a new Block design and name with ``k26sys``.
 #. Switch with the TCL Console to the current working folder with:
    
     .. code-block::
@@ -188,8 +188,8 @@ Project with TCL Scripts:
 
 #. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
-    * kr260sys_ps_generation → PS 
-    * kr260sys_hd_generation → IP-Cores, Connections
+    * k26sys_ps_generation → PS 
+    * k26sys_hd_generation → IP-Cores, Connections
 
 .. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
 

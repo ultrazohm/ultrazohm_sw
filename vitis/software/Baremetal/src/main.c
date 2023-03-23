@@ -130,7 +130,7 @@ int main(void)
             struct uz_pmsmModel_config_t pmsm_IPCore_config = {
             		.base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
 					.ip_core_frequency_Hz=100000000,
-					.simulate_mechanical_system = false,
+					.simulate_mechanical_system = true,
 					.r_1 = config_PMSM.R_ph_Ohm,
 					.L_d = config_PMSM.Ld_Henry,
 					.L_q = config_PMSM.Lq_Henry,

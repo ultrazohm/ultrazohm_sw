@@ -184,15 +184,17 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
 }
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag){
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* logging, int js_cnt_slowData){
     static bool old_finished_calculation = false;
     static bool feedback = false;
-    if(data.finished_calculation && !old_finished_calculation)
-    {
-        if(printf("%f, %f, %f, %f\n", data.psi_array[0], data.psi_array[1], data.psi_array[2], data.psi_array[3]) > 0)
-        {
-            feedback = true;
-        }  
+    static int js_cnt_slowData_start = 0;
+    
+    if(data.finished_calculation && !old_finished_calculation && !logging){
+        js_cnt_slowData_start = js_cnt_slowData;
+        logging = true;
+    }else if(logging && js_cnt_slowData == js_cnt_slowData_start){
+        logging = false;
+        feedback = true;
     }
     if(!meas_flag)
     	feedback = false;

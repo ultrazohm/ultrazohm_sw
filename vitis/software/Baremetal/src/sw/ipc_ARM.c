@@ -291,7 +291,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 		case (My_Button_8):
-			data->av.send_data = true;
 			break;
 		//After all My_Button cases add the following
 		        //ParameterID

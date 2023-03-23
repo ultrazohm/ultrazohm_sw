@@ -35,6 +35,11 @@ enum JS_OberservableData {
 	JSO_ia2,
 	JSO_ib2,
 	JSO_ic2,
+	JSO_fluxmap_index,
+	JSO_fluxmap_id,
+	JSO_fluxmap_iq,
+	JSO_fluxmap_psid,
+	JSO_fluxmap_psiq,
 	JSO_ud,
 	JSO_uq,
 	JSO_ux,
@@ -273,11 +278,11 @@ RCV_FLD_ENDMARKER
 
 RCV_LABELS_ZEROVALUE=0,
 RPM,
-Nm,
-A,
-A,
-Vs,
-Vs,
+,
+mA,
+mA,
+mVs,
+mVs,
 RCV_LABELS_ENDMARKER
 
 

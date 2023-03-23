@@ -52,7 +52,8 @@ extern float temp_avg;
 extern struct uz_DutyCycle_t dutyCycles_set1;
 extern struct uz_DutyCycle_t dutyCycles_set2;
 
-struct psi_javascope psi_out;
+float values_milli[4];
+float index_array;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -101,6 +102,11 @@ int JavaScope_initalize(DS_Data* data)
   js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
   js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
+	js_slowDataArray[JSO_fluxmap_index]				= &(ParaID_Data.FluxmapID_extended_controller_Output->array_index);
+	js_slowDataArray[JSO_fluxmap_id]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0]);
+	js_slowDataArray[JSO_fluxmap_iq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1]);
+	js_slowDataArray[JSO_fluxmap_psid]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2]);
+	js_slowDataArray[JSO_fluxmap_psiq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3]);
 
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
@@ -161,11 +167,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_temp_inv1]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_temp_inv2]				= &(data->av.temperature_inv_2);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_index]				= &(ParaID_Data.FluxmapID_extended_controller_Output->array_index);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_index]				= &(index_array);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(values_milli[0]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(values_milli[1]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]				= &(values_milli[2]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]				= &(values_milli[3]);
 
 
 
@@ -185,7 +191,11 @@ void JavaScope_update(DS_Data* data){
 	para_state = activeState;
 	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
-
+	values_milli[0] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0];
+	values_milli[1] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1];
+	values_milli[2] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2];
+	values_milli[3] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3];
+	index_array = (float) ParaID_Data.FluxmapID_extended_controller_Output->array_index;
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();

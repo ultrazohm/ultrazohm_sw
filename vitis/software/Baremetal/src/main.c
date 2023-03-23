@@ -91,9 +91,9 @@ struct uz_SetPoint_config sp_config = {
 
 #include "uz/uz_signals/uz_signals.h"
 
-struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = 10000.0f};
-uz_IIR_Filter_t* instance_d = NULL;
-uz_IIR_Filter_t* instance_q = NULL;
+struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 10000.0f};
+uz_IIR_Filter_t* filter_1 = NULL;
+uz_IIR_Filter_t* filter_2 = NULL;
 // Psi calc, remove maybe
 #include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
 float meas_array[10000];
@@ -181,8 +181,8 @@ int main(void)
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
 
-			instance_d = uz_signals_IIR_Filter_init(config);
-			instance_q = uz_signals_IIR_Filter_init(config);
+			filter_1 = uz_signals_IIR_Filter_init(config);
+			filter_2 = uz_signals_IIR_Filter_init(config);
 
 			Initialize_Timer();
 			            uz_SystemTime_init();
@@ -225,7 +225,7 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
-            uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
+            //uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, &(Global_Data.av.logging), Global_Data.av.js_cnt_slowData);
 			uz_ParameterID_6ph_calculate_PsiPMs(ParameterID, &ParaID_Data, meas_array);
             break;
         default:

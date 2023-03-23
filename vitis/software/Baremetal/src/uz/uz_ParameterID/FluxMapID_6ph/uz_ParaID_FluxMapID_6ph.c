@@ -6,6 +6,9 @@
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 
+#include "../../uz_SystemTime/uz_SystemTime.h"
+
+
 #define PARAMETERID6PH_FLUXMAP_RES_ORDER_AB 2.0f
 #define PARAMETERID6PH_FLUXMAP_RES_ORDER_XY 6.0f
 #define PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY (UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
@@ -184,20 +187,20 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
 }
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* logging, int js_cnt_slowData){
+uint8_t uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* logging, int js_cnt_slowData){
     static bool old_finished_calculation = false;
-    static bool feedback = false;
-    static int js_cnt_slowData_start = 0;
+    static uint8_t feedback = 0U;
+    static float time = 0.0f;
     
-    if(data.finished_calculation && !old_finished_calculation && !logging){
-        js_cnt_slowData_start = js_cnt_slowData;
-        logging = true;
-    }else if(logging && js_cnt_slowData == js_cnt_slowData_start){
-        logging = false;
-        feedback = true;
+    if(data.finished_calculation && !old_finished_calculation && !(feedback & 0x02)){
+		time = uz_SystemTime_GetGlobalTimeInSec();
+    	feedback = feedback | 0x02;
+    }else if((feedback & 0x02) && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
+    	feedback = feedback & 0xFD;
+		feedback = feedback | 0x01;
     }
     if(!meas_flag)
-    	feedback = false;
+    	feedback = feedback & 0xFE;
     old_finished_calculation = data.finished_calculation;
     return feedback;
 }

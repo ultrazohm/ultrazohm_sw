@@ -74,7 +74,9 @@ uz_6ph_dq_t paraid_temp_dq_currents = {0};
 //Next lines only needed, if the uz_FOC is used as the controller
 struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 uz_3ph_alphabeta_t voltage_stationary_xy = {0};
+uz_3ph_alphabeta_t current_stationary_xy = {0};
 uz_3ph_alphabeta_t voltage_stationary_zero = {0};
+uz_3ph_alphabeta_t current_stationary_zero = {0};
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_abc_t m_6ph_abc_voltage = {0};
 float u_neutral = 0.0f;
@@ -94,12 +96,16 @@ uz_6ph_dq_t controller_out = {0};
 uz_3ph_dq_t cc_3ph_dq = {0};
 uz_3ph_dq_t cc_setp = {0};
 uz_6ph_dq_t cc_6ph_dq = {0};
-uz_3ph_alphabeta_t current_stationary_xy = {0};
 uz_3ph_dq_t current_rotating_xy = {0};
 uz_3ph_dq_t cc_3ph_xy_rotating = {0};
 uz_3ph_alphabeta_t cc_3ph_xy_stationary = {0};
 extern float res_gain_scope;
 
+
+// filter
+#include "../uz/uz_signals/uz_signals.h"
+extern uz_IIR_Filter_t* filter_1;
+extern uz_IIR_Filter_t* filter_2;
 
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
@@ -135,7 +141,8 @@ uz_6ph_abc_t zero_offset_function(bool* flag){
 	return out;
 }
 
-
+bool temp_remove = false;
+int temp_remove_1 = 0;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -200,7 +207,6 @@ void ISR_Control(void *data)
 		}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
-		ultrazohm_state_machine_set_userLED(true);
 		uz_assert(0);
 		}
 
@@ -238,10 +244,14 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
 	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
-	ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
+	// rotate xy
 	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
 	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	//ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	current_stationary_xy.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
+	current_stationary_xy.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
+	ParaID_Data.ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(current_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
 	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
 	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
@@ -251,6 +261,8 @@ void ISR_Control(void *data)
 	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
 	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
+
+	Global_Data.av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, &temp_remove, temp_remove_1);
 
 	//////////////ParaID ende
 /*
@@ -273,7 +285,7 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2, filter_1, filter_2);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
 /*
         cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);

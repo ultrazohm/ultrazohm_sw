@@ -89,6 +89,11 @@ struct uz_SetPoint_config sp_config = {
 };
 //end
 
+#include "uz/uz_signals/uz_signals.h"
+
+struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = 10000.0f};
+uz_IIR_Filter_t* instance_d = NULL;
+uz_IIR_Filter_t* instance_q = NULL;
 // Psi calc, remove maybe
 #include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
 float meas_array[10000];
@@ -134,11 +139,11 @@ int main(void)
 				.upper_limit = 20.0f
 			};
 			struct uz_PI_Controller_config PI_config_xy = {
-							.Ki = 500.0f,//ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
-							.Kp = 15.0f,//ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
-							.samplingTime_sec = isr_ts,
-							.lower_limit = -20.0f,
-							.upper_limit = 20.0f
+			.Ki = 500.0f,//ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+			.Kp = 15.0f,//ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
+			.samplingTime_sec = isr_ts,
+			.lower_limit = -20.0f,
+			.upper_limit = 20.0f
 					};
 
 			struct uz_CurrentControl_config cc_config_1 = {
@@ -175,6 +180,10 @@ int main(void)
 			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
+
+			instance_d = uz_signals_IIR_Filter_init(config);
+			instance_q = uz_signals_IIR_Filter_init(config);
+
 			Initialize_Timer();
 			            uz_SystemTime_init();
 			            JavaScope_initalize(&Global_Data);

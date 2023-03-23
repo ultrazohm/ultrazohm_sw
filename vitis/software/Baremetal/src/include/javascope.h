@@ -119,6 +119,11 @@ enum JS_SlowData {
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_temp_inv1,
 	JSSD_FLOAT_temp_inv2,
+	JSSD_FLOAT_fluxmap_index,
+	JSSD_FLOAT_fluxmap_id,
+	JSSD_FLOAT_fluxmap_iq,
+	JSSD_FLOAT_fluxmap_psid,
+	JSSD_FLOAT_fluxmap_psiq,
 	JSSD_ENDMARKER
 };
 
@@ -255,11 +260,11 @@ SND_LABELS_ENDMARKER
 
 RCV_FLD_ZEROVALUE=0,
 speed,
-torque,
+index,
 i_d,
 i_q,
-u_d,
-u_q,
+psi_d,
+psi_q,
 RCV_FLD_ENDMARKER
 
 
@@ -271,8 +276,8 @@ RPM,
 Nm,
 A,
 A,
-V,
-V,
+Vs,
+Vs,
 RCV_LABELS_ENDMARKER
 
 
@@ -282,11 +287,11 @@ RCV_LABELS_ENDMARKER
 
 SLOWDAT_DISPLAY_ZEROVALUE=0,
 JSSD_FLOAT_speed,
-JSSD_FLOAT_torque,
-JSSD_FLOAT_i_d,
-JSSD_FLOAT_i_q,
-JSSD_FLOAT_u_d,
-JSSD_FLOAT_u_q,
+JSSD_FLOAT_fluxmap_index,
+JSSD_FLOAT_fluxmap_id,
+JSSD_FLOAT_fluxmap_iq,
+JSSD_FLOAT_fluxmap_psid,
+JSSD_FLOAT_fluxmap_psiq,
 JSSD_FLOAT_Error_Code,
 SLOWDAT_DISPLAY_ENDMARKER
 */

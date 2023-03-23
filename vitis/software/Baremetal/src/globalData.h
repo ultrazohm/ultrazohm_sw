@@ -96,6 +96,8 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	struct uz_resolverIP_position_velocity_t posVel_mech;
 	struct uz_resolverIP_position_velocity_t posVel_el;
+	bool logging;
+	int js_cnt_slowData;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

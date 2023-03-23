@@ -291,7 +291,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 		case (My_Button_8):
-
+			data->av.send_data = true;
 			break;
 		//After all My_Button cases add the following
 		        //ParameterID
@@ -666,11 +666,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
+	 if (data->av.logging == true) {
+		js_status_BareToRTOS |= (1 << 12);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 12);
+	 }
 
 	//Replace Bit 13-19 with the following
 	    /* Bit 13 - Ident_Lq */
@@ -717,11 +717,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	    /* Bit 19 -ParameterID active */
 	    if (ParaID_Data.GlobalConfig.enableParameterID == true) {
-	        ultrazohm_state_machine_set_userLED(true);
+	        //ultrazohm_state_machine_set_userLED(true);
 	        js_status_BareToRTOS |= (1 << 19);
 	    } else {
 	        js_status_BareToRTOS &= ~(1 << 19);
-	        ultrazohm_state_machine_set_userLED(false);
+	        //ultrazohm_state_machine_set_userLED(false);
 	    }
 
 }

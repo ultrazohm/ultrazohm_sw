@@ -199,9 +199,10 @@ void ISR_Control(void *data)
 			uz_assert(0);
 		}
 	// check inverter temp
-		if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
-		//		uz_assert(0);
-			}
+	if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
+		ultrazohm_state_machine_set_userLED(true);
+		uz_assert(0);
+		}
 
 	// read temperature values from inverters
 	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
@@ -240,7 +241,9 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
 	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
 	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	//ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
+	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
 	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
@@ -250,7 +253,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
 
 	//////////////ParaID ende
-
+/*
 	current_stationary_xy.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
 	current_stationary_xy.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
 	current_rotating_xy = uz_transformation_3ph_alphabeta_to_dq(current_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
@@ -264,17 +267,15 @@ void ISR_Control(void *data)
 	uz_resonantController_set_harmonic_order(res_instance_1, 2.0f);
 	uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.res_gain_scope);
 	uz_resonantController_set_harmonic_order(res_instance_2, 2.0f);
-
+*/
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	//uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-
-    	//uz_FluxMapID_6ph_mock_for_controller_testing(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-    	//controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-		//ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-
+    	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+/*
         cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
         cc_6ph_dq.d = cc_3ph_dq.d + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.d, ParaID_Data.ActualValues.omega_el);
         cc_6ph_dq.q = cc_3ph_dq.q + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.q, ParaID_Data.ActualValues.omega_el);
@@ -287,7 +288,7 @@ void ISR_Control(void *data)
 
         ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
-
+*/
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
 		Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;

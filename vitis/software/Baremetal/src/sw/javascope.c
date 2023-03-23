@@ -38,6 +38,8 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
+#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 float para_state = 0.0f;
@@ -49,6 +51,8 @@ extern uz_3ph_dq_t  cc_3ph_xy_rotating;
 extern float temp_avg;
 extern struct uz_DutyCycle_t dutyCycles_set1;
 extern struct uz_DutyCycle_t dutyCycles_set2;
+
+struct psi_javascope psi_out;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -157,6 +161,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_temp_inv1]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_temp_inv2]				= &(data->av.temperature_inv_2);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_index]				= &(ParaID_Data.FluxmapID_extended_controller_Output->array_index);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3]);
+
+
 
 	return Status;
 }
@@ -173,6 +184,7 @@ void JavaScope_update(DS_Data* data){
 	int status = XST_SUCCESS;
 	para_state = activeState;
 	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
+
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
@@ -206,6 +218,7 @@ void JavaScope_update(DS_Data* data){
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
+	data->av.js_cnt_slowData = js_cnt_slowData;
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

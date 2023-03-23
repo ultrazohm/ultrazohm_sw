@@ -226,7 +226,7 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 	uz_6ph_dq_t out = {0};
 	if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 1)
 	{
-		out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		//out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
 	}
 	/*else
 	{

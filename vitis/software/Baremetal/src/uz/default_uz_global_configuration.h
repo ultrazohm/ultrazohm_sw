@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 /** ISR trigger source
  *
@@ -19,7 +19,7 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
+#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            1.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
 
@@ -28,7 +28,7 @@
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
-#define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
+#define UZ_CURRENTCONTROL_MAX_INSTANCES                 1U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
@@ -48,7 +48,7 @@
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
-#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
+#define UZ_INVERTER_ADAPTER_MAX_INSTANCES               1U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #endif
 

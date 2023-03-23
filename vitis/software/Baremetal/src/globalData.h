@@ -6,7 +6,12 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
-
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -60,6 +65,7 @@ typedef struct _actualValues_ {
 	float I_U; 		// Machine side current in A
 	float I_V; 		// Machine side current in A
 	float I_W; 		// Machine side current in A
+	float I_DC;		// DC-link current in A
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
@@ -81,8 +87,11 @@ typedef struct _actualValues_ {
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float omega_m;		// in rad/s
+	float omega_elec;	// in rad/s
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -110,6 +119,11 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_CurrentControl_t* CC_instance;
+	uz_SetPoint_t* SP_instance;
+	uz_SpeedControl_t* SC_instance;
+	uz_pmsmModel_t* pmsm_IP_core;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

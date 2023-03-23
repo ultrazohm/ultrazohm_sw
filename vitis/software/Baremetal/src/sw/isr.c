@@ -40,7 +40,37 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+struct uz_3ph_abc_t i_abc_actual_Ampere = {0};
+struct uz_3ph_abc_t v_abc_actualVolts = {0};
+struct uz_3ph_dq_t i_dq_actual_Ampere = {0};
+struct uz_3ph_dq_t i_dq_CIL_Ampere = {0};
+struct uz_3ph_dq_t i_dq_reference_Ampere = {0};
+struct uz_3ph_dq_t v_dq_actual_Volts = {0};
+struct uz_3ph_dq_t v_dq_CurrentControl_Volts = {0};
+struct uz_3ph_abc_t v_abc_Volts = {0};
+struct uz_3ph_dq_t i_dq_SetPoint_currents_amp = {0};
+struct uz_DutyCycle_t DutyCycle_output = {0};
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+    .omega_mech_1_s=52.36f,
+    .v_d_V=0.0f,
+    .v_q_V=0.0f,
+    .load_torque=0.0f
+};
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+    .i_d_A=0.0f,
+    .i_q_A=0.0f,
+    .torque_Nm=0.0f,
+    .omega_mech_1_s=0.0f
+};
+float n_ref_rpm = 0.0f;
+float M_ref_Nm = 0.0f;
+float SC_torque_out = 0.0f;
+float PMSM_IP_Core_V_DC = 48.0f;
+extern bool select_CurrentControl;
+extern bool select_DDPG;
+extern bool select_Real;
+extern bool select_SpeedControl;
+extern bool select_CIL;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -54,12 +84,107 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    if(select_CIL) {
+    	pmsm_outputs=uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_IP_core);
+		i_dq_CIL_Ampere.d = pmsm_outputs.i_d_A;
+		i_dq_CIL_Ampere.q = pmsm_outputs.i_q_A;
+		Global_Data.av.I_d = pmsm_outputs.i_d_A;
+		Global_Data.av.I_q = pmsm_outputs.i_q_A;
+		Global_Data.av.omega_m = pmsm_outputs.omega_mech_1_s;
+		Global_Data.av.mechanicalRotorSpeed = pmsm_outputs.omega_mech_1_s * 60.0f / (2.0f*M_PI);
+    	if (current_state==control_state) {
+    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_IP_core);
+    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_IP_core);
+    		if(select_SpeedControl || select_CurrentControl) {
+    			if(select_SpeedControl) {
+    				SC_torque_out = uz_SpeedControl_sample(Global_Data.objects.SC_instance, pmsm_outputs.omega_mech_1_s, n_ref_rpm);
+    				Global_Data.av.mechanicalTorque = SC_torque_out;
+    				i_dq_SetPoint_currents_amp = uz_SetPoint_sample(Global_Data.objects.SP_instance, pmsm_outputs.omega_mech_1_s, SC_torque_out, PMSM_IP_Core_V_DC, i_dq_CIL_Ampere);
+    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_SetPoint_currents_amp, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_m * 3.0f);
+    			}
+    			if(select_CurrentControl) {
+    				v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_reference_Ampere, i_dq_CIL_Ampere, PMSM_IP_Core_V_DC, Global_Data.av.omega_m * 3.0f);
+    			}
+    			pmsm_inputs.v_d_V = v_dq_CurrentControl_Volts.d;
+    			pmsm_inputs.v_q_V = v_dq_CurrentControl_Volts.q;
+
+    		}
+    		if(select_DDPG) {
+    			//DDPG Code
+    		}
+    	} else {
+        	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
+        	uz_SpeedControl_reset(Global_Data.objects.SC_instance);
+        	i_dq_reference_Ampere.d = 0.0f;
+        	i_dq_reference_Ampere.q = 0.0f;
+        	pmsm_inputs.v_d_V = 0.0f;
+        	pmsm_inputs.v_q_V = 0.0f;
+    	}
+
+    	uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_IP_core, pmsm_inputs);
+		Global_Data.av.U_d = pmsm_inputs.v_d_V;
+		Global_Data.av.U_q = pmsm_inputs.v_q_V;
     }
+    if(select_Real) {
+    	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
+    	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  //I changed the encoder function to write the theta onto theta_mech
+    	Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    	Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    	Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    	Global_Data.av.I_W = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    	Global_Data.av.I_DC = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    	Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    	Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    	Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    	Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    	i_abc_actual_Ampere.a = Global_Data.av.I_U;
+    	i_abc_actual_Ampere.b = Global_Data.av.I_V;
+    	i_abc_actual_Ampere.c = Global_Data.av.I_W;
+    	v_abc_actualVolts.a = Global_Data.av.U_U;
+    	v_abc_actualVolts.b = Global_Data.av.U_V;
+    	v_abc_actualVolts.c = Global_Data.av.U_W;
+    	i_dq_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_abc_actual_Ampere, Global_Data.av.theta_elec);
+    	v_dq_actual_Volts = uz_transformation_3ph_abc_to_dq(v_abc_actualVolts, Global_Data.av.theta_elec);
+    	Global_Data.av.I_d = i_dq_actual_Ampere.d;
+    	Global_Data.av.I_q = i_dq_actual_Ampere.q;
+    	Global_Data.av.U_d = v_dq_actual_Volts.d;
+    	Global_Data.av.U_q = v_dq_actual_Volts.q;
+    	if (current_state == running_state || current_state == control_state) {
+    		// enable inverter adapter hardware
+    	 	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    	} else {
+    	  	// disable inverter adapter hardware
+    	   	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    	}
+    	if (current_state==control_state) {
+    	  	if(select_SpeedControl || select_CurrentControl) {
+    	   		if(select_SpeedControl) {
+    	   			SC_torque_out = uz_SpeedControl_sample(Global_Data.objects.SC_instance, Global_Data.av.omega_m, n_ref_rpm);
+    	   			Global_Data.av.mechanicalTorque = SC_torque_out;
+    	   			i_dq_SetPoint_currents_amp = uz_SetPoint_sample(Global_Data.objects.SP_instance, Global_Data.av.omega_m, SC_torque_out, Global_Data.av.U_ZK, i_dq_actual_Ampere);
+    	   			v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_SetPoint_currents_amp, i_dq_actual_Ampere, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
+    	   		}
+    	   		if(select_CurrentControl) {
+    	   			v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_reference_Ampere, i_dq_actual_Ampere, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
+    	   		}
+    	   		DutyCycle_output = uz_Space_Vector_Modulation(v_dq_CurrentControl_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    	   		Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
+    	   		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
+    	   		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
+    	  	}
+    	  	if(select_DDPG) {
+    	  		//DDPG Code
+    	  	}
+   	    } else {
+    	    	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
+    	    	uz_SpeedControl_reset(Global_Data.objects.SC_instance);
+    	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	    }
+    }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

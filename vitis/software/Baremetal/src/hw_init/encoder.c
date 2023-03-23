@@ -41,8 +41,9 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 }
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
-	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);
-	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(encoder_D5) * 60.0f / (2.0f*M_PI);
+	data->av.theta_mech=uz_incrementalEncoder_get_theta_el(encoder_D5);
+	data->av.omega_m = uz_incrementalEncoder_get_omega_mech(encoder_D5);
+	data->av.mechanicalRotorSpeed = data->av.omega_m * 60.0f / (2.0f*M_PI);
 
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;

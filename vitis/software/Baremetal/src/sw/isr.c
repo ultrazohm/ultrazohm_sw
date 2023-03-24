@@ -130,13 +130,13 @@ void ISR_Control(void *data)
 
     		}
     		if(select_DDPG_1) {
-//    			if(ext_clamping == false) {
+   			if(ext_clamping == false) {
     				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY; // use Forward-Euler with error of previous timestep for integration
     				i_dq_integrated_error_Amp.q = ( i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY;
-//    			} else {
-//    				i_dq_integrated_error_Amp.d += 0.0f;
-//    				i_dq_integrated_error_Amp.q += 0.0f;
-//    			}
+    			} else {
+    				i_dq_integrated_error_Amp.d += 0.0f;
+    				i_dq_integrated_error_Amp.q += 0.0f;
+    			}
     			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_CIL_Ampere.d) / rated_current;
     			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_CIL_Ampere.q) / rated_current;
     			observation_ip[0] = i_dq_error_Amp.d;

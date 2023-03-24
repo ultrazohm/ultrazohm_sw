@@ -103,8 +103,13 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+
     if(select_CIL) {
-    	pmsm_outputs=uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_IP_core);
+		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_IP_core);
+		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_IP_core);
+		pmsm_outputs=uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_IP_core);
+
 		i_dq_CIL_Ampere.d = pmsm_outputs.i_d_A;
 		i_dq_CIL_Ampere.q = pmsm_outputs.i_q_A;
 		Global_Data.av.I_d = pmsm_outputs.i_d_A;
@@ -113,8 +118,7 @@ void ISR_Control(void *data)
 		Global_Data.av.mechanicalRotorSpeed = pmsm_outputs.omega_mech_1_s * 60.0f / (2.0f*M_PI);
 		Global_Data.av.omega_elec = pmsm_outputs.omega_mech_1_s * 3.0f;
     	if (current_state==control_state) {
-    		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_IP_core);
-    		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_IP_core);
+
     		if(select_SpeedControl || select_CurrentControl) {
     			if(select_SpeedControl) {
     				SC_torque_out = uz_SpeedControl_sample(Global_Data.objects.SC_instance, pmsm_outputs.omega_mech_1_s, n_ref_rpm);

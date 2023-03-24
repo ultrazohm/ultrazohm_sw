@@ -66,7 +66,7 @@ static float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 static float b_2[NUMBER_OF_OUTPUTS] = {
 	#include "ac_layer_out_bias.csv"
 };
-static float y_2[NUMBER_OF_OUTPUTS] = {0};
+float y_2[NUMBER_OF_OUTPUTS] = {0};
 
 // initialize config struct and activation function
 struct uz_nn_layer_config config[3] = {
@@ -133,8 +133,8 @@ int main(void)
             initialization_chain = init_nn;
             break;
         case init_nn:
-            Global_Data.objects.matrix_input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-            Global_Data.objects.nn_layer = uz_nn_init(config, 2);
+            Global_Data.objects.matrix_input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
+            Global_Data.objects.nn_layer = uz_nn_init(config, 2U);
         	initialization_chain = init_FOC;
         	break;
         case init_FOC:;
@@ -178,7 +178,7 @@ int main(void)
         	struct uz_pmsmModel_config_t pmsm_IPCore_config = {
         			.base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
 					.ip_core_frequency_Hz=100000000,
-					.simulate_mechanical_system = true,
+					.simulate_mechanical_system = false,
 					.r_1 = config_PMSM.R_ph_Ohm,
 					.L_d = config_PMSM.Ld_Henry,
 					.L_q = config_PMSM.Lq_Henry,

@@ -51,7 +51,7 @@ struct uz_3ph_abc_t v_abc_Volts = {0};
 struct uz_3ph_dq_t i_dq_SetPoint_currents_amp = {0};
 struct uz_DutyCycle_t DutyCycle_output = {0};
 struct uz_pmsmModel_inputs_t pmsm_inputs={
-    .omega_mech_1_s=52.36f,
+    .omega_mech_1_s=0.0f,
     .v_d_V=0.0f,
     .v_q_V=0.0f,
     .load_torque=0.0f
@@ -72,11 +72,10 @@ extern bool select_DDPG_2;
 extern bool select_Real;
 extern bool select_SpeedControl;
 extern bool select_CIL;
-
+extern float y_2[2];
 // Variables for NN
 
 uz_matrix_t* matrix_output;
-extern uz_matrix_t input_matrix;
 struct uz_3ph_dq_t i_dq_integrated_error_Amp = {0};
 struct uz_3ph_dq_t i_dq_error_Amp = {0};
 struct uz_3ph_dq_t v_dq_limited_Volts = {0};
@@ -89,6 +88,7 @@ float U_max = 48.0f / 1.732050808f; // sqrt(3) Because of SpaceVetorLimitation
 float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping = false;
 float max_modulation_index = 1.0f / 1.732050808f;
+float ts = 1.0f / UZ_PWM_FREQUENCY;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -130,9 +130,9 @@ void ISR_Control(void *data)
 
     		}
     		if(select_DDPG_1) {
-   			if(ext_clamping == false) {
-    				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY; // use Forward-Euler with error of previous timestep for integration
-    				i_dq_integrated_error_Amp.q = ( i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY;
+    			if(ext_clamping == false) {
+    				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * ts)); // use Forward-Euler with error of previous timestep for integration
+    				i_dq_integrated_error_Amp.q = (i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * ts));
     			} else {
     				i_dq_integrated_error_Amp.d += 0.0f;
     				i_dq_integrated_error_Amp.q += 0.0f;
@@ -140,9 +140,9 @@ void ISR_Control(void *data)
     			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_CIL_Ampere.d) / rated_current;
     			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_CIL_Ampere.q) / rated_current;
     			observation_ip[0] = i_dq_error_Amp.d;
-    			observation_ip[1] = i_dq_integrated_error_Amp.d;
+    			observation_ip[1] = i_dq_integrated_error_Amp.d * UZ_PWM_FREQUENCY;
     			observation_ip[2] = i_dq_error_Amp.q;
-    			observation_ip[3] = i_dq_integrated_error_Amp.q;
+    			observation_ip[3] = i_dq_integrated_error_Amp.q * UZ_PWM_FREQUENCY ;
     			observation_ip[4] = i_dq_CIL_Ampere.d / rated_current;
     			observation_ip[5] = i_dq_CIL_Ampere.q / rated_current;
     			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
@@ -153,6 +153,7 @@ void ISR_Control(void *data)
     	        }
     	        uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
     	        matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+
     	        uz_matrix_multiply_by_scalar(matrix_output,U_max); // scaling layer of nn
     	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
     	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);

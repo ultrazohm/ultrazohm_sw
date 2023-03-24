@@ -229,7 +229,38 @@ void ISR_Control(void *data)
     	   		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}
     	  	if(select_DDPG_1) {
-    	  		//DDPG Code
+    	  		if(ext_clamping == false) {
+    	  			i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * ts)); // use Forward-Euler with error of previous timestep for integration
+    	  			i_dq_integrated_error_Amp.q = (i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * ts));
+    	  		} else {
+    	  			i_dq_integrated_error_Amp.d += 0.0f;
+    	  			i_dq_integrated_error_Amp.q += 0.0f;
+    	  		}
+    	  		i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_actual_Ampere.d) / rated_current;
+    	  		i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_actual_Ampere.q) / rated_current;
+    	  		observation_ip[0] = i_dq_error_Amp.d;
+    	  		observation_ip[1] = i_dq_integrated_error_Amp.d * UZ_PWM_FREQUENCY;
+    	  		observation_ip[2] = i_dq_error_Amp.q;
+    	  		observation_ip[3] = i_dq_integrated_error_Amp.q * UZ_PWM_FREQUENCY ;
+    	  		observation_ip[4] = i_dq_actual_Ampere.d / rated_current;
+    	  		observation_ip[5] = i_dq_actual_Ampere.q / rated_current;
+    	  		observation_ip[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+    	  		observation_ip[7] = pmsm_inputs.v_d_V * Voltage_Scaling;
+    	  		observation_ip[8] = pmsm_inputs.v_q_V * Voltage_Scaling;
+    	  		for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
+    	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+    	  		}
+    	  		uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
+    	  		matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+
+    	  		uz_matrix_multiply_by_scalar(matrix_output,U_max); // scaling layer of nn
+    	  		v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
+    	  		v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
+    	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
+    	  		DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    	  		Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
+    	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
+    	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}
    	    } else {
     	    	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
@@ -237,6 +268,8 @@ void ISR_Control(void *data)
     	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+            	i_dq_integrated_error_Amp.d = 0.0f;
+            	i_dq_integrated_error_Amp.q = 0.0f;
     	    }
     }
 

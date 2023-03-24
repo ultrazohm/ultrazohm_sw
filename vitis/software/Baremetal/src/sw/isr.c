@@ -162,6 +162,7 @@ void ISR_Control(void *data)
     	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
     	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
     	        v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, PMSM_IP_Core_V_DC, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
+    	        pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
     	        pmsm_inputs.v_d_V = v_dq_limited_Volts.d;
     	        pmsm_inputs.v_q_V = v_dq_limited_Volts.q;
     		}
@@ -172,6 +173,8 @@ void ISR_Control(void *data)
         	i_dq_reference_Ampere.q = 0.0f;
         	pmsm_inputs.v_d_V = 0.0f;
         	pmsm_inputs.v_q_V = 0.0f;
+        	i_dq_integrated_error_Amp.d = 0.0f;
+        	i_dq_integrated_error_Amp.q = 0.0f;
     	}
 
     	uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_IP_core, pmsm_inputs);

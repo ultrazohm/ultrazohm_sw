@@ -25,7 +25,7 @@
 // configuration of neural network
 #define NUMBER_OF_INPUTS 9
 #define NUMBER_OF_OUTPUTS 2
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 100
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U

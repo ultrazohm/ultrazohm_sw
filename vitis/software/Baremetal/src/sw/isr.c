@@ -82,9 +82,9 @@ struct uz_3ph_dq_t i_dq_error_Amp = {0};
 struct uz_3ph_dq_t v_dq_limited_Volts = {0};
 struct uz_3ph_dq_t v_dq_non_limited_Volts = {0};
 float observation_ip[NUMBER_OF_INPUTS] = {0};
-float integrated_error_weight = UZ_PWM_FREQUENCY;
 float rated_current = 4.2f;
 float rated_Speed_rpm = 3000.0f;
+float speed_weight = 1.0f / 3000.0f;
 float U_max = 48.0f / 1.732050808f; // sqrt(3) Because of SpaceVetorLimitation
 float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping = false;
@@ -130,22 +130,22 @@ void ISR_Control(void *data)
 
     		}
     		if(select_DDPG_1) {
-    			if(ext_clamping == true) {
+//    			if(ext_clamping == false) {
     				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY; // use Forward-Euler with error of previous timestep for integration
     				i_dq_integrated_error_Amp.q = ( i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * (1/UZ_PWM_FREQUENCY))) * UZ_PWM_FREQUENCY;
-    			} else {
-    				i_dq_integrated_error_Amp.d += 0.0f;
-    				i_dq_integrated_error_Amp.q += 0.0f;
-    			}
-    			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_actual_Ampere.d) / rated_current;
-    			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_actual_Ampere.q) / rated_current;
+//    			} else {
+//    				i_dq_integrated_error_Amp.d += 0.0f;
+//    				i_dq_integrated_error_Amp.q += 0.0f;
+//    			}
+    			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_CIL_Ampere.d) / rated_current;
+    			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_CIL_Ampere.q) / rated_current;
     			observation_ip[0] = i_dq_error_Amp.d;
-    			observation_ip[1] = integrated_error_weight * i_dq_integrated_error_Amp.d;
+    			observation_ip[1] = i_dq_integrated_error_Amp.d;
     			observation_ip[2] = i_dq_error_Amp.q;
-    			observation_ip[3] = integrated_error_weight * i_dq_integrated_error_Amp.q;
-    			observation_ip[4] = i_dq_actual_Ampere.d / rated_current;
-    			observation_ip[5] = i_dq_actual_Ampere.q / rated_current;
-    			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed * rated_Speed_rpm;
+    			observation_ip[3] = i_dq_integrated_error_Amp.q;
+    			observation_ip[4] = i_dq_CIL_Ampere.d / rated_current;
+    			observation_ip[5] = i_dq_CIL_Ampere.q / rated_current;
+    			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
     			observation_ip[7] = pmsm_inputs.v_d_V * Voltage_Scaling;
     			observation_ip[8] = pmsm_inputs.v_q_V * Voltage_Scaling;
     	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {

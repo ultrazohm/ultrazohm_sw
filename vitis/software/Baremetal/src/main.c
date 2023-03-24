@@ -61,10 +61,10 @@ static float b_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 
 static float y_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 static float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer2_weights.csv"
+	#include "ac_layer_out_weights.csv"
 };
 static float b_2[NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer2_bias.csv"
+	#include "ac_layer_out_bias.csv"
 };
 static float y_2[NUMBER_OF_OUTPUTS] = {0};
 

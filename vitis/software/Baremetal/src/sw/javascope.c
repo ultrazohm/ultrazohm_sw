@@ -30,7 +30,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-
+extern float observation_ip_9n[9];
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -71,6 +71,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_obs_1]			= &observation_ip_9n[0];
+	js_ch_observable[JSO_obs_2]			= &observation_ip_9n[1];
+	js_ch_observable[JSO_obs_3]			= &observation_ip_9n[2];
+	js_ch_observable[JSO_obs_4]			= &observation_ip_9n[3];
+	js_ch_observable[JSO_obs_5]			= &observation_ip_9n[4];
+	js_ch_observable[JSO_obs_6]			= &observation_ip_9n[5];
+	js_ch_observable[JSO_obs_7]			= &observation_ip_9n[6];
+	js_ch_observable[JSO_obs_8]			= &observation_ip_9n[7];
+	js_ch_observable[JSO_obs_9]			= &observation_ip_9n[8];
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

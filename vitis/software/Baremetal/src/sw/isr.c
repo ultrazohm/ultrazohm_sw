@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+#include "../uz/uz_nn/uz_nn_activation_functions.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -76,6 +78,9 @@ extern bool select_CIL;
 extern float y_2[2];
 // Variables for NN
 
+#define NUMBER_OF_INPUTS_9N 9U
+#define NUMBER_OF_INPUTS_7N 7U
+
 uz_matrix_t* matrix_output_9n;
 uz_matrix_t* matrix_output_7n;
 struct uz_3ph_dq_t i_dq_integrated_error_Amp = {0};
@@ -93,17 +98,20 @@ float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping = false;
 float max_modulation_index = 1.0f / 1.732050808f;
 float ts = 1.0f / UZ_PWM_FREQUENCY;
-float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
-//float uz_correct_LP1_filter(DS_Data* const data, float RC) {
-//    uz_assert_not_NULL(data);
-//    float factor = sqrtf(1.0f + powf((data->av.omega_elec * RC), 2.0f));
-//    data->av.U_U = data->av.U_U * factor;
-//    data->av.U_V = data->av.U_V * factor;
-//    data->av.U_W = data->av.U_W * factor;
-//    float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
-//    return(theta_el_corr);
-//}
+
 float offset = 3.31f;
+
+
+#if NN_9_INPUT_3_64
+extern float mlp_ip_output[2U];
+extern uz_matrix_t *p_output_data;
+extern uz_mlp_three_layer_ip_t* mlp_ip_instance;
+#endif
+
+
+
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -171,12 +179,20 @@ void ISR_Control(void *data)
     	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
     	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_9n,observation_ip_9n[i],0U,i);
     	        }
+
+#if NN_9_INPUT_3_64 == 1
+    	        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_9n, p_output_data);
+    	        // IP-Core only calculates with linear, tanh has to be added manually
+    	        v_dq_non_limited_Volts.d=(uz_nn_activation_function_tanh(mlp_ip_output[0]))*U_max;
+    	        v_dq_non_limited_Volts.q=(uz_nn_activation_function_tanh(mlp_ip_output[1]))*U_max;
+
+#else
     	        uz_nn_ff(Global_Data.objects.nn_layer_9n,Global_Data.objects.matrix_input_9n);
     	        matrix_output_9n = uz_nn_get_output_data(Global_Data.objects.nn_layer_9n);
-
     	        uz_matrix_multiply_by_scalar(matrix_output_9n,U_max); // scaling layer of nn
     	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_9n,0U,0U);
     	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_9n,0U,1U);
+#endif
     	        v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, PMSM_IP_Core_V_DC, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
     	        pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
     	        pmsm_inputs.v_d_V = v_dq_limited_Volts.d;

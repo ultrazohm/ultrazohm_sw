@@ -15,6 +15,10 @@
 
 // Includes from own files
 #include "main.h"
+#include "xparameters.h"
+#include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+#include "sw/nn_9_input_1_64/nn_9_input_1_64.h"
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -48,96 +52,33 @@ struct uz_PMSM_t config_PMSM = {
 					.J_kg_m_squared = 1.48e-05f,
 					.I_max_Ampere = 5.0f,
 };
-// config structs neural network
-// read in weights and bias from .csv
-//for 9 observations
-float x_9[NUMBER_OF_INPUTS_9N] = {0};
-static float w_1_9[NUMBER_OF_INPUTS_9N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_weights.csv"
-};
 
-static float b_1_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_bias.csv"
-};
 
-static float y_1_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
-static float w_2_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_weights.csv"
-};
-static float b_2_9[NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_bias.csv"
-};
-float y_2_9[NUMBER_OF_OUTPUTS] = {0};
-// initialize config struct and activation function
-struct uz_nn_layer_config config_9nn[2] = {
-[0] = {
-    .activation_function = activation_ReLU,
-    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .number_of_inputs = NUMBER_OF_INPUTS_9N,
-    .length_of_weights = UZ_MATRIX_SIZE(w_1_9),
-    .length_of_bias = UZ_MATRIX_SIZE(b_1_9),
-    .length_of_output = UZ_MATRIX_SIZE(y_1_9),
-    .weights = w_1_9,
-    .bias = b_1_9,
-    .output = y_1_9},
-[1] = {
-	.activation_function = activation_tanh,
-    .number_of_neurons = NUMBER_OF_OUTPUTS,
-    .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .length_of_weights = UZ_MATRIX_SIZE(w_2_9),
-    .length_of_bias = UZ_MATRIX_SIZE(b_2_9),
-    .length_of_output = UZ_MATRIX_SIZE(y_2_9),
-    .weights = w_2_9,
-    .bias = b_2_9,
-    .output = y_2_9}
-};
-
-// config structs neural network
-// read in weights and bias from .csv
-//for 7 observations
-float x_7[NUMBER_OF_INPUTS_7N] = {0};
-static float w_1_7[NUMBER_OF_INPUTS_7N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_weights.csv"
-};
-
-static float b_1_7[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "ac_layer1_bias.csv"
-};
-
-static float y_1_7[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
-static float w_2_7[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_weights.csv"
-};
-static float b_2_7[NUMBER_OF_OUTPUTS] = {
-	#include "ac_layer_out_bias.csv"
-};
-float y_2_7[NUMBER_OF_OUTPUTS] = {0};
-// initialize config struct and activation function
-struct uz_nn_layer_config config_7nn[2] = {
-[0] = {
-    .activation_function = activation_ReLU,
-    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .number_of_inputs = NUMBER_OF_INPUTS_7N,
-    .length_of_weights = UZ_MATRIX_SIZE(w_1_7),
-    .length_of_bias = UZ_MATRIX_SIZE(b_1_7),
-    .length_of_output = UZ_MATRIX_SIZE(y_1_7),
-    .weights = w_1_7,
-    .bias = b_1_7,
-    .output = y_1_7},
-[1] = {
-	.activation_function = activation_tanh,
-    .number_of_neurons = NUMBER_OF_OUTPUTS,
-    .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .length_of_weights = UZ_MATRIX_SIZE(w_2_7),
-    .length_of_bias = UZ_MATRIX_SIZE(b_2_7),
-    .length_of_output = UZ_MATRIX_SIZE(y_2_7),
-    .weights = w_2_7,
-    .bias = b_2_7,
-    .output = y_2_7}
-};
-
-struct uz_matrix_t input_matrix_9n={0};
-struct uz_matrix_t input_matrix_7n={0};
+//struct uz_nn_layer_config config_7nn[2] = {
+//[0] = {
+//    .activation_function = activation_ReLU,
+//    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+//    .number_of_inputs = NUMBER_OF_INPUTS_7N,
+//    .length_of_weights = UZ_MATRIX_SIZE(w_1_7),
+//    .length_of_bias = UZ_MATRIX_SIZE(b_1_7),
+//    .length_of_output = UZ_MATRIX_SIZE(y_1_7),
+//    .weights = w_1_7,
+//    .bias = b_1_7,
+//    .output = y_1_7},
+//[1] = {
+//	.activation_function = activation_tanh,
+//    .number_of_neurons = NUMBER_OF_OUTPUTS,
+//    .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+//    .length_of_weights = UZ_MATRIX_SIZE(w_2_7),
+//    .length_of_bias = UZ_MATRIX_SIZE(b_2_7),
+//    .length_of_output = UZ_MATRIX_SIZE(y_2_7),
+//    .weights = w_2_7,
+//    .bias = b_2_7,
+//    .output = y_2_7}
+//};
+//
+//
+//struct uz_matrix_t input_matrix_7n={0};
 
 enum init_chain
 {
@@ -178,11 +119,21 @@ int main(void)
             break;
         case init_nn:
         	//For 9 observations
-            Global_Data.objects.matrix_input_9n=uz_matrix_init(&input_matrix_9n,x_9,UZ_MATRIX_SIZE(x_9),1U,NUMBER_OF_INPUTS_9N);
-            Global_Data.objects.nn_layer_9n = uz_nn_init(config_9nn, 2U);
-            //For 7 observations
-            Global_Data.objects.matrix_input_7n = uz_matrix_init(&input_matrix_7n,x_7,UZ_MATRIX_SIZE(x_7),1U,NUMBER_OF_INPUTS_9N);
-            Global_Data.objects.nn_layer_7n = uz_nn_init(config_7nn, 2U);
+
+#if NN_9_INPUT_1_64==1
+        	nn_9_input_1_64_init();
+#endif
+
+#if NN_9_INPUT_1_128==1
+        	nn_9_input_1_128_init();
+#endif
+
+#if NN_9_INPUT_3_64==1
+        	nn_9_input_3_64_init();
+#endif
+        	//For 7 observations
+        //    Global_Data.objects.matrix_input_7n = uz_matrix_init(&input_matrix_7n,x_7,UZ_MATRIX_SIZE(x_7),1U,NUMBER_OF_INPUTS_9N);
+        //    Global_Data.objects.nn_layer_7n = uz_nn_init(config_7nn, 2U);
         	initialization_chain = init_FOC;
         	break;
         case init_FOC:;
@@ -264,7 +215,7 @@ int main(void)
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
+         //   init_network();
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:
@@ -281,3 +232,4 @@ int main(void)
     }
     return (status);
 }
+

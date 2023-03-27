@@ -6,6 +6,9 @@
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 
+#include "../../uz_SystemTime/uz_SystemTime.h"
+
+
 #define PARAMETERID6PH_FLUXMAP_RES_ORDER_AB 2.0f
 #define PARAMETERID6PH_FLUXMAP_RES_ORDER_XY 6.0f
 #define PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY (UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
@@ -81,7 +84,7 @@ uz_ParaID_FluxMapID_extended_controller_output_t* uz_get_FluxMapID_6ph_extended_
 		return(&self->output.extended_controller_output);
 }
 
-uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2, uz_IIR_Filter_t* filter_1,  uz_IIR_Filter_t* filter_2)
+uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2, uz_IIR_Filter_t* filter_1,  uz_IIR_Filter_t* filter_2, uz_IIR_Filter_t* filter_3, uz_IIR_Filter_t* filter_4)
 {
     // assert input pointers
         uz_assert_not_NULL(CC_instance_1);
@@ -97,10 +100,13 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
     // step PI controller
         uz_3ph_dq_t setp_filtered_dq;
+        uz_3ph_dq_t setp_filtered_xy;
         setp_filtered_dq.d = uz_signals_IIR_Filter_sample(filter_1, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.d);
         setp_filtered_dq.q = uz_signals_IIR_Filter_sample(filter_2, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.q);
+        setp_filtered_xy.d = uz_signals_IIR_Filter_sample(filter_3, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref.d);
+        setp_filtered_xy.q = uz_signals_IIR_Filter_sample(filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref.q);
         uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(CC_instance_1, setp_filtered_dq, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-        uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+        uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, setp_filtered_xy, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 
     // map outputs and step resonant controllers depending on current state inside FluxMapID
     switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
@@ -131,7 +137,9 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             if(initialized_controllers != 2U)
             {
                 printf("\nIdentify Psi xy\ni_d,i_q,psi_d,psi_q\n");
-                uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
+                //uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
+                uz_resonantController_reset(resonant_1);
+				uz_resonantController_reset(resonant_2);
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_XY);
                 initialized_controllers = 2U;
@@ -184,20 +192,20 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
 
 }
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* logging, int js_cnt_slowData){
+uint8_t uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag){
     static bool old_finished_calculation = false;
-    static bool feedback = false;
-    static int js_cnt_slowData_start = 0;
+    static uint8_t feedback = 0U;
+    static float time = 0.0f;
     
-    if(data.finished_calculation && !old_finished_calculation && !logging){
-        js_cnt_slowData_start = js_cnt_slowData;
-        logging = true;
-    }else if(logging && js_cnt_slowData == js_cnt_slowData_start){
-        logging = false;
-        feedback = true;
+    if(data.finished_calculation && !old_finished_calculation && !(feedback & 0x02)){
+		time = uz_SystemTime_GetGlobalTimeInSec();
+    	feedback = feedback | 0x02;
+    }else if((feedback & 0x02) && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
+    	feedback = feedback & 0xFD;
+		feedback = feedback | 0x01;
     }
     if(!meas_flag)
-    	feedback = false;
+    	feedback = feedback & 0xFE;
     old_finished_calculation = data.finished_calculation;
     return feedback;
 }
@@ -205,12 +213,12 @@ bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_co
 static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2){
     //float tau_sum = Data->GlobalConfig.sampleTimeISR*2.0f;
     // reset all
-    uz_CurrentControl_reset(CC_instance_1);
-    uz_CurrentControl_reset(CC_instance_2);
+    //uz_CurrentControl_reset(CC_instance_1);
+    //uz_CurrentControl_reset(CC_instance_2);
     uz_resonantController_reset(resonant_1);
     uz_resonantController_reset(resonant_2);
     // set cc1
-    uz_CurrentControl_set_Kp_id(CC_instance_1, 10.0f);//Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum));
+   uz_CurrentControl_set_Kp_id(CC_instance_1, 10.0f);//Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum));
     uz_CurrentControl_set_Kp_iq(CC_instance_1, 10.0f);//Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum));
     uz_CurrentControl_set_Ki_id(CC_instance_1, 1500.0f);//Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
     uz_CurrentControl_set_Ki_iq(CC_instance_1, 1500.0f);//Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));

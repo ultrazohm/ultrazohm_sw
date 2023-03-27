@@ -162,8 +162,8 @@ int main(void)
         			.id_ref_Ampere = 0.0f
         	};
         	struct uz_SpeedControl_config SC_config = {
-        			.config_controller.Kp = 0.0207f,
-					.config_controller.Ki = 0.207f,
+        			.config_controller.Kp = 0.0207f * 0.045f,
+					.config_controller.Ki = 0.207f * 0.045f,
 					.config_controller.samplingTime_sec = 0.0001f,
 					.config_controller.upper_limit = 2.0f,
 					.config_controller.lower_limit = -2.0f,

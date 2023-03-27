@@ -81,6 +81,7 @@ uz_matrix_t* matrix_output_7n;
 struct uz_3ph_dq_t i_dq_integrated_error_Amp = {0};
 struct uz_3ph_dq_t i_dq_error_Amp = {0};
 struct uz_3ph_dq_t v_dq_limited_Volts = {0};
+struct uz_3ph_dq_t v_dq_limited_Volts_k_old = {0};
 struct uz_3ph_dq_t v_dq_non_limited_Volts = {0};
 float observation_ip_9n[NUMBER_OF_INPUTS_9N] = {0};
 float observation_ip_7n[NUMBER_OF_INPUTS_7N] = {0};
@@ -293,9 +294,9 @@ void ISR_Control(void *data)
     	  		observation_ip_9n[4] = i_dq_actual_Ampere.d / rated_current;
     	  		observation_ip_9n[5] = i_dq_actual_Ampere.q / rated_current;
     	  		observation_ip_9n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
-    	  		observation_ip_9n[7] = v_dq_actual_Volts.d * Voltage_Scaling;
-    	  		observation_ip_9n[8] = v_dq_actual_Volts.q * Voltage_Scaling;
-    	  		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
+				observation_ip_9n[7] = v_dq_limited_Volts_k_old.d * Voltage_Scaling;
+				observation_ip_9n[8] = v_dq_limited_Volts_k_old.q * Voltage_Scaling;
+				for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
     	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_9n,observation_ip_9n[i],0U,i);
     	  		}
     	  		uz_nn_ff(Global_Data.objects.nn_layer_9n,Global_Data.objects.matrix_input_9n);
@@ -305,8 +306,9 @@ void ISR_Control(void *data)
     	  		v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_9n,0U,0U);
     	  		v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_9n,0U,1U);
     	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
-    	  		DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
-    	  		Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
+				v_dq_limited_Volts_k_old = v_dq_limited_Volts;
+				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+				Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}

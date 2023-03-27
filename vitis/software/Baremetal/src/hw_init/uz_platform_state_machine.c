@@ -7,6 +7,10 @@
 #include "../include/gpio_axi.h"
 #include "../include/uz_assertion_configuration.h"
 
+#include "../main.h"
+#include "../IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+extern DS_Data Global_Data;
+
 typedef struct
 {
 	bool readyLED;
@@ -172,6 +176,7 @@ static void error_entry(void)
 {
     if (ultrazohm_state.entry)
     {
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
         uz_axigpio_disable_pwm_and_power_electronics();
         uz_led_set_errorLED_on();
         ultrazohm_state.uz_led_states.errorLED = true;

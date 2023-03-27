@@ -50,8 +50,8 @@ struct uz_PMSM_t config_PMSM = {
 };
 // config structs neural network
 // read in weights and bias from .csv
-float x[NUMBER_OF_INPUTS] = {0};
-static float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+float x[NUMBER_OF_INPUTS_9N] = {0};
+static float w_1[NUMBER_OF_INPUTS_9N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "ac_layer1_weights.csv"
 };
 
@@ -69,11 +69,12 @@ static float b_2[NUMBER_OF_OUTPUTS] = {
 float y_2[NUMBER_OF_OUTPUTS] = {0};
 
 // initialize config struct and activation function
-struct uz_nn_layer_config config[3] = {
+//for 9 observations
+struct uz_nn_layer_config config_9nn[2] = {
 [0] = {
     .activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .number_of_inputs = NUMBER_OF_INPUTS,
+    .number_of_inputs = NUMBER_OF_INPUTS_9N,
     .length_of_weights = UZ_MATRIX_SIZE(w_1),
     .length_of_bias = UZ_MATRIX_SIZE(b_1),
     .length_of_output = UZ_MATRIX_SIZE(y_1),
@@ -92,7 +93,31 @@ struct uz_nn_layer_config config[3] = {
     .output = y_2}
 };
 
-struct uz_matrix_t input_matrix={0};
+//for 7 observations
+struct uz_nn_layer_config config_7nn[2] = {
+[0] = {
+    .activation_function = activation_ReLU,
+    .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+    .number_of_inputs = NUMBER_OF_INPUTS_7N,
+    .length_of_weights = UZ_MATRIX_SIZE(w_1),
+    .length_of_bias = UZ_MATRIX_SIZE(b_1),
+    .length_of_output = UZ_MATRIX_SIZE(y_1),
+    .weights = w_1,
+    .bias = b_1,
+    .output = y_1},
+[1] = {
+	.activation_function = activation_tanh,
+    .number_of_neurons = NUMBER_OF_OUTPUTS,
+    .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+    .length_of_weights = UZ_MATRIX_SIZE(w_2),
+    .length_of_bias = UZ_MATRIX_SIZE(b_2),
+    .length_of_output = UZ_MATRIX_SIZE(y_2),
+    .weights = w_2,
+    .bias = b_2,
+    .output = y_2}
+};
+
+struct uz_matrix_t input_matrix_9n={0};
 
 
 enum init_chain
@@ -133,8 +158,8 @@ int main(void)
             initialization_chain = init_nn;
             break;
         case init_nn:
-            Global_Data.objects.matrix_input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-            Global_Data.objects.nn_layer = uz_nn_init(config, 2U);
+            Global_Data.objects.matrix_input_9n=uz_matrix_init(&input_matrix_9n,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS_9N);
+            Global_Data.objects.nn_layer_9n = uz_nn_init(config_9nn, 2U);
         	initialization_chain = init_FOC;
         	break;
         case init_FOC:;

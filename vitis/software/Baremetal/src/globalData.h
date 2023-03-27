@@ -126,8 +126,8 @@ typedef struct{
 	uz_SetPoint_t* SP_instance;
 	uz_SpeedControl_t* SC_instance;
 	uz_pmsmModel_t* pmsm_IP_core;
-	uz_matrix_t* matrix_input;
-	uz_nn_t* nn_layer;
+	uz_matrix_t* matrix_input_9n;
+	uz_nn_t* nn_layer_9n;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

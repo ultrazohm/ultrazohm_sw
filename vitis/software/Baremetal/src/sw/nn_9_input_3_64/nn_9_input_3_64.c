@@ -1,6 +1,6 @@
 
 // configuration of neural network
-#define NUMBER_OF_INPUTS_9N 9
+#define NUMBER_OF_INPUTS_9N 13
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 
@@ -107,7 +107,7 @@ struct uz_nn_layer_config config_9nn[4] = {
 struct uz_matrix_t input_matrix_9n={0};
 struct uz_matrix_t output_data = {0};
 uz_matrix_t *p_output_data;
-float mlp_ip_output[8U] = {0};
+float mlp_ip_output[2] = {0};
 uz_mlp_three_layer_ip_t* mlp_ip_instance;
 extern uz_matrix_t* matrix_output_9n;
 
@@ -125,18 +125,18 @@ struct uz_mlp_three_layer_ip_config_t config = {
 	p_output_data= uz_matrix_init(&output_data, mlp_ip_output, UZ_MATRIX_SIZE(mlp_ip_output), 1, UZ_MATRIX_SIZE(mlp_ip_output));
 
 
-	while(1){
-
-
-	uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_9n, p_output_data);
-// IP-Core only calculates with linear, tanh has to be added manually
-	mlp_ip_output[0]=uz_nn_activation_function_tanh(mlp_ip_output[0])*27.71281f;
-	mlp_ip_output[1]=uz_nn_activation_function_tanh(mlp_ip_output[1])*27.71281f;
-
-	uz_nn_ff(Global_Data.objects.nn_layer_9n, Global_Data.objects.matrix_input_9n);
-	matrix_output_9n = uz_nn_get_output_data(Global_Data.objects.nn_layer_9n);
-	uz_matrix_multiply_by_scalar(matrix_output_9n,27.71281f); // scaling layer of nn
-	}
+//	while(1){
+//
+//
+//	uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_9n, p_output_data);
+//// IP-Core only calculates with linear, tanh has to be added manually
+//	mlp_ip_output[0]=uz_nn_activation_function_tanh(mlp_ip_output[0])*27.71281f;
+//	mlp_ip_output[1]=uz_nn_activation_function_tanh(mlp_ip_output[1])*27.71281f;
+//
+//	uz_nn_ff(Global_Data.objects.nn_layer_9n, Global_Data.objects.matrix_input_9n);
+//	matrix_output_9n = uz_nn_get_output_data(Global_Data.objects.nn_layer_9n);
+//	uz_matrix_multiply_by_scalar(matrix_output_9n,27.71281f); // scaling layer of nn
+//	}
 }
 
 #endif

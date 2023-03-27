@@ -92,6 +92,17 @@ float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping = false;
 float max_modulation_index = 1.0f / 1.732050808f;
 float ts = 1.0f / UZ_PWM_FREQUENCY;
+float RC = (5600.0f * 1300.0f * 0.000000484f) / (5600.0f + 1300.0f);
+//float uz_correct_LP1_filter(DS_Data* const data, float RC) {
+//    uz_assert_not_NULL(data);
+//    float factor = sqrtf(1.0f + powf((data->av.omega_elec * RC), 2.0f));
+//    data->av.U_U = data->av.U_U * factor;
+//    data->av.U_V = data->av.U_V * factor;
+//    data->av.U_W = data->av.U_W * factor;
+//    float theta_el_corr =Data->ActualValues.theta_el - atanf(Data->ActualValues.omega_el * RC);
+//    return(theta_el_corr);
+//}
+float offset = 3.31f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -217,6 +228,7 @@ void ISR_Control(void *data)
 		Global_Data.av.U_q = pmsm_inputs.v_q_V;
     }
     if(select_Real) {
+    	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
     	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  //I changed the encoder function to write the theta onto theta_mech
     	Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
@@ -281,8 +293,8 @@ void ISR_Control(void *data)
     	  		observation_ip_9n[4] = i_dq_actual_Ampere.d / rated_current;
     	  		observation_ip_9n[5] = i_dq_actual_Ampere.q / rated_current;
     	  		observation_ip_9n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
-    	  		observation_ip_9n[7] = pmsm_inputs.v_d_V * Voltage_Scaling;
-    	  		observation_ip_9n[8] = pmsm_inputs.v_q_V * Voltage_Scaling;
+    	  		observation_ip_9n[7] = v_dq_actual_Volts.d * Voltage_Scaling;
+    	  		observation_ip_9n[8] = v_dq_actual_Volts.q * Voltage_Scaling;
     	  		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
     	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_9n,observation_ip_9n[i],0U,i);
     	  		}

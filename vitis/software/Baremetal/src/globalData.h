@@ -113,15 +113,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
-	float res_gain_scope;
 	uint16_t selected_subsystem;
-	uz_3ph_dq_t ab_i_dq_PI_ref;
-	uz_3ph_dq_t xy_i_dq_PI_ref;
-	float resonant_order;
-	float kp_dq;
-	float ki_dq;
-	float kp_xy;
-	float ki_xy;
+	float resonant_gain;
 } referenceAndSetValues;
 
 typedef struct{

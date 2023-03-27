@@ -86,6 +86,7 @@ float u_neutral = 0.0f;
 // controller
 extern uz_CurrentControl_t* CC_instance_1;
 extern uz_CurrentControl_t* CC_instance_2;
+extern uz_CurrentControl_t* CC_instance_3;
 extern uz_SpeedControl_t* Speed_instace;
 extern uz_SetPoint_t* sp_instance;
 extern uz_resonantController_t* res_instance_1;
@@ -99,8 +100,11 @@ uz_6ph_dq_t cc_6ph_dq = {0};
 uz_3ph_dq_t current_rotating_xy = {0};
 uz_3ph_dq_t cc_3ph_xy_rotating = {0};
 uz_3ph_alphabeta_t cc_3ph_xy_stationary = {0};
-extern float res_gain_scope;
 
+// zero system
+uz_6ph_abc_t V_abc_zero_control = {0};
+uz_3ph_dq_t cc_out_zero_rotating = {0};
+uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
 
 // filter
 #include "../uz/uz_signals/uz_signals.h"
@@ -108,43 +112,15 @@ extern uz_IIR_Filter_t* filter_1;
 extern uz_IIR_Filter_t* filter_2;
 extern uz_IIR_Filter_t* filter_3;
 extern uz_IIR_Filter_t* filter_4;
+extern uz_IIR_Filter_t* filter_5;
+extern uz_IIR_Filter_t* filter_6;
 
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
 bool zero_finished = false;
+uz_6ph_abc_t zero_offset_function(bool* flag);
+struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected);
 
-uz_6ph_abc_t zero_offset_function(bool* flag){
-	static uz_6ph_abc_t data[1000];
-	static uz_6ph_abc_t sum = {0};
-	static int i = 0;
-	uz_6ph_abc_t out = {0};
-	data[i].a1 = Global_Data.av.v_a1;
-	sum.a1 = sum.a1 + data[i].a1;
-	data[i].b1 = Global_Data.av.v_b1;
-	sum.b1 = sum.b1 + data[i].b1;
-	data[i].c1 = Global_Data.av.v_c1;
-	sum.c1 = sum.c1 + data[i].c1;
-	data[i].a2 = Global_Data.av.v_a2;
-	sum.a2 = sum.a2 + data[i].a2;
-	data[i].b2 = Global_Data.av.v_b2;
-	sum.b2 = sum.b2 + data[i].b2;
-	data[i].c2 = Global_Data.av.v_c2;
-	sum.c2 = sum.c2 + data[i].c2;
-	i++;
-	if(i==999){
-		out.a1 = sum.a1/i;
-		out.b1 = sum.b1/i;
-		out.c1 = sum.c1/i;
-		out.a2 = sum.a2/i;
-		out.b2 = sum.b2/i;
-		out.c2 = sum.c2/i;
-		*flag = true;
-	}
-	return out;
-}
-
-bool temp_remove = false;
-int temp_remove_1 = 0;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -209,7 +185,7 @@ void ISR_Control(void *data)
 		}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
-		uz_assert(0);
+		//uz_assert(0);
 		}
 
 	// read temperature values from inverters
@@ -217,8 +193,6 @@ void ISR_Control(void *data)
 	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
 	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
 	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
-
-
 
 	////////////write to structs
 	m_6ph_abc_currents.a1 = Global_Data.av.i_a1;
@@ -244,9 +218,13 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
-	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
+	// rotate zero
+	voltage_stationary_zero.alpha = ParaID_Data.ActualValues.v_dq_6ph.z1;
+	voltage_stationary_zero.beta = ParaID_Data.ActualValues.v_dq_6ph.z2;
+	current_stationary_zero.alpha = ParaID_Data.ActualValues.i_abc_6ph.a1;
+	current_stationary_zero.beta = ParaID_Data.ActualValues.i_abc_6ph.a2;
 	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.i_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(current_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
 	// rotate xy
 	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
 	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
@@ -263,34 +241,25 @@ void ISR_Control(void *data)
 	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
 	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
-
-	Global_Data.av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, &temp_remove, temp_remove_1);
-
+	Global_Data.av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
 	//////////////ParaID ende
-/*
-	current_stationary_xy.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
-	current_stationary_xy.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
-	current_rotating_xy = uz_transformation_3ph_alphabeta_to_dq(current_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
 
-	uz_CurrentControl_set_Kp_id(CC_instance_1, Global_Data.rasv.kp_dq);
-	uz_CurrentControl_set_Kp_iq(CC_instance_1, Global_Data.rasv.kp_dq);
-	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
-	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
-*/
-	//uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.res_gain_scope);
-	uz_resonantController_set_harmonic_order(res_instance_1, 6.0f);
-	//uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.res_gain_scope);
-	uz_resonantController_set_harmonic_order(res_instance_2, 6.0f);
+	uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.resonant_gain);
+	uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.resonant_gain);
+	uz_resonantController_set_harmonic_order(res_instance_1, 6);
+	uz_resonantController_set_harmonic_order(res_instance_2, 6);
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        // ParaID functions
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4);
+    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
 
 /*
+ 	 	// dq and xy control
     	cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, cc_setp, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
 		cc_6ph_dq.d = cc_3ph_dq.d;
 		cc_6ph_dq.q = cc_3ph_dq.q;
@@ -300,9 +269,26 @@ void ISR_Control(void *data)
         cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
         cc_6ph_dq.x = cc_3ph_xy_stationary.alpha;
         cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
-
     	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 */
+/*
+  		// zero system control
+        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_2, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+        cc_out_zero_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.d, ParaID_Data.ActualValues.omega_el);
+        cc_out_zero_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.q, ParaID_Data.ActualValues.omega_el);
+        cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*ParaID_Data.ActualValues.theta_el);
+        V_abc_zero_control.a1 = 3.0f/2.0f*cc_out_zero_stationary.alpha;
+        V_abc_zero_control.c1 = -V_abc_zero_control.a1;
+        V_abc_zero_control.a2 = 3.0f/2.0f*cc_out_zero_stationary.beta;
+        V_abc_zero_control.c2 = -V_abc_zero_control.a2;
+        ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_zero_control, ParaID_Data.ActualValues.V_DC);
+*/
+
+		// change DC=0 to 0.01
+
+		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
+		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
+
 
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
@@ -314,11 +300,10 @@ void ISR_Control(void *data)
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }
-    else
-    {
-    	uz_resonantController_reset(res_instance_1);
-    	uz_resonantController_reset(res_instance_2);
-    }
+
+
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
@@ -531,3 +516,44 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected){
+	struct uz_DutyCycle_t corrected = uncorrected;
+	if(corrected.DutyCycle_A == 0.0f)
+		corrected.DutyCycle_A =  0.01f;
+	if(corrected.DutyCycle_B == 0.0f)
+		corrected.DutyCycle_B =  0.01f;
+	if(corrected.DutyCycle_C == 0.0f)
+		corrected.DutyCycle_C =  0.01f;
+	return corrected;
+}
+
+uz_6ph_abc_t zero_offset_function(bool* flag){
+	static uz_6ph_abc_t data[1000];
+	static uz_6ph_abc_t sum = {0};
+	static int i = 0;
+	uz_6ph_abc_t out = {0};
+	data[i].a1 = Global_Data.av.v_a1;
+	sum.a1 = sum.a1 + data[i].a1;
+	data[i].b1 = Global_Data.av.v_b1;
+	sum.b1 = sum.b1 + data[i].b1;
+	data[i].c1 = Global_Data.av.v_c1;
+	sum.c1 = sum.c1 + data[i].c1;
+	data[i].a2 = Global_Data.av.v_a2;
+	sum.a2 = sum.a2 + data[i].a2;
+	data[i].b2 = Global_Data.av.v_b2;
+	sum.b2 = sum.b2 + data[i].b2;
+	data[i].c2 = Global_Data.av.v_c2;
+	sum.c2 = sum.c2 + data[i].c2;
+	i++;
+	if(i==999){
+		out.a1 = sum.a1/i;
+		out.b1 = sum.b1/i;
+		out.c1 = sum.c1/i;
+		out.a2 = sum.a2/i;
+		out.b2 = sum.b2/i;
+		out.c2 = sum.c2/i;
+		*flag = true;
+	}
+	return out;
+}

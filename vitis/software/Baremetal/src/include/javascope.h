@@ -25,6 +25,8 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_x_rot,
 	JSO_y_rot,
+	JSO_z1_rot,
+	JSO_z2_rot,
 	JSO_ix,
 	JSO_iy,
 	JSO_iz1,

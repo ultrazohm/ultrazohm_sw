@@ -213,18 +213,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-			Global_Data.rasv.kp_dq = value;
-
 			break;
 
 		case (Set_Send_Field_5):
-		Global_Data.rasv.ki_dq = value;
 
 			break;
 
 		case (Set_Send_Field_6):
-		Global_Data.rasv.res_gain_scope = value;
-
+			data->rasv.resonant_gain = value;
 			break;
 
 		case (My_Button_1):

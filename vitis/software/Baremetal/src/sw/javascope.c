@@ -96,6 +96,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
 	js_ch_observable[JSO_x_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.d);
 	js_ch_observable[JSO_y_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.q);
+	js_ch_observable[JSO_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
+	js_ch_observable[JSO_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
 
 
   js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;

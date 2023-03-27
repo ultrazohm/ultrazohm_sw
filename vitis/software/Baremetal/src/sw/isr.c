@@ -69,6 +69,7 @@ float PMSM_IP_Core_V_DC = 48.0f;
 extern bool select_CurrentControl;
 extern bool select_DDPG_1;
 extern bool select_DDPG_2;
+extern bool select_DDPG_3;
 extern bool select_Real;
 extern bool select_SpeedControl;
 extern bool select_CIL;
@@ -134,6 +135,7 @@ void ISR_Control(void *data)
 
     		}
     		if(select_DDPG_1) {
+    			//DDPG with 9 observations
     			if(ext_clamping == false) {
     				i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * ts)); // use Forward-Euler with error of previous timestep for integration
     				i_dq_integrated_error_Amp.q = (i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * ts));
@@ -165,6 +167,16 @@ void ISR_Control(void *data)
     	        pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
     	        pmsm_inputs.v_d_V = v_dq_limited_Volts.d;
     	        pmsm_inputs.v_q_V = v_dq_limited_Volts.q;
+    		}
+    		if (select_DDPG_2) {
+    			//DDPG with 7 observations
+
+    			//Code here
+    		}
+    		if (select_DDPG_3) {
+    			//DDPG with IP-core
+
+    			//Code here
     		}
     	} else {
         	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
@@ -229,6 +241,7 @@ void ISR_Control(void *data)
     	   		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}
     	  	if(select_DDPG_1) {
+    	  		//DDPG with 9 observations
     	  		if(ext_clamping == false) {
     	  			i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * ts)); // use Forward-Euler with error of previous timestep for integration
     	  			i_dq_integrated_error_Amp.q = (i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * ts));
@@ -261,6 +274,16 @@ void ISR_Control(void *data)
     	  		Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
+    	  	}
+    	  	if (select_DDPG_2) {
+    	  		//DDPG with 7 observations
+
+    	  	    //Code here
+    	  	}
+    	  	if (select_DDPG_3) {
+    	  		//DDPG with IP-core
+
+    	  	    //Code here
     	  	}
    	    } else {
     	    	uz_CurrentControl_reset(Global_Data.objects.CC_instance);

@@ -29,6 +29,7 @@ bool select_SpeedControl = false;
 bool select_CIL = false;
 bool select_DDPG_1 = false;
 bool select_DDPG_2 = false;
+bool select_DDPG_3 = false;
 bool select_Real = false;
 extern float n_ref_rpm;
 extern float M_ref_Nm;
@@ -264,6 +265,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 					select_CurrentControl = false;
 					select_SpeedControl = false;
 					select_DDPG_2 = false;
+					select_DDPG_3 = false;
 				} else {
 					select_DDPG_1 = false;
 				}
@@ -275,13 +277,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 					select_CurrentControl = false;
 					select_SpeedControl = false;
 					select_DDPG_1 = false;
+					select_DDPG_3 = false;
 				} else {
 					select_DDPG_2 = false;
 				}
 			break;
 
 		case (My_Button_7):
-
+				if(!select_DDPG_3) {
+					select_DDPG_3 = true;
+					select_CurrentControl = false;
+					select_SpeedControl = false;
+					select_DDPG_1 = false;
+					select_DDPG_2 = false;
+				} else {
+					select_DDPG_3 = false;
+				}
 			break;
 
 		case (My_Button_8):
@@ -368,12 +379,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 9 - My_Button_6 */
 	if (select_DDPG_2 == true) {
-			js_status_BareToRTOS |= (1 << 9);
-		} else {
-			js_status_BareToRTOS &= ~(1 << 9);
-		}
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	if (select_DDPG_3 == true) {
+		js_status_BareToRTOS |= (1 << 10);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

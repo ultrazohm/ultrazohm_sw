@@ -90,6 +90,8 @@ typedef struct _actualValues_ {
 	float theta_offset_rad;
 	float temperature_inv_1;
 	float temperature_inv_2;
+	uz_6ph_abc_t winding_temperature;
+	float avg_winding_temperature;
 	struct uz_PWM_duty_freq_detection_outputs_t tempPWMoutputs1;
 	struct uz_PWM_duty_freq_detection_outputs_t tempPWMoutputs2;
 	float polepairs;
@@ -97,7 +99,6 @@ typedef struct _actualValues_ {
 	struct uz_resolverIP_position_velocity_t posVel_mech;
 	struct uz_resolverIP_position_velocity_t posVel_el;
 	bool logging;
-	int js_cnt_slowData;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -229,7 +229,6 @@ void JavaScope_update(DS_Data* data){
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
-	data->av.js_cnt_slowData = js_cnt_slowData;
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

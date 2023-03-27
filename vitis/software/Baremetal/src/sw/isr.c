@@ -121,6 +121,11 @@ bool zero_finished = false;
 uz_6ph_abc_t zero_offset_function(bool* flag);
 struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected);
 
+// uz Temp card
+#include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+extern uz_temperaturecard_t* uz_Tempcard;
+uz_temperaturecard_OneGroup temp_card_channel_A;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -170,6 +175,7 @@ void ISR_Control(void *data)
     Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2 - zero_offset.b2;
     Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2 - zero_offset.c2;
 
+    // zero voltage reading at startup
     if(!zero_finished){
     	zero_offset = zero_offset_function(&zero_finished);
     }
@@ -193,6 +199,24 @@ void ISR_Control(void *data)
 	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
 	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
 	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
+
+	// read temperatures from windings
+	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
+	temp_card_channel_A = uz_TempCard_IF_get_channel_A(uz_Tempcard);
+	Global_Data.av.winding_temperature.a1 = temp_card_channel_A.temperature[3];
+	Global_Data.av.winding_temperature.b1 = temp_card_channel_A.temperature[5];
+	Global_Data.av.winding_temperature.c1 = temp_card_channel_A.temperature[7];
+	Global_Data.av.winding_temperature.a2 = temp_card_channel_A.temperature[9];
+	Global_Data.av.winding_temperature.b2 = temp_card_channel_A.temperature[11];
+	Global_Data.av.winding_temperature.c2 = temp_card_channel_A.temperature[13];
+	/*uz_assert(Global_Data.av.winding_temperature.a1>0.0f);
+	uz_assert(Global_Data.av.winding_temperature.b1>0.0f);
+	uz_assert(Global_Data.av.winding_temperature.c1>0.0f);
+	uz_assert(Global_Data.av.winding_temperature.a2>0.0f);
+	uz_assert(Global_Data.av.winding_temperature.b2>0.0f);
+	uz_assert(Global_Data.av.winding_temperature.c2>0.0f);*/
+
+	Global_Data.av.avg_winding_temperature = (Global_Data.av.winding_temperature.a1 + Global_Data.av.winding_temperature.b1 + Global_Data.av.winding_temperature.c1 + Global_Data.av.winding_temperature.a2 + Global_Data.av.winding_temperature.b2 + Global_Data.av.winding_temperature.c2)/6.0f;
 
 	////////////write to structs
 	m_6ph_abc_currents.a1 = Global_Data.av.i_a1;

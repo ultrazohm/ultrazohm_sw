@@ -27,6 +27,11 @@ static uz_temperaturecard_t* uz_temperaturecard_allocation(void){
     return (self);
 }
 
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_A(uz_temperaturecard_t* self){
+	uz_temperaturecard_OneGroup out = self->Channel_A;
+	return out;
+}
+
 uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t config) {
     uz_temperaturecard_t* self  = uz_temperaturecard_allocation();
     // Store settings

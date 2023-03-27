@@ -316,6 +316,8 @@ struct uz_temperaturecard_config_t{
     uint32_t    Configdata_C[20];               /**< Configuration-struct for the last 20-Channels   / Channelgroup C */
 };
 
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_A(uz_temperaturecard_t* self);
+
 /**
  * @brief Initializes an instance of the temperaturecard driver
  *

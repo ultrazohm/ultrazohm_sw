@@ -100,6 +100,24 @@ uz_ParaID_ElectricalID_fft_in_t uncorrected;
 uz_ParaID_ElectricalID_fft_in_t corrected;
 void print_paraID(uz_ParaID_ElectricalID_fft_in_t uncorrected, uz_ParaID_ElectricalID_fft_in_t corrected, uz_ParaID_ElectricalID_output_t mess);
 
+// Temperaturemeasurement
+#include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+uz_temperaturecard_t* uz_Tempcard = NULL;
+struct uz_temperaturecard_config_t t_config = {
+    .base_address = XPAR_UZ_USER_TEMP_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
+    .ip_clk_frequency_Hz = 100000000,
+    .Sample_Freq = 100,
+    .Configdata_A = {0},
+	.Configdata_A[4-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[6-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[8-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[10-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[12-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[14-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+	.Configdata_A[2-1] = 0xE80FA000,//(SENSOR_TYPE__SENSE_RESISTOR) + (SENSE_RESISTOR_VALUE),
+	.Configdata_B = {0},
+	.Configdata_C = {0}};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -197,6 +215,10 @@ int main(void)
             Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
+            // uz tempcard
+            uz_Tempcard = uz_temperaturecard_init(t_config);
+			uz_TempCard_IF_Reset(uz_Tempcard);
+			uz_TempCard_IF_Start(uz_Tempcard);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

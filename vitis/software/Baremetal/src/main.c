@@ -73,7 +73,7 @@ struct uz_nn_layer_config config_9nn[2] = {
 [0] = {
     .activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .number_of_inputs = NUMBER_OF_INPUTS_7N,
+    .number_of_inputs = NUMBER_OF_INPUTS_9N,
     .length_of_weights = UZ_MATRIX_SIZE(w_1_9),
     .length_of_bias = UZ_MATRIX_SIZE(b_1_9),
     .length_of_output = UZ_MATRIX_SIZE(y_1_9),
@@ -92,6 +92,8 @@ struct uz_nn_layer_config config_9nn[2] = {
     .output = y_2_9}
 };
 
+// config structs neural network
+// read in weights and bias from .csv
 //for 7 observations
 float x_7[NUMBER_OF_INPUTS_7N] = {0};
 static float w_1_7[NUMBER_OF_INPUTS_7N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {

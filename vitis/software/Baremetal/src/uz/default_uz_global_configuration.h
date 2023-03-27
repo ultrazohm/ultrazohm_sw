@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 3U
+#define UZ_HARDWARE_VERSION 4U
 
 /** ISR trigger source
  *
@@ -22,12 +22,6 @@
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            1.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
-// configuration of neural network
-#define NUMBER_OF_INPUTS_9N 9
-#define NUMBER_OF_INPUTS_7N 7
-#define NUMBER_OF_OUTPUTS 2
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
-
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
@@ -36,8 +30,8 @@
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 1U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
-#define UZ_NN_LAYER_MAX_INSTANCES                       3U
-#define UZ_NN_MAX_INSTANCES                             1U
+#define UZ_NN_LAYER_MAX_INSTANCES                       10U
+#define UZ_NN_MAX_INSTANCES                             10U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
@@ -55,6 +49,7 @@
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               1U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
+#define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

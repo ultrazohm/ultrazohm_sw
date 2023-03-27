@@ -172,8 +172,28 @@ void ISR_Control(void *data)
     		}
     		if (select_DDPG_2) {
     			//DDPG with 7 observations
+    			i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_CIL_Ampere.d) / rated_current;
+    			i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_CIL_Ampere.q) / rated_current;
+    			observation_ip_7n[0] = i_dq_error_Amp.d;
+    			observation_ip_7n[1] = i_dq_error_Amp.q;
+    			observation_ip_7n[2] = i_dq_CIL_Ampere.d / rated_current;
+    			observation_ip_7n[3] = i_dq_CIL_Ampere.q / rated_current;
+    			observation_ip_7n[4] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+    			observation_ip_7n[5] = pmsm_inputs.v_d_V * Voltage_Scaling;
+    			observation_ip_7n[6] = pmsm_inputs.v_q_V * Voltage_Scaling;
+    			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
+    				uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_7n,observation_ip_7n[i],0U,i);
+    			}
+    			uz_nn_ff(Global_Data.objects.nn_layer_7n,Global_Data.objects.matrix_input_7n);
+    			matrix_output_7n = uz_nn_get_output_data(Global_Data.objects.nn_layer_7n);
 
-    			//Code here
+    			uz_matrix_multiply_by_scalar(matrix_output_7n,U_max); // scaling layer of nn
+    			v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_7n,0U,0U);
+    			v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_7n,0U,1U);
+    			v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, PMSM_IP_Core_V_DC, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
+    			pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
+    			pmsm_inputs.v_d_V = v_dq_limited_Volts.d;
+    			pmsm_inputs.v_q_V = v_dq_limited_Volts.q;
     		}
     		if (select_DDPG_3) {
     			//DDPG with IP-core
@@ -189,6 +209,7 @@ void ISR_Control(void *data)
         	pmsm_inputs.v_q_V = 0.0f;
         	i_dq_integrated_error_Amp.d = 0.0f;
         	i_dq_integrated_error_Amp.q = 0.0f;
+        	ext_clamping = false;
     	}
 
     	uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_IP_core, pmsm_inputs);
@@ -295,6 +316,7 @@ void ISR_Control(void *data)
     	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
             	i_dq_integrated_error_Amp.d = 0.0f;
             	i_dq_integrated_error_Amp.q = 0.0f;
+            	ext_clamping = false;
     	    }
     }
 

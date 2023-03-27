@@ -128,6 +128,8 @@ typedef struct{
 	uz_pmsmModel_t* pmsm_IP_core;
 	uz_matrix_t* matrix_input_9n;
 	uz_nn_t* nn_layer_9n;
+	uz_matrix_t* matrix_input_7n;
+	uz_nn_t* nn_layer_7n;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

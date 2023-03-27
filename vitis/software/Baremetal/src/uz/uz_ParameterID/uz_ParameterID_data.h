@@ -197,6 +197,7 @@ typedef struct {
   boolean_T start_FM_ID; /**< flag to enable the automatic current control */
   boolean_T identR; /**< flag to enable online identification */
   real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
+  uint16_T selected_subsystem;
 } uz_ParaID_FluxMapIDConfig_t;
 
 /**

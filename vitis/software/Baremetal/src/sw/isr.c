@@ -59,7 +59,7 @@ extern DS_Data Global_Data;
 #define DC_VOLT_OFF_2		452.17f
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  18.0f
+#define MAX_PHASE_CURRENT_AMP  22.0f
 #define MAX_DC_VOLT 590.0f
 #define MAX_TEMP_DEG 100.0f
 
@@ -106,6 +106,8 @@ extern float res_gain_scope;
 #include "../uz/uz_signals/uz_signals.h"
 extern uz_IIR_Filter_t* filter_1;
 extern uz_IIR_Filter_t* filter_2;
+extern uz_IIR_Filter_t* filter_3;
+extern uz_IIR_Filter_t* filter_4;
 
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
@@ -274,33 +276,34 @@ void ISR_Control(void *data)
 	uz_CurrentControl_set_Kp_iq(CC_instance_1, Global_Data.rasv.kp_dq);
 	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
 	uz_CurrentControl_set_Ki_id(CC_instance_1, Global_Data.rasv.ki_dq);
-
-	uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.res_gain_scope);
-	uz_resonantController_set_harmonic_order(res_instance_1, 2.0f);
-	uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.res_gain_scope);
-	uz_resonantController_set_harmonic_order(res_instance_2, 2.0f);
 */
+	//uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.res_gain_scope);
+	uz_resonantController_set_harmonic_order(res_instance_1, 6.0f);
+	//uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.res_gain_scope);
+	uz_resonantController_set_harmonic_order(res_instance_2, 6.0f);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2, filter_1, filter_2);
+    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+
 /*
-        cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        cc_6ph_dq.d = cc_3ph_dq.d + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.d, ParaID_Data.ActualValues.omega_el);
-        cc_6ph_dq.q = cc_3ph_dq.q + uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_dq.q, ParaID_Data.ActualValues.omega_el);
-
-
-        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, cc_setp, current_rotating_xy, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-         cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
+    	cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, cc_setp, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+		cc_6ph_dq.d = cc_3ph_dq.d;
+		cc_6ph_dq.q = cc_3ph_dq.q;
+        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_xy_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+        cc_3ph_xy_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_xy_rotating.d, ParaID_Data.ActualValues.omega_el);
+		cc_3ph_xy_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_xy_rotating.q, ParaID_Data.ActualValues.omega_el);
+        cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
         cc_6ph_dq.x = cc_3ph_xy_stationary.alpha;
         cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
 
-        ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
-
+    	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 */
+
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
 		Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;

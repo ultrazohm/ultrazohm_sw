@@ -32,6 +32,7 @@ extern uz_SpeedControl_t* SpeedControl_instance;
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
+uint16_t scope_selected_subsystem = 0U;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -48,7 +49,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			//Change Send_Filed 1-3
 			        case (Set_Send_Field_1):
-			            ParaID_Data.GlobalConfig.n_ref = value;
+						scope_selected_subsystem = (int) value;
 			            break;
 
 			        case (Set_Send_Field_2):

@@ -94,6 +94,8 @@ struct uz_SetPoint_config sp_config = {
 struct uz_IIR_Filter_config config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 10000.0f};
 uz_IIR_Filter_t* filter_1 = NULL;
 uz_IIR_Filter_t* filter_2 = NULL;
+uz_IIR_Filter_t* filter_3 = NULL;
+uz_IIR_Filter_t* filter_4 = NULL;
 // Psi calc, remove maybe
 #include "uz/uz_ParameterID/ElectricalID_6ph/uz_ParaID_Frequency_Analysis.h"
 float meas_array[10000];
@@ -183,6 +185,8 @@ int main(void)
 
 			filter_1 = uz_signals_IIR_Filter_init(config);
 			filter_2 = uz_signals_IIR_Filter_init(config);
+			filter_3 = uz_signals_IIR_Filter_init(config);
+			filter_4 = uz_signals_IIR_Filter_init(config);
 
 			Initialize_Timer();
 			            uz_SystemTime_init();

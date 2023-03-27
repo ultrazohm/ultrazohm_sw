@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.71
+ * Model version                  : 3.73
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Mar 23 09:09:39 2023
+ * C/C++ source code generated on : Thu Mar 23 15:14:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,6 +63,7 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
+
 
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {
@@ -162,9 +163,6 @@ typedef struct {
                                   /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   boolean_T finished_calculation_l;
                                   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  boolean_T finished_ab;               /* '<Root>/FluxMapID_6ph_codegen' */
-  boolean_T finished_xy;               /* '<Root>/FluxMapID_6ph_codegen' */
-  boolean_T finished_zero;             /* '<Root>/FluxMapID_6ph_codegen' */
   boolean_T finished_calculation_p;    /* '<Root>/FluxMapID_6ph_codegen' */
 } DW_FluxMapID_6ph_codegen_t;
 

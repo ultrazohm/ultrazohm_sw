@@ -238,7 +238,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 SND_FLD_ZEROVALUE=0,
-n_ref,
+selcted_Fluxmap,
 i_d_ref,
 i_q_ref,
 kp_dq,
@@ -251,7 +251,7 @@ SND_FLD_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 SND_LABELS_ZEROVALUE=0,
-RPM,
+,
 A,
 A,
 Ohm,

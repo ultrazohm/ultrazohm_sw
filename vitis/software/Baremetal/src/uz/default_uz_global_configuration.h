@@ -23,7 +23,8 @@
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
 // configuration of neural network
-#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_INPUTS_9N 9
+#define NUMBER_OF_INPUTS_7N 7
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 

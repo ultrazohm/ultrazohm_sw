@@ -347,9 +347,10 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 }
 
 bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){
-	uint8_t feedback = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag);
-	Data->feedback_printed = feedback & 0x01;
-	return (feedback & 0x02);
+	bool feedback_printed;
+	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag, &feedback_printed);
+	Data->feedback_printed = feedback_printed;
+	return (logging_flag);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {

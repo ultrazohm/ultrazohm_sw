@@ -44,10 +44,10 @@ extern uz_codegen codegenInstance;
 
 #define CURRENT_CONV_FACTOR 80.0f/3.0f
 #define PN 1.0f
-#define theta_offset 1.1f
+
 #define dc_link 15.0f
 #define VOLTAGE_CONV_FACTOR 12.5f
-#define MAX_CURRENT_ASSERTION 20.0f
+#define MAX_CURRENT_ASSERTION 30.0f
 #define MAX_SPEED_ASSERTION 1500.0f
 #define voltage_offsetL13 8.6f
 #define voltage_offsetL2 8.8f
@@ -68,6 +68,8 @@ extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_dq_Amp = {0};
+uz_3ph_abc_t measured_voltage_uvw_V = {0};
+uz_3ph_dq_t measured_voltage_dq_V = {0};
 uz_3ph_dq_t FOC_output_Volts = {0};
 uz_3ph_abc_t measured_currents_uvw_Amp = {0};
 uz_3ph_abc_t calc_voltage_uvw = {0};
@@ -88,6 +90,7 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 float theta_el_rad = 0.0f;
 float rpm_ref = 0.0f;
 float torque_ref = 0.0f;
+float theta_offset = 0.9f;
 int option = 0;
 
 void ISR_Control(void *data)
@@ -103,10 +106,14 @@ void ISR_Control(void *data)
 	measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A1-2.5f);
 	measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
 	measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);
-
+	theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
 	Global_Data.av.U_L1 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B5 - voltage_offsetL13;
 	Global_Data.av.U_L2 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B6 - voltage_offsetL2;
 	Global_Data.av.U_L3 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B7 - voltage_offsetL13;
+	measured_voltage_uvw_V.a = Global_Data.av.U_L1;
+	measured_voltage_uvw_V.b = Global_Data.av.U_L2;
+	measured_voltage_uvw_V.c = Global_Data.av.U_L3;
+	measured_voltage_dq_V = uz_transformation_3ph_abc_to_dq(measured_voltage_uvw_V, theta_el_rad);
 
 	Global_Data.av.U_ZK = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_A4;
 
@@ -138,7 +145,6 @@ void ISR_Control(void *data)
     	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
     	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
 
-    				theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
     				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
     				// conversion from uvw- to dq-system (currents)
     				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
@@ -159,8 +165,6 @@ void ISR_Control(void *data)
     	    		/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
     	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
     	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
-    				update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    				theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
     				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
     				// conversion from uvw- to dq-system (currents)
     				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
@@ -221,8 +225,6 @@ void ISR_Control(void *data)
 					/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
 					measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
 					measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
-					update_speed_and_position_of_encoder_on_D5(&Global_Data);
-					theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
 					omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
 					// conversion from uvw- to dq-system (currents)
 					measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);

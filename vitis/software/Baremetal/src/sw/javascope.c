@@ -43,6 +43,8 @@ extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 extern struct uz_3ph_dq_t measured_currents_dq_Amp;
 extern struct uz_3ph_dq_t FOC_output_Volts;
 extern struct uz_3ph_abc_t measured_currents_uvw_Amp;
+extern struct uz_3ph_dq_t measured_voltage_dq_V;
+extern struct uz_3ph_dq_t reference_currents_Amp;
 
 
 extern struct DS_Data data;
@@ -74,6 +76,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_omega] = &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_v_d_FOC] = &FOC_output_Volts.d;
 	js_ch_observable[JSO_v_q_FOC] = &FOC_output_Volts.q;
+	js_ch_observable[JSO_v_d_meas] = &measured_voltage_dq_V.d;
+	js_ch_observable[JSO_v_q_meas] = &measured_voltage_dq_V.q;
 	js_ch_observable[JSO_torque] = &pmsm_outputs.torque_Nm;
 	js_ch_observable[JSO_angle] = &data->av.theta_elec;
 	js_ch_observable[JSO_ua_meas] = &data->av.U_L1;
@@ -83,9 +87,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia_meas] = &measured_currents_uvw_Amp.a;
 	js_ch_observable[JSO_ib_meas] = &measured_currents_uvw_Amp.b;
 	js_ch_observable[JSO_ic_meas] = &measured_currents_uvw_Amp.c;
-	/*js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
-	js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
-	js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
+	js_ch_observable[JSO_i_q_ref] = &reference_currents_Amp.q;
+	js_ch_observable[JSO_i_d_ref] = &reference_currents_Amp.d;
+	/*js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
 	js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
 	js_ch_observable[JSO_torque] = &pmsm_outputs.torque_Nm;
@@ -101,8 +105,12 @@ int JavaScope_initalize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_v_d_FOC]                            = &(FOC_output_Volts.d);
 	js_slowDataArray[JSSD_FLOAT_v_q_FOC]                            = &(FOC_output_Volts.q);
+	js_slowDataArray[JSSD_FLOAT_v_d_meas]                           = &(measured_voltage_dq_V.d);
+	js_slowDataArray[JSSD_FLOAT_v_q_meas]                           = &(measured_voltage_dq_V.q);
 	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(measured_currents_dq_Amp.d);
 	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(measured_currents_dq_Amp.q);
+	js_slowDataArray[JSSD_FLOAT_i_d_ref]                            = &(reference_currents_Amp.d);
+	js_slowDataArray[JSSD_FLOAT_i_q_ref]                            = &(reference_currents_Amp.q);
 	js_slowDataArray[JSSD_FLOAT_speed]                              = &(data->av.mechanicalRotorSpeed_filtered);
 	js_slowDataArray[JSSD_FLOAT_torque]								= &(pmsm_outputs.torque_Nm);
 	js_slowDataArray[JSSD_FLOAT_angle]								= &(data->av.theta_elec);

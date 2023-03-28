@@ -21,6 +21,8 @@
 #include <stdbool.h>
 #include "uz_ParameterID.h"
 
+extern uint16_t scope_selected_subsystem;
+
 typedef struct uz_ParameterID_6ph_t {
 	bool is_ready;
 	uz_ParaID_ControlState_t* ControlState;
@@ -199,7 +201,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
 		V_abc_Volts.c2 = -V_abc_Volts.a2;
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
-	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem >= 1) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem == 1) || (Data->FluxmapID_extended_controller_Output->selected_subsystem == 2) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
@@ -318,6 +320,8 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
+	Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
+
 	//Step the function
 	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->feedback_printed);
 

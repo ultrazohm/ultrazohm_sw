@@ -42,14 +42,18 @@ XTmrCtr Timer_Interrupt;
 extern DS_Data Global_Data;
 extern uz_codegen codegenInstance;
 
-#define CURRENT_CONV_FACTOR 3.2f
+#define CURRENT_CONV_FACTOR 80.0f/3.0f
+#define PN 1.0f
+#define theta_offset 1.1f
+#define dc_link 15.0f
+#define VOLTAGE_CONV_FACTOR 12.5f
+#define MAX_CURRENT_ASSERTION 20.0f
+#define MAX_SPEED_ASSERTION 1500.0f
+#define voltage_offsetL13 8.6f
+#define voltage_offsetL2 8.8f
 
 uz_3ph_abc_t three_phase_output = {0};
 bool is_three_phase_active = false;
-float amplitude = 0.5f;
-float frequency = 1.0f;
-float offset = 0.0f;
-//float link = 48.0f;
 struct uz_DutyCycle_t duty_cycles={0};
 
 //==============================================================================================================================================================
@@ -63,10 +67,10 @@ static void ReadAllADC();
 extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
-uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_dq_Amp = {0};
 uz_3ph_dq_t FOC_output_Volts = {0};
-uz_3ph_abc_t output_current_uvw = {0};
-uz_3ph_abc_t output_uvw = {0};
+uz_3ph_abc_t measured_currents_uvw_Amp = {0};
+uz_3ph_abc_t calc_voltage_uvw = {0};
 uz_3ph_dq_t output_dq = {0};
 float omega_el_rad_per_sec = 0.0f;
 struct uz_pmsmModel_inputs_t pmsm_inputs={
@@ -82,53 +86,165 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .omega_mech_1_s=0.0f
 };
 float theta_el_rad = 0.0f;
+float rpm_ref = 0.0f;
+float torque_ref = 0.0f;
+int option = 0;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+	update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+	codegenInstance.input.omega = (2.0f * M_PI *rpm_ref / 60.0f) * PN ;
+	codegenInstance.input.torque = torque_ref;
     uz_codegen_step(&codegenInstance);
 
-    Global_Data.av.I_U = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
-    Global_Data.av.I_V = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
-    Global_Data.av.I_W = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    theta_el_rad = (Global_Data.av.theta_elec - 5.4f) * 3.0f;
+	measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A1-2.5f);
+	measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
+	measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);
 
-    output_current_uvw.a = Global_Data.av.I_U;
-	output_current_uvw.b = Global_Data.av.I_V;
-	output_current_uvw.c = Global_Data.av.I_W;
-	output_dq = uz_transformation_3ph_abc_to_dq(output_current_uvw, theta_el_rad);
-	measured_currents_Amp.d = output_dq.d;
-	measured_currents_Amp.q = output_dq.q;
-	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * 3.0f;
+	Global_Data.av.U_L1 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B5 - voltage_offsetL13;
+	Global_Data.av.U_L2 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B6 - voltage_offsetL2;
+	Global_Data.av.U_L3 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B7 - voltage_offsetL13;
+
+	Global_Data.av.U_ZK = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_A4;
+
+	Global_Data.av.mechanicalTorqueObserved = Global_Data.aa.A1.me.ADC_A1 * (-2.0f);
+
+	if ((fabs(measured_currents_uvw_Amp.a) > MAX_CURRENT_ASSERTION) || (fabs(measured_currents_uvw_Amp.b) > MAX_CURRENT_ASSERTION) || (fabs(measured_currents_uvw_Amp.c) > MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed_filtered) > MAX_SPEED_ASSERTION)) {
+		uz_assert(0);
+		/*Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+		ultrazohm_state_machine_set_stop(true);*/
+	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
- /*   	uz_pmsmModel_trigger_input_strobe(pmsm);
-    	uz_pmsmModel_trigger_output_strobe(pmsm);
-    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm); */
-
-
-    	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 48.0f, omega_el_rad_per_sec);
-    	output_uvw = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, theta_el_rad);
+    	//get data
 
 
 
-    	/*pmsm_inputs.v_q_V=FOC_output_Volts.q;
-    	pmsm_inputs.v_d_V=FOC_output_Volts.d;
-    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);*/
+		// options: 1=mtpa_tb, 2=me_tb, 3=mtpa_ip, 4=me_ip, 5=mtpa_tb_current
+		switch (option){
+			case (1):
+    	    		reference_currents_Amp.d = codegenInstance.output.MTPA_id;
+    	    		reference_currents_Amp.q = codegenInstance.output.MTPA_iq;
+    	    		//reading out the phase currents and encoder data
+    	    		/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
+    	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
+    	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
 
-    	/*if (is_three_phase_active) {
-    	       three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset);*/
+    				theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
+    				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
+    				// conversion from uvw- to dq-system (currents)
+    				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
+    				// executing the FOC
+    	        	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_dq_Amp, dc_link, omega_el_rad_per_sec);
+    	        	// conversion from dq- to uvw-system (voltages)
+    	        	calc_voltage_uvw = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, theta_el_rad);
+    	        	// calculates and sets duty cycles
+    	        	duty_cycles=	   uz_FOC_generate_DutyCycles(calc_voltage_uvw, dc_link);
+    				Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.DutyCycle_U;
+    				Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.DutyCycle_V;
+    				Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
+    	    		break;
+			case (2):
+    	    		reference_currents_Amp.d = codegenInstance.output.ME_id;
+    	    		reference_currents_Amp.q = codegenInstance.output.ME_iq;
+    	    		//reading out the phase currents and encoder data
+    	    		/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
+    	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
+    	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
+    				update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    				theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
+    				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
+    				// conversion from uvw- to dq-system (currents)
+    				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
+    				// executing the FOC
+    	        	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_dq_Amp, dc_link, omega_el_rad_per_sec);
+    	        	// conversion from dq- to uvw-system (voltages)
+    	        	calc_voltage_uvw = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, theta_el_rad);
+    	        	// calculates and sets duty cycles
+    	        	duty_cycles=	   uz_FOC_generate_DutyCycles(calc_voltage_uvw, dc_link);
+    				Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.DutyCycle_U;
+    				Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.DutyCycle_V;
+    				Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
+    	    		break;
+			case (3):
+					//starts pmsm model, reads outputs, sets rpm_ref
+					uz_pmsmModel_trigger_input_strobe(pmsm);
+					uz_pmsmModel_trigger_output_strobe(pmsm);
+					pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+					pmsm_inputs.omega_mech_1_s = 2 * M_PI * rpm_ref / 60.0f;
+					// reads reference currents from LUT
+    	    		reference_currents_Amp.d = codegenInstance.output.MTPA_id;
+    	    		reference_currents_Amp.q = codegenInstance.output.MTPA_iq;
+    	    		// reads output currents & omega from pmsm model
+    	    		measured_currents_dq_Amp.d = pmsm_outputs.i_d_A;
+					measured_currents_dq_Amp.q = pmsm_outputs.i_q_A;
+					omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * PN;
+    				// executing the FOC
+					FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_dq_Amp, 24.0f, omega_el_rad_per_sec);
+					// feeds output voltages back to input
+					pmsm_inputs.v_q_V=FOC_output_Volts.q;
+					pmsm_inputs.v_d_V=FOC_output_Volts.d;
+					// sets inputs
+					uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    	    		break;
+			case (4):
+					//starts pmsm model, reads outputs, sets rpm_ref
+					uz_pmsmModel_trigger_input_strobe(pmsm);
+					uz_pmsmModel_trigger_output_strobe(pmsm);
+					pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+					pmsm_inputs.omega_mech_1_s = 2 * M_PI * rpm_ref / 60.0f;
+					// reads reference currents from LUT
+    	    		reference_currents_Amp.d = codegenInstance.output.ME_id;
+    	    		reference_currents_Amp.q = codegenInstance.output.ME_iq;
+    	    		// reads output currents & omega from pmsm model
+					measured_currents_dq_Amp.d = pmsm_outputs.i_d_A;
+					measured_currents_dq_Amp.q = pmsm_outputs.i_q_A;
+					omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * PN;
+    				// executing the FOC
+					FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_dq_Amp, 24.0f, omega_el_rad_per_sec);
+					// feeds output voltages back to input
+					pmsm_inputs.v_q_V=FOC_output_Volts.q;
+					pmsm_inputs.v_d_V=FOC_output_Volts.d;
+					// sets inputs
+					uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    	    		break;
+			case (5):
+					//reading out the phase currents and encoder data
+					/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
+					measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
+					measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
+					update_speed_and_position_of_encoder_on_D5(&Global_Data);
+					theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
+					omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
+					// conversion from uvw- to dq-system (currents)
+					measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
+					// executing the FOC
+					FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_dq_Amp, dc_link, omega_el_rad_per_sec);
+					// conversion from dq- to uvw-system (voltages)
+					calc_voltage_uvw = uz_transformation_3ph_dq_to_abc(FOC_output_Volts, theta_el_rad);
+					// calculates and sets duty cycles
+					duty_cycles=	   uz_FOC_generate_DutyCycles(calc_voltage_uvw, dc_link);
+					Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.DutyCycle_U;
+					Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.DutyCycle_V;
+					Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
+					break;
+			default:
+					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+					Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+					Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		}
 
-    	 duty_cycles=	   uz_FOC_generate_DutyCycles(output_uvw, 48.0f);
-    	 Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.DutyCycle_U;
-    	 Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.DutyCycle_V;
-    	 Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
 
-	 } else { //if (current_state!=control_state || !is_three_phase_active) {
+
+	} else { //if (current_state!=control_state || !is_three_phase_active) {
 		 Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		 Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 		 Global_Data.rasv.halfBridge3DutyCycle = 0.0f;

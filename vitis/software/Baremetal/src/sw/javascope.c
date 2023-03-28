@@ -31,6 +31,7 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -39,10 +40,14 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern uz_3ph_abc_t three_phase_output;
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
-extern struct uz_3ph_dq_t measured_currents_Amp;
+extern struct uz_3ph_dq_t measured_currents_dq_Amp;
+extern struct uz_3ph_dq_t FOC_output_Volts;
+extern struct uz_3ph_abc_t measured_currents_uvw_Amp;
+
 
 extern struct DS_Data data;
 extern float i_u_A;
+
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -64,12 +69,27 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_i_q] = &measured_currents_Amp.q;
-	js_ch_observable[JSO_i_d] =  &measured_currents_Amp.d;
+	js_ch_observable[JSO_i_q] = &measured_currents_dq_Amp.q;
+	js_ch_observable[JSO_i_d] = &measured_currents_dq_Amp.d;
 	js_ch_observable[JSO_omega] = &data->av.mechanicalRotorSpeed_filtered;
+	js_ch_observable[JSO_v_d] = &FOC_output_Volts.d;
+	js_ch_observable[JSO_v_q] = &FOC_output_Volts.q;
+	js_ch_observable[JSO_torque] = &pmsm_outputs.torque_Nm;
+	js_ch_observable[JSO_angle] = &data->av.theta_elec;
+	js_ch_observable[JSO_ua_meas] = &data->av.U_L1;
+	js_ch_observable[JSO_ub_meas] = &data->av.U_L2;
+	js_ch_observable[JSO_uc_meas] = &data->av.U_L3;
+	js_ch_observable[JSO_torque_meas] = &data->av.mechanicalTorqueObserved;
+	js_ch_observable[JSO_ia_meas] = &measured_currents_uvw_Amp.a;
+	js_ch_observable[JSO_ib_meas] = &measured_currents_uvw_Amp.b;
+	js_ch_observable[JSO_ic_meas] = &measured_currents_uvw_Amp.c;
+	/*js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
+	js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
+	js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
 	js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
-	/*js_ch_observable[JSO_i_u] = &data->av.I_U;
+	js_ch_observable[JSO_torque] = &pmsm_outputs.torque_Nm;
+	js_ch_observable[JSO_i_u] = &data->av.I_U;
 	js_ch_observable[JSO_i_v] = &data->av.I_V;
 	js_ch_observable[JSO_i_w] = &data->av.I_W;
 	js_ch_observable[JSO_angle] = &data->av.theta_elec;*/
@@ -79,11 +99,20 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
-	js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(measured_currents_Amp.d);
-	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(measured_currents_Amp.q);
+	js_slowDataArray[JSSD_FLOAT_u_d]                                = &(FOC_output_Volts.d);
+	js_slowDataArray[JSSD_FLOAT_u_q]                                = &(FOC_output_Volts.q);
+	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(measured_currents_dq_Amp.d);
+	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(measured_currents_dq_Amp.q);
 	js_slowDataArray[JSSD_FLOAT_speed]                              = &(data->av.mechanicalRotorSpeed_filtered);
+	js_slowDataArray[JSSD_FLOAT_torque]								= &(pmsm_outputs.torque_Nm);
+	js_slowDataArray[JSSD_FLOAT_angle]								= &(data->av.theta_elec);
+	js_slowDataArray[JSSD_FLOAT_u_a_meas]							= &(data->av.U_L1);
+	js_slowDataArray[JSSD_FLOAT_u_b_meas]							= &(data->av.U_L2);
+	js_slowDataArray[JSSD_FLOAT_u_c_meas]							= &(data->av.U_L3);
+	js_slowDataArray[JSSD_FLOAT_i_a_meas]							= &(measured_currents_uvw_Amp.a);
+	js_slowDataArray[JSSD_FLOAT_i_b_meas]							= &(measured_currents_uvw_Amp.b);
+	js_slowDataArray[JSSD_FLOAT_i_c_meas]							= &(measured_currents_uvw_Amp.c);
+	js_slowDataArray[JSSD_FLOAT_torque_meas]						= &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
 
 	return Status;

@@ -13,12 +13,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
+#pragma once
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 
 typedef struct{
 	ExtY output;
 	ExtU input;
-	DW rtDW;                        /* Observable states */
+	//DW rtDW;                        /* Observable states */
 	RT_MODEL modelData;
 	RT_MODEL *PtrToModelData;
 }uz_codegen;

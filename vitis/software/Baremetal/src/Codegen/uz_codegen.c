@@ -17,7 +17,7 @@
 
 void uz_codegen_init(uz_codegen *self){
 	self->PtrToModelData=&self->modelData;
-	self->PtrToModelData->dwork=&self->rtDW;
+	//self->PtrToModelData->dwork=&self->rtDW;
 	self->PtrToModelData->inputs=&self->input;
 	self->PtrToModelData->outputs=&self->output;
 }

@@ -25,10 +25,10 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 extern bool is_three_phase_active;
-extern float amplitude;
-extern float frequency;
-extern float offset;
 extern uz_3ph_dq_t reference_currents_Amp;
+extern float torque_ref;
+extern float rpm_ref;
+extern int option;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -192,23 +192,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				reference_currents_Amp.q = value;
+				rpm_ref = value;
 			break;
 
 		case (Set_Send_Field_2):
-				reference_currents_Amp.d = value;
+				torque_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+				reference_currents_Amp.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+				reference_currents_Amp.d = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+				option = value;
 			break;
 
 		case (Set_Send_Field_6):

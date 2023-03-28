@@ -9,7 +9,7 @@
  *
  * Model version                  : 5.3
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Wed Mar 22 13:05:01 2023
+ * C/C++ source code generated on : Wed Mar 22 14:08:30 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -135,13 +135,13 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_codegen_mtpa_me/uz_codegen')    - opens subsystem uz_codegen_mtpa_me/uz_codegen
- * hilite_system('uz_codegen_mtpa_me/uz_codegen/Kp') - opens and selects block Kp
+ * hilite_system('uz_codegen/uz_codegen')    - opens subsystem uz_codegen/uz_codegen
+ * hilite_system('uz_codegen/uz_codegen/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_codegen_mtpa_me'
- * '<S1>'   : 'uz_codegen_mtpa_me/uz_codegen'
+ * '<Root>' : 'uz_codegen'
+ * '<S1>'   : 'uz_codegen/uz_codegen'
  */
 
 /*-

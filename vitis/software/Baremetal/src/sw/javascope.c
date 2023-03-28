@@ -102,6 +102,16 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
 	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
+
+	js_ch_observable[JSO_DC1] = &(data->rasv.halfBridge1DutyCycle);
+	js_ch_observable[JSO_DC2] = &(data->rasv.halfBridge2DutyCycle);
+	js_ch_observable[JSO_DC3] = &(data->rasv.halfBridge3DutyCycle);
+	js_ch_observable[JSO_DC4] = &(data->rasv.halfBridge4DutyCycle);
+	js_ch_observable[JSO_DC5] = &(data->rasv.halfBridge5DutyCycle);
+	js_ch_observable[JSO_DC6] = &(data->rasv.halfBridge6DutyCycle);
+
+
+
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

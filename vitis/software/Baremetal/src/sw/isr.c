@@ -64,7 +64,7 @@ extern DS_Data Global_Data;
 #define MAX_TEMP_DEG 100.0f
 
 //neutral config
-#define NEUTRAL_CONFIG 1U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3U: zero fluxmap
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 float u_a1c1 = 0.0f;
@@ -214,12 +214,18 @@ void ISR_Control(void *data)
 	Global_Data.av.winding_temperature.b2 = temp_card_channel_A.temperature[11];
 	Global_Data.av.winding_temperature.c2 = temp_card_channel_A.temperature[13];
 	// negative -333°C means readout error and average would be false
-	uz_assert(Global_Data.av.winding_temperature.a1>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.b1>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.c1>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.a2>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.b2>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.c2>0.0f);
+	if(Global_Data.av.winding_temperature.a1 < 0.0f)
+		Global_Data.av.winding_temperature.a1 = Global_Data.av.avg_winding_temperature;
+	if(Global_Data.av.winding_temperature.b1 < 0.0f)
+			Global_Data.av.winding_temperature.b1 = Global_Data.av.avg_winding_temperature;
+	if(Global_Data.av.winding_temperature.c1 < 0.0f)
+			Global_Data.av.winding_temperature.c1 = Global_Data.av.avg_winding_temperature;
+	if(Global_Data.av.winding_temperature.a2 < 0.0f)
+			Global_Data.av.winding_temperature.a2 = Global_Data.av.avg_winding_temperature;
+	if(Global_Data.av.winding_temperature.b2 < 0.0f)
+			Global_Data.av.winding_temperature.b2 = Global_Data.av.avg_winding_temperature;
+	if(Global_Data.av.winding_temperature.c2 < 0.0f)
+			Global_Data.av.winding_temperature.c2 = Global_Data.av.avg_winding_temperature;
 	// average winding temperature
 	Global_Data.av.avg_winding_temperature = (Global_Data.av.winding_temperature.a1 + Global_Data.av.winding_temperature.b1 + Global_Data.av.winding_temperature.c1 + Global_Data.av.winding_temperature.a2 + Global_Data.av.winding_temperature.b2 + Global_Data.av.winding_temperature.c2)/6.0f;
 
@@ -287,12 +293,8 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
 	Global_Data.av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
+	ParaID_Data.ActualValues.average_winding_temp = Global_Data.av.avg_winding_temperature;
 	//////////////ParaID ende
-
-	uz_resonantController_set_gain(res_instance_1, Global_Data.rasv.resonant_gain);
-	uz_resonantController_set_gain(res_instance_2, Global_Data.rasv.resonant_gain);
-	uz_resonantController_set_harmonic_order(res_instance_1, 6);
-	uz_resonantController_set_harmonic_order(res_instance_2, 6);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -301,16 +303,15 @@ void ISR_Control(void *data)
         // ParaID functions
     	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
     	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
-		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+		//ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+    	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
-/*
+
  	 	// dq and xy control
-    	cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, cc_setp, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+/*    	cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
 		cc_6ph_dq.d = cc_3ph_dq.d;
 		cc_6ph_dq.q = cc_3ph_dq.q;
-        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_xy_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        cc_3ph_xy_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_xy_rotating.d, ParaID_Data.ActualValues.omega_el);
-		cc_3ph_xy_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_xy_rotating.q, ParaID_Data.ActualValues.omega_el);
+        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, cc_setp, ParaID_Data.ActualValues.i_xy_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
         cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
         cc_6ph_dq.x = cc_3ph_xy_stationary.alpha;
         cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
@@ -330,8 +331,8 @@ void ISR_Control(void *data)
 */
 
 		// change DutyCycles=0 to 0.01
-		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
-		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
+		//ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
+		//ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
 		// write DutyCycles
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
@@ -342,8 +343,6 @@ void ISR_Control(void *data)
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }
-
-
 
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

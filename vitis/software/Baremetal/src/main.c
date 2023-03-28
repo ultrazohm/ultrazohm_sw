@@ -173,7 +173,6 @@ int main(void)
 				.antiwindup_gain = 100.0f,
 				.in_reference_value = 0.0f,
 				.in_measured_value = 0.0f};
-			Global_Data.rasv.resonant_gain = 0.1f;
 			// init controllers
 			sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
 			Speed_instace = uz_SpeedControl_init(speed_config);

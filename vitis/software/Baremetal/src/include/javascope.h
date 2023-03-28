@@ -21,6 +21,12 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
+	JSO_DC1,
+	JSO_DC2,
+	JSO_DC3,
+	JSO_DC4,
+	JSO_DC5,
+	JSO_DC6,
 	JSO_id,
 	JSO_iq,
 	JSO_x_rot,
@@ -263,7 +269,7 @@ SND_LABELS_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 RCV_FLD_ZEROVALUE=0,
-speed,
+AvgWindingTemp,
 index,
 i_d,
 i_q,

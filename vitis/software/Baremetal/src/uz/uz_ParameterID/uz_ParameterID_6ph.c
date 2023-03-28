@@ -206,12 +206,12 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	} else {
-		output_DutyCycle.system1.DutyCycle_A = 0.0f;
-		output_DutyCycle.system1.DutyCycle_B = 0.0f;
-		output_DutyCycle.system1.DutyCycle_C = 0.0f;
-		output_DutyCycle.system2.DutyCycle_A = 0.0f;
-		output_DutyCycle.system2.DutyCycle_B = 0.0f;
-		output_DutyCycle.system2.DutyCycle_C = 0.0f;
+		output_DutyCycle.system1.DutyCycle_A = 0.5f;
+		output_DutyCycle.system1.DutyCycle_B = 0.5f;
+		output_DutyCycle.system1.DutyCycle_C = 0.5f;
+		output_DutyCycle.system2.DutyCycle_A = 0.5f;
+		output_DutyCycle.system2.DutyCycle_B = 0.5f;
+		output_DutyCycle.system2.DutyCycle_C = 0.5f;
 	}
 	if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.system1.DutyCycle_A = 0.0f;
@@ -347,7 +347,7 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 }
 
 bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){
-	bool feedback_printed;
+	bool feedback_printed = false;
 	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxmapID_extended_controller_Output, &feedback_printed);
 	Data->feedback_printed = feedback_printed;
 	return (logging_flag);

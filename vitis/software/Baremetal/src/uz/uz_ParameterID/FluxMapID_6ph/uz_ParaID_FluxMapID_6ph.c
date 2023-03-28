@@ -192,11 +192,11 @@ bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_co
     static float time = 0.0f;
     static bool logging = false;
     
-    if(data.finished_calculation && !old_finished_calculation && !logging){
+    if(data->finished_calculation && !old_finished_calculation && !logging){
 		time = uz_SystemTime_GetGlobalTimeInSec();
     	logging = true;
     }else if(logging && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
-    	feedback_printed = true;
+    	*feedback_printed = true;
         logging = false;
     }
     old_finished_calculation = data->finished_calculation;

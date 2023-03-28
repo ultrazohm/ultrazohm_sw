@@ -25,8 +25,8 @@ enum JS_OberservableData {
 	JSO_i_d,
 	JSO_omega,
 	JSO_torque,
-	JSO_v_d,
-	JSO_v_q,
+	JSO_v_d_FOC,
+	JSO_v_q_FOC,
 	JSO_angle,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
@@ -78,8 +78,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_angle,
-	JSSD_FLOAT_u_d,
-	JSSD_FLOAT_u_q,
+	JSSD_FLOAT_v_d_FOC,
+	JSSD_FLOAT_v_q_FOC,
 	JSSD_FLOAT_u_a_meas,
 	JSSD_FLOAT_u_b_meas,
 	JSSD_FLOAT_u_c_meas,
@@ -194,11 +194,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	i_q,
-	i_d,
+	i_q_meas,
+	i_d_meas,
 	rpm_meas,
-	v_q,
-	v_d,
+	v_q_FOC,
+	v_d_FOC,
 	torque_meas,
 	RCV_FLD_ENDMARKER
 
@@ -224,8 +224,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_speed,
-	JSSD_FLOAT_u_q,
-	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_v_q_FOC,
+	JSSD_FLOAT_v_d_FOC,
 	JSSD_FLOAT_torque_meas,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER

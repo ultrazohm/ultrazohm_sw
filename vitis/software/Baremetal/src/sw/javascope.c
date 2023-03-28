@@ -72,8 +72,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_q] = &measured_currents_dq_Amp.q;
 	js_ch_observable[JSO_i_d] = &measured_currents_dq_Amp.d;
 	js_ch_observable[JSO_omega] = &data->av.mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_v_d] = &FOC_output_Volts.d;
-	js_ch_observable[JSO_v_q] = &FOC_output_Volts.q;
+	js_ch_observable[JSO_v_d_FOC] = &FOC_output_Volts.d;
+	js_ch_observable[JSO_v_q_FOC] = &FOC_output_Volts.q;
 	js_ch_observable[JSO_torque] = &pmsm_outputs.torque_Nm;
 	js_ch_observable[JSO_angle] = &data->av.theta_elec;
 	js_ch_observable[JSO_ua_meas] = &data->av.U_L1;
@@ -99,8 +99,8 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d]                                = &(FOC_output_Volts.d);
-	js_slowDataArray[JSSD_FLOAT_u_q]                                = &(FOC_output_Volts.q);
+	js_slowDataArray[JSSD_FLOAT_v_d_FOC]                            = &(FOC_output_Volts.d);
+	js_slowDataArray[JSSD_FLOAT_v_q_FOC]                            = &(FOC_output_Volts.q);
 	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(measured_currents_dq_Amp.d);
 	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(measured_currents_dq_Amp.q);
 	js_slowDataArray[JSSD_FLOAT_speed]                              = &(data->av.mechanicalRotorSpeed_filtered);

@@ -63,8 +63,12 @@ extern DS_Data Global_Data;
 #define MAX_DC_VOLT 590.0f
 #define MAX_TEMP_DEG 100.0f
 
-bool first_ISR = false;
-
+//neutral config
+#define NEUTRAL_CONFIG 1U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+float u_n1 = 0.0f;
+float u_n2 = 0.0f;
+float u_a1c1 = 0.0f;
+float u_a2c2 = 0.0f;
 
 //ParaID
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
@@ -79,7 +83,6 @@ uz_3ph_alphabeta_t voltage_stationary_zero = {0};
 uz_3ph_alphabeta_t current_stationary_zero = {0};
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_abc_t m_6ph_abc_voltage = {0};
-float u_neutral = 0.0f;
 //RaraID end
 
 
@@ -118,6 +121,7 @@ extern uz_IIR_Filter_t* filter_6;
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
 bool zero_finished = false;
+bool first_ISR = false;
 uz_6ph_abc_t zero_offset_function(bool* flag);
 struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected);
 
@@ -188,11 +192,11 @@ void ISR_Control(void *data)
 	// check DC Bus
 	if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
 			uz_assert(0);
-		}
+	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
 		//uz_assert(0);
-		}
+	}
 
 	// read temperature values from inverters
 	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
@@ -209,13 +213,14 @@ void ISR_Control(void *data)
 	Global_Data.av.winding_temperature.a2 = temp_card_channel_A.temperature[9];
 	Global_Data.av.winding_temperature.b2 = temp_card_channel_A.temperature[11];
 	Global_Data.av.winding_temperature.c2 = temp_card_channel_A.temperature[13];
-	/*uz_assert(Global_Data.av.winding_temperature.a1>0.0f);
+	// negative -333°C means readout error and average would be false
+	uz_assert(Global_Data.av.winding_temperature.a1>0.0f);
 	uz_assert(Global_Data.av.winding_temperature.b1>0.0f);
 	uz_assert(Global_Data.av.winding_temperature.c1>0.0f);
 	uz_assert(Global_Data.av.winding_temperature.a2>0.0f);
 	uz_assert(Global_Data.av.winding_temperature.b2>0.0f);
-	uz_assert(Global_Data.av.winding_temperature.c2>0.0f);*/
-
+	uz_assert(Global_Data.av.winding_temperature.c2>0.0f);
+	// average winding temperature
 	Global_Data.av.avg_winding_temperature = (Global_Data.av.winding_temperature.a1 + Global_Data.av.winding_temperature.b1 + Global_Data.av.winding_temperature.c1 + Global_Data.av.winding_temperature.a2 + Global_Data.av.winding_temperature.b2 + Global_Data.av.winding_temperature.c2)/6.0f;
 
 	////////////write to structs
@@ -225,15 +230,31 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.a2 = Global_Data.av.i_a2;
 	m_6ph_abc_currents.b2 = Global_Data.av.i_b2;
 	m_6ph_abc_currents.c2 = Global_Data.av.i_c2;
-
-	u_neutral = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
-
-	m_6ph_abc_voltage.a1 = Global_Data.av.v_a1 - u_neutral;
-	m_6ph_abc_voltage.b1 = Global_Data.av.v_b1 - u_neutral;
-	m_6ph_abc_voltage.c1 = Global_Data.av.v_c1 - u_neutral;
-	m_6ph_abc_voltage.a2 = Global_Data.av.v_a2 - u_neutral;
-	m_6ph_abc_voltage.b2 = Global_Data.av.v_b2 - u_neutral;
-	m_6ph_abc_voltage.c2 = Global_Data.av.v_c2 - u_neutral;
+	// calc u neutral voltagey
+	switch(NEUTRAL_CONFIG){
+	case 1U:{
+		u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+		u_n2 = u_n1;
+		break;
+	}
+	case 2U:{
+		u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
+		u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
+		break;
+	}
+	case 3U:{
+		u_a1c1 = Global_Data.av.v_a1 - Global_Data.av.v_c1;
+		u_a2c2 = Global_Data.av.v_a2 - Global_Data.av.v_c2;
+	}
+	default: break;
+	}
+	// calc phase voltages with neutral voltage
+	m_6ph_abc_voltage.a1 = Global_Data.av.v_a1 - u_n1;
+	m_6ph_abc_voltage.b1 = Global_Data.av.v_b1 - u_n1;
+	m_6ph_abc_voltage.c1 = Global_Data.av.v_c1 - u_n1;
+	m_6ph_abc_voltage.a2 = Global_Data.av.v_a2 - u_n2;
+	m_6ph_abc_voltage.b2 = Global_Data.av.v_b2 - u_n2;
+	m_6ph_abc_voltage.c2 = Global_Data.av.v_c2 - u_n2;
 
 	////////////Para ID actual
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
@@ -243,8 +264,8 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	// rotate zero
-	voltage_stationary_zero.alpha = ParaID_Data.ActualValues.v_dq_6ph.z1;
-	voltage_stationary_zero.beta = ParaID_Data.ActualValues.v_dq_6ph.z2;
+	voltage_stationary_zero.alpha = u_a1c1;
+	voltage_stationary_zero.beta = u_a2c2;
 	current_stationary_zero.alpha = ParaID_Data.ActualValues.i_abc_6ph.a1;
 	current_stationary_zero.beta = ParaID_Data.ActualValues.i_abc_6ph.a2;
 	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
@@ -308,19 +329,16 @@ void ISR_Control(void *data)
         ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_zero_control, ParaID_Data.ActualValues.V_DC);
 */
 
-		// change DC=0 to 0.01
-
+		// change DutyCycles=0 to 0.01
 		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
 		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
-
-
+		// write DutyCycles
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
 		Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
 		Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
 		Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
 		Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_C;
-
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }

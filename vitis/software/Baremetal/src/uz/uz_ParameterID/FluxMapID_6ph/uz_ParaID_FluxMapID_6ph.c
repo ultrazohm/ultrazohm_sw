@@ -187,7 +187,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
     return out;
 }
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* feedback_printed){
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed){
     static bool old_finished_calculation = false;
     static float time = 0.0f;
     static bool logging = false;
@@ -199,9 +199,7 @@ bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_co
     	feedback_printed = true;
         logging = false;
     }
-    if(!meas_flag)
-    	feedback_printed = false;
-    old_finished_calculation = data.finished_calculation;
+    old_finished_calculation = data->finished_calculation;
     return logging;
 }
 

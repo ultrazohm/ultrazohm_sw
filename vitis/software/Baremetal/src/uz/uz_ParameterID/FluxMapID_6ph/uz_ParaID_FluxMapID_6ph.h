@@ -35,7 +35,7 @@ uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_Para
 uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_FluxMapID_extended_controller_output_t* uz_get_FluxMapID_6ph_extended_controller_output(uz_ParaID_FluxMapID_6ph_t* self);
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* feedback_printed);
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed);
 uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_CurrentControl_t* CC_instance_3, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2, uz_IIR_Filter_t* filter_1,  uz_IIR_Filter_t* filter_2, uz_IIR_Filter_t* filter_3, uz_IIR_Filter_t* filter_4, uz_IIR_Filter_t* filter_5, uz_IIR_Filter_t* filter_6);
 uz_3ph_dq_t uz_filter_controller_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint);
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

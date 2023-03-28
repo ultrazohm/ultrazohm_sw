@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.76
+ * Model version                  : 3.77
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Mar 28 15:24:04 2023
+ * C/C++ source code generated on : Tue Mar 28 15:49:24 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -33,17 +33,8 @@
 #endif                      /* FluxMapID_6ph_codegen_COMMON_INCLUDES_ */
 
 /* Model Code Variants */
-#include "rt_zcfcn.h"
 
 /* Macros for accessing real-time model data structure */
-#ifndef rtmGetPrevZCSigState
-#define rtmGetPrevZCSigState(rtm)      ((rtm)->prevZCSigState)
-#endif
-
-#ifndef rtmSetPrevZCSigState
-#define rtmSetPrevZCSigState(rtm, val) ((rtm)->prevZCSigState = (val))
-#endif
-
 #ifndef rtmGetRootDWork
 #define rtmGetRootDWork(rtm)           ((rtm)->dwork)
 #endif
@@ -93,17 +84,7 @@ typedef struct {
   uint32_T i;                     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint8_T is_c14_Subchart_FluxMapID_refer;
                                   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  uint8_T previousZC;             /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  boolean_T feedback_printed_prev;/* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  boolean_T feedback_printed_start;
-                                  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 } DW_AMMstateIdentificationDQFl_t;
-
-/* Zero-crossing (trigger) state for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-typedef struct {
-  ZCSigState SFunction_edgeDetectionSignal_Z;
-                                  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-} ZCE_AMMstateIdentificationDQF_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
@@ -176,16 +157,6 @@ typedef struct {
   boolean_T finished_calculation_p;    /* '<Root>/FluxMapID_6ph_codegen' */
 } DW_FluxMapID_6ph_codegen_t;
 
-/* Zero-crossing (trigger) state */
-typedef struct {
-  ZCE_AMMstateIdentificationDQF_t sf_AMMstateIdentificationXY1Flu;
-                                 /* '<S1>/AMMstate.IdentificationXY1.Fluxmap' */
-  ZCE_AMMstateIdentificationDQF_t sf_AMMstateIdentificationXYFlux;
-                                  /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
-  ZCE_AMMstateIdentificationDQF_t sf_AMMstateIdentificationDQFlux;
-                                  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-} PrevZCX_FluxMapID_6ph_codegen_t;
-
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   uz_ParaID_FluxMapIDConfig_t FluxMapIDConfig;/* '<Root>/FluxMapIDConfig' */
@@ -206,7 +177,6 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM_FluxMapID_6ph_codegen_t {
-  PrevZCX_FluxMapID_6ph_codegen_t *prevZCSigState;
   ExtU_FluxMapID_6ph_codegen_t *inputs;
   ExtY_FluxMapID_6ph_codegen_t *outputs;
   DW_FluxMapID_6ph_codegen_t *dwork;

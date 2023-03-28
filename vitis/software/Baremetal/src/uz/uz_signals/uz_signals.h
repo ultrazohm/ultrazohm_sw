@@ -1,22 +1,24 @@
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
+#include "../uz_math_constants.h"
 
 /*! enum for readable configuring for type of 1st order filter */
-enum uz_IIR_Filter_selection {
+enum uz_IIR_Filter_selection
+{
 	LowPass_first_order = 0,
-    HighPass_first_order
+	HighPass_first_order
 };
 
 /**
  * @brief Configuration struct for a 1st order filter. Low- and HighPass filter is possible.
  *
  */
-struct uz_IIR_Filter_config {
+struct uz_IIR_Filter_config
+{
 	enum uz_IIR_Filter_selection selection; /**< Filter selection \n */
-    float cutoff_frequency_Hz; /**< cutoff frequency in Hz of the filter */
-	float sample_frequency_Hz; /**< sample frequency in Hz of the signal */
+	float cutoff_frequency_Hz;				/**< cutoff frequency in Hz of the filter */
+	float sample_frequency_Hz;				/**< sample frequency in Hz of the signal */
 };
-
 
 typedef struct uz_IIR_Filter_t uz_IIR_Filter_t;
 /**
@@ -49,27 +51,37 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit);
 
 /**
  * @brief Initialization of the filter 1st order object
- * 
+ *
  * @param config uz_Filter_1st_config configuration struct
  * @return uz_IIR_Filter_t* pointer instance
  */
-uz_IIR_Filter_t* uz_signals_IIR_Filter_init(struct uz_IIR_Filter_config config);
+uz_IIR_Filter_t *uz_signals_IIR_Filter_init(struct uz_IIR_Filter_config config);
 
 /**
  * @brief Function to filter an input signal with either an LowPass or HighPass filter
-	 *
+ *
  * @param self pointer instance of uz_IIR_Filter_t
  * @param input signal, which will be filtered
  * @return float filtered signal
  */
-float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
+float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t *self, float input);
 
 /**
  * @brief Function to reverse the filter of the input signal with either an LowPass or HighPass filter
-	 *
+ *
  * @param self pointer instance of uz_IIR_Filter_t
  * @param input filtered signal
  * @return float unfiltered signal
  */
-float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t *self, float input);
+
+/**
+ * @brief wraps a number to the range of [0, limit]
+ *
+ * @param number number to wrap
+ * @param limit defines the wrapping limit of [0, limit]
+ * @return wrapped number
+ */
+float uz_signals_wrap(float number, float limit);
+
 #endif // UZ_SIGNALS_H

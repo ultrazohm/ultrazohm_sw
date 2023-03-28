@@ -47,6 +47,7 @@ struct uz_3ph_abc_t v_abc_actualVolts = {0};
 struct uz_3ph_dq_t i_dq_actual_Ampere = {0};
 struct uz_3ph_dq_t i_dq_CIL_Ampere = {0};
 struct uz_3ph_dq_t i_dq_reference_Ampere = {0};
+struct uz_3ph_dq_t  i_dq_reference_Ampere_javascope={0};
 struct uz_3ph_dq_t v_dq_actual_Volts = {0};
 struct uz_3ph_dq_t v_dq_CurrentControl_Volts = {0};
 struct uz_3ph_abc_t v_abc_Volts = {0};
@@ -75,6 +76,8 @@ extern bool select_DDPG_3;
 extern bool select_Real;
 extern bool select_SpeedControl;
 extern bool select_CIL;
+extern bool select_automatic_idiq;
+
 extern float y_2[2];
 // Variables for NN
 
@@ -101,6 +104,15 @@ float ts = 1.0f / UZ_PWM_FREQUENCY;
 
 float offset = 3.31f;
 
+float id_setpoints[22]={
+#include "id_setpoints.csv"
+};
+
+float iq_setpoints[22]={
+#include "iq_setpoints.csv"
+};
+
+
 
 #if NN_9_INPUT_3_64
 extern float mlp_ip_output[2U];
@@ -109,9 +121,10 @@ extern uz_mlp_three_layer_ip_t* mlp_ip_instance;
 #endif
 
 
-
-
-
+uint64_t old_uptime=0;
+uint32_t setpoint_index=0;
+bool automatic_idiq_lock=false; // hack to only do it once
+float start_marker=0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -126,6 +139,31 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    if( (select_automatic_idiq) && (!automatic_idiq_lock) ){
+    	start_marker=1.0f;
+    	i_dq_reference_Ampere.d=id_setpoints[setpoint_index];
+    	i_dq_reference_Ampere.q=iq_setpoints[setpoint_index];
+
+    	// step throught the array
+    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+    	if(current_uptime>(old_uptime +300 ) ){
+    		old_uptime=current_uptime;
+
+    		if(setpoint_index<21){
+    			setpoint_index++;
+    		}else{
+    			setpoint_index=0;
+    			select_automatic_idiq=false;
+    			automatic_idiq_lock=true;
+    		}
+
+
+
+    	}
+    }else{
+    	i_dq_reference_Ampere=i_dq_reference_Ampere_javascope;
+    }
 
 
     if(select_CIL) {

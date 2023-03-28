@@ -21,33 +21,36 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
-	JSO_ISR_ExecTime_us,
-	JSO_ISR_Period_us,
-	JSO_lifecheck,
-	JSO_theta_mech,
-	JSO_ua,
-	JSO_ub,
-	JSO_uc,
-	JSO_ia,
-	JSO_ib,
-	JSO_ic,
-	JSO_id,
-	JSO_iq,
-	JSO_ud,
-	JSO_uq,
-	JSO_obs_1,
-	JSO_obs_2,
-	JSO_obs_3,
-	JSO_obs_4,
-	JSO_obs_5,
-	JSO_obs_6,
-	JSO_obs_7,
-	JSO_obs_8,
-	JSO_obs_9,
-	JSO_Speed_rpm,
-	JSO_Torque_Nm,
-	JSO_Theta_el,
-	JSO_Theta_mech,
+	JSO_ISR_ExecTime_us, // 1
+	JSO_ISR_Period_us,	// 2
+	JSO_lifecheck,		// 3
+	JSO_theta_mech,		// 4
+	JSO_ua,				// 5
+	JSO_ub,				// 6
+	JSO_uc,				// 7
+	JSO_ia,				// 8
+	JSO_ib,				// 9
+	JSO_ic,				// 10
+	JSO_id,				// 11
+	JSO_iq,				// 12
+	JSO_ud,				// 13
+	JSO_uq,				// 14
+	JSO_obs_1,			// 15
+	JSO_obs_2,			// 16
+	JSO_obs_3,			// 17
+	JSO_obs_4,			// 18
+	JSO_obs_5,			// 19
+	JSO_obs_6,			// 20
+	JSO_obs_7,			// 21
+	JSO_obs_8,			// 22
+	JSO_obs_9,			// 23
+	JSO_id_set,			// 24
+	JSO_iq_set,			// 25
+	JSO_enable,			// 26
+	JSO_Speed_rpm,		// 27
+	JSO_Torque_Nm,		// 28
+	JSO_Theta_el,		// 29
+	JSO_Theta_mech,		// 30
 	JSO_ENDMARKER
 };
 

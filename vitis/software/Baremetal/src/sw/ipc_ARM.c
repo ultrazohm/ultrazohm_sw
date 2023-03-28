@@ -31,9 +31,10 @@ bool select_DDPG_1 = false;
 bool select_DDPG_2 = false;
 bool select_DDPG_3 = false;
 bool select_Real = false;
+bool select_automatic_idiq=false;
 extern float n_ref_rpm;
 extern float M_ref_Nm;
-extern struct uz_3ph_dq_t i_dq_reference_Ampere;
+extern struct uz_3ph_dq_t i_dq_reference_Ampere_javascope;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -200,11 +201,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-			i_dq_reference_Ampere.d = value;
+			i_dq_reference_Ampere_javascope.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-			i_dq_reference_Ampere.q = value;
+			i_dq_reference_Ampere_javascope.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -296,7 +297,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-
+		if(select_automatic_idiq==false){
+			select_automatic_idiq=true;
+		}
 			break;
 
 		case (Error_Reset):

@@ -31,6 +31,8 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 extern float observation_ip_9n[9];
+extern struct uz_3ph_dq_t i_dq_reference_Ampere;
+extern float start_marker;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -80,6 +82,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_obs_7]			= &observation_ip_9n[6];
 	js_ch_observable[JSO_obs_8]			= &observation_ip_9n[7];
 	js_ch_observable[JSO_obs_9]			= &observation_ip_9n[8];
+	js_ch_observable[JSO_id_set]			= &i_dq_reference_Ampere.d;
+	js_ch_observable[JSO_iq_set]			= &i_dq_reference_Ampere.q;
+	js_ch_observable[JSO_enable]			= &start_marker;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

@@ -37,11 +37,7 @@ enum JS_OberservableData {
 	JSO_ia2,
 	JSO_ib2,
 	JSO_ic2,
-	JSO_fluxmap_index,
-	JSO_fluxmap_id,
-	JSO_fluxmap_iq,
-	JSO_fluxmap_psid,
-	JSO_fluxmap_psiq,
+	JSO_avg_winding_temp,
 	JSO_ud,
 	JSO_uq,
 	JSO_ux,
@@ -131,6 +127,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_fluxmap_iq,
 	JSSD_FLOAT_fluxmap_psid,
 	JSSD_FLOAT_fluxmap_psiq,
+	JSSD_FLOAT_avg_winding_temp,
 	JSSD_ENDMARKER
 };
 
@@ -279,7 +276,7 @@ RCV_FLD_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 RCV_LABELS_ZEROVALUE=0,
-RPM,
+degC,
 ,
 mA,
 mA,
@@ -293,7 +290,7 @@ RCV_LABELS_ENDMARKER
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 SLOWDAT_DISPLAY_ZEROVALUE=0,
-JSSD_FLOAT_speed,
+JSSD_FLOAT_avg_winding_temp,
 JSSD_FLOAT_fluxmap_index,
 JSSD_FLOAT_fluxmap_id,
 JSSD_FLOAT_fluxmap_iq,

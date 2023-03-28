@@ -98,17 +98,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_y_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.q);
 	js_ch_observable[JSO_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
 	js_ch_observable[JSO_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
-
-
-  js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
-  js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
+	js_ch_observable[JSO_avg_winding_temp] = &(ParaID_Data.ActualValues.average_winding_temp);
+	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
+	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
-	js_slowDataArray[JSO_fluxmap_index]				= &(ParaID_Data.FluxmapID_extended_controller_Output->array_index);
-	js_slowDataArray[JSO_fluxmap_id]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0]);
-	js_slowDataArray[JSO_fluxmap_iq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1]);
-	js_slowDataArray[JSO_fluxmap_psid]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2]);
-	js_slowDataArray[JSO_fluxmap_psiq]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3]);
-
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -168,14 +161,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_temp_inv1]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_temp_inv2]				= &(data->av.temperature_inv_2);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_index]				= &(index_array);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(index_array);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(values_milli[0]);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(values_milli[1]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]				= &(values_milli[2]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]				= &(values_milli[3]);
-
-
-
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
+	js_slowDataArray[JSSD_FLOAT_avg_winding_temp]		= &(ParaID_Data.ActualValues.average_winding_temp);
 	return Status;
 }
 

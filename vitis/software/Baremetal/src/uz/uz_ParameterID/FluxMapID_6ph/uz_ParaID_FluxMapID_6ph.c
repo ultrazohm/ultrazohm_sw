@@ -185,25 +185,24 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         }
     }
     return out;
-
 }
 
-uint8_t uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag){
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t data, bool meas_flag, bool* feedback_printed){
     static bool old_finished_calculation = false;
-    static uint8_t feedback = 0U;
     static float time = 0.0f;
+    static bool logging = false;
     
-    if(data.finished_calculation && !old_finished_calculation && !(feedback & 0x02)){
+    if(data.finished_calculation && !old_finished_calculation && !logging){
 		time = uz_SystemTime_GetGlobalTimeInSec();
-    	feedback = feedback | 0x02;
-    }else if((feedback & 0x02) && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
-    	feedback = feedback & 0xFD;
-		feedback = feedback | 0x01;
+    	logging = true;
+    }else if(logging && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
+    	feedback_printed = true;
+        logging = false;
     }
     if(!meas_flag)
-    	feedback = feedback & 0xFE;
+    	feedback_printed = false;
     old_finished_calculation = data.finished_calculation;
-    return feedback;
+    return logging;
 }
 
 static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2){

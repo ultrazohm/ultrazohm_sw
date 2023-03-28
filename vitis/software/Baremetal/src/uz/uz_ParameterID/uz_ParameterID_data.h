@@ -54,6 +54,7 @@ typedef struct {
   real32_T theta_m; /**< measured mechanical theta */
   real32_T theta_el; /**< measured electrical theta */
   real32_T V_DC; /**< measured DC-link voltage */
+  real32_T average_winding_temp; //celsius
 } uz_ParaID_ActualValues_t;
 
 /**

@@ -35,7 +35,7 @@ typedef struct uz_ParameterID_6ph_t {
 
 static uint32_t instances_counter_ParameterID_6ph = 0;
 static uz_ParameterID_6ph_t instances_ParameterID_6ph[UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
-float dc_temp(float DC);
+
 static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
@@ -189,21 +189,19 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	uz_6ph_abc_t V_abc_Volts = {0};
 	struct uz_DutyCycle_2x3ph_t output_DutyCycle = { 0 };
     if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
-		output_DutyCycle.system1.DutyCycle_A = dc_temp(Data->ElectricalID_Output->PWM_Switch_0);
-		output_DutyCycle.system1.DutyCycle_B = dc_temp(Data->ElectricalID_Output->PWM_Switch_2);
-		output_DutyCycle.system1.DutyCycle_C = dc_temp(Data->ElectricalID_Output->PWM_Switch_4);
-		output_DutyCycle.system2.DutyCycle_A = dc_temp(Data->ElectricalID_Output->PWM_Switch_a2);
-		output_DutyCycle.system2.DutyCycle_B = dc_temp(Data->ElectricalID_Output->PWM_Switch_b2);
-		output_DutyCycle.system2.DutyCycle_C = dc_temp(Data->ElectricalID_Output->PWM_Switch_c2);
-
-
+		output_DutyCycle.system1.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
+		output_DutyCycle.system1.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_2;
+		output_DutyCycle.system1.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_4;
+		output_DutyCycle.system2.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_a2;
+		output_DutyCycle.system2.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_b2;
+		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
 	} else if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 3){
 		V_abc_Volts.a1 = 3.0f/2.0f*v_dq_Volts.z1;
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
 		V_abc_Volts.c2 = -V_abc_Volts.a2;
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
-	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem == 1) ||(Data->FluxmapID_extended_controller_Output->selected_subsystem == 2) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
+	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem == 1) || (Data->FluxmapID_extended_controller_Output->selected_subsystem == 2) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
 	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
@@ -225,13 +223,6 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	}
 	return (output_DutyCycle);
 }
-float dc_temp(float DC){
-	if(DC == 0.0f)
-		return 0.01f;
-	else
-		return DC;
-}
-
 
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t* res_instance_1, uz_resonantController_t* res_instance_2) {
 	uz_6ph_dq_t out = {0};
@@ -330,6 +321,7 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
+
 	//Step the function
 	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->feedback_printed);
 
@@ -355,9 +347,10 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 }
 
 bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data){
-	uint8_t feedback = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag);
-	Data->feedback_printed = feedback & 0x01;
-	return (feedback & 0x02);
+	bool feedback_printed;
+	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(*Data->FluxmapID_extended_controller_Output, Data->FluxMapID_Output->external_Measurement_Flag, &feedback_printed);
+	Data->feedback_printed = feedback_printed;
+	return (logging_flag);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
@@ -381,16 +374,16 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->GlobalConfig.Kp_id = 0.09f;
 	Data->GlobalConfig.Kp_iq = 0.08f;
 	Data->GlobalConfig.Kp_n = 0.04f;
-	Data->GlobalConfig.PMSM_config.Ld_Henry = 0.0018f;
-	Data->GlobalConfig.PMSM_config.Lq_Henry = 0.004f;
-	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.26f;
-	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.19;
+	Data->GlobalConfig.PMSM_config.Ld_Henry = 0.0918e-03f;
+	Data->GlobalConfig.PMSM_config.Lq_Henry = 0.0757e-03f;
+	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.074f;
+	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0048f;
 	Data->GlobalConfig.PMSM_config.polePairs = 5.0f;
 	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
-	Data->GlobalConfig.PMSM_config.I_max_Ampere = 10.0f;
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
 	Data->GlobalConfig.ratCurrent = 8.0f;
 	Data->GlobalConfig.ratTorque = 3.0f;
-	Data->GlobalConfig.ratSpeed = 3000.0f;
+	Data->GlobalConfig.ratSpeed = 1000.0f;
 	Data->GlobalConfig.voltage_measurement_C = 0.012e-6f;
 	Data->GlobalConfig.voltage_measurement_Rp = 6650.0f;
 	Data->GlobalConfig.voltage_measurement_Rs = 2*78700.0f;

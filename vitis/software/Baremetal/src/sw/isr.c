@@ -353,12 +353,19 @@ void ISR_Control(void *data)
 				for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
     	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_9n,observation_ip_9n[i],0U,i);
     	  		}
-    	  		uz_nn_ff(Global_Data.objects.nn_layer_9n,Global_Data.objects.matrix_input_9n);
-    	  		matrix_output_9n = uz_nn_get_output_data(Global_Data.objects.nn_layer_9n);
+#if NN_9_INPUT_3_64 == 1
+    	        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_9n, p_output_data);
+    	        // IP-Core only calculates with linear, tanh has to be added manually
+    	        v_dq_non_limited_Volts.d=(uz_nn_activation_function_tanh(mlp_ip_output[0]))*U_max;
+    	        v_dq_non_limited_Volts.q=(uz_nn_activation_function_tanh(mlp_ip_output[1]))*U_max;
 
-    	  		uz_matrix_multiply_by_scalar(matrix_output_9n,U_max); // scaling layer of nn
-    	  		v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_9n,0U,0U);
-    	  		v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_9n,0U,1U);
+#else
+    	        uz_nn_ff(Global_Data.objects.nn_layer_9n,Global_Data.objects.matrix_input_9n);
+    	        matrix_output_9n = uz_nn_get_output_data(Global_Data.objects.nn_layer_9n);
+    	        uz_matrix_multiply_by_scalar(matrix_output_9n,U_max); // scaling layer of nn
+    	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_9n,0U,0U);
+    	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_9n,0U,1U);
+#endif
     	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
 				v_dq_limited_Volts_k_old = v_dq_limited_Volts;
 				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);

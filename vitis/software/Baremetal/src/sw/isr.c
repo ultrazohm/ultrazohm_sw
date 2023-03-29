@@ -128,7 +128,8 @@ struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected);
 // uz Temp card
 #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 extern uz_temperaturecard_t* uz_Tempcard;
-uz_temperaturecard_OneGroup temp_card_channel_A;
+uz_temperaturecard_OneGroup channel_A_data;
+uz_6ph_abc_t winding_temperature = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -206,28 +207,14 @@ void ISR_Control(void *data)
 
 	// read temperatures from windings
 	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-	temp_card_channel_A = uz_TempCard_IF_get_channel_A(uz_Tempcard, 'a');
-	Global_Data.av.winding_temperature.a1 = temp_card_channel_A.temperature[3];
-	Global_Data.av.winding_temperature.b1 = temp_card_channel_A.temperature[5];
-	Global_Data.av.winding_temperature.c1 = temp_card_channel_A.temperature[7];
-	Global_Data.av.winding_temperature.a2 = temp_card_channel_A.temperature[9];
-	Global_Data.av.winding_temperature.b2 = temp_card_channel_A.temperature[11];
-	Global_Data.av.winding_temperature.c2 = temp_card_channel_A.temperature[13];
-	// negative -333°C means readout error and average would be false
-	if(Global_Data.av.winding_temperature.a1 < 0.0f)
-		Global_Data.av.winding_temperature.a1 = Global_Data.av.avg_winding_temperature;
-	if(Global_Data.av.winding_temperature.b1 < 0.0f)
-			Global_Data.av.winding_temperature.b1 = Global_Data.av.avg_winding_temperature;
-	if(Global_Data.av.winding_temperature.c1 < 0.0f)
-			Global_Data.av.winding_temperature.c1 = Global_Data.av.avg_winding_temperature;
-	if(Global_Data.av.winding_temperature.a2 < 0.0f)
-			Global_Data.av.winding_temperature.a2 = Global_Data.av.avg_winding_temperature;
-	if(Global_Data.av.winding_temperature.b2 < 0.0f)
-			Global_Data.av.winding_temperature.b2 = Global_Data.av.avg_winding_temperature;
-	if(Global_Data.av.winding_temperature.c2 < 0.0f)
-			Global_Data.av.winding_temperature.c2 = Global_Data.av.avg_winding_temperature;
-	// average winding temperature
-	Global_Data.av.avg_winding_temperature = (Global_Data.av.winding_temperature.a1 + Global_Data.av.winding_temperature.b1 + Global_Data.av.winding_temperature.c1 + Global_Data.av.winding_temperature.a2 + Global_Data.av.winding_temperature.b2 + Global_Data.av.winding_temperature.c2)/6.0f;
+	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
+	winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
+	winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
+	winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);
+	winding_temperature.a2 = channel_A_data.temperature[9]*(channel_A_data.Channels_Valid[9]==1);
+	winding_temperature.b2 = channel_A_data.temperature[11]*(channel_A_data.Channels_Valid[11]==1);
+	winding_temperature.c2 = channel_A_data.temperature[13]*(channel_A_data.Channels_Valid[13]==1);
+	Global_Data.av.avg_winding_temperature = (winding_temperature.a1 + winding_temperature.b1 + winding_temperature.c1 + winding_temperature.a2 + winding_temperature.b2 + winding_temperature.c2)/((channel_A_data.Channels_Valid[3]==1) + (channel_A_data.Channels_Valid[5]==1) + (channel_A_data.Channels_Valid[7]==1) + (channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1));
 
 	////////////write to structs
 	m_6ph_abc_currents.a1 = Global_Data.av.i_a1;

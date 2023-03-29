@@ -199,6 +199,8 @@ typedef struct {
   boolean_T identR; /**< flag to enable online identification */
   real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
   uint16_T selected_subsystem;
+  real32_T lower_meas_temp;
+  real32_T upper_meas_temp;
 } uz_ParaID_FluxMapIDConfig_t;
 
 /**

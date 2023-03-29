@@ -110,16 +110,16 @@ void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert_not_NULL(Data);
+	//Reset the input of the OnlineID before it's written to the CleanPsiArray object
+	if(Data->OnlineID_Config.OnlineID_Reset == true) {
+		memcpy(self->input.cleaned_psi_array, self->output.OnlineID_output.psi_array, sizeof(self->input.cleaned_psi_array));
+	}
 	uz_CleanPsiArray_set_OnlineID_output(self->CleanPsiArray, &self->output.OnlineID_output);
 	uz_CleanPsiArray_set_eta_c(self->CleanPsiArray, 0.01f * Data->GlobalConfig.ratCurrent);
 	uz_CleanPsiArray_step(self->CleanPsiArray);
-	if (Data->OnlineID_Config.OnlineID_Reset == false) {
-		float* array_pointer = uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray);
-		for (uint32_t i = 0U; i < (sizeof(self->input.cleaned_psi_array)/sizeof(self->input.cleaned_psi_array[0])); i++) {
-			self->input.cleaned_psi_array[i] = array_pointer[i];
-		}
-	} else {
-		memcpy(self->input.cleaned_psi_array, self->output.OnlineID_output.psi_array, sizeof(self->input.cleaned_psi_array));
+	float* array_pointer = uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray);
+	for (uint32_t i = 0U; i < (sizeof(self->input.cleaned_psi_array)/sizeof(self->input.cleaned_psi_array[0])); i++) {
+		self->input.cleaned_psi_array[i] = array_pointer[i];
 	}
 	Data->OnlineID_Config.array_cleaned = uz_CleanPsiArray_get_array_cleaned_flag(self->CleanPsiArray);
 	Data->FluxMap_MeasuringPoints = uz_CleanPsiArray_get_n_flux_points(self->CleanPsiArray);

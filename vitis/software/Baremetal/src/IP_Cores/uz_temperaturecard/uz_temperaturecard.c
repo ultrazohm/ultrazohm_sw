@@ -27,8 +27,25 @@ static uz_temperaturecard_t* uz_temperaturecard_allocation(void){
     return (self);
 }
 
-uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_A(uz_temperaturecard_t* self){
-	uz_temperaturecard_OneGroup out = self->Channel_A;
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channel){
+	uz_temperaturecard_OneGroup out;
+	switch (channel){
+	case 'a':
+		case 'A':{
+			out = self->Channel_A;
+			break;}
+		case 'b':
+		case 'B':{
+			out = self->Channel_B;
+			break;}
+		case 'c':
+		case 'C':{
+			out = self->Channel_A;
+			break;}
+		default:{
+			out = self->Channel_A;
+			break;}
+	}
 	return out;
 }
 

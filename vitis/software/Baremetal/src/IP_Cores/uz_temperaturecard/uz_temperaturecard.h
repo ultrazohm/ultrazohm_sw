@@ -300,7 +300,7 @@ typedef struct {
 	float       temperature[20];       /**< calculated value for one Temperature Channel */
 	uint32_t    temperature_raw[20];   /**< raw value for one Temperature Channel */
 	uint32_t    Configdata[20];        /**< used Config for one Temperature Channel */
-	uint32_t		  Channels_Valid[20];  /**< Informations about the measurement */
+	uint32_t	Channels_Valid[20];  /**< Informations about the measurement */
 }uz_temperaturecard_OneGroup;
 
 /**
@@ -316,7 +316,7 @@ struct uz_temperaturecard_config_t{
     uint32_t    Configdata_C[20];               /**< Configuration-struct for the last 20-Channels   / Channelgroup C */
 };
 
-uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_A(uz_temperaturecard_t* self);
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channel);
 
 /**
  * @brief Initializes an instance of the temperaturecard driver

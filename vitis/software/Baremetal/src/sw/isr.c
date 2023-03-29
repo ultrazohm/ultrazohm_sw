@@ -206,7 +206,7 @@ void ISR_Control(void *data)
 
 	// read temperatures from windings
 	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-	temp_card_channel_A = uz_TempCard_IF_get_channel_A(uz_Tempcard);
+	temp_card_channel_A = uz_TempCard_IF_get_channel_A(uz_Tempcard, 'a');
 	Global_Data.av.winding_temperature.a1 = temp_card_channel_A.temperature[3];
 	Global_Data.av.winding_temperature.b1 = temp_card_channel_A.temperature[5];
 	Global_Data.av.winding_temperature.c1 = temp_card_channel_A.temperature[7];

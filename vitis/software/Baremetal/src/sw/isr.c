@@ -43,7 +43,7 @@ extern DS_Data Global_Data;
 extern uz_codegen codegenInstance;
 
 #define CURRENT_CONV_FACTOR 80.0f/3.0f
-#define PN 1.0f
+#define PN 5.0f
 
 #define dc_link 15.0f
 #define VOLTAGE_CONV_FACTOR 12.5f
@@ -66,6 +66,8 @@ static void ReadAllADC();
 
 extern uz_pmsmModel_t *pmsm;
 extern uz_FOC* FOC_instance;
+extern uz_IIR_Filter_t* test_instance;
+
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_dq_Amp = {0};
 uz_3ph_abc_t measured_voltage_uvw_V = {0};
@@ -90,23 +92,25 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 float theta_el_rad = 0.0f;
 float rpm_ref = 0.0f;
 float torque_ref = 0.0f;
-float theta_offset = 0.9f;
-int option = 0;
+float theta_offset = 1.4f;
+int option = 5;
+float option_js = 0.0f;
+float torque_meas_filtered = 10.0f;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 	update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
-	codegenInstance.input.omega = (2.0f * M_PI *rpm_ref / 60.0f) * PN ;
+	// input values for LUTs
+	codegenInstance.input.omega = (2.0f * M_PI * Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * PN ;
 	codegenInstance.input.torque = torque_ref;
     uz_codegen_step(&codegenInstance);
-
+    //
 	measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A1-2.5f);
 	measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
 	measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);
-	theta_el_rad = (Global_Data.av.theta_elec - theta_offset) * PN;
+	theta_el_rad = (Global_Data.av.theta_elec - theta_offset);
 	Global_Data.av.U_L1 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B5 - voltage_offsetL13;
 	Global_Data.av.U_L2 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B6 - voltage_offsetL2;
 	Global_Data.av.U_L3 = VOLTAGE_CONV_FACTOR * Global_Data.aa.A2.me.ADC_B7 - voltage_offsetL13;
@@ -119,33 +123,25 @@ void ISR_Control(void *data)
 
 	Global_Data.av.mechanicalTorqueObserved = Global_Data.aa.A1.me.ADC_A1 * (-2.0f);
 
+	float unfiltered_signal = Global_Data.av.mechanicalTorqueObserved;
+	torque_meas_filtered = uz_signals_IIR_Filter_sample(test_instance, unfiltered_signal);
+
 	if ((fabs(measured_currents_uvw_Amp.a) > MAX_CURRENT_ASSERTION) || (fabs(measured_currents_uvw_Amp.b) > MAX_CURRENT_ASSERTION) || (fabs(measured_currents_uvw_Amp.c) > MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed_filtered) > MAX_SPEED_ASSERTION)) {
 		uz_assert(0);
-		/*Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-		ultrazohm_state_machine_set_stop(true);*/
 	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	//get data
-
-
-
 		// options: 1=mtpa_tb, 2=me_tb, 3=mtpa_ip, 4=me_ip, 5=mtpa_tb_current
 		switch (option){
 			case (1):
+					option_js = option;
+					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
     	    		reference_currents_Amp.d = codegenInstance.output.MTPA_id;
     	    		reference_currents_Amp.q = codegenInstance.output.MTPA_iq;
     	    		//reading out the phase currents and encoder data
-    	    		/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
-    	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
-    	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
-
-    				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
+    	    		omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
     				// conversion from uvw- to dq-system (currents)
     				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
     				// executing the FOC
@@ -159,12 +155,11 @@ void ISR_Control(void *data)
     				Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
     	    		break;
 			case (2):
+					option_js = option;
+					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
     	    		reference_currents_Amp.d = codegenInstance.output.ME_id;
     	    		reference_currents_Amp.q = codegenInstance.output.ME_iq;
     	    		//reading out the phase currents and encoder data
-    	    		/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
-    	    		measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
-    	    		measured_currents_uvw_Amp.c = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A3-2.5f);*/
     				omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered * (2.0f*M_PI/60.0f) * PN;
     				// conversion from uvw- to dq-system (currents)
     				measured_currents_dq_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_uvw_Amp, theta_el_rad);
@@ -179,6 +174,7 @@ void ISR_Control(void *data)
     				Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
     	    		break;
 			case (3):
+					option_js = option;
 					//starts pmsm model, reads outputs, sets rpm_ref
 					uz_pmsmModel_trigger_input_strobe(pmsm);
 					uz_pmsmModel_trigger_output_strobe(pmsm);
@@ -200,6 +196,7 @@ void ISR_Control(void *data)
 					uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     	    		break;
 			case (4):
+					option_js = option;
 					//starts pmsm model, reads outputs, sets rpm_ref
 					uz_pmsmModel_trigger_input_strobe(pmsm);
 					uz_pmsmModel_trigger_output_strobe(pmsm);
@@ -221,6 +218,8 @@ void ISR_Control(void *data)
 					uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     	    		break;
 			case (5):
+					option_js = option;
+					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
 					//reading out the phase currents and encoder data
 					/*measured_currents_uvw_Amp.a = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A2-2.5f);
 					measured_currents_uvw_Amp.b = CURRENT_CONV_FACTOR * (Global_Data.aa.A2.me.ADC_A4-2.5f);
@@ -239,17 +238,15 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.DutyCycle_W;
 					break;
 			default:
-					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-					Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-					Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+					uz_assert(0);
 		}
 
-
-
 	} else { //if (current_state!=control_state || !is_three_phase_active) {
-		 Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		 Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		 Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		// sets no gate signal for all half bridges
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, true, true, true);
+		Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator

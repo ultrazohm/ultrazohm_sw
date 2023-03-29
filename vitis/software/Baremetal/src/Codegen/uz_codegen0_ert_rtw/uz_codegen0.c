@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 5.3
+ * Model version                  : 5.4
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Wed Mar 22 14:08:30 2023
+ * C/C++ source code generated on : Wed Mar 29 16:20:19 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -198,13 +198,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Lookup_n-D: '<S1>/MEid'
    */
   rtY->ME_id = look2_iflf_binlx(rtU->omega, rtU->torque, rtConstP.pooled1,
-    rtConstP.pooled2, rtConstP.MEid_tableData, rtConstP.pooled3, 4U);
+    rtConstP.pooled2, rtConstP.MEid_tableData, rtConstP.pooled3, 7U);
 
   /* Outport: '<Root>/ME_iq' incorporates:
    *  Lookup_n-D: '<S1>/MEiq'
    */
   rtY->ME_iq = look2_iflf_binlx(rtU->omega, rtU->torque, rtConstP.pooled1,
-    rtConstP.pooled2, rtConstP.MEiq_tableData, rtConstP.pooled3, 4U);
+    rtConstP.pooled2, rtConstP.MEiq_tableData, rtConstP.pooled3, 7U);
 
   /* Outport: '<Root>/MTPA_id' incorporates:
    *  Lookup_n-D: '<S1>/MTPAid'

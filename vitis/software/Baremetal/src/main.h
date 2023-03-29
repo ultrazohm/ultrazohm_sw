@@ -59,6 +59,7 @@
 #include "xparameters.h"
 #include "uz/uz_FOC/uz_FOC.h"
 #include "Codegen/uz_codegen.h"
+#include "uz/uz_signals/uz_signals.h"
 
 //----------------------------------------------------
 // FUNCTIONS

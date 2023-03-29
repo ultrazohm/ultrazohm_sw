@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+
 uz_codegen codegenInstance;
 
 // Initialize the global variables
@@ -49,10 +50,17 @@ enum init_chain
 };
 uz_pmsmModel_t *pmsm=NULL;
 uz_FOC* FOC_instance = NULL;
+uz_IIR_Filter_t* test_instance = NULL;
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+	struct uz_IIR_Filter_config config = {
+			.selection = LowPass_first_order,
+			.cutoff_frequency_Hz = 20.0f,
+			.sample_frequency_Hz = 20000.0f};
+	test_instance = uz_signals_IIR_Filter_init(config);
+
     int status = UZ_SUCCESS;
     while (1)
     {

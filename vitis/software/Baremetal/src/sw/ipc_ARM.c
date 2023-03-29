@@ -26,6 +26,7 @@ extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 extern bool is_three_phase_active;
 extern uz_3ph_dq_t reference_currents_Amp;
+extern float theta_offset;
 extern float torque_ref;
 extern float rpm_ref;
 extern int option;
@@ -192,7 +193,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				rpm_ref = value;
+				option = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -208,7 +209,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-				option = value;
 			break;
 
 		case (Set_Send_Field_6):

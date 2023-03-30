@@ -187,42 +187,10 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
     return out;
 }
 
-enum logstates {flux_idle, flux_log, flux_wait_transistion};
-
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed, uint16_t activeState, int js_cnt_slowData){
-    static float time = 0.0f;
-    bool logging = false;
-    static enum logstates state = flux_idle;
-    *feedback_printed = false;
-    switch (state){
-    case flux_idle:{
-    	if(data->finished_calculation && (js_cnt_slowData == 0)){
-    		state = flux_log;
-    	}
-    	break;
-    }
-    case flux_log:{
-    	logging = true;
-    	if(js_cnt_slowData == 0){
-    		state = flux_wait_transistion;
-    	}
-    	break;
-    }
-    case flux_wait_transistion:{
-    	*feedback_printed = true;
-    	if(activeState!=403U){
-			state = flux_idle;
-		}
-    }
-    default: break;
-    }
-    return logging;
-}
 
 enum logstates {flux_idle, flux_log, flux_wait_transistion};
 
 bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed, uint16_t activeState, int js_cnt_slowData){
-    static float time = 0.0f;
     bool logging = false;
     static enum logstates state = flux_idle;
     *feedback_printed = false;

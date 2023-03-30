@@ -55,6 +55,11 @@ extern struct uz_DutyCycle_t dutyCycles_set2;
 float values_milli[4];
 float index_array;
 
+extern float u_a1c1;
+extern float u_a2c2;
+
+extern uz_3ph_dq_t cc_out_zero_rotating;
+extern uz_3ph_alphabeta_t cc_out_zero_stationary;
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -96,22 +101,19 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
 	js_ch_observable[JSO_x_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.d);
 	js_ch_observable[JSO_y_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.q);
-	js_ch_observable[JSO_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
-	js_ch_observable[JSO_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
+	js_ch_observable[JSO_u_z1_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.d);
+	js_ch_observable[JSO_u_z2_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.q);
+	js_ch_observable[JSO_i_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
+	js_ch_observable[JSO_i_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
+	js_ch_observable[JSO_u_a1c1] = &(u_a1c1);
+	js_ch_observable[JSO_u_a2c2] = &(u_a2c2);
+	js_ch_observable[JSO_u_set_z1] = &(cc_out_zero_rotating.d);
+	js_ch_observable[JSO_u_set_z2] = &(cc_out_zero_rotating.q);
+
 	js_ch_observable[JSO_avg_winding_temp] = &(ParaID_Data.ActualValues.average_winding_temp);
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
 	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
-
-	js_ch_observable[JSO_DC1] = &(data->rasv.halfBridge1DutyCycle);
-	js_ch_observable[JSO_DC2] = &(data->rasv.halfBridge2DutyCycle);
-	js_ch_observable[JSO_DC3] = &(data->rasv.halfBridge3DutyCycle);
-	js_ch_observable[JSO_DC4] = &(data->rasv.halfBridge4DutyCycle);
-	js_ch_observable[JSO_DC5] = &(data->rasv.halfBridge5DutyCycle);
-	js_ch_observable[JSO_DC6] = &(data->rasv.halfBridge6DutyCycle);
-
-
-
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -177,6 +179,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
 	js_slowDataArray[JSSD_FLOAT_avg_winding_temp]		= &(ParaID_Data.ActualValues.average_winding_temp);
+	js_slowDataArray[JSSD_FLOAT_selected_subs]		= &(ParaID_Data.FluxmapID_extended_controller_Output->selected_subsystem);
+
 	return Status;
 }
 
@@ -213,6 +217,8 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->slowDataContent = *js_slowDataArray[js_cnt_slowData];
 	javascope_data->status 			= js_status_BareToRTOS;
 
+
+
 	// flush data cache of shared memory region to make sure shared memory is updated
 	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
 
@@ -230,6 +236,7 @@ void JavaScope_update(DS_Data* data){
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
+	data->av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, js_cnt_slowData);
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

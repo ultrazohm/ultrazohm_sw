@@ -118,8 +118,8 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             }
             
             // assign to output
-            out.d = cc_out_ab_rotating.d;// + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
-            out.q = cc_out_ab_rotating.q;// + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
             uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
             out.x = cc_out_xy_stationary.alpha;
             out.y = cc_out_xy_stationary.beta;
@@ -187,19 +187,35 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
     return out;
 }
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed){
-    static bool old_finished_calculation = false;
+enum logstates {flux_idle, flux_log, flux_wait_transistion};
+
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed, uint16_t activeState, int js_cnt_slowData){
     static float time = 0.0f;
-    static bool logging = false;
-    
-    if(data->finished_calculation && !old_finished_calculation && !logging){
-		time = uz_SystemTime_GetGlobalTimeInSec();
-    	logging = true;
-    }else if(logging && ((uz_SystemTime_GetGlobalTimeInSec() - time) > 0.005f)){
-    	*feedback_printed = true;
-        logging = false;
+    bool logging = false;
+    static enum logstates state = flux_idle;
+    *feedback_printed = false;
+    switch (state){
+    case flux_idle:{
+    	if(data->finished_calculation && (js_cnt_slowData == 0)){
+    		state = flux_log;
+    	}
+    	break;
     }
-    old_finished_calculation = data->finished_calculation;
+    case flux_log:{
+    	logging = true;
+    	if(js_cnt_slowData == 0){
+    		state = flux_wait_transistion;
+    	}
+    	break;
+    }
+    case flux_wait_transistion:{
+    	*feedback_printed = true;
+    	if(activeState!=403U){
+			state = flux_idle;
+		}
+    }
+    default: break;
+    }
     return logging;
 }
 

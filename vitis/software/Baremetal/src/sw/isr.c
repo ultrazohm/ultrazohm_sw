@@ -59,12 +59,12 @@ extern DS_Data Global_Data;
 #define DC_VOLT_OFF_2		452.17f
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  22.0f
+#define MAX_PHASE_CURRENT_AMP  20.0f
 #define MAX_DC_VOLT 590.0f
-#define MAX_TEMP_DEG 100.0f
+#define MAX_TEMP_DEG 90.0f
 
 //neutral config
-#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+#define NEUTRAL_CONFIG 3U //1U: 1N, 2U: 2N, 3U: zero fluxmap
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 float u_a1c1 = 0.0f;
@@ -196,7 +196,7 @@ void ISR_Control(void *data)
 	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG) {
-		//uz_assert(0);
+		uz_assert(0);
 	}
 
 	// read temperature values from inverters
@@ -236,8 +236,8 @@ void ISR_Control(void *data)
 		break;
 	}
 	case 3U:{
-		u_a1c1 = Global_Data.av.v_a1 - Global_Data.av.v_c1;
-		u_a2c2 = Global_Data.av.v_a2 - Global_Data.av.v_c2;
+		u_a1c1 = Global_Data.av.v_c1 - Global_Data.av.v_a1;
+		u_a2c2 = Global_Data.av.v_c2 - Global_Data.av.v_a2;
 	}
 	default: break;
 	}
@@ -279,7 +279,6 @@ void ISR_Control(void *data)
 	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;//- temp_theta_off;//
 	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
-	Global_Data.av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data);
 	ParaID_Data.ActualValues.average_winding_temp = Global_Data.av.avg_winding_temperature;
 	//////////////ParaID ende
 
@@ -288,10 +287,10 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // ParaID functions
-    	uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
+    	//uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+    	//controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
 		//ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-    	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
+    	//ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
 
  	 	// dq and xy control
@@ -304,22 +303,22 @@ void ISR_Control(void *data)
         cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
     	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 */
-/*
+
   		// zero system control
-        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_2, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        cc_out_zero_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.d, ParaID_Data.ActualValues.omega_el);
-        cc_out_zero_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.q, ParaID_Data.ActualValues.omega_el);
+        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_3, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+        //cc_out_zero_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.d, ParaID_Data.ActualValues.omega_el);
+        //cc_out_zero_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.q, ParaID_Data.ActualValues.omega_el);
         cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*ParaID_Data.ActualValues.theta_el);
         V_abc_zero_control.a1 = 3.0f/2.0f*cc_out_zero_stationary.alpha;
         V_abc_zero_control.c1 = -V_abc_zero_control.a1;
         V_abc_zero_control.a2 = 3.0f/2.0f*cc_out_zero_stationary.beta;
         V_abc_zero_control.c2 = -V_abc_zero_control.a2;
         ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_zero_control, ParaID_Data.ActualValues.V_DC);
-*/
+
 
 		// change DutyCycles=0 to 0.01
-		//ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
-		//ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
+		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
+		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
 		// write DutyCycles
 		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
 		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;

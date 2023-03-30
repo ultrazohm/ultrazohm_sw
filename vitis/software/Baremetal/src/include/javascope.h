@@ -21,12 +21,14 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
-	JSO_DC1,
-	JSO_DC2,
-	JSO_DC3,
-	JSO_DC4,
-	JSO_DC5,
-	JSO_DC6,
+	JSO_u_z1_rot,
+	JSO_u_z2_rot,
+	JSO_i_z1_rot,
+	JSO_i_z2_rot,
+	JSO_u_a1c1,
+	JSO_u_a2c2,
+	JSO_u_set_z1,
+	JSO_u_set_z2,
 	JSO_id,
 	JSO_iq,
 	JSO_x_rot,
@@ -134,6 +136,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_fluxmap_psid,
 	JSSD_FLOAT_fluxmap_psiq,
 	JSSD_FLOAT_avg_winding_temp,
+	JSSD_FLOAT_selected_subs,
 	JSSD_ENDMARKER
 };
 

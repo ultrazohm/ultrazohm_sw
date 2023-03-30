@@ -24,7 +24,7 @@ This function can be used to limit angles to :math:`[0, 2\pi]`.
 The main intentended usa-case is for the electric rotor angle of a machine, which is usually a mechanic angle multiplied with the polepairs.
 For higher polepair numbered maschines, the resulting angle can reach high values which might be unintuitive to understand or showcase in plots.
 
-.. figure:: angle_wrap.jpg
+.. figure:: angle_wrap.svg
 
     Example wrapping to :math:`[0, 2\pi]`
 

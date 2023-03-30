@@ -34,8 +34,8 @@ This guarantees that the measurements are only recorded when the motor has the s
   \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Collect data\\ \textbf{403}};
   \node[block,fill=yellow!20,name=state4, below = 0.5cm of state3,drop shadow,align=center] {Wait for collection \\to finish\\\textbf{404}};
   \node[block,fill=yellow!20,name=state5, below = 0.5cm of state4,drop shadow,align=center] {Reset integrators \\\textbf{450}};
-  \node[block,fill=yellow!20,name=state6, right = 1.5cm of state2,drop shadow,align=center] {Cooling the machine \\ $i_d, i_q = 0A$\\\textbf{410}};
-  \node[block,fill=yellow!20,name=state7, below = 0.5cm of state6,drop shadow,align=center] {Heating the machine \\$i_d, i_q = max$\\\textbf{420}};
+  \node[block,fill=yellow!20,name=state6, right = 1.5cm of state2,drop shadow,align=center] {Cooling the machine \\ $i_\mathrm d, i_\mathrm q = 0A$\\\textbf{410}};
+  \node[block,fill=yellow!20,name=state7, below = 0.5cm of state6,drop shadow,align=center] {Heating the machine \\$i_\mathrm d, i_\mathrm q = max$\\\textbf{420}};
   \node[block,fill=green!20,name=exit, below = 0.5cm of state5,drop shadow,align=center] {Exit of state};
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state3)(state7),inner sep=5pt,minimum width=12cm] {};
@@ -43,7 +43,7 @@ This guarantees that the measurements are only recorded when the motor has the s
   \draw[->](state1.south) -- (state2.north);
   \draw[->](entry.south) -- (state8.north);
   \draw[->](state8.south) -- (state1.north);
-  \node[name=ACPT,above right = -0.0cm and -1.5cm of state1, align=center]{start\_FM\_ID == true}; 
+  \path(state8.south)--(state1.north) node [midway, align=center] (ACPT) {start\_FM\_ID == true \&\& \textbf{ACCEPT}};
   \draw[->](state2.south) -- (state3.north);
   \draw[->](state3.south) -- (state4.north);
   \draw[->](state5.south) -- (exit.north);
@@ -54,7 +54,7 @@ This guarantees that the measurements are only recorded when the motor has the s
   \draw[->](state4.west) -| ($(state2.west)-(1.3cm,0cm)$) -- (state2.west);
   \draw[->](state4.south) -- (state5.north);
   \node[name=identR1,below right = -1.35cm and 0.25cm of state4, align=center]{identR == 1}; 
-  \node[name=identR0,above left = 0.5cm and -0.5cm of state4, align=center]{identR \\== 0}; 
+  \path([xshift=-2cm,yshift=-1cm]state2.west) -- (state4.west) node [midway, align=center] (identR1) {identR \\== 0};
   \end{tikzpicture}
 
 Necessary measurement values

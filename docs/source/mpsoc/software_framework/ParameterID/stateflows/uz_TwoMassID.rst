@@ -21,7 +21,7 @@ This state requires some sort of speed control.
   \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
   \node[block,fill=yellow!20,name=state1, below = 0.5cm of entry,drop shadow,align=center] {Setting \\reference speed \\\textbf{210}};
   \node[block,fill=yellow!20,name=state2, below = 0.5cm of state1,drop shadow,align=center] {Excitation via a \\PRBS sequence\\ \textbf{220}};
-  \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Calculating results\\Reseting the integrator\\ \textbf{230}};
+  \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Calculating $J, d, c$\\Reseting the integrator\\ \textbf{230}};
   \node[block,fill=green!20,name=exit, below = 0.5cm of state3,drop shadow,align=center] {Exit of state};
   \begin{scope}[on background layer]
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state3),inner sep=5pt,minimum width=7cm] {};

@@ -356,6 +356,7 @@ bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data,
 	return (logging_flag);
 }
 
+
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);

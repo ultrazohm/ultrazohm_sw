@@ -93,7 +93,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         uz_assert_not_NULL(resonant_2);
 
     // Initialize output struct
-        uz_6ph_dq_t out = {0};
+        static uz_6ph_dq_t out = {0};
 
     // calculate resonant controller gains
         static uint16_t initialized_controllers = 0U;
@@ -103,7 +103,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(CC_instance_2, uz_filter_controller_setpoint(filter_3, filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 
     // map outputs and step resonant controllers depending on current state inside FluxMapID
-    switch(1)//Data->FluxmapID_extended_controller_Output->selected_subsystem)
+    switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
     {
         case 1: // control alpha beta system
         {
@@ -118,8 +118,8 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             }
             
             // assign to output
-            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
-            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+            out.d += uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q += uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
             uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
             out.x = cc_out_xy_stationary.alpha;
             out.y = cc_out_xy_stationary.beta;
@@ -219,6 +219,38 @@ bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_co
     return logging;
 }
 
+enum logstates {flux_idle, flux_log, flux_wait_transistion};
+
+bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_extended_controller_output_t* data, bool* feedback_printed, uint16_t activeState, int js_cnt_slowData){
+    static float time = 0.0f;
+    bool logging = false;
+    static enum logstates state = flux_idle;
+    *feedback_printed = false;
+    switch (state){
+    case flux_idle:{
+    	if(data->finished_calculation && (js_cnt_slowData == 0)){
+    		state = flux_log;
+    	}
+    	break;
+    }
+    case flux_log:{
+    	logging = true;
+    	if(js_cnt_slowData == 0){
+    		state = flux_wait_transistion;
+    	}
+    	break;
+    }
+    case flux_wait_transistion:{
+    	*feedback_printed = true;
+    	if(activeState!=403U){
+			state = flux_idle;
+		}
+    }
+    default: break;
+    }
+    return logging;
+}
+
 static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2){
     //float tau_sum = Data->GlobalConfig.sampleTimeISR*2.0f;
     // reset all
@@ -241,10 +273,10 @@ static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Dat
     uz_resonantController_set_gain(resonant_2, 1000.0f);//2.0f*Data->GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum));
 }
 
-uz_3ph_dq_t uz_filter_controller_setpoint(uz_IIR_Filter_t* f1, uz_IIR_Filter_t* f2, uz_3ph_dq_t setpoint){
+uz_3ph_dq_t uz_filter_controller_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint){
     uz_3ph_dq_t out = {
-        .d = uz_signals_IIR_Filter_sample(f1, setpoint.d),
-        .q = uz_signals_IIR_Filter_sample(f2, setpoint.q),
+        .d = uz_signals_IIR_Filter_sample(filter_1, setpoint.d),
+        .q = uz_signals_IIR_Filter_sample(filter_2, setpoint.q),
         .zero = 0.0f};
     return out;
 }

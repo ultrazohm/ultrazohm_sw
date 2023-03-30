@@ -140,7 +140,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
-    if( (select_automatic_idiq) && (!automatic_idiq_lock) ){
+    if( (select_automatic_idiq) ){
     	start_marker=1.0f;
     	i_dq_reference_Ampere.d=id_setpoints[setpoint_index];
     	i_dq_reference_Ampere.q=iq_setpoints[setpoint_index];
@@ -155,7 +155,7 @@ void ISR_Control(void *data)
     		}else{
     			setpoint_index=0;
     			select_automatic_idiq=false;
-    			automatic_idiq_lock=true;
+    			start_marker=0.0f;
     		}
 
 
@@ -192,6 +192,7 @@ void ISR_Control(void *data)
     			}
     			pmsm_inputs.v_d_V = v_dq_CurrentControl_Volts.d;
     			pmsm_inputs.v_q_V = v_dq_CurrentControl_Volts.q;
+    			pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
 
     		}
     		if(select_DDPG_1) {

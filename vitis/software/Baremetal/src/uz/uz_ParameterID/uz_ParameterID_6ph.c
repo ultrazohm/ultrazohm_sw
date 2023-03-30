@@ -321,8 +321,8 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
-	Data->FluxMapID_Config.lower_meas_temp = 40.0f;
-	Data->FluxMapID_Config.upper_meas_temp = 45.0f;
+	Data->FluxMapID_Config.lower_meas_temp = -100.0f;
+	Data->FluxMapID_Config.upper_meas_temp = 100.0f;
 
 
 	//Step the function

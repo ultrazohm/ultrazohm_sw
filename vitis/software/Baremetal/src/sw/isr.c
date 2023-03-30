@@ -131,6 +131,9 @@ extern uz_temperaturecard_t* uz_Tempcard;
 uz_temperaturecard_OneGroup channel_A_data;
 uz_6ph_abc_t winding_temperature = {0};
 
+
+uz_3ph_dq_t filtered_voltage = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -223,7 +226,8 @@ void ISR_Control(void *data)
 	m_6ph_abc_currents.a2 = Global_Data.av.i_a2;
 	m_6ph_abc_currents.b2 = Global_Data.av.i_b2;
 	m_6ph_abc_currents.c2 = Global_Data.av.i_c2;
-	// calc u neutral voltagey
+
+	// calc u neutral voltage
 	switch(NEUTRAL_CONFIG){
 	case 1U:{
 		u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
@@ -236,8 +240,8 @@ void ISR_Control(void *data)
 		break;
 	}
 	case 3U:{
-		u_a1c1 = Global_Data.av.v_c1 - Global_Data.av.v_a1;
-		u_a2c2 = Global_Data.av.v_c2 - Global_Data.av.v_a2;
+		u_a1c1 = Global_Data.av.v_a1 - Global_Data.av.v_c1;
+		u_a2c2 = Global_Data.av.v_a2 - Global_Data.av.v_c2;
 	}
 	default: break;
 	}
@@ -257,8 +261,8 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	// rotate zero
-	voltage_stationary_zero.alpha = u_a1c1;
-	voltage_stationary_zero.beta = u_a2c2;
+	voltage_stationary_zero.alpha = u_a1c1/3.0f;
+	voltage_stationary_zero.beta = u_a2c2/3.0f;
 	current_stationary_zero.alpha = ParaID_Data.ActualValues.i_abc_6ph.a1;
 	current_stationary_zero.beta = ParaID_Data.ActualValues.i_abc_6ph.a2;
 	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
@@ -287,9 +291,8 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // ParaID functions
-    	//uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-    	//controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
-		//ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
+    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
+		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
     	//ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 
 
@@ -303,9 +306,9 @@ void ISR_Control(void *data)
         cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
     	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
 */
-
+/*
   		// zero system control
-        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_3, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
+        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_3, ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
         //cc_out_zero_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.d, ParaID_Data.ActualValues.omega_el);
         //cc_out_zero_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.q, ParaID_Data.ActualValues.omega_el);
         cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*ParaID_Data.ActualValues.theta_el);
@@ -314,7 +317,7 @@ void ISR_Control(void *data)
         V_abc_zero_control.a2 = 3.0f/2.0f*cc_out_zero_stationary.beta;
         V_abc_zero_control.c2 = -V_abc_zero_control.a2;
         ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_zero_control, ParaID_Data.ActualValues.V_DC);
-
+*/
 
 		// change DutyCycles=0 to 0.01
 		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
@@ -341,7 +344,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
-
+    uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
     // Determine mechanical angle of resolver
     if(theta_mech_old-Global_Data.av.theta_mech_rad > 4.0f) {
     	cnt++;

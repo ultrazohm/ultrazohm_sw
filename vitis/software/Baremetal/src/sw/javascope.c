@@ -60,6 +60,8 @@ extern float u_a2c2;
 
 extern uz_3ph_dq_t cc_out_zero_rotating;
 extern uz_3ph_alphabeta_t cc_out_zero_stationary;
+
+extern uz_3ph_dq_t filtered_voltage;
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -99,16 +101,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);
 	js_ch_observable[JSO_ib2] = &(ParaID_Data.ActualValues.i_abc_6ph.b2);
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
-	js_ch_observable[JSO_x_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.d);
-	js_ch_observable[JSO_y_rot] = &(ParaID_Data.ActualValues.i_xy_rotating.q);
 	js_ch_observable[JSO_u_z1_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.d);
 	js_ch_observable[JSO_u_z2_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.q);
 	js_ch_observable[JSO_i_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
 	js_ch_observable[JSO_i_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
-	js_ch_observable[JSO_u_a1c1] = &(u_a1c1);
-	js_ch_observable[JSO_u_a2c2] = &(u_a2c2);
-	js_ch_observable[JSO_u_set_z1] = &(cc_out_zero_rotating.d);
-	js_ch_observable[JSO_u_set_z2] = &(cc_out_zero_rotating.q);
+	js_ch_observable[JSO_u_set_z1] = &(ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref.d);
+	js_ch_observable[JSO_u_set_z2] = &(ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref.q);
+	js_ch_observable[JSO_u_ref_z1] = &(cc_out_zero_rotating.d);
+	js_ch_observable[JSO_u_ref_z2] = &(cc_out_zero_rotating.q);
+
 
 	js_ch_observable[JSO_avg_winding_temp] = &(ParaID_Data.ActualValues.average_winding_temp);
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;

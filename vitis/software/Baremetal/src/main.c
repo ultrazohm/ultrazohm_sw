@@ -153,6 +153,12 @@ int main(void)
 				.samplingTime_sec = isr_ts,
 				.lower_limit = -20.0f,
 				.upper_limit = 20.0f};
+			struct uz_PI_Controller_config PI_config_zero = {
+				.Ki = 100.0f,//500.0f,//ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
+				.Kp = 15.0f,//15.0f,//ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/2.0f/(2.0f*tau_sum),
+				.samplingTime_sec = isr_ts,
+				.lower_limit = -20.0f,
+				.upper_limit = 20.0f};
 			struct uz_CurrentControl_config cc_config_1 = {
 				.decoupling_select = linear_decoupling,
 				.config_id = PI_config,
@@ -162,6 +168,11 @@ int main(void)
 				.decoupling_select = no_decoupling,
 				.config_id = PI_config_xy,
 				.config_iq = PI_config_xy,
+				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+			struct uz_CurrentControl_config cc_config_3 = {
+				.decoupling_select = no_decoupling,
+				.config_id = PI_config_zero,
+				.config_iq = PI_config_zero,
 				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
 			struct uz_resonantController_config resonant_config = {
 				.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
@@ -179,7 +190,7 @@ int main(void)
 			sp_instance = uz_SetPoint_init(sp_config);
 			CC_instance_1 = uz_CurrentControl_init(cc_config_1);
 			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
-			CC_instance_3 = uz_CurrentControl_init(cc_config_2);
+			CC_instance_3 = uz_CurrentControl_init(cc_config_3);
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
 			// init filters

@@ -344,7 +344,9 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
     uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+
     // Determine mechanical angle of resolver
     if(theta_mech_old-Global_Data.av.theta_mech_rad > 4.0f) {
     	cnt++;

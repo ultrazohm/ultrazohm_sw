@@ -114,7 +114,7 @@ float iq_setpoints[22]={
 
 
 
-#if NN_9_INPUT_3_64
+#if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
 extern float mlp_ip_output[2U];
 extern uz_matrix_t *p_output_data;
 extern uz_mlp_three_layer_ip_t* mlp_ip_instance;
@@ -251,12 +251,22 @@ void ISR_Control(void *data)
     			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
     				uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_7n,observation_ip_7n[i],0U,i);
     			}
+
+
+#if NN_7_INPUT_3_64 == 1
+    	        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_7n, p_output_data);
+    	        // IP-Core only calculates with linear, tanh has to be added manually
+    	        v_dq_non_limited_Volts.d=(uz_nn_activation_function_tanh(mlp_ip_output[0]))*U_max;
+    	        v_dq_non_limited_Volts.q=(uz_nn_activation_function_tanh(mlp_ip_output[1]))*U_max;
+
+#else
     			uz_nn_ff(Global_Data.objects.nn_layer_7n,Global_Data.objects.matrix_input_7n);
     			matrix_output_7n = uz_nn_get_output_data(Global_Data.objects.nn_layer_7n);
-
     			uz_matrix_multiply_by_scalar(matrix_output_7n,U_max); // scaling layer of nn
     			v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_7n,0U,0U);
     			v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_7n,0U,1U);
+#endif
+
     			v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, PMSM_IP_Core_V_DC, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
     			pmsm_inputs.omega_mech_1_s = ( n_ref_rpm / 60.0f ) * 2.0f * M_PI;
     			pmsm_inputs.v_d_V = v_dq_limited_Volts.d;
@@ -376,9 +386,47 @@ void ISR_Control(void *data)
     	  	}
     	  	if (select_DDPG_2) {
     	  		//DDPG with 7 observations
+    	  		if(ext_clamping == false) {
+    	  			i_dq_integrated_error_Amp.d = (i_dq_integrated_error_Amp.d + (i_dq_error_Amp.d * ts)); // use Forward-Euler with error of previous timestep for integration
+    	  			i_dq_integrated_error_Amp.q = (i_dq_integrated_error_Amp.q + (i_dq_error_Amp.q * ts));
+    	  		} else {
+    	  			i_dq_integrated_error_Amp.d += 0.0f;
+    	  			i_dq_integrated_error_Amp.q += 0.0f;
+    	  		}
+    	  		i_dq_error_Amp.d = (i_dq_reference_Ampere.d - i_dq_actual_Ampere.d) / rated_current;
+    	  		i_dq_error_Amp.q = (i_dq_reference_Ampere.q - i_dq_actual_Ampere.q) / rated_current;
+    	  		observation_ip_7n[0] = i_dq_error_Amp.d;
+    	  		observation_ip_7n[1] = i_dq_error_Amp.q;
+    	  		observation_ip_7n[2] = i_dq_actual_Ampere.d / rated_current;
+    	  		observation_ip_7n[3] = i_dq_actual_Ampere.q / rated_current;
+    	  		observation_ip_7n[4] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+				observation_ip_7n[5] = v_dq_limited_Volts_k_old.d * Voltage_Scaling;
+				observation_ip_7n[6] = v_dq_limited_Volts_k_old.q * Voltage_Scaling;
+				for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
+    	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_7n,observation_ip_7n[i],0U,i);
+    	  		}
+#if NN_7_INPUT_3_64 == 1
+    	        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input_7n, p_output_data);
+    	        // IP-Core only calculates with linear, tanh has to be added manually
+    	        v_dq_non_limited_Volts.d=(uz_nn_activation_function_tanh(mlp_ip_output[0]))*U_max;
+    	        v_dq_non_limited_Volts.q=(uz_nn_activation_function_tanh(mlp_ip_output[1]))*U_max;
 
-    	  	    //Code here
+#else
+    	        uz_nn_ff(Global_Data.objects.nn_layer_7n,Global_Data.objects.matrix_input_7n);
+    	        matrix_output_7n = uz_nn_get_output_data(Global_Data.objects.nn_layer_7n);
+    	        uz_matrix_multiply_by_scalar(matrix_output_7n,U_max); // scaling layer of nn
+    	        v_dq_non_limited_Volts.d = uz_matrix_get_element_zero_based(matrix_output_7n,0U,0U);
+    	        v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(matrix_output_7n,0U,1U);
+#endif
+    	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
+				v_dq_limited_Volts_k_old = v_dq_limited_Volts;
+				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+				Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
+    	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
+    	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
     	  	}
+    	  	    //Code here
+
     	  	if (select_DDPG_3) {
     	  		//DDPG with IP-core
 

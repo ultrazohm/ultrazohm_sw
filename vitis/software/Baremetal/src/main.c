@@ -18,7 +18,9 @@
 #include "xparameters.h"
 #include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 #include "sw/nn_9_input_1_64/nn_9_input_1_64.h"
-
+#include "sw/nn_9_input_3_64/nn_9_input_3_64.h"
+#include "sw/nn_9_input_1_128/nn_9_input_1_128.h"
+#include "sw/nn_7_input_1_64/nn_7_input_1_64.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -131,6 +133,16 @@ int main(void)
 #if NN_9_INPUT_3_64==1
         	nn_9_input_3_64_init();
 #endif
+#if NN_7_INPUT_1_64==1
+        	nn_7_input_1_64_init();
+#endif
+#if NN_7_INPUT_1_128==1
+        	nn_7_input_1_128_init();
+#endif
+#if NN_7_INPUT_3_64==1
+        	nn_7_input_3_64_init();
+#endif
+
         	//For 7 observations
         //    Global_Data.objects.matrix_input_7n = uz_matrix_init(&input_matrix_7n,x_7,UZ_MATRIX_SIZE(x_7),1U,NUMBER_OF_INPUTS_9N);
         //    Global_Data.objects.nn_layer_7n = uz_nn_init(config_7nn, 2U);

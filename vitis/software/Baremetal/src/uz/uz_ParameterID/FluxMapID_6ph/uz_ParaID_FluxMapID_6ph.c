@@ -179,6 +179,7 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
             initialized_controllers = 0U;
     		uz_CurrentControl_reset(CC_instance_1);
             uz_CurrentControl_reset(CC_instance_2);
+            uz_CurrentControl_reset(CC_instance_3);
             uz_resonantController_reset(resonant_1);
             uz_resonantController_reset(resonant_2);
             break;
@@ -186,7 +187,6 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
     }
     return out;
 }
-
 
 enum logstates {flux_idle, flux_log, flux_wait_transistion};
 

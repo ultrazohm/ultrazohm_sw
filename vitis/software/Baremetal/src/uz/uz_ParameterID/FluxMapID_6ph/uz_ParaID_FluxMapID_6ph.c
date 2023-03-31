@@ -114,12 +114,14 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
                 //uz_FluxMapID_6ph_set_controller_parameter(Data, CC_instance_1, CC_instance_2, resonant_1, resonant_2);
                 uz_resonantController_set_harmonic_order(resonant_1, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
                 uz_resonantController_set_harmonic_order(resonant_2, PARAMETERID6PH_FLUXMAP_RES_ORDER_AB);
+                uz_resonantController_reset(resonant_1);
+				uz_resonantController_reset(resonant_2);
                 initialized_controllers = 1U;
             }
             
             // assign to output
-            out.d += uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
-            out.q += uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+            out.d = cc_out_ab_rotating.d + uz_resonantController_step(resonant_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q = cc_out_ab_rotating.q + uz_resonantController_step(resonant_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
             uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
             out.x = cc_out_xy_stationary.alpha;
             out.y = cc_out_xy_stationary.beta;
@@ -178,8 +180,8 @@ uz_6ph_dq_t uz_FluxMapID_6ph_step_controllers(uz_ParameterID_Data_t* Data, uz_Cu
         default:
         {
             initialized_controllers = 0U;
-    		uz_CurrentControl_reset(CC_instance_1);
-            uz_CurrentControl_reset(CC_instance_2);
+    		//uz_CurrentControl_reset(CC_instance_1);
+            //uz_CurrentControl_reset(CC_instance_2);
             uz_CurrentControl_reset(CC_instance_3);
             uz_resonantController_reset(resonant_1);
             uz_resonantController_reset(resonant_2);
@@ -225,8 +227,6 @@ static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Dat
     // reset all
     //uz_CurrentControl_reset(CC_instance_1);
     //uz_CurrentControl_reset(CC_instance_2);
-    uz_resonantController_reset(resonant_1);
-    uz_resonantController_reset(resonant_2);
     // set cc1
    uz_CurrentControl_set_Kp_id(CC_instance_1, 10.0f);//Data->GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum));
     uz_CurrentControl_set_Kp_iq(CC_instance_1, 10.0f);//Data->GlobalConfig.PMSM_config.Lq_Henry/(2.0f*tau_sum));

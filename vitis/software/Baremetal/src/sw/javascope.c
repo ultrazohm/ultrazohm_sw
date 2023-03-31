@@ -105,8 +105,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_u_z2_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.q);
 	js_ch_observable[JSO_i_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
 	js_ch_observable[JSO_i_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
-	js_ch_observable[JSO_u_set_z1] = &(ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref.d);
-	js_ch_observable[JSO_u_set_z2] = &(ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref.q);
+	js_ch_observable[JSO_u_set_z1] = &(ParaID_Data.FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.d);
+	js_ch_observable[JSO_u_set_z2] = &(ParaID_Data.FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.q);
 	js_ch_observable[JSO_u_ref_z1] = &(cc_out_zero_rotating.d);
 	js_ch_observable[JSO_u_ref_z2] = &(cc_out_zero_rotating.q);
 

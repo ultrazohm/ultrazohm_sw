@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.82
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Mar 31 10:15:13 2023
+ * C/C++ source code generated on : Fri Mar 31 11:32:28 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,7 +31,7 @@
 #define FluxMapID_6ph_codegen_COMMON_INCLUDES
 #include "../rtwtypes.h"
 #endif                      /* FluxMapID_6ph_codegen_COMMON_INCLUDES_ */
-
+        
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
@@ -64,7 +64,6 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
 
-
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {
   real32_T u_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -72,6 +71,10 @@ typedef struct {
   real32_T omega_el_array[1000];  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T i_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T i_q_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T PI_d_loc;              /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T PI_q_loc;              /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T PI_d_loc_h;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T PI_q_loc_b;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T exitPortIndex;         /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfIDpoints;      /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfPoints;        /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */

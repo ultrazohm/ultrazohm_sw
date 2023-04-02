@@ -103,20 +103,20 @@ void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *con
     }
          //Berechne alle Gradienten
 
-     uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
+    //  uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
 
-     uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+    //  uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
 
-     uz_nn_layer_calc_gradients(self->layer[0],input);
+    //  uz_nn_layer_calc_gradients(self->layer[0],input);
 
 
     //Gradient output + alle hidden layer
-    // for (uint32_t i = self->number_of_layer - 1U; i > 1; --i)
-    // {
-    //         uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
-    // }
-    // //Gradient erster layer
-    // uz_nn_layer_calc_gradients(self->layer[0],input);
+    for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
+    {
+            uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+    }
+    //Gradient erster layer
+    uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
 void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate)

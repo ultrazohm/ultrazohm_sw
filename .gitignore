@@ -18,6 +18,6 @@ vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/rtwtypeschksum.mat
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/uz_codegen0.mk
 vitis/software/Baremetal/src/Codegen/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
-
+vitis/software/Baremetal/test/uz/Cranium
 .vscode/settings.json
 control_algorithms/uz_FOC.slxc

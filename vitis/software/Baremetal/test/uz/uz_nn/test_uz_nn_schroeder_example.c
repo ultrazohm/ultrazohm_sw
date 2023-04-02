@@ -206,7 +206,7 @@ void test_uz_nn_schroeder(void)
     printf("Mittelwert von biasgrad = %.2f \n", avgbias);
     //Lernrate festlegen
     float lernrate = 2.0f;
-    //Update THETA 1,1 und bias 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
+    //Update THETA 1,1 und bias 1,1 mit den berechneten Gradienten und einer Schrittweite von eta = 2
     uz_nn_update(test,avgtheta,avgbias,lernrate);
     
     //Funktion die die daten exportiert und in die .csv Dateien überschreibt

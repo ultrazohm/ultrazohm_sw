@@ -6,6 +6,8 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
+#include "uz_sum.h"
+#include "uz_codegen0_ert_rtw/uz_codegen0.h"
 #include <time.h>
 
 
@@ -14,6 +16,8 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
+#define NUMBER_OF_EPOCHS 1
+#define NUMBEROFTRAININGSDATA 252
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -41,10 +45,10 @@ float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYE
 
 // 13 Trainingsdaten aus Matlab(1-13)
 float x[NUMBER_OF_INPUTS] = {
-#include "matlab_weights/X_input.csv"
+#include "matlab_weights/X_inputvec.csv"
 };
 float reference_output[NUMBER_OF_OUTPUTS]= {
-#include "matlab_weights/T_output.csv"
+#include "matlab_weights/T_outputvec.csv"
 };
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
@@ -177,42 +181,24 @@ void tearDown(void)
 {
 }
 
-
 void test_uz_nn_matlab(void)
   {
      clock_t start = clock();
-//     float biashelper[13];
-//     float THETAhelper[13];
-//     float sumtheta = 0.0f;
-//     float sumbias = 0.0f;
-//     float avgtheta = 0.0f;
-//     float avgbias = 0.0f;
-//     init nn
-//     for (size_t i = 0; i < 13; i++)
-//     {
-//     uz_nn_t* testlooper = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
-//     testing around with derivatemat declaration
+    // for (size_t i = 0; i < NUMBEROFTRAININGSDATA; i++)
+    // {
        uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
        struct uz_matrix_t x_matrix={0};
        uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,13);
        uz_nn_ff(test,input);
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
+      float result=uz_matrix_get_element_zero_based(output,0,0);
        uz_nn_calc_gradients(test,&reference_output[0],input);
-//     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
-//     THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
-//     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
-//     sumtheta += THETAhelper[i];
-//     sumbias += biashelper[i];
-//     }
-//     uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
-//     avgbias = sumbias / 13.0f;
-//     avgtheta = sumtheta / 13.0f;
-//     printf("Mittelwert von thetagrad = %.2f \n", avgtheta);
-//     printf("Mittelwert von biasgrad = %.2f \n", avgbias);
-//     Lernrate festlegen
-//     float lernrate = 2.0f;
-//     Update THETA 1,1 mit den Berechneten Gradienten und einer Schrittweite von eta = 2
+       // MSE Berechnen für Trainingsdatenpaar
+       float msetest =  0.5f * ((result- -0.4821f) * (result- -0.4821f));
+       printf("result ist = %.4f \n", result);
+       printf("mse von result ist = %.4f \n", msetest);
+    // }
 //     uz_nn_update(test,avgtheta,avgbias,lernrate);
      clock_t end = clock();
 //     Funktion die die daten exportiert und in die .csv Dateien überschreibt

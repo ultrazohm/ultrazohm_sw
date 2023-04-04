@@ -33,4 +33,4 @@ Software Framework
     matrix/matrix_math
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
-    EncOffEst/EncOffEst
+    encoder_offset_estimation/encoder_offset_estimation

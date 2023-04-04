@@ -1,4 +1,4 @@
-.. _uz_EncOffEst:
+.. _uz_encoder_offset_estimation:
 
 =========================
 Encoder Offset Estimation
@@ -9,14 +9,14 @@ Estimate Theta with "wrong" method.
 Use estimated theta in code below and algorithm will find true theta in that range.
 
 
-.. doxygenstruct:: uz_EncOffEst_config
+.. doxygenstruct:: uz_encoder_offset_estimation_config
   :members: 
 
-.. doxygenfunction:: uz_EncOffEst_init
+.. doxygenfunction:: uz_encoder_offset_estimation_init
 
-.. doxygenfunction:: uz_EncOffEst_step
+.. doxygenfunction:: uz_encoder_offset_estimation_step
 
-.. doxygenfunction:: uz_EncOffEst_get_finished
+.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
 
 
 .. code-block:: c

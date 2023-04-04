@@ -43,13 +43,22 @@ float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * 
 float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
-// 13 Trainingsdaten aus Matlab(1-13)
+// 13 Trainingsvektordaten aus Matlab(1-13)
 float x[NUMBER_OF_INPUTS] = {
 #include "matlab_weights/X_inputvec.csv"
 };
+// 3276 Trainingsinput (13x252)
+// float x_mat[NUMBER_OF_INPUTS * NUMBEROFTRAININGSDATA] = {
+// #include "matlab_weights/X_input.csv"
+// };
+// Sollausgabe (1 Ausgabewert) aus Matlab
 float reference_output[NUMBER_OF_OUTPUTS]= {
 #include "matlab_weights/T_outputvec.csv"
 };
+// Sollausgabe (252 Ausgabewerte) aus Matlab
+// float reference_mat[NUMBER_OF_OUTPUTS * NUMBEROFTRAININGSDATA]= {
+// #include "matlab_weights/T_output.csv"
+// };
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "matlab_weights/layer1_weights.csv"
@@ -192,13 +201,14 @@ void test_uz_nn_matlab(void)
        uz_nn_ff(test,input);
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
-      float result=uz_matrix_get_element_zero_based(output,0,0);
-       uz_nn_calc_gradients(test,&reference_output[0],input);
        // MSE Berechnen für Trainingsdatenpaar
-       float msetest =  0.5f * ((result- -0.4821f) * (result- -0.4821f));
+       struct uz_matrix_t refmatrix={0};
+       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+       float msetest =  uz_nn_mse(output,refout);
+       float result=uz_matrix_get_element_zero_based(output,0,0);
+       uz_nn_calc_gradients(test,&reference_output[0],input);
        printf("result ist = %.4f \n", result);
        printf("mse von result ist = %.4f \n", msetest);
-    // }
 //     uz_nn_update(test,avgtheta,avgbias,lernrate);
      clock_t end = clock();
 //     Funktion die die daten exportiert und in die .csv Dateien überschreibt

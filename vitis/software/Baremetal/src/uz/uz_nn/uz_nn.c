@@ -90,6 +90,24 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 //     uz_nn_layer_calc_gradients(self->layer[0],input);
 // }
 
+void uz_nn_gradient_descent(uz_nn_t *self)
+{
+}
+
+float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float y = 0.0f;
+    // summiere alle Fehler auf
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        y+=(output->data[i] - expectedoutput->data[i]) * (output->data[i] - expectedoutput->data[i]);
+    }
+    // Wer als float ausgeben zum Debuggen 1/n * Summe = MSE
+    y = ((float)1/(float)output->length_of_data) * y;
+    
+    return y;
+}
 
 void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input)
 {

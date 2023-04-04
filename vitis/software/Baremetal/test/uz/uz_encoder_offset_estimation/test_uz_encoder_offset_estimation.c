@@ -2,8 +2,8 @@
 
 #include "unity.h"
 
-#include "uz_EncOffEst.h"
-#include "uz_EncOffEst.c"
+#include "uz_encoder_offset_estimation.h"
+#include "uz_encoder_offset_estimation.c"
 
 #include "mock_uz_SystemTime.h"
 #include "uz_filter_cumulativeavg.h"
@@ -19,7 +19,7 @@ void tearDown(void)
 {
 }
 
-void test_uz_EncOffEst_find_best_theta(void)
+void test_uz_encoder_offset_estimation_find_best_theta(void)
 {
     #define OFFSET_ARRAYSIZE 5U
     struct measurement meas1 = {
@@ -49,7 +49,7 @@ void test_uz_EncOffEst_find_best_theta(void)
     array[3U] = meas4;
     array[4U] = meas5;
 
-    //float best_theta = uz_EncOffEst_find_best_theta(array);
+    //float best_theta = uz_encoder_offset_estimation_find_best_theta(array);
     //printf("\ntheta: %f", best_theta);
 }
 

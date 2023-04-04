@@ -14,9 +14,9 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include "uz_EncOffEst.h"
+#include "uz_encoder_offset_estimation.h"
 #include "../uz_global_configuration.h"
-#if UZ_ENCOFFEST_MAX_INSTANCES > 0
+#if UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES > 0
 
 #define OFFSET_RANGE_RAD 0.5f
 #define OFFSET_STEP_RAD 0.1f
@@ -53,7 +53,7 @@ static const uz_3ph_dq_t zero_dq_struct = {
     .q = 0.0f,
     .zero = 0.0f};
 
-typedef struct uz_EncOffEst_t {
+typedef struct uz_encoder_offset_estimation_t {
     // general variables
     bool is_ready;                                                          // is ready
     uz_filter_cumulativeavg_t *filter_u_q;                                  // pointer to filter instance
@@ -74,28 +74,28 @@ typedef struct uz_EncOffEst_t {
     float sub_max_speed;                                                    // maximum speed with given current
     float sub_u_q_filtered;                                                 // filtered uq
     float sub_omega_el_filtered;                                            // filtered omega electric
-}uz_EncOffEst_t;
+}uz_encoder_offset_estimation_t;
 
 
 static uint32_t instances_counter_EncOffEst = 0;
 
-static uz_EncOffEst_t instances_EncOffEst[UZ_ENCOFFEST_MAX_INSTANCES] = {0};
-static uz_EncOffEst_t* uz_EncOffEst_allocation(void);
-static float uz_EncOffEst_single_direction(uz_EncOffEst_t* self, float setp_current);
-static float uz_EncOffEst_find_best_theta(const struct measurement meas_struct[OFFSET_ARRAYSIZE]);
-static void uz_EncOffEst_reset_substatemachine(uz_EncOffEst_t* self);
+static uz_encoder_offset_estimation_t instances_EncOffEst[UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES] = {0};
+static uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_allocation(void);
+static float uz_encoder_offset_estimation_single_direction(uz_encoder_offset_estimation_t* self, float setp_current);
+static float uz_encoder_offset_estimation_find_best_theta(const struct measurement meas_struct[OFFSET_ARRAYSIZE]);
+static void uz_encoder_offset_estimation_reset_substatemachine(uz_encoder_offset_estimation_t* self);
 
-static uz_EncOffEst_t* uz_EncOffEst_allocation(void) {
-	uz_assert(instances_counter_EncOffEst < UZ_ENCOFFEST_MAX_INSTANCES);
-	uz_EncOffEst_t* self = &instances_EncOffEst[instances_counter_EncOffEst];
+static uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_allocation(void) {
+	uz_assert(instances_counter_EncOffEst < UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES);
+	uz_encoder_offset_estimation_t* self = &instances_EncOffEst[instances_counter_EncOffEst];
 	uz_assert(self->is_ready == false);
 	instances_counter_EncOffEst++;
 	self->is_ready = true;
 	return (self);
 }
 
-uz_EncOffEst_t* uz_EncOffEst_init(struct uz_EncOffEst_config config) {
-	uz_EncOffEst_t* self = uz_EncOffEst_allocation();
+uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_encoder_offset_estimation_config config) {
+	uz_encoder_offset_estimation_t* self = uz_encoder_offset_estimation_allocation();
     self->filter_u_q = uz_filter_cumulativeavg_init();
     self->filter_omega_el = uz_filter_cumulativeavg_init();
     self->actual = config.actual;
@@ -107,7 +107,7 @@ uz_EncOffEst_t* uz_EncOffEst_init(struct uz_EncOffEst_config config) {
 	return (self);
 }
 
-uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
+uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
     switch(self->encoderoffset_current_state_hl){
         case init_theta:{
             self->theta_offset_inital = self->actual->theta_elec;                               // safe inital determined offset
@@ -117,7 +117,7 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
             break;
         }
         case positive_setpoint:{
-            self->meas_array[self->meas_array_counter].psi_d_positive = uz_EncOffEst_single_direction(self, self->setpoint_current);  // get psi with positive direction rotation
+            self->meas_array[self->meas_array_counter].psi_d_positive = uz_encoder_offset_estimation_single_direction(self, self->setpoint_current);  // get psi with positive direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){              // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back to init
                 self->encoderoffset_current_state_hl = negative_setpoint;                       // activate next step
@@ -125,7 +125,7 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
             break;
         }
         case negative_setpoint:{
-            self->meas_array[self->meas_array_counter].psi_d_negative = uz_EncOffEst_single_direction(self, -self->setpoint_current); // get psi with negative direction rotation
+            self->meas_array[self->meas_array_counter].psi_d_negative = uz_encoder_offset_estimation_single_direction(self, -self->setpoint_current); // get psi with negative direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){              // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back to init
                 self->encoderoffset_current_state_hl = change_theta;                            // activate next step
@@ -140,7 +140,7 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
                 self->encoderoffset_current_state_hl = positive_setpoint;                       // back to positive speed
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;                   // set substatemachine back init
             } else{
-                self->actual->theta_offset = uz_EncOffEst_find_best_theta(self->meas_array);
+                self->actual->theta_offset = uz_encoder_offset_estimation_find_best_theta(self->meas_array);
                 self->encoderoffset_current_state_hl = encoderoffset_finished;                  // if all points are measured, get to finished state
             }
             break;
@@ -150,7 +150,7 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self){
     return (self->i_reference_Ampere);
 }
 
-bool uz_EncOffEst_get_finished(uz_EncOffEst_t* self){
+bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* self){
     if(self->encoderoffset_current_state_hl == encoderoffset_finished){
         return true;
     } else{
@@ -158,7 +158,7 @@ bool uz_EncOffEst_get_finished(uz_EncOffEst_t* self){
     }
 }
 
-static float uz_EncOffEst_find_best_theta(const struct measurement meas_struct[OFFSET_ARRAYSIZE]){
+static float uz_encoder_offset_estimation_find_best_theta(const struct measurement meas_struct[OFFSET_ARRAYSIZE]){
     float min_diff = INFINITY;
     uint16_t index_min_diff = 0U;
     for(uint16_t i = 0U; i < OFFSET_ARRAYSIZE; i++){
@@ -170,14 +170,14 @@ static float uz_EncOffEst_find_best_theta(const struct measurement meas_struct[O
     return (meas_struct[index_min_diff].theta_offset);
 }
 
-static void uz_EncOffEst_reset_substatemachine(uz_EncOffEst_t* self){
+static void uz_encoder_offset_estimation_reset_substatemachine(uz_encoder_offset_estimation_t* self){
     self->sub_init_time = 0.0f;
     self->sub_max_speed = 0.0f;
     self->sub_u_q_filtered = 0.0f;
     self->sub_omega_el_filtered = 0.0f;
 }
 
-static float uz_EncOffEst_single_direction(uz_EncOffEst_t* self, const float setp_current){
+static float uz_encoder_offset_estimation_single_direction(uz_encoder_offset_estimation_t* self, const float setp_current){
     float psi_d = 0.0f;
     switch (self->encoderoffset_current_state_ll){
         case encoderoffset_ll_init:{
@@ -207,7 +207,7 @@ static float uz_EncOffEst_single_direction(uz_EncOffEst_t* self, const float set
                 self->sub_init_time = uz_SystemTime_GetGlobalTimeInSec();                           // get init time
             }
             if(((uz_SystemTime_GetGlobalTimeInSec()-self->sub_init_time) > OFFSET_DELAY_BETWEEN_SETPOINTS_SEC) && self->sub_init_time != 0.0f){                                                     // wait before next step
-                uz_EncOffEst_reset_substatemachine(self);                                           // set all substate variables to zero
+                uz_encoder_offset_estimation_reset_substatemachine(self);                                           // set all substate variables to zero
                 self->encoderoffset_current_state_ll = encoderoffset_ll_finished;                   // set finished state
             }
             break;

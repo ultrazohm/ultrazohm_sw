@@ -1,5 +1,5 @@
-#ifndef UZ_ENCOFFEST_H
-#define UZ_ENCOFFEST_H
+#ifndef UZ_ENCODER_OFFSET_ESTIMATION_H
+#define UZ_ENCODER_OFFSET_ESTIMATION_H
 
 #include "../uz_SystemTime/uz_SystemTime.h"
 #include "../uz_filter_cumulativeavg/uz_filter_cumulativeavg.h"
@@ -12,21 +12,21 @@
  * @brief Configuration struct for the PMSM model IP-Core driver
  * 
  */
-struct uz_EncOffEst_config {
+struct uz_encoder_offset_estimation_config {
     actualValues *actual;       /**< Pointer to global data actual values */
     float polepair;             /**< Polepairs of maschine */
     float setpoint_current;     /**< Setpoint current for tests */
 };
 
-typedef struct uz_EncOffEst_t uz_EncOffEst_t;
+typedef struct uz_encoder_offset_estimation_t uz_encoder_offset_estimation_t;
 
 /**
  * @brief Initialize an instance
  * 
  * @param config Config struct
- * @return uz_EncOffEst_t* Pointer to an initialized instance
+ * @return uz_encoder_offset_estimation_t* Pointer to an initialized instance
  */
-uz_EncOffEst_t* uz_EncOffEst_init(struct uz_EncOffEst_config);
+uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_encoder_offset_estimation_config);
 
 /**
  * @brief Step the function
@@ -34,7 +34,7 @@ uz_EncOffEst_t* uz_EncOffEst_init(struct uz_EncOffEst_config);
  * @param self Pointer to instance
  * @return setpoint for current controller
  */
-uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self);
+uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self);
 
 /**
  * @brief Get finished flag
@@ -42,6 +42,6 @@ uz_3ph_dq_t uz_EncOffEst_step(uz_EncOffEst_t* self);
  * @param self Pointer to instance
  * @return finished flag
  */
-bool uz_EncOffEst_get_finished(uz_EncOffEst_t* self);
+bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* self);
 
-#endif // UZ_ENCOFFEST_H
+#endif // uz_encoder_offset_estimation_H

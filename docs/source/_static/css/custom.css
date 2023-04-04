@@ -64,3 +64,18 @@
       overflow: visible !important;
    }
 }
+
+/* For having math labels to the right of the equation: https: //stackoverflow.com/questions/14110790/numbered-math-equations-in-restructuredtext/52509369#52509369*/
+.math {
+	text-align: left;
+}
+
+.eqno {
+	float: right;
+}
+
+
+
+
+
+

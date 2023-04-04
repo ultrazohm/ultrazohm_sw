@@ -1,3 +1,5 @@
+.. _adc_loopback:
+
 ============
 ADC Loopback
 ============
@@ -29,8 +31,8 @@ The following tutorial requires:
 - Analog adapter card ADC :ref:`Analog_LTC2311_16_v3` in slot A2 or A3 or :ref:`Analog_LTC2311_16_v2` in slot A1
 - If the analog adapter card is used in a different slot, change the variables accordingly
 
-.. UltraZohm Setup
-.. ***************
+UltraZohm Setup
+***************
 
 .. The UltraZohm has to be connected to a PC by Ethernet and USB (JTAG-Programmer) and the optical adapter card is in D3.
 

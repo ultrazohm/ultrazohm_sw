@@ -36,19 +36,7 @@ enum JS_OberservableData {
 	JSO_ud,
 	JSO_uq,
 	JSO_Speed_rpm,
-	JSO_psi_d_neg,
-	JSO_psi_q_neg,
-	JSO_psi_d_pos,
-	JSO_psi_q_pos,
-	JSO_filter_id,
-	JSO_filter_iq,
-	JSO_filter_uq,
-	JSO_filter_ud,
-	JSO_filter_omega_el,
-	JSO_Theta_offset,
-	JSO_umin_old,
-	JSO_umin_new,
-	JSO_omega_el,
+	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,
@@ -56,7 +44,11 @@ enum JS_OberservableData {
 	JSO_Theta_mech,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
-	JSO_gradient,
+	JSO_Wtemp,
+	JSO_Rs_mOhm,
+	JSO_Ld_mH,
+	JSO_Lq_mH,
+	JSO_PsiPM_mVs,
 	JSO_ENDMARKER
 };
 
@@ -163,9 +155,9 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	send_field_1,
 	send_field_2,
-	i_d,
-	i_q,
-	theta_offset,
+	send_field_3,
+	send_field_4,
+	send_field_5,
 	send_field_6,
 	SND_FLD_ENDMARKER
 
@@ -187,9 +179,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	u_d,
-	u_q,
-	speed_rpm,
+	receive_field_1,
+	receive_field_2,
+	receive_field_3,
 	receive_field_4,
 	receive_field_5,
 	receive_field_6,
@@ -200,9 +192,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	V,
-	V,
-	rpm,
+	RPM,
+	Nm,
+	A,
 	A,
 	V,
 	V,
@@ -214,9 +206,9 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_u_d,
-	JSSD_FLOAT_u_q,
-	JSO_Speed_rpm_filtered,
+	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_ISR_ExecTime_us,
+	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_Ld,

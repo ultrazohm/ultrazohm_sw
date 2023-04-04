@@ -1,11 +1,11 @@
-.. _porting_the_UZ_Framework_for_the_KR260:
+.. _how_to_implement_uz_on_k26_kits:
 
-======================================
-Porting the UZ-Framework for the KR260
-======================================
+==========================================
+Porting the UZ-Framework for the Kria Kits
+==========================================
 
 In case you don't have access to an UltraZohm, various other evaluation kits can be used for preliminary developments.
-The goal of this how-to is to port the existing UltraZohm project to the KR260 board to create a small HiL environment for the first tests.
+The goal of this how-to is to port the existing UltraZohm project to the KR260 Robotics Starter Kit and KV260 Vision AI Starter Kit board to create a small HiL environment for the first tests.
 Based on the getting-started the same workflow is used.
 First, a suitable hardware_design is created in Vivado, the required information is exported to Vitis, and then the UltraZohm project is created.
 Subsequently, minor changes are made to the source files, and the software is started on the KR260.
@@ -21,23 +21,30 @@ This is the starting point for small Hil/Sil/PiL projects, which are compatible 
 Prerequisites
 =============
 
-  * Getting-Started completed and understood
-  * A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
-  * Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
-  * Basic knowledge of the used tools.
+#. Getting-Started completed and understood
+#. An evaluation kit to use
+
+    *  A `KR260 <https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html>`_ evaluation kit 
+    *  A `KV260 <https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit.html>`_ evaluation kit 
+
+#. Install Vitis and Vivado **2022.2**, download `here <https://www.xilinx.com/support/download.html>`_
+#. Basic knowledge of the used tools.
+
 
 Vivado
 ======
 
-To get the UltraZohm-Framework running on the KR260, first of all a valid Hardware-Design is needed.
-This can be done with the create a project from scratch or using mainly scripts. 
+To get the UltraZohm-Framework running on the Kria boards, first of all a valid Hardware-Design is needed.
+This can be done with the create a project from scratch or using mainly scripts.
 
 Creating Fresh Project
 -----------------------
 
 #.  Create a fresh project in Vivado 2022.2
 
-#.  When you were asked for the Default Part, select `Kria KR260 Robotics Starter Kit SOM`
+#.  When you were asked for the Default Part, select the board which you have.
+
+    #. For `Kria KR260 Robotics Starter Kit SOM`  
 
     .. _Boardselection_KR260:
 
@@ -46,6 +53,18 @@ Creating Fresh Project
         :align: center
 
         Boardselection UZ-KR260.
+
+
+    #. For `Kria KV260 Robotics Starter Kit SOM` 
+
+    .. _Boardselection_KV260:
+
+    .. figure:: img/NewProject_Kv260.png
+        :scale: 70 
+        :align: center
+
+        Board selection UZ-KV260.
+
 
 #.  Add a new Block design and name with ``k26sys``
 
@@ -62,7 +81,7 @@ Creating Fresh Project
 
 #.  Create HDL-Wrapper and make sure its the Top-file.
  
-#.  Download the Constrain-file for the KR260 SOM directly from Xilinx `KR260-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
+#.  Download the Constrain-file for K26 SOM directly from Xilinx `K26 SOM-Contrains <https://www.xilinx.com/products/som/kria/k26c-commercial.html#documentation>`_ and add the file to the project.
     (Link → Key Features → Design Resources → Kria K26 CCDR → KRIA K26 SOM XDC File).
 
 #.  Some VHDL-files have to be added manually as design sources to the Vivado-Project. Those files actually were located in ``ip_cores and vivado`` folders. Search for
@@ -90,7 +109,7 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_PResets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_Presets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
 
 #.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
 
@@ -146,19 +165,19 @@ Creating Fresh Project
 
 Following those steps should lead to an HW-Design like this:
 
-.. _Vivado_project_KR260:
+.. _Vivado_project_K26:
 
-.. figure:: img/Vivado_project_KR260.png
+.. figure:: img/Vivado_project_K26.png
     :scale: 70
     :align: center
 
-    Vivado-Project Hardware-Design KR260.
+    Vivado-Project Hardware-Design Kria boards.
     
 
 Project with TCL Scripts: 
 ----------------------------
 
-#. Create a fresh project in `Vivado 2022.2` with `Kria KR260 Robotics Starter Kit SOM` board. 
+#. Create a fresh project in `Vivado 2022.2` with your preferred `Kria SOM` board. 
 #. Add the missing VHDL-files:
    
     .. code-block::
@@ -184,7 +203,7 @@ Project with TCL Scripts:
         source ../tcl_scripts/k26sys_ps_generaton.tcl 
         source ../tcl_scripts/k26sys_hd_generaton.tcl
 
-#. Create VHDL wrapper for `kr260sys` and set as top manually. 
+#. Create VHDL wrapper for `k26sys` and set as top manually. 
 
 #. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
 
@@ -201,11 +220,9 @@ Vitis
 
 After creating the Hardware-Design, there were a few Software-changes necessary.
 This includes mainly the removed IP-Cores and the Frontpanel, as well as the ISR.
-Additionally, a small hack to the Board-Support-Package BSP must be applied to bring up the network interface.#
+Additionally, a small hack to the Board-Support-Package BSP must be applied to bring up the network interface for the KR260 Robotics.
 This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII Interface which isn't compatible with the used LwIP-Stack and both PHY's for the PS-GEM's shared the same MDIO's.
 
-
-To create a suited software for the KR260, follow these steps:
 
 #.  Open Vitis 2022.2 and create the Workspace according to Ultrazohm Setup.
 
@@ -226,7 +243,7 @@ To create a suited software for the KR260, follow these steps:
         :scale: 70
         :align: center
 
-        Vitis BSP-Settings for KR260.
+        Vitis BSP-Settings for K26.
 
 #.  Build the "UZ-Plattform-Project".
 #.  Changes for the Baremetal-Project:
@@ -272,13 +289,17 @@ To create a suited software for the KR260, follow these steps:
 
         * if (mscnt >=DHCP_COARSE_TIMER_SECS * 2000)
 
-    #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
+    #. To create a suited software for the KR260 Robotics, follow these steps:
 
-        * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
+        #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis_kria\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
+
+            * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
+     
+    #. KV260 Vision AI does not require the hack.
 
 #. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
-    * ``\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
+    * ``\vitis_kria\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
 #. Restart Vitis to make the. launches-files accessible
 #. Build both C-Projects 
@@ -286,7 +307,7 @@ To create a suited software for the KR260, follow these steps:
     
     * Control the Debug Configuration - Application and Target Setup.
     * Debug Configuration - Application → Make sure the psu_cortexa53_0 for FreeRTOS and psu_cortexr5_0 for Baremetal are activated. 
-    * Debug Configuration - Target Setup → Check the Bitsream file for KR260. It should use newly generated bitsream, not Ultrazohm file. 
+    * Debug Configuration - Target Setup → Check the Bitsream file for K26 board. It should use newly generated bitsream, not Ultrazohm file. 
 
 #. Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
 
@@ -295,7 +316,6 @@ Known Issues
 * The applied BSP-Hack is done in generated source files. This means regenerating the BSP **WILL DELETE THE HACK** and the FreeRTOS won't initialize the PHY properly. If the error "autonegation failed" show's up during the start, check if the hack is still present.
 * Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
     * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
-
 
 Discussion
 ==========

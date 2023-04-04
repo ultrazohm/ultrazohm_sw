@@ -1,7 +1,7 @@
 /*
- * File Name:         C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_pr\ip_cores\uz_pmsm_model_6ph_dq\hdl_prj\ipcore\uz_pmsm_model_6ph_dq_v1_0\include\uz_pmsm_model_6ph_dq_addr.h
+ * File Name:         C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_pmsm_model_6ph_dq\hdl_prj\ipcore\uz_pmsm_model_6ph_dq_v1_0\include\uz_pmsm_model_6ph_dq_addr.h
  * Description:       C Header File
- * Created:           2022-12-21 11:20:24
+ * Created:           2023-04-04 17:13:14
 */
 
 #ifndef UZ_PMSM_MODEL_6PH_DQ_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_model_6ph_dq                         0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model_6ph_dq                        0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model_6ph_dq                     0x8  //contains unique IP timestamp (yymmddHHMM): 2212211120
+#define  IPCore_Timestamp_uz_pmsm_model_6ph_dq                     0x8  //contains unique IP timestamp (yymmddHHMM): 2304041713
 #define  reset_integrators_Data_uz_pmsm_model_6ph_dq               0x100  //data register for Inport reset_integrators
 #define  use_axi_input_Data_uz_pmsm_model_6ph_dq                   0x104  //data register for Inport use_axi_input
 #define  simulate_mechanical_Data_uz_pmsm_model_6ph_dq             0x108  //data register for Inport simulate_mechanical

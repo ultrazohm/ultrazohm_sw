@@ -163,6 +163,16 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 //     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
 // }
 
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float const *const error)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->error->data = error;
+    uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
+    uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
+    uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
+    uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
+}
 
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference)
 {
@@ -216,7 +226,19 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     //matrizen zusammenstellen und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
     
 }
-
+void uz_nn_update_layer_param(uz_nn_layer_t *const self, float const lernrate)
+{
+//erst weights (loop von 0-650)
+for(size_t i=0;i<self->weights->length_of_data;i++)
+{
+self->weights->data[i] = self->weights->data[i] - lernrate * self->gradients->data[i];
+}
+//dann bias (loop von 650-700 z.B.)
+for(size_t i=self->weights->length_of_data;i<(self->weights->length_of_data+self->bias->length_of_data);i++)
+{
+self->bias->data[i - self->weights->length_of_data] = self->weights->data[i - self->weights->length_of_data] - lernrate * self->gradients->data[i];
+}
+}
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias, float *const lernrate)
 {
     self->weights->data[0] = self->weights->data[0] - *lernrate * *theta;

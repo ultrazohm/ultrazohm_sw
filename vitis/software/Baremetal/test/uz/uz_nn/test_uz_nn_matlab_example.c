@@ -205,10 +205,16 @@ void test_uz_nn_matlab(void)
        struct uz_matrix_t refmatrix={0};
        uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
        float msetest =  uz_nn_mse(output,refout);
+       float * mse = &msetest;
        float result=uz_matrix_get_element_zero_based(output,0,0);
-       uz_nn_calc_gradients(test,&reference_output[0],input);
-       printf("result ist = %.4f \n", result);
-       printf("mse von result ist = %.4f \n", msetest);
+       printf("result ist = %.8f \n", result);
+       printf("mse von result ist = %.8f \n", msetest);
+       uz_nn_backward_pass(test,mse,input);
+       float lernrate = 0.001f;
+       float *lr = &lernrate;
+       uz_nn_gradient_descent(test,lernrate);
+//       uz_nn_calc_gradients(test,&reference_output[0],input);
+
 //     uz_nn_update(test,avgtheta,avgbias,lernrate);
      clock_t end = clock();
 //     Funktion die die daten exportiert und in die .csv Dateien überschreibt

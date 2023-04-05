@@ -1,4 +1,4 @@
-.. _uz_FOC_DutyCycle:
+.. _uz_CurrentControl_DutyCycle:
 
 ====================
 DutyCycle generation
@@ -7,7 +7,7 @@ DutyCycle generation
 .. doxygenstruct:: uz_DutyCycle_t
   :members:
 
-.. doxygenfunction:: uz_FOC_generate_DutyCycles
+.. doxygenfunction:: uz_CurrentControl_generate_DutyCycles
 
 Example
 =======
@@ -19,7 +19,7 @@ Example
   int main(void) {
      float V_dc_volts = 24.0f;
      struct uz_3ph_abc_t UVW = {.a = 0.0f, .b = -0.866f, .c = 0.866f};
-     struct uz_DutyCycle_t output = uz_FOC_generate_DutyCycles(UVW, V_dc_volts);
+     struct uz_DutyCycle_t output = uz_CurrentControl_generate_DutyCycles(UVW, V_dc_volts);
   }
 
 Description

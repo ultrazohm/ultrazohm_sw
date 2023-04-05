@@ -18,16 +18,16 @@
 
 static uz_3ph_dq_t uz_limit_dq_prio_d_axis(uz_3ph_dq_t v_input_Volts, float V_SV_max);
 static uz_3ph_dq_t uz_limit_dq_prio_q_axis(uz_3ph_dq_t v_input_Volts, float V_SV_max);
-uz_3ph_dq_t uz_FOC_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_volts, float omega_el_rad_per_sec, uz_3ph_dq_t i_actual_Ampere, bool* ext_clamping){
+uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_volts, float max_modulation_index, float omega_el_rad_per_sec, uz_3ph_dq_t i_actual_Ampere, bool* ext_clamping){
 	uz_assert_not_NULL(ext_clamping);
 	uz_assert(V_dc_volts > 0.0f);
 	uz_3ph_dq_t v_output_Volts = {0};
-  	float V_SV_max =V_dc_volts / sqrtf(3.0f);
+  	float V_SV_max =V_dc_volts * max_modulation_index;
 	float V_SV_abs = sqrtf(powf(v_input_Volts.d, 2.0f)  + powf(v_input_Volts.q, 2.0f) );
 	bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_actual_Ampere.q));
 
 	if ( V_SV_abs > V_SV_max ){
-		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_dq_t
+		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_3ph_dq_t
 		*ext_clamping = true;
 		if (if_omega_equal_q_current == true) {
 			v_output_Volts = uz_limit_dq_prio_d_axis(v_input_Volts, V_SV_max);

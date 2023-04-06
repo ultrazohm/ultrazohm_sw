@@ -113,7 +113,7 @@ Creating Fresh Project
     *  Deactivate the second PL-Clock
         Re-customize IP → Clock Configuration → Output Clocks → Low Power Domain Clocks → PL Fabric Clocks → Deactivate PL1
 
-    .. tip:: Use the provided tcl_Script ``vivado_UZ_K26_ZynqMP_Presets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
+    .. tip:: Use the provided tcl_Script ``kria_vivado_K26_ZynqMP_Presets.tcl`` when configuring the PS. This script can be used while configuring the IP-Core, click on the top left "Presets" and "Apply Configuration"
 
 #.  After applying the settings for the PS, the UltraZohm-Hardware can be implemented. To accelerate the reconstruction of the whole Block-Design, there were TCL-Scripts for each UZ-Hierarchy available.
 
@@ -207,7 +207,7 @@ Project with TCL Scripts:
         source ../tcl_scripts/k26sys_ps_generation.tcl 
         source ../tcl_scripts/k26sys_hd_generation.tcl
 
-#. Double check the settings for PS, the most up-to-date Preset file should be ``kria_vivado_UZ_K26_ZynqMP_Presets.tcl``
+#. Double check the settings for PS, the most up-to-date Preset file should be ``kria_vivado_K26_ZynqMP_Presets.tcl``
 
 #. Create VHDL wrapper for `k26sys` and set as top manually. 
 

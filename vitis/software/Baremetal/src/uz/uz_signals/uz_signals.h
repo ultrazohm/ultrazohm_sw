@@ -1,3 +1,6 @@
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz_Transformation/uz_Transformation.h"
+
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
 
@@ -72,4 +75,8 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  * @return float unfiltered signal
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+
+struct uz_DutyCycle_t uz_sinusoidal_pwm(uz_3ph_abc_t input, float V_dc_volts);
+struct uz_DutyCycle_2x3ph_t uz_sinusoidal_pwm_6ph(uz_6ph_abc_t input, float V_dc_volts);
+
 #endif // UZ_SIGNALS_H

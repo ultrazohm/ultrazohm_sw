@@ -4,6 +4,8 @@
 
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz_Transformation/uz_Transformation.h"
 
 void setUp(void)
 {

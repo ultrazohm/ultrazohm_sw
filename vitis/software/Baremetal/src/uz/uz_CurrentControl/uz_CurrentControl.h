@@ -27,17 +27,6 @@ struct uz_CurrentControl_config {
 };
 
 /**
- * @brief Struct for the three DutyCycles for a three-phase-system
- * 
- */
-struct uz_DutyCycle_t {
-	float DutyCycle_U; /**< DutyCycle for Phase U */
-	float DutyCycle_V; /**< DutyCycle for Phase V */
-	float DutyCycle_W; /**< DutyCycle for Phase W */
-};
-
-
-/**
  * @brief Object definition for CurrentControl
  *
  */
@@ -140,12 +129,4 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
-/**
- * @brief Generates one sample for a continuous sinusoidal PWM (SPWM)  
- * 
- * @param input uz_3ph_abc_t struct 
- * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
- */
-struct uz_DutyCycle_t uz_CurrentControl_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts);
 #endif // UZ_CURRENTCONTROL_H

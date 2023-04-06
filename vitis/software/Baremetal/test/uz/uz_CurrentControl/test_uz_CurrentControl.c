@@ -248,21 +248,6 @@ void test_uz_CurrentControl_get_ext_clamping_output(void){
     TEST_ASSERT_EQUAL_INT(1,uz_CurrentControl_get_ext_clamping(instance));
 }
 
-void test_uz_CurrentControl_generate_DutyCycles_output(void) {
-    struct uz_3ph_abc_t UVW = {.a=10.0f, .b=0.0f, .c=-6.0f};
-    struct uz_DutyCycle_t output = uz_CurrentControl_generate_DutyCycles(UVW, V_dc_volts);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.91667f, output.DutyCycle_U);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.5f, output.DutyCycle_V);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 0.25f, output.DutyCycle_W);
-}
-
-void test_uz_CurrentControl_generate_DutyCycles_limit(void) {
-    struct uz_3ph_abc_t UVW = {.a = 30.0f, .b = 35.32f, .c = -25.0f};
-    struct uz_DutyCycle_t output = uz_CurrentControl_generate_DutyCycles(UVW, V_dc_volts);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_U);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.DutyCycle_V);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, output.DutyCycle_W);
-}
 void test_uz_CurrentControl_sample_no_decoupling(void) {
     config.decoupling_select = no_decoupling;
     config.config_PMSM.Ld_Henry = 0.0f;

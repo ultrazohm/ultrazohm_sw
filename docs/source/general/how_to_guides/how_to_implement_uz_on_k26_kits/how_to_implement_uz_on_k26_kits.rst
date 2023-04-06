@@ -42,9 +42,9 @@ Creating Fresh Project
 
 #.  Create a fresh project in Vivado 2022.2
 
-#.  When you were asked for the Default Part, select the board which you have.
-
-    #. For `Kria KR260 Robotics Starter Kit SOM`  
+#.  When you were asked for the Default Part, select the board which you have. 
+    
+    * For `Kria KR260 Robotics Starter Kit SOM`  
 
     .. _Boardselection_KR260:
 
@@ -55,7 +55,11 @@ Creating Fresh Project
         Boardselection UZ-KR260.
 
 
-    #. For `Kria KV260 Robotics Starter Kit SOM` 
+
+
+
+
+    * For `Kria KV260 Robotics Starter Kit SOM` 
 
     .. _Boardselection_KV260:
 
@@ -156,7 +160,7 @@ Creating Fresh Project
         create_hier_cell_uz_digital_adapter hier_0 uz_digital_adapter
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_digital_adapter]
        
-#.  Don't recreate the ``uz_analog_adapter`` since we don't have analog-Interfaces with the KR260.
+#.  Don't recreate the ``uz_analog_adapter`` since we don't have analog-Interfaces with the kits.
 #.  Delete every digital Slot inside ``uz_digital_adapter`` except D1.
     We only want to use the 2-LvL-PWM-Cores in this How-To.
 #.  Manually route the created hierarchies to the PS. Use the UltraZohm-Main-Project as a template.
@@ -200,8 +204,10 @@ Project with TCL Scripts:
 
     .. code-block::
 
-        source ../tcl_scripts/k26sys_ps_generaton.tcl 
-        source ../tcl_scripts/k26sys_hd_generaton.tcl
+        source ../tcl_scripts/k26sys_ps_generation.tcl 
+        source ../tcl_scripts/k26sys_hd_generation.tcl
+
+#. Double check the settings for PS, the most up-to-date Preset file should be ``vivado_UZ_K26_ZynqMP_Presets.tcl``
 
 #. Create VHDL wrapper for `k26sys` and set as top manually. 
 
@@ -299,7 +305,7 @@ This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII
 
 #. Manually add the Launch-configs. Copy the .launches-fils from the software-folder to
 
-    * ``\vitis_kria\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
+    * ``\vitis\workspace\.metadata\.plugins\org.eclipse.debug.core\.launches\``
 
 #. Restart Vitis to make the. launches-files accessible
 #. Build both C-Projects 

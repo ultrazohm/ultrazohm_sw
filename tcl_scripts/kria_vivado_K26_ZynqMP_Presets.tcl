@@ -1,5 +1,5 @@
 proc getPresetInfo {} {
-  return [dict create name {UZ_K26_ZynqMP_PResets} description {UZ_K26_ZynqMP_PResets}  vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 display_name {UZ_K26_ZynqMP_PResets} ]
+  return [dict create name {kria_vivado_K26_ZynqMP_Presets} description {kria_vivado_K26_ZynqMP_Presets}  vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 display_name {kria_vivado_K26_ZynqMP_Presets} ]
 }
 
 proc validate_preset {IPINST} { return true }

@@ -207,7 +207,7 @@ Project with TCL Scripts:
         source ../tcl_scripts/k26sys_ps_generation.tcl 
         source ../tcl_scripts/k26sys_hd_generation.tcl
 
-#. Double check the settings for PS, the most up-to-date Preset file should be ``vivado_UZ_K26_ZynqMP_Presets.tcl``
+#. Double check the settings for PS, the most up-to-date Preset file should be ``kria_vivado_UZ_K26_ZynqMP_Presets.tcl``
 
 #. Create VHDL wrapper for `k26sys` and set as top manually. 
 

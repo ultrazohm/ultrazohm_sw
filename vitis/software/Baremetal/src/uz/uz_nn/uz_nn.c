@@ -16,6 +16,7 @@
 
 #include "../uz_global_configuration.h"
 #if UZ_NN_MAX_INSTANCES > 0U
+#include <stdio.h>
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_nn.h"
@@ -182,7 +183,24 @@ void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const 
     const float *lernratelayer0 = &Lernrate;
     uz_nn_layer_update(self->layer[0],gradient1,gradient2,lernratelayer0);
 }
-void uz_nn_export(uz_nn_t *self)
+
+void uz_nn_mat_export(uz_nn_t *self)
+{
+        char *fname = "test/uz/uz_nn/matlab_weights/c_layer1_weights.csv";
+        uz_nn_layer_matw_export(self->layer[0], fname);
+        char *fname1 = "test/uz/uz_nn/matlab_weights/c_layer2_weights.csv";
+        uz_nn_layer_matw_export(self->layer[1], fname1);
+        char *fname2 = "test/uz/uz_nn/matlab_weights/c_layer3_weights.csv";
+        uz_nn_layer_matw_export(self->layer[2], fname2);
+        char *fname3 = "test/uz/uz_nn/matlab_weights/c_layer1_bias.csv";
+        uz_nn_layer_matb_export(self->layer[0], fname3);
+        char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
+        uz_nn_layer_matb_export(self->layer[1], fname4);
+        char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
+        uz_nn_layer_matb_export(self->layer[2], fname5);
+}
+
+void uz_nn_schroeder_export(uz_nn_t *self)
 {
     // Zeige Gewichte nach dem Trainingsschritt an
     uz_matrix_t* weightshelper = uz_nn_get_weight_matrix(self,1);

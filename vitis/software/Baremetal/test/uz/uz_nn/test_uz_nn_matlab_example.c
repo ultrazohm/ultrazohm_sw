@@ -207,16 +207,17 @@ void test_uz_nn_matlab(void)
        float msetest =  uz_nn_mse(output,refout);
        float * mse = &msetest;
        float result=uz_matrix_get_element_zero_based(output,0,0);
-       printf("result ist = %.8f \n", result);
-       printf("mse von result ist = %.8f \n", msetest);
+       printf("result ist step 0= %.8f \n", result);
+       printf("mse von result step 0 ist = %.8f \n", msetest);
        uz_nn_backward_pass(test,mse,input);
        float lernrate = 0.001f;
        float *lr = &lernrate;
        uz_nn_gradient_descent(test,lernrate);
-//       uz_nn_calc_gradients(test,&reference_output[0],input);
-
-//     uz_nn_update(test,avgtheta,avgbias,lernrate);
-     clock_t end = clock();
+//Test 1: Überprüfen der ersten 5 weights im ersten layer: Extrahieren der Weights aus layer 1
+// im debugger w1-w3 und b1-b3 anschauen
+// exportieren nach matlab
+       uz_nn_mat_export(test);
+       clock_t end = clock();
 //     Funktion die die daten exportiert und in die .csv Dateien überschreibt
 //     uz_nn_export(test);
 //     /*Do something*/

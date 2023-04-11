@@ -210,7 +210,7 @@ void test_uz_nn_schroeder(void)
     uz_nn_update(test,avgtheta,avgbias,lernrate);
     
     //Funktion die die daten exportiert und in die .csv Dateien überschreibt
-    uz_nn_export(test);
+    uz_nn_schroeder_export(test);
     uz_matrix_t* check = uz_nn_get_output_from_each_layer(test,1);
     clock_t end = clock();
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;

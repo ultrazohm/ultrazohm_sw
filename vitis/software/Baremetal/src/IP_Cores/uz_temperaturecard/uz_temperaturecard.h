@@ -359,5 +359,23 @@ void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);
  */
 void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);
 
+/**
+ * @brief reads the temperatures and additional data from one specified channel
+ *
+ * @param self Pointer to driver instance
+ * @param channel specify channel to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
+ * @return copy of the specified channel data
+ */
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channel);
+
+/**
+ * @brief Averages all valid channels in the specified range. If one channel gets invalid during measurement, average will not be affected since it will no longer be included in the calculation.
+ *
+ * @param self Pointer to driver instance
+ * @param lower lowest channel to include (minimum 0)
+ * @param upper highest channel to include (maximum 19)
+ * @return average of all valid temperatures in specified channel range
+ */
+float uz_TempCard_IF_average_temperature_for_valid(uz_temperaturecard_OneGroup channeldata, const uint16_t lower, const uint16_t upper);
 
 #endif // UZ_TEMPERATURECARD_H

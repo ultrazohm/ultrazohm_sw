@@ -146,4 +146,42 @@ void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self){
 
 }
 
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channel){
+	uz_assert_not_NULL(self);
+	uz_temperaturecard_OneGroup out = {0};
+	switch (channel){
+		case 'a':
+		case 'A':{
+			out = self->Channel_A;
+			break;}
+		case 'b':
+		case 'B':{
+			out = self->Channel_B;
+			break;}
+		case 'c':
+		case 'C':{
+			out = self->Channel_C;
+			break;}
+		default:{
+			break;}
+	}
+	return out;
+}
+
+float uz_TempCard_IF_average_temperature_for_valid(uz_temperaturecard_OneGroup channeldata, const uint16_t lower, const uint16_t upper){
+	uz_assert(lower <= upper);
+	uz_assert(upper < 20U);
+	float sum = 0.0f;
+	float valid = 0.0f;
+	for(int i=lower; i<=upper; i++){
+		sum += channeldata.temperature[i]*(channeldata.Channels_Valid[i]==1);
+		valid += (channeldata.Channels_Valid[i]==1);
+	}
+	if(valid != 0.0f){
+		return (sum/valid);
+	}else{
+		return (-333.3f);
+	}
+}
+
 #endif

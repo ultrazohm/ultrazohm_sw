@@ -360,7 +360,7 @@ void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);
 void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);
 
 /**
- * @brief reads the temperatures and additional data from one specified channel
+ * @brief Reads the temperatures and additional data from one specified channel
  *
  * @param self Pointer to driver instance
  * @param channel specify channel to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)

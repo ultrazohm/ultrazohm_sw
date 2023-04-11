@@ -72,6 +72,10 @@ Operation
 
 .. doxygenfunction:: uz_TempCard_IF_MeasureTemps_cyclic
 
+.. doxygenfunction:: uz_TempCard_IF_get_channel
+
+.. doxygenfunction:: uz_TempCard_IF_average_temperature_for_valid
+
 How the driver could be used
 ----------------------------
 This library provide an easy way to use the UZ_Temperature_Card.
@@ -170,6 +174,55 @@ To get the temperature value, a direct access to the Global_Data is needed.
     ...
        // More ISR-Stuff
    };
+
+
+Example
+-------
+In this example the temperaturecard is used to read six winding temperatures from an electric machine which uses PT100 sensors.
+Since the mean value is of interest and non-valid values (e.g. due to EMI) should not make the average unusable, a specific averaging function is used.
+
+.. code-block:: c
+  :caption: ``main.c``
+
+   // pre-loop
+   #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+   uz_temperaturecard_t* uz_Tempcard = NULL;
+   struct uz_temperaturecard_config_t t_config = {
+      .base_address = XPAR_UZ_USER_TEMP_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
+      .ip_clk_frequency_Hz = 100000000,
+      .Sample_Freq = 100,
+      .Configdata_A = {0},
+      .Configdata_A[1]  = 0xE80FA000,
+      .Configdata_A[3]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_A[5]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_A[7]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_A[9]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_A[11] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_A[13] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+      .Configdata_B = {0},
+      .Configdata_C = {0}};
+
+   // in switch-case
+   case init_ip_cores:
+      // uz tempcard
+      uz_Tempcard = uz_temperaturecard_init(t_config);
+      uz_TempCard_IF_Reset(uz_Tempcard);
+      uz_TempCard_IF_Start(uz_Tempcard);
+
+
+.. code-block:: c
+  :caption: ``isr.c``
+
+   // pre-loop
+   #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+   extern uz_temperaturecard_t* uz_Tempcard;
+   uz_temperaturecard_OneGroup channel_A_data;
+   float average = 0.0f;
+
+   // in isr
+   uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
+   channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
+   average = uz_TempCard_IF_average_temperature_for_valid(channel_A_data, 0U, 13U);
 
 
 Designed by 

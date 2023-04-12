@@ -101,7 +101,8 @@ Example
         .decoupling_select = linear_decoupling,
         .config_PMSM = config_PMSM,
         .config_id = config_id,
-        .config_iq = config_iq
+        .config_iq = config_iq,
+        .max_modulation_index = 1.0f / sqrtf(3.0f)
      };
   }
 

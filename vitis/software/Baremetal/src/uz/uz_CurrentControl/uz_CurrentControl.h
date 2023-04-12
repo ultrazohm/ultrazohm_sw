@@ -2,15 +2,9 @@
 #define UZ_CURRENTCONTROL_H
 
 #pragma once
-#include "../uz_HAL.h"
 #include "../uz_piController/uz_piController.h"
-#include "../uz_signals/uz_signals.h"
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
-#include "uz_linear_decoupling.h"
-#include "uz_space_vector_limitation.h"
-#include <math.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
@@ -24,23 +18,13 @@ enum uz_CurrentControl_decoupling_select {
  */
 struct uz_CurrentControl_config {
 	enum uz_CurrentControl_decoupling_select decoupling_select; /**< CurrentControl decoupling selector \n
-													0 = no_decoupling \n
-													1 = linear_decoupling*/
+													 no_decoupling \n
+													 linear_decoupling*/
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
-
+	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
-/**
- * @brief Struct for the three DutyCycles for a three-phase-system
- * 
- */
-struct uz_DutyCycle_t {
-	float DutyCycle_U; /**< DutyCycle for Phase U */
-	float DutyCycle_V; /**< DutyCycle for Phase V */
-	float DutyCycle_W; /**< DutyCycle for Phase W */
-};
-
 
 /**
  * @brief Object definition for CurrentControl
@@ -132,8 +116,8 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
  * 
  * @param self uz_CurrentControl_t instance
  * @param decoupling_select enum CurrentControl decoupling selector \n
-							0 = no_decoupling \n
-							1 = linear_decoupling
+							 no_decoupling \n
+							 linear_decoupling
  */
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select);
 
@@ -145,12 +129,4 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
-/**
- * @brief Generates one sample for a continuous sinusoidal PWM (SPWM)  
- * 
- * @param input uz_3ph_abc_t struct 
- * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @return struct uz_DutyCycle_t outputs the corresponding DutyCycle for each phase
- */
-struct uz_DutyCycle_t uz_CurrentControl_generate_DutyCycles(uz_3ph_abc_t input, float V_dc_volts);
 #endif // UZ_CURRENTCONTROL_H

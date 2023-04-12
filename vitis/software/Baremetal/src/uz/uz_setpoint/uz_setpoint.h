@@ -7,7 +7,8 @@
 
 /*! enum for selection of machine type */
 enum uz_Setpoint_motor_type {
-	SMPMSM = 0, IPMSM
+	SMPMSM = 0,
+    IPMSM
 };
 
 /*! enum for selection of control type */
@@ -29,10 +30,10 @@ struct uz_SetPoint_config {
 	float id_ref_Ampere; 	/**< manual i_d reference current. Will be added on top of the MTPA d-current. Unused, if FW is active. */
 	bool is_field_weakening_enabled; /**< flag to enable field_weaking. True = enabled */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
-											0 = SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
-											1 = IPMSM -> interior PMSM (Ld=/=Lq) */
+											SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
+											IPMSM -> interior PMSM (Ld=/=Lq) */
 	enum uz_Setpoint_control_type control_type; /**< Selection for which control type is used \n
-											0 = FOC -> field oriented control \n */							
+											FOC -> field oriented control \n */							
 };
 
 /**

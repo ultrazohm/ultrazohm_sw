@@ -6,13 +6,13 @@
 static struct uz_inverter_adapter_config_t inverter_config_D1 = {
 		.base_address = XPAR_UZ_USER_UZ_INVERTER_ADAPTER_D1_UZ_D_INVERTER_ADAPTER_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000,
-		.linear_interpolation_params = {1.0f, 1.0f}
+		.linear_interpolation_params = {-289.01f, 211.72f}
 };
 
 static struct uz_inverter_adapter_config_t inverter_config_D2 = {
 		.base_address = XPAR_UZ_USER_UZ_INVERTER_ADAPTER_D2_UZ_D_INVERTER_ADAPTER_0_BASEADDR,
 		.ip_clk_frequency_Hz = 100000000,
-		.linear_interpolation_params = {1.0f, 1.0f}
+		.linear_interpolation_params = {-289.01f, 211.72f}
 };
 
 static struct uz_inverter_adapter_outputs_t inverter_outputs_D1 = {

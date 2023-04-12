@@ -237,7 +237,7 @@ self->weights->data[i] = self->weights->data[i] - lernrate * self->gradients->da
 //dann bias (loop von 650-700 z.B.)
 for(size_t i=self->weights->length_of_data;i<(self->weights->length_of_data+self->bias->length_of_data);i++)
 {
-self->bias->data[i - self->weights->length_of_data] = self->weights->data[i - self->weights->length_of_data] - lernrate * self->gradients->data[i];
+self->bias->data[i - self->weights->length_of_data] = self->bias->data[i - self->weights->length_of_data] - lernrate * self->gradients->data[i];
 }
 // sinnvoller wäre es verschiedene Speicher anzulegen, dann kann man nicht durcheinander kommen!
 }
@@ -245,16 +245,17 @@ self->bias->data[i - self->weights->length_of_data] = self->weights->data[i - se
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)
 {
     FILE *f = fopen(fname, "w");
-    for (uint32_t i = 0; i< self->weights->length_of_data - 1U; i++)
+    for (uint32_t i = 0; i< self->weights->length_of_data; i++)
     {
     fprintf(f, "%.6f,", self->weights->data[i]); 
     } 
   fclose(f);
 }
+
 void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname)
 {
     FILE *f = fopen(fname, "w");
-    for (uint32_t i = 0; i< self->bias->length_of_data - 1U; i++)
+    for (uint32_t i = 0; i< self->bias->length_of_data; i++)
     {
     fprintf(f, "%.6f,", self->bias->data[i]); 
     } 

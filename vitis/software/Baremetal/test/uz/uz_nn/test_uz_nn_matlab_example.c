@@ -16,8 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 1
-#define NUMBEROFTRAININGSDATA 252
+#define NUMBER_OF_EPOCHS 5
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -192,27 +191,29 @@ void tearDown(void)
 
 void test_uz_nn_matlab(void)
   {
-     clock_t start = clock();
-    // for (size_t i = 0; i < NUMBEROFTRAININGSDATA; i++)
-    // {
-       uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
-       struct uz_matrix_t x_matrix={0};
-       uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,13);
+      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+      struct uz_matrix_t refmatrix={0};
+      uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+      struct uz_matrix_t x_matrix={0};
+      uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,13);
+      clock_t start = clock();
+       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+       {
        uz_nn_ff(test,input);
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
        // MSE Berechnen für Trainingsdatenpaar
-       struct uz_matrix_t refmatrix={0};
-       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
-       float msetest =  uz_nn_mse(output,refout);
-       float * mse = &msetest;
+       float msetest [NUMBER_OF_EPOCHS];
+       msetest[i] =  uz_nn_mse(output,refout);
+       float * mse = &msetest[i];
        float result=uz_matrix_get_element_zero_based(output,0,0);
        printf("result ist step 0= %.8f \n", result);
-       printf("mse von result step 0 ist = %.8f \n", msetest);
+       printf("mse von result step 0 ist = %.8f \n", msetest[i]);
        uz_nn_backward_pass(test,mse,input);
-       float lernrate = 0.001f;
+       float lernrate = 5.0f;
        float *lr = &lernrate;
        uz_nn_gradient_descent(test,lernrate);
+       }
 //Test 1: Überprüfen der ersten 5 weights im ersten layer: Extrahieren der Weights aus layer 1
 // im debugger w1-w3 und b1-b3 anschauen
 // exportieren nach matlab

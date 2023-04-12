@@ -6,6 +6,8 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -83,6 +85,10 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	struct uz_resolverIP_position_velocity_t theta_el_omega_el_D5_1;
+	struct uz_resolverIP_position_velocity_t theta_el_omega_el_D5_2;
+	struct uz_inverter_adapter_outputs_t inverter_D1_status;
+	struct uz_inverter_adapter_outputs_t inverter_D2_status;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -110,6 +116,10 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* uz_d_inverter_D1;
+	uz_inverter_adapter_t* uz_d_inverter_D2;
+	uz_resolverIP_t* uz_d_resolver_D5_1;
+	uz_resolverIP_t* uz_d_resolver_D5_2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

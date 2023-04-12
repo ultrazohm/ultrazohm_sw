@@ -89,6 +89,11 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.uz_d_resolver_D5_1 = initialize_resolver_D5_1();
+            Global_Data.objects.uz_d_resolver_D5_2 = initialize_resolver_D5_2();
+            Global_Data.objects.uz_d_inverter_D1 = initialize_inverter_D1();
+            Global_Data.objects.uz_d_inverter_D2 = initialize_inverter_D2();
+
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialization_chain = print_msg;
             break;

@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
+
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -53,8 +55,34 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    // read angel and speed from both resolvers
+    Global_Data.av.theta_el_omega_el_D5_1 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_1);
+    Global_Data.av.theta_el_omega_el_D5_2 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_2);
+    // update status of both inverters
+    uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D1);
+    uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D2);
+    // assign status to Global_Data
+    Global_Data.av.inverter_D1_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_D1);
+    Global_Data.av.inverter_D2_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_D2);
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    // if "Stop"
+    if (current_state==idle_state)
+    {
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, false);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, false);
+    }
+
+    // if "Enable System"
+    if (current_state==running_state)
+    {
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, true);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, true);
+    }
+
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

@@ -9,15 +9,6 @@ Estimate Theta with "wrong" method.
 Use estimated theta in code below and algorithm will find true theta in that range.
 
 
-.. doxygenstruct:: uz_encoder_offset_estimation_config
-  :members: 
-
-.. doxygenfunction:: uz_encoder_offset_estimation_init
-
-.. doxygenfunction:: uz_encoder_offset_estimation_step
-
-.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
-
 
 .. code-block:: c
     :caption: main

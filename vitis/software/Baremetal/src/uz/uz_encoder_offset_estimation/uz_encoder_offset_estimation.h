@@ -18,6 +18,10 @@ struct uz_encoder_offset_estimation_config {
     float setpoint_current;     /**< Setpoint current for tests */
 };
 
+/**
+ * @brief Object definition for generating a PI-Controller
+ *
+ */
 typedef struct uz_encoder_offset_estimation_t uz_encoder_offset_estimation_t;
 
 /**

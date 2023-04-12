@@ -31,7 +31,9 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "../uz/uz_math_constants.h"
 
+#define		RAD_PER_S_2_RPM		30.0f/UZ_PIf
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -55,9 +57,14 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    // read angel and speed from both resolvers
+    // read electrical angle and speed from both resolvers
     Global_Data.av.theta_el_omega_el_D5_1 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_1);
     Global_Data.av.theta_el_omega_el_D5_2 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_2);
+    // read mechanical angle and speed from both resolvers
+    Global_Data.av.theta_mech_omega_mech_D5_1 = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_1);
+    Global_Data.av.theta_mech_omega_mech_D5_2 = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_2);
+    Global_Data.av.speed_rpm_d5_1 = Global_Data.av.theta_mech_omega_mech_D5_1.velocity * RAD_PER_S_2_RPM;
+    Global_Data.av.speed_rpm_d5_2 = Global_Data.av.theta_mech_omega_mech_D5_2.velocity * RAD_PER_S_2_RPM;
     // update status of both inverters
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D1);
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D2);

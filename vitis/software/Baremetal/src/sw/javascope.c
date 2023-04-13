@@ -65,6 +65,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia_d1] 			= &data->av.i_a_d1;
 	js_ch_observable[JSO_ib_d1] 			= &data->av.i_b_d1;
 	js_ch_observable[JSO_ic_d1] 			= &data->av.i_c_d1;
+	js_ch_observable[JSO_ia_d2] 			= &data->av.i_a_d2;
+	js_ch_observable[JSO_ib_d2] 			= &data->av.i_b_d2;
+	js_ch_observable[JSO_ic_d2] 			= &data->av.i_c_d2;
 	js_ch_observable[JSO_va_d1] 			= &data->av.v_a_d1;
 	js_ch_observable[JSO_vb_d1] 			= &data->av.v_b_d1;
 	js_ch_observable[JSO_vc_d1] 			= &data->av.v_c_d1;
@@ -92,11 +95,14 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.v_d_d1);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.v_q_d1);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d_d1);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q_d1);
+	js_slowDataArray[JSSD_FLOAT_ud_d1] 			        = &(data->av.v_d_d1);
+	js_slowDataArray[JSSD_FLOAT_uq_d1] 			        = &(data->av.v_q_d1);
+	js_slowDataArray[JSSD_FLOAT_id_d1] 			        = &(data->av.i_d_d1);
+	js_slowDataArray[JSSD_FLOAT_iq_d1] 			        = &(data->av.i_q_d1);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.speed_rpm_d5_1);
+	js_slowDataArray[JSSD_FLOAT_v_dc_d1]				= &(data->av.v_dc_d1);
+	js_slowDataArray[JSSD_FLOAT_temp_inv_d1]			= &(data->av.mean_temp_inv_d1);
+	js_slowDataArray[JSSD_FLOAT_temp_inv_d2]			= &(data->av.mean_temp_inv_d2);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

@@ -67,6 +67,8 @@ typedef struct _actualValues_ {
 	float v_c_d2;
 	float v_dc_d1;
 	float v_dc_d2;
+	float i_dc_d1;
+	float i_dc_d2;
 	float i_d_d1;
 	float i_q_d1;
 	float i_d_d2;
@@ -83,6 +85,8 @@ typedef struct _actualValues_ {
 	struct uz_resolverIP_position_velocity_t theta_mech_omega_mech_D5_2;
 	struct uz_inverter_adapter_outputs_t inverter_D1_status;
 	struct uz_inverter_adapter_outputs_t inverter_D2_status;
+	float mean_temp_inv_d1;
+	float mean_temp_inv_d2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

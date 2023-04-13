@@ -43,7 +43,7 @@ void uz_phy_reset(void)
 	uz_gpio_set_enable_output(&MIO_PHY1_Reset, false);
 
 
-	xil_printf("PHY reset successful \n\r");
+	uz_printf("PHY reset successful \n\r");
 }
 
 static void uz_phy_reset_init() {

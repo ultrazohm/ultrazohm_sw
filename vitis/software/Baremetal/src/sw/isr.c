@@ -74,7 +74,7 @@ uz_3ph_alphabeta_t voltage_stationary_zero = {0};
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
 
-
+// encoder offset
 
 // Inverter, PWM etc.:
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;

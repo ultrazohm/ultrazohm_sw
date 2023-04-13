@@ -95,8 +95,8 @@ int JavaScope_initalize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_ud_d1] 			        = &(data->av.v_d_d1);
-	js_slowDataArray[JSSD_FLOAT_uq_d1] 			        = &(data->av.v_q_d1);
+	js_slowDataArray[JSSD_FLOAT_vd_d1] 			        = &(data->av.v_d_d1);
+	js_slowDataArray[JSSD_FLOAT_vq_d1] 			        = &(data->av.v_q_d1);
 	js_slowDataArray[JSSD_FLOAT_id_d1] 			        = &(data->av.i_d_d1);
 	js_slowDataArray[JSSD_FLOAT_iq_d1] 			        = &(data->av.i_q_d1);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.speed_rpm_d5_1);

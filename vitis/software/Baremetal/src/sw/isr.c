@@ -75,6 +75,11 @@ uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_alphabeta_t m_6ph_alphabeta_currents = {0};
 
 // encoder offset
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+uz_6ph_dq_t transformed_voltage = {0};
+uz_3ph_dq_t setpoint_current = {0};
+uz_3ph_dq_t ref_voltage_3ph = {0};
+extern uz_encoder_offset_estimation_t* encoder_offset_obj;
 
 // Inverter, PWM etc.:
 extern struct uz_d_gan_inverter_t* gan_inverter_D3;
@@ -89,7 +94,7 @@ float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
 
 // controller
-extern uz_CurrentControl_t* CC_instance_1;
+extern uz_CurrentControl_t* CC_instance;
 extern uz_CurrentControl_t* CC_instance_2;
 extern uz_SpeedControl_t* Speed_instace;
 extern uz_SetPoint_t* sp_instance;
@@ -138,6 +143,10 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;// ParaID_Data.ElectricalID_Output->thetaOffset;
 	//ParaID ende
 
+	//theta off
+	transformed_voltage = uz_transformation_asym30deg_6ph_abc_to_dq(u_phase, Global_Data.av.theta_elec - Global_Data.av.theta_offset);
+	Global_Data.av.U_d = transformed_voltage.d;
+	Global_Data.av.U_q = transformed_voltage.q;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Phase current measurement and various transformations (dq, VSD)					////
@@ -248,11 +257,17 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (current_state==control_state)
     {
-    	//ParaID
-		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-		//ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), 36.0f);
+    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){
+        	setpoint_current = uz_encoder_offset_estimation_step(encoder_offset_obj);
+    	}else{
+    		setpoint_current.d = 0.0f;
+    		setpoint_current.q = 0.0f;
+    	}
+    	ref_voltage_3ph = uz_CurrentControl_sample(CC_instance, setpoint_current, ParaID_Data.ActualValues.i_dq, 36.0f, omega_el_rad_per_sec);
+    	controller_out.d = ref_voltage_3ph.d;
+    	controller_out.q = ref_voltage_3ph.q;
+
+		ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), 36.0f);
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;

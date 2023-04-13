@@ -18,8 +18,8 @@
 #include "../uz_global_configuration.h"
 #if UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES > 0
 
-#define OFFSET_RANGE_RAD 0.5f
-#define OFFSET_STEP_RAD 0.1f
+#define OFFSET_RANGE_RAD 0.25f
+#define OFFSET_STEP_RAD 0.01f
 #define OFFSET_ARRAYSIZE ((uint16_t) (2U*OFFSET_RANGE_RAD/OFFSET_STEP_RAD))
 #define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f
 #define OFFSET_DELAY_REACH_SPEED_SEC 1.0f
@@ -103,6 +103,7 @@ uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_enco
     self->setpoint_current = config.setpoint_current;
     self->encoderoffset_current_state_ll = encoderoffset_ll_init;
     self->encoderoffset_current_state_hl = init_theta;
+    self->actual->theta_offset = self->actual->theta_offset - OFFSET_RANGE_RAD;           // use initial offset minus the ranges lower end to start search
     self->i_reference_Ampere = zero_dq_struct;
 	return (self);
 }
@@ -110,9 +111,6 @@ uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_enco
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
     switch(self->encoderoffset_current_state_hl){
         case init_theta:{
-            self->theta_offset_inital = self->actual->theta_elec;                               // safe inital determined offset
-            self->actual->theta_offset = self->actual->theta_elec - OFFSET_RANGE_RAD;           // use initial offset minus the ranges lower end to start search                                                            
-            self->encoderoffset_current_state_ll = encoderoffset_ll_init;                       // set substatemachine back init
             self->encoderoffset_current_state_hl = positive_setpoint;                           // activate next state
             break;
         }

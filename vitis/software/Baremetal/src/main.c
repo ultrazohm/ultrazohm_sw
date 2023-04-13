@@ -97,7 +97,7 @@ struct uz_d_gan_inverter_config_t config_gan_inverter_D4 = {
 
 
 // controller
-uz_CurrentControl_t* CC_instance_1 = NULL;
+uz_CurrentControl_t* CC_instance = NULL;
 uz_CurrentControl_t* CC_instance_2 = NULL;
 uz_SpeedControl_t* Speed_instace = NULL;
 uz_SetPoint_t* sp_instance = NULL;
@@ -122,6 +122,16 @@ struct uz_SetPoint_config sp_config = {
 		.motor_type = SMPMSM,
 		.control_type = FOC
 };
+
+//theta off
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+struct uz_encoder_offset_estimation_config encoder_offset_cfg = {
+		.actual = &Global_Data.av,
+		.polepair = UZ_D5_MOTOR_POLE_PAIR_NUMBER,
+		.setpoint_current = 0.5f
+};
+uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;
+
 
 // Init: --------------------------------------
 
@@ -175,7 +185,7 @@ int main(void)
         	        	};
 
         	struct uz_CurrentControl_config cc_config_1 = {
-        	        .decoupling_select = linear_decoupling,
+        	        .decoupling_select = no_decoupling,
         	        .config_id = PI_config,
 					.config_iq = PI_config,
         	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
@@ -201,10 +211,15 @@ int main(void)
         	sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
 			Speed_instace = uz_SpeedControl_init(speed_config);
 			sp_instance = uz_SetPoint_init(sp_config);
-			CC_instance_1 = uz_CurrentControl_init(cc_config_1);
+			CC_instance = uz_CurrentControl_init(cc_config_1);
 			CC_instance_2 = uz_CurrentControl_init(cc_config_2);
 			res_instance_1 = uz_resonantController_init(resonant_config);
 			res_instance_2 = uz_resonantController_init(resonant_config);
+
+			//theta off
+			encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
+			Global_Data.av.theta_offset = 5.5f;
+
 
             Initialize_Timer();
             uz_SystemTime_init();

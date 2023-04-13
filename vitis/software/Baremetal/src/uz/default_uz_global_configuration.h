@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 /** ISR trigger source
  *
@@ -27,7 +27,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U

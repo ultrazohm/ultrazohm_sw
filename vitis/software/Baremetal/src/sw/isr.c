@@ -32,6 +32,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "../uz/uz_math_constants.h"
+#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 #define		RAD_PER_S_2_RPM		30.0f/UZ_PIf
 #define 	CURRENT_2_SI_AMPERE	12.5f
@@ -48,6 +49,16 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+struct uz_3ph_abc_t i_abc_d1 = {0.0f};
+struct uz_3ph_abc_t i_abc_d2 = {0.0f};
+struct uz_3ph_dq_t i_dq_d1 = {0.0f};
+struct uz_3ph_dq_t i_dq_d2 = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_d1 = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_d2 = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_d1 = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_d2 = {0.0f};
+struct uz_DutyCycle_t dutycyc_d1 = {0.0f};
+struct uz_DutyCycle_t dutycyc_d2 = {0.0f};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -112,6 +123,9 @@ void ISR_Control(void *data)
     {
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, false);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, false);
+    	// reset controllers
+    	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d1);
+    	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d2);
     }
 
     // if "Enable System"
@@ -125,6 +139,18 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	// park transformation of measured currents
+    	i_dq_d1 = uz_transformation_3ph_abc_to_dq(i_abc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
+    	i_dq_d2 = uz_transformation_3ph_abc_to_dq(i_abc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
+    	// get reference currents from Global_Data
+    	i_dq_ref_d1 = Global_Data.rasv.i_dq_ref_d1;
+    	i_dq_ref_d2 = Global_Data.rasv.i_dq_ref_d2;
+    	// calculate reference voltages for current control
+    	v_dq_ref_d1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d1, i_dq_ref_d1, i_dq_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.velocity);
+    	v_dq_ref_d2 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d2, i_dq_ref_d2, i_dq_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.velocity);
+    	// calculate duty cycles from reference dq voltages
+    	dutycyc_d1 = uz_Space_Vector_Modulation(v_dq_ref_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
+    	dutycyc_d2 = uz_Space_Vector_Modulation(v_dq_ref_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

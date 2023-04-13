@@ -72,6 +72,8 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
+            Global_Data.objects.current_ctrl_d1 = current_ctrl_d1_init();
+			Global_Data.objects.current_ctrl_d2 = current_ctrl_d2_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

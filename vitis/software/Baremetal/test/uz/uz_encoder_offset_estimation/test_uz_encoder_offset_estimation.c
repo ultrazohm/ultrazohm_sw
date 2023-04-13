@@ -21,7 +21,6 @@ void tearDown(void)
 
 void test_uz_encoder_offset_estimation_find_best_theta(void)
 {
-    #define OFFSET_ARRAYSIZE 5U
     struct measurement meas1 = {
         .theta_offset = 1.0f,
         .psi_d_positive = 5.0f,
@@ -47,10 +46,12 @@ void test_uz_encoder_offset_estimation_find_best_theta(void)
     array[1U] = meas2;
     array[2U] = meas3;
     array[3U] = meas4;
-    array[4U] = meas5;
+    for(int i=4; i<OFFSET_ARRAYSIZE; i++){
+        array[i] = meas5;
+    }
 
-    //float best_theta = uz_encoder_offset_estimation_find_best_theta(array);
-    //printf("\ntheta: %f", best_theta);
+    float best_theta = uz_encoder_offset_estimation_find_best_theta(array);
+    TEST_ASSERT_EQUAL_FLOAT(4.0f, best_theta);
 }
 
 #endif // TEST

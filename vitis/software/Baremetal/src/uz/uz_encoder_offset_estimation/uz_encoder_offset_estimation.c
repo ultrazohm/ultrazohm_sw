@@ -162,9 +162,9 @@ static float uz_encoder_offset_estimation_find_best_theta(const struct measureme
     float min_diff = INFINITY;
     uint16_t index_min_diff = 0U;
     for(uint16_t i = 0U; i < OFFSET_ARRAYSIZE; i++){
-        if(fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative) < min_diff){
+        if((float)(fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative)) < min_diff){
             index_min_diff = i;
-            min_diff = fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative);
+            min_diff = (float)(fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative));
         }
     }
     return (meas_struct[index_min_diff].theta_offset);

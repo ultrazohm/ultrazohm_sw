@@ -8,6 +8,7 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 
+
 /**
  * @brief Configuration struct for the PMSM model IP-Core driver
  * 

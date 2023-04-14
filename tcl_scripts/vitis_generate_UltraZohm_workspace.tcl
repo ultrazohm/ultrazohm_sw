@@ -229,16 +229,6 @@ platform config -remove-boot-bsp
 platform config -fsbl-elf $filename_FSBLelf/FSBL.elf 
 platform write 
 
-#Clean all
-####################################################
-puts "Info:(UltraZohm) clean platform and all application projects"
-platform clean
-app_clean
-puts "Info:(UltraZohm) build platform and all application projects"
-platform generate 
-app_build
-
-
 puts "========================================"
 # copy debug files
 set filename_meta [file join $WS_PATH .metadata]
@@ -259,6 +249,18 @@ file copy -force -- $DebugAll $filename_launches
 puts "========================================"
 puts "debug files copied"
 puts "========================================"
+
+#Clean all
+####################################################
+puts "Info:(UltraZohm) clean platform and all application projects"
+platform clean
+app_clean
+puts "Info:(UltraZohm) build platform and all application projects"
+platform generate 
+app_build
+
+
+
 puts "Info:(UltraZohm) generate_UltraZohm_workspace.tcl script finished successfully"
 }
 

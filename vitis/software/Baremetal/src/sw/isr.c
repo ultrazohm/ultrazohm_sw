@@ -105,6 +105,13 @@ void ISR_Control(void *data)
     Global_Data.av.v_c_d2 	= Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
     Global_Data.av.v_dc_d2 	= Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
 
+    i_abc_d1.a = Global_Data.av.i_a_d1;
+    i_abc_d1.b = Global_Data.av.i_b_d1;
+    i_abc_d1.c = Global_Data.av.i_c_d1;
+    i_abc_d2.a = Global_Data.av.i_a_d2;
+    i_abc_d2.b = Global_Data.av.i_b_d2;
+    i_abc_d2.c = Global_Data.av.i_c_d2;
+
     // check for current limit
     if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
    		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
@@ -124,8 +131,17 @@ void ISR_Control(void *data)
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, false);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, false);
     	// reset controllers
-    	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d1);
-    	uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d2);
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d1);
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d2);
+		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_d1);
+		// write zero dutycycle
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+
     }
 
     // if "Enable System"
@@ -142,8 +158,12 @@ void ISR_Control(void *data)
     	// park transformation of measured currents
     	i_dq_d1 = uz_transformation_3ph_abc_to_dq(i_abc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
     	i_dq_d2 = uz_transformation_3ph_abc_to_dq(i_abc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
+    	// calculate reference torque from speed ctrl of d1
+    	Global_Data.rasv.M_ref_d1 = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.n_ref_d1);
+    	// calculate current setpoint for speed control of d1
+    	i_dq_ref_d1 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.M_ref_d1, Global_Data.av.v_dc_d1, i_dq_d1);
     	// get reference currents from Global_Data
-    	i_dq_ref_d1 = Global_Data.rasv.i_dq_ref_d1;
+//    	i_dq_ref_d1 = Global_Data.rasv.i_dq_ref_d1;
     	i_dq_ref_d2 = Global_Data.rasv.i_dq_ref_d2;
     	// calculate reference voltages for current control
     	v_dq_ref_d1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d1, i_dq_ref_d1, i_dq_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.velocity);
@@ -151,7 +171,19 @@ void ISR_Control(void *data)
     	// calculate duty cycles from reference dq voltages
     	dutycyc_d1 = uz_Space_Vector_Modulation(v_dq_ref_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
     	dutycyc_d2 = uz_Space_Vector_Modulation(v_dq_ref_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
+
+    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_d1.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_d1.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_d1.DutyCycle_C;
+    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_d2.DutyCycle_A;
+    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_d2.DutyCycle_B;
+    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_d2.DutyCycle_C;
+
+
     }
+
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

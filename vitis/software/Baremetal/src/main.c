@@ -73,6 +73,8 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
             Global_Data.objects.current_ctrl_d1 = current_ctrl_d1_init();
+            Global_Data.objects.setpoint_ctrl_d1 = setpoint_ctrl_d1_init();
+            Global_Data.objects.speed_ctrl_d1 = speed_ctrl_d1_init();
 			Global_Data.objects.current_ctrl_d2 = current_ctrl_d2_init();
             initialization_chain = init_ip_cores;
             break;

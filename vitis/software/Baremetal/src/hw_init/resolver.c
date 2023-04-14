@@ -10,7 +10,7 @@ struct uz_resolverIP_config_t resolver_config_D5_1 = {
 		.pole_pairs_machine = 4.0f,
 		.pole_pairs_resolver = 1.0f,
 		.resolution = 16,
-		.zero_position_mechanical = 0.0f
+		.zero_position_mechanical = 0.3923f
 };
 
 struct uz_resolverIP_config_t resolver_config_D5_2 = {
@@ -20,7 +20,7 @@ struct uz_resolverIP_config_t resolver_config_D5_2 = {
 		.pole_pairs_machine = 4.0f,
 		.pole_pairs_resolver = 1.0f,
 		.resolution = 16,
-		.zero_position_mechanical = 0.0f
+		.zero_position_mechanical = 0.3964f
 };
 
 

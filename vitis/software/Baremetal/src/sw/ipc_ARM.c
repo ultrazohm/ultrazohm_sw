@@ -187,7 +187,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			data->rasv.n_ref_d1 = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -195,11 +195,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+			data->rasv.i_dq_ref_d1.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			data->rasv.i_dq_ref_d1.q = value;
 			break;
 
 		case (Set_Send_Field_5):

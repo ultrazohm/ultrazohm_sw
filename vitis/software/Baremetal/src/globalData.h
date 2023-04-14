@@ -9,6 +9,8 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -105,6 +107,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	uz_3ph_dq_t i_dq_ref_d1;
 	uz_3ph_dq_t i_dq_ref_d2;
+	float M_ref_d1;
+	float n_ref_d1;
 } referenceAndSetValues;
 
 typedef struct{
@@ -122,6 +126,8 @@ typedef struct{
 	uz_resolverIP_t* uz_d_resolver_D5_1;
 	uz_resolverIP_t* uz_d_resolver_D5_2;
 	uz_CurrentControl_t* current_ctrl_d1;
+	uz_SetPoint_t* setpoint_ctrl_d1;
+	uz_SpeedControl_t* speed_ctrl_d1;
 	uz_CurrentControl_t* current_ctrl_d2;
 }object_pointers_t;
 

@@ -24,41 +24,49 @@
 
 proc app_clean {{name *}} {
   set tmplist [app list]
+  set tmplist [split $tmplist "\n"]
   set index 0
   foreach element $tmplist {
-	if {$index>2} {
-	  if {[string match $name $element]} {
-		app clean $element
-		puts "clean -name $element "
-	  } else {
-		puts "skip $element"
-	  }
-	} else {
-	  puts "$element"
-	}
-	incr index
+    if {[catch {
+      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
+        set tmpname [lindex [split $element " "] 1];
+        if {[string match $name $tmpname]} {
+          app clean $tmpname
+          puts "clean -name $tmpname "
+        } else {
+          puts "skip $tmpname"
+        }
+      } else {
+        puts "Debug: (UZ) $element"
+      }
+    } result]} {
+      puts "Error:(UZ) Script (app_clean) failed failed at $element with: $result."
+    }
+    incr index
   }
 }
 
 proc app_build {{name *}} {
   set tmplist [app list]
+  set tmplist [split $tmplist "\n"]
   set index 0
   foreach element $tmplist {
-	if {$index>2} {
-	  if {[string match $name $element]} {
-	  
-		if {[catch {
-		  app build $element
-		} result]} { puts "Error:(TE) build $element failed: $result."}
-
-		puts "build $element "
-	  } else {
-		puts "skip $element"
-	  }
-	} else {
-	  puts "$element"
-	}
-	incr index
+    if {[catch {
+      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
+        set tmpname [lindex [split $element " "] 1];
+        if {[string match $name $tmpname]} {
+          app build $tmpname
+          puts "build $tmpname "
+        } else {
+          puts "skip $tmpname"
+        }
+      } else {
+        puts "Debug: (UZ) $element"
+      }
+    } result]} {
+      puts "Error:(UZ) Script (app_build) failed at $element with: $result."
+    }
+    incr index
   }
 }
 

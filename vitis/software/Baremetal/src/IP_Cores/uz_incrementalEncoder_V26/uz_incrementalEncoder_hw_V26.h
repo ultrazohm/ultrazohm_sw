@@ -14,6 +14,7 @@ void uz_incrementalEncoder_hw_set_increments_per_turn_electric_V26(uint32_t base
 void uz_incrementalEncoder_hw_set_omegaPerOverSample_V26(uint32_t base_address,float omega_per_over_sampl);
 void uz_incrementalEncoder_hw_set_speed_timeout_value_V26(uint32_t base_address,uint32_t timeout_ms);
 void uz_incrementalEncoder_hw_set_cw_ccw_direction_V26(uint32_t base_address,uint32_t cw_ccw_direction);
+void uz_incrementalEncoder_hw_set_d_axis_hit_Offset_V26(uint32_t base_address,uint32_t d_axis_hit_Offset_Value);
 
 //------------------------------------------------------------------------------------------------------------------------
 

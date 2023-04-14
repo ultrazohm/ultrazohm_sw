@@ -149,14 +149,15 @@ static void set_timeout_V26(uz_incrementalEncoder_t_V26* self){
 }
 
 static void set_offset_V26(uz_incrementalEncoder_t_V26* self){
-	 uz_assert(self->is_ready);
-	 uz_incrementalEncoder_hw_set_Position_Offset_V26(self->config.base_address, self->config.Encoder_mech_Offset);
-	 uz_incrementalEncoder_hw_set_theta_el_Offset_V26(self->config.base_address, self->config.Encoder_elec_Offset);
+	uz_assert(self->is_ready);
+	uz_incrementalEncoder_hw_set_Position_Offset_V26(self->config.base_address, self->config.Encoder_mech_Offset);
+	uz_incrementalEncoder_hw_set_theta_el_Offset_V26(self->config.base_address, self->config.Encoder_elec_Offset);
+    uz_incrementalEncoder_hw_set_d_axis_hit_Offset_V26(self->config.base_address, self->config.d_axis_Hit_Offset);
 }
 
 static void set_counting_direction_V26(uz_incrementalEncoder_t_V26* self){
-	 uz_assert(self->is_ready);
-	 uz_incrementalEncoder_hw_set_cw_ccw_direction_V26(self->config.base_address, self->config.Counting_Direction);
+	uz_assert(self->is_ready);
+	uz_incrementalEncoder_hw_set_cw_ccw_direction_V26(self->config.base_address, self->config.Counting_Direction);
 }
 
 void set_pi2_inc_V26(uz_incrementalEncoder_t_V26* self){

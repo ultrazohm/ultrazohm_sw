@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="a0d660603b1247df9a13f5258a3d0ebf"/>
+    <Option Name="Id" Val="efd3b9c8dfd049258e5e2cc9a5a6ceab"/>
     <Option Name="Part" Val="xczu9cg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -194,6 +194,12 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

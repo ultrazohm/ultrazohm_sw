@@ -3,8 +3,8 @@ WARNING: [Common 17-306] Update version (2020.1_AR75502) does not match product 
 # Vivado v2020.1.1_AR75502 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Tue Mar  7 12:49:08 2023
-# Process ID: 9504
+# Start of session at: Fri Apr 14 13:51:55 2023
+# Process ID: 372
 # Current directory: E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: E:/01_Repos/06_Ultrazohm_HADEK/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/prj_ip/vivado.log
@@ -36,6 +36,8 @@ WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_AB_Line_S
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter_Theta_el_wOffset.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -80,4 +82,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_axi_lite.vhd"
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Mar  7 12:49:21 2023...
+INFO: [Common 17-206] Exiting Vivado at Fri Apr 14 13:52:12 2023...

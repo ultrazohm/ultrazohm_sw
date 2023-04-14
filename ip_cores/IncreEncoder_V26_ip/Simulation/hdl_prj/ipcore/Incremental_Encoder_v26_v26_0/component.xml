@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a7f56b2d</spirit:value>
+            <spirit:value>33b7ac3a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a7f56b2d</spirit:value>
+            <spirit:value>33b7ac3a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -834,6 +834,19 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>d_Axis_Hit_WithCompare</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_Lite_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1043,6 +1056,10 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1053,7 +1070,7 @@
       <spirit:file>
         <spirit:name>hdl/Incremental_Encoder_v26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_0a6bc314</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_8934e091</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1169,6 +1186,11 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1255,15 +1277,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Incremental_Encoder_v26</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112932328</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-03-07T11:49:21Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112987111</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-04-14T11:52:12Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1_AR75502</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="28355fbc"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="dbad6901"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="fdcac61e"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="e2fc013e"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="859704dd"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

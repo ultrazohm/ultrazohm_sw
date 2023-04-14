@@ -38,6 +38,7 @@ void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolut
 		.drive_pole_pair = motorPolePairNumber,
 		.Encoder_mech_Offset = Mech_Offset,
 		.Encoder_elec_Offset = Elec_Offset,
+		.d_axis_Hit_Offset 	= 0U,
 		.Counting_Direction = CW_Counting,
 		.Speed_Timeout_s = speed_timeout
 	};

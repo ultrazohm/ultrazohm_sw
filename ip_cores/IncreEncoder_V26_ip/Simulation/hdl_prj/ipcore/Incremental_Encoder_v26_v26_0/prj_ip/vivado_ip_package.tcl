@@ -5,6 +5,7 @@ set_property ip_repo_paths {../../} [current_fileset]
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd}
+add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Counter.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Counter_Theta_el_wOffset.vhd}
 add_files -norecurse {../hdl/Incremental_Encoder_v26_src_Counter_position.vhd}
@@ -46,7 +47,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2112932328 [ipx::current_core]
+set_property core_revision 2112987111 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -61,6 +62,10 @@ ipx::add_file {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd} [ipx::get_f
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_Counter.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/Incremental_Encoder_v26_src_Counter.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/Incremental_Encoder_v26_src_Counter.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

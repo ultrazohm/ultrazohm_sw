@@ -1,6 +1,7 @@
  --> Incremental_Encoder_v26_src_IncEnc_V26_pac
 inc_enc_v26/IncEnc_V26/AB-Line-Switch --> Incremental_Encoder_v26_src_AB_Line_Switch
 inc_enc_v26/IncEnc_V26/Check d-Axis-Hit --> Incremental_Encoder_v26_src_Check_d_Axis_Hit
+inc_enc_v26/IncEnc_V26/Check d-Axis-Hit_WithCompare --> Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare
 inc_enc_v26/IncEnc_V26/Counter --> Incremental_Encoder_v26_src_Counter
 inc_enc_v26/IncEnc_V26/Counter_Theta_el_wOffset --> Incremental_Encoder_v26_src_Counter_Theta_el_wOffset
 inc_enc_v26/IncEnc_V26/Counter_position --> Incremental_Encoder_v26_src_Counter_position

@@ -2,6 +2,7 @@ vlib work
 vcom  Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd
 vcom  Incremental_Encoder_v26_src_AB_Line_Switch.vhd
 vcom  Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd
+vcom  Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd
 vcom  Incremental_Encoder_v26_src_Counter.vhd
 vcom  Incremental_Encoder_v26_src_Counter_Theta_el_wOffset.vhd
 vcom  Incremental_Encoder_v26_src_Counter_position.vhd

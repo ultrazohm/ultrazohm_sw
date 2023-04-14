@@ -83,21 +83,21 @@ set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 		$FOLDER_PATH/vivado_exported_xsa
 
 ####################################################
-puts "Info:(UltraZohm) Chose active platform"
+puts "Info (UltraZohm): Chose active platform"
 platform active $PLATFORM_NAME
 
 ####################################################
-puts "Info:(UltraZohm) Import new xsa hardware file from:"
-puts "$XSA_FOLDER"
+puts "Info (UltraZohm): Import new xsa hardware file from:"
+puts "Info (UltraZohm): $XSA_FOLDER"
 if {[catch {set XSA_FILES [glob -join -dir ${XSA_FOLDER} *.xsa]} ]} {puts "Error:(UltraZohm) update of ${PLATFORM_NAME} failed: .xsa does not exist in ${XSA_FOLDER}."}
 #
 set XSA_FILE [lindex $XSA_FILES 0]
 puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
-puts "using {$XSA_FILE}"
+puts "Info (UltraZohm): using {$XSA_FILE}"
 platform config -updatehw $XSA_FILE
 
 ####################################################
-puts "Info:(UltraZohm) Regenerate FreeRTOS_domain BSP"
+puts "Info (UltraZohm): Regenerate FreeRTOS_domain BSP"
 domain active FreeRTOS_domain
 # increase heap size of freertos, to fix javascope glitches
 # this has to be included in update_platform script, otherwise this setting is overwritten (for some strange reason)
@@ -106,24 +106,28 @@ platform write
 bsp regenerate
 
 ####################################################
-puts "Info:(UltraZohm) Regenerate Baremetal_domain BSP"
+puts "Info (UltraZohm): Regenerate Baremetal_domain BSP"
 domain active Baremetal_domain
 bsp regenerate
 
 #####################################################
-#puts "Info:(UltraZohm) Regenerate FSBL_domain BSP"
+#puts "Info (UltraZohm): Regenerate FSBL_domain BSP"
 #domain active FSBL_domain
 #bsp regenerate
 
 #####################################################
-puts "Info:(UltraZohm) generate Platform project"
+puts "Info (UltraZohm): generate Platform project"
 platform generate
 
 ####################################################
-#puts "Info:(UltraZohm) clean all application projects"
+#puts "Info (UltraZohm): clean all application projects"
 #app_clean
-puts "Info:(UltraZohm) build all application projects"
+puts "Info (UltraZohm): build all application projects"
 app_build
+
+puts "========================================"
+puts "Info (UltraZohm): vitis_update_platform.tcl script finished successfully"
+puts "========================================"
 
 }
 

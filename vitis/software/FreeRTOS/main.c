@@ -30,6 +30,7 @@
 #include "defines.h"
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
+#include "uz/xcp_driver/xcp_interface.h"
 
 
 size_t lifecheck_mainThread = 0;
@@ -269,6 +270,9 @@ int main_thread()
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+			sys_thread_new("echod", wait_for_xcp_master, 0,
+					THREAD_STACKSIZE,
+					DEFAULT_THREAD_PRIO);
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
@@ -287,6 +291,9 @@ int main_thread()
 			print_echo_app_header();
 			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
+					THREAD_STACKSIZE,
+					DEFAULT_THREAD_PRIO);
+			sys_thread_new("echod", wait_for_xcp_master, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;

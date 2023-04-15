@@ -24,6 +24,7 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "../uz/xcp_driver/xcp_interface.h"
 
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
@@ -59,6 +60,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+
+	timer_irq_callback_10kHz();
 
 	// if javascope connection is established
 	if(js_connection_established!=0)

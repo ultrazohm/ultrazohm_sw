@@ -158,6 +158,10 @@ void ISR_Control(void *data)
     	// park transformation of measured currents
     	i_dq_d1 = uz_transformation_3ph_abc_to_dq(i_abc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
     	i_dq_d2 = uz_transformation_3ph_abc_to_dq(i_abc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
+    	Global_Data.av.i_d_d1 = i_dq_d1.d;
+    	Global_Data.av.i_q_d1 = i_dq_d1.q;
+    	Global_Data.av.i_d_d2 = i_dq_d2.d;
+    	Global_Data.av.i_q_d2 = i_dq_d2.q;
     	// calculate reference torque from speed ctrl of d1
     	Global_Data.rasv.M_ref_d1 = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.n_ref_d1);
     	// calculate current setpoint for speed control of d1
@@ -168,6 +172,8 @@ void ISR_Control(void *data)
     	// calculate reference voltages for current control
     	v_dq_ref_d1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d1, i_dq_ref_d1, i_dq_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.velocity);
     	v_dq_ref_d2 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d2, i_dq_ref_d2, i_dq_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.velocity);
+    	Global_Data.av.v_d_d1 = v_dq_ref_d1.d;
+    	Global_Data.av.v_q_d1 = v_dq_ref_d1.q;
     	// calculate duty cycles from reference dq voltages
     	dutycyc_d1 = uz_Space_Vector_Modulation(v_dq_ref_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
     	dutycyc_d2 = uz_Space_Vector_Modulation(v_dq_ref_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);

@@ -26,7 +26,7 @@
    };
    const struct uz_PI_Controller_config config_speed_d1 = {
 		   .Kp = 0.02f,
-		   .Ki = 0.0f,
+		   .Ki = 2.0f,
 		   .samplingTime_sec = 0.0001f,
 		   .upper_limit = 12.0f,
 		   .lower_limit = -12.0f

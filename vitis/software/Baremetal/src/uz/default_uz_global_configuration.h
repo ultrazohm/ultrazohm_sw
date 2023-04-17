@@ -27,7 +27,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  7U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
@@ -51,6 +51,7 @@
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
+#define UZ_SPEEDCONTROL_MAX_INSTANCES					1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

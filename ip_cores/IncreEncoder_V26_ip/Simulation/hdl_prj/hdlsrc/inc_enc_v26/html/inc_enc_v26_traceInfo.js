@@ -61,31 +61,15 @@ function RTW_Sid2UrlHash() {
 	/* <S5>/Switch1 */
 	this.urlHashMap["inc_enc_v26:10283"] = "Incremental_Encoder_v26_src_AB_Line_Switch.vhd:54,55";
 	/* <S6>/Constant */
-	this.urlHashMap["inc_enc_v26:10252"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:50";
-	/* <S6>/Constant1 */
-	this.urlHashMap["inc_enc_v26:10267"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:78";
+	this.urlHashMap["inc_enc_v26:10252"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:43";
 	/* <S6>/Equal */
-	this.urlHashMap["inc_enc_v26:10251"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:53,54";
-	/* <S6>/Equal1 */
-	this.urlHashMap["inc_enc_v26:10268"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:81,82";
-	/* <S6>/Reset_flag */
-	this.urlHashMap["inc_enc_v26:10246"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:74,75,76";
-	/* <S6>/reset_old */
-	this.urlHashMap["inc_enc_v26:10247"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:62,63,64,65,66,67,68,69,70,71";
-	/* <S6>/reset_old_switch */
-	this.urlHashMap["inc_enc_v26:10248"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:59,60";
-	/* <S7>/Constant1 */
-	this.urlHashMap["inc_enc_v26:10442"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:79";
+	this.urlHashMap["inc_enc_v26:11036"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:46,47";
+	/* <S6>/Pipeline1 */
+	this.urlHashMap["inc_enc_v26:11037"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:49,50,51,52,53,54,55,56,57,58";
 	/* <S7>/Equal */
-	this.urlHashMap["inc_enc_v26:10443"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:54,55";
-	/* <S7>/Equal1 */
-	this.urlHashMap["inc_enc_v26:10444"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:82,83";
-	/* <S7>/Reset_flag */
-	this.urlHashMap["inc_enc_v26:10445"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:75,76,77";
-	/* <S7>/reset_old */
-	this.urlHashMap["inc_enc_v26:10446"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:63,64,65,66,67,68,69,70,71,72";
-	/* <S7>/reset_old_switch */
-	this.urlHashMap["inc_enc_v26:10447"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:60,61";
+	this.urlHashMap["inc_enc_v26:10443"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:47,48";
+	/* <S7>/Pipeline1 */
+	this.urlHashMap["inc_enc_v26:11035"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:50,51,52,53,54,55,56,57,58,59";
 	/* <S8>/Detec_edge */
 	this.urlHashMap["inc_enc_v26:3606"] = "Incremental_Encoder_v26_src_Counter.vhd:68,69,70";
 	/* <S8>/Reset_flag */
@@ -807,36 +791,20 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["inc_enc_v26:10245"] = {rtwname: "<S6>/Count_in"};
 	this.rtwnameHashMap["<S6>/Constant"] = {sid: "inc_enc_v26:10252"};
 	this.sidHashMap["inc_enc_v26:10252"] = {rtwname: "<S6>/Constant"};
-	this.rtwnameHashMap["<S6>/Constant1"] = {sid: "inc_enc_v26:10267"};
-	this.sidHashMap["inc_enc_v26:10267"] = {rtwname: "<S6>/Constant1"};
-	this.rtwnameHashMap["<S6>/Equal"] = {sid: "inc_enc_v26:10251"};
-	this.sidHashMap["inc_enc_v26:10251"] = {rtwname: "<S6>/Equal"};
-	this.rtwnameHashMap["<S6>/Equal1"] = {sid: "inc_enc_v26:10268"};
-	this.sidHashMap["inc_enc_v26:10268"] = {rtwname: "<S6>/Equal1"};
-	this.rtwnameHashMap["<S6>/Reset_flag"] = {sid: "inc_enc_v26:10246"};
-	this.sidHashMap["inc_enc_v26:10246"] = {rtwname: "<S6>/Reset_flag"};
-	this.rtwnameHashMap["<S6>/reset_old"] = {sid: "inc_enc_v26:10247"};
-	this.sidHashMap["inc_enc_v26:10247"] = {rtwname: "<S6>/reset_old"};
-	this.rtwnameHashMap["<S6>/reset_old_switch"] = {sid: "inc_enc_v26:10248"};
-	this.sidHashMap["inc_enc_v26:10248"] = {rtwname: "<S6>/reset_old_switch"};
+	this.rtwnameHashMap["<S6>/Equal"] = {sid: "inc_enc_v26:11036"};
+	this.sidHashMap["inc_enc_v26:11036"] = {rtwname: "<S6>/Equal"};
+	this.rtwnameHashMap["<S6>/Pipeline1"] = {sid: "inc_enc_v26:11037"};
+	this.sidHashMap["inc_enc_v26:11037"] = {rtwname: "<S6>/Pipeline1"};
 	this.rtwnameHashMap["<S6>/d-axis-hit"] = {sid: "inc_enc_v26:10249"};
 	this.sidHashMap["inc_enc_v26:10249"] = {rtwname: "<S6>/d-axis-hit"};
 	this.rtwnameHashMap["<S7>/Count_in"] = {sid: "inc_enc_v26:10440"};
 	this.sidHashMap["inc_enc_v26:10440"] = {rtwname: "<S7>/Count_in"};
 	this.rtwnameHashMap["<S7>/Counter_Compare"] = {sid: "inc_enc_v26:10449"};
 	this.sidHashMap["inc_enc_v26:10449"] = {rtwname: "<S7>/Counter_Compare"};
-	this.rtwnameHashMap["<S7>/Constant1"] = {sid: "inc_enc_v26:10442"};
-	this.sidHashMap["inc_enc_v26:10442"] = {rtwname: "<S7>/Constant1"};
 	this.rtwnameHashMap["<S7>/Equal"] = {sid: "inc_enc_v26:10443"};
 	this.sidHashMap["inc_enc_v26:10443"] = {rtwname: "<S7>/Equal"};
-	this.rtwnameHashMap["<S7>/Equal1"] = {sid: "inc_enc_v26:10444"};
-	this.sidHashMap["inc_enc_v26:10444"] = {rtwname: "<S7>/Equal1"};
-	this.rtwnameHashMap["<S7>/Reset_flag"] = {sid: "inc_enc_v26:10445"};
-	this.sidHashMap["inc_enc_v26:10445"] = {rtwname: "<S7>/Reset_flag"};
-	this.rtwnameHashMap["<S7>/reset_old"] = {sid: "inc_enc_v26:10446"};
-	this.sidHashMap["inc_enc_v26:10446"] = {rtwname: "<S7>/reset_old"};
-	this.rtwnameHashMap["<S7>/reset_old_switch"] = {sid: "inc_enc_v26:10447"};
-	this.sidHashMap["inc_enc_v26:10447"] = {rtwname: "<S7>/reset_old_switch"};
+	this.rtwnameHashMap["<S7>/Pipeline1"] = {sid: "inc_enc_v26:11035"};
+	this.sidHashMap["inc_enc_v26:11035"] = {rtwname: "<S7>/Pipeline1"};
 	this.rtwnameHashMap["<S7>/d-axis-hit"] = {sid: "inc_enc_v26:10448"};
 	this.sidHashMap["inc_enc_v26:10448"] = {rtwname: "<S7>/d-axis-hit"};
 	this.rtwnameHashMap["<S8>/Enable_ctr"] = {sid: "inc_enc_v26:3597"};

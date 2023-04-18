@@ -1,3 +1,6 @@
+#ifndef UZ_AXITIMER64BIT_H_
+#define UZ_AXITIMER64BIT_H_
+
 #include <stdint.h>
 #include "../uz_HAL.h"
 
@@ -8,3 +11,6 @@
 
 void uz_AxiTimer64Bit_init();
 uint64_t uz_AxiTimer64Bit_ReadValue64Bit();
+uint32_t uz_AxiTimer64Bit_getTimestamp_u32(void);
+
+#endif /* UZ_AXITIMER64BIT_H_ */

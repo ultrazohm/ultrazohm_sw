@@ -1,29 +1,24 @@
 /*
- * Copyright (c) 2022 Jens Wenzl
+ * Copyright (c) 2023 Jens Wenzl
  * Author: Jens Wenzl jens_wenzl@t-online.de
  *
  * Interface between UltraZohm project and XCP Basic Driver
  */
 
+#include <stdint.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "netif/xadapter.h"
-#include "xil_printf.h"
 #include "lwip/sockets.h"
 #include "queue.h"
-#include "math.h"
-#include "stdint.h"
-// TODO create functionality when used with cache
-//#include "xil_cache_l.h"
-
-//#include "../bsp/bsp_general.h"
-//#include "../bsp/bsp_timer.h"
-//#include "../bsp/bsp_can.h"
+#include "xil_printf.h"
 #include "xil_cache.h"
 
+#include "xcp_config.h"
+#include "XCP_Basic/XcpBasic.h"
 
-#include "../../../../software/FreeRTOS/uz/xcp_driver/xcp_config.h"
-#include "../../../../software/FreeRTOS/uz/xcp_driver/XCP_Basic/XcpBasic.h"
+#include "../bsp_timer/bsp_timer.h"
 
 /*-------------------------------------------------------------------
  * Configuration
@@ -39,38 +34,25 @@
 #define PRIO_XCP_RX				5
 #define PRIO_XCP_TX				4
 
-/*-------------------------------------------------------------------
- * Type definitions
- *-----------------------------------------------------------------*/
-typedef struct {
-	uint8_t array_50_byte [50];
-	uint8_t array_90_byte [90];
-	uint8_t array_100_byte [100];
-
-	uint8_t saw_u8;
-	int8_t sine_u8;
-	int8_t cos_u8;
-	float sine_f;
-} meas_t;
-
-typedef struct {
-	uint8_t stop_calc;
-} stim_t;
-
-typedef struct {
-	meas_t meas;
-	stim_t stim;
-} xcp_data_t;
+// Address definitions for data exchange R5 <-> A53
+#define XCP_MEAS_R5_ADDR		0xFFFC0400
+#define XCP_MEAS_R5_LEN			0x00000400
+#define XCP_STIM_R5_ADDR		0xFFFC0800
+#define XCP_STIM_R5_LEN			0x00000400
+// Timestamp from R5 is used
+#define XCP_TIMESTAMP_R5_ADDR	0xFFFC0400
 
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
-static xcp_data_t xcp_data;
-
 static uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 static uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
 
-static QueueHandle_t queue_tx;
+#define QUEUE_XCP_TX_LEN		1000
+#define QUEUE_XCP_RX_LEN		10
+
+static QueueHandle_t queue_xcp_tx;
+static QueueHandle_t queue_xcp_rx = NULL;
 
 static uint32_t xcp_timestamp;
 
@@ -85,43 +67,30 @@ static void my_print_ip(ip_addr_t *ip)
 }
 #endif
 
-static void task_100ms(void *p)
+static void xcp_interface_cache_flush_measure(void)
 {
-	xil_printf("%s() \n", __func__);
+	Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
+}
 
-	while(1) {
-		if (xcp_data.stim.stop_calc == 0) {
-			xcp_data.meas.saw_u8++;
-			float arg_2pi = (float) xcp_data.meas.saw_u8 * (float)M_PI * 2 / 255;
-			xcp_data.meas.sine_f = sinf(arg_2pi);
-			xcp_data.meas.sine_u8 = xcp_data.meas.sine_f * 127;
-			xcp_data.meas.cos_u8 = sinf(arg_2pi + (float)M_PI / 2) * 127;
-		}
-
-    	vTaskDelay(100 / portTICK_RATE_MS);
-	}
+static void xcp_interface_cache_flush_stimulate(void)
+{
+	Xil_DCacheFlushRange(XCP_STIM_R5_ADDR, XCP_STIM_R5_LEN);
 }
 
 static void xcp_interface_init(void)
 {
-	xil_printf("%s() \n", __func__);
+	queue_xcp_tx = xQueueGenericCreate(QUEUE_XCP_TX_LEN, BUF_SIZE_XCP_TX, 0);
+	queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
 
-	queue_tx = xQueueGenericCreate(10, BUF_SIZE_XCP_TX, 0);
-
-	// Init xcp basic driver
 	XcpInit();
 
-//    bsp_timer_init();
-//    bsp_timer_start();
-//    if (bsp_can_init() != XST_SUCCESS) {
-//		xil_printf("%s(): can init failed \n", __func__);
-//	}
-
-    // TODO: Replace sys_thread_new() with xTaskCreate()
-    //xTaskCreate(pxTaskCode, pcName, usStackDepth, pvParameters, uxPriority, pxCreatedTask)
-	// Set up Tasks for the slow DAQ xcp events
-	sys_thread_new("task_100ms", task_100ms,
-		NULL, STACKSIZE_XCP, PRIO_XCP_BACKGROUND);
+    bsp_timer_init();
+    bsp_timer_start();
+#ifdef USE_XCP_CAN
+    if (bsp_can_init() != XST_SUCCESS) {
+		xil_printf("%s(): can init failed \n", __func__);
+	}
+#endif
 }
 
 #ifdef USE_XCP_CAN
@@ -135,7 +104,7 @@ static void xcp_can_trx(void *arg_p)
 		// CAN tx
 		//-----------------------------
 		BaseType_t xret_val;
-		xret_val = xQueueReceive(queue_tx, buf_xcp_tx, XCP_CAN_QUEUE_TIMEOUT);
+		xret_val = xQueueReceive(queue_xcp_tx, buf_xcp_tx, XCP_CAN_QUEUE_TIMEOUT);
 		if(xret_val != errQUEUE_EMPTY) {
 			if(xret_val != pdPASS) {
 				xil_printf("%s(): xQueueReceive() failed\n", __func__);
@@ -191,17 +160,18 @@ static void xcp_eth_tx(void *arg_p)
 	int nwrote;
 
 	xil_printf("%s() start\n", __func__);
-	vTaskDelay(1);
 
+	xQueueReset(queue_xcp_tx);
+
+	uint16_t xcp_package_counter = 0;
 	while (1) {
-		if(xQueueReceive(queue_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
-			xil_printf("%s(): xQueueReceive() failed\n", __func__);
+		if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
+			xil_printf("%s(): xQueueReceive() tx failed\n", __func__);
 			xil_printf("%s(): critical error, can not recover\n", __func__);
 			vTaskDelay(5);
 			return;
 		}
 
-		static uint16_t xcp_package_counter = 0;
 		xcp_package_counter++;
 		// length was already written before msg was given to queue
 		uint16_t len_xcp_tx;
@@ -240,10 +210,16 @@ static void xcp_eth_rx(void *arg_p)
 		// No bytes means socket was closed by counterpart
 		if (n <= 0) {
 			xil_printf("%s(): n <= 0\n", __func__);
-			continue;
+			break;
 		}
 
-		XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
+		//XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
+		if (xQueueSend(queue_xcp_rx, buf_xcp_rx, 0) != pdPASS) {
+			xil_printf("%s(): xQueueSend() tcp_rx failed\n", __func__);
+			xil_printf("%s(): critical error!\n", __func__);
+			vTaskDelay(5);
+			return;
+		}
 	}
 
 	xil_printf("%s(): delete\n", __func__);
@@ -255,15 +231,34 @@ static void xcp_eth_rx(void *arg_p)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
+
+// TODO remove
+uint32_t time_irq_ns = 0;
+uint32_t time_irq_max_ns = 0;
+uint32_t time_irqLen_ns = 0;
+uint32_t time_irqLen_max_ns = 0;
+uint32_t time_cacheFlush_ns = 0;
+uint32_t time_cacheFlush_max_ns = 0;
+
+
 void timer_irq_callback_10kHz(void)
 {
-	// Set the timestamp which comes from R5 once.
-	// TODO maybe there is a cleaner solution?
-	//const uint32_t xcp_timestamp_addr = (MEM_SHARED_START + 0x1000);
-	const uint32_t xcp_timestamp_addr = (0xFFFF0000 + 0x1000);
-	uint32_t *xcp_timestamp_p = (uint32_t *)xcp_timestamp_addr;
-	Xil_DCacheFlushRange(xcp_timestamp_addr, 4);
-	xcp_timestamp = *xcp_timestamp_p;
+// todo remove
+static uint16_t ts_start = 0;
+time_irqLen_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
+if (time_irqLen_ns > time_irqLen_max_ns)
+	time_irqLen_max_ns = time_irqLen_ns;
+ts_start = bsp_timer_timestamp_get();
+
+
+
+	xcp_interface_cache_flush_measure();
+time_cacheFlush_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
+	if (time_cacheFlush_ns > time_cacheFlush_max_ns){
+		time_cacheFlush_max_ns = time_cacheFlush_ns;}
+
+
+	xcp_timestamp = *(uint32_t *)XCP_TIMESTAMP_R5_ADDR;
 
 	XcpEvent(XCP_EVENT_FAST);
 
@@ -288,6 +283,9 @@ void timer_irq_callback_10kHz(void)
 		XcpEvent(XCP_EVENT_100MS);
 
 		XcpBackground();
+
+		// Todo correct position here?
+		xcp_interface_cache_flush_stimulate();
 	}
 
 	static uint32_t cnt_div_10000 = 3;
@@ -297,19 +295,18 @@ void timer_irq_callback_10kHz(void)
 		XcpEvent(XCP_EVENT_1S);
 	}
 
-//	static uint8_t cnt= 0;
-//	cnt++;
-//	static uint8_t cnt_array_50 = 0;
-//	if (++cnt_array_50 >= 50) {
-//		cnt_array_50 = 0;
-//	}
-//	xcp_data.meas.array_50_byte[cnt_array_50] = cnt;
-//
-//	static uint8_t cnt_array_90 = 0;
-//	if (++cnt_array_90 >= 90) {
-//		cnt_array_90 = 0;
-//	}
-//	xcp_data.meas.array_90_byte[cnt_array_90] = cnt;
+
+	// This irq can occur before the queue is created (xcp main task)
+	if (queue_xcp_rx != NULL) {
+		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) == pdPASS) {
+			XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
+		}
+	}
+
+// todo remove
+time_irq_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
+if (time_irq_ns > time_irq_max_ns)
+	time_irq_max_ns = time_irq_ns;
 }
 
 void wait_for_xcp_master(void *p)
@@ -340,6 +337,9 @@ void wait_for_xcp_master(void *p)
 	}
 	lwip_listen(sock, 0);
 
+	/* The eth_tx task blocks at a queue and will not notice that the xcp
+	 * master closed the TCP connection. This task will continue to run. */
+	int flag_xcp_eth_tx_created_once = 0;
 	while (1) {
 		int new_sd;
 		int size = sizeof(remote);
@@ -348,8 +348,11 @@ void wait_for_xcp_master(void *p)
 		if ((new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 			xil_printf("xcp master connected from\n");
 			my_print_ip((ip_addr_t*) &remote.sin_addr);
-			sys_thread_new("xcp_eth_tx", xcp_eth_tx,
-				(void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_TX);
+			if (! flag_xcp_eth_tx_created_once) {
+				flag_xcp_eth_tx_created_once = 1;
+				sys_thread_new("xcp_eth_tx", xcp_eth_tx,
+					(void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_TX);
+			}
 			sys_thread_new("xcp_eth_rx", xcp_eth_rx,
 				(void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_RX);
 		}
@@ -359,15 +362,19 @@ void wait_for_xcp_master(void *p)
 	vTaskDelete(NULL);
 }
 
+uint32_t time_WtoTxQ_ns;
+uint32_t time_WtoTxQ_max_ns = 0;
 void ApplXcpSend( vuint8 len, const BYTEPTR msg )
 {
+uint16_t ts_start = bsp_timer_timestamp_get();
+
 	BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
 	uint8_t *msg_with_header_p = (uint8_t *)msg - XCP_HEADER_LEN;
 
 	msg_with_header_p[0] = (uint8_t) (len >> 0);
 	msg_with_header_p[1] = (uint8_t) (len >> 8);
 
-	if(xQueueSendFromISR(queue_tx,
+	if(xQueueSendFromISR(queue_xcp_tx,
 			  	  	     msg_with_header_p,
 						 pxHigherPriorityTaskWoken_) != pdPASS) {
 		xil_printf("%s(): xQueueSend() failed\n", __func__);
@@ -375,13 +382,16 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
 		vTaskDelay(5);
 		return;
 	}
+uint32_t time_send_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
+if (time_send_ns > time_WtoTxQ_max_ns)
+	time_WtoTxQ_max_ns = time_send_ns;
 }
 
 MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )
 {
 	// Address extension is not used.
 	// --> addr already holds the requested memory address
-	return (MTABYTEPTR) addr;
+	return (MTABYTEPTR)((uint64_t)addr);
 }
 
 void ApplXcpInterruptDisable( void )
@@ -402,6 +412,30 @@ vuint8 ApplXcpSendStall( void )
 
 XcpDaqTimestampType ApplXcpGetTimestamp(void)
 {
-	//return (XcpDaqTimestampType) bsp_timer_timestamp_get();
 	return (XcpDaqTimestampType) xcp_timestamp;
+}
+
+
+// Todo remove
+void timer_irq_callback__(void)
+{
+	static uint32_t div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= 10000) {
+		div_cnt = 0;
+
+//		static uint8_t cnt = 0;
+//		cnt++;
+//		xil_printf("%s(): %d\n", __func__, cnt);
+
+xil_printf("\n%5s, %5s\n", "now", "max");
+xil_printf("%7d, %8d WriteQ\n", time_WtoTxQ_ns, time_WtoTxQ_max_ns);
+xil_printf("%7d, %8d IRQ 10kHz\n", time_irq_ns, time_irq_max_ns);
+xil_printf("%7d, %8d T_irq 10kHz\n", time_irqLen_ns, time_irqLen_max_ns);
+xil_printf("%7d, %8d cacheFlush\n", time_cacheFlush_ns, time_cacheFlush_max_ns);
+time_WtoTxQ_max_ns = 0;
+time_irq_max_ns = 0;
+time_irqLen_max_ns = 0;
+time_cacheFlush_max_ns = 0;
+	}
 }

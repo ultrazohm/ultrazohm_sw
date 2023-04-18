@@ -1199,12 +1199,11 @@ proc create_hier_cell_D5_adapter { parentCell nameHier } {
 
 
   # Create pins
-  create_bd_pin -dir I -type clk AXI4_Lite_ACLK
+  create_bd_pin -dir I -type clk AXI4_LITE_ACLK
   create_bd_pin -dir I -type rst AXI4_Lite_ARESETN
   create_bd_pin -dir I -from 0 -to 0 Dig_11_Ch5
   create_bd_pin -dir I -from 0 -to 0 Dig_12_Ch5
   create_bd_pin -dir I -from 0 -to 0 Dig_13_Ch5
-  create_bd_pin -dir I -type clk clk
   create_bd_pin -dir I -from 0 -to 0 probe5
 
   # Create instance: IncreEncoder_V24_ip_0, and set properties
@@ -1223,20 +1222,19 @@ proc create_hier_cell_D5_adapter { parentCell nameHier } {
 
 
   # Create interface connections
-  connect_bd_intf_net -intf_net smartconnect_0_M09_AXI [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins IncreEncoder_V24_ip_0/AXI4_Lite]
+  connect_bd_intf_net -intf_net AXI4_Lite_1 [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins IncreEncoder_V24_ip_0/AXI4_Lite]
 
   # Create port connections
+  connect_bd_net -net AXI4_Lite_ARESETN_1 [get_bd_pins AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN]
   connect_bd_net -net A_1 [get_bd_pins Dig_12_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/A] [get_bd_pins ila_Encoder/probe0]
   connect_bd_net -net B_1 [get_bd_pins Dig_13_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/B] [get_bd_pins ila_Encoder/probe1]
   connect_bd_net -net I_1 [get_bd_pins Dig_11_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/I] [get_bd_pins ila_Encoder/probe2]
   connect_bd_net -net IncreEncoder_V24_ip_0_OverSamplFactor [get_bd_pins IncreEncoder_V24_ip_0/OverSamplFactor] [get_bd_pins ila_Encoder/probe7]
   connect_bd_net -net IncreEncoder_V24_ip_0_omega [get_bd_pins IncreEncoder_V24_ip_0/omega] [get_bd_pins ila_Encoder/probe3]
   connect_bd_net -net IncreEncoder_V24_ip_0_position [get_bd_pins IncreEncoder_V24_ip_0/position] [get_bd_pins ila_Encoder/probe6]
-  connect_bd_net -net IncreEncoder_ip_0_theta_el [get_bd_pins IncreEncoder_V24_ip_0/theta_el] [get_bd_pins ila_Encoder/probe4]
+  connect_bd_net -net IncreEncoder_V24_ip_0_theta_el [get_bd_pins IncreEncoder_V24_ip_0/theta_el] [get_bd_pins ila_Encoder/probe4]
   connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins IncreEncoder_V24_ip_0/PeriodEnd] [get_bd_pins ila_Encoder/probe5]
-  connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins ila_Encoder/clk]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_CLK]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins AXI4_LITE_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_CLK] [get_bd_pins ila_Encoder/clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -2054,8 +2052,6 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
 
 
   # Create pins
-  create_bd_pin -dir I -type clk AXI4_Lite_ACLK
-  create_bd_pin -dir I -type rst AXI4_Lite_ARESETN1
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_min
@@ -2110,12 +2106,10 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   connect_bd_net -net Gates_dout_0 [get_bd_pins D1_OUT] [get_bd_pins D1_adapter/D1_OUT]
   connect_bd_net -net I_1 [get_bd_pins Dig_11_Ch5] [get_bd_pins D5_adapter/Dig_11_Ch5]
   connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins D5_adapter/probe5]
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN]
-  connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins AXI4_Lite_ARESETN1] [get_bd_pins D5_adapter/AXI4_Lite_ARESETN]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN] [get_bd_pins D5_adapter/AXI4_Lite_ARESETN]
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins D3_OUT] [get_bd_pins D3_adapter/D3_OUT]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Enable_Gate] [get_bd_pins D2_adapter/Enable_Gates]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins D1_adapter/CLK] [get_bd_pins D2_adapter/AXI4_Lite_ACLK] [get_bd_pins D3_adapter/clk] [get_bd_pins D5_adapter/clk]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins D5_adapter/AXI4_Lite_ACLK]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins D1_adapter/CLK] [get_bd_pins D2_adapter/AXI4_Lite_ACLK] [get_bd_pins D3_adapter/clk] [get_bd_pins D5_adapter/AXI4_LITE_ACLK]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -3322,7 +3316,6 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net ADC_LTC2311_0_SS_N [get_bd_ports A2_OUT_CNV_0] [get_bd_ports A2_OUT_CNV_1] [get_bd_pins uz_analog_adapter/A2_OUT_CNV_1]
   connect_bd_net -net ADC_LTC2311_1_SS_N [get_bd_ports A1_OUT_CNV_0] [get_bd_ports A1_OUT_CNV_1] [get_bd_pins uz_analog_adapter/A1_OUT_CNV_1]
   connect_bd_net -net ADC_LTC2311_2_SS_N [get_bd_ports A3_OUT_CNV_0] [get_bd_ports A3_OUT_CNV_1] [get_bd_pins uz_analog_adapter/A3_OUT_CNV_1]
-  connect_bd_net -net AXI4_Lite_ARESETN1_1 [get_bd_pins uz_digital_adapter/AXI4_Lite_ARESETN1] [get_bd_pins uz_system/peripheral_aresetn1]
   connect_bd_net -net A_1 [get_bd_ports Dig_12_Ch5] [get_bd_pins uz_digital_adapter/Dig_12_Ch5]
   connect_bd_net -net B_1 [get_bd_ports Dig_13_Ch5] [get_bd_pins uz_digital_adapter/Dig_13_Ch5]
   connect_bd_net -net Enable_Gates_CPLD_High_dout [get_bd_ports D1_OUT_28] [get_bd_ports D2_OUT_28] [get_bd_ports D3_OUT_28] [get_bd_ports D4_OUT_28] [get_bd_pins uz_system/D1_OUT_28]
@@ -3347,7 +3340,6 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net xlslice_Enable_Gate_Dout [get_bd_ports D1_OUT_29] [get_bd_ports D2_OUT_29] [get_bd_ports D3_OUT_29] [get_bd_ports D4_OUT_29] [get_bd_pins uz_system/D1_OUT_29]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins uz_digital_adapter/Enable_Gate] [get_bd_pins uz_system/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins uz_analog_adapter/s00_axi_aclk] [get_bd_pins uz_digital_adapter/clk] [get_bd_pins uz_system/clk] [get_bd_pins uz_user/aclk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/saxi_lpd_aclk]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins uz_digital_adapter/AXI4_Lite_ACLK] [get_bd_pins uz_system/clk_50MHz]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins uz_system/resetn] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
   # Create address segments

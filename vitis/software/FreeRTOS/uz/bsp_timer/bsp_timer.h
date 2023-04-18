@@ -16,7 +16,7 @@ void bsp_timer_stop(void);
 
 uint16_t bsp_timer_timestamp_get(void);
 uint32_t bsp_timer_timestamp_get_time_delta_ns(uint16_t time_start,
-											   uint16_t time_end);
+                                               uint16_t time_end);
 void timer_irq_callback__(void);
 
 #endif /* BSP_TIMER_H_ */

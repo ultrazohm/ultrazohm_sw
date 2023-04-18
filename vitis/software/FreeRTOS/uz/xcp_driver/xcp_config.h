@@ -27,7 +27,7 @@
 #ifdef USE_XCP_CAN
 #define kXcpMaxCTO              8
 #define kXcpMaxDTO              8
-#define XCP_CAN_ID_TX			(uint16_t) 0x23
+#define XCP_CAN_ID_TX            (uint16_t) 0x23
 /*
  * No filter implemented.
  * In this setup XCP master from CANape is the only other participant on the

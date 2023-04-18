@@ -67,14 +67,14 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-		codegenInstance.input.time = uz_SystemTime_GetGlobalTimeInSec();
+        codegenInstance.input.time = uz_SystemTime_GetGlobalTimeInSec();
 
-		// TODO remove!
-		void xcp_dummy_calculations(void);
-		xcp_dummy_calculations();
+        // TODO remove!
+        void xcp_dummy_calculations(void);
+        xcp_dummy_calculations();
 
-		uz_codegen_step(&codegenInstance);
-		Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.ChirpSine;
+        uz_codegen_step(&codegenInstance);
+        Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.ChirpSine;
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
@@ -87,7 +87,7 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
-	xcp_R5_cache_flush_measure();
+    xcp_R5_cache_flush_measure();
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

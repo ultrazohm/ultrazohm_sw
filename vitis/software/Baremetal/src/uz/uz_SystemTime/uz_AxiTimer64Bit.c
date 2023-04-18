@@ -39,5 +39,5 @@ uint64_t uz_AxiTimer64Bit_ReadValue64Bit(){
 
 uint32_t uz_AxiTimer64Bit_getTimestamp_u32(void)
 {
-	return XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
+    return XTmrCtr_ReadReg(Timer_Uptime.BaseAddress, 0, XTC_TCR_OFFSET);
 }

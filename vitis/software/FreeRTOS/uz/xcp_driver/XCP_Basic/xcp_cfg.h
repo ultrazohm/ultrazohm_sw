@@ -36,9 +36,9 @@
 
 #ifndef  __XCP_CFG_H__
 
+#include <stdint.h>
 #include "xcpBasic.h"
-#include "stdint.h"
-#include "../../../../../software/FreeRTOS/uz/xcp_driver/xcp_config.h"
+#include "../xcp_config.h"
 
 /*----------------------------------------------------------------------------*/
 /* Project specific includes */
@@ -158,7 +158,7 @@ typedef int32_t		vsint32;
 /* Enable memory checksum */
 /* The checksum will be calculated in XcpBackground() */
 /* This may be implementation specific */
-#define XCP_ENABLE_CHECKSUM
+//#define XCP_ENABLE_CHECKSUM
 #define kXcpChecksumMethod XCP_CHECKSUM_TYPE_ADD14
 
 /* Enable Calibration Page switching and dynamic calibration overlay RAM allocation */
@@ -206,23 +206,25 @@ typedef int32_t		vsint32;
 /* DAQ Timestamp */
 #define XCP_ENABLE_DAQ_TIMESTAMP
 #ifdef XCP_ENABLE_DAQ_TIMESTAMP
-  #define kXcpDaqTimestampSize DAQ_TIMESTAMP_DWORD	//WORD == uint16, DWORD == uint32
-  #define kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS
-  //#define kXcpDaqTimestampTicksPerUnit 15360  // 133MHz/4 -> 30ns * 512 = 15360 (Triboard TC1767) Error 0%
+  /*
+   * Example:
+   * Timestamp is TTC10
+   * One tick of timestamp counter is = (1 / (100 MHz / (2 ^ 12))) s = 40.96 us
+   * TicksPerUnit == "how many (ticks * unit) is one timer tick:
+   *  => 40.96 us = (4096 * 10 ns)
+   * Results in code:
+   *   #define kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS
+   *   #define kXcpDaqTimestampTicksPerUnit 4096
+   */
+#define kXcpDaqTimestampSize DAQ_TIMESTAMP_DWORD	//WORD == uint16, DWORD == uint32
+#define kXcpDaqTimestampUnit DAQ_TIMESTAMP_UNIT_10NS
+#define kXcpDaqTimestampTicksPerUnit 1
 
-  // Timestamp is TTC10
-  //  One tick of timestamp counter is = (1 / (100 MHz / (2 ^ 12))) s = 40.96 us
-  //  TicksPerUnit == "how many (ticks * unit) is one timer tick:
-  //   => 40.96 us = (4096 * 10 ns)
-//#define kXcpDaqTimestampTicksPerUnit 4096
-#define kXcpDaqTimestampTicksPerUnit 100
 //  #define ApplXcpGetTimestamp()     xcp_interface_getTimestamp()
 //  #define ApplXcpDaqGetTimestamp()  xcp_interface_daqGetTimestamp()
 #endif
 
-
 /* Enable Plug&Play for the event definitions */
 //#define XCP_ENABLE_DAQ_EVENT_INFO
-
 
 #endif

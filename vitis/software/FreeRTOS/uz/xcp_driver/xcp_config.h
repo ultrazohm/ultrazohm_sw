@@ -48,6 +48,11 @@
 #endif
 
 /*-----------------------------------------------
+ * XCP driver configuration
+ */
+#define XCP_ENABLE_UNALIGNED_MEM_ACCESS
+
+/*-----------------------------------------------
  * Plausability check
  */
 #if (defined(USE_XCP_ETH) && defined(USE_XCP_CAN))

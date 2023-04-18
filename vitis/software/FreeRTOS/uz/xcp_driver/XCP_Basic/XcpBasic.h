@@ -1540,9 +1540,6 @@ typedef struct {
 } tXcpDto;
 
 typedef union { /* PRQA S 0750 */ /* MD_MSR_18.4 */
-  // JWenzl +1: Prepend bytes for the XCP-Header
-  vuint8 __space_for_header[XCP_HEADER_LEN];
-
   /* There might be a loss of up to 3 bytes. */
   vuint8  b[ ((kXcpMaxCTO + 3) & 0xFFC)      ];
   vuint16 w[ ((kXcpMaxCTO + 3) & 0xFFC) / 2  ];
@@ -1775,10 +1772,14 @@ typedef struct {
 typedef struct {
   /* Crm has to be the first object of this structure !! (refer to XcpInit()) */
 
+  // JWenzl +1: Prepend bytes for the XCP-Header
+  vuint8 __space_for_header1[XCP_HEADER_LEN];
   tXcpCto Crm;                           /* RES,ERR Message buffer */
   vuint8  CrmLen;                        /* RES,ERR Message length */
 
 #if defined ( XCP_ENABLE_SEND_EVENT ) || defined ( XCP_ENABLE_SERV_TEXT )
+  // JWenzl +1: Prepend bytes for the XCP-Header
+  vuint8 __space_for_header2[XCP_HEADER_LEN];
   tXcpCto Ev;                            /* EV,SERV Message buffer */
   vuint8 EvLen;                          /* EV,SERV Message length */
 #endif

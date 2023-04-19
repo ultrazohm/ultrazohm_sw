@@ -1,7 +1,11 @@
-#pragma once
+/*
+ * File Name:         hdl_prj\ipcore\uz_resolver_pl_interface_v1_0\include\uz_resolver_pl_interface_addr.h
+ * Description:       C Header File
+ * Created:           2023-04-19 20:07:07
+*/
 
-#ifndef UZ_RESOLVER_MECH_REV_CALC_H_
-#define UZ_RESOLVER_MECH_REV_CALC_H_
+#ifndef UZ_RESOLVER_PL_INTERFACE_H_
+#define UZ_RESOLVER_PL_INTERFACE_H_
 
 #define  IPCore_Reset_uz_resolver_pl_interface                  0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_resolver_pl_interface                 0x4  //enabled (by default) when bit 0 is 0x1
@@ -18,4 +22,4 @@
 #define  cnt_AXI_Data_uz_resolver_pl_interface                  0x124  //data register for Outport cnt_AXI
 #define  n_mech_rpm_AXI_Data_uz_resolver_pl_interface           0x128  //data register for Outport n_mech_rpm_AXI
 
-#endif /* UZ_RESOLVER_MECH_REV_CALC_H_ */
+#endif /* UZ_RESOLVER_PL_INTERFACE_H_ */

@@ -29,11 +29,20 @@ struct uz_resolverIP_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core, tested for 100MHz*/
     uint32_t resolution; /**< Resolution setting of AD2S1210. Determined by RES pins, tested for 16bit */
     float freq_clockin; /**< External Clock of AD2S1210. Determined by Crystal Frequency, tested for 8.192MHz */
-    float zero_position_mech; /**< Mechanical zero position*/
-    float pole_pairs_mach; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
-    float pole_pairs_res; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
+    float zero_position_mechanical; /**< Mechanical zero position*/
+    float pole_pairs_machine; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
+    float pole_pairs_resolver; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
 };
 
+/**
+ * @brief struct for returning both position and velocity (in float)
+ *
+ */
+
+struct uz_resolverIP_position_velocity_t{
+  float position;
+  float velocity;
+};
 
 
 
@@ -141,7 +150,7 @@ void uz_resolverIP_setResolverPolePairs(uz_resolverIP_t* self, float pole_Pairs)
  *
  * @param self instance of uz_resolverIP_t
  *
- *  @return Float Electrical Velocity Data in revs per second
+ *  @return Float Electrical Velocity Data in rad per second
  */
 float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self);
 
@@ -150,7 +159,7 @@ float uz_resolverIP_readElectricalVelocity(uz_resolverIP_t* self);
  *
  * @param self instance of uz_resolverIP_t
  *
- * @return Float Mechanical Velocity Data in revs per second
+ * @return Float Mechanical Velocity Data in rad per second
  */
 float uz_resolverIP_readMechanicalVelocity(uz_resolverIP_t* self);
 
@@ -176,23 +185,30 @@ float uz_resolverIP_readMechanicalPosition(uz_resolverIP_t* self);
 
 
 /**
-  * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
+ * @brief Reads Resolver Mechanical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float mechanical position value in range 0..2*PI
- * @param velocity_f pointer to float mechanical velocity value in revs per second
+ * 
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for mechanical position (0..2*PI) and velocity in rad per second
  */
-void uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readMechanicalPositionAndVelocity(uz_resolverIP_t* self);
 
 /**
   * @brief Reads Resolver Electrical Position and Velocity, returns after SPI Communication is done and value is read in via AXI. External trigger connected to IPCore is neccessary
  *
  * @param self instance of uz_resolverIP_t
- * @param position_f pointer to float electrical position value in range 0..2*PI
- * @param velocity_f pointer to float electrical velocity value in revs per second
+ * 
+ * @return Struct of type uz_resolverIP_position_velocity_t with float members for electrical position (0..2*PI) and velocity in rad per second
  */
-void uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self, float* position_f, float* velocity_f);
+struct uz_resolverIP_position_velocity_t uz_resolverIP_readElectricalPositionAndVelocity(uz_resolverIP_t* self);
 
+
+
+/*********************
+ *
+ * High Level Register Read/Write Functions
+ *
+ *********************/
 /**
  * @brief Reads Resolver Register
  *
@@ -211,13 +227,6 @@ int32_t uz_resolverIP_readRegister(uz_resolverIP_t* self, int32_t addr);
  * @param val Register write value
  */
 void uz_resolverIP_writeRegister(uz_resolverIP_t* self, int32_t addr, int32_t val);
-
-
-/*********************
- *
- * High Level Register Read/Write Functions
- *
- *********************/
 
 /**
  * @brief Sets Loss Of Signal Threshold of AD2S1210.

@@ -103,10 +103,12 @@ int main(void)
 
             initialization_chain = print_msg;
             break;
-        case print_msg:
+	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
+            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

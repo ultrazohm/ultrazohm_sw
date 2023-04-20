@@ -31,6 +31,25 @@
 #define SOFTWARE_RST_REG_ADR            0xF0U
 #define FAULT_REG_ADR                   0xFFU
 
+/**
+ * @brief Reads Resolver Register
+ *
+ * @param base_address base_address of IPCore
+ * @param addr Register address (see Datasheet)
+ *
+ *  @return int32_t Read Register Data
+ */
+int32_t uz_resolverIP_hw_readRegister(uint32_t base_address, int32_t addr);
+
+/**
+ * @brief Writes Resolver Register
+ *
+ * @param base_address base_address of IPCore
+ * @param addr Register address
+ * @param val Register write value
+ */
+void uz_resolverIP_hw_writeRegister(uint32_t base_address,  int32_t addr, int32_t val);
+
 
 /**
  * @brief writes value in val to RESCON AXI register (bit map above)

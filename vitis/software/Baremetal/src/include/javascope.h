@@ -37,6 +37,7 @@ enum JS_OberservableData {
 	JSO_ud,
 	JSO_cnt,
 	JSO_Speed_rpm,
+	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,

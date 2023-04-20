@@ -80,7 +80,7 @@ References
 ==========
 
 * :download:`Schematic <SCH_UZ_A_DAC_THS_Rev01.pdf>`
-* `Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_
+* `uz_dac8831 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_
 * Data sheet of DAC8831: https://www.ti.com/lit/ds/slas449d/slas449d.pdf?ts=1653291212982
 
 Designed by 

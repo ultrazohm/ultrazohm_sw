@@ -61,6 +61,7 @@
 void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
 void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
 
+int Initialize_Timer(void);													// Init Timer for ISRs
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
 int Initialize_ISR(void);

@@ -113,34 +113,6 @@ int Initialize_ISR()
 
 //==============================================================================================================================================================
 //----------------------------------------------------
-// INITIALIZE AXI-TIMER FOR ISRs
-// - "TIMER_LOAD_VALUE" sets the counter-end-value in order to set the ISR-frequency f_c
-// - "Con_TIMER_DEVICE_ID" uses the Device-ID of the used timer in Vivado
-// - "Timer_Interrupt" is the used timer structure instance
-// - "XTC_INT_MODE_OPTION" activates the Interrupt function
-// - "XTC_AUTO_RELOAD_OPTION" activates an automatic reload of the timer
-// - By default, the counter counts up
-//----------------------------------------------------
-int Initialize_Timer()
-{
-
-    int Status;
-
-    // SETUP THE TIMER 1 for Interrupts
-    Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_UZ_SYSTEM_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
-    if (Status != XST_SUCCESS)
-        return XST_FAILURE;
-    // XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
-    XTmrCtr_SetOptions(&Timer_Interrupt, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
-    XTmrCtr_SetResetValue(&Timer_Interrupt, 0, TIMER_LOAD_VALUE);
-    XTmrCtr_Reset(&Timer_Interrupt, 0);
-    XTmrCtr_Start(&Timer_Interrupt, 0);
-
-    return Status;
-}
-
-//==============================================================================================================================================================
-//----------------------------------------------------
 // Rpu_GicInit() - This function initializes RPU GIC and connects
 // 					interrupts with the associated handlers
 // @IntcInstPtr		Pointer to the GIC instance

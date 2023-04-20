@@ -29,7 +29,6 @@
 #define Interrupt_3L_start_center	XPS_FPGA3_INT_ID
 #define Interrupt_3L_start			XPS_FPGA4_INT_ID
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
-#define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
 
 #if INTERRUPT_ISR_SOURCE_USER_CHOICE == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min
@@ -48,9 +47,6 @@
 	#define Interrupt_ISR_freq_factor	1
 #elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 5
 	#define Interrupt_ISR_ID			Interrupt_3L_center
-	#define Interrupt_ISR_freq_factor	1
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 6
-	#define Interrupt_ISR_ID			Interrupt_timer_fcc
 	#define Interrupt_ISR_freq_factor	1
 #else
 	#warning no ISR interrupt ID defined

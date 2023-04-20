@@ -8,6 +8,10 @@
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
 
+#define OFFSET_STEP_RAD 0.01f                       // set stepsize to step through thetas
+#define OFFSET_RANGE_RAD 0.2f                       // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
+#define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f     // a delay between the rotations (positive, negative and next theta's positive can be set)
+#define OFFSET_ACCELLERATE_TIME_SEC 3.0f            // the time to let the motor accellerate with the given q-current
 
 /**
  * @brief Configuration struct for the PMSM model IP-Core driver

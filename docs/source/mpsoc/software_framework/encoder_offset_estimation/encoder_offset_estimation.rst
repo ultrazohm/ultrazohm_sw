@@ -50,7 +50,6 @@ It is important to use the global data struct at least for the measured theta el
         	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
     uz_CurrentControl_t* CC_instance = NULL;
 
-    Global_Data.av.theta_offset = 2.0f; // initial theta offset
     ..
     // in main loop
     CC_instance = uz_CurrentControl_init(cc_config);

@@ -417,6 +417,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ElectricalID_Config.identLq = false;
 		            break;
 
+		        case (ParaID_EID_Enable_extended_psi):
+					ParaID_Data.ElectricalID_Config.extended_psi = true;
+					break;
+
+				case (ParaID_EID_Disable_extended_psi):
+					ParaID_Data.ElectricalID_Config.extended_psi = false;
+					break;
+
+				case (ParaID_EID_Enable_extended_offset):
+					ParaID_Data.ElectricalID_Config.extended_offset = true;
+					break;
+
+				case (ParaID_EID_Disable_extended_offset):
+					ParaID_Data.ElectricalID_Config.extended_offset = false;
+					break;
+
 		        case (ParaID_EID_Admit_Params):
 		            //If FOC is used
 		            //uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
@@ -714,5 +730,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	        js_status_BareToRTOS &= ~(1 << 19);
 	        ultrazohm_state_machine_set_userLED(false);
 	    }
+
+	    /* Bit 20 - ext offset */
+		if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
+			js_status_BareToRTOS |= (1 << 20);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 20);
+		}
+
+	    //* Bit 13 - ext psi */
+		if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
+			js_status_BareToRTOS |= (1 << 21);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 21);
+		}
+
+
 
 }

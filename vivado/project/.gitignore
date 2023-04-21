@@ -4,6 +4,8 @@
 /*
 !zusys/zusys.bd
 !zusys/hdl/zusys_wrapper.vhd
+!kria/k26sys.bd
+!kria/hdl/k26sys_wrapper.vhd
 !*.xpr
 !.gitignore
 

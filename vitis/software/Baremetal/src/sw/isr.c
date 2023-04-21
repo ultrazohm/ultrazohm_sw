@@ -82,16 +82,24 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    update_position_and_speed_of_resolverIP(&Global_Data);
-    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false); // cnt_reset false=normal operation
+//    update_position_and_speed_of_resolverIP(&Global_Data);
+    update_speed_of_resolverIP(&Global_Data);
+    update_position_of_resolverIP(&Global_Data);
+    Global_Data.av.pl_interface = uz_resolver_pl_interface_get_outputs(Global_Data.objects.pl_interface);
+//    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_PL_INTER_0_BASEADDR + 0x104, false); // cnt_reset false=normal operation
+//
+//    uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_PL_INTER_0_BASEADDR + 0x114, theta_m_offset); // theta_el offset
+//
+//    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_mech_2pi
+//	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x11C),20); //position_el_2pi
+//	omega_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x120),11); //omega_mech
+//	rpm_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x128),11); //rpm_mech
+//	cnt_ip = uz_axi_read_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x124); //cnt
 
-    uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x114, theta_m_offset); // theta_el offset
-
-    theta_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x118),20); //position_mech_2pi
-	theta_elec_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x11C),20); //position_el_2pi
-	omega_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x120),11); //omega_mech
-	rpm_mech_res_calc_ip = uz_convert_sfixed_to_float(uz_axi_read_uint32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x128),11); //rpm_mech
-	cnt_ip = uz_axi_read_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x124); //cnt
+	theta_mech_res_calc_ip = Global_Data.av.pl_interface.position_mech_2pi;
+	theta_elec_res_calc_ip = Global_Data.av.pl_interface.position_el_2pi;
+	omega_mech_res_calc_ip = Global_Data.av.pl_interface.omega_mech_rad_s;
+	rpm_mech_res_calc_ip = Global_Data.av.pl_interface.n_mech_rpm;
 
     theta_mech_resolver_ip = theta_mech_calc_from_resolver + theta_m_offset;
     theta_elec_resolver_ip = theta_mech_calc_from_resolver*5.0f + theta_m_offset*5.0f;
@@ -103,9 +111,9 @@ void ISR_Control(void *data)
     speed_rpm_resolver_ip = Global_Data.av.mechanicalRotorSpeed;
 
     if (reset_ip_cnt == true) {
-    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, true);
+//    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, true);
     } else {
-   	uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false);
+//   	uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false);
     }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -159,7 +167,7 @@ void ISR_Control(void *data)
         	cnt=0;
         	cnt_float=0.0f;
         	first_ISR=false;
-        	uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false);
+//        	uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, false);
         }
 
         if (Global_Data.av.theta_mech <= theta_m_min) {

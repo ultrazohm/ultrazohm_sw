@@ -92,13 +92,13 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             //initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.resolver_IP = initialize_resolverIP_on_D5();
-
+            Global_Data.objects.pl_interface = initialize_resolver_pl_interface();
             //resolver_mech_rev_calc
-            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x100, 2); //resolver polepairs
-            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x108, 65535); //position_intmax
-            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x10C, 5); //machine polepairs
-            uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x110, 0.003814697f); //bitToRPS Factor
-            uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, true); //cnt_reset: hold reset until isr.c disables reset
+//            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x100, 2); //resolver polepairs
+//            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x108, 65535); //position_intmax
+//            uz_axi_write_int32(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x10C, 5); //machine polepairs
+//            uz_axi_write_float(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x110, 0.003814697f); //bitToRPS Factor
+//            uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_MECH_REV_0_BASEADDR + 0x104, true); //cnt_reset: hold reset until isr.c disables reset
 
 
             initialization_chain = print_msg;

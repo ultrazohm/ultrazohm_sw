@@ -54,6 +54,13 @@ typedef struct {
 //        tmeas.temp_last3s_ns[_tmeas] = tmeas.now_ns[_tmeas]; \
 //    } while (0)
 
+typedef struct _timing_R5_t {
+    float isr_period_us;                    // measured period of interrupt in micro seconds
+    float isr_execution_time_us;            // measured execution time of interrupt service routine (isr)
+    float xcp_cache_flush_stim_us;
+    float xcp_cache_flush_meas_us;
+} timing_R5_t;
+
 //--------------------------------------------------------------------
 // Variables
 // -------------------------------------------------------------------
@@ -78,17 +85,23 @@ xcp_meas_t xcp_meas SECTION_XCP_MEAS = {0};
 uint8_t xcp_80Byte_u8[DUMMY_LEN] SECTION_XCP_MEAS = {0};
 uint32_t xcp_80Byte_u32[DUMMY_LEN/4] SECTION_XCP_MEAS = {0};
 
+timing_R5_t timing_R5 SECTION_XCP_MEAS = {0};
+
 //--------------------------------------------------------------------
 // Global functions
 // -------------------------------------------------------------------
 void xcp_R5_cache_flush_stimulate(void)
 {
+    uint32_t ts_start = uz_AxiTimer64Bit_getTimestamp_u32();
     Xil_DCacheFlushRange(XCP_STIM_R5_ADDR, XCP_STIM_R5_LEN);
+    timing_R5.xcp_cache_flush_stim_us = (uz_AxiTimer64Bit_getTimestamp_u32() - ts_start) / 100.0f;
 }
 
 void xcp_R5_cache_flush_measure(void)
 {
+    uint32_t ts_start = uz_AxiTimer64Bit_getTimestamp_u32();
     Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
+    timing_R5.xcp_cache_flush_meas_us = (uz_AxiTimer64Bit_getTimestamp_u32() - ts_start) / 100.0f;
 }
 
 void xcp_R5_set_timestamp(void)
@@ -102,6 +115,12 @@ void xcp_R5_set_timestamp(void)
 // TODO remove!
 void xcp_dummy_calculations(void)
 {
+    // Set measured timings to read it via XCP
+    extern float uz_SystemTime_GetIsrExectionTimeInUs();
+    timing_R5.isr_execution_time_us = uz_SystemTime_GetIsrExectionTimeInUs();
+    extern float uz_SystemTime_GetIsrPeriodInUs();
+    timing_R5.isr_period_us = uz_SystemTime_GetIsrPeriodInUs();
+
     static int init_once = 1;
     if (init_once) {
         init_once = 0;

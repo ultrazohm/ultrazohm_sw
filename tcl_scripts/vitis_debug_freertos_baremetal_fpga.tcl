@@ -16,7 +16,7 @@ cd [getws]
 connect -url tcp:127.0.0.1:3121
 puts "INFO: Connected to target on host '127.0.0.1' and port '3121'."
 source $PATH_zynqmp_utils 
-puts "INFO: sourcing of 'Xilinx/Vitis/2022.2/scripts/vitis/util/zynqmp_utils.tcl' is done."
+puts "INFO: sourcing of '$PATH_zynqmp_utils ' is done."
 targets -set -nocase -filter {name =~"APU*"}
 puts "INFO: Context for 'APU' is selected."
 rst -system
@@ -42,7 +42,7 @@ puts "INFO: sourcing of 'workspace/FreeRTOS/_ide/psinit/psu_init.tcl' is done."
 psu_init
 puts "INFO:'psu_init' command is executed."
 source $PATH_fsbl 
-puts "INFO: sourcing of 'Xilinx/Vitis/2022.2/scripts/vitis/util/fsbl.tcl' is done."
+puts "INFO: sourcing of '$PATH_fsbl' is done."
 after 1000
 psu_ps_pl_isolation_removal
 puts "INFO: 'psu_ps_pl_isolation_removal' command is executed."

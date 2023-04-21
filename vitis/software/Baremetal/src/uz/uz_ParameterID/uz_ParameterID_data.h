@@ -144,6 +144,8 @@ typedef struct {
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
   real32_T goertzlTorque; /**< max torque of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
+  boolean_T extended_psi;
+  boolean_T extended_offset;
 } uz_ParaID_ElectricalIDConfig_t;
 
 
@@ -166,6 +168,7 @@ typedef struct {
   uz_6ph_dq_t resistances_6ph;
   real32_T psi_pm[5];
   real32_T psi_pm_angle[5];
+  real32_T set_rpm_val;
 } uz_ParaID_ElectricalID_output_t;
 
 typedef struct {

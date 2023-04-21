@@ -1,23 +1,11 @@
 #include "uz_resolver_pl_interface.h"
 
-#include "../../uz_global_configuration.h"
+#include "../../uz/uz_global_configuration.h"
 #if UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES > 0U
 #include <stdbool.h> 
-#include "../../uz_HAL.h"
+#include "../../uz/uz_HAL.h"
 #include "uz_resolver_pl_interface.h"
 #include "uz_resolver_pl_interface_hw.h" 
-
-// Datasheet values of AD2S1210 needed fpr internal calculations of the IP-Core
-// Maximum representable rounds per second according to resolver resolution setting
-#define RPS_MAX_16BIT  125U
-#define RPS_MAX_14BIT  500U
-#define RPS_MAX_12BIT 1000U
-#define RPS_MAX_10BIT 2500U
-// Calculation factor for results in rounds per second from raw value
-#define BIT_TO_RPS_FACTOR_16BIT 0.003814697f // RPS_MAX_xxBIT/(2^(xx-1))
-#define BIT_TO_RPS_FACTOR_14BIT 0.061035156f
-#define BIT_TO_RPS_FACTOR_12BIT 0.488281250f
-#define BIT_TO_RPS_FACTOR_10BIT 4.882812500f
 
 struct uz_resolver_pl_interface_t {
     bool is_ready;
@@ -49,6 +37,7 @@ uz_resolver_pl_interface_t* uz_resolver_pl_interface_init(struct uz_resolver_pl_
     self->config=config;
     self->outputs=outputs;
     uz_resolver_pl_interface_set_config(self);
+    uz_resolver_pl_interface_reset(self);
     return (self);
 }
 
@@ -62,10 +51,28 @@ void uz_resolver_pl_interface_set_config(uz_resolver_pl_interface_t *self) {
     uz_resolver_pl_interface_set_theta_m_offset_rad(self, self->config.theta_m_offset_rad);
 }
 
+struct uz_resolver_pl_interface_outputs_t uz_resolver_pl_interface_get_outputs(uz_resolver_pl_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->outputs.revolution_counter = uz_resolver_pl_interface_hw_read_revolution_cnt(self->config.base_address);
+    self->outputs.position_mech_2pi = uz_resolver_pl_interface_hw_read_pos_mech_2pi(self->config.base_address);
+    self->outputs.position_el_2pi = uz_resolver_pl_interface_hw_read_pos_el_2pi(self->config.base_address);
+    self->outputs.omega_mech_rad_s = uz_resolver_pl_interface_hw_read_omega_mech_rad_s(self->config.base_address);
+    self->outputs.n_mech_rpm = uz_resolver_pl_interface_hw_read_n_mech_rpm(self->config.base_address);
+    return(self->outputs);
+}
+
 void uz_resolver_pl_interface_set_theta_m_offset_rad(uz_resolver_pl_interface_t *self, float theta_m_offset_rad) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->config.theta_m_offset_rad = theta_m_offset_rad;
     uz_resolver_pl_interface_hw_write_theta_m_offset_rad(self->config.base_address, self->config.theta_m_offset_rad);
+}
+
+void uz_resolver_pl_interface_reset(uz_resolver_pl_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, true);
+    uz_resolver_pl_interface_hw_write_cnt_reset(self->config.base_address, false);    
 }
 #endif

@@ -50,4 +50,7 @@ void update_position_and_speed_of_resolverIP(DS_Data* const data);
  */
 void readRegister_of_resolverIP(DS_Data* const data);
 
+uz_resolverIP_t* initialize_resolverIP_on_D5(void);
+uz_resolver_pl_interface_t* initialize_resolver_pl_interface(void);
+
 #endif /* RESOLVER_H_ */

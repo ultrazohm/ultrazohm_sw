@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -84,6 +85,7 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float theta_m_mod;
 	float theta_el_mod;
+	struct uz_resolver_pl_interface_outputs_t pl_interface;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -112,6 +114,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
 	uz_resolverIP_t* resolver_IP;
+	uz_resolver_pl_interface_t* pl_interface;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

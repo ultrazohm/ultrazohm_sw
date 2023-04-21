@@ -19,6 +19,10 @@
 
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
+#include "../uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz_setpoint/uz_setpoint.h"
+#include "../uz_ResonantController/uz_resonant_controller.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
 
@@ -427,6 +431,12 @@ typedef struct uz_ParameterID_Data_t {
 													0 = No_Control \n
 													1 = Current_Control \n
 													2 = Speed_Control*/
+  uz_SetPoint_t* setpoint_instance;
+  uz_SpeedControl_t* speed_instance;
+  uz_CurrentControl_t* cc_instance_1;
+  uz_CurrentControl_t* cc_instance_2;
+  uz_resonantController_t* resonant_instance_1;
+  uz_resonantController_t* resonant_instance_2;
 } uz_ParameterID_Data_t;
 
 #endif

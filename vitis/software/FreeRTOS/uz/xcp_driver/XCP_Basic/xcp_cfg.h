@@ -37,7 +37,7 @@
 #ifndef  __XCP_CFG_H__
 
 #include <stdint.h>
-#include "xcpBasic.h"
+#include "XcpBasic.h"
 #include "../xcp_config.h"
 
 /*----------------------------------------------------------------------------*/

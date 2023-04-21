@@ -10,13 +10,10 @@
 // Configuration
 // -------------------------------------------------------------------
 #define XCP_MEAS_R5_ADDR        0xFFFC0400
-#define XCP_MEAS_R5_LEN            0x00000400
-#define XCP_STIM_R5_ADDR        0xFFFC0800
-#define XCP_STIM_R5_LEN            0x00000400
+#define XCP_MEAS_R5_LEN         0x00000400
 
-#define SECTION_XCP_TS       __attribute__ ((section (".section_xcp_timestamp")))
+#define SECTION_XCP_TS      __attribute__ ((section (".section_xcp_timestamp")))
 #define SECTION_XCP_MEAS    __attribute__ ((section (".section_xcp_meas")))
-#define SECTION_XCP_STIM    __attribute__ ((section (".section_xcp_stim")))
 
 //--------------------------------------------------------------------
 // Types
@@ -77,7 +74,7 @@ uint32_t xcp_timestamp_R5 SECTION_XCP_TS = 0;
  * - SECTION_XCP_MEAS for data that shall be measured via XCP
  * - SECTION_XCP_STIM for data that shall be stimulated via XCP
  */
-xcp_stim_t xcp_stim SECTION_XCP_STIM = {0};
+xcp_stim_t xcp_stim SECTION_XCP_MEAS = {0};
 tmeas_t tmeas SECTION_XCP_MEAS = {0};
 xcp_meas_t xcp_meas SECTION_XCP_MEAS = {0};
 
@@ -93,7 +90,7 @@ timing_R5_t timing_R5 SECTION_XCP_MEAS = {0};
 void xcp_R5_cache_flush_stimulate(void)
 {
     uint32_t ts_start = uz_AxiTimer64Bit_getTimestamp_u32();
-    Xil_DCacheFlushRange(XCP_STIM_R5_ADDR, XCP_STIM_R5_LEN);
+    Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
     timing_R5.xcp_cache_flush_stim_us = (uz_AxiTimer64Bit_getTimestamp_u32() - ts_start) / 100.0f;
 }
 

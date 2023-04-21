@@ -26,7 +26,6 @@ MEMORY
  /*psu_ocm_ram_bank0_to_2_MEM_0 : ORIGIN = 0xFFFC0000, LENGTH = 0x30000 */
    psu_ocm_ram_xcp_timestamp_MEM_0 :   ORIGIN = 0xFFFC0400, LENGTH = 0x00000004
    psu_ocm_ram_xcp_meas_MEM_0 :        ORIGIN = 0xFFFC0404, LENGTH = 0x000003FC
-   psu_ocm_ram_xcp_stim_MEM_0 :        ORIGIN = 0xFFFC0800, LENGTH = 0x00000400
    psu_ocm_ram_bank3_MEM_0 : ORIGIN = 0xFFFF0000, LENGTH = 0x10000
    psu_qspi_linear_0_MEM_0 : ORIGIN = 0xC0000000, LENGTH = 0x20000000
    psu_r5_0_atcm_MEM_0 : ORIGIN = 0x0, LENGTH = 0x10000
@@ -315,14 +314,6 @@ _SDA2_BASE_ = __sdata2_start + ((__sbss2_end - __sdata2_start) / 2 );
    . = ALIGN(4);
    __section_xcp_meas_end = .;
 } > psu_ocm_ram_xcp_meas_MEM_0
-
-.section_xcp_stim : {
-   . = ALIGN(4);
-   __section_xcp_stim_start = .;
-   KEEP (*(.section_xcp_stim))
-   . = ALIGN(4);
-   __section_xcp_stim_start = .;
-} > psu_ocm_ram_xcp_stim_MEM_0
 
 _end = .;
 }

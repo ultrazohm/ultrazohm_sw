@@ -37,8 +37,6 @@
 // Address definitions for data exchange R5 <-> A53
 #define XCP_MEAS_R5_ADDR        0xFFFC0400
 #define XCP_MEAS_R5_LEN         0x00000400
-#define XCP_STIM_R5_ADDR        0xFFFC0800
-#define XCP_STIM_R5_LEN         0x00000400
 // Timestamp from R5 is used
 #define XCP_TIMESTAMP_R5_ADDR   0xFFFC0400
 
@@ -74,7 +72,7 @@ static void xcp_interface_cache_flush_measure(void)
 
 static void xcp_interface_cache_flush_stimulate(void)
 {
-    Xil_DCacheFlushRange(XCP_STIM_R5_ADDR, XCP_STIM_R5_LEN);
+    Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
 }
 
 static void xcp_interface_init(void)

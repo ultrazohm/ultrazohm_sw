@@ -19,6 +19,10 @@
 
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
+#include "../uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz_setpoint/uz_setpoint.h"
+#include "../uz_ResonantController/uz_resonant_controller.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
 
@@ -43,7 +47,10 @@ typedef struct {
   uz_3ph_dq_t v_dq; /**< measured dq currents */
   uz_6ph_abc_t v_abc_6ph; /**< measured six-phase voltages */
   uz_6ph_abc_t i_abc_6ph; /**< measured six-phase currents */
-  uz_3ph_dq_t v_dq_zero; /**< measured dq currents */
+  uz_3ph_dq_t v_xy_rotating; /**< measured dq voltages */
+  uz_3ph_dq_t i_xy_rotating; /**< measured dq currents */
+  uz_3ph_dq_t v_zero_rotating; /**< measured dq voltages */
+  uz_3ph_dq_t i_zero_rotating; /**< measured dq currents */
   uz_6ph_dq_t i_dq_6ph; /**< measured dq voltages */
   uz_6ph_dq_t v_dq_6ph; /**< measured dq currents */
   real32_T omega_m; /**< measured mechanical omega */
@@ -51,6 +58,7 @@ typedef struct {
   real32_T theta_m; /**< measured mechanical theta */
   real32_T theta_el; /**< measured electrical theta */
   real32_T V_DC; /**< measured DC-link voltage */
+  real32_T average_winding_temp; //celsius
 } uz_ParaID_ActualValues_t;
 
 /**
@@ -140,6 +148,8 @@ typedef struct {
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
   real32_T goertzlTorque; /**< max torque of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
+  boolean_T extended_psi;
+  boolean_T extended_offset;
 } uz_ParaID_ElectricalIDConfig_t;
 
 
@@ -162,6 +172,7 @@ typedef struct {
   uz_6ph_dq_t resistances_6ph;
   real32_T psi_pm[5];
   real32_T psi_pm_angle[5];
+  real32_T set_rpm_val;
 } uz_ParaID_ElectricalID_output_t;
 
 typedef struct {
@@ -194,6 +205,9 @@ typedef struct {
   boolean_T start_FM_ID; /**< flag to enable the automatic current control */
   boolean_T identR; /**< flag to enable online identification */
   real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
+  uint16_T selected_subsystem;
+  real32_T lower_meas_temp;
+  real32_T upper_meas_temp;
 } uz_ParaID_FluxMapIDConfig_t;
 
 /**
@@ -215,6 +229,7 @@ typedef struct {
   uz_3ph_dq_t zero_i_dq_PI_ref;
   boolean_T finished_calculation;
   real32_T psi_array[4];
+  uint32_T array_index;
   } uz_ParaID_FluxMapID_extended_controller_output_t;
 //----------------------------------------//
 //----------------------------------------//
@@ -416,6 +431,12 @@ typedef struct uz_ParameterID_Data_t {
 													0 = No_Control \n
 													1 = Current_Control \n
 													2 = Speed_Control*/
+  uz_SetPoint_t* setpoint_instance;
+  uz_SpeedControl_t* speed_instance;
+  uz_CurrentControl_t* cc_instance_1;
+  uz_CurrentControl_t* cc_instance_2;
+  uz_resonantController_t* resonant_instance_1;
+  uz_resonantController_t* resonant_instance_2;
 } uz_ParameterID_Data_t;
 
 #endif

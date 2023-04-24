@@ -1,8 +1,8 @@
 .. _how_to_build_uz_on_k26_kits:
 
-================================================================
-Building the UZ-Framework for the Kria Kits with TCL TCL-Scripts
-================================================================
+============================================================
+Building the UZ-Framework for the Kria Kits with TCL-Scripts
+============================================================
 
 To speed up the implementation of the UZ project on K26 kits, using tcl scripts can be helpful. 
 The purpose of this how-to guide is to provide instructions for building the existing UltraZohm project on K26 kits in order to create a HiL (Hardware-in-the-Loop) environment. 
@@ -24,7 +24,7 @@ Prerequisites
 Vivado
 ======
 
-The default Vivado project (see :ref:`default_vivado_project`) can be generated using the ``build.tcl`` (see :ref: `vivado_build_tcl``) script.
+The default Vivado project (see :ref:`default_vivado_project`) can be generated using the ``build.tcl`` (see :ref:`vivado_build_tcl`) script.
 Based on this, you can implement the default Vivado project (as a HiL version) on K26 kits by using the ``build_kria.tcl`` script.
 Since these scripts are coupled with the paths in the ultrazohm_sw/vivado folder, they are not included in tcl_scripts (see Tcl Scripts) but located in ultrazohm_sw/vivado.
 

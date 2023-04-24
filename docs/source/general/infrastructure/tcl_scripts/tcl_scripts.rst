@@ -12,6 +12,7 @@ The three different kinds of Tcl scripts are differentiated by prefix:
     * ci\_ marks scripts that are used for continuous integration
     * vivado\_ marks scripts for Vivado
     * vitis\_ marks scripts for Vitis
+    * kria\_ marks scripts for K26 kits
 
 The Vivado scripts can be called from Vivado tcl console (``Window -> Tcl console`` in Vivado) or choose a Tcl script (``Tools -> Run Tcl script...``) as well as the command line in batch mode on linux:
 

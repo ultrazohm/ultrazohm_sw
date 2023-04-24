@@ -65,6 +65,7 @@ uz_6ph_dq_t paraid_temp_dq_currents = {0};
 struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
 uz_3ph_alphabeta_t voltage_stationary_xy = {0};
 uz_3ph_alphabeta_t voltage_stationary_zero = {0};
+uz_6ph_dq_t controller_out = {0};
 //RaraID end
 
 
@@ -87,15 +88,6 @@ float u_neutral = 0.0f;
 float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
 float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
-
-// controller
-extern uz_CurrentControl_t* CC_instance_1;
-extern uz_CurrentControl_t* CC_instance_2;
-extern uz_SpeedControl_t* Speed_instace;
-extern uz_SetPoint_t* sp_instance;
-extern uz_resonantController_t* res_instance_1;
-extern uz_resonantController_t* res_instance_2;
-uz_6ph_dq_t controller_out = {0};
 
 
 float temp_theta_off = -0.78f;
@@ -127,18 +119,20 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
 	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
-	ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
+	//ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
 	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
 	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
+	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
 	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
-	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;// ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_el =  ParaID_Data.ActualValues.theta_m * polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
+	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;
 	//ParaID ende
 
-
+	ParaID_Data.ElectricalID_Config.goertzlTorque=3.0f;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Phase current measurement and various transformations (dq, VSD)					////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,9 +244,8 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
+		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-		//ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(controller_out, ParaID_Data.ActualValues.theta_el), 36.0f);
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
@@ -263,8 +256,6 @@ void ISR_Control(void *data)
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_12_to_17, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }
-
-
 
 
     // duty cycles:

@@ -417,19 +417,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ElectricalID_Config.identLq = false;
 		            break;
 
-		        case (ParaID_EID_Enable_extended_psi):
+		        case (ParaID_EID_Enable_EXT_PSI):
 					ParaID_Data.ElectricalID_Config.extended_psi = true;
 					break;
 
-				case (ParaID_EID_Disable_extended_psi):
+				case (ParaID_EID_Disable_EXT_PSI):
 					ParaID_Data.ElectricalID_Config.extended_psi = false;
 					break;
 
-				case (ParaID_EID_Enable_extended_offset):
+				case (ParaID_EID_Enable_EXT_THETA):
 					ParaID_Data.ElectricalID_Config.extended_offset = true;
 					break;
 
-				case (ParaID_EID_Disable_extended_offset):
+				case (ParaID_EID_Disable_EXT_THETA):
 					ParaID_Data.ElectricalID_Config.extended_offset = false;
 					break;
 

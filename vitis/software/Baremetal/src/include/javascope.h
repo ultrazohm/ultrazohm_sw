@@ -230,6 +230,10 @@ enum gui_button_mapping {
     ParaID_OID_max_ident_pause,
     ParaID_OID_identR_Amp,
     ParaID_OID_Fluxmap_Control_counter,
+	ParaID_EID_Enable_EXT_PSI,
+	ParaID_EID_Disable_EXT_PSI,
+	ParaID_EID_Enable_EXT_THETA,
+	ParaID_EID_Disable_EXT_THETA,
     GUI_BTN_ENDMARKER
 };
 

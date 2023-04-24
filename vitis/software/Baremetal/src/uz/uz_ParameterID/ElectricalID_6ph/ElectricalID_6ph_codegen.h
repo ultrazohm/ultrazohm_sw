@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.83
+ * Model version                  : 3.84
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri Apr 21 16:09:42 2023
+ * C/C++ source code generated on : Mon Apr 24 13:25:53 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -68,7 +68,7 @@ typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
-  uz_ParaID_Controller_Parameters_output_t b;
+  uz_ParaID_Controller_Parameters_output_t FOC_out_old;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
@@ -183,9 +183,9 @@ typedef struct {
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c14_sOrida1dLJHFhz3jwws1fnH_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_siDrVKQJrmgth2tO4iYKAXD_;
-                               /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint8_T is_c14_swiDrWmrnFiNemiFZhejbKE_;
+                               /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  uint8_T is_c14_siDrVKQJrmgth2tO4iYKAXD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint8_T is_c14_sXsuRAan3TDX1V4pP05BViE_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */

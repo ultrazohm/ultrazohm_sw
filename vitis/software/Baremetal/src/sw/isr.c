@@ -111,28 +111,23 @@ void ISR_Control(void *data)
 
 	omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*polepairs*2.0f*M_PI/60;
 
+	// ParaID Actual values
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
 	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
-	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
 	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	voltage_stationary_zero.alpha = 3.0f * controller_out.z1;
-	voltage_stationary_zero.beta = 3.0f * controller_out.z2;
-	//ParaID_Data.ActualValues.v_dq_zero = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
-	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
-	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
-	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_m = Global_Data.av.theta_elec;
-	ParaID_Data.ActualValues.theta_el =  ParaID_Data.ActualValues.theta_m * polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
-	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * polepairs - temp_theta_off;
+	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - ParaID_Data.ElectricalID_Output->thetaOffset;
+	// inside:
+	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
+	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
+	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
+	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
 	//ParaID ende
 
-	ParaID_Data.ElectricalID_Config.goertzlTorque=3.0f;
+	//ParaID_Data.ElectricalID_Config.goertzlTorque=3.0f;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////			Phase current measurement and various transformations (dq, VSD)					////
 ////////////////////////////////////////////////////////////////////////////////////////////////////

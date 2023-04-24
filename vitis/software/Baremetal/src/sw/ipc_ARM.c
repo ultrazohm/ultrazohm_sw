@@ -433,6 +433,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 					ParaID_Data.ElectricalID_Config.extended_offset = false;
 					break;
 
+				case (ParaID_EID_ManualOffset):
+					ParaID_Data.ElectricalID_Config.manual_offset = value;
+					break;
+
 		        case (ParaID_EID_Admit_Params):
 		            //If FOC is used
 		            //uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
@@ -743,6 +747,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS |= (1 << 21);
 		} else {
 			js_status_BareToRTOS &= ~(1 << 21);
+		}
+
+		//* Bit 13 - ext psi speed */
+		if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
+			js_status_BareToRTOS |= (1 << 22);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 22);
 		}
 
 

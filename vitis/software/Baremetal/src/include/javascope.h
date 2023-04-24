@@ -234,6 +234,7 @@ enum gui_button_mapping {
 	ParaID_EID_Disable_EXT_PSI,
 	ParaID_EID_Enable_EXT_THETA,
 	ParaID_EID_Disable_EXT_THETA,
+	ParaID_EID_ManualOffset,
     GUI_BTN_ENDMARKER
 };
 

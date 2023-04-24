@@ -14,7 +14,7 @@ Having a common platform enables the active research community to focus on publi
     The UltraZohm is based on `Xilinx Zynq UltraScale+ MPSoC <https://www.xilinx.com/products/silicon-devices/soc/zynq-ultrascale-mpsoc.html>`_ (EG devices).
     These offer four ARM A53, two ARM R5, and a large FPGA (programmable logic - PL) in one System-on-a-Chip (SoC).
     The UltraScale is used with a System-on-a-Module (SoM) from `Trenz Electronic GmbH <https://www.trenz-electronic.de/de/>`_. specifically the `TE0808 with a ZU9EG <https://shop.trenz-electronic.de/de/TE0808-05-9GI21-A-UltraSOM-MPSoC-Modul-mit-Zynq-UltraScale-XCZU9EG-2FFVC900I-4-GB-DDR4>`_ device is the default and strongly recommended.
-    Additionally, SoM with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`viavdo_build_tcl`.
+    Additionally, SoM with devices from 2EG (TE0803) to 15EG (TE0808) can be used with the UltraZohm framework out of the box using the :ref:`vivado_build_tcl`.
 
 **Hard real-time**
 

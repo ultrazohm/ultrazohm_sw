@@ -456,6 +456,9 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_Config.identLq = false;
 	Data->ElectricalID_Config.min_n_ratio = 0.015f;
 	Data->ElectricalID_Config.n_ref_measurement = 0.0f;
+	Data->ElectricalID_Config.extended_psi = false;
+	Data->ElectricalID_Config.extended_offset = false;
+	Data->ElectricalID_Config.manual_offset = -1.0f;
 
 	//Initialize FluxMapID-Config
 	Data->FluxMapID_Config.AMMsampleTime = 2.0f;

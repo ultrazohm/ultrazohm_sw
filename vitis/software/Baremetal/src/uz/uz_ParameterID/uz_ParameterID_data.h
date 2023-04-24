@@ -150,6 +150,7 @@ typedef struct {
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
   boolean_T extended_psi;
   boolean_T extended_offset;
+  real32_T manual_offset;
 } uz_ParaID_ElectricalIDConfig_t;
 
 

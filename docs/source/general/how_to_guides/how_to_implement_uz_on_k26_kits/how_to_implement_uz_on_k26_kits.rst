@@ -55,10 +55,6 @@ Creating Fresh Project
         Boardselection UZ-KR260.
 
 
-
-
-
-
     * For `Kria KV260 Robotics Starter Kit SOM` 
 
     .. _Boardselection_KV260:
@@ -177,49 +173,6 @@ Following those steps should lead to an HW-Design like this:
 
     Vivado-Project Hardware-Design Kria boards.
     
-
-Project with TCL Scripts: 
-----------------------------
-
-#. Create a fresh project in `Vivado 2022.2` with your preferred `Kria SOM` board. 
-#. Add the missing VHDL-files:
-   
-    .. code-block::
-        
-        top_npc_state_machine.vhd
-        npc_phase_state_machine.vhd
-        delay_trigger.vhd
-        extend_interrupt.vhd
-        iobufds_inst.vhd
-
-#. Add the UltraZohm IP-Repository to the project. 
-#. Add a new Block design and name with ``k26sys``.
-#. Switch with the TCL Console to the current working folder with:
-   
-    .. code-block::
-        
-        cd [ get_property DIRECTORY [current_project] ]
-
-#. Open TCL Console and call the TCL-scripts for block and connection implementation with given order:
-
-    .. code-block::
-
-        source ../tcl_scripts/k26sys_ps_generation.tcl 
-        source ../tcl_scripts/k26sys_hd_generation.tcl
-
-#. Double check the settings for PS, the most up-to-date Preset file should be ``kria_vivado_K26_ZynqMP_Presets.tcl``
-
-#. Create VHDL wrapper for `k26sys` and set as top manually. 
-
-#. With this step, you have current UltraZohm project for Kria as implemented. Generate bitstream and export. If you want to see the detailed steps, check out the tcl_scripts folder:
-
-    * k26sys_ps_generation → PS 
-    * k26sys_hd_generation → IP-Cores, Connections
-
-.. tip:: Please consider TCL Scripts and generated flow use the ultrazohm_sw as main location, so you might need to create a folder for kria vivado project inside of ultrazohm_sw.  
-
-#.  Generate the Bitstream and export the `.xsa`.
-
 
 Vitis
 =====

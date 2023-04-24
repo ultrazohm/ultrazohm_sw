@@ -4,7 +4,7 @@ Default Vivado project
 ======================
 
 The default Vivado project uses vendor IP-Cores as well as IP-Cores from the Ultrazohm repository (:ref:`ip_cores`) to provide a starting point for users.
-It is located in ``ultrazohm_sw/vivado/project/ultrazohm.xpr`` and can be generated using the ``build.tcl`` script (see :ref:`viavdo_build_tcl`).
+It is located in ``ultrazohm_sw/vivado/project/ultrazohm.xpr`` and can be generated using the ``build.tcl`` script (see :ref:`vivado_build_tcl`).
 :numref:`default_vivado_project_picture` shows the default project.
 It is split into the following different parts:
 

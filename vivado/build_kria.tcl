@@ -38,8 +38,19 @@
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
 
-# Set default board part
-set board_part "xilinx.com:kr260_som:part0:1.1"
+# Set default board part according to your board
+
+# KR260 Robotics Starter Kit
+#*****************************************************************************************
+#set board_part "xilinx.com:kr260_som:part0:1.1"
+#set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
+#*****************************************************************************************
+
+# KV260 Vision AI Starter Kit
+#*****************************************************************************************
+#set board_part "xilinx.com:kv260_som:part0:1.1"
+#set_property -name "board_part" -value "xilinx.com:kv260_som:part0:1.1" -objects $obj
+#*****************************************************************************************
 
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
@@ -117,7 +128,6 @@ set proj_dir [get_property directory [current_project]]
 # Set project properties
 set obj [current_project]
 set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/../../AppData/Roaming/Xilinx/Vivado/2020.2.2/xhub/board_store/xilinx_board_store"]" -objects $obj
-set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj

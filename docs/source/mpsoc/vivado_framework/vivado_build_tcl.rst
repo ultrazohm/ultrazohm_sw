@@ -1,4 +1,4 @@
-.. _viavdo_build_tcl:
+.. _vivado_build_tcl:
 
 ========================
 Vivado build tcl scripts

@@ -2,7 +2,7 @@
 <launchConfiguration type="com.xilinx.sdx.sdsoc.debug.launch.SdsTcfLaunchDelegate">
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.ui.breakpoint.main" value="true"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script" value="true"/>
-    <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script.location" value="/home/hufnagelde/ultrazohm_sw/tcl_scripts/vitis_debug_freertos_baremetal_fpga.tcl"/>
+    <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.exec.script.location" value="${workspace_loc}\..\..\tcl_scripts\vitis_update_platform.tcl>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.fsbl_exit_function" value="XFsbl_Exit"/>
     <booleanAttribute key="com.xilinx.sdk.tcf.debug.ui.fsbl_flow" value="true"/>
     <stringAttribute key="com.xilinx.sdk.tcf.debug.ui.fsbl_path" value="${sdxTcfLaunchFile:project=Baremetal;fileType=fsbl;}"/>

@@ -247,8 +247,8 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_Curren
 */
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data) {
 	uz_6ph_dq_t out = {0};
-	uz_3ph_dq_t v_dq_Volts = {0}
-	//uz_assert_not_NULL(Data);
+	uz_3ph_dq_t v_dq_Volts = {0};
+	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(Data->cc_instance_1);
 	uz_assert_not_NULL(Data->cc_instance_2);
 	uz_assert_not_NULL(Data->resonant_instance_1);
@@ -377,7 +377,7 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
+	//Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
 	Data->FluxMapID_Config.lower_meas_temp = 40.0f;
 	Data->FluxMapID_Config.upper_meas_temp = 45.0f;
 

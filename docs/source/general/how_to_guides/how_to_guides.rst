@@ -19,4 +19,5 @@ How to guides
     how_to_create_framework_functions_from_embedded_coder/how_to_create_framework_functions_from_embedded_coder
     how_to_set_encoder_offset/how_to_set_encoder_offset
     how_to_implement_uz_on_k26_kits/how_to_implement_uz_on_k26_kits
+    how_to_build_uz_on_k26_kits/how_to_build_uz_on_k26_kits
    

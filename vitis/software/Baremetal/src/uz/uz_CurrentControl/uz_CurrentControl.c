@@ -82,8 +82,8 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
 	uz_3ph_dq_t v_decoup_Volts = uz_CurrentControl_decoupling(self->config.decoupling_select, self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
 	v_pre_limit_Volts.d += v_decoup_Volts.d;
 	v_pre_limit_Volts.q += v_decoup_Volts.q;
-	uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
-	return (v_output_Volts);
+	//uz_3ph_dq_t v_output_Volts = uz_CurrentControl_SpaceVector_Limitation(v_pre_limit_Volts, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &self->ext_clamping);
+	return (v_pre_limit_Volts);
 }
 
 uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {

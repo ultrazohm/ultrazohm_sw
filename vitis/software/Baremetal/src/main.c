@@ -168,6 +168,8 @@ int main(void) {
 			ParaID_Data.resonant_instance_1 = uz_resonantController_init(resonant_config);
 			ParaID_Data.resonant_instance_2 = uz_resonantController_init(resonant_config);
 
+			uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &Global_Data.av.theta_elec);
+
 			Initialize_Timer();
 			uz_SystemTime_init();
 			JavaScope_initalize(&Global_Data);

@@ -418,6 +418,7 @@ typedef struct uz_ParameterID_Data_t {
   uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
+  bool finished_extended_offset_estimation;
   bool feedback_printed;
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */

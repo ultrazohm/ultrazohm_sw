@@ -138,8 +138,8 @@ void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_
 
 void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* self){
     // set default values
-    self->filter_u_q = uz_filter_cumulativeavg_init();
-    self->filter_omega_el = uz_filter_cumulativeavg_init();
+    uz_filter_cumulativeavg_reset(self->filter_u_q);
+    uz_filter_cumulativeavg_reset(self->filter_omega_el);
     self->encoderoffset_current_state_ll = encoderoffset_ll_init;
     self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;
     *self->ptr_offset_angle = *self->ptr_offset_angle - OFFSET_RANGE_RAD;         // use initial offset minus the ranges lower end to start search

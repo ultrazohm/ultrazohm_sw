@@ -87,4 +87,12 @@ void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_
  */
 void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* self);
 
+/**
+ * @brief Get progress status in range 0..1
+ * 
+ * @param self Pointer to instance
+ * @return progress normed to 1, meaning 0 is not started and 1 is finished
+ */
+float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self);
+
 #endif // uz_encoder_offset_estimation_H

@@ -72,8 +72,7 @@ typedef struct uz_encoder_offset_estimation_t {
     // user input variables
     float setpoint_current;                                                 // q-axis current to turn motor
     float min_omega_el;                                                     // target omega electric
-    // mainstate variables
-    float theta_offset_inital;                                              // initially predetermined encoder offset
+    // meas array
     struct measurement meas_array[OFFSET_ARRAYSIZE];                        // measurement array
     uint32_t meas_array_counter;                                            // index for measurements array
     // substate variables
@@ -144,6 +143,11 @@ void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* s
     self->encoderoffset_current_state_hl = encoderoffset_hl_init;
     self->diagnose = encoderoffset_no_error;
     self->meas_array_counter = 0U;
+}
+
+float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self){
+    uz_assert_not_NULL(self);
+    return (((float)(self->meas_array_counter))/((float) (OFFSET_ARRAYSIZE)));
 }
 
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){

@@ -186,7 +186,7 @@ typedef struct {
 
 typedef struct {
   boolean_T finished_flag;
-  uz_3ph_t i_dq_ref;
+  uz_3ph_dq_t i_dq_ref;
 } uz_ParaID_ElectricalID_offset_estimation_t;
 
 //----------------------------------------//

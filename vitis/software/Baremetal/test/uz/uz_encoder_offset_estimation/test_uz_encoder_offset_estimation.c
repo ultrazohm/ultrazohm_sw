@@ -46,7 +46,7 @@ void test_uz_encoder_offset_estimation_find_best_theta(void)
     array[1U] = meas2;
     array[2U] = meas3;
     array[3U] = meas4;
-    for(int i=4; i<OFFSET_ARRAYSIZE; i++){
+    for(uint32_t i=4U; i<OFFSET_ARRAYSIZE; i++){
         array[i] = meas5;
     }
 

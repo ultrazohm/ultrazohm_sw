@@ -314,7 +314,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	}
 
 	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
+	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT, Data->ElectricalID_Offset_Estimation);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID));

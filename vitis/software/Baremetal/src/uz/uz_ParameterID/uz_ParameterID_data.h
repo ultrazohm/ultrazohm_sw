@@ -438,6 +438,7 @@ typedef struct uz_ParameterID_Data_t {
   uz_CurrentControl_t* cc_instance_2;
   uz_resonantController_t* resonant_instance_1;
   uz_resonantController_t* resonant_instance_2;
+  uz_encoder_offset_estimation_t* encoder_offset_estimation;
 } uz_ParameterID_Data_t;
 
 #endif

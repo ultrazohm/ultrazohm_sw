@@ -416,6 +416,13 @@ bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data,
 	return (logging_flag);
 }
 
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data){
+	struct uz_encoder_offset_estimation_config offset_estimation_config = {
+		.ptr_offset_angle = &Data->ElectricalID_Output.thetaOffset
+		.ptr_actual_omega_el = &Data->ActualValues.omega_el;
+		.ptr_actual_u_q_V = &Data->ActualValues.v_dq.q;
+	}
+}
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
@@ -526,7 +533,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->cc_instance_2 = NULL;
 	Data->resonant_instance_1 = NULL;
 	Data->resonant_instance_2 = NULL;
-
+	Data->uz_encoder_offset_estimation_t = NULL;
 }
 
 #endif

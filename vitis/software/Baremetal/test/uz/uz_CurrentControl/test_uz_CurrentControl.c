@@ -36,6 +36,7 @@ void setUp(void)
     config.config_PMSM.Ld_Henry = 0.00027f;
     config.config_PMSM.Lq_Henry = 0.00027f;
     config.config_PMSM.Psi_PM_Vs = 0.0082f;
+    config.max_modulation_index = 1.0f / sqrtf(3.0f);
     i_reference_Ampere.d = 1.0f;
     i_reference_Ampere.q = 1.0f;
     i_reference_Ampere.zero = 0.0f;

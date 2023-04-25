@@ -3,7 +3,6 @@
 
 #include "../uz_SystemTime/uz_SystemTime.h"
 #include "../uz_filter_cumulativeavg/uz_filter_cumulativeavg.h"
-#include "../../globalData.h"
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_HAL.h"
 #include "../uz_math_constants.h"
@@ -18,9 +17,22 @@
  * 
  */
 struct uz_encoder_offset_estimation_config {
-    actualValues *actual;       /**< Pointer to global data actual values */
-    float polepair;             /**< Polepairs of maschine */
-    float setpoint_current;     /**< Setpoint current for tests */
+    float* ptr_measured_rotor_angle;/**< Pointer to rotor angle measurement */
+    float* ptr_offset_angle;        /**< Pointer to offset variable */
+    float* ptr_actual_omega_el;     /**< Pointer to actual omega electric in rad/s */
+    float* ptr_actual_u_q_V;        /**< Pointer to actual q-axis voltage in V */
+    float polepair;                 /**< Polepairs of maschine */
+    float setpoint_current;         /**< Setpoint current for tests */
+    float min_omega_el;             /**< Target omega electric (rad/s) to reach for flux linkage measurement */
+};
+
+/**
+ * @brief enum with error/status messages
+ */
+enum uz_encoder_offset_estimation_diagnose
+{
+    encoderoffset_no_error = 0,
+    encoderoffset_speed_not_reached,
 };
 
 /**
@@ -35,7 +47,7 @@ typedef struct uz_encoder_offset_estimation_t uz_encoder_offset_estimation_t;
  * @param config Config struct
  * @return uz_encoder_offset_estimation_t* Pointer to an initialized instance
  */
-uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_encoder_offset_estimation_config);
+uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_encoder_offset_estimation_config config);
 
 /**
  * @brief Step the function
@@ -52,5 +64,13 @@ uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* se
  * @return finished flag
  */
 bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* self);
+
+/**
+ * @brief Set (new) config to object
+ * 
+ * @param self Pointer to instance
+ * @param config Config struct
+ */
+void uz_encoder_offset_estimation_set_config(uz_encoder_offset_estimation_t* self, struct uz_encoder_offset_estimation_config config);
 
 #endif // uz_encoder_offset_estimation_H

@@ -24,7 +24,8 @@
 // enum for states of higher level state machine
 enum encoderoffset_states_high_level
 {
-    encoderoffset_hl_positive_setpoint = 0,
+    encoderoffset_hl_init = 0,
+    encoderoffset_hl_positive_setpoint,
     encoderoffset_hl_negative_setpoint,
     encoderoffset_hl_change_theta,
     encoderoffset_hl_finished
@@ -118,8 +119,7 @@ uz_encoder_offset_estimation_t* uz_encoder_offset_estimation_init(struct uz_enco
     self->filter_u_q = uz_filter_cumulativeavg_init();
     self->filter_omega_el = uz_filter_cumulativeavg_init();
     self->encoderoffset_current_state_ll = encoderoffset_ll_init;
-    self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;
-    *self->ptr_offset_angle = *self->ptr_offset_angle - OFFSET_RANGE_RAD;         // use initial offset minus the ranges lower end to start search
+    self->encoderoffset_current_state_hl = encoderoffset_hl_init;
     self->diagnose = encoderoffset_no_error;
 	return (self);
 }
@@ -141,14 +141,18 @@ void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* s
     uz_filter_cumulativeavg_reset(self->filter_u_q);
     uz_filter_cumulativeavg_reset(self->filter_omega_el);
     self->encoderoffset_current_state_ll = encoderoffset_ll_init;
-    self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;
-    *self->ptr_offset_angle = *self->ptr_offset_angle - OFFSET_RANGE_RAD;         // use initial offset minus the ranges lower end to start search
+    self->encoderoffset_current_state_hl = encoderoffset_hl_init;
     self->diagnose = encoderoffset_no_error;
     self->meas_array_counter = 0U;
 }
 
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
     switch(self->encoderoffset_current_state_hl){
+        case encoderoffset_hl_init:{
+            *self->ptr_offset_angle -= OFFSET_RANGE_RAD;                                    // use initial offset minus the ranges lower end to start search
+            self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;      // select next state
+            break;
+        }
         case encoderoffset_hl_positive_setpoint:{
         	uz_encoder_offset_estimation_single_direction(self, &self->meas_array[self->meas_array_counter].psi_d_positive, self->setpoint_current);  // get psi with positive direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){          // if substatemachine is finished

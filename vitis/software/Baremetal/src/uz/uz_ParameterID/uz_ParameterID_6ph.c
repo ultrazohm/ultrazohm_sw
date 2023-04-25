@@ -146,7 +146,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		Data->GlobalConfig.Reset = false;
 		Data->AutoRefCurrents_Config.Reset = false;
 		uz_OnlineID_set_AutoRefCurrents_Config(self->OnlineID, Data->AutoRefCurrents_Config);
-		Data->finished_extended_offset_estimation = uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
 	}
 	if (Data->OnlineID_Config.OnlineID_Reset) {
 		Data->OnlineID_Config.OnlineID_Reset = false;
@@ -306,9 +306,9 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	
 	// extended encoder offset estimation
 	if(Data->Controller_Parameters.activeState==165U){
-		Data->finished_extended_offset_estimation = uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
 		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, 0.25f*Data->GlobalConfig.ratSpeed/60.0f*2.0f*UZ_PIf*Data->GlobalConfig.PMSM_config.polePairs);
-		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
+		uz_encoder_offset_estimation_set_setpoint_current(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
 	}
 	if(Data->Controller_Parameters.activeState==166U){
 		Data->Controller_Parameters.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
@@ -411,13 +411,13 @@ bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data,
 
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle){
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {
-		.ptr_measured_rotor_angle = &raw_rotor_angle,
-		.ptr_offset_angle = &Data->ElectricalID_Output.thetaOffset,
+		.ptr_measured_rotor_angle = raw_rotor_angle,
+		.ptr_offset_angle = &Data->ElectricalID_Output->thetaOffset,
 		.ptr_actual_omega_el = &Data->ActualValues.omega_el,
 		.ptr_actual_u_q_V = &Data->ActualValues.v_dq.q,
 		.setpoint_current = 1.0f,
 		.min_omega_el = 1.0f};
-	Data->uz_encoder_offset_estimation = uz_encoder_offset_estimation_init(offset_estimation_config);
+	Data->encoder_offset_estimation = uz_encoder_offset_estimation_init(offset_estimation_config);
 }
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
@@ -530,7 +530,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->cc_instance_2 = NULL;
 	Data->resonant_instance_1 = NULL;
 	Data->resonant_instance_2 = NULL;
-	Data->uz_encoder_offset_estimation = NULL;
+	Data->encoder_offset_estimation = NULL;
 }
 
 #endif

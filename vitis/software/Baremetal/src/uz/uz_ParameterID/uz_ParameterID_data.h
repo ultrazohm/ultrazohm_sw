@@ -23,6 +23,7 @@
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz_setpoint/uz_setpoint.h"
 #include "../uz_ResonantController/uz_resonant_controller.h"
+#include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
 

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.85
+ * Model version                  : 3.86
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Apr 24 14:57:50 2023
+ * C/C++ source code generated on : Tue Apr 25 09:57:17 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -31,6 +31,7 @@
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
+
 /* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */

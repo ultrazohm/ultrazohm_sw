@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.87
+ * Model version                  : 3.89
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Apr 25 13:28:03 2023
+ * C/C++ source code generated on : Tue Apr 25 15:23:00 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,7 +63,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
@@ -203,8 +202,7 @@ typedef struct {
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
   uz_ParaID_ElectricalID_fft_in_t ElectricalID_fft_in;/* '<Root>/ElectricalID_fft_in' */
-  boolean_T finished_extended_offset_estima;
-                              /* '<Root>/finished_extended_offset_estimation' */
+  uz_ParaID_ElectricalID_offset_estimation_t extended_offset_estimation;/* '<Root>/extended_offset_estimation' */
 } ExtU_ElectricalID_6ph_codegen_t;
 
 /* External outputs (root outports fed by signals with default storage) */

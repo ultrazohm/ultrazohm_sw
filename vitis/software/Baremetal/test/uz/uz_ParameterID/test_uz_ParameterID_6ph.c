@@ -5,7 +5,6 @@
 #include "test_assert_with_exception.h"
 
 #include "uz_ParameterID_6ph.h"
-#include "uz_ParameterID.h"
 
 #include "uz_ParaID_ControlState.h"
 #include "ControlState_codegen.h"
@@ -18,9 +17,6 @@
 
 #include "uz_ParaID_ElectricalID_6ph.h"
 #include "ElectricalID_6ph_codegen.h"
-
-#include "uz_ParaID_ElectricalID.h"
-#include "ElectricalID_codegen.h"
 
 #include "uz_ParaID_Frequency_Analysis.h"
 #include "FFTImplementationCallback.h"

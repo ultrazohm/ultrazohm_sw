@@ -301,19 +301,20 @@ static void uz_ParameterID_reset_controllers(uz_ParameterID_Data_t* Data){
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
-	
+
 	// extended encoder offset estimation
 	if(Data->Controller_Parameters.activeState==165U){
 		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
-		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, 0.25f*Data->GlobalConfig.ratSpeed/60.0f*2.0f*UZ_PIf*Data->GlobalConfig.PMSM_config.polePairs);
+		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, Data->ElectricalID_Config.n_ref_measurement);
 		uz_encoder_offset_estimation_set_setpoint_current(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
 	}
 	if(Data->Controller_Parameters.activeState==166U){
-		Data->Controller_Parameters.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
-		Data->finished_extended_offset_estimation = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.finished_flag = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
 	}
+
+	//Step the function
+	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID));
@@ -521,7 +522,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 
 	//initialize flags
 	Data->ElectricalID_FFT.finished_flag = false;
-	Data->finished_extended_offset_estimation = false;
+	Data->ElectricalID_Offset_Estimation.finished_flag = false;
 
 	// controller instances
 	Data->setpoint_instance = NULL;

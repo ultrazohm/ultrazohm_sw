@@ -56,11 +56,24 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void) {
 
 void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in)
 {
+    // get inputs
     self->input.ElectricalIDConfig=ID_config;
     self->input.ActualValues=actual;
     self->input.GlobalConfig_out=global_config;
     self->input.ControlFlags=flags;
     self->input.ElectricalID_fft_in=fft_in;
+
+    // extended encoder offset estimation
+	if(Data->Controller_Parameters.activeState==165U){
+		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, 0.25f*Data->GlobalConfig.ratSpeed/60.0f*2.0f*UZ_PIf*Data->GlobalConfig.PMSM_config.polePairs);
+		uz_encoder_offset_estimation_set_setpoint_current(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
+	}
+	if(Data->Controller_Parameters.activeState==166U){
+		Data->Controller_Parameters.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
+		Data->finished_extended_offset_estimation = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
+	}
+
     ElectricalID_6ph_codegen_step(self->PtrToModelData);
 }
 

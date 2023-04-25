@@ -418,6 +418,7 @@ typedef struct uz_ParameterID_Data_t {
   uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
+  bool finished_extended_offset_estimation;
   bool feedback_printed;
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
@@ -438,6 +439,7 @@ typedef struct uz_ParameterID_Data_t {
   uz_CurrentControl_t* cc_instance_2;
   uz_resonantController_t* resonant_instance_1;
   uz_resonantController_t* resonant_instance_2;
+  uz_encoder_offset_estimation_t* encoder_offset_estimation;
 } uz_ParameterID_Data_t;
 
 #endif

@@ -47,6 +47,7 @@ enum JS_OberservableData {
 	JSO_lifecheck,
 	JSO_ISR_Period_us,
 	JSO_Speed_rpm,
+	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,

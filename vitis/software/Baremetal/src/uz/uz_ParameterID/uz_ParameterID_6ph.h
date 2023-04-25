@@ -29,6 +29,7 @@
 #include "FrictionID/uz_ParaID_FrictionID.h"
 #include "OnlineID/uz_ParaID_OnlineID.h"
 #include "TwoMassID/uz_ParaID_TwoMassID.h"
+#include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 
 /**

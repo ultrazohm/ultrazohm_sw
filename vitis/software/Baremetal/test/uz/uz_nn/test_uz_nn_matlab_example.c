@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 5
+#define NUMBER_OF_EPOCHS 2
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -207,22 +207,16 @@ void test_uz_nn_matlab(void)
        msetest[i] =  uz_nn_mse(output,refout);
        float * mse = &msetest[i];
        float result=uz_matrix_get_element_zero_based(output,0,0);
-       printf("result ist step 0= %.8f \n", result);
-       printf("mse von result step 0 ist = %.8f \n", msetest[i]);
+       printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+       printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
        uz_nn_backward_pass(test,mse,input);
-       float lernrate = 5.0f;
-       float *lr = &lernrate;
-       uz_nn_gradient_descent(test,lernrate);
+       float lernrate = 0.01f;
+              uz_nn_gradient_descent(test,lernrate);
        }
-//Test 1: Überprüfen der ersten 5 weights im ersten layer: Extrahieren der Weights aus layer 1
-// im debugger w1-w3 und b1-b3 anschauen
-// exportieren nach matlab
+       // exportieren nach matlab
        uz_nn_mat_export(test);
        clock_t end = clock();
-//     Funktion die die daten exportiert und in die .csv Dateien überschreibt
-//     uz_nn_export(test);
-//     /*Do something*/
-    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-    printf("Zeit des Tests = %.6f \n", seconds);
+       float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+       printf("Zeit des Tests = %.6f \n", (double)seconds);
  }
 #endif // TEST

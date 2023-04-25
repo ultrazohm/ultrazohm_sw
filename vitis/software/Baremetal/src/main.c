@@ -97,7 +97,7 @@ struct uz_SpeedControl_config speed_config = { .config_controller.type =
 struct uz_SetPoint_config sp_config = { .id_ref_Ampere = 0.0f,
 		.is_field_weakening_enabled = false, .motor_type = SMPMSM,
 		.control_type = FOC };
-
+extern uz_6ph_dq_t controller_out;
 // Init: --------------------------------------
 
 enum init_chain {
@@ -168,7 +168,7 @@ int main(void) {
 			ParaID_Data.resonant_instance_1 = uz_resonantController_init(resonant_config);
 			ParaID_Data.resonant_instance_2 = uz_resonantController_init(resonant_config);
 
-			uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &Global_Data.av.theta_elec);
+			uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &Global_Data.av.theta_elec, &controller_out.q);
 
 			Initialize_Timer();
 			uz_SystemTime_init();

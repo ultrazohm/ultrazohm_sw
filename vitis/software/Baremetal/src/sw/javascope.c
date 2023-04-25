@@ -167,7 +167,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_L_Z1]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z1);
 	js_slowDataArray[JSSD_FLOAT_L_Z2]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z2);
 	js_slowDataArray[JSSD_FLOAT_set_rpm_val]      		= &(ParaID_Data.ElectricalID_Output->set_rpm_val);
-	js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation->progress);
+	js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation.progress);
 	return Status;
 }
 

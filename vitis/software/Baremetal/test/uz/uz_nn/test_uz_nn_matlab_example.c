@@ -211,7 +211,7 @@ void test_uz_nn_matlab(void)
        printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
        uz_nn_backward_pass(test,mse,input);
        float lernrate = 0.01f;
-              uz_nn_gradient_descent(test,lernrate);
+       uz_nn_gradient_descent(test,lernrate);
        }
        // exportieren nach matlab
        uz_nn_mat_export(test);

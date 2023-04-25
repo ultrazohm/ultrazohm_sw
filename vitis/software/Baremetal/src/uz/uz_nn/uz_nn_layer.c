@@ -164,7 +164,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 //     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
 // }
 
-void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float const *const error)
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -172,10 +172,10 @@ void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float const *const erro
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-    uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
+    uz_matrix_multiply_by_scalar(self->delta,1.0f); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
 }
 
-void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float const *const reference)
+void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

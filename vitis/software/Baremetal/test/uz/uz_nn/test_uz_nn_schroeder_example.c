@@ -197,23 +197,21 @@ void test_uz_nn_schroeder(void)
     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
     sumtheta += THETAhelper[i];
     sumbias += biashelper[i];
-    printf("sumthteta = %.2f \n", sumtheta);
-    printf("sumbias = %.2f \n", sumbias);
+    printf("sumthteta = %.2f \n", (double)sumtheta);
+    printf("sumbias = %.2f \n", (double)sumbias);
     }
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
-    printf("Mittelwert von thetagrad = %.2f \n", avgtheta);
-    printf("Mittelwert von biasgrad = %.2f \n", avgbias);
+    printf("Mittelwert von thetagrad = %.2f \n", (double)avgtheta);
+    printf("Mittelwert von biasgrad = %.2f \n", (double)avgbias);
     //Lernrate festlegen
     float lernrate = 2.0f;
     //Update THETA 1,1 und bias 1,1 mit den berechneten Gradienten und einer Schrittweite von eta = 2
     uz_nn_update(test,avgtheta,avgbias,lernrate);
-    
     //Funktion die die daten exportiert und in die .csv Dateien überschreibt
     uz_nn_schroeder_export(test);
-    uz_matrix_t* check = uz_nn_get_output_from_each_layer(test,1);
     clock_t end = clock();
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-    printf("Zeit des Tests = %.6f \n", seconds);
+    printf("Zeit des Tests = %.6f \n", (double)seconds);
 }
 #endif // TEST

@@ -36,7 +36,7 @@ float cacheg_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
 float cacheg_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float cacheg_3[NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
-//Gradienten
+//Gradienten 1
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {
 #include "functions_weights/grad1.csv"
 };
@@ -46,6 +46,17 @@ float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER 
 float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "functions_weights/grad3.csv"
 };
+//Gradienten 3
+float g_12[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {
+#include "functions_weights/gradx1.csv"
+};
+float g_22[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/gradx2.csv"
+};
+float g_32[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/gradx3.csv"
+};
+
 
 float x[NUMBER_OF_INPUTS] = {
 #include "functions_weights/x1.csv"
@@ -58,17 +69,53 @@ float reference_output[NUMBER_OF_OUTPUTS]= {
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "functions_weights/g1.csv"
 };
+float w_12[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/g12.csv"
+};
+float wx1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/wsoll1.csv"    
+};
+float wx12[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/wsoll12.csv"    
+};
 float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "functions_weights/b1.csv"
-		};
+};
+float b_12[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/b12.csv"
+};
+float bx1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/bsoll1.csv"
+};
+float bx12[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "functions_weights/bsoll12.csv"
+};
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
 
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "functions_weights/g2.csv"
 };
+float w_22[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/g22.csv"
+};
+float wx2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/wsoll2.csv"    
+};
+float wx22[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/wsoll22.csv"    
+};
 float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "functions_weights/b2.csv"
+};
+float b_22[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/b22.csv"
+};
+float bx2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/bsoll2.csv"
+};
+float bx22[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "functions_weights/bsoll22.csv"
 };
 float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
@@ -76,8 +123,26 @@ float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
 #include "functions_weights/g3.csv"
 };
+float w_32[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/g32.csv"
+};
+float wx3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/wsoll3.csv"    
+};
+float wx32[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/wsoll32.csv"    
+};
 float b_3[NUMBER_OF_OUTPUTS] = {
 #include "functions_weights/b3.csv"
+};
+float b_32[NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/b32.csv"
+};
+float bx3[NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/bsoll3.csv"
+};
+float bx32[NUMBER_OF_OUTPUTS] = {
+#include "functions_weights/bsoll32.csv"
 };
 float y_3[NUMBER_OF_OUTPUTS] = {0};
 // error
@@ -177,6 +242,91 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .error= e_3}
   };
 
+struct uz_nn_layer_config config2[NUMBER_OF_HIDDEN_LAYER] = {
+    [0] = {
+        .activation_function = activation_tanh,
+        .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_inputs = NUMBER_OF_INPUTS,
+        .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_cachegradcolumns = NUMBER_OF_INPUTS,
+        .number_of_temporaryrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_temporarycolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+        .length_of_weights = UZ_MATRIX_SIZE(w_12),
+        .length_of_bias = UZ_MATRIX_SIZE(b_12),
+        .length_of_output = UZ_MATRIX_SIZE(y_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(s_1),
+        .length_of_derivate_gradients= UZ_MATRIX_SIZE(d_1),
+        .length_of_delta = UZ_MATRIX_SIZE(delta_1),
+        .length_of_error = UZ_MATRIX_SIZE(e_1),
+        .length_of_gradients = UZ_MATRIX_SIZE(g_12),
+        .length_of_temporarybackprop = UZ_MATRIX_SIZE(T1),
+        .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_1),
+        .weights = w_12,
+        .bias = b_12,
+        .output = y_1,
+        .sumout = s_1,
+        .derivate_gradients = d_1,
+        .delta = delta_1,
+        .temporarybackprop = T1,
+        .gradients = g_12,
+        .cachegradients = cacheg_1,
+        .error = e_1},
+    [1] = {
+      .activation_function = activation_tanh, 
+      .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+      .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+      .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+      .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+      .number_of_temporaryrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+      .number_of_temporarycolumns = NUMBER_OF_OUTPUTS,
+      .length_of_weights = UZ_MATRIX_SIZE(w_22),
+      .length_of_bias = UZ_MATRIX_SIZE(b_22),
+      .length_of_output = UZ_MATRIX_SIZE(y_2),
+      .length_of_sumout = UZ_MATRIX_SIZE(s_2),
+      .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2),
+      .length_of_delta = UZ_MATRIX_SIZE(delta_2),
+      .length_of_gradients = UZ_MATRIX_SIZE(g_22),
+      .length_of_error = UZ_MATRIX_SIZE(e_2),
+      .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2),
+      .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2),
+      .weights = w_22,
+      .bias = b_22,
+      .output = y_2,
+      .sumout = s_2,
+      .derivate_gradients = d_2,
+      .delta = delta_2,
+      .temporarybackprop = T2,
+      .gradients = g_22,
+      .cachegradients = cacheg_2,
+      .error=e_2},
+  [2] = {.activation_function = activation_linear,
+   .number_of_neurons = NUMBER_OF_OUTPUTS,
+   .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+   .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
+   .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
+   .number_of_temporarycolumns = 2,
+   .number_of_temporaryrows = 2,
+   .length_of_weights = UZ_MATRIX_SIZE(w_32),
+   .length_of_bias = UZ_MATRIX_SIZE(b_32),
+   .length_of_output = UZ_MATRIX_SIZE(y_3),
+   .length_of_sumout = UZ_MATRIX_SIZE(s_3),
+   .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3),
+   .length_of_delta = UZ_MATRIX_SIZE(delta_3),
+   .length_of_gradients = UZ_MATRIX_SIZE(g_32),
+   .length_of_error = UZ_MATRIX_SIZE(e_3),
+   .length_of_temporarybackprop = UZ_MATRIX_SIZE(T3),
+   .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_3),
+   .weights = w_32,
+   .bias = b_32,
+   .output = y_3,
+   .sumout = s_3,
+   .derivate_gradients = d_3,
+   .delta = delta_3, 
+   .temporarybackprop = T3,
+   .gradients = g_32,
+   .cachegradients = cacheg_3,
+   .error= e_3}
+  };
 float mse1[1] = {7};
 float mse2[1] = {4};
 float bmse3[3] = {8,7,9};
@@ -210,12 +360,35 @@ void test_uz_nn_mse_three(void)
     TEST_ASSERT_EQUAL_FLOAT(expected_result, msetest2);
 }
 
-void test_uz_nn_gradient_descent(void)
+void test_uz_nn_gradient_descent1(void)
 {
+    // Test 1: Gleiche Gradienten für bias und weights, LR 0.1
     uz_nn_t *test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     float lernrate = 0.1f;
     uz_nn_gradient_descent(test,lernrate);
-    // hier müsste jeder Werte dann 0.2 betragen von b1-b3 und g1-g3
-    float expected_result = 0.2f;
+
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_1, wx1,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_2, wx2,100);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_3, wx3,10);
+
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_1, bx1,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_2, bx2,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_3, bx3,1);
+}
+void test_uz_nn_gradient_descent2(void)
+{
+    // Test 1: Unterschiedlicher Gradienten für bias und weights
+    // prüfen der loopindizes, LR 0.5
+    uz_nn_t *test2 = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER);
+    float lernrate = 0.5f;
+    uz_nn_gradient_descent(test2,lernrate);
+
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_12, wx12,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_22, wx22,100);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(w_32, wx32,10);
+
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_12, bx12,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_22, bx22,10);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_32, bx32,1);
 }
 #endif // TEST

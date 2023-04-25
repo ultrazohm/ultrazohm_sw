@@ -229,15 +229,17 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
 }
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
+uint32_t bias_index = self->bias->length_of_data;
+uint32_t weight_index = self->weights->length_of_data;
 //erst weights (loop von 0-649)
-for(size_t i=0;i<self->weights->length_of_data;i++)
+for(size_t i=0;i< weight_index;i++)
 {
 self->weights->data[i] = self->weights->data[i] + ( lernrate * (-1.0f * self->gradients->data[i]));
 }
 //dann bias (loop von 650-700 z.B.)
-for(size_t i=self->weights->length_of_data;i<(self->weights->length_of_data+self->bias->length_of_data);i++)
+for(size_t i=weight_index;i<(weight_index+bias_index);i++)
 {
-self->bias->data[i - self->weights->length_of_data] = self->bias->data[i - self->weights->length_of_data] + ( lernrate * (-1.0f * self->gradients->data[i]));
+self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
 }
 // sinnvoller wäre es verschiedene Speicher anzulegen, dann kann man nicht durcheinander kommen!
 }

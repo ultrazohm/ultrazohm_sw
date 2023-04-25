@@ -311,6 +311,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	if(Data->Controller_Parameters.activeState==166U){
 		Data->ElectricalID_Offset_Estimation.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
 		Data->ElectricalID_Offset_Estimation.finished_flag = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.progress = uz_encoder_offset_estimation_get_progress_status(Data->encoder_offset_estimation);
 	}
 
 	//Step the function
@@ -523,6 +524,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	//initialize flags
 	Data->ElectricalID_FFT.finished_flag = false;
 	Data->ElectricalID_Offset_Estimation.finished_flag = false;
+	Data->ElectricalID_Offset_Estimation.progress = 0.0f;
 
 	// controller instances
 	Data->setpoint_instance = NULL;

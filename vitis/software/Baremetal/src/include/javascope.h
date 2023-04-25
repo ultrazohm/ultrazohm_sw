@@ -182,7 +182,7 @@ enum gui_button_mapping {
     ParaID_RESET,
     ParaID_EID_sampleTimeISR,
     ParaID_EID_n_ref_meas,
-    ParaID_EID_goertzl_Torque,
+	ParaID_EID_goertzl_Amp,
     ParaID_EID_goertzl_Freq,
     ParaID_EID_DutyCyc,
     ParaID_EID_MaxContinousCurrent,

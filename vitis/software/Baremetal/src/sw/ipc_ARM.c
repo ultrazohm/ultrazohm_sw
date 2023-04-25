@@ -393,7 +393,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
 		            break;
 
-		        case (ParaID_EID_goertzl_Torque):
+		        case (ParaID_EID_goertzl_Amp):
 		            ParaID_Data.ElectricalID_Config.goertzlTorque = value;
 		            break;
 
@@ -747,13 +747,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS |= (1 << 21);
 		} else {
 			js_status_BareToRTOS &= ~(1 << 21);
-		}
-
-		//* Bit 13 - ext psi speed */
-		if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
-			js_status_BareToRTOS |= (1 << 22);
-		} else {
-			js_status_BareToRTOS &= ~(1 << 22);
 		}
 
 

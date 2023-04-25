@@ -80,4 +80,11 @@ void uz_encoder_offset_estimation_set_setpoint_current(uz_encoder_offset_estimat
  */
 void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_t* self, float min_omega_el);
 
+/**
+ * @brief Reset states for new usage
+ * 
+ * @param self Pointer to instance
+ */
+void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* self);
+
 #endif // uz_encoder_offset_estimation_H

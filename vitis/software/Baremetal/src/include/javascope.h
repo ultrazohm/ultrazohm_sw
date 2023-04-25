@@ -134,6 +134,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_L_Z1,
 	JSSD_FLOAT_L_Z2,
 	JSSD_FLOAT_set_rpm_val,
+	JSSD_FLOAT_extended_offset_progress,
 	JSSD_ENDMARKER
 };
 

@@ -742,13 +742,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			js_status_BareToRTOS &= ~(1 << 20);
 		}
 
-	    //* Bit 13 - ext psi */
+	    //* Bit 21 - ext psi */
 		if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
 			js_status_BareToRTOS |= (1 << 21);
 		} else {
 			js_status_BareToRTOS &= ~(1 << 21);
 		}
-
-
 
 }

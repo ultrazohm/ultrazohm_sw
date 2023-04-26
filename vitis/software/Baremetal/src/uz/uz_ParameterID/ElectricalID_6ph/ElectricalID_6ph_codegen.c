@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.90
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Apr 26 11:12:59 2023
+ * C/C++ source code generated on : Wed Apr 26 11:33:06 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -127,10 +127,11 @@ static void rotorInertiaEstimation(ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
 static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
-  *BusConversion_InsertedFor_Elect, ExtU_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_DW);
+  *BusConversion_InsertedFor_Elect, const
+  uz_ParaID_ElectricalID_offset_estimation_t *BusConversion_InsertedFor_Ele_b,
+  ExtU_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_U,
+  ExtY_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_Y,
+  DW_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_DW);
 static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
   *BusConversion_InsertedFor_Elect, const
   uz_ParaID_ElectricalID_offset_estimation_t *BusConversion_InsertedFor_Ele_b,
@@ -461,7 +462,7 @@ static void Subchart_St_MeasureStepRespon_n(real32_T v_dq_d, real32_T i_dq_d,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subchart_St_MeasureStepResponse': '<S2>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sMWbr9x0gq9qn9qDdVLZeFF_Subchart_Step_Response': '<S2>:39' */
   /* '<S2>:39:2' fns = fieldnames(i_dq); */
   /* '<S2>:39:3' current = i_dq.(fns{index}); */
   /* '<S2>:39:4' voltage = v_dq.(fns{index}); */
@@ -758,7 +759,7 @@ static void Subchart__b_MeasureStepRespon_g(real32_T v_dq_x, real32_T i_dq_x,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subchart__b_MeasureStepResponse': '<S3>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_suUPVh77ZXqqMHR03zyk1ZB_Subchart_Step_Response': '<S3>:39' */
   /* '<S3>:39:2' fns = fieldnames(i_dq); */
   /* '<S3>:39:3' current = i_dq.(fns{index}); */
   /* '<S3>:39:4' voltage = v_dq.(fns{index}); */
@@ -1055,7 +1056,7 @@ static void Subchart_bt_MeasureStepRespon_p(real32_T v_dq_y, real32_T i_dq_y,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subchart_bt_MeasureStepResponse': '<S4>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sXsuRAan3TDX1V4pP05BViE_Subchart_Step_Response': '<S4>:39' */
   /* '<S4>:39:2' fns = fieldnames(i_dq); */
   /* '<S4>:39:3' current = i_dq.(fns{index}); */
   /* '<S4>:39:4' voltage = v_dq.(fns{index}); */
@@ -1352,7 +1353,7 @@ static void Subchar_btw_MeasureStepRespon_k(real32_T v_dq_z1, real32_T i_dq_z1,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subchar_btw_MeasureStepResponse': '<S5>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_siDrVKQJrmgth2tO4iYKAXD_Subchart_Step_Response': '<S5>:39' */
   /* '<S5>:39:2' fns = fieldnames(i_dq); */
   /* '<S5>:39:3' current = i_dq.(fns{index}); */
   /* '<S5>:39:4' voltage = v_dq.(fns{index}); */
@@ -1649,7 +1650,7 @@ static void Subcha_btw5_MeasureStepRespon_g(real32_T v_dq_z2, real32_T i_dq_z2,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subcha_btw5_MeasureStepResponse': '<S6>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_swiDrWmrnFiNemiFZhejbKE_Subchart_Step_Response': '<S6>:39' */
   /* '<S6>:39:2' fns = fieldnames(i_dq); */
   /* '<S6>:39:3' current = i_dq.(fns{index}); */
   /* '<S6>:39:4' voltage = v_dq.(fns{index}); */
@@ -1946,7 +1947,7 @@ static void Subch_btw5m_MeasureStepRespon_e(real32_T v_dq_q, real32_T i_dq_q,
 {
   int32_T k;
 
-  /* MATLAB Function 'Subch_btw5m_MeasureStepResponse': '<S7>:39' */
+  /* MATLAB Function 'MeasureStepResponsec14_sOrida1dLJHFhz3jwws1fnH_Subchart_Step_Response': '<S7>:39' */
   /* '<S7>:39:2' fns = fieldnames(i_dq); */
   /* '<S7>:39:3' current = i_dq.(fns{index}); */
   /* '<S7>:39:4' voltage = v_dq.(fns{index}); */
@@ -3315,10 +3316,11 @@ static void rotorInertiaEstimation(ExtU_ElectricalID_6ph_codegen_t
 
 /* Function for Chart: '<Root>/ElectricalID_6ph_codegen' */
 static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
-  *BusConversion_InsertedFor_Elect, ExtU_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
-  *rtElectricalID_6ph_codegen_DW)
+  *BusConversion_InsertedFor_Elect, const
+  uz_ParaID_ElectricalID_offset_estimation_t *BusConversion_InsertedFor_Ele_b,
+  ExtU_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_U,
+  ExtY_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_Y,
+  DW_ElectricalID_6ph_codegen_t *rtElectricalID_6ph_codegen_DW)
 {
   int32_T i;
 
@@ -3624,6 +3626,15 @@ static void exit_internal_ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
     rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
     break;
 
+   case IN_extendedOffsetEstimation:
+    /* Merge: '<S1>/ Merge ' */
+    /* Exit 'extendedOffsetEstimation': '<S1>:1117' */
+    /* '<S1>:1117:10' ElectricalID_output.thetaOffset = extended_offset_estimation.offset_angle_rad; */
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
+      BusConversion_InsertedFor_Ele_b->offset_angle_rad;
+    rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_NO_ACTIVE_CHILD;
+    break;
+
    case IN_findDutyCycle:
     /* Inport: '<Root>/ActualValues' */
     /* Exit 'findDutyCycle': '<S1>:789' */
@@ -3741,8 +3752,8 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
     initParams(rtElectricalID_6ph_codegen_U, rtElectricalID_6ph_codegen_Y,
                rtElectricalID_6ph_codegen_DW);
     exit_internal_ElectricalID(BusConversion_InsertedFor_Elect,
-      rtElectricalID_6ph_codegen_U, rtElectricalID_6ph_codegen_Y,
-      rtElectricalID_6ph_codegen_DW);
+      BusConversion_InsertedFor_Ele_b, rtElectricalID_6ph_codegen_U,
+      rtElectricalID_6ph_codegen_Y, rtElectricalID_6ph_codegen_DW);
     rtElectricalID_6ph_codegen_DW->is_c3_ElectricalID_6ph_codegen = IN_Waiting;
 
     /* Entry 'Waiting': '<S1>:902' */
@@ -5844,7 +5855,12 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
       /* During 'extendedOffsetEstimation': '<S1>:1117' */
       /* '<S1>:1122:1' sf_internal_predicateOutput = extended_offset_estimation.finished_flag; */
       if (BusConversion_InsertedFor_Ele_b->finished_flag) {
+        /* Merge: '<S1>/ Merge ' */
         /* Transition: '<S1>:1122' */
+        /* Exit 'extendedOffsetEstimation': '<S1>:1117' */
+        /* '<S1>:1117:10' ElectricalID_output.thetaOffset = extended_offset_estimation.offset_angle_rad; */
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
+          BusConversion_InsertedFor_Ele_b->offset_angle_rad;
         rtElectricalID_6ph_codegen_DW->is_ElectricalID = IN_waitState;
 
         /* Entry 'waitState': '<S1>:428' */

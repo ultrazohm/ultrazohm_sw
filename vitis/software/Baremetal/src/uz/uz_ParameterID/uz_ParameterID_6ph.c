@@ -304,6 +304,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 
 	// extended encoder offset estimation
 	if(Data->Controller_Parameters.activeState==165U){
+		Data->ElectricalID_Offset_Estimation.offset_angle_rad = Data->ElectricalID_Output->thetaOffset;
 		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
 		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, Data->ElectricalID_Config.n_ref_measurement*Data->GlobalConfig.PMSM_config.polePairs/60.0f*2.0f*UZ_PIf);
 		uz_encoder_offset_estimation_set_setpoint_current(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
@@ -414,7 +415,7 @@ bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data,
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {
 		.ptr_measured_rotor_angle = raw_rotor_angle,
-		.ptr_offset_angle = &Data->ElectricalID_Output->thetaOffset,
+		.ptr_offset_angle = &Data->ElectricalID_Offset_Estimation.offset_angle_rad,
 		.ptr_actual_omega_el = &Data->ActualValues.omega_el,
 		.ptr_actual_u_q_V = u_q_ref,
 		.setpoint_current = 1.0f,
@@ -525,6 +526,7 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_FFT.finished_flag = false;
 	Data->ElectricalID_Offset_Estimation.finished_flag = false;
 	Data->ElectricalID_Offset_Estimation.progress = 0.0f;
+	Data->ElectricalID_Offset_Estimation.offset_angle_rad = 0.0f;
 
 	// controller instances
 	Data->setpoint_instance = NULL;

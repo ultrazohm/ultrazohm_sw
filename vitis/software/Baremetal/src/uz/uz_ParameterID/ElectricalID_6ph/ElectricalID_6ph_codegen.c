@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.89
+ * Model version                  : 3.90
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue Apr 25 15:23:00 2023
+ * C/C++ source code generated on : Wed Apr 26 11:12:59 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -461,7 +461,7 @@ static void Subchart_St_MeasureStepRespon_n(real32_T v_dq_d, real32_T i_dq_d,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sMWbr9x0gq9qn9qDdVLZeFF_Subchart_Step_Response': '<S2>:39' */
+  /* MATLAB Function 'Subchart_St_MeasureStepResponse': '<S2>:39' */
   /* '<S2>:39:2' fns = fieldnames(i_dq); */
   /* '<S2>:39:3' current = i_dq.(fns{index}); */
   /* '<S2>:39:4' voltage = v_dq.(fns{index}); */
@@ -758,7 +758,7 @@ static void Subchart__b_MeasureStepRespon_g(real32_T v_dq_x, real32_T i_dq_x,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_suUPVh77ZXqqMHR03zyk1ZB_Subchart_Step_Response': '<S3>:39' */
+  /* MATLAB Function 'Subchart__b_MeasureStepResponse': '<S3>:39' */
   /* '<S3>:39:2' fns = fieldnames(i_dq); */
   /* '<S3>:39:3' current = i_dq.(fns{index}); */
   /* '<S3>:39:4' voltage = v_dq.(fns{index}); */
@@ -1055,7 +1055,7 @@ static void Subchart_bt_MeasureStepRespon_p(real32_T v_dq_y, real32_T i_dq_y,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sXsuRAan3TDX1V4pP05BViE_Subchart_Step_Response': '<S4>:39' */
+  /* MATLAB Function 'Subchart_bt_MeasureStepResponse': '<S4>:39' */
   /* '<S4>:39:2' fns = fieldnames(i_dq); */
   /* '<S4>:39:3' current = i_dq.(fns{index}); */
   /* '<S4>:39:4' voltage = v_dq.(fns{index}); */
@@ -1352,7 +1352,7 @@ static void Subchar_btw_MeasureStepRespon_k(real32_T v_dq_z1, real32_T i_dq_z1,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_siDrVKQJrmgth2tO4iYKAXD_Subchart_Step_Response': '<S5>:39' */
+  /* MATLAB Function 'Subchar_btw_MeasureStepResponse': '<S5>:39' */
   /* '<S5>:39:2' fns = fieldnames(i_dq); */
   /* '<S5>:39:3' current = i_dq.(fns{index}); */
   /* '<S5>:39:4' voltage = v_dq.(fns{index}); */
@@ -1649,7 +1649,7 @@ static void Subcha_btw5_MeasureStepRespon_g(real32_T v_dq_z2, real32_T i_dq_z2,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_swiDrWmrnFiNemiFZhejbKE_Subchart_Step_Response': '<S6>:39' */
+  /* MATLAB Function 'Subcha_btw5_MeasureStepResponse': '<S6>:39' */
   /* '<S6>:39:2' fns = fieldnames(i_dq); */
   /* '<S6>:39:3' current = i_dq.(fns{index}); */
   /* '<S6>:39:4' voltage = v_dq.(fns{index}); */
@@ -1946,7 +1946,7 @@ static void Subch_btw5m_MeasureStepRespon_e(real32_T v_dq_q, real32_T i_dq_q,
 {
   int32_T k;
 
-  /* MATLAB Function 'MeasureStepResponsec14_sOrida1dLJHFhz3jwws1fnH_Subchart_Step_Response': '<S7>:39' */
+  /* MATLAB Function 'Subch_btw5m_MeasureStepResponse': '<S7>:39' */
   /* '<S7>:39:2' fns = fieldnames(i_dq); */
   /* '<S7>:39:3' current = i_dq.(fns{index}); */
   /* '<S7>:39:4' voltage = v_dq.(fns{index}); */
@@ -5902,8 +5902,13 @@ static void ElectricalID(const uz_ParaID_ElectricalID_fft_in_t
         /* '<S1>:428:16' ElectricalID_FOC_output.activeState = uint16(170); */
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.activeState = 170U;
       } else {
+        /* Merge: '<S1>/ Merge ' */
+        /* '<S1>:1117:7' ElectricalID_output.thetaOffset = extended_offset_estimation.offset_angle_rad; */
+        rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
+          BusConversion_InsertedFor_Ele_b->offset_angle_rad;
+
         /* Outport: '<Root>/ElectricalID_FOC_output' */
-        /* '<S1>:1117:7' ElectricalID_FOC_output.i_dq_ref=extended_offset_estimation.i_dq_ref; */
+        /* '<S1>:1117:8' ElectricalID_FOC_output.i_dq_ref=extended_offset_estimation.i_dq_ref; */
         rtElectricalID_6ph_codegen_Y->ElectricalID_FOC_output.i_dq_ref =
           BusConversion_InsertedFor_Ele_b->i_dq_ref;
       }

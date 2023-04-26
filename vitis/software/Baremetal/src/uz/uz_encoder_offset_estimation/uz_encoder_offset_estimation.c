@@ -147,7 +147,11 @@ void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* s
 
 float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self){
     uz_assert_not_NULL(self);
+    if(self->encoderoffset_current_state_hl == encoderoffset_hl_finished){
+        return 1.0f;
+    }else{
     return (((float)(self->meas_array_counter))/((float) (OFFSET_ARRAYSIZE)));
+    }
 }
 
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
@@ -175,14 +179,14 @@ uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* se
         }
         case encoderoffset_hl_change_theta:{                               
             self->meas_array[self->meas_array_counter].theta_offset = *self->ptr_offset_angle;            // safe theta
-            if(self->meas_array_counter < OFFSET_ARRAYSIZE){                                                     // if not all points are measured yet
+            if(self->meas_array_counter < OFFSET_ARRAYSIZE){                                              // if not all points are measured yet
                 *self->ptr_offset_angle += OFFSET_STEP_RAD;                                               // step up theta offset
-                self->meas_array_counter++;                                                                      // step up index                                                      
-                self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;                       // back to positive speed
-                self->encoderoffset_current_state_ll = encoderoffset_ll_init;                                    // set substatemachine back init
+                self->meas_array_counter++;                                                               // step up index                                                      
+                self->encoderoffset_current_state_hl = encoderoffset_hl_positive_setpoint;                // back to positive speed
+                self->encoderoffset_current_state_ll = encoderoffset_ll_init;                             // set substatemachine back init
             } else{
                 *self->ptr_offset_angle = uz_encoder_offset_estimation_find_best_theta(self->meas_array); // calculate best theta
-                self->encoderoffset_current_state_hl = encoderoffset_hl_finished;                                // if all points are measured, set finished
+                self->encoderoffset_current_state_hl = encoderoffset_hl_finished;                         // if all points are measured, set finished
             }
             break;
         }

@@ -140,6 +140,7 @@ typedef struct _referenceAndSetValues_ {
 	float ref_halfBridge10DutyCycle;
 	float ref_halfBridge11DutyCycle;
 	float ref_halfBridge12DutyCycle;
+	bool print_data;
 } referenceAndSetValues;
 
 typedef struct{

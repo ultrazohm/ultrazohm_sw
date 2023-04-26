@@ -556,6 +556,7 @@ void print_paraID(uz_ParameterID_Data_t *Data) {
 	printf("Lz1:%f\n", Data->ElectricalID_Output->inductances_6ph.z1 * 1000.0f);
 	printf("Lz2:%f\n", Data->ElectricalID_Output->inductances_6ph.z2 * 1000.0f);
 
+	if(Data->ElectricalID_Config.extended_psi){
 	printf("Psi_speed:%f\n", Data->ElectricalID_Output->set_rpm_val);
 
 	printf("Psi_m1:%f\n", Data->ElectricalID_Output->psi_pm[0] * 1000.0f);
@@ -568,7 +569,7 @@ void print_paraID(uz_ParameterID_Data_t *Data) {
 	printf("Psi_a2:%f\n", Data->ElectricalID_Output->psi_pm_angle[1]);
 	printf("Psi_a3:%f\n", Data->ElectricalID_Output->psi_pm_angle[2]);
 	printf("Psi_a4:%f\n", Data->ElectricalID_Output->psi_pm_angle[3]);
-	printf("Psi_a5:%f\n", Data->ElectricalID_Output->psi_pm_angle[4]);
+	printf("Psi_a5:%f\n", Data->ElectricalID_Output->psi_pm_angle[4]);}
 
 	printf("theta_init:%f\n", Data->temp_initial_angle);
 	printf("theta_ext:%f\n", Data->ElectricalID_Output->thetaOffset);

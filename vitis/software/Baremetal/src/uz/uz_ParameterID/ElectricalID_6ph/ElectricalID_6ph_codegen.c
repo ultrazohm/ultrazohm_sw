@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.90
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Apr 26 11:33:06 2023
+ * C/C++ source code generated on : Wed Apr 26 15:27:46 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -2427,8 +2427,13 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
   } else if (rtElectricalID_6ph_codegen_DW->DC_valid &&
              (rtElectricalID_6ph_codegen_U->ElectricalIDConfig.manual_offset >=
               0.0F)) {
-    /* Inport: '<Root>/ActualValues' */
+    /* Merge: '<S1>/ Merge ' */
     /* Transition: '<S1>:1114' */
+    /* '<S1>:1114:1' ElectricalID_output.thetaOffset = ElectricalIDConfig.manual_offset */
+    rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
+      rtElectricalID_6ph_codegen_U->ElectricalIDConfig.manual_offset;
+
+    /* Inport: '<Root>/ActualValues' */
     /* Exit 'findDutyCycle': '<S1>:789' */
     /* '<S1>:789:30' ref_amplitude = single(DutyCycle*ActualValues.V_DC); */
     rtElectricalID_6ph_codegen_DW->ref_amplitude =

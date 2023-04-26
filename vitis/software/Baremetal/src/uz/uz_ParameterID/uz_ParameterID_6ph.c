@@ -147,6 +147,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		Data->AutoRefCurrents_Config.Reset = false;
 		uz_OnlineID_set_AutoRefCurrents_Config(self->OnlineID, Data->AutoRefCurrents_Config);
 		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		Data->temp_initial_angle = 0.0f;
 	}
 	if (Data->OnlineID_Config.OnlineID_Reset) {
 		Data->OnlineID_Config.OnlineID_Reset = false;
@@ -304,6 +305,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 
 	// extended encoder offset estimation
 	if(Data->Controller_Parameters.activeState==165U){
+		Data->temp_initial_angle = Data->ElectricalID_Output->thetaOffset;
 		Data->ElectricalID_Offset_Estimation.offset_angle_rad = Data->ElectricalID_Output->thetaOffset;
 		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
 		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, Data->ElectricalID_Config.n_ref_measurement*Data->GlobalConfig.PMSM_config.polePairs/60.0f*2.0f*UZ_PIf);
@@ -537,5 +539,44 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->resonant_instance_2 = NULL;
 	Data->encoder_offset_estimation = NULL;
 }
+
+// Temp
+void print_paraID(uz_ParameterID_Data_t *Data) {
+	printf("Rd:%f\n", Data->ElectricalID_Output->resistances_6ph.d);
+	printf("Rq:%f\n", Data->ElectricalID_Output->resistances_6ph.q);
+	printf("Rx:%f\n", Data->ElectricalID_Output->resistances_6ph.x);
+	printf("Ry:%f\n", Data->ElectricalID_Output->resistances_6ph.y);
+	printf("Rz1:%f\n", Data->ElectricalID_Output->resistances_6ph.z1);
+	printf("Rz2:%f\n", Data->ElectricalID_Output->resistances_6ph.z2);
+
+	printf("Ld:%f\n", Data->ElectricalID_Output->inductances_6ph.d * 1000.0f);
+	printf("Lq:%f\n", Data->ElectricalID_Output->inductances_6ph.q * 1000.0f);
+	printf("Lx:%f\n", Data->ElectricalID_Output->inductances_6ph.x * 1000.0f);
+	printf("Ly:%f\n", Data->ElectricalID_Output->inductances_6ph.y * 1000.0f);
+	printf("Lz1:%f\n", Data->ElectricalID_Output->inductances_6ph.z1 * 1000.0f);
+	printf("Lz2:%f\n", Data->ElectricalID_Output->inductances_6ph.z2 * 1000.0f);
+
+	printf("Psi_speed:%f\n", Data->ElectricalID_Output->set_rpm_val);
+
+	printf("Psi_m1:%f\n", Data->ElectricalID_Output->psi_pm[0] * 1000.0f);
+	printf("Psi_m2:%f\n", Data->ElectricalID_Output->psi_pm[1] * 1000.0f);
+	printf("Psi_m3:%f\n", Data->ElectricalID_Output->psi_pm[2] * 1000.0f);
+	printf("Psi_m4:%f\n", Data->ElectricalID_Output->psi_pm[3] * 1000.0f);
+	printf("Psi_m5:%f\n", Data->ElectricalID_Output->psi_pm[4] * 1000.0f);
+
+	printf("Psi_a1:%f\n", Data->ElectricalID_Output->psi_pm_angle[0]);
+	printf("Psi_a2:%f\n", Data->ElectricalID_Output->psi_pm_angle[1]);
+	printf("Psi_a3:%f\n", Data->ElectricalID_Output->psi_pm_angle[2]);
+	printf("Psi_a4:%f\n", Data->ElectricalID_Output->psi_pm_angle[3]);
+	printf("Psi_a5:%f\n", Data->ElectricalID_Output->psi_pm_angle[4]);
+
+	printf("theta_init:%f\n", Data->temp_initial_angle);
+	printf("theta_ext:%f\n", Data->ElectricalID_Output->thetaOffset);
+
+	printf("pmsm_j:%f\n", Data->ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
+	printf("pmsm_psi:%f\n", Data->ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+	printf("pmsm_r:%f\n", Data->ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+}
+
 
 #endif

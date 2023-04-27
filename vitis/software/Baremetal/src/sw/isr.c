@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_FOC/uz_FOC.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,6 +41,12 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
+
+extern uz_FOC* FOC_instance;
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t FOC_output_Volts = {0};
+float omega_el_rad_per_sec = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -59,6 +66,12 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+
+    	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+
+
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

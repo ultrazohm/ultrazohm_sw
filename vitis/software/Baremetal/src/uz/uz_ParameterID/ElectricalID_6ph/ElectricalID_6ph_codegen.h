@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.93
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Apr 27 09:35:20 2023
+ * C/C++ source code generated on : Thu Apr 27 10:33:21 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,7 +63,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

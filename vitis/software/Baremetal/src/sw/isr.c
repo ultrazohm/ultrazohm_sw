@@ -44,9 +44,13 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+// FOC and Speed Control
 struct uz_3ph_abc_t measurement_current = {0};
 struct uz_3ph_abc_t measurement_voltage = {0};
 struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_ref_Volts = {0};
+struct uz_3ph_abc_t uvw_ref = {0};
 struct uz_DutyCycle_t output = {
 		.DutyCycle_U = 0.0f,
 		.DutyCycle_V = 0.0f,
@@ -89,6 +93,7 @@ void ISR_Control(void *data)
     measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
 
+    // Check if Max. Current or Max. Speed is reached
     if ((fabs(measurement_current.a) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.b) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.c) > MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION)){
     	// Assertion to Stop Machine if max. Current of max. Speed
     	output.DutyCycle_U=0.0f;
@@ -98,24 +103,31 @@ void ISR_Control(void *data)
     	ultrazohm_state_machine_set_stop(true);
     }
 
-
+    // Get measured voltages of U,V,W
     measurement_voltage.a = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
-    measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+
+
+    // calculating values needed for control
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
+    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f;
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	// Set I_d and I_q currents for FOC
+		dq_reference_current.d = Global_Data.rasv.i_d_ref;
+		dq_reference_current.q = Global_Data.rasv.i_q_ref;
+		dq_reference_current.zero = 0.0f;
 
-
-
-
-    	//FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-
-
-
+		// FOC - get U_d and U_q as controlled variable
+		dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
+		// inverse d/q-transformation
+		uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
+		// Generate PWM Signal for each phase
+		output = uz_FOC_generate_DutyCycles(uvw_ref, 24.0f);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

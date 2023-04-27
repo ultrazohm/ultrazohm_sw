@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_FOC/uz_FOC.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -45,12 +46,16 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_foc_pmsm,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+uz_FOC* FOC_instance = NULL;
+
 enum init_chain initialization_chain = init_assertions;
+
 
 int main(void)
 {
@@ -73,6 +78,31 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
+            initialization_chain = init_foc_pmsm;
+            break;
+        case init_foc_pmsm:;
+        	struct uz_PMSM_t config_SRM = {
+        	    .Ld_Henry = 3.00e-04f,
+        	    .Lq_Henry = 3.00e-04f,
+        	    .Psi_PM_Vs = 0.0f};
+            struct uz_PI_Controller_config config_id = {
+                .Kp = 0.25f,
+                .Ki = 158.8f,
+                .samplingTime_sec = 0.00005f,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+            struct uz_PI_Controller_config config_iq = {
+                .Kp = 0.25f,
+                .Ki = 158.8f,
+                .samplingTime_sec = 0.00005f,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+            struct uz_FOC_config config_FOC = {
+                .decoupling_select = linear_decoupling,
+                .config_PMSM = config_SRM,
+                .config_id = config_id,
+                .config_iq = config_iq};
+            FOC_instance = uz_FOC_init(config_FOC);
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

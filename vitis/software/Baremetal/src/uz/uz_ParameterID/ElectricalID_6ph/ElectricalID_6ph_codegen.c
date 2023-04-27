@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.93
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Apr 27 09:35:20 2023
+ * C/C++ source code generated on : Thu Apr 27 10:33:21 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -52,7 +52,7 @@
 #define IN_waitLock                    ((uint8_T)18U)
 #define IN_waitSetRPM                  ((uint8_T)19U)
 #define IN_waitState                   ((uint8_T)20U)
-#define loc_FFT_length_ms              (0.0F)
+#define loc_FFT_length_ms              (1000.0F)
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_ElectricalID_6ph_codegen_t
@@ -2597,8 +2597,6 @@ static real32_T cutoff_frequency(real32_T Rp, real32_T Rs, real32_T C)
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
  * function out = correct_setpoint(setpoint_rpm,ratSpeed_rpm,polepairs,FFT_length_ms)
  * correct_setpoint corrects the requested rpm
- *    ties the rpm to rated speed if its higher or rounds it to nearest
- *    hundred
  *  function:
  *  if corrected_setpoint_rpm is larger than n_ref set it to n_ref
  */
@@ -2608,17 +2606,17 @@ static real32_T correct_setpoint(real32_T setpoint_rpm, real32_T ratSpeed_rpm,
   real32_T T_fundamental_ms;
 
   /* MATLAB Function 'correct_setpoint': '<S1>:1073' */
-  /* '<S1>:1073:7' if(setpoint_rpm>ratSpeed_rpm) */
+  /* '<S1>:1073:5' if(setpoint_rpm>ratSpeed_rpm) */
   if (setpoint_rpm > ratSpeed_rpm) {
-    /* '<S1>:1073:8' setpoint_rpm = ratSpeed_rpm; */
+    /* '<S1>:1073:6' setpoint_rpm = ratSpeed_rpm; */
     setpoint_rpm = ratSpeed_rpm;
   }
 
-  /* '<S1>:1073:10' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
+  /* '<S1>:1073:8' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
   T_fundamental_ms = 1.0F / (setpoint_rpm / 60.0F * polepairs) * 1000.0F;
 
   /*  find integer multiple of FFT window */
-  /* '<S1>:1073:12' while mod(FFT_length_ms,T_fundamental_ms) */
+  /* '<S1>:1073:10' while mod(FFT_length_ms,T_fundamental_ms) */
   int32_T exitg1;
   real32_T b;
   do {
@@ -2648,17 +2646,17 @@ static real32_T correct_setpoint(real32_T setpoint_rpm, real32_T ratSpeed_rpm,
     }
 
     if (b != 0.0F) {
-      /* '<S1>:1073:13' setpoint_rpm = setpoint_rpm-1; */
+      /* '<S1>:1073:11' setpoint_rpm = setpoint_rpm-1; */
       setpoint_rpm--;
 
-      /* '<S1>:1073:14' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
+      /* '<S1>:1073:12' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
       T_fundamental_ms = 1.0F / (setpoint_rpm / 60.0F * polepairs) * 1000.0F;
     } else {
       exitg1 = 1;
     }
   } while (exitg1 == 0);
 
-  /* '<S1>:1073:16' out = setpoint_rpm; */
+  /* '<S1>:1073:14' out = setpoint_rpm; */
   return setpoint_rpm;
 }
 

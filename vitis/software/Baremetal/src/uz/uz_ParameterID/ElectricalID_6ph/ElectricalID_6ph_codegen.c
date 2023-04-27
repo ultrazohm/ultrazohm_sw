@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.90
+ * Model version                  : 3.93
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed Apr 26 15:27:46 2023
+ * C/C++ source code generated on : Thu Apr 27 09:35:20 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -52,6 +52,7 @@
 #define IN_waitLock                    ((uint8_T)18U)
 #define IN_waitSetRPM                  ((uint8_T)19U)
 #define IN_waitState                   ((uint8_T)20U)
+#define loc_FFT_length_ms              (0.0F)
 
 /* Forward declaration for local functions */
 static void initParams(ExtU_ElectricalID_6ph_codegen_t
@@ -106,8 +107,8 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_DW);
 static real32_T cutoff_frequency(real32_T Rp, real32_T Rs, real32_T C);
-static real32_T correct_setpoint(real32_T setpoint, real32_T ratSpeed, real32_T
-  polepairs);
+static real32_T correct_setpoint(real32_T setpoint_rpm, real32_T ratSpeed_rpm,
+  real32_T polepairs, real32_T FFT_length_ms);
 static void gatherResults(ExtU_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_U, ExtY_ElectricalID_6ph_codegen_t
   *rtElectricalID_6ph_codegen_Y, DW_ElectricalID_6ph_codegen_t
@@ -2423,13 +2424,13 @@ static void findDutyCycle(ExtU_ElectricalID_6ph_codegen_t
     /* '<S1>:3:5' counter = uint32(1); */
     rtElectricalID_6ph_codegen_DW->counter = 1U;
 
-    /* '<S1>:1114:1' sf_internal_predicateOutput = DC_valid==1 && ElectricalIDConfig.manual_offset>=0; */
+    /* '<S1>:1128:1' sf_internal_predicateOutput = DC_valid==1 && ElectricalIDConfig.manual_offset>=0; */
   } else if (rtElectricalID_6ph_codegen_DW->DC_valid &&
              (rtElectricalID_6ph_codegen_U->ElectricalIDConfig.manual_offset >=
               0.0F)) {
     /* Merge: '<S1>/ Merge ' */
-    /* Transition: '<S1>:1114' */
-    /* '<S1>:1114:1' ElectricalID_output.thetaOffset = ElectricalIDConfig.manual_offset */
+    /* Transition: '<S1>:1128' */
+    /* '<S1>:1128:1' ElectricalID_output.thetaOffset=ElectricalIDConfig.manual_offset */
     rtElectricalID_6ph_codegen_DW->ElectricalID_output.thetaOffset =
       rtElectricalID_6ph_codegen_U->ElectricalIDConfig.manual_offset;
 
@@ -2594,83 +2595,71 @@ static real32_T cutoff_frequency(real32_T Rp, real32_T Rs, real32_T C)
 
 /*
  * Function for Chart: '<Root>/ElectricalID_6ph_codegen'
- * function out = correct_setpoint(setpoint,ratSpeed,polepairs)
+ * function out = correct_setpoint(setpoint_rpm,ratSpeed_rpm,polepairs,FFT_length_ms)
  * correct_setpoint corrects the requested rpm
  *    ties the rpm to rated speed if its higher or rounds it to nearest
  *    hundred
  *  function:
  *  if corrected_setpoint_rpm is larger than n_ref set it to n_ref
  */
-static real32_T correct_setpoint(real32_T setpoint, real32_T ratSpeed, real32_T
-  polepairs)
+static real32_T correct_setpoint(real32_T setpoint_rpm, real32_T ratSpeed_rpm,
+  real32_T polepairs, real32_T FFT_length_ms)
 {
-  real32_T tmp;
-  uint32_T T_fundamental;
-  uint32_T x_0;
+  real32_T T_fundamental_ms;
 
   /* MATLAB Function 'correct_setpoint': '<S1>:1073' */
-  /* '<S1>:1073:7' if(setpoint>ratSpeed) */
-  if (setpoint > ratSpeed) {
-    /* '<S1>:1073:8' setpoint = ratSpeed; */
-    setpoint = ratSpeed;
+  /* '<S1>:1073:7' if(setpoint_rpm>ratSpeed_rpm) */
+  if (setpoint_rpm > ratSpeed_rpm) {
+    /* '<S1>:1073:8' setpoint_rpm = ratSpeed_rpm; */
+    setpoint_rpm = ratSpeed_rpm;
   }
 
-  /* '<S1>:1073:10' T_fundamental = uint32(floor(setpoint/single(60)*polepairs)); */
-  tmp = floorf(setpoint / 60.0F * polepairs);
-  if (tmp < 4.2949673E+9F) {
-    if (tmp >= 0.0F) {
-      T_fundamental = (uint32_T)tmp;
-    } else {
-      T_fundamental = 0U;
-    }
-  } else {
-    T_fundamental = MAX_uint32_T;
-  }
+  /* '<S1>:1073:10' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
+  T_fundamental_ms = 1.0F / (setpoint_rpm / 60.0F * polepairs) * 1000.0F;
 
   /*  find integer multiple of FFT window */
-  /* '<S1>:1073:12' while mod(uint32(ratSpeed),T_fundamental) */
-  tmp = roundf(ratSpeed);
-  if (tmp < 4.2949673E+9F) {
-    if (tmp >= 0.0F) {
-      x_0 = (uint32_T)tmp;
-    } else {
-      x_0 = 0U;
-    }
-  } else {
-    x_0 = MAX_uint32_T;
-  }
-
+  /* '<S1>:1073:12' while mod(FFT_length_ms,T_fundamental_ms) */
   int32_T exitg1;
-  uint32_T x;
+  real32_T b;
   do {
     exitg1 = 0;
-    x = x_0;
-    if (T_fundamental != 0U) {
-      x = x_0 - x_0 / T_fundamental * T_fundamental;
+    b = FFT_length_ms;
+    if (T_fundamental_ms == 0.0F) {
+      if (FFT_length_ms == 0.0F) {
+        b = T_fundamental_ms;
+      }
+    } else if (FFT_length_ms == 0.0F) {
+      b = 0.0F / T_fundamental_ms;
+    } else {
+      boolean_T rEQ0;
+      b = fmodf(FFT_length_ms, T_fundamental_ms);
+      rEQ0 = (b == 0.0F);
+      if ((!rEQ0) && (T_fundamental_ms > floorf(T_fundamental_ms))) {
+        real32_T q;
+        q = fabsf(FFT_length_ms / T_fundamental_ms);
+        rEQ0 = (fabsf(q - floorf(q + 0.5F)) <= 1.1920929E-7F * q);
+      }
+
+      if (rEQ0) {
+        b = 0.0F;
+      } else if ((FFT_length_ms < 0.0F) != (T_fundamental_ms < 0.0F)) {
+        b += T_fundamental_ms;
+      }
     }
 
-    if (x != 0U) {
-      /* '<S1>:1073:13' setpoint = setpoint-1; */
-      setpoint--;
+    if (b != 0.0F) {
+      /* '<S1>:1073:13' setpoint_rpm = setpoint_rpm-1; */
+      setpoint_rpm--;
 
-      /* '<S1>:1073:14' T_fundamental = uint32(floor(setpoint/single(60)*polepairs)); */
-      tmp = floorf(setpoint / 60.0F * polepairs);
-      if (tmp < 4.2949673E+9F) {
-        if (tmp >= 0.0F) {
-          T_fundamental = (uint32_T)tmp;
-        } else {
-          T_fundamental = 0U;
-        }
-      } else {
-        T_fundamental = MAX_uint32_T;
-      }
+      /* '<S1>:1073:14' T_fundamental_ms = 1/(setpoint_rpm/60*polepairs)*1000; */
+      T_fundamental_ms = 1.0F / (setpoint_rpm / 60.0F * polepairs) * 1000.0F;
     } else {
       exitg1 = 1;
     }
   } while (exitg1 == 0);
 
-  /* '<S1>:1073:16' out = setpoint; */
-  return setpoint;
+  /* '<S1>:1073:16' out = setpoint_rpm; */
+  return setpoint_rpm;
 }
 
 /* Function for Chart: '<Root>/ElectricalID_6ph_codegen' */
@@ -2722,9 +2711,9 @@ static void gatherResults(ExtU_ElectricalID_6ph_codegen_t
     /* '<S1>:1047:6' f_cutoff = cutoff_frequency(GlobalConfig.voltage_measurement_Rp,.... */
     /* '<S1>:1047:7'     GlobalConfig.voltage_measurement_Rs,GlobalConfig.voltage_measurement_C); */
     /* . */
-    /* '<S1>:1047:8' setpoint_rpm = f_cutoff/single(highest_order)/ElectricalID_output.PMSM_parameters.polePairs*single(60); */
-    /* '<S1>:1047:9' ElectricalID_output.set_rpm_val = correct_setpoint(setpoint_rpm,GlobalConfig.ratSpeed,.... */
-    /* '<S1>:1047:10'     ElectricalID_output.PMSM_parameters.polePairs); */
+    /* '<S1>:1047:8' loc_setpoint_rpm = f_cutoff/single(highest_order)/ElectricalID_output.PMSM_parameters.polePairs*single(60); */
+    /* '<S1>:1047:9' ElectricalID_output.set_rpm_val = correct_setpoint(loc_setpoint_rpm,GlobalConfig.ratSpeed,.... */
+    /* '<S1>:1047:10'     ElectricalID_output.PMSM_parameters.polePairs,loc_FFT_length_ms); */
     rtElectricalID_6ph_codegen_DW->ElectricalID_output.set_rpm_val =
       correct_setpoint(cutoff_frequency
                        (rtElectricalID_6ph_codegen_U->GlobalConfig_out.voltage_measurement_Rp,
@@ -2734,7 +2723,8 @@ static void gatherResults(ExtU_ElectricalID_6ph_codegen_t
                        rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs
                        * 60.0F,
                        rtElectricalID_6ph_codegen_U->GlobalConfig_out.ratSpeed,
-                       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs);
+                       rtElectricalID_6ph_codegen_DW->ElectricalID_output.PMSM_parameters.polePairs,
+                       loc_FFT_length_ms);
 
     /* . */
 

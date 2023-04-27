@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+//#include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_FOC/uz_FOC.h"
 
 // Initialize the Interrupt structure
@@ -42,11 +44,28 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-extern uz_FOC* FOC_instance;
-uz_3ph_dq_t reference_currents_Amp = {0};
-uz_3ph_dq_t measured_currents_Amp = {0};
-uz_3ph_dq_t FOC_output_Volts = {0};
+struct uz_3ph_abc_t measurement_current = {0};
+struct uz_3ph_abc_t measurement_voltage = {0};
+struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_DutyCycle_t output = {
+		.DutyCycle_U = 0.0f,
+		.DutyCycle_V = 0.0f,
+		.DutyCycle_W = 0.0f,
+};
+
 float omega_el_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec = 0.0f;
+
+// Conversion factors for current and voltage
+#define NUMBER_OF_TURNS_CURRENT_MEASURING 3.0f	// Number of Turns Current Measuring
+#define ADC_CURRENT_SCALING	  	80.0f 			// NUMBER_OF_TURNS_CURRENT_MEASURING
+#define ADC_CURRENT_OFFSET    	2.5f			// Offset for LEM Sensors
+#define DC_VOLT_CONV		  	12.5f
+#define PHASE_VOLT_CONV		  	12.5f
+#define ADC_PH_VOLT_OFFSET	  	0.0f			// Offset for Voltage Sensor
+#define USE_RESOLVER		  	1U				// 0U: IncrementalEncoder on D5
+#define MAX_CURRENT_ASSERTION	50.0f 			// Max. Current
+#define MAX_SPEED_ASSERTION		2500.0f			// Max. Speed
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -62,13 +81,38 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+
+    // convert ADC currents
+    measurement_current.a = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A1 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
+
+    if ((fabs(measurement_current.a) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.b) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.c) > MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION)){
+    	// Assertion to Stop Machine if max. Current of max. Speed
+    	output.DutyCycle_U=0.0f;
+    	output.DutyCycle_V=0.0f;
+    	output.DutyCycle_W=0.0f;
+    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+
+    measurement_voltage.a = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7- ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
 
-    	FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+
+
+    	//FOC_output_Volts = uz_FOC_sample(FOC_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
 
 
 

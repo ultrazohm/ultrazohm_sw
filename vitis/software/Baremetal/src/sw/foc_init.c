@@ -6,7 +6,7 @@
       .R_ph_Ohm = 0.45,
       .Ld_Henry = 0.00175f,
       .Lq_Henry = 0.00175f,
-      .Psi_PM_Vs = 0.035f,
+      .Psi_PM_Vs = 0.042f,
 	  .polePairs = 4.0f,
 	  .I_max_Ampere = 12.0f
     };//these parameters are only needed if linear decoupling is selected

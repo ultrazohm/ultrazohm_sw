@@ -172,7 +172,7 @@ void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-    uz_matrix_multiply_by_scalar(self->delta,1.0f); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
+    uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
 }
 
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference)
@@ -263,11 +263,29 @@ void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname)
     } 
   fclose(f);
 }
-void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias, float *const lernrate)
+void uz_nn_layer_update(uz_nn_layer_t *const self,float *theta, float *bias,float *lernrate)
 {
     self->weights->data[0] = self->weights->data[0] - *lernrate * *theta;
     self->bias->data[0] = self->bias->data[0] - *lernrate * *bias;
 }
+
+void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *const gradientmatrix)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->gradients->data == gradientmatrix->data); //assert wenn matrix nichts gleiche länge haben
+    for(uint32_t i=0U;i<self->gradients->length_of_data;i++){
+        self->gradients->data[i] = gradientmatrix->data[i];
+    }
+}
+
+void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_matrix_set_zero(self->gradients);
+}
+
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);

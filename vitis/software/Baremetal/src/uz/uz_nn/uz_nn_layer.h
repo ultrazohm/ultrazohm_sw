@@ -86,11 +86,13 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference);
 void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error);
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
-void uz_nn_layer_update(uz_nn_layer_t *const self, float *const theta, float *const bias, float *const lernrate);
+void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate);
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname);
 void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname);
-uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
+void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *const gradientmatrix);
+void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self);
+uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self);
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);

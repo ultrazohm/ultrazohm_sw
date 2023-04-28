@@ -40,8 +40,10 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  */
 
 void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input);
-void uz_nn_backward_pass(uz_nn_t *self,float *const error, uz_matrix_t *const input);
+void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *const input);
 void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate);
+void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer);
+void uz_nn_set_gradients_zero(uz_nn_t *self);
 void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate);
 void uz_nn_schroeder_export(uz_nn_t *self);
 void uz_nn_mat_export(uz_nn_t *self);

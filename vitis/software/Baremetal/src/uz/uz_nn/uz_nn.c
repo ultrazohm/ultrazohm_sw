@@ -111,7 +111,7 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
     // summiere alle Fehler auf
     for (uint32_t i = 0; i < output->length_of_data; i++)
     {
-        y+=(output->data[i] - expectedoutput->data[i]) * (output->data[i] - expectedoutput->data[i]);
+        y+=(expectedoutput->data[i]-output->data[i]) * (expectedoutput->data[i]-output->data[i]);
     }
     // Wer als float ausgeben zum Debuggen 1/n * Summe = MSE
     y = (1.0f/((float)output->length_of_data)) * y;
@@ -119,7 +119,7 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
     return y;
 }
 
-void uz_nn_backward_pass(uz_nn_t *self,float *const error, uz_matrix_t *const input)
+void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -180,10 +180,7 @@ void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *con
 
 void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate)
 {
-    const float *gradient1 = &THETA;
-    const float *gradient2 = &BIAS;
-    const float *lernratelayer0 = &Lernrate;
-    uz_nn_layer_update(self->layer[0],gradient1,gradient2,lernratelayer0);
+    uz_nn_layer_update(self->layer[0],&THETA,&BIAS,&Lernrate);
 }
 
 void uz_nn_mat_export(uz_nn_t *self)
@@ -202,6 +199,25 @@ void uz_nn_mat_export(uz_nn_t *self)
         uz_nn_layer_matb_export(self->layer[2], fname5);
 }
 
+void uz_nn_set_gradients_zero(uz_nn_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    // Loop through layers
+
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_set_gradient_in_layer_zero(self->layer[i]);
+    }
+}
+
+void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_nn_set_gradient_in_layer(self->layer[layer - 1], gradientmatrix);
+}
+
 void uz_nn_schroeder_export(uz_nn_t *self)
 {
     // Zeige Gewichte nach dem Trainingsschritt an
@@ -215,19 +231,19 @@ void uz_nn_schroeder_export(uz_nn_t *self)
     x12 = uz_matrix_get_element_zero_based(weightshelper,0,1);
     b11 = uz_matrix_get_element_zero_based(biasoutput,0,0);
     b12 = uz_matrix_get_element_zero_based(biasoutput,0,1);
-    printf("Neuer Wert für THETA 1.1 ist %.2f \n", x11);
-    printf("Neuer Wert für BIAS 1.1 ist %.2f \n", b11);
+    printf("Neuer Wert für THETA 1.1 ist %.2f \n", (double)x11);
+    printf("Neuer Wert für BIAS 1.1 ist %.2f \n", (double)b11);
 // Daten in .csv datei überschreiben
 FILE* file1 = fopen("test/uz/uz_nn/schroeder_weights/layer1_weights.csv", "w");
 if (file1 != NULL)
 {
-    fprintf(file1, "%.2ff,%.2ff", x11, x12);
+    fprintf(file1, "%.2ff,%.2ff", (double)x11, (double)x12);
 }
 
 FILE* file2 = fopen("test/uz/uz_nn/schroeder_weights/layer1_bias.csv", "w");
 if (file2 != NULL)
 {
-    fprintf(file2, "%.2ff,%.2ff", b11, b12);
+    fprintf(file2, "%.2ff,%.2ff", (double)b11, (double)b12);
 }
 
 }

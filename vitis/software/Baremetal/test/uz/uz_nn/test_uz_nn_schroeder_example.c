@@ -191,10 +191,17 @@ void test_uz_nn_schroeder(void)
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* eingabe=uz_matrix_init(&x_matrix,&x[i],1,1,NUMBER_OF_INPUTS);
     uz_nn_ff(test,eingabe);
-    uz_nn_calc_gradients(test,&reference_output[i],eingabe);
+    //
+    uz_matrix_t* output=uz_nn_get_output_data(test);
+    float result=uz_matrix_get_element_zero_based(output,0,0);
+    float error = reference_output[i]- result;
+    float const *ptr = &error;
+    uz_nn_backward_pass(test,ptr,eingabe);
+    //
+    //uz_nn_calc_gradients(test,&reference_output[i],eingabe);
     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
-    THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);//THETA 1,1 
-    biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);//bias 1,1
+    THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);// THETA 1,1 
+    biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);// bias 1,1
     sumtheta += THETAhelper[i];
     sumbias += biashelper[i];
     printf("sumthteta = %.2f \n", (double)sumtheta);
@@ -206,10 +213,14 @@ void test_uz_nn_schroeder(void)
     printf("Mittelwert von biasgrad = %.2f \n", (double)avgbias);
     //Lernrate festlegen
     float lernrate = 2.0f;
+    // überschreiben der Gradienten mit den Werten avgtheta und avgbias, rest 0 setzen
+    
+    // updaten aller parameter mit den funktionen für das ganze netz
+    uz_nn_gradient_descent(test, lernrate);
     //Update THETA 1,1 und bias 1,1 mit den berechneten Gradienten und einer Schrittweite von eta = 2
-    uz_nn_update(test,avgtheta,avgbias,lernrate);
+    //uz_nn_update(test,avgtheta,avgbias,lernrate);
     //Funktion die die daten exportiert und in die .csv Dateien überschreibt
-    uz_nn_schroeder_export(test);
+    //uz_nn_schroeder_export(test);
     clock_t end = clock();
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;
     printf("Zeit des Tests = %.6f \n", (double)seconds);

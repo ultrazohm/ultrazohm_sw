@@ -362,7 +362,7 @@ void test_uz_nn_mse_three(void)
 
 void test_uz_nn_gradient_descent1(void)
 {
-    // Test 1: Gleiche Gradienten für bias und weights, LR 0.1
+    // Test 1: Gleiche Gradienten für bias und weights, LR 0.1, Gradienten werden in der Config angelegt
     uz_nn_t *test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     float lernrate = 0.1f;
     uz_nn_gradient_descent(test,lernrate);
@@ -390,5 +390,33 @@ void test_uz_nn_gradient_descent2(void)
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_12, bx12,10);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_22, bx22,10);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(b_32, bx32,1);
+}
+
+void test_uz_nn_set_gradients_zero(void)
+{
+    uz_nn_t *testzero = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_set_gradients_zero(testzero);
+    float f1[UZ_MATRIX_SIZE(g_1)]={0.0f};
+    float f2[UZ_MATRIX_SIZE(g_2)]={0.0f};
+    float f3[UZ_MATRIX_SIZE(g_3)]={0.0f};
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_1, f1,UZ_MATRIX_SIZE(g_1));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_2, f2,UZ_MATRIX_SIZE(g_2));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_3, f3,UZ_MATRIX_SIZE(g_3));
+}
+
+void test_uz_nn_set_gradient_matrix(void)
+{
+    uz_nn_t *testsetgrad = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    float f1[UZ_MATRIX_SIZE(g_3)]={1.0f,2.0f,3.0f,4.0,5.0f,60.0f,70.0f,80.0f,90.0f,100.0f,1000.0f};
+    float t1[UZ_MATRIX_SIZE(g_3)]={1.0f,2.0f,3.0f,4.0,5.0f,60.0f,70.0f,80.0f,90.0f,100.0f,1000.0f};
+    struct uz_matrix_t gradmax={0};
+    uz_matrix_t* gradxx=uz_matrix_init(&gradmax, t1,UZ_MATRIX_SIZE(t1),UZ_MATRIX_SIZE(t1),1);
+    uz_nn_set_gradient_matrix(testsetgrad,gradxx, 3);
+    uz_matrix_t* gradsoll = uz_nn_get_gradient_data(testsetgrad,3);
+    // for(uint32_t i=0U;i<gradsoll->length_of_data;i++){
+    //         float x = 0.0f;
+    //         x = gradsoll->data[i];
+    //         TEST_ASSERT_EQUAL_FLOAT(x,f1[i]);
+    // }
 }
 #endif // TEST

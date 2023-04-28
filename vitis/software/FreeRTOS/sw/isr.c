@@ -26,8 +26,6 @@
 #include "xil_cache.h"
 
 struct APU_to_RPU_t ControlData;
-
-extern A53_Data Global_Data_A53;
 extern int js_connection_established;
 
 // Javascope Queue parameters

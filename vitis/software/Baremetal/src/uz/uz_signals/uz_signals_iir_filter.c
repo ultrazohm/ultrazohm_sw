@@ -139,4 +139,12 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t *self, float input)
     return (output);
 }
 
+uz_3ph_dq_t uz_signals_IIR_Filter_dq_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint){
+    uz_3ph_dq_t out = {
+        .d = uz_signals_IIR_Filter_sample(filter_1, setpoint.d),
+        .q = uz_signals_IIR_Filter_sample(filter_2, setpoint.q),
+        .zero = 0.0f};
+    return out;
+}
+
 #endif

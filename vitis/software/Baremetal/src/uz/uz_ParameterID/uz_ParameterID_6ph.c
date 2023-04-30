@@ -255,8 +255,11 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data) {
 		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
 	}
 
-	// any control active
-	if (Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed || Data->Controller_Parameters.enableFOC_torque) {
+	// Fluxmap ID and Multi-phase controllers
+	if(uz_get_FluxMapID_6ph_entered(self->FluxMapID)){
+			}
+	// any control active except Fluxmap
+	else if ((Data->Controller_Parameters.enableFOC_current && !uz_get_FluxMapID_6ph_entered(self->FluxMapID)) || Data->Controller_Parameters.enableFOC_speed || Data->Controller_Parameters.enableFOC_torque) {
 		//Change, if desired, the current controller here
 		if (Data->Controller_Parameters.enableFOC_current) {
 			//If CurrentControl is active, use input reference currents
@@ -274,21 +277,120 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data) {
 		uz_ParameterID_reset_controllers(Data);
 	}
 
-	// configure fundamental controllers
-	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
+	// configure fundamental controllers except for FluxMap
+	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 3U) {
 		if (Data->Controller_Parameters.activeState == 148U) {
 			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
 			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, linear_decoupling);
 		}
+		// cc instance 1
 		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->Controller_Parameters.Kp_id_out);
 		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->Controller_Parameters.Kp_iq_out);
 		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->Controller_Parameters.Ki_id_out);
 		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->Controller_Parameters.Ki_iq_out);
-		uz_SpeedControl_set_Ki(Data->speed_instance, Data->Controller_Parameters.Ki_n_out);
-		uz_SpeedControl_set_Kp(Data->speed_instance, Data->Controller_Parameters.Kp_n_out);
 	}
+
+	// FluxmapID active and in start state
+	if(Data->Controller_Parameters.activeState == 400U){
+		uz_ParameterID_configure_6ph_controllers(Data);
+	}
+
 	return (out);
+}
+
+// multi-phase current control
+uz_6ph_dq_t uz_ParameterID_6ph_step_controllers(uz_ParameterID_Data_t* Data)
+{
+    // Initialize output struct
+    uz_6ph_dq_t out = {0};
+
+    // map outputs and step resonant controllers depending on current state inside FluxMapID
+    switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
+    {
+        case 1: // control dq system
+			uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_filter_controller_setpoint(filter_1, filter_2, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_filter_controller_setpoint(filter_3, filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            out.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+            out.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+            uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
+            out.x = cc_out_xy_stationary.alpha;
+            out.y = cc_out_xy_stationary.beta;
+            break;
+        case 2: // control xy system
+			uz_3ph_dq_t cc_out_ab_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_filter_controller_setpoint(filter_1, filter_2, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			uz_3ph_dq_t cc_out_xy_rotating = uz_CurrentControl_sample(Data->cc_instance_2, uz_filter_controller_setpoint(filter_3, filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            out.d = cc_out_ab_rotating.d;
+            out.q = cc_out_ab_rotating.q;
+            cc_out_xy_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
+            cc_out_xy_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
+            uz_3ph_alphabeta_t cc_out_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
+            out.x = cc_out_xy_stationary.alpha;
+            out.y = cc_out_xy_stationary.beta;
+            break;
+        case 3: // control zero system
+            uz_3ph_dq_t cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_filter_controller_setpoint(filter_5, filter_6, Data->FluxmapID_extended_controller_Output->zero_i_dq_PI_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+            cc_out_zero_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
+            cc_out_zero_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
+            uz_3ph_alphabeta_t cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
+            out.z1 = cc_out_zero_stationary.alpha;
+            out.z2 = cc_out_zero_stationary.beta;
+            break;
+        default:
+    		uz_ParameterID_reset_controllers(Data);
+            break;
+    }
+    return out;
+}
+
+static void uz_ParameterID_configure_6ph_controllers(uz_ParameterID_Data_t* Data){
+	int system = 0;
+	// current control
+	switch (system){
+		case 1U:
+		case 2U:
+			// cc instance 1 for dq
+			uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Kp);
+			uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Kp);
+			uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Ki);
+			uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Ki);
+			// cc instance 2 for xy
+			uz_CurrentControl_set_Kp_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Kp);
+			uz_CurrentControl_set_Kp_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Kp);
+			uz_CurrentControl_set_Ki_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Ki);
+			uz_CurrentControl_set_Ki_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Ki);
+			break;
+		case 3U:
+			// cc instance 1 for zero
+			uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Kp);
+			uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Kp);
+			uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Ki);
+			uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
+			break;
+		default: break;
+	}
+	// resonant
+	switch (system){
+		case 1U:
+			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
+			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
+			break;
+		case 2U:
+			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
+			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
+			break;
+		case 3U:
+			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
+			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);
+			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_zero.harmonic_order);
+			break;
+		default: break;
+	}
 }
 
 static void uz_ParameterID_reset_controllers(uz_ParameterID_Data_t* Data){
@@ -538,6 +640,9 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->resonant_instance_1 = NULL;
 	Data->resonant_instance_2 = NULL;
 	Data->encoder_offset_estimation = NULL;
+
+	// controller parameters
+	Data->
 }
 
 // Temp

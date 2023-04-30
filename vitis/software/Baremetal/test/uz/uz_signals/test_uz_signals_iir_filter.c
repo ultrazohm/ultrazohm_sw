@@ -4,6 +4,7 @@
 
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
+#include "uz_Transformation.h"
 TEST_FILE("uz_signals_iir_filter.c")
 
 struct uz_IIR_Filter_config config = { 0 };
@@ -124,4 +125,10 @@ void test_uz_signals_Filter_1st_highpass_reverse_output(void) {
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, expected_filtered_array[i], filtered_array[i]);
     }
 }
+
+void test_uz_signals_IIR_Filter_dq_setpoint(void){
+    uz_3ph_dq_t setpoint = {0};
+    TEST_ASSERT_FAIL_ASSERT(uz_signals_IIR_Filter_dq_setpoint(NULL, NULL, setpoint));
+}
+
 #endif // TEST

@@ -603,6 +603,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		        case (ParaID_FID_Array_Control_counter):
 		            ParaID_Data.Array_Control_counter = value;
 		            break;
+		        case (ParaID_FMID_temperature_lower):
+		        		            ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
+		        		            break;
+
+		        case (ParaID_FMID_temperature_upper):
+		ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
+		        		            break;
+
+		        case (ParaID_FMID_selected_subsystem):
+		ParaID_Data.FluxMapID_Config.selected_subsystem = value;
+		        		            break;
 
 		case (Error_Reset):
 

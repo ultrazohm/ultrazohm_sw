@@ -29,7 +29,7 @@ enum JS_OberservableData {
 	JSO_iy,
 	JSO_iz1,
 	JSO_iz2,
-	JSO_ua1,
+	JSO_ia1,
 	JSO_ib1,
 	JSO_ic1,
 	JSO_ia2,
@@ -41,6 +41,7 @@ enum JS_OberservableData {
 	JSO_uy,
 	JSO_uz1,
 	JSO_uz2,
+	JSO_omega_el,
 	JSO_theta_mech,
 	JSO_state,
 	JSO_ISR_ExecTime_us,
@@ -135,6 +136,11 @@ enum JS_SlowData {
 	JSSD_FLOAT_L_Z2,
 	JSSD_FLOAT_set_rpm_val,
 	JSSD_FLOAT_extended_offset_progress,
+	JSSD_FLOAT_out_point_number,
+	JSSD_FLOAT_out_i_d,
+	JSSD_FLOAT_out_i_q,
+	JSSD_FLOAT_out_psi_d,
+	JSSD_FLOAT_out_psi_q,
 	JSSD_ENDMARKER
 };
 
@@ -237,6 +243,9 @@ enum gui_button_mapping {
 	ParaID_EID_Enable_EXT_THETA,
 	ParaID_EID_Disable_EXT_THETA,
 	ParaID_EID_ManualOffset,
+	ParaID_FMID_temperature_lower,
+	ParaID_FMID_temperature_upper,
+	ParaID_FMID_selected_subsystem,
     GUI_BTN_ENDMARKER
 };
 

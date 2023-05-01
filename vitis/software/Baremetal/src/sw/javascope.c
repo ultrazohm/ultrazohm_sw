@@ -82,12 +82,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
-	js_ch_observable[JSO_ua1] = &(ParaID_Data.ActualValues.v_abc_6ph.a1);
+	js_ch_observable[JSO_ia1] = &(ParaID_Data.ActualValues.i_abc_6ph.a1);
 	js_ch_observable[JSO_ib1] = &(ParaID_Data.ActualValues.i_abc_6ph.b1);
 	js_ch_observable[JSO_ic1] = &(ParaID_Data.ActualValues.i_abc_6ph.c1);
 	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);
 	js_ch_observable[JSO_ib2] = &(ParaID_Data.ActualValues.i_abc_6ph.b2);
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
+	js_ch_observable[JSO_omega_el] = &(ParaID_Data.ActualValues.omega_el);
+
+
   js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
   js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
@@ -168,6 +171,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_L_Z2]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z2);
 	js_slowDataArray[JSSD_FLOAT_set_rpm_val]      		= &(ParaID_Data.ElectricalID_Output->set_rpm_val);
 	js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation.progress);
+	js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(ParaID_Data.FluxmapID_extended_controller_Output->array_index);
+	js_slowDataArray[JSSD_FLOAT_out_i_d]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0]);
+	js_slowDataArray[JSSD_FLOAT_out_i_q]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1]);
+	js_slowDataArray[JSSD_FLOAT_out_psi_d]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2]);
+	js_slowDataArray[JSSD_FLOAT_out_psi_q]				= &(ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3]);
+
 	return Status;
 }
 

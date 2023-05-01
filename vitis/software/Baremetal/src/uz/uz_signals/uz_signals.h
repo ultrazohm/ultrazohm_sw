@@ -1,6 +1,8 @@
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
 
+#include "../uz_Transformation/uz_Transformation.h"
+
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {
 	LowPass_first_order = 0,
@@ -72,4 +74,15 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  * @return float unfiltered signal
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+
+/**
+ * @brief Function to filter/smooth out a dq setpoint e.g. for current control
+ *
+ * @param filter_1 pointer instance of uz_IIR_Filter_t
+ * @param filter_2 pointer instance of uz_IIR_Filter_t
+ * @param setpoint raw setpoint for control algorithm
+ * @return filtered dq struct
+ */
+uz_3ph_dq_t uz_signals_IIR_Filter_dq_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint);
+
 #endif // UZ_SIGNALS_H

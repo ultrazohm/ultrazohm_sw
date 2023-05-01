@@ -24,6 +24,7 @@
 #include "../uz_setpoint/uz_setpoint.h"
 #include "../uz_ResonantController/uz_resonant_controller.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../uz_signals/uz_signals.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
 
@@ -442,6 +443,7 @@ typedef struct uz_ParameterID_Data_t {
 													0 = No_Control \n
 													1 = Current_Control \n
 													2 = Speed_Control*/
+  // controller instances
   uz_SetPoint_t* setpoint_instance;
   uz_SpeedControl_t* speed_instance;
   uz_CurrentControl_t* cc_instance_1;
@@ -449,6 +451,21 @@ typedef struct uz_ParameterID_Data_t {
   uz_resonantController_t* resonant_instance_1;
   uz_resonantController_t* resonant_instance_2;
   uz_encoder_offset_estimation_t* encoder_offset_estimation;
+  // controller parameters
+  struct uz_CurrentControl_config config_cc_dq;
+  struct uz_CurrentControl_config config_cc_xy;
+  struct uz_CurrentControl_config config_cc_zero;
+  struct uz_resonantController_config config_res_dq;
+  struct uz_resonantController_config config_res_xy;
+  struct uz_resonantController_config config_res_zero;
+  // filter instances
+  uz_IIR_Filter_t* filter_1;
+  uz_IIR_Filter_t* filter_2;
+  uz_IIR_Filter_t* filter_3;
+  uz_IIR_Filter_t* filter_4;
+  uz_IIR_Filter_t* filter_5;
+  uz_IIR_Filter_t* filter_6;
+
   // temp stuff
   float temp_initial_angle;
 } uz_ParameterID_Data_t;

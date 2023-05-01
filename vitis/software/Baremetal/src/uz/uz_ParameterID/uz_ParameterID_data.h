@@ -24,6 +24,7 @@
 #include "../uz_setpoint/uz_setpoint.h"
 #include "../uz_ResonantController/uz_resonant_controller.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../uz_signals/uz_signals.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
 
@@ -457,6 +458,13 @@ typedef struct uz_ParameterID_Data_t {
   struct uz_resonantController_config config_res_dq;
   struct uz_resonantController_config config_res_xy;
   struct uz_resonantController_config config_res_zero;
+  // filter instances
+  uz_IIR_Filter_t* filter_1;
+  uz_IIR_Filter_t* filter_2;
+  uz_IIR_Filter_t* filter_3;
+  uz_IIR_Filter_t* filter_4;
+  uz_IIR_Filter_t* filter_5;
+  uz_IIR_Filter_t* filter_6;
 
   // temp stuff
   float temp_initial_angle;

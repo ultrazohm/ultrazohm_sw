@@ -80,14 +80,14 @@ steps:
    - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
 
 # Runs report_environment from vivado to check if the license is valid for debug reasons (only on main and develop branch)
- - name: Vivado_check_license
-   image: vivado:2022.2
-   depends_on: [ Vivado_validate_board_design ]
-   commands:
-   - ip link show
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
-  #  when:
+#  - name: Vivado_check_license
+#    image: vivado:2022.2
+#    depends_on: [ Vivado_validate_board_design ]
+#    commands:
+#    - ip link show
+#    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+#    - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
+#   #  when:
   #    branch:
   #    - main
   #    - develop

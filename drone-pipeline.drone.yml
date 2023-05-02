@@ -97,7 +97,7 @@ steps:
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream
    image: vivado:2022.2
-   depends_on: [ Vivado_check_license ]
+   depends_on: [ Vivado_check_syntax ]
    commands:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh

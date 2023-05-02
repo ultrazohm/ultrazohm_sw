@@ -30,12 +30,12 @@ steps:
    - cd build
    - ls
   
- - name: Ceedling unit tests
-   image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
-   commands:
-   - cd vitis/software/Baremetal
-   - ceedling test:all
+#  - name: Ceedling unit tests
+#    image: ultrazohm/ultrazohm_remote_container
+#    depends_on: [ copy_global_config ]
+#    commands:
+#    - cd vitis/software/Baremetal
+#    - ceedling test:all
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container

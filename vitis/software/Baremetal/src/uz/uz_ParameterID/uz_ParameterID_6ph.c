@@ -135,7 +135,14 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		break;
 
 	default:
-		uz_ParaID_6ph_FOC_output_set_zero(Data);
+		if(Data->ParaID_Control_Selection == Current_Control){
+			Data->Controller_Parameters.i_dq_ref = Data->GlobalConfig.i_dq_ref;
+			Data->Controller_Parameters.i_xy_ref = Data->GlobalConfig.i_xy_ref;
+			Data->Controller_Parameters.resonant_subsystem = Data->GlobalConfig.resonant_subsystem;
+			Data->Controller_Parameters.PI_subsystem = Data->GlobalConfig.PI_subsystem;
+		}else{
+			uz_ParaID_6ph_FOC_output_set_zero(Data);
+		}
 		break;
 	}
 	
@@ -204,8 +211,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
 	// during normal operation give out calculated dutycycles from setpoints
-	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control))) {		
+	} else if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true || Data->ParaID_Control_Selection == Current_Control) {		
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
@@ -286,6 +292,9 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_Paramet
 	// FluxmapID active and in start state
 	if(Data->Controller_Parameters.activeState == 400U){
 		uz_ParaID_configure_6ph_controllers(Data);
+	}else if(Data->GlobalConfig.controllers_updated){
+		uz_ParaID_configure_6ph_controllers(Data);
+		Data->GlobalConfig.controllers_updated = false;
 	}
 	return (out);
 }

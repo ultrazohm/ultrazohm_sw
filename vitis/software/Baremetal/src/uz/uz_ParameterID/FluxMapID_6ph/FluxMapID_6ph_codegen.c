@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.98
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue May  2 14:42:16 2023
+ * C/C++ source code generated on : Tue May  2 15:50:41 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -23,6 +23,7 @@
 #include "../mean_GqoxPyM9.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
+
 
 /* Named constants for Chart: '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 #define IN_AMMcollectData              ((uint8_T)1U)
@@ -894,6 +895,13 @@ static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[2] = 0.0F;
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[3] = 0.0F;
 
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:736:4' FluxMapID_FOC_output.resetIntegrator = false; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resetIntegrator = false;
+
+    /* '<S1>:736:5' FluxMapID_FOC_output.enableFOC_current = true; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.enableFOC_current = true;
+
     /* Entry Internal 'IdentificationXY': '<S1>:736' */
     /* Transition: '<S1>:749' */
     rtFluxMapID_6ph_codegen_DW->is_IdentificationXY = IN_Fluxmap;
@@ -1042,6 +1050,13 @@ static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[1] = 0.0F;
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[2] = 0.0F;
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[3] = 0.0F;
+
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:817:4' FluxMapID_FOC_output.resetIntegrator = false; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resetIntegrator = false;
+
+    /* '<S1>:817:5' FluxMapID_FOC_output.enableFOC_current = true; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.enableFOC_current = true;
 
     /* Entry Internal 'IdentificationZero': '<S1>:817' */
     /* Transition: '<S1>:835' */
@@ -1201,12 +1216,12 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
 
     /* Outport: '<Root>/finishedFluxMapID' */
     /* Exit 'AMMstate': '<S1>:590' */
-    /* '<S1>:590:11' counter = uint32(1); */
-    /* '<S1>:590:12' finishedFluxMapID=boolean(1); */
+    /* '<S1>:590:30' counter = uint32(1); */
+    /* '<S1>:590:31' finishedFluxMapID=boolean(1); */
     rtFluxMapID_6ph_codegen_Y->finishedFluxMapID = true;
 
     /* Outport: '<Root>/enteredFluxMapID' */
-    /* '<S1>:590:13' enteredFluxMapID = boolean(0); */
+    /* '<S1>:590:32' enteredFluxMapID = boolean(0); */
     rtFluxMapID_6ph_codegen_Y->enteredFluxMapID = false;
     rtFluxMapID_6ph_codegen_DW->is_c16_FluxMapID_6ph_codegen = IN_Waiting;
 
@@ -1229,6 +1244,26 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
       ((rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp -
         rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref) * TEMP_COEFFICIENT
        + 1.0F) * rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref;
+
+    /* { */
+    /* if(FluxMapIDConfig.start_FM_ID==1) */
+    /*     %if(FluxMapIDConfig.identR == 1) */
+    /*       %  if(FluxMapID_FOC_output.activeState ~= 403) */
+    /*      %       FluxMapID_output.R_s = identRes; */
+    /*      %   end */
+    /*    %     if(FluxMapIDConfig.R_s_ref ~= 0.0 && FluxMapIDConfig.Temp_ref ~= 0.0) */
+    /*          %   FluxMapID_output.WindingTemp = ((FluxMapID_output.R_s/FluxMapIDConfig.R_s_ref)-1).... */
+    /*        %         *254.453+FluxMapIDConfig.Temp_ref; */
+    /*      %   end */
+    /*    % end */
+    /*     %if(FluxMapIDConfig.identR == 0) */
+    /*       % i_d_R_online = single(0.0); */
+    /*     %    FluxMapID_output.WindingTemp= single(65); */
+    /*   %  end */
+    /* else */
+    /*      */
+    /* end */
+    /*     %} */
     switch (rtFluxMapID_6ph_codegen_DW->is_AMMstate) {
      case IN_IdentificationDQ:
       {
@@ -1460,62 +1495,62 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
         } else {
           uint32_T exitPortIndex_l;
 
-          /* '<S1>:736:5' if(FluxMapIDConfig.start_FM_ID==true) */
+          /* '<S1>:736:7' if(FluxMapIDConfig.start_FM_ID==true) */
           if (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.start_FM_ID) {
             /* Outport: '<Root>/FluxMapID_FOC_output' */
-            /* '<S1>:736:6' FluxMapID_FOC_output.i_xy_ref.d=i_d_ref_AMM; */
+            /* '<S1>:736:8' FluxMapID_FOC_output.i_xy_ref.d=i_d_ref_AMM; */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_xy_ref.d =
               rtFluxMapID_6ph_codegen_DW->i_d_ref_AMM;
 
-            /* '<S1>:736:7' FluxMapID_FOC_output.i_xy_ref.q=i_q_ref_AMM; */
+            /* '<S1>:736:9' FluxMapID_FOC_output.i_xy_ref.q=i_q_ref_AMM; */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_xy_ref.q =
               rtFluxMapID_6ph_codegen_DW->i_q_ref_AMM;
           } else {
             /* Outport: '<Root>/FluxMapID_FOC_output' */
-            /* '<S1>:736:8' else */
-            /* '<S1>:736:9' FluxMapID_FOC_output.i_xy_ref.d=single(0); */
+            /* '<S1>:736:10' else */
+            /* '<S1>:736:11' FluxMapID_FOC_output.i_xy_ref.d=single(0); */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_xy_ref.d = 0.0F;
 
-            /* '<S1>:736:10' FluxMapID_FOC_output.i_xy_ref.q=single(0); */
+            /* '<S1>:736:12' FluxMapID_FOC_output.i_xy_ref.q=single(0); */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_xy_ref.q = 0.0F;
           }
 
-          /* '<S1>:736:12' if(finished_calculation) */
+          /* '<S1>:736:14' if(finished_calculation) */
           if (rtFluxMapID_6ph_codegen_DW->finished_calculation_b) {
-            /* '<S1>:736:13' FluxMapID_output.psi_array(1)=mean_currents.d; */
+            /* '<S1>:736:15' FluxMapID_output.psi_array(1)=mean_currents.d; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[0] =
               rtFluxMapID_6ph_codegen_DW->mean_currents_m.d;
 
-            /* '<S1>:736:14' FluxMapID_output.psi_array(2)=mean_currents.q; */
+            /* '<S1>:736:16' FluxMapID_output.psi_array(2)=mean_currents.q; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[1] =
               rtFluxMapID_6ph_codegen_DW->mean_currents_m.q;
 
-            /* '<S1>:736:15' FluxMapID_output.psi_array(3)=single(-1)*flux(mean_voltages.q, mean_currents.q, ... */
-            /* '<S1>:736:16'         mean_omega_el, FluxMapID_output.R_s); */
+            /* '<S1>:736:17' FluxMapID_output.psi_array(3)=single(-1)*flux(mean_voltages.q, mean_currents.q, ... */
+            /* '<S1>:736:18'         mean_omega_el, FluxMapID_output.R_s); */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[2] = -flux
               (rtFluxMapID_6ph_codegen_DW->mean_voltages_c.q,
                rtFluxMapID_6ph_codegen_DW->mean_currents_m.q,
                rtFluxMapID_6ph_codegen_DW->mean_omega_el_k,
                rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s);
 
-            /* '<S1>:736:17' FluxMapID_output.psi_array(4)=flux(mean_voltages.d, mean_currents.d, ... */
-            /* '<S1>:736:18'         mean_omega_el, FluxMapID_output.R_s); */
+            /* '<S1>:736:19' FluxMapID_output.psi_array(4)=flux(mean_voltages.d, mean_currents.d, ... */
+            /* '<S1>:736:20'         mean_omega_el, FluxMapID_output.R_s); */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[3] = flux
               (rtFluxMapID_6ph_codegen_DW->mean_voltages_c.d,
                rtFluxMapID_6ph_codegen_DW->mean_currents_m.d,
                rtFluxMapID_6ph_codegen_DW->mean_omega_el_k,
                rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s);
 
-            /* '<S1>:736:19' FluxMapID_output.array_index = repetition_counter; */
+            /* '<S1>:736:21' FluxMapID_output.array_index = repetition_counter; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.array_index =
               rtFluxMapID_6ph_codegen_DW->repetition_counter;
 
-            /* '<S1>:736:20' FluxMapID_output.finished_calculation=true; */
+            /* '<S1>:736:22' FluxMapID_output.finished_calculation=true; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.finished_calculation =
               true;
           } else {
-            /* '<S1>:736:21' else */
-            /* '<S1>:736:22' FluxMapID_output.finished_calculation=false; */
+            /* '<S1>:736:23' else */
+            /* '<S1>:736:24' FluxMapID_output.finished_calculation=false; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.finished_calculation =
               false;
           }
@@ -1641,62 +1676,62 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
         } else {
           uint32_T exitPortIndex_l;
 
-          /* '<S1>:817:5' if(FluxMapIDConfig.start_FM_ID==true) */
+          /* '<S1>:817:7' if(FluxMapIDConfig.start_FM_ID==true) */
           if (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.start_FM_ID) {
             /* Outport: '<Root>/FluxMapID_FOC_output' */
-            /* '<S1>:817:6' FluxMapID_FOC_output.i_zero_ref.d=i_d_ref_AMM; */
+            /* '<S1>:817:8' FluxMapID_FOC_output.i_zero_ref.d=i_d_ref_AMM; */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_zero_ref.d =
               rtFluxMapID_6ph_codegen_DW->i_d_ref_AMM;
 
-            /* '<S1>:817:7' FluxMapID_FOC_output.i_zero_ref.q=i_q_ref_AMM; */
+            /* '<S1>:817:9' FluxMapID_FOC_output.i_zero_ref.q=i_q_ref_AMM; */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_zero_ref.q =
               rtFluxMapID_6ph_codegen_DW->i_q_ref_AMM;
           } else {
             /* Outport: '<Root>/FluxMapID_FOC_output' */
-            /* '<S1>:817:8' else */
-            /* '<S1>:817:9' FluxMapID_FOC_output.i_zero_ref.d=single(0); */
+            /* '<S1>:817:10' else */
+            /* '<S1>:817:11' FluxMapID_FOC_output.i_zero_ref.d=single(0); */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_zero_ref.d = 0.0F;
 
-            /* '<S1>:817:10' FluxMapID_FOC_output.i_zero_ref.q=single(0); */
+            /* '<S1>:817:12' FluxMapID_FOC_output.i_zero_ref.q=single(0); */
             rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_zero_ref.q = 0.0F;
           }
 
-          /* '<S1>:817:12' if(finished_calculation) */
+          /* '<S1>:817:14' if(finished_calculation) */
           if (rtFluxMapID_6ph_codegen_DW->finished_calculation_b) {
-            /* '<S1>:817:13' FluxMapID_output.psi_array(1)=mean_currents.d; */
+            /* '<S1>:817:15' FluxMapID_output.psi_array(1)=mean_currents.d; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[0] =
               rtFluxMapID_6ph_codegen_DW->mean_currents_m.d;
 
-            /* '<S1>:817:14' FluxMapID_output.psi_array(2)=mean_currents.q; */
+            /* '<S1>:817:16' FluxMapID_output.psi_array(2)=mean_currents.q; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[1] =
               rtFluxMapID_6ph_codegen_DW->mean_currents_m.q;
 
-            /* '<S1>:817:15' FluxMapID_output.psi_array(3)=flux(mean_voltages.q, mean_currents.q, ... */
-            /* '<S1>:817:16'         mean_omega_el, FluxMapID_output.R_s)/single(3); */
+            /* '<S1>:817:17' FluxMapID_output.psi_array(3)=flux(mean_voltages.q, mean_currents.q, ... */
+            /* '<S1>:817:18'         mean_omega_el, FluxMapID_output.R_s)/single(3); */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[2] = flux
               (rtFluxMapID_6ph_codegen_DW->mean_voltages_c.q,
                rtFluxMapID_6ph_codegen_DW->mean_currents_m.q,
                rtFluxMapID_6ph_codegen_DW->mean_omega_el_k,
                rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s) / 3.0F;
 
-            /* '<S1>:817:17' FluxMapID_output.psi_array(4)=single(-1)*flux(mean_voltages.d, mean_currents.d, ... */
-            /* '<S1>:817:18'         mean_omega_el, FluxMapID_output.R_s)/single(3); */
+            /* '<S1>:817:19' FluxMapID_output.psi_array(4)=single(-1)*flux(mean_voltages.d, mean_currents.d, ... */
+            /* '<S1>:817:20'         mean_omega_el, FluxMapID_output.R_s)/single(3); */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.psi_array[3] = -flux
               (rtFluxMapID_6ph_codegen_DW->mean_voltages_c.d,
                rtFluxMapID_6ph_codegen_DW->mean_currents_m.d,
                rtFluxMapID_6ph_codegen_DW->mean_omega_el_k,
                rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s) / 3.0F;
 
-            /* '<S1>:817:19' FluxMapID_output.array_index = repetition_counter; */
+            /* '<S1>:817:21' FluxMapID_output.array_index = repetition_counter; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.array_index =
               rtFluxMapID_6ph_codegen_DW->repetition_counter;
 
-            /* '<S1>:817:20' FluxMapID_output.finished_calculation=true; */
+            /* '<S1>:817:22' FluxMapID_output.finished_calculation=true; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.finished_calculation =
               true;
           } else {
-            /* '<S1>:817:21' else */
-            /* '<S1>:817:22' FluxMapID_output.finished_calculation=false; */
+            /* '<S1>:817:23' else */
+            /* '<S1>:817:24' FluxMapID_output.finished_calculation=false; */
             rtFluxMapID_6ph_codegen_DW->FluxMapID_output.finished_calculation =
               false;
           }

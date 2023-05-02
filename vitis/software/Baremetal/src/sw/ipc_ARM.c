@@ -45,17 +45,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			//Change Send_Filed 1-3
 			        case (Set_Send_Field_1):
-			            ParaID_Data.GlobalConfig.n_ref = value;
+			            ParaID_Data.GlobalConfig.i_dq_ref.d  = value;
 			            break;
 
 			        case (Set_Send_Field_2):
-			            ParaID_Data.GlobalConfig.i_dq_ref.d = value;
-			            break;
-
-			        case (Set_Send_Field_3):
 			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
 			            break;
 
+			        case (Set_Send_Field_3):
+			            ParaID_Data.GlobalConfig.i_xy_ref.d = value;
+			            break;
+			        case (Set_Send_Field_4):
+						ParaID_Data.GlobalConfig.i_xy_ref.q = value;
+						break;
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
 			{
@@ -218,63 +220,63 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-					data->rasv.halfBridge1DutyCycle = 0.043f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.043f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_2):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.043f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.043f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_3):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.043f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.043f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_4):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.043f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_5):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.043f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_6):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.043f;
 					break;
 
 				case (My_Button_7):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
@@ -604,16 +606,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.Array_Control_counter = value;
 		            break;
 		        case (ParaID_FMID_temperature_lower):
-		        		            ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
-		        		            break;
-
+					ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
+					break;
 		        case (ParaID_FMID_temperature_upper):
-		ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
-		        		            break;
+					ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
+					break;
 
 		        case (ParaID_FMID_selected_subsystem):
-		ParaID_Data.FluxMapID_Config.selected_subsystem = value;
-		        		            break;
+					ParaID_Data.FluxMapID_Config.selected_subsystem = (uint16_t) value;
+					break;
 
 		case (Error_Reset):
 

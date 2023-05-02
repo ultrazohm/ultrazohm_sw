@@ -89,7 +89,10 @@ float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
 float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
 
+// ParaID local
+uz_3ph_alphabeta_t local_i_XY = {0};
 
+// temp
 float temp_theta_off = -0.78f;
 
 //==============================================================================================================================================================
@@ -119,12 +122,15 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - 5.48;//ParaID_Data.ElectricalID_Output->thetaOffset;
 	// inside:
 	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
 	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
 	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
+	local_i_XY.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
+	local_i_XY.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
+	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
 	//ParaID ende
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,7 +244,7 @@ void ISR_Control(void *data)
     {
     	//ParaID
 		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-		controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data);
+		controller_out = uz_ParameterID_6ph_Controller(ParameterID, &ParaID_Data);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
 		//write duty-cycles
     	Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;

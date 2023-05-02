@@ -88,10 +88,11 @@ struct uz_SpeedControl_config speed_config = { .config_controller.type =
 		.config_controller.upper_limit = 10.0f, .config_controller.lower_limit =
 				-10.0f };
 
-struct uz_SetPoint_config sp_config = { .id_ref_Ampere = 0.0f,
-		.is_field_weakening_enabled = false, .motor_type = SMPMSM,
-		.control_type = FOC };
+
 extern uz_6ph_dq_t controller_out;
+
+struct uz_IIR_Filter_config config_filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 10000.0f};
+
 // Init: --------------------------------------
 
 enum init_chain {
@@ -124,46 +125,54 @@ int main(void) {
 			ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
 			//Code below is only needed, if the uz_FOC is used as the controller
 
-			struct uz_PI_Controller_config PI_config = { .Ki =
-					ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm
-							/ (2.0f * tau_sum), .Kp =
-					ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry
-							/ (2.0f * tau_sum), .samplingTime_sec = isr_ts,
-					.lower_limit = -20.0f, .upper_limit = 20.0f };
-			struct uz_PI_Controller_config PI_config_xy = { .Ki =
-					ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm
-							/ (2.0f * tau_sum), .Kp =
-					ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry / 2.0f
-							/ (2.0f * tau_sum), .samplingTime_sec = isr_ts,
-					.lower_limit = -20.0f, .upper_limit = 20.0f };
-
-			struct uz_CurrentControl_config cc_config_1 = { .decoupling_select =
-					linear_decoupling, .config_id = PI_config, .config_iq =
-					PI_config, .config_PMSM =
-					ParaID_Data.GlobalConfig.PMSM_config };
-
-			struct uz_CurrentControl_config cc_config_2 = { .decoupling_select =
-					linear_decoupling, .config_id = PI_config_xy, .config_iq =
-					PI_config_xy, .config_PMSM =
-					ParaID_Data.GlobalConfig.PMSM_config };
-
-			struct uz_resonantController_config resonant_config = {
+			struct uz_PI_Controller_config PI_config = {
+					.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm / (2.0f * tau_sum),
+					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry / (2.0f * tau_sum),
+					.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+					.lower_limit = -20.0f,
+					.upper_limit = 20.0f };
+			struct uz_PI_Controller_config PI_config_xy = {
+					.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm	/ (2.0f * tau_sum),
+					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry / 2.0f / (2.0f * tau_sum),
+					.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
+					.lower_limit = -20.0f,
+					.upper_limit = 20.0f };
+			struct uz_CurrentControl_config cc_config_1 = {
+					.decoupling_select = linear_decoupling,
+					.config_id = PI_config,
+					.config_iq = PI_config,
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+			struct uz_CurrentControl_config cc_config_2 = {
+					.decoupling_select = no_decoupling,
+					.config_id = PI_config_xy,
+					.config_iq = PI_config_xy,
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config };
+			struct uz_resonantController_config resonant_config_dq = {
 					.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
-					.gain = PI_config.Ki, .harmonic_order = 2.0f,
-					.fundamental_frequency = 1.0f, .lower_limit = -10.0f,
-					.upper_limit = 10.0f, .antiwindup_gain = 10.0f,
-					.in_reference_value = 0.0f, .in_measured_value = 0.0f };
-
-			sp_config.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config;
-			ParaID_Data.speed_instance = uz_SpeedControl_init(speed_config);
-			ParaID_Data.setpoint_instance = uz_SetPoint_init(sp_config);
-			ParaID_Data.cc_instance_1 = uz_CurrentControl_init(cc_config_1);
-			ParaID_Data.cc_instance_2 = uz_CurrentControl_init(cc_config_2);
-			ParaID_Data.resonant_instance_1 = uz_resonantController_init(resonant_config);
-			ParaID_Data.resonant_instance_2 = uz_resonantController_init(resonant_config);
-
+					.gain = PI_config.Ki,
+					.harmonic_order = 2.0f,
+					.fundamental_frequency = 1.0f,
+					.lower_limit = -10.0f,
+					.upper_limit = 10.0f,
+					.antiwindup_gain = 10.0f,
+					.in_reference_value = 0.0f,
+					.in_measured_value = 0.0f };
+			struct uz_resonantController_config resonant_config_xy = resonant_config_dq;
+			resonant_config_xy.harmonic_order = 6.0f;
+			resonant_config_xy.gain = PI_config_xy.Ki;
+			struct uz_resonantController_config resonant_config_zero = resonant_config_dq;
+			resonant_config_zero.harmonic_order = 6.0f;
+			struct uz_SetPoint_config sp_config = {
+					.id_ref_Ampere = 0.0f,
+					.is_field_weakening_enabled = false,
+					.motor_type = SMPMSM,
+					.control_type = FOC,
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+			// ParaID inits
+			uz_ParameterID_6ph_init_controllers(&ParaID_Data, sp_config, speed_config, cc_config_1, cc_config_2, cc_config_1, resonant_config_dq, resonant_config_xy, resonant_config_zero);
+			uz_ParameterID_6ph_init_filter(&ParaID_Data, config_filter);
 			uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &Global_Data.av.theta_elec, &controller_out.q);
-
+			// ParaID inits end
 			Initialize_Timer();
 			uz_SystemTime_init();
 			JavaScope_initalize(&Global_Data);

@@ -2551,6 +2551,50 @@
 		</VendorURL>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:uz_resolver_pl_interface:1.0">
+		</VLNV>
+		<DisplayName value="uz_resolver_pl_interface">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112994687">
+		</CoreRevision>
+		<ComponentPath value="uz_resolver_mech_rev_calc/hdl_prj/ipcore/uz_resolver_pl_interface_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:uz_rs_flip_flop:1.0">
 		</VLNV>
 		<DisplayName value="uz_rs_flip_flop">

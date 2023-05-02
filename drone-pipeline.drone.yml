@@ -46,47 +46,47 @@ steps:
     - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
 
  - name: Vivado_build_tcl
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ copy_global_config ]
    commands:
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - cd vivado
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source build.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source build.tcl
    - cd ..
    - git status
 
 # pipeline step just opens the vivado project
  - name: Vivado_open_project
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_build_tcl ]
    commands:
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_open_project.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_open_project.tcl
 
 # Open vivado project and check the syntax
  - name: Vivado_check_syntax
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_open_project ]
    commands:
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_syntax.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_syntax.tcl
 
 # Open vivado project, open the board design and validate the board design (F6 in Vivado GUI)
  - name: Vivado_validate_board_design
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_check_syntax ]
    commands:
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_validate_bd_design.tcl
 
 # Runs report_environment from vivado to check if the license is valid for debug reasons (only on main and develop branch)
  - name: Vivado_check_license
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_validate_board_design ]
    commands:
    - ip link show
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
    when:
      branch:
      - main
@@ -96,13 +96,13 @@ steps:
 
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_check_license ]
    commands:
    - ip link show
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
-   - /bin/bash /opt/Xilinx/Vivado/2020.1/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
+   - /bin/bash /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl
    when:
      branch:
      - main
@@ -110,34 +110,34 @@ steps:
 
 # Open vitis and generate the workspace with the existing xsa or with the new generated xsa if it is main/develop
  - name: Vitis_generate_Workspace
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vivado_generate_bitstream ]
    commands:
    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
  
  - name: Baremetal_build_successful
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vitis_generate_Workspace ]
    commands:
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkIfBaremetalElfExists.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_checkIfBaremetalElfExists.tcl
    
  - name: FreeRTOS_build_successful
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vitis_generate_Workspace ]
    commands:
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_checkifFreeRTOSElfExists.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_checkifFreeRTOSElfExists.tcl
 
 # Update the platform just to test the update script (does not update the platform since it did not change)
  - name: Vitis_update_platform
-   image: vivado:2020.1
+   image: vivado:2022.2
    depends_on: [ Vitis_generate_Workspace ]
    commands:
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/settings64.sh
-   - /bin/bash /opt/Xilinx/Vitis/2020.1/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
+   - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
 
  - name: Push_binary
    depends_on: [ Vitis_generate_Workspace ]

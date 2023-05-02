@@ -28,9 +28,6 @@
 #include "rtwtypes.h"
 #include <stdbool.h>
 
-typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
-
 
 //----------------------------------------//
 //----------------------------------------//
@@ -94,6 +91,7 @@ typedef struct {
   real32_T voltage_measurement_C;
   real32_T voltage_measurement_Rp;
   real32_T voltage_measurement_Rs;
+  uz_3ph_dq_t i_xy_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
 } uz_ParaID_GlobalConfig_t;
 
 
@@ -131,6 +129,10 @@ typedef struct {
   real32_T Ki_id_out; /**<Ki_id for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_iq_out; /**<Ki_iq for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_n_out; /**<Ki_n for FOC control. Can be ignored, if another control algorithm is used */
+  uz_3ph_dq_t i_xy_ref; 
+  uz_3ph_dq_t i_zero_ref;
+  uint16_T resonant_subsystem;
+  uint16_T PI_subsystem;
 } uz_ParaID_Controller_Parameters_output_t;
 
 //----------------------------------------//
@@ -228,9 +230,12 @@ typedef struct {
   boolean_T external_Measurement_Flag; /**< trigger to signal, when an external measurement equipment should measure */
   real32_T R_s; /**< identified online resistance in ohm */
   real32_T WindingTemp; /**< identified winding temperature of the stator */
+  boolean_T finished_calculation;
+  real32_T psi_array[4];
+  uint32_T array_index;
 } uz_ParaID_FluxMapID_output_t;
 
-
+/*
 typedef struct {
   boolean_T control_active;
   uint16_T selected_subsystem;
@@ -240,7 +245,7 @@ typedef struct {
   boolean_T finished_calculation;
   real32_T psi_array[4];
   uint32_T array_index;
-  } uz_ParaID_FluxMapID_extended_controller_output_t;
+  } uz_ParaID_FluxMapID_extended_controller_output_t;*/
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -425,7 +430,7 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
   uz_ParaID_ElectricalID_fft_in_t ElectricalID_FFT;
   uz_ParaID_ElectricalID_offset_estimation_t ElectricalID_Offset_Estimation;
-  uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
+ // uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
   bool finished_extended_offset_estimation;

@@ -45,6 +45,7 @@ static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data);
 static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data);
 static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data);
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data);
 
 static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void);
 
@@ -174,7 +175,8 @@ static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.enableFOC_speed = false;
 	Data->Controller_Parameters.i_dq_ref.d = 0.0f;
 	Data->Controller_Parameters.i_dq_ref.q = 0.0f;
-	Data->Controller_Parameters.i_dq_ref.zero = 0.0f;
+	Data->Controller_Parameters.i_xy_ref.d = 0.0f;
+	Data->Controller_Parameters.i_xy_ref.q = 0.0f;
 	Data->Controller_Parameters.n_ref_FOC = 0.0f;
 	Data->Controller_Parameters.resetIntegrator = false;
 }
@@ -194,7 +196,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
 	
 	// during zero fluxmap everything changes
-	} else if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 3){
+	} else if(Data->Controller_Parameters.PI_subsystem & (0x04)){
 		V_abc_Volts.a1 = 3.0f/2.0f*v_dq_Volts.z1;
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
@@ -202,8 +204,8 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
 	// during normal operation give out calculated dutycycles from setpoints
-	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem == 1) || (Data->FluxmapID_extended_controller_Output->selected_subsystem == 2) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
+	} else if ((Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true)
+	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control))) {		
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
@@ -249,28 +251,17 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_Paramet
 		SpeedControl_reference_torque = uz_SpeedControl_sample(Data->speed_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC);
 		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
 		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
-	}
-
-	// Torque control active
-	if (Data->Controller_Parameters.enableFOC_torque == true) {
-		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
-	}
-
-	// Fluxmap ID and Multi-phase controllers
-	if(uz_get_FluxMapID_6ph_entered(self->FluxMapID)){
-			}
-	// any control active except Fluxmap
-	else if ((Data->Controller_Parameters.enableFOC_current && !uz_get_FluxMapID_6ph_entered(self->FluxMapID)) || Data->Controller_Parameters.enableFOC_speed || Data->Controller_Parameters.enableFOC_torque) {
-		//Change, if desired, the current controller here
-		if (Data->Controller_Parameters.enableFOC_current) {
-			//If CurrentControl is active, use input reference currents
-			v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-		} else if (Data->Controller_Parameters.enableFOC_torque || Data->Controller_Parameters.enableFOC_speed) {
-			//If SetPoint or SpeedControl & SetPoint is active, use Setpoint currents
-			v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-		}
+		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		out.d = v_dq_Volts.d;
 		out.q = v_dq_Volts.q;
+	// Torque control active
+	}else if (Data->Controller_Parameters.enableFOC_torque == true) {
+		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		out.d = v_dq_Volts.d;
+		out.q = v_dq_Volts.q;
+	}else if(Data->Controller_Parameters.enableFOC_current){
+		out = uz_ParaID_6ph_extended_control(Data);
 	}
 
 	// reset all integrators and controllers
@@ -299,102 +290,93 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_Paramet
 	return (out);
 }
 
+
 // multi-phase current control
-uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 {
     // Initialize structs
     uz_6ph_dq_t out = {0};
-	uz_3ph_dq_t cc_out_dq;
-	uz_3ph_dq_t cc_out_xy;
-	uz_3ph_alphabeta_t cc_out_XY;
-	uz_3ph_dq_t cc_out_zero_rotating;
-	uz_3ph_alphabeta_t cc_out_zero_stationary;
+	uz_3ph_dq_t cc_out_dq = {0};
+	uz_3ph_dq_t cc_out_xy = {0};
+	uz_3ph_alphabeta_t cc_out_XY = {0};
+	uz_3ph_dq_t cc_out_zero_rotating = {0};
+	uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
 
-    // map outputs and step resonant controllers depending on current of inside FluxMapID
-    switch(Data->FluxmapID_extended_controller_Output->selected_subsystem)
-    {
-        case 1: // control dq system
-			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-            out.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
-            out.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
-            cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy, -1.0f*Data->ActualValues.theta_el);
-            out.x = cc_out_XY.alpha;
-            out.y = cc_out_XY.beta;
-            break;
-        case 2: // control xy system
-			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->FluxmapID_extended_controller_Output->ab_i_dq_PI_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->FluxmapID_extended_controller_Output->xy_i_dq_PI_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-            out.d = cc_out_dq.d;
-            out.q = cc_out_dq.q;
-            cc_out_xy.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
-            cc_out_xy.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
-            cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy, -1.0f*Data->ActualValues.theta_el);
-            out.x = cc_out_XY.alpha;
-            out.y = cc_out_XY.beta;
-            break;
-        case 3: // control zero system
-            cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->FluxmapID_extended_controller_Output->zero_i_dq_PI_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
-            cc_out_zero_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
-            cc_out_zero_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
-            cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
-            out.z1 = cc_out_zero_stationary.alpha;
-            out.z2 = cc_out_zero_stationary.beta;
-            break;
-        default:
-    		uz_ParaID_6ph_reset_controllers(Data);
-            break;
-    }
+	// if first (dq) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
+		cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		out.d = cc_out_dq.d;
+		out.q = cc_out_dq.q;
+	}
+	// if second (xy) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
+		cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);     
+	}
+	// if third (zero) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
+		cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+	}
+
+	// select resonant output
+	if(Data->Controller_Parameters.PI_subsystem & (0x1)){
+		out.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+		out.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x2)){
+		cc_out_xy.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
+		cc_out_xy.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		cc_out_zero_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
+		cc_out_zero_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
+	}
+
+	// back to stationary
+	cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy, -1.0f*Data->ActualValues.theta_el);
+	out.x = cc_out_XY.alpha;
+	out.y = cc_out_XY.beta;
+	cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
+	out.z1 = cc_out_zero_stationary.alpha;
+	out.z2 = cc_out_zero_stationary.beta;
     return out;
 }
 
 static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data){
 	// current control
-	switch (Data->FluxmapID_extended_controller_Output->selected_subsystem){
-		case 1U:
-		case 2U:
-			// cc instance 1 for dq
-			uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Kp);
-			uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Kp);
-			uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Ki);
-			uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Ki);
-			// cc instance 2 for xy
-			uz_CurrentControl_set_Kp_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Kp);
-			uz_CurrentControl_set_Kp_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Kp);
-			uz_CurrentControl_set_Ki_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Ki);
-			uz_CurrentControl_set_Ki_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Ki);
-			break;
-		case 3U:
-			// cc instance 1 for zero
-			uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Kp);
-			uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Kp);
-			uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Ki);
-			uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
-			break;
-		default: break;
+	if(Data->Controller_Parameters.PI_subsystem & (0x3)){
+		// cc instance 1 for dq
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Ki);
+		// cc instance 2 for xy
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Ki);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		// cc instance 1 for zero
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
 	}
 	// resonant
-	switch (Data->FluxmapID_extended_controller_Output->selected_subsystem){
-		case 1U:
-			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
-			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
-			break;
-		case 2U:
-			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
-			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
-			break;
-		case 3U:
-			uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
-			uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);
-			uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_zero.harmonic_order);
-			break;
-		default: break;
+	if(Data->Controller_Parameters.PI_subsystem & (0x1)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x2)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_zero.harmonic_order);
 	}
+	uz_ParaID_6ph_reset_controllers(Data);
 }
 
 static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data){
@@ -506,11 +488,6 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	//Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
-	Data->FluxMapID_Config.lower_meas_temp = 40.0f;
-	Data->FluxMapID_Config.upper_meas_temp = 45.0f;
-
-
 	//Step the function
 	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->feedback_printed);
 
@@ -540,7 +517,7 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 
 bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData){
 	bool feedback_printed = false;
-	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxmapID_extended_controller_Output, &feedback_printed, Data->Controller_Parameters.activeState, js_cnt_slowData);
+	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxMapID_Output, &feedback_printed, Data->Controller_Parameters.activeState, js_cnt_slowData);
 	Data->feedback_printed = feedback_printed;
 	return (logging_flag);
 }
@@ -643,7 +620,6 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	Data->FrictionID_Output = uz_FrictionID_get_output(self->FrictionID);
 	Data->FluxMapID_Output = uz_get_FluxMapID_6ph_output(self->FluxMapID);
-	Data->FluxmapID_extended_controller_Output = uz_get_FluxMapID_6ph_extended_controller_output(self->FluxMapID);
 	Data->TwoMassID_Output = uz_TwoMassID_get_output(self->TwoMassID);
 	Data->OnlineID_Output = uz_OnlineID_get_output(self->OnlineID);
 	Data->ControlFlags = uz_ControlState_get_ControlFlags(self->ControlState);

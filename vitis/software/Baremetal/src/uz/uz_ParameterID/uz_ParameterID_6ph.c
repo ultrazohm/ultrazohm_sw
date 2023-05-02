@@ -136,6 +136,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 
 	default:
 		if(Data->ParaID_Control_Selection == Current_Control){
+			Data->Controller_Parameters.enableFOC_current = true;
 			Data->Controller_Parameters.i_dq_ref = Data->GlobalConfig.i_dq_ref;
 			Data->Controller_Parameters.i_xy_ref = Data->GlobalConfig.i_xy_ref;
 			Data->Controller_Parameters.resonant_subsystem = Data->GlobalConfig.resonant_subsystem;
@@ -369,17 +370,17 @@ static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data){
 		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
 	}
 	// resonant
-	if(Data->Controller_Parameters.PI_subsystem & (0x1)){
+	if(Data->Controller_Parameters.resonant_subsystem & (0x1)){
 		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
 		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
 		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
 		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
-	}else if(Data->Controller_Parameters.PI_subsystem & (0x2)){
+	}else if(Data->Controller_Parameters.resonant_subsystem & (0x2)){
 		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
 		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
 		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
 		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
-	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+	}else if(Data->Controller_Parameters.resonant_subsystem & (0x4)){
 		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
 		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
 		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);

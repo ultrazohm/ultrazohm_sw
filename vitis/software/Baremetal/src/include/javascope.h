@@ -23,8 +23,6 @@ enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
 	JSO_id,
 	JSO_iq,
-	JSO_ixd,
-	JSO_ixq,
 	JSO_ix,
 	JSO_iy,
 	JSO_iz1,
@@ -246,6 +244,8 @@ enum gui_button_mapping {
 	ParaID_FMID_temperature_lower,
 	ParaID_FMID_temperature_upper,
 	ParaID_FMID_selected_subsystem,
+	ParaID_Control_PI,
+	ParaID_Control_res,
     GUI_BTN_ENDMARKER
 };
 

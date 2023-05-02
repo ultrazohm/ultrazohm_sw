@@ -94,7 +94,7 @@ typedef struct {
   uz_3ph_dq_t i_xy_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   uint16_T resonant_subsystem;
   uint16_T PI_subsystem;
-  booleant_T controllers_updated;
+  boolean_T controllers_updated;
 } uz_ParaID_GlobalConfig_t;
 
 

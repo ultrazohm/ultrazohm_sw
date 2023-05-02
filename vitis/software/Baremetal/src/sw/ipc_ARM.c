@@ -323,6 +323,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ParaID_Control_Selection = No_Control;
 		            break;
 
+		        case (ParaID_Control_PI):
+				ParaID_Data.GlobalConfig.PI_subsystem = (uint16_t) value;
+		        ParaID_Data.GlobalConfig.controllers_updated = true;
+		        break;
+		        case (ParaID_Control_res):
+		        				ParaID_Data.GlobalConfig.resonant_subsystem = (uint16_t) value;
+		        		        ParaID_Data.GlobalConfig.controllers_updated = true;
+		        		        break;
+
 		        case (ParaID_Enable_ElectricalID):
 		            ParaID_Data.GlobalConfig.ElectricalID = true;
 		            break;

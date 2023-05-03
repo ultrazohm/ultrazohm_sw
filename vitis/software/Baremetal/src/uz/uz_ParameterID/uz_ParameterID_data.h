@@ -95,7 +95,7 @@ typedef struct {
   uint16_T resonant_subsystem;
   uint16_T PI_subsystem;
   boolean_T controllers_updated;
-  boolean_t setpoint_filter;
+  boolean_T setpoint_filter;
 } uz_ParaID_GlobalConfig_t;
 
 
@@ -137,7 +137,7 @@ typedef struct {
   uz_3ph_dq_t i_zero_ref;
   uint16_T resonant_subsystem;
   uint16_T PI_subsystem;
-  boolean_T setpoint_filter;
+  uint16_T setpoint_filter;
 } uz_ParaID_Controller_Parameters_output_t;
 
 //----------------------------------------//

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.102
+ * Model version                  : 3.103
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed May  3 15:16:40 2023
+ * C/C++ source code generated on : Wed May  3 15:58:37 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -80,6 +80,9 @@ static void RefreshDataRegister(DW_FluxMapID_6ph_codegen_t
   *rtFluxMapID_6ph_codegen_DW);
 static real32_T identRes(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
   DW_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_DW);
+static void exit_atomic_Wait_select_subsyst(ExtU_FluxMapID_6ph_codegen_t
+  *rtFluxMapID_6ph_codegen_U, ExtY_FluxMapID_6ph_codegen_t
+  *rtFluxMapID_6ph_codegen_Y);
 static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
   *rtFluxMapID_6ph_codegen_U, ExtY_FluxMapID_6ph_codegen_t
   *rtFluxMapID_6ph_codegen_Y, DW_FluxMapID_6ph_codegen_t
@@ -837,6 +840,9 @@ static void reset_FOC_out(ExtY_FluxMapID_6ph_codegen_t
 {
   /* Outport: '<Root>/FluxMapID_FOC_output' */
   /* MATLAB Function 'reset_FOC_out': '<S1>:870' */
+  /* '<S1>:870:2' FluxMapID_FOC_output.setpoint_filter = 0x0000; */
+  rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = 0U;
+
   /* '<S1>:870:3' FluxMapID_FOC_output.i_dq_ref.d = single(0); */
   rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_dq_ref.d = 0.0F;
 
@@ -1132,6 +1138,68 @@ static real32_T identRes(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U
 }
 
 /* Function for Chart: '<Root>/FluxMapID_6ph_codegen' */
+static void exit_atomic_Wait_select_subsyst(ExtU_FluxMapID_6ph_codegen_t
+  *rtFluxMapID_6ph_codegen_U, ExtY_FluxMapID_6ph_codegen_t
+  *rtFluxMapID_6ph_codegen_Y)
+{
+  /* SystemInitialize for Inport: '<Root>/FluxMapIDConfig' */
+  /* Exit 'Wait_select_subsystem': '<S1>:762' */
+  /* '<S1>:762:11' switch (FluxMapIDConfig.selected_subsystem) */
+  switch (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem) {
+   case 1U:
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:762:12' case 1 */
+    /* '<S1>:762:13' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
+
+    /* '<S1>:762:14' FluxMapID_FOC_output.resonant_subsystem = 0x0001; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 1U;
+
+    /* '<S1>:762:15' FluxMapID_FOC_output.setpoint_filter = 0x0001; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = 1U;
+    break;
+
+   case 2U:
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:762:16' case 2 */
+    /* '<S1>:762:17' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
+
+    /* '<S1>:762:18' FluxMapID_FOC_output.resonant_subsystem = 0x0002; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 2U;
+
+    /* '<S1>:762:19' FluxMapID_FOC_output.setpoint_filter = 0x0002 */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = 2U;
+    break;
+
+   case 3U:
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:762:20' case 3 */
+    /* '<S1>:762:21' FluxMapID_FOC_output.PI_subsystem = 0x0004; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 4U;
+
+    /* '<S1>:762:22' FluxMapID_FOC_output.resonant_subsystem = 0x0004; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 4U;
+
+    /* '<S1>:762:23' FluxMapID_FOC_output.setpoint_filter = 0x0004; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = 4U;
+    break;
+
+   default:
+    /* Outport: '<Root>/FluxMapID_FOC_output' */
+    /* '<S1>:762:24' otherwise */
+    /* '<S1>:762:25' FluxMapID_FOC_output.PI_subsystem = 0x0000; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
+
+    /* '<S1>:762:26' FluxMapID_FOC_output.resonant_subsystem = 0x0000; */
+    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
+    break;
+  }
+
+  /* End of SystemInitialize for Inport: '<Root>/FluxMapIDConfig' */
+}
+
+/* Function for Chart: '<Root>/FluxMapID_6ph_codegen' */
 static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
   *rtFluxMapID_6ph_codegen_U, ExtY_FluxMapID_6ph_codegen_t
   *rtFluxMapID_6ph_codegen_Y, DW_FluxMapID_6ph_codegen_t
@@ -1145,50 +1213,8 @@ static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
   if ((rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem == 2) &&
       rtFluxMapID_6ph_codegen_U->GlobalConfig_out.ACCEPT) {
     /* Transition: '<S1>:757' */
-    /* Exit 'Wait_select_subsystem': '<S1>:762' */
-    /* '<S1>:762:11' switch (FluxMapIDConfig.selected_subsystem) */
-    switch (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem) {
-     case 1U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:12' case 1 */
-      /* '<S1>:762:13' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:14' FluxMapID_FOC_output.resonant_subsystem = 0x0001; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 1U;
-      break;
-
-     case 2U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:15' case 2 */
-      /* '<S1>:762:16' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:17' FluxMapID_FOC_output.resonant_subsystem = 0x0002; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 2U;
-      break;
-
-     case 3U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:18' case 3 */
-      /* '<S1>:762:19' FluxMapID_FOC_output.PI_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 4U;
-
-      /* '<S1>:762:20' FluxMapID_FOC_output.resonant_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 4U;
-      break;
-
-     default:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:21' otherwise */
-      /* '<S1>:762:22' FluxMapID_FOC_output.PI_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
-
-      /* '<S1>:762:23' FluxMapID_FOC_output.resonant_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
-      break;
-    }
-
+    exit_atomic_Wait_select_subsyst(rtFluxMapID_6ph_codegen_U,
+      rtFluxMapID_6ph_codegen_Y);
     rtFluxMapID_6ph_codegen_DW->is_AMMstate = IN_IdentificationXY;
 
     /* Entry 'IdentificationXY': '<S1>:736' */
@@ -1222,50 +1248,8 @@ static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
   } else if ((rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem == 1)
              && rtFluxMapID_6ph_codegen_U->GlobalConfig_out.ACCEPT) {
     /* Transition: '<S1>:754' */
-    /* Exit 'Wait_select_subsystem': '<S1>:762' */
-    /* '<S1>:762:11' switch (FluxMapIDConfig.selected_subsystem) */
-    switch (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem) {
-     case 1U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:12' case 1 */
-      /* '<S1>:762:13' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:14' FluxMapID_FOC_output.resonant_subsystem = 0x0001; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 1U;
-      break;
-
-     case 2U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:15' case 2 */
-      /* '<S1>:762:16' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:17' FluxMapID_FOC_output.resonant_subsystem = 0x0002; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 2U;
-      break;
-
-     case 3U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:18' case 3 */
-      /* '<S1>:762:19' FluxMapID_FOC_output.PI_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 4U;
-
-      /* '<S1>:762:20' FluxMapID_FOC_output.resonant_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 4U;
-      break;
-
-     default:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:21' otherwise */
-      /* '<S1>:762:22' FluxMapID_FOC_output.PI_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
-
-      /* '<S1>:762:23' FluxMapID_FOC_output.resonant_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
-      break;
-    }
-
+    exit_atomic_Wait_select_subsyst(rtFluxMapID_6ph_codegen_U,
+      rtFluxMapID_6ph_codegen_Y);
     rtFluxMapID_6ph_codegen_DW->is_AMMstate = IN_IdentificationDQ;
 
     /* Entry 'IdentificationDQ': '<S1>:717' */
@@ -1299,50 +1283,8 @@ static void Wait_select_subsystem(ExtU_FluxMapID_6ph_codegen_t
   } else if ((rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem == 3)
              && rtFluxMapID_6ph_codegen_U->GlobalConfig_out.ACCEPT) {
     /* Transition: '<S1>:837' */
-    /* Exit 'Wait_select_subsystem': '<S1>:762' */
-    /* '<S1>:762:11' switch (FluxMapIDConfig.selected_subsystem) */
-    switch (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem) {
-     case 1U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:12' case 1 */
-      /* '<S1>:762:13' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:14' FluxMapID_FOC_output.resonant_subsystem = 0x0001; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 1U;
-      break;
-
-     case 2U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:15' case 2 */
-      /* '<S1>:762:16' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-      /* '<S1>:762:17' FluxMapID_FOC_output.resonant_subsystem = 0x0002; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 2U;
-      break;
-
-     case 3U:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:18' case 3 */
-      /* '<S1>:762:19' FluxMapID_FOC_output.PI_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 4U;
-
-      /* '<S1>:762:20' FluxMapID_FOC_output.resonant_subsystem = 0x0004; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 4U;
-      break;
-
-     default:
-      /* Outport: '<Root>/FluxMapID_FOC_output' */
-      /* '<S1>:762:21' otherwise */
-      /* '<S1>:762:22' FluxMapID_FOC_output.PI_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
-
-      /* '<S1>:762:23' FluxMapID_FOC_output.resonant_subsystem = 0x0000; */
-      rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
-      break;
-    }
-
+    exit_atomic_Wait_select_subsyst(rtFluxMapID_6ph_codegen_U,
+      rtFluxMapID_6ph_codegen_Y);
     rtFluxMapID_6ph_codegen_DW->is_AMMstate = IN_IdentificationZero;
 
     /* Entry 'IdentificationZero': '<S1>:817' */
@@ -1464,51 +1406,8 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
       break;
 
      case IN_Wait_select_subsystem:
-      /* SystemInitialize for Inport: '<Root>/FluxMapIDConfig' */
-      /* Exit 'Wait_select_subsystem': '<S1>:762' */
-      /* '<S1>:762:11' switch (FluxMapIDConfig.selected_subsystem) */
-      switch (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.selected_subsystem) {
-       case 1U:
-        /* Outport: '<Root>/FluxMapID_FOC_output' */
-        /* '<S1>:762:12' case 1 */
-        /* '<S1>:762:13' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-        /* '<S1>:762:14' FluxMapID_FOC_output.resonant_subsystem = 0x0001; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 1U;
-        break;
-
-       case 2U:
-        /* Outport: '<Root>/FluxMapID_FOC_output' */
-        /* '<S1>:762:15' case 2 */
-        /* '<S1>:762:16' FluxMapID_FOC_output.PI_subsystem = 0x0003; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 3U;
-
-        /* '<S1>:762:17' FluxMapID_FOC_output.resonant_subsystem = 0x0002; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 2U;
-        break;
-
-       case 3U:
-        /* Outport: '<Root>/FluxMapID_FOC_output' */
-        /* '<S1>:762:18' case 3 */
-        /* '<S1>:762:19' FluxMapID_FOC_output.PI_subsystem = 0x0004; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 4U;
-
-        /* '<S1>:762:20' FluxMapID_FOC_output.resonant_subsystem = 0x0004; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 4U;
-        break;
-
-       default:
-        /* Outport: '<Root>/FluxMapID_FOC_output' */
-        /* '<S1>:762:21' otherwise */
-        /* '<S1>:762:22' FluxMapID_FOC_output.PI_subsystem = 0x0000; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
-
-        /* '<S1>:762:23' FluxMapID_FOC_output.resonant_subsystem = 0x0000; */
-        rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
-        break;
-      }
-
+      exit_atomic_Wait_select_subsyst(rtFluxMapID_6ph_codegen_U,
+        rtFluxMapID_6ph_codegen_Y);
       rtFluxMapID_6ph_codegen_DW->is_AMMstate = IN_NO_ACTIVE_CHILD_a;
       break;
 
@@ -1519,12 +1418,12 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
 
     /* Outport: '<Root>/finishedFluxMapID' */
     /* Exit 'AMMstate': '<S1>:590' */
-    /* '<S1>:590:29' counter = uint32(1); */
-    /* '<S1>:590:30' finishedFluxMapID=boolean(1); */
+    /* '<S1>:590:28' counter = uint32(1); */
+    /* '<S1>:590:29' finishedFluxMapID=boolean(1); */
     rtFluxMapID_6ph_codegen_Y->finishedFluxMapID = true;
 
     /* Outport: '<Root>/enteredFluxMapID' */
-    /* '<S1>:590:31' enteredFluxMapID = boolean(0); */
+    /* '<S1>:590:30' enteredFluxMapID = boolean(0); */
     rtFluxMapID_6ph_codegen_Y->enteredFluxMapID = false;
     rtFluxMapID_6ph_codegen_DW->is_c16_FluxMapID_6ph_codegen = IN_Waiting;
 
@@ -1536,36 +1435,36 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
          rtFluxMapID_6ph_codegen_DW);
   } else {
     /* SystemInitialize for Inport: '<Root>/ActualValues' */
-    /* '<S1>:590:8' FluxMapID_output.WindingTemp = ActualValues.average_winding_temp; */
+    /* '<S1>:590:7' FluxMapID_output.WindingTemp = ActualValues.average_winding_temp; */
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp =
       rtFluxMapID_6ph_codegen_U->ActualValues.average_winding_temp;
 
     /* SystemInitialize for Inport: '<Root>/FluxMapIDConfig' */
-    /* '<S1>:590:9' FluxMapID_output.R_s = FluxMapIDConfig.R_s_ref*... */
-    /* '<S1>:590:10'     (single(1)+TEMP_COEFFICIENT*(FluxMapID_output.WindingTemp - FluxMapIDConfig.Temp_ref)); */
+    /* '<S1>:590:8' FluxMapID_output.R_s = FluxMapIDConfig.R_s_ref*... */
+    /* '<S1>:590:9'     (single(1)+TEMP_COEFFICIENT*(FluxMapID_output.WindingTemp - FluxMapIDConfig.Temp_ref)); */
     rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s =
       ((rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp -
         rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref) * TEMP_COEFFICIENT
        + 1.0F) * rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref;
 
-    /* '<S1>:590:11' if(FluxMapIDConfig.start_FM_ID==1) */
+    /* '<S1>:590:10' if(FluxMapIDConfig.start_FM_ID==1) */
     if (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.start_FM_ID) {
-      /* '<S1>:590:12' if(FluxMapIDConfig.identR == 1) */
+      /* '<S1>:590:11' if(FluxMapIDConfig.identR == 1) */
       if (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.identR) {
         /* Outport: '<Root>/FluxMapID_FOC_output' */
-        /* '<S1>:590:13' if(FluxMapID_FOC_output.activeState ~= 403) */
+        /* '<S1>:590:12' if(FluxMapID_FOC_output.activeState ~= 403) */
         if (rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.activeState != 403)
         {
-          /* '<S1>:590:14' FluxMapID_output.R_s = identRes; */
+          /* '<S1>:590:13' FluxMapID_output.R_s = identRes; */
           rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s = identRes
             (rtFluxMapID_6ph_codegen_U, rtFluxMapID_6ph_codegen_DW);
         }
 
-        /* '<S1>:590:16' if(FluxMapIDConfig.R_s_ref ~= 0.0 && FluxMapIDConfig.Temp_ref ~= 0.0) */
+        /* '<S1>:590:15' if(FluxMapIDConfig.R_s_ref ~= 0.0 && FluxMapIDConfig.Temp_ref ~= 0.0) */
         if ((rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref != 0.0F) &&
             (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref != 0.0F)) {
-          /* '<S1>:590:17' FluxMapID_output.WindingTemp = ((FluxMapID_output.R_s/FluxMapIDConfig.R_s_ref)-1).... */
-          /* '<S1>:590:18'                 *254.453+FluxMapIDConfig.Temp_ref; */
+          /* '<S1>:590:16' FluxMapID_output.WindingTemp = ((FluxMapID_output.R_s/FluxMapIDConfig.R_s_ref)-1).... */
+          /* '<S1>:590:17'                 *254.453+FluxMapIDConfig.Temp_ref; */
           rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp =
             (rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s /
              rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref - 1.0F) *
@@ -1575,16 +1474,17 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
         }
       }
 
-      /* '<S1>:590:21' if(FluxMapIDConfig.identR == 0) */
+      /* '<S1>:590:20' if(FluxMapIDConfig.identR == 0) */
       if (!rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.identR) {
-        /* '<S1>:590:22' fun_i_R_online = single(0.0); */
+        /* '<S1>:590:21' fun_i_R_online = single(0.0); */
         rtFluxMapID_6ph_codegen_DW->fun_i_R_online = 0.0F;
 
-        /* '<S1>:590:23' FluxMapID_output.WindingTemp= single(65); */
-        rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp = 65.0F;
+        /* '<S1>:590:22' FluxMapID_output.WindingTemp= FluxMapIDConfig.lower_meas_temp; */
+        rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp =
+          rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.lower_meas_temp;
       }
     } else {
-      /* '<S1>:590:25' else */
+      /* '<S1>:590:24' else */
     }
 
     switch (rtFluxMapID_6ph_codegen_DW->is_AMMstate) {
@@ -2134,9 +2034,6 @@ void FluxMapID_6ph_codegen_step(RT_MODEL_FluxMapID_6ph_codege_t *const
     /* '<S1>:590:5' enteredFluxMapID = true; */
     rtFluxMapID_6ph_codegen_Y->enteredFluxMapID = true;
 
-    /* '<S1>:590:6' FluxMapID_FOC_output.setpoint_filter = true; */
-    rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = true;
-
     /* Entry Internal 'AMMstate': '<S1>:590' */
     /* Transition: '<S1>:763' */
     rtFluxMapID_6ph_codegen_DW->is_AMMstate = IN_Wait_select_subsystem;
@@ -2285,7 +2182,7 @@ void FluxMapID_6ph_codegen_initialize(RT_MODEL_FluxMapID_6ph_codege_t *const
   rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.i_zero_ref.zero = 0.0F;
   rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.resonant_subsystem = 0U;
   rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.PI_subsystem = 0U;
-  rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = false;
+  rtFluxMapID_6ph_codegen_Y->FluxMapID_FOC_output.setpoint_filter = 0U;
   rtFluxMapID_6ph_codegen_DW->FluxMapID_output.external_Measurement_Flag = false;
   rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s = 0.0F;
   rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp = 0.0F;

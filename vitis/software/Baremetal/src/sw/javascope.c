@@ -243,7 +243,7 @@ void JavaScope_update(DS_Data* data){
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
 
-	data->av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, js_cnt_slowData);
+	uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, js_cnt_slowData, &data->av.logging);
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

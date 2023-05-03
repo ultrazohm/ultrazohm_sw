@@ -233,7 +233,6 @@ typedef struct {
   boolean_T external_Measurement_Flag; /**< trigger to signal, when an external measurement equipment should measure */
   real32_T R_s; /**< identified online resistance in ohm */
   real32_T WindingTemp; /**< identified winding temperature of the stator */
-  boolean_T finished_calculation;
   real32_T psi_array[4];
   uint32_T array_index;
 } uz_ParaID_FluxMapID_output_t;

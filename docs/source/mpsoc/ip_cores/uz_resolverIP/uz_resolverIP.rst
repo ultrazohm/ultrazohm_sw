@@ -136,6 +136,10 @@ In ``POSITION_AND_VELOCITY_MODE``, the ResolverIP interface can also read out bo
 
 .. _vitis_setup:
 
+.. warning:: 
+  If you plan to only use the PL output ports of the resolverIP, then you have to set 
+  the ``mode_after_init`` in your config struct to e.g. ``POSITION_AND_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP Core will not update speed and position values.
+
 Vitis Setup
 ***********
 To integrate AXI communication between your PS project and the PL IP Core follow the instructions below. 
@@ -178,9 +182,9 @@ the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching
            .ip_clk_frequency_Hz=IP_CLK_FREQ,
            .resolution = 16,
            .freq_clockin = CRYSTAL_FREQUENCY,
-		       .pole_pairs_machine = 4.0f,
-		       .pole_pairs_resolver = 1.0f,
-		       .zero_position_mechanical = 0.3964f,
+           .pole_pairs_machine = 4.0f,
+           .pole_pairs_resolver = 1.0f,
+           .zero_position_mechanical = 0.3964f,
            .mode_after_init = CONFIG_MODE,
         };
 
@@ -210,7 +214,7 @@ Because doxygen can't display nested structs, here is the declaration of ``uz_re
     	}; 
     };
 
-Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IPCore manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
+Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IP Core manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
 
 The member ``union`` is used for buffering the position and velocity values read in via AXI from the RESDAT register. Position values are written to bits 0 to 15, velocity values are written to bits 16 to 31.
 

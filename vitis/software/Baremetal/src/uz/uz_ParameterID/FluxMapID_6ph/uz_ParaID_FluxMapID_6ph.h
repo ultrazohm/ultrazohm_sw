@@ -34,6 +34,5 @@ bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
 uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_output_t* data, bool* gui_logging_flag, uint16_t activeState, int js_cnt_slowData);
 uz_3ph_dq_t uz_filter_controller_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint);
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

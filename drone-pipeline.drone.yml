@@ -30,12 +30,12 @@ steps:
    - cd build
    - ls
   
-#  - name: Ceedling unit tests
-#    image: ultrazohm/ultrazohm_remote_container
-#    depends_on: [ copy_global_config ]
-#    commands:
-#    - cd vitis/software/Baremetal
-#    - ceedling test:all
+ - name: Ceedling unit tests
+   image: ultrazohm/ultrazohm_remote_container
+   depends_on: [ copy_global_config ]
+   commands:
+   - cd vitis/software/Baremetal
+   - ceedling test:all
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container
@@ -87,13 +87,12 @@ steps:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
-   #- /bin/bash LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
-#   #  when:
-  #    branch:
-  #    - main
-  #    - develop
-  #    ref:
-  #    - refs/tags/vivado*
+   when:
+     branch:
+     - main
+     - develop
+     ref:
+     - refs/tags/vivado*
 
 # Generates the bitstream, only on main or develop branch since the step takes ~1.5h, exports the xsa
  - name: Vivado_generate_bitstream
@@ -104,10 +103,10 @@ steps:
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_generate_bitstream.tcl
    - /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -source tcl_scripts/ci_vivado_export_xsa.tcl
-  #  when:
-  #    branch:
-  #    - main
-  #    - develop
+   when:
+     branch:
+     - main
+     - develop
 
 # Open vitis and generate the workspace with the existing xsa or with the new generated xsa if it is main/develop
  - name: Vitis_generate_Workspace

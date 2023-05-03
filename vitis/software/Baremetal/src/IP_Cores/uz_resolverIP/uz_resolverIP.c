@@ -62,12 +62,14 @@ uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t config) {
      uz_assert(config.zero_position_mechanical >= 0 && config.zero_position_mechanical < 2*UZ_PIf);
      uz_assert(config.pole_pairs_machine > 0);
      uz_assert(config.pole_pairs_resolver > 0);
+	 uz_assert(config.mode_after_init == 0 || config.mode_after_init == 1 || config.mode_after_init == 2 || config.mode_after_init == 3);
 	uz_resolverIP_t* self = uz_resolverIP_allocation();
 	self->config =config;
     self->is_ready = true;
     self->config.zero_position_mechanical = config.zero_position_mechanical;
     self->config.pole_pairs_machine = config.pole_pairs_machine;
     self->config.pole_pairs_resolver = config.pole_pairs_resolver;
+	self->config.mode_after_init = config.mode_after_init;
 	self->registerValue = 0;
 
 	switch (self->config.resolution){ //Factor is determined by tracking rate defined on p 4 of Datasheet, maps 2-complement value to rps value
@@ -98,7 +100,24 @@ uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t config) {
         rescon = uz_resolverIP_hw_read_RESCON(self->config.base_address);
     } while (rescon & RESCON_Data_uz_axi_BUSY_bit);
 
-    uz_resolverIP_setConfigMode(self);
+    switch (self->config.mode_after_init) {
+		case POSITION_MODE:
+		uz_resolverIP_setDataModePosition(self);
+		break;
+		case VELOCITY_MODE:
+		uz_resolverIP_setDataModeVelocity(self);
+		break;
+		case CONFIG_MODE:
+		uz_resolverIP_setConfigMode(self);
+		break;
+		case POSITION_VELOCITY_MODE:
+		uz_resolverIP_setDataModePositionVelocity(self);
+		break;
+		default:
+		uz_assert(0);
+	}
+	
+	
     return self;
 }
 

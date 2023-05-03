@@ -85,6 +85,7 @@ steps:
    depends_on: [ Vivado_validate_board_design ]
    commands:
    - ip link show
+   - apt-get install libudev1
    - /bin/bash LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so /opt/Xilinx/Vivado/2022.2/settings64.sh
    - /bin/bash LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
 #   #  when:

@@ -525,11 +525,8 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 	}
 }
 
-bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData){
-	bool feedback_printed = false;
-	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxMapID_Output, &feedback_printed, Data->Controller_Parameters.activeState, js_cnt_slowData);
-	Data->feedback_printed = feedback_printed;
-	return (logging_flag);
+void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData, bool* gui_logging_flag){
+	Data->feedback_printed  = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxMapID_Output, gui_logging_flag, Data->Controller_Parameters.activeState, js_cnt_slowData);
 }
 
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){

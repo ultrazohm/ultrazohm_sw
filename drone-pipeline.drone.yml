@@ -86,7 +86,7 @@ steps:
    commands:
    - ip link show
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
-   - /bin/bash LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
+   - LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
    #- /bin/bash LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1 /opt/Xilinx/Vivado/2022.2/bin/vivado -mode batch -nolog -nojournal -source tcl_scripts/ci_vivado_check_license.tcl
 #   #  when:
   #    branch:

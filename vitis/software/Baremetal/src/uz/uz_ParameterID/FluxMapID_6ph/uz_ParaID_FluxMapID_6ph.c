@@ -78,33 +78,4 @@ uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6p
 	return(&self->output.FluxMapID_output);
 }
 
-
-enum logstates {flux_idle, flux_log, flux_wait_finsish};
-
-bool uz_FluxMapID_6ph_transmit_calculated_values(uz_ParaID_FluxMapID_output_t* data, bool* gui_logging_flag, uint16_t activeState, int js_cnt_slowData){
-    static enum logstates state = flux_idle;
-    bool feedback_printed = false;
-    switch (state){
-    case flux_idle:
-        *gui_logging_flag = false;
-    	if((js_cnt_slowData == 0) && (activeState==404U)){
-    		state = flux_log;
-    	}
-    	break;
-    case flux_log:
-    	*gui_logging_flag = true;
-    	if(js_cnt_slowData == 0){
-    		state = flux_wait_finsish;
-    	}
-    	break;
-    case flux_wait_finsish:
-    	feedback_printed = true;
-    	if(activeState!=404U){
-			state = flux_idle;
-		}
-    default: break;
-    }
-    return feedback_printed;
-}
-
 #endif

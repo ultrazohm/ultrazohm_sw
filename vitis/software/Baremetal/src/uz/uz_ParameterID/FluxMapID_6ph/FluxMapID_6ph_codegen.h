@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.101
+ * Model version                  : 3.102
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Wed May  3 13:16:55 2023
+ * C/C++ source code generated on : Wed May  3 15:16:40 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,7 +64,6 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
 
-
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {
   real32_T u_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -74,7 +73,7 @@ typedef struct {
   real32_T i_q_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T PI_d_loc;              /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T PI_q_loc;              /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  real32_T PI_d_loc_i;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T PI_d_loc_h;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T PI_q_loc_b;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T exitPortIndex;         /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint32_T NumberOfIDpoints;      /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -85,7 +84,6 @@ typedef struct {
   uint32_T i;                     /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uint8_T is_c14_Subchart_FluxMapID_refer;
                                   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  boolean_T finished_calculation; /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 } DW_AMMstateIdentificationDQFl_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
@@ -99,10 +97,10 @@ typedef struct {
   uz_ParaID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t actual_voltages;         /* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t actual_currents;         /* '<Root>/FluxMapID_6ph_codegen' */
-  uz_3ph_dq_t actual_voltages_m;       /* '<Root>/FluxMapID_6ph_codegen' */
-  uz_3ph_dq_t actual_currents_m;       /* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t actual_voltages_n;       /* '<Root>/FluxMapID_6ph_codegen' */
-  uz_3ph_dq_t actual_currents_a;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_currents_k;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_voltages_l;       /* '<Root>/FluxMapID_6ph_codegen' */
+  uz_3ph_dq_t actual_currents_c;       /* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t mean_voltages;    /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   uz_3ph_dq_t mean_currents;    /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   uz_3ph_dq_t mean_voltages_i;    /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
@@ -111,10 +109,10 @@ typedef struct {
   uz_3ph_dq_t mean_currents_m;    /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   uz_3ph_dq_t mean_currents_mb;        /* '<Root>/FluxMapID_6ph_codegen' */
   uz_3ph_dq_t mean_voltages_c;         /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T R_s_array[50];              /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_R_s_array[50];          /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T omega_el;                   /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T omega_el_i;                 /* '<Root>/FluxMapID_6ph_codegen' */
-  real32_T omega_el_o;                 /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T omega_el_m;                 /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T PI_d_ref;            /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   real32_T PI_q_ref;            /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   real32_T mean_omega_el;       /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
@@ -124,15 +122,23 @@ typedef struct {
   real32_T PI_d_ref_f;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T PI_q_ref_a;            /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
   real32_T mean_omega_el_g;       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  real32_T fun_i_R_online;             /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_v1_counter;             /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_v2_counter;             /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_i2_counter;             /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_i1_counter;             /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_actual_v;               /* '<Root>/FluxMapID_6ph_codegen' */
+  real32_T fun_actual_i;               /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T i_d_ref_AMM;                /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T i_q_ref_AMM;                /* '<Root>/FluxMapID_6ph_codegen' */
   real32_T mean_omega_el_k;            /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T three_sec_transition_counter;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T three_sec_transition_counter_a;/* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T three_sec_transition_counter_f;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T three_sec_transition_counter_m;/* '<Root>/FluxMapID_6ph_codegen' */
+  uint32_T three_sec_transition_counter_e;/* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T repetitionCounter;   /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   uint32_T repetitionCounter_p;   /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   uint32_T repetitionCounter_j;   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  uint32_T fun_counter;                /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T repetition_counter;         /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T three_sec_transition_counter_c;/* '<Root>/FluxMapID_6ph_codegen' */
   uint16_T activeState;         /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
@@ -144,6 +150,13 @@ typedef struct {
   uint8_T is_IdentificationDQ;         /* '<Root>/FluxMapID_6ph_codegen' */
   uint8_T is_IdentificationXY;         /* '<Root>/FluxMapID_6ph_codegen' */
   uint8_T is_IdentificationZero;       /* '<Root>/FluxMapID_6ph_codegen' */
+  boolean_T finished_calculation;
+                                /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
+  boolean_T finished_calculation_i;
+                                  /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
+  boolean_T finished_calculation_g;
+                                  /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
+  boolean_T finished_calculation_b;    /* '<Root>/FluxMapID_6ph_codegen' */
 } DW_FluxMapID_6ph_codegen_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -152,7 +165,6 @@ typedef struct {
   uz_ParaID_ActualValues_t ActualValues;/* '<Root>/ActualValues' */
   uz_ParaID_GlobalConfig_t GlobalConfig_out;/* '<Root>/GlobalConfig' */
   uz_ParaID_ControlFlags_t ControlFlags;/* '<Root>/ControlFlags' */
-  boolean_T feedback_printed;          /* '<Root>/feedback_printed' */
 } ExtU_FluxMapID_6ph_codegen_t;
 
 /* External outputs (root outports fed by signals with default storage) */

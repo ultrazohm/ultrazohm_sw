@@ -141,6 +141,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 			Data->Controller_Parameters.i_xy_ref = Data->GlobalConfig.i_xy_ref;
 			Data->Controller_Parameters.resonant_subsystem = Data->GlobalConfig.resonant_subsystem;
 			Data->Controller_Parameters.PI_subsystem = Data->GlobalConfig.PI_subsystem;
+			Data->Controller_Parameters.setpoint_filter = Data->GlobalConfig.setpoint_filter;
 		}else{
 			uz_ParaID_6ph_FOC_output_set_zero(Data);
 		}
@@ -314,17 +315,29 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 
 	// if first (dq) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
-		cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		if(Data->Controller_Parameters.setpoint_filter){
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}else{
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}
 		out.d = cc_out_dq.d;
 		out.q = cc_out_dq.q;
 	}
 	// if second (xy) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
-		cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);     
+		if(Data->Controller_Parameters.setpoint_filter){
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+		}else{
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+		}   
 	}
 	// if third (zero) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
-		cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		if(Data->Controller_Parameters.setpoint_filter){
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}else{
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}
 	}
 
 	// select resonant output
@@ -525,9 +538,6 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 	}
 }
 
-void uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData, bool* gui_logging_flag){
-	Data->feedback_printed  = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxMapID_Output, gui_logging_flag, Data->Controller_Parameters.activeState, js_cnt_slowData);
-}
 
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {

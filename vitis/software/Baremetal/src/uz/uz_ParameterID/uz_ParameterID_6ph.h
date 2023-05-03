@@ -79,8 +79,6 @@ void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data
 
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array);
-bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData);
-
 // Temp
 void print_paraID(uz_ParameterID_Data_t *Data);
 

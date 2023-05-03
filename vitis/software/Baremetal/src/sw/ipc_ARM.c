@@ -694,11 +694,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
+	 if (data->av.logging == true) {
+		js_status_BareToRTOS |= (1 << 12);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 12);
+	 }
 
 	//Replace Bit 13-19 with the following
 	    /* Bit 13 - Ident_Lq */

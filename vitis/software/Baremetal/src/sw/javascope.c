@@ -38,11 +38,15 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
+#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 float para_state = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
+
+float values_milli[4];
+float index_array;
 
 
 extern float temp_avg;
@@ -171,11 +175,17 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_L_Z2]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z2);
 	js_slowDataArray[JSSD_FLOAT_set_rpm_val]      		= &(ParaID_Data.ElectricalID_Output->set_rpm_val);
 	js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation.progress);
-	js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(ParaID_Data.FluxMapID_Output->array_index);
+	js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(index_array);
 	js_slowDataArray[JSSD_FLOAT_out_i_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[0]);
 	js_slowDataArray[JSSD_FLOAT_out_i_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[1]);
 	js_slowDataArray[JSSD_FLOAT_out_psi_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[2]);
 	js_slowDataArray[JSSD_FLOAT_out_psi_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[3]);
+	js_slowDataArray[JSSD_FLOAT_average_winding_temp]	= &(ParaID_Data.ActualValues.average_winding_temp);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(index_array);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(values_milli[0]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(values_milli[1]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
 
 	return Status;
 }
@@ -199,6 +209,13 @@ void JavaScope_update(DS_Data* data){
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();
 	System_UpTime_ms		= uz_SystemTime_GetUptimeInMs();
+
+
+	values_milli[0] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[0];
+	values_milli[1] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[1];
+	values_milli[2] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[2];
+	values_milli[3] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[3];
+	index_array = (float) ParaID_Data.FluxMapID_Output->array_index;
 
 	// write data to shared memory
 	for(int j=0; j<JS_CHANNELS; j++){
@@ -225,6 +242,8 @@ void JavaScope_update(DS_Data* data){
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
+
+	data->av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, js_cnt_slowData);
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

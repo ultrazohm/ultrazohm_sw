@@ -112,6 +112,7 @@ typedef struct _actualValues_ {
 	float ki_d;
 	float ki_q;
 	uint32_t heartbeatframe_content;
+	bool logging;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

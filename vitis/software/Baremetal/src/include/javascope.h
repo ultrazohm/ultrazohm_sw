@@ -139,6 +139,12 @@ enum JS_SlowData {
 	JSSD_FLOAT_out_i_q,
 	JSSD_FLOAT_out_psi_d,
 	JSSD_FLOAT_out_psi_q,
+	JSSD_FLOAT_average_winding_temp,
+	JSSD_FLOAT_fluxmap_index,
+	JSSD_FLOAT_fluxmap_id,
+	JSSD_FLOAT_fluxmap_iq,
+	JSSD_FLOAT_fluxmap_psid,
+	JSSD_FLOAT_fluxmap_psiq,
 	JSSD_ENDMARKER
 };
 
@@ -284,12 +290,12 @@ SND_LABELS_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 RCV_FLD_ZEROVALUE=0,
-speed,
-torque,
+AvgWindingTemp,
+index,
 i_d,
 i_q,
-u_d,
-u_q,
+psi_d,
+psi_q,
 RCV_FLD_ENDMARKER
 
 
@@ -297,12 +303,12 @@ RCV_FLD_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 RCV_LABELS_ZEROVALUE=0,
-RPM,
-Nm,
-A,
-A,
-V,
-V,
+degC,
+,
+mA,
+mA,
+mVs,
+mVs,
 RCV_LABELS_ENDMARKER
 
 
@@ -311,12 +317,12 @@ RCV_LABELS_ENDMARKER
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 SLOWDAT_DISPLAY_ZEROVALUE=0,
-JSSD_FLOAT_speed,
-JSSD_FLOAT_torque,
-JSSD_FLOAT_i_d,
-JSSD_FLOAT_i_q,
-JSSD_FLOAT_u_d,
-JSSD_FLOAT_u_q,
+JSSD_FLOAT_average_winding_temp,
+JSSD_FLOAT_fluxmap_index,
+JSSD_FLOAT_fluxmap_id,
+JSSD_FLOAT_fluxmap_iq,
+JSSD_FLOAT_fluxmap_psid,
+JSSD_FLOAT_fluxmap_psiq,
 JSSD_FLOAT_Error_Code,
 SLOWDAT_DISPLAY_ENDMARKER
 */

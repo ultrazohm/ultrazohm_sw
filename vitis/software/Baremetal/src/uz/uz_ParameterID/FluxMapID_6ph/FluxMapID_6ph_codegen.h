@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FluxMapID_6ph_codegen'.
  *
- * Model version                  : 3.98
+ * Model version                  : 3.100
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Tue May  2 15:50:41 2023
+ * C/C++ source code generated on : Wed May  3 11:20:10 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,6 +63,7 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
+
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {
   real32_T u_d_array[1000];       /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
@@ -130,9 +131,6 @@ typedef struct {
   uint32_T repetitionCounter;   /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */
   uint32_T repetitionCounter_i;   /* '<S1>/AMMstate.IdentificationXY.Fluxmap' */
   uint32_T repetitionCounter_p;   /* '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
-  uint32_T exitPortIndex;              /* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T exitPortIndex_i;            /* '<Root>/FluxMapID_6ph_codegen' */
-  uint32_T exitPortIndex_o;            /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T repetition_counter;         /* '<Root>/FluxMapID_6ph_codegen' */
   uint32_T three_sec_transition_counter_c;/* '<Root>/FluxMapID_6ph_codegen' */
   uint16_T activeState;         /* '<S1>/AMMstate.IdentificationZero.Fluxmap' */

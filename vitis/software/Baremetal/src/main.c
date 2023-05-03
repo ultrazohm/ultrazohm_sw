@@ -77,15 +77,15 @@ int main(void)
 					.Psi_PM_Vs = 0.0075f
             };//these parameters are only needed if linear decoupling is selected
             struct uz_PI_Controller_config config_id = {
-            		.Kp = 0.369f,
-					.Ki = 162.47f,
+            		.Kp = 2.0f,
+					.Ki = 533.33f,
 					.samplingTime_sec = 0.00005f,
 					.upper_limit = 10.0f,
 					.lower_limit = -10.0f
             };
             struct uz_PI_Controller_config config_iq = {
-            		.Kp = 0.369f,
-					.Ki = 162.47f,
+            		.Kp = 2.0f,
+					.Ki = 533.33f,
 					.samplingTime_sec = 0.00005f,
 					.upper_limit = 10.0f,
 					.lower_limit = -10.0f

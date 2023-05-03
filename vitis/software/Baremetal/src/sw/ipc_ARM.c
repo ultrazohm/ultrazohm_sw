@@ -208,7 +208,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-
+		data->rasv.kp_res = value;
 			break;
 
 		case (Set_Send_Field_6):

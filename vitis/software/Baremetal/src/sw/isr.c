@@ -91,6 +91,7 @@ float polepairs = 5.0f;
 
 // ParaID local
 uz_3ph_alphabeta_t local_i_XY = {0};
+uz_3ph_alphabeta_t local_v_XY = {0};
 
 // temp
 float temp_theta_off = -0.78f;
@@ -107,7 +108,8 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
 
-
+    uz_resonantController_set_gain(ParaID_Data.resonant_instance_1, Global_Data.rasv.kp_res);
+    uz_resonantController_set_gain(ParaID_Data.resonant_instance_2, Global_Data.rasv.kp_res);
 
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
@@ -132,6 +134,10 @@ void ISR_Control(void *data)
 	local_i_XY.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
 	local_i_XY.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
 	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
+	local_v_XY.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
+	local_v_XY.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
+	ParaID_Data.ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
+
 	//ParaID ende
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

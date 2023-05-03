@@ -88,7 +88,6 @@ struct uz_SpeedControl_config speed_config = { .config_controller.type =
 		.config_controller.upper_limit = 10.0f, .config_controller.lower_limit =
 				-10.0f };
 
-
 extern uz_6ph_dq_t controller_out;
 
 struct uz_IIR_Filter_config config_filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 10000.0f};
@@ -168,6 +167,8 @@ int main(void) {
 					.motor_type = SMPMSM,
 					.control_type = FOC,
 					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+			Global_Data.rasv.kp_res = 100.0f;
+
 			// ParaID inits
 			uz_ParameterID_6ph_init_controllers(&ParaID_Data, sp_config, speed_config, cc_config_1, cc_config_2, cc_config_1, resonant_config_dq, resonant_config_xy, resonant_config_zero);
 			uz_ParameterID_6ph_init_filter(&ParaID_Data, config_filter);

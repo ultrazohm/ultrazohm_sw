@@ -252,6 +252,7 @@ enum gui_button_mapping {
 	ParaID_FMID_selected_subsystem,
 	ParaID_Control_PI,
 	ParaID_Control_res,
+	ParaID_Enable_setpoint_filter,
     GUI_BTN_ENDMARKER
 };
 

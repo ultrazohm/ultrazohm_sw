@@ -123,7 +123,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
 	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - 5.48;//ParaID_Data.ElectricalID_Output->thetaOffset;
-	ParaID_Data.ActualValues.average_winding_temp = 41.0f;
+	ParaID_Data.ActualValues.average_winding_temp = ParaID_Data.FluxMapID_Output->WindingTemp;
 	// inside:
 	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
 	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;

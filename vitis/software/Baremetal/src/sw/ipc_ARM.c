@@ -331,7 +331,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		        				ParaID_Data.GlobalConfig.resonant_subsystem = (uint16_t) value;
 		        		        ParaID_Data.GlobalConfig.controllers_updated = true;
 		        		        break;
-
+		        case (ParaID_Enable_setpoint_filter):
+				ParaID_Data.GlobalConfig.setpoint_filter = true;
+				break;
+				case (ParaID_Disable_setpoint_filter):
+								ParaID_Data.GlobalConfig.setpoint_filter = false;
+								break;
 		        case (ParaID_Enable_ElectricalID):
 		            ParaID_Data.GlobalConfig.ElectricalID = true;
 		            break;
@@ -694,7 +699,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	 if (data->av.logging == true) {
+	 if (ParaID_Data.Controller_Parameters.activeState == 404U) {
 		js_status_BareToRTOS |= (1 << 12);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 12);

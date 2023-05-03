@@ -236,8 +236,6 @@ void test_uz_nn_mse_three(void)
 
 void test_uz_nn_gradient_descent2(void)
 {
-    // Test 1: Unterschiedlicher Gradienten für bias und weights
-    // prüfen der loopindizes, LR 0.5
     uz_nn_t *test2 = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER);
     float lernrate = 0.5f;
     uz_nn_gradient_descent(test2,lernrate);
@@ -272,9 +270,9 @@ void test_uz_nn_set_gradients_zero(void)
     float f1[UZ_MATRIX_SIZE(g_12)]={0.0f};
     float f2[UZ_MATRIX_SIZE(g_22)]={0.0f};
     float f3[UZ_MATRIX_SIZE(g_32)]={0.0f};
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_12, f1,UZ_MATRIX_SIZE(g_12));
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_22, f2,UZ_MATRIX_SIZE(g_22));
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(g_32, f3,UZ_MATRIX_SIZE(g_32));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(f1,g_12,UZ_MATRIX_SIZE(g_12));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(f2,g_22,UZ_MATRIX_SIZE(g_22));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(f3,g_32,UZ_MATRIX_SIZE(g_32));
 }
 
 void test_uz_nn_set_gradient_matrix(void)

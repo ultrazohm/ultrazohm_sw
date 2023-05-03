@@ -80,6 +80,9 @@ float e_3[NUMBER_OF_OUTPUTS]={0.0f};
 float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
+float gradmat[13] = {
+#include "schroeder_weights/gradmat.csv"
+};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -173,6 +176,41 @@ void tearDown(void)
 {
 }
 
+void test_uz_nn_schroder_gradients(void)
+{
+uz_nn_t* gradientnet = uz_nn_init(config,NUMBER_OF_HIDDEN_LAYER);
+    // uz_nn_t* testlooper = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    // testing around with derivatemat declaration
+    struct uz_matrix_t x_matrix={0};
+    uz_matrix_t* eingabe=uz_matrix_init(&x_matrix,&x[0],1,1,NUMBER_OF_INPUTS);
+    uz_nn_ff(gradientnet,eingabe);
+    uz_matrix_t* output=uz_nn_get_output_data(gradientnet);
+    float result=uz_matrix_get_element_zero_based(output,0,0);
+    float error = reference_output[0]- result;
+    float const *ptr = &error;
+    uz_nn_backward_pass(gradientnet,ptr,eingabe);
+    // extract gradient to uz_matrix and then into array to check with unity fct
+    uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(gradientnet,1); 
+    uz_matrix_t* gradhelp2 = uz_nn_get_gradient_data(gradientnet,2); 
+    uz_matrix_t* gradhelp3 = uz_nn_get_gradient_data(gradientnet,3); 
+     float gradhelper[UZ_MATRIX_SIZE(g_1)+UZ_MATRIX_SIZE(g_2)+UZ_MATRIX_SIZE(g_3)];
+     gradhelper[0] = uz_matrix_get_element_zero_based(gradhelp1,0,0);
+     gradhelper[1] = uz_matrix_get_element_zero_based(gradhelp1,1,0);
+     gradhelper[2] = uz_matrix_get_element_zero_based(gradhelp1,2,0);
+     gradhelper[3] = uz_matrix_get_element_zero_based(gradhelp1,3,0);
+     gradhelper[4] = uz_matrix_get_element_zero_based(gradhelp2,0,0);
+     gradhelper[5] = uz_matrix_get_element_zero_based(gradhelp2,1,0);
+     gradhelper[6] = uz_matrix_get_element_zero_based(gradhelp2,2,0);
+     gradhelper[7] = uz_matrix_get_element_zero_based(gradhelp2,3,0);
+     gradhelper[8] = uz_matrix_get_element_zero_based(gradhelp2,4,0);
+     gradhelper[9] = uz_matrix_get_element_zero_based(gradhelp2,5,0);
+     gradhelper[10] = uz_matrix_get_element_zero_based(gradhelp3,0,0);
+     gradhelper[11] = uz_matrix_get_element_zero_based(gradhelp3,1,0);
+     gradhelper[12] = uz_matrix_get_element_zero_based(gradhelp3,2,0);
+     for(int i=0;i< (int)(sizeof(gradmat) / sizeof(float));i++) {
+        TEST_ASSERT_FLOAT_WITHIN(1e-02f, gradmat[i], gradhelper[i]);
+    }
+}
 void test_uz_nn_schroeder(void)
   {
     clock_t start = clock();

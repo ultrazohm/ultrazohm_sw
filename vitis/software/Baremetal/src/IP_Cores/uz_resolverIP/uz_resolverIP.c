@@ -62,7 +62,7 @@ uz_resolverIP_t* uz_resolverIP_init(struct uz_resolverIP_config_t config) {
      uz_assert(config.zero_position_mechanical >= 0 && config.zero_position_mechanical < 2*UZ_PIf);
      uz_assert(config.pole_pairs_machine > 0);
      uz_assert(config.pole_pairs_resolver > 0);
-	 uz_assert(config.mode_after_init == 0 || config.mode_after_init == 1 || config.mode_after_init == 2 || config.mode_after_init == 3);
+	 uz_assert(config.mode_after_init <= 3);
 	uz_resolverIP_t* self = uz_resolverIP_allocation();
 	self->config =config;
     self->is_ready = true;

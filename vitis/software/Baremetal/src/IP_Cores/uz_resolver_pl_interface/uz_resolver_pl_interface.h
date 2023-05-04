@@ -9,10 +9,10 @@
 #define RPS_MAX_12BIT 1000U
 #define RPS_MAX_10BIT 2500U
 // Calculation factor for results in rounds per second from raw value
-#define BIT_TO_RPS_FACTOR_16BIT (float)(RPS_MAX_16BIT/(2^(16-1)))
-#define BIT_TO_RPS_FACTOR_14BIT (float)(RPS_MAX_14BIT/(2^(14-1)))
-#define BIT_TO_RPS_FACTOR_12BIT (float)(RPS_MAX_12BIT/(2^(12-1)))
-#define BIT_TO_RPS_FACTOR_10BIT (float)(RPS_MAX_10BIT/(2^(10-1)))
+#define BIT_TO_RPS_FACTOR_16BIT (float)(RPS_MAX_16BIT/(exp2f(16-1)))
+#define BIT_TO_RPS_FACTOR_14BIT (float)(RPS_MAX_14BIT/(exp2f(14-1)))
+#define BIT_TO_RPS_FACTOR_12BIT (float)(RPS_MAX_12BIT/(exp2f(12-1)))
+#define BIT_TO_RPS_FACTOR_10BIT (float)(RPS_MAX_10BIT/(exp2f(10-1)))
 
 /**
  * @brief Data type for object uz_resolver_pl_interface

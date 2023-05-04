@@ -81,10 +81,11 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
-//    update_position_and_speed_of_resolverIP(&Global_Data);
-    update_speed_of_resolverIP(&Global_Data);
-    update_position_of_resolverIP(&Global_Data);
+//    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_position_and_speed_of_resolverIP(&Global_Data);
+//    update_position_of_resolverIP(&Global_Data);
+//    update_speed_of_resolverIP(&Global_Data);
+
     Global_Data.av.pl_interface = uz_resolver_pl_interface_get_outputs(Global_Data.objects.pl_interface);
 //    uz_axi_write_bool(XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_UZ_RESOLVER_PL_INTER_0_BASEADDR + 0x104, false); // cnt_reset false=normal operation
 //

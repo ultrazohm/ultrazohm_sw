@@ -1,0 +1,17 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Fri Apr 21 16:56:07 2023
+# Process ID: 16636
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent22452 C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_resolverIP\uz_resolverIP.xpr
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.xpr
+update_compile_order -fileset sources_1
+launch_simulation
+source resolver_ip_tb.tcl
+close_sim

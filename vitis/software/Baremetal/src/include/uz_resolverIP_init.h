@@ -42,7 +42,7 @@ void update_speed_of_resolverIP(DS_Data *const data);					// update speed in glo
  * @brief Writes the electrical and mechanical position and mechanical velocity to global data structure, separate trigger neccessary on IPCore sample trigger input
  *
  */
-void update_position_and_speed_of_resolverIP(DS_Data* const data);
+struct uz_resolverIP_position_velocity_t update_position_and_speed_of_resolverIP(DS_Data* const data);
 
 /**
  * @brief Reads Register

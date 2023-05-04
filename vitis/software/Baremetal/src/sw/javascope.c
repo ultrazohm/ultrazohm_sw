@@ -75,10 +75,10 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_theta_m_res_calc] = &theta_mech_res_calc_ip;
-	js_ch_observable[JSO_theta_el_res_calc] = &theta_elec_res_calc_ip;
-	js_ch_observable[JSO_omega_mech_res_calc] = &omega_mech_res_calc_ip;
-	js_ch_observable[JSO_rpm_mech_res_calc] = &rpm_mech_res_calc_ip;
+	js_ch_observable[JSO_theta_m_res_calc] = &data->av.pl_interface.position_mech_2pi;
+	js_ch_observable[JSO_theta_el_res_calc] = &data->av.pl_interface.position_el_2pi;
+	js_ch_observable[JSO_omega_mech_res_calc] = &data->av.pl_interface.omega_mech_rad_s;
+	js_ch_observable[JSO_rpm_mech_res_calc] = &data->av.pl_interface.n_mech_rpm;
 	js_ch_observable[JSO_cnt_ip] 			= &cnt_ip;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;

@@ -49,13 +49,11 @@ void update_speed_of_resolverIP(DS_Data* const data){
 	data->av.mechanicalRotorSpeed = uz_resolverIP_readMechanicalVelocity(data->objects.resolver_IP) * 60.f; //in rpm
 }
 
-//void update_position_and_speed_of_resolverIP(DS_Data* const data){
-//	float *position = &data->av.theta_mech;
-//	float *velocity = &data->av.mechanicalRotorSpeed;
-//	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP,position,velocity);
+struct uz_resolverIP_position_velocity_t update_position_and_speed_of_resolverIP(DS_Data* const data){
+	uz_resolverIP_readMechanicalPositionAndVelocity(data->objects.resolver_IP);
 //	data->av.mechanicalRotorSpeed = data->av.mechanicalRotorSpeed * 60.F; //rpm
 //	data->av.theta_elec = (data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)) - 2 * UZ_PIf * floor(data->av.theta_mech * uz_resolverIP_getMachinePolePairs(data->objects.resolver_IP)  / (2* UZ_PIf));
-//}
+}
 //
 //// For DEBUGGING only
 //void readRegister_of_resolverIP(DS_Data* const data){
@@ -70,8 +68,8 @@ static struct uz_resolver_pl_interface_config_t pl_config = {
 		.ip_clk_frequency_Hz = 100000000U,
 		.position_intmax = 65535,
 		.bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
-		.machine_polepairs = 5.0f,
-		.resolver_polepairs = 2.0f,
+		.machine_polepairs = 5,
+		.resolver_polepairs = 2,
 		.theta_m_offset_rad = -0.42f
 };
 

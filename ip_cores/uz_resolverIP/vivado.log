@@ -1,0 +1,100 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Fri Apr 21 16:56:07 2023
+# Process ID: 16636
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent22452 C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_resolverIP\uz_resolverIP.xpr
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.xpr
+INFO: [Project 1-313] Project file moved from 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests4/ip_cores/uz_resolverIP' since last save.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+open_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:08 . Memory (MB): peak = 1048.586 ; gain = 0.000
+update_compile_order -fileset sources_1
+launch_simulation
+Command: launch_simulation 
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'resolver_ip_tb' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.sim/sim_1/behav/xsim'
+"xvhdl --incr --relax -prj resolver_ip_tb_vhdl.prj"
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/AD2S1210_Interface.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'AD2S1210_Interface'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/Resolver_Interface_v1_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'Resolver_Interface_v1_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/Resolver_Interface_v1_0_S00_AXI.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'Resolver_Interface_v1_0_S00_AXI'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/spi_master_LTC.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'spi_master_LTC'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/sim/resolver_ip_tb.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'resolver_ip_tb'
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.sim/sim_1/behav/xsim'
+"xelab -wto 39f7d946e63f4e798e654901b15f11a9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot resolver_ip_tb_behav xil_defaultlib.resolver_ip_tb -log elaborate.log"
+Vivado Simulator 2020.1.1
+Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2020.1/bin/unwrapped/win64.o/xelab.exe -wto 39f7d946e63f4e798e654901b15f11a9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot resolver_ip_tb_behav xil_defaultlib.resolver_ip_tb -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package std.standard
+Compiling package std.textio
+Compiling package ieee.std_logic_1164
+Compiling package ieee.numeric_std
+Compiling package ieee.std_logic_arith
+Compiling package ieee.std_logic_unsigned
+Compiling architecture logic of entity xil_defaultlib.spi_master_LTC [spi_master_ltc_default]
+Compiling architecture behavioral of entity xil_defaultlib.AD2S1210_Interface [ad2s1210_interface_default]
+Compiling architecture arch_imp of entity xil_defaultlib.Resolver_Interface_v1_0_S00_AXI [\Resolver_Interface_v1_0_S00_AXI...]
+Compiling architecture arch_imp of entity xil_defaultlib.Resolver_Interface_v1_0 [\Resolver_Interface_v1_0(c_s00_a...]
+Compiling architecture bench of entity xil_defaultlib.resolver_ip_tb
+Built simulation snapshot resolver_ip_tb_behav
+
+****** Webtalk v2020.1.1 (64-bit)
+  **** SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+  **** IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.sim/sim_1/behav/xsim/xsim.dir/resolver_ip_tb_behav/webtalk/xsim_webtalk.tcl -notrace
+INFO: [Common 17-206] Exiting Webtalk at Fri Apr 21 16:57:08 2023...
+INFO: [USF-XSim-69] 'elaborate' step finished in '4' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/uz_resolverIP.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "resolver_ip_tb_behav -key {Behavioral:sim_1:Functional:resolver_ip_tb} -tclbatch {resolver_ip_tb.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Vivado Simulator 2020.1.1
+Time resolution is 1 ps
+source resolver_ip_tb.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run 1000ns
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'resolver_ip_tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+launch_simulation: Time (s): cpu = 00:00:05 ; elapsed = 00:00:11 . Memory (MB): peak = 1048.586 ; gain = 0.000
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Fri Apr 21 17:29:55 2023...

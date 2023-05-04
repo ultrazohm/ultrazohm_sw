@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.104
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu May  4 14:14:33 2023
+ * C/C++ source code generated on : Thu May  4 15:10:35 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -1428,12 +1428,12 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
 
     /* Outport: '<Root>/finishedFluxMapID' */
     /* Exit 'AMMstate': '<S1>:590' */
-    /* '<S1>:590:30' counter = uint32(1); */
-    /* '<S1>:590:31' finishedFluxMapID=boolean(1); */
+    /* '<S1>:590:31' counter = uint32(1); */
+    /* '<S1>:590:32' finishedFluxMapID=boolean(1); */
     rtFluxMapID_6ph_codegen_Y->finishedFluxMapID = true;
 
     /* Outport: '<Root>/enteredFluxMapID' */
-    /* '<S1>:590:32' enteredFluxMapID = boolean(0); */
+    /* '<S1>:590:33' enteredFluxMapID = boolean(0); */
     rtFluxMapID_6ph_codegen_Y->enteredFluxMapID = false;
     rtFluxMapID_6ph_codegen_DW->is_c16_FluxMapID_6ph_codegen = IN_Waiting;
 
@@ -1463,20 +1463,15 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
             (rtFluxMapID_6ph_codegen_U, rtFluxMapID_6ph_codegen_DW);
         } else {
           /* '<S1>:590:13' else */
-          /* '<S1>:590:14' FluxMapID_output.R_s = FluxMapIDConfig.R_s_ref*... */
-          /* '<S1>:590:15'                 (single(1)+TEMP_COEFFICIENT*(FluxMapID_output.WindingTemp - FluxMapIDConfig.Temp_ref)); */
-          rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s =
-            ((rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp -
-              rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref) *
-             TEMP_COEFFICIENT + 1.0F) *
-            rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref;
+          /* '<S1>:590:14' fun_i_R_online = single(0); */
+          rtFluxMapID_6ph_codegen_DW->fun_i_R_online = 0.0F;
         }
 
-        /* '<S1>:590:17' if(FluxMapIDConfig.R_s_ref ~= 0.0 && FluxMapIDConfig.Temp_ref ~= 0.0) */
+        /* '<S1>:590:16' if(FluxMapIDConfig.R_s_ref ~= 0.0 && FluxMapIDConfig.Temp_ref ~= 0.0) */
         if ((rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref != 0.0F) &&
             (rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref != 0.0F)) {
-          /* '<S1>:590:18' FluxMapID_output.WindingTemp = ((FluxMapID_output.R_s/FluxMapIDConfig.R_s_ref)-1).... */
-          /* '<S1>:590:19'                 *254.453+FluxMapIDConfig.Temp_ref; */
+          /* '<S1>:590:17' FluxMapID_output.WindingTemp = ((FluxMapID_output.R_s/FluxMapIDConfig.R_s_ref)-1).... */
+          /* '<S1>:590:18'                 *254.453+FluxMapIDConfig.Temp_ref; */
           rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp =
             (rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s /
              rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref - 1.0F) *
@@ -1486,17 +1481,27 @@ static void AMMstate(ExtU_FluxMapID_6ph_codegen_t *rtFluxMapID_6ph_codegen_U,
         }
       }
 
-      /* '<S1>:590:22' if(FluxMapIDConfig.identR == 0) */
+      /* '<S1>:590:21' if(FluxMapIDConfig.identR == 0) */
       if (!rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.identR) {
-        /* '<S1>:590:23' fun_i_R_online = single(0.0); */
+        /* '<S1>:590:22' fun_i_R_online = single(0.0); */
         rtFluxMapID_6ph_codegen_DW->fun_i_R_online = 0.0F;
 
-        /* '<S1>:590:24' FluxMapID_output.WindingTemp= FluxMapIDConfig.lower_meas_temp; */
+        /* '<S1>:590:23' FluxMapID_output.WindingTemp= FluxMapIDConfig.lower_meas_temp; */
         rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp =
           rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.lower_meas_temp;
       }
     } else {
-      /* '<S1>:590:26' else */
+      /* '<S1>:590:25' else */
+      /* '<S1>:590:26' FluxMapID_output.R_s = FluxMapIDConfig.R_s_ref*... */
+      /* '<S1>:590:27'         (single(1)+TEMP_COEFFICIENT*(FluxMapID_output.WindingTemp - FluxMapIDConfig.Temp_ref)); */
+      rtFluxMapID_6ph_codegen_DW->FluxMapID_output.R_s =
+        ((rtFluxMapID_6ph_codegen_DW->FluxMapID_output.WindingTemp -
+          rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.Temp_ref) *
+         TEMP_COEFFICIENT + 1.0F) *
+        rtFluxMapID_6ph_codegen_U->FluxMapIDConfig.R_s_ref;
+
+      /* '<S1>:590:28' fun_i_R_online = single(0); */
+      rtFluxMapID_6ph_codegen_DW->fun_i_R_online = 0.0F;
     }
 
     switch (rtFluxMapID_6ph_codegen_DW->is_AMMstate) {
@@ -2232,3 +2237,4 @@ void FluxMapID_6ph_codegen_initialize(RT_MODEL_FluxMapID_6ph_codege_t *const
  *
  * [EOF]
  */
+#endif

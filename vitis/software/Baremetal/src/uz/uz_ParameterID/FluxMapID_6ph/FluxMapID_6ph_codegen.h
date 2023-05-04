@@ -9,7 +9,7 @@
  *
  * Model version                  : 3.104
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu May  4 14:14:33 2023
+ * C/C++ source code generated on : Thu May  4 15:10:35 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,140 +64,6 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
 
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_FluxMapIDConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_FluxMapIDConfig_t_
-
-typedef struct {
-  real32_T AMMsampleTime;
-  real32_T IDstart;
-  real32_T IDstepsize;
-  real32_T IDstop;
-  real32_T IQstart;
-  real32_T IQstepsize;
-  real32_T IQstop;
-  real32_T R_s_ref;
-  real32_T Temp_ref;
-  boolean_T start_FM_ID;
-  boolean_T identR;
-  real32_T identRAmp;
-  uint16_T selected_subsystem;
-  real32_T lower_meas_temp;
-  real32_T upper_meas_temp;
-} uz_ParaID_FluxMapIDConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_ActualValues_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_ActualValues_t_
-
-typedef struct {
-  uz_3ph_abc_t V_abc;
-  uz_3ph_abc_t I_abc;
-  uz_3ph_dq_t i_dq;
-  uz_3ph_dq_t v_dq;
-  uz_6ph_abc_t v_abc_6ph;
-  uz_6ph_abc_t i_abc_6ph;
-  uz_3ph_dq_t v_xy_rotating;
-  uz_3ph_dq_t i_xy_rotating;
-  uz_3ph_dq_t v_zero_rotating;
-  uz_3ph_dq_t i_zero_rotating;
-  uz_6ph_dq_t i_dq_6ph;
-  uz_6ph_dq_t v_dq_6ph;
-  real32_T omega_m;
-  real32_T omega_el;
-  real32_T theta_m;
-  real32_T theta_el;
-  real32_T V_DC;
-  real32_T average_winding_temp;
-} uz_ParaID_ActualValues_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_GlobalConfig_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_GlobalConfig_t_
-
-typedef struct {
-  uz_PMSM_t PMSM_config;
-  uz_6ph_dq_t PMSM_6ph_inductances;
-  boolean_T enableParameterID;
-  boolean_T Reset;
-  real32_T Kp_id;
-  real32_T Kp_iq;
-  real32_T Kp_n;
-  real32_T Ki_id;
-  real32_T Ki_iq;
-  real32_T Ki_n;
-  boolean_T ElectricalID;
-  boolean_T FrictionID;
-  boolean_T TwoMassID;
-  boolean_T FluxMapID;
-  boolean_T OnlineID;
-  boolean_T ACCEPT;
-  real32_T sampleTimeISR;
-  real32_T ratCurrent;
-  real32_T ratSpeed;
-  uz_3ph_dq_t i_dq_ref;
-  real32_T n_ref;
-  real32_T voltage_measurement_C;
-  real32_T voltage_measurement_Rp;
-  real32_T voltage_measurement_Rs;
-  uz_3ph_dq_t i_xy_ref;
-} uz_ParaID_GlobalConfig_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_ControlFlags_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_ControlFlags_t_
-
-typedef struct {
-  boolean_T startFrictionID;
-  boolean_T startElectricalID;
-  boolean_T startTwoMassID;
-  boolean_T startFluxMapID;
-  uint16_T transNr;
-  boolean_T enableOnlineID;
-  boolean_T finished_all_Offline_states;
-} uz_ParaID_ControlFlags_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_Controller_Parameters_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_Controller_Parameters_output_t_
-
-typedef struct {
-  uz_3ph_dq_t i_dq_ref;
-  uint16_T activeState;
-  real32_T n_ref_FOC;
-  boolean_T enableFOC_speed;
-  boolean_T enableFOC_current;
-  boolean_T resetIntegrator;
-  real32_T Kp_id_out;
-  real32_T Kp_iq_out;
-  real32_T Kp_n_out;
-  real32_T Ki_id_out;
-  real32_T Ki_iq_out;
-  real32_T Ki_n_out;
-  uz_3ph_dq_t i_xy_ref;
-  uz_3ph_dq_t i_zero_ref;
-  uint16_T resonant_subsystem;
-  uint16_T PI_subsystem;
-  uint16_T setpoint_filter;
-} uz_ParaID_Controller_Parameters_output_t;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_uz_ParaID_FluxMapID_output_t_
-#define DEFINED_TYPEDEF_FOR_uz_ParaID_FluxMapID_output_t_
-
-typedef struct {
-  boolean_T external_Measurement_Flag;
-  real32_T R_s;
-  real32_T WindingTemp;
-  real32_T psi_array[4];
-  uint32_T array_index;
-} uz_ParaID_FluxMapID_output_t;
-
-#endif
 
 /* Block signals and states (default storage) for system '<S1>/AMMstate.IdentificationDQ.Fluxmap' */
 typedef struct {

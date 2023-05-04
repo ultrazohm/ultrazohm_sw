@@ -4,17 +4,14 @@
 Digital SI Inverter
 ===================
 
-.. image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant_V1_Rev03.png
-  :height: 500
 
-.. image:: Digital_SI_Inverter_rev03/3D_View_Bot_UZ_D_Inverter_Variant_V1_Rev03.png
-  :height: 500
+|pic1| |pic2|
 
-Source
-======
+.. |pic1| image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant_V1_Rev03.png
+   :width: 45%
 
-* `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
-
+.. |pic2| image:: Digital_SI_Inverter_rev03/3D_View_Bot_UZ_D_Inverter_Variant_V1_Rev03.png
+   :width: 45%
 
 Functionality
 =============
@@ -22,15 +19,16 @@ Functionality
 The UltraZohm digital inverter consists of three half-bridges with conventional SI-semiconductors. 
 It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages as well as temperature measurements for each semiconductor.  
 The voltage measurement is equipped with a 1st order low-pass filter.
+The current measurement is realized with shunt resistors.
 An over current protection for the three phases and the DC-link is included. 
 The OCP is not designed for half-bridge shorts and will only be triggered, if the phase or DC-link currents exceed the safe operating window. 
 The OCP, when triggered, only flags a FAULT bit in the corresponding software driver. 
 The inverter won't be automatically shut down.
 Each half-bridge is designed in a non-bootstrap configuration. 
-This means, that each semiconductor has its own power-supply for charging the gate and therefore no minimum switch-on time for the semiconductors is necessary.
 Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended into differential transmission to reduce the susceptibility to interference.
 The measurement signals are transmitted via ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 To increase heat dissipation and keep the switches cooler an additional heatsink can be installed.
+For additional information or an in depth look into the circuit design check the schematics in the :ref:`References <dig_si_inverter_references>` section.
 
 Maximum operation ratings
 -------------------------
@@ -48,22 +46,12 @@ Additional ratings
   - Current measurement up to :math:`I_{peak,meas}=\pm35\ A`
   - Voltage measurement up to :math:`V_{peak,meas}= 60\ V`
   - Temperature measurement up to :math:`T_{meas}=105°C`
-  - Temperature measurement is not build into the Mosfet. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature should always be **significantly** lower than the max operating temperature of the semiconductors.
+  - Temperature measurement is not build into the Mosfet. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
   - DC-link capacitance :math:`C_{DC} = 570\mu F`
   - OPC triggerpoint :math:`I_{OCP}=\pm29.85\ A`
-  - Cutoff frequency for voltage measurement :math:`f_g = 2170Hz` 
-
-Used components
----------------
-
-- Mosfet (100 V, 97 A, 6.0 :math:`m\Omega`) `ISC060N10NM6ATMA1 <https://www.mouser.de/datasheet/2/196/Infineon_ISC060N10NM6_DataSheet_v02_02_EN-3166722.pdf>`_
-- Gate-Driver `EiceDRIVER 2EDF7275KXUMA1 <https://www.mouser.de/datasheet/2/196/Infineon_2EDF7275K_DataSheet_v02_07_EN-1731004.pdf>`_
-- Isolated DC/DC Converter for gate 12V supply `PDSE1-S24-S12-M-TR <https://www.mouser.de/datasheet/2/670/pdse1_m-1596038.pdf>`_ 
-- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
-- Differential operational amplifier `ADA4940-1ARZ <https://www.mouser.de/datasheet/2/609/ada4940_1_4940_2-3120247.pdf>`_ 
-- Temperature measurement `LM57CISD-10/NOPB <https://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=https://www.ti.com/lit/gpn/lm57>`_
-- Voltage to PWM frequency converter `LTC6992HS6-4#WTRMPBF <https://www.mouser.de/datasheet/2/609/LTC6992-1-6992-2-6992-3-6992-4-1852873.pdf>`_
-
+  - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
+  - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
+  
 Pinout
 ------
 
@@ -92,6 +80,16 @@ Whilst there is further optimization potential, the resulting switching behaviou
    :include: Digital_SI_Inverter_rev03/switching_behaviour.tikz
    :align: right
 
+Used components
+---------------
+
+- Mosfet (100 V, 97 A, 6.0 :math:`m\Omega`) `ISC060N10NM6ATMA1 <https://www.mouser.de/datasheet/2/196/Infineon_ISC060N10NM6_DataSheet_v02_02_EN-3166722.pdf>`_
+- Gate-Driver `EiceDRIVER 2EDF7275KXUMA1 <https://www.mouser.de/datasheet/2/196/Infineon_2EDF7275K_DataSheet_v02_07_EN-1731004.pdf>`_
+- Isolated DC/DC Converter for gate 12V supply `PDSE1-S24-S12-M-TR <https://www.mouser.de/datasheet/2/670/pdse1_m-1596038.pdf>`_ 
+- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
+- Differential operational amplifier `ADA4940-1ARZ <https://www.mouser.de/datasheet/2/609/ada4940_1_4940_2-3120247.pdf>`_ 
+- Temperature measurement `LM57CISD-10/NOPB <https://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=https://www.ti.com/lit/gpn/lm57>`_
+- Voltage to PWM frequency converter `LTC6992HS6-4#WTRMPBF <https://www.mouser.de/datasheet/2/609/LTC6992-1-6992-2-6992-3-6992-4-1852873.pdf>`_
 
 Setup before first use and implementation with Inverter Interface IP-Core
 =========================================================================
@@ -109,6 +107,13 @@ Software implementation
 
 This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP-Core and its corresponding driver.
 Follow :ref:`this guide <inverter_adapter_usage>` on how to integrate the IP-Core in the FPGA and how to set up the software driver.
+Whilst following this guide, make sure to adjust the `linear interpolation parameters` for the ``inverter_adapter_config``. 
+For this inverter card they should be:
+
+.. code-block:: c
+ :caption: linear interpolation parameters for config struct
+
+ .linear_interpolation_params = {-289.01f, 218.72f}
 
 Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an appropriate value. 
 A safe value with a considerable safety margin is ``200ns``. 
@@ -196,13 +201,12 @@ These are optional features and can be left out if they aren't required.
 
 
 References
-""""""""""
+==========
 
-* :download:`Schematic Rev01 <Digital_Resolver_rev01/SCH_UZ_D_Resolver_Default_Rev01.pdf>`
-* :download:`Datasheet AD2S1210 IC <Digital_Resolver_rev01/AD2S1210.pdf>`
-* :ref:`dig_encoder_v1`
-* :ref:`label_cpld_programming`
+.. _dig_si_inverter_references:
 
+* :download:`Schematic Rev03 <Digital_SI_Inverter_rev03/UZ_D_Inverter.pdf>`
+* `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues
 ------------

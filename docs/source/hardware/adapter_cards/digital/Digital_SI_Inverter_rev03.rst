@@ -11,24 +11,24 @@ Digital SI Inverter
   :height: 500
 
 Source
-------
+======
 
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 
 Functionality
--------------
+=============
 
 The UltraZohm digital inverter consists of three half-bridges with conventional SI-semiconductors. 
 It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages as well as temperature measurements for each semiconductor.  
 The voltage measurement is equipped with a 1st order low-pass filter.
 An over current protection for the three phases and the DC-link is included. 
-The OCP is not designed for half-bridge shorts and will only be triggered, if the phase or DC-link currents exceed the safe operation window. 
+The OCP is not designed for half-bridge shorts and will only be triggered, if the phase or DC-link currents exceed the safe operating window. 
 The OCP, when triggered, only flags a FAULT bit in the corresponding software driver. 
 The inverter won't be automatically shut down.
 Each half-bridge is designed in a non-bootstrap configuration. 
 This means, that each semiconductor has its own power-supply for charging the gate and therefore no minimum switch-on time for the semiconductors is necessary.
-Each the phase and current measurement signals are converted from single-ended into differential transmission to reduce the susceptibility to interference.
+Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended into differential transmission to reduce the susceptibility to interference.
 The measurement signals are transmitted via ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 To increase heat dissipation and keep the switches cooler an additional heatsink can be installed.
 
@@ -64,24 +64,6 @@ Used components
 - Temperature measurement `LM57CISD-10/NOPB <https://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=https://www.ti.com/lit/gpn/lm57>`_
 - Voltage to PWM frequency converter `LTC6992HS6-4#WTRMPBF <https://www.mouser.de/datasheet/2/609/LTC6992-1-6992-2-6992-3-6992-4-1852873.pdf>`_
 
-Switching behavior
-------------------
-
-- include pictures
-
-
-Known issues
-------------
-
-The reference input of the MAX40056TAUA+ current amplifier was initially designed to work with 2.5V to allow for a higher max amplitude for the current measurements. 
-This ref-input pin is however *buggy* and draws too much current during startup operation of the amplifier. 
-This kills any 2.5V reference voltage source. 
-Therefore it was decided, to only use the 1.5V internal reference of the MAX40056TAUA+. 
-The maximum current to be measured is therefore lower and is stated in the note above. 
-
-Compatibility 
--------------
-
 Pinout
 ------
 
@@ -91,8 +73,126 @@ Pinout
    :header-rows: 1
 
 
-Implementation with Inverter Interface IP-Core
-----------------------------------------------
+Compatibility 
+-------------
+
+This digital adapter inverter board is directly compatible with the :ref:`uz_inverter_adapter` IP-Core.
+It can be used in any of the D1-D4 digital adapter card slots in the UltraZohm, provided the correct CPLD is flashed. 
+The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
+
+Switching behaviour
+-------------------
+
+In the figure below the general switching behaviour of the inverter with a PMSM as load is shown. 
+The plots were capture during routine operation with the PMSM running with :math:`i_q = 5\ A`. The PWM frequency was :math:`20\ kHz` with a deadtime of :math:`150\ ns`.
+The gate resistance has been tuned to such a degree, that there is practically no overshoot and only a minimal degree of oscillation for the drain source voltages.
+Whilst there is further optimization potential, the resulting switching behaviour shows a robust enough solution.
+
+.. tikz::
+   :include: Digital_SI_Inverter_rev03/switching_behaviour.tikz
+   :align: right
+
+
+Setup before first use and implementation with Inverter Interface IP-Core
+=========================================================================
+
+CPLD
+----
+
+Make sure, that in the corresponding digital adapter slot the correct CPLD is flashed.
+For this adapter card the ``uz_d_3ph_inverter`` CPLD has to be flashed.
+Download this CPLD from the `UltraZohm CPLD Repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+Follow :ref:`this guide  <label_cpld_programming>` on how to flash the correct CPLD onto the UltraZohm.
+
+Software implementation
+-----------------------
+
+This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP-Core and its corresponding driver.
+Follow :ref:`this guide <inverter_adapter_usage>` on how to integrate the IP-Core in the FPGA and how to set up the software driver.
+
+Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to a appropriate value. 
+A safe value with a considerable safety margin is ``200ns``. 
+No matter what, the deadtime should not be lower than ``150ns``.
+
+To read out the measured current and voltage signals both ethernet cables have to be connected to an ADC-Card.
+In the ``isr.c`` add the following conversion factors to the measured signals.
+
+.. code-block:: c
+ :caption: Additions for isr.c if the ADC-Card is in the A1 slot
+
+ struct uz_3ph_abc_t v_abc_Volts = {0};
+ struct uz_3ph_abc_t i_abc_Amps = {0};
+ float v_DC_Volts = 0.0f;
+ float i_DC_Amps = 0.0f;
+ v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+ v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+ v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+ v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+ i_abc_Volts.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+ i_abc_Volts.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+ i_abc_Volts.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+ i_DC_Volts = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
+
+In order to use the over current and over temperature protection, the following code has to be added to the isr.c as well. 
+These are optional features and can be left out if they aren't required.
+
+.. code-block:: c
+ :caption: Additions for isr.c if OCP or OTP are used
+ 
+ //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+ //Overtemperature for H1
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overtemperature for L1
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overtemperature for H2
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overtemperature for L2
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overtemperature for H3
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overtemperature for L3
+ if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+ //Binding of the signals to the driver is slightly unintuitive 
+ //Overcurrent for Phase A
+ if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overcurrent for Phase B
+ if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overcurrent for Phase C
+ if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ //Overcurrent for DC-link
+ if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    ultrazohm_state_machine_set_error(true);
+ }
+ 
 
 
 References
@@ -103,6 +203,12 @@ References
 * :ref:`dig_encoder_v1`
 * :ref:`label_cpld_programming`
 
+
+Known issues
+------------
+
+As of this moment, no issue in Rev03 is known.
+
 Designed by 
-"""""""""""""""
+"""""""""""
 Dennis Hufnagel (THN), Eyke Aufderheide (TUM), Michael Hoerner (THN)

@@ -153,23 +153,17 @@ Important constant configuration parameters are stored in the struct ``uz_resolv
 .. doxygenstruct:: uz_resolverIP_config_t
 	:members:
 
-Note that the member ``base_address`` needs to be set to the AXI base address assgined to the IPCore by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
-
-Note that the member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
-
-Note that the member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
-
-Note that the member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
-
-Note that the member ``pole_pairs_machine`` needs to be set according to the electric machine the resolver is attached to. It influences the conversion from mechanical to electrical position and velocity.
-
-Note that the member ``pole_pairs_resolver`` needs to be set according to the resolver data. It influences the conversion from measured to mechanical velocity.
-
-Note that the member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``.
-
-Note that the member ``mode_after_init`` defines the operating mode of the ip core after init. This is important when the IP Core shall be used in the PL without using the software driver functions 
-that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP Core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
-the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching modes during operation is handled via the read functions for position and velocity.
+.. note:: 
+   - The member ``base_address`` needs to be set to the AXI base address assgined to the IPCore by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
+   - The member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
+   - The member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
+   - The member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
+   - The member ``pole_pairs_machine`` needs to be set according to the electric machine the resolver is attached to. It influences the conversion from mechanical to electrical position and velocity.
+   - The member ``pole_pairs_resolver`` needs to be set according to the resolver data. It influences the conversion from measured to mechanical velocity.
+   - The member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``.
+   - The member ``mode_after_init`` defines the operating mode of the ip core after init. This is important when the IP Core shall be used in the PL without using the software driver functions 
+     that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP Core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
+     the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching modes during operation is handled via the read functions for position and velocity.
 
 .. code-block:: c
    :caption: A declaration of the struct ``uz_resolverIP_config_t``

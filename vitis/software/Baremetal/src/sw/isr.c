@@ -108,9 +108,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
 
-    uz_resonantController_set_gain(ParaID_Data.resonant_instance_1, Global_Data.rasv.kp_res);
-    uz_resonantController_set_gain(ParaID_Data.resonant_instance_2, Global_Data.rasv.kp_res);
-
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 

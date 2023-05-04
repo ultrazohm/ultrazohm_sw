@@ -110,7 +110,7 @@ Software implementation
 This adapter card interacts with the user via the highly sophisticated :ref:`uz_inverter_adapter` IP-Core and its corresponding driver.
 Follow :ref:`this guide <inverter_adapter_usage>` on how to integrate the IP-Core in the FPGA and how to set up the software driver.
 
-Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to a appropriate value. 
+Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an appropriate value. 
 A safe value with a considerable safety margin is ``200ns``. 
 No matter what, the deadtime should not be lower than ``150ns``.
 

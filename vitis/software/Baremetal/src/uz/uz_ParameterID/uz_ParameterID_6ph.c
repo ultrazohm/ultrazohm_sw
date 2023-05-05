@@ -72,32 +72,33 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 }
 
 void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float u_a1c1, float u_a2c2){
+	uz_assert_not_NULL(Data);
 	uz_3ph_alphabeta_t local_i_XY;	
 	uz_3ph_alphabeta_t local_v_XY;	
 	uz_3ph_alphabeta_t local_v_ZERO;
 	uz_3ph_alphabeta_t local_i_ZERO;
 	// transform 6ph abc to dq
-	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	Data->ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.i_abc_6ph, Data->ActualValues.theta_el);
+	Data->ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.v_abc_6ph, Data->ActualValues.theta_el);
 	// map individual subsystem structs for dq
-	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
-	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
-	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
-	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
+	Data->ActualValues.i_dq.d = Data->ActualValues.i_dq_6ph.d;
+	Data->ActualValues.i_dq.q = Data->ActualValues.i_dq_6ph.q;
+	Data->ActualValues.v_dq.d = Data->ActualValues.v_dq_6ph.d;
+	Data->ActualValues.v_dq.q = Data->ActualValues.v_dq_6ph.q;
 	// map individual subsystem structs for xy with rotation
-	local_i_XY.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
-	local_i_XY.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
-	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
-	local_v_XY.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
-	local_v_XY.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	ParaID_Data.ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
+	local_i_XY.alpha = Data->ActualValues.i_dq_6ph.x;
+	local_i_XY.beta = Data->ActualValues.i_dq_6ph.y;
+	Data->ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*Data->ActualValues.theta_el);
+	local_v_XY.alpha = Data->ActualValues.v_dq_6ph.x;
+	local_v_XY.beta = Data->ActualValues.v_dq_6ph.y;
+	Data->ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*Data->ActualValues.theta_el);
 	// map individual subsystem structs for xy with rotation
 	local_v_ZERO.alpha = u_a1c1/3.0f;
 	local_v_ZERO.beta = u_a2c2/3.0f;
-	local_i_ZERO.alpha = ParaID_Data.ActualValues.i_abc_6ph.a1;
-	local_i_ZERO.beta = ParaID_Data.ActualValues.i_abc_6ph.a2;
-	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_ZERO, 3.0f*ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.i_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_ZERO, 3.0f*ParaID_Data.ActualValues.theta_el);
+	local_i_ZERO.alpha = Data->ActualValues.i_abc_6ph.a1;
+	local_i_ZERO.beta = Data->ActualValues.i_abc_6ph.a2;
+	Data->ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_ZERO, 3.0f*Data->ActualValues.theta_el);
+	Data->ActualValues.i_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_ZERO, 3.0f*Data->ActualValues.theta_el);
 }
 
 void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {

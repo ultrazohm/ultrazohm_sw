@@ -88,6 +88,18 @@ Used components
 - Temperature measurement `LM57CISD-10/NOPB <https://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=https://www.ti.com/lit/gpn/lm57>`_
 - Voltage to PWM frequency converter `LTC6992HS6-4#WTRMPBF <https://www.mouser.de/datasheet/2/609/LTC6992-1-6992-2-6992-3-6992-4-1852873.pdf>`_
 
+Heatsink
+--------
+
+The PCB is prepared for a heatsink installation. 
+Four holes are placed to allow screws with a maximum of M3 diameter to be used.
+Intended design is, that the heatsink has the appropriate bore holes with threads into which the screws can be screwed.
+For further information about the dimensions of the heatsink and the placement of screw holes check out the schematic below. 
+The dimensions take account the safety margin required in respect to the mounting rails in the UltraZohm. 
+A simple passive heatsink is sufficient for operation. 
+An advanced actively cooled heatsink, either with air or water, can be installed as well if desired.
+
+
 Setup before first use and implementation with Inverter Interface IP-Core
 =========================================================================
 
@@ -115,6 +127,11 @@ For this inverter card they should be:
 Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an appropriate value. 
 A safe value with a considerable safety margin is ``200ns``. 
 No matter what, the deadtime should not be lower than ``150ns``.
+
+.. code-block:: c
+ :caption: set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file. Shown is an example for the D1 slot.
+
+ static uz_interlockDeadtime2L interlock_slotD1_pin_0_to_5 = { .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR, .clock_frequency_MHz = 100, .deadtime_us = 0.2, .inverse_bottom_switch = false };
 
 To enable respectively disable the ``PWM_EN`` for normal operation add the following code to the isr.c. 
 It should always be ensured, that the ``PWM_EN`` is handled correctly. 

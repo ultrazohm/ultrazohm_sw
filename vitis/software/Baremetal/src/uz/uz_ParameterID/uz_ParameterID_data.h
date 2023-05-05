@@ -225,6 +225,7 @@ typedef struct {
   uint16_T selected_subsystem;
   real32_T lower_meas_temp;
   real32_T upper_meas_temp;
+  uint16_T ident_R_component;
 } uz_ParaID_FluxMapIDConfig_t;
 
 /**

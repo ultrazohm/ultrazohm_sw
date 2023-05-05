@@ -76,8 +76,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq_6ph.d;
 	js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq_6ph.q;
-	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_dq_6ph.x;
-	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_dq_6ph.y;
+	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_xy_rotating.d;
+	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_xy_rotating.q;
 	js_ch_observable[JSO_uz1] = &ParaID_Data.ActualValues.v_dq_6ph.z1;
 	js_ch_observable[JSO_uz2] = &ParaID_Data.ActualValues.v_dq_6ph.z2;
 	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;

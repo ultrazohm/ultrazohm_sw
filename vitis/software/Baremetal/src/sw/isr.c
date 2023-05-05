@@ -123,25 +123,16 @@ void ISR_Control(void *data)
 
 	// ParaID Actual values
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	//ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.v_abc_6ph = u_phase;
-	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
+	//ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
 	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - 5.48;//ParaID_Data.ElectricalID_Output->thetaOffset;
 	ParaID_Data.ActualValues.average_winding_temp = ParaID_Data.FluxMapID_Output->WindingTemp;
 	// inside:
-	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
-	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
-	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
-	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
-	local_i_XY.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
-	local_i_XY.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
-	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
-	local_v_XY.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
-	local_v_XY.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	ParaID_Data.ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*ParaID_Data.ActualValues.theta_el);
+	uz_ParameterID_6ph_process_actual_values(&ParaID_Data, u_a1c1, u_a2c2);
 
 	//ParaID ende
 

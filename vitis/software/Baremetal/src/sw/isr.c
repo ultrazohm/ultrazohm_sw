@@ -80,8 +80,8 @@ const uz_PMSM_6ph_t dengine={
 // 2x3ph PMSM rated values
 const rated_val_t rated_val={
 		.VR=400.0f,
-		.IR=7.071f,
-//		.IR=14.142f,
+//		.IR=7.071f,
+		.IR=14.142f,
 		.nR=3000.0f
 };
 
@@ -141,8 +141,11 @@ float load_torque = 0.0f;
 float setp_omega = 0.0f;// 16.6f*2.0f*M_PI;
 float setp_rpm = 0.0f;
 
-
-
+float sw_cnt_avg_time_sec = 0.0f;
+uint32_t isr_cnt = 0;
+uint32_t switchNumb = 0;
+float passed_time_sec = 0.0f;
+float f_sw_avg_Hz = 0.0f;
 
 
 
@@ -258,6 +261,28 @@ void ISR_Control(void *data)
     uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(lambda_x, 17));
     uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(lambda_y, 17));
     uz_axi_write_int32(XPAR_UZ_USER_UZ_6PH_COST_IP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(lambda_u, 17));
+
+    // count switching actions of 2L-sixphase inverter
+    if(setp_rpm != 0.0f) {
+    sw_cnt_avg_time_sec = 1.0f/(setp_rpm / 60.0f * dengine.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
+
+    if(passed_time_sec >= sw_cnt_avg_time_sec) {
+        	switchNumb = uz_axi_read_uint32(XPAR_UZ_USER_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
+        	uz_axi_write_bool(XPAR_UZ_USER_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);
+        	isr_cnt = 0;
+        	f_sw_avg_Hz = switchNumb * 0.041667f / passed_time_sec; // 0.041667 = 1/(12*2); 12 switches and each transition is counted (*2)
+        	uz_axi_write_bool(XPAR_UZ_USER_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, false);
+        }
+
+        isr_cnt++;
+        passed_time_sec = isr_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
+
+
+    }
+
+
+
+
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

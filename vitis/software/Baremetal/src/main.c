@@ -82,7 +82,7 @@ struct uz_inverter_3ph_config_t inverter_1_config = {
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
-		.udc=56.0f
+		.udc=150.0f
 };
 
 struct uz_inverter_3ph_config_t inverter_2_config = {
@@ -90,7 +90,7 @@ struct uz_inverter_3ph_config_t inverter_2_config = {
 		.ip_core_frequency_Hz= 100000000,
 		.switch_pspl_abc=false,
 		.switch_pspl_gate=false,
-		.udc=56.0f
+		.udc=150.0f
 };
 
 struct uz_pmsm6ph_config_t pmsm_6ph_transformation_config={
@@ -215,6 +215,7 @@ int main(void)
 
 			//debug for typeconv_multi ip-core (convert omega_mech from pmsm to el. p.u. for prediciton)
 			uz_axi_write_uint32(XPAR_UZ_USER_UZ_TYPECONV_MULTI_0_BASEADDR + 0x100, uz_convert_float_to_unsigned_fixed(0.000636619f, 18)); //0.000636619f=2pi*p/60 *3000
+
 
             initialization_chain = print_msg;
             break;

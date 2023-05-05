@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_park_transformation
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-10
+11
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-22
+33
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-331
+538
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-32
+34
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-228
+267
 </td>
 
 </tr>
@@ -240,7 +240,7 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:7')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:107')" name="code2model" class="code2model">
 uz_park_transformation
 </a>
 
@@ -252,12 +252,12 @@ Multipliers (6)
 [+]
 </span>
 <span style="font-family:monospace">
-18x24-bit Multiply 							: 1
+18x27-bit Multiply 							: 1
 </span>
 <span name="Multiply_1_1" id="Multiply_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:64')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:151')" name="code2model" class="code2model">
 Product
 </a>
 
@@ -270,36 +270,48 @@ Product
 [+]
 </span>
 <span style="font-family:monospace">
-18x18-bit Multiply 							: 5
+27x27-bit Multiply 							: 1
 </span>
 <span name="Multiply_1_2" id="Multiply_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:41')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:148')" name="code2model" class="code2model">
 Gain
 </a>
 
 </li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27x18-bit Multiply 							: 4
+</span>
+<span name="Multiply_1_3" id="Multiply_1_3">
+<ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:32')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:140')" name="code2model" class="code2model">
 Divide
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:33')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:141')" name="code2model" class="code2model">
 Divide1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:35')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:143')" name="code2model" class="code2model">
 Divide3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:34')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:142')" name="code2model" class="code2model">
 Divide2
 </a>
 
@@ -309,18 +321,24 @@ Divide2
 
 </span>
 <br /><h5>
-Adders/Subtractors (2)
+Adders/Subtractors (3)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-27x27-bit Adder 							: 1
+27x27-bit Adder 							: 2
 </span>
 <span name="Adder_1_1" id="Adder_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:30')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:116')" name="code2model" class="code2model">
+Add2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:114')" name="code2model" class="code2model">
 Add
 </a>
 
@@ -338,7 +356,7 @@ Add
 <span name="Subtractor_1_1" id="Subtractor_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:31')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:115')" name="code2model" class="code2model">
 Add1
 </a>
 
@@ -348,18 +366,18 @@ Add1
 
 </span>
 <br /><h5>
-Registers (17)
+Registers (28)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 3
+1-bit Register 							: 6
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:54')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:132')" name="code2model" class="code2model">
 Delay3
 </a>
 
@@ -372,42 +390,42 @@ Delay3
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit Register 							: 10
+18-bit Register 							: 14
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:66')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:130')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:131')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:120')" name="code2model" class="code2model">
 Delay11
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:67')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:121')" name="code2model" class="code2model">
 Delay12
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:97')" name="code2model" class="code2model">
-Delay15
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:98')" name="code2model" class="code2model">
-Delay14
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:49')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:117')" name="code2model" class="code2model">
 Delay
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:40')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:118')" name="code2model" class="code2model">
 Delay1
 </a>
 
@@ -420,19 +438,31 @@ Delay1
 [+]
 </span>
 <span style="font-family:monospace">
-24-bit Register 							: 2
+27-bit Register 							: 8
 </span>
 <span name="Register_1_3" id="Register_1_3">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:50')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:129')" name="code2model" class="code2model">
 Delay2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:57')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:135')" name="code2model" class="code2model">
 Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:124')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:123')" name="code2model" class="code2model">
+Delay14
 </a>
 
 </li>
@@ -440,37 +470,40 @@ Delay6
 </ul>
 
 </span>
-<br /><span style="font-family:monospace">
-27-bit Register 							: 2
-</span>
 <br /><h5>
-Multiplexers (8)
+Multiplexers (10)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 4
+1-bit 2-to-1 Multiplexer 							: 5
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-18-bit 2-to-1 Multiplexer 							: 3
+18-bit 2-to-1 Multiplexer 							: 4
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:68')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:157')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:156')" name="code2model" class="code2model">
 Switch3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:46')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:153')" name="code2model" class="code2model">
 Switch
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:47')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:154')" name="code2model" class="code2model">
 Switch1
 </a>
 
@@ -483,12 +516,12 @@ Switch1
 [+]
 </span>
 <span style="font-family:monospace">
-24-bit 2-to-1 Multiplexer 							: 1
+27-bit 2-to-1 Multiplexer 							: 1
 </span>
 <span name="Multiplexer_1_3" id="Multiplexer_1_3">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:48')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:155')" name="code2model" class="code2model">
 Switch2
 </a>
 
@@ -498,13 +531,13 @@ Switch2
 
 </span>
 <br /><h5>
-Number of I/O Bits (228)
+Number of I/O Bits (267)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 82
+Number of Input Bits: 103
 </span>
 <span name="Input_Port" id="Input_Port">
 <ul>
@@ -518,32 +551,38 @@ reset: 1 bit
 clk_enable: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:8')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:108')" name="code2model" class="code2model">
 u1
 </a>
 : 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:9')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:109')" name="code2model" class="code2model">
 u2
 </a>
 : 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:51')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:110')" name="code2model" class="code2model">
 angle_el
 </a>
-: 24 bits
+: 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:52')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:111')" name="code2model" class="code2model">
 trigger
 </a>
 : 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:65')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:112')" name="code2model" class="code2model">
 factor_angle_el_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_park_transformation:113')" name="code2model" class="code2model">
+offset_angle_el_AXI
 </a>
 : 18 bits
 </li>
@@ -555,7 +594,7 @@ factor_angle_el_AXI
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 146
+Number of Output Bits: 164
 </span>
 <span name="Output_Port" id="Output_Port">
 <ul>
@@ -563,44 +602,44 @@ Number of Output Bits: 146
 ce_out: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:10')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:158')" name="code2model" class="code2model">
 y1
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:45')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:159')" name="code2model" class="code2model">
 y2
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:60')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:160')" name="code2model" class="code2model">
 y1_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:61')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:161')" name="code2model" class="code2model">
 y2_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:102')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:162')" name="code2model" class="code2model">
 sin
 </a>
-: 18 bits
+: 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:103')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:163')" name="code2model" class="code2model">
 cos
 </a>
-: 18 bits
+: 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_park_transformation:89')" name="code2model" class="code2model">
-calc_done
+<a href="matlab:coder.internal.code2model('uz_park_transformation:164')" name="code2model" class="code2model">
+park_done
 </a>
 : 1 bit
 </li>
@@ -609,7 +648,7 @@ calc_done
 
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:44')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:152')" name="code2model" class="code2model">
 Sine
 HDL Optimized
 </a>
@@ -619,13 +658,13 @@ HDL Optimized
 Adders/Subtractors (8)
 </h5>
 <span style="font-family:monospace">
-19x19-bit Subtractor 							: 5
+28x28-bit Subtractor 							: 5
 </span>
 <br /><span style="font-family:monospace">
-20x20-bit Subtractor 							: 1
+29x29-bit Subtractor 							: 1
 </span>
 <br /><span style="font-family:monospace">
-19-bit Subtractor 							: 2
+28-bit Subtractor 							: 2
 </span>
 <br /><h5>
 Registers (4)
@@ -634,7 +673,7 @@ Registers (4)
 1-bit Register 							: 1
 </span>
 <br /><span style="font-family:monospace">
-18-bit Register 							: 2
+27-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
 8-bit Register 							: 1
@@ -646,7 +685,7 @@ Multiplexers (22)
 1-bit 2-to-1 Multiplexer 							: 5
 </span>
 <br /><span style="font-family:monospace">
-19-bit 2-to-1 Multiplexer 							: 3
+28-bit 2-to-1 Multiplexer 							: 3
 </span>
 <br /><span style="font-family:monospace">
 10-bit 2-to-1 Multiplexer 							: 8
@@ -655,13 +694,13 @@ Multiplexers (22)
 8-bit 3-to-1 Multiplexer 							: 2
 </span>
 <br /><span style="font-family:monospace">
-18-bit 2-to-1 Multiplexer 							: 2
+27-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><span style="font-family:monospace">
 10-bit 3-to-1 Multiplexer 							: 2
 </span>
 <br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:91')" name="code2model" class="code2model">
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_park_transformation:139')" name="code2model" class="code2model">
 Detect Rise
 Positive
 </a>

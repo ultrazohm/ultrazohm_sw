@@ -90,6 +90,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_f_sw_avg,
 	JSSD_FLOAT_Rs_Offline,
 	JSSD_FLOAT_Ld_Offline,
 	JSSD_FLOAT_Lq_Offline,
@@ -219,7 +220,7 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
+	Hz,
 	Nm,
 	A,
 	A,
@@ -233,7 +234,7 @@ enum gui_button_mapping {
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_f_sw_avg,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_polePairs,

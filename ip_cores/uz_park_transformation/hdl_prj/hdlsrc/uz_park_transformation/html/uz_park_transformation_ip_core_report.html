@@ -52,7 +52,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core name
 </td>
-<td class="summaryTableSndColOddRow">uz_park_t_ip
+<td class="summaryTableSndColOddRow">uz_park_transform_ip
 </td>
 </tr>
 <tr>
@@ -64,13 +64,13 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\uz_park_t_ip_v1_0\*.*')">hdl_prj\ipcore\uz_park_t_ip_v1_0</a>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj\ipcore\uz_park_transform_ip_v1_0\*.*')">hdl_prj\ipcore\uz_park_transform_ip_v1_0</a>
 </td>
 </tr>
 <tr>
 <td>IP core zip file name
 </td>
-<td class="summaryTableSndColEvenRow">uz_park_t_ip_v1_0.zip
+<td class="summaryTableSndColEvenRow">uz_park_transform_ip_v1_0.zip
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.11
+<td class="summaryTableSndColOddRow">1.16
 </td>
 </tr>
 <tr>
@@ -112,13 +112,13 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">12-Aug-2022 13:06:54
+<td class="summaryTableSndColOddRow">05-May-2023 14:55:39
 </td>
 </tr>
 <tr>
 <td>IP core generated for
 </td>
-<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:7')">uz_park_transformation</a>
+<td class="summaryTableSndColEvenRow"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:107')">uz_park_transformation</a>
 </td>
 </tr>
 </tbody>
@@ -154,7 +154,7 @@ Target platform interface table:
 </thead>
 <tbody>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:8')">u1</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:108')">u1</a>
 </td>
 <td>Inport
 </td>
@@ -168,7 +168,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:9')">u2</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:109')">u2</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -182,11 +182,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:51')">angle_el</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:110')">angle_el</a>
 </td>
 <td>Inport
 </td>
-<td>sfix24_En20
+<td>sfix27_En20
 </td>
 <td>External Port
 </td>
@@ -196,7 +196,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:52')">trigger</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:111')">trigger</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -210,7 +210,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:65')">factor_angle_el_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:112')">factor_angle_el_AXI</a>
 </td>
 <td>Inport
 </td>
@@ -224,21 +224,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:10')">y1</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:113')">offset_angle_el_AXI</a>
 </td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
-<td class="distinctCellColor">sfix27_En16
+<td class="distinctCellColor">sfix18_En14
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"104"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:45')">y2</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:158')">y1</a>
 </td>
 <td>Outport
 </td>
@@ -252,21 +252,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:60')">y1_AXI</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:159')">y2</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
 <td class="distinctCellColor">sfix27_En16
 </td>
-<td class="distinctCellColor">AXI4-Lite
+<td class="distinctCellColor">External Port
 </td>
-<td class="distinctCellColor">x"104"
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:61')">y2_AXI</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:160')">y1_AXI</a>
 </td>
 <td>Outport
 </td>
@@ -280,25 +280,25 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:102')">sin</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:161')">y2_AXI</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">sfix18_En16
+<td class="distinctCellColor">sfix27_En16
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">
+<td class="distinctCellColor">x"10C"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:103')">cos</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:162')">sin</a>
 </td>
 <td>Outport
 </td>
-<td>sfix18_En16
+<td>sfix27_En20
 </td>
 <td>External Port
 </td>
@@ -308,17 +308,31 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:89')">calc_done</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:163')">cos</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">boolean
+<td class="distinctCellColor">sfix27_En20
 </td>
 <td class="distinctCellColor">External Port
 </td>
 <td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_park_transformation:164')">park_done</a>
+</td>
+<td>Outport
+</td>
+<td>boolean
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -361,7 +375,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2208121306
+<td>contains unique IP timestamp (yymmddHHMM): 2305051455
 </td>
 </tr>
 <tr>
@@ -373,19 +387,27 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td>y1_AXI_Data
+<td>offset_angle_el_AXI_Data
 </td>
 <td>0x104
 </td>
-<td>data register for Outport y1_AXI
+<td>data register for Inport offset_angle_el_AXI
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">y2_AXI_Data
+<td class="distinctCellColor">y1_AXI_Data
 </td>
 <td class="distinctCellColor">0x108
 </td>
-<td class="distinctCellColor">data register for Outport y2_AXI
+<td class="distinctCellColor">data register for Outport y1_AXI
+</td>
+</tr>
+<tr>
+<td>y2_AXI_Data
+</td>
+<td>0x10C
+</td>
+<td>data register for Outport y2_AXI
 </td>
 </tr>
 </tbody>
@@ -395,7 +417,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\include\uz_park_t_ip_addr.h')">include\uz_park_t_ip_addr.h</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\include\uz_park_transform_ip_addr.h')">include\uz_park_transform_ip_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -455,44 +477,44 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\uz_park_t_ip_v1_0\*.*')">hdl_prj\ipcore\uz_park_t_ip_v1_0</a>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_park_transform_ip_v1_0\*.*')">hdl_prj\ipcore\uz_park_transform_ip_v1_0</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="matlab:uiopen('hdl_prj\ipcore\uz_park_t_ip_v1_0\*.*')">uz_park_t_ip_v1_0.zip</a>
+<a href="matlab:uiopen('hdl_prj\ipcore\uz_park_transform_ip_v1_0\*.*')">uz_park_transform_ip_v1_0.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="matlab:web('hdl_prj\ipcore\uz_park_t_ip_v1_0\doc\uz_park_transformation_ip_core_report.html')">doc\uz_park_transformation_ip_core_report.html</a>
+<a href="matlab:web('hdl_prj\ipcore\uz_park_transform_ip_v1_0\doc\uz_park_transformation_ip_core_report.html')">doc\uz_park_transformation_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_src_uz_park_transformation_pkg.vhd')">hdl\vhdl\uz_park_t_ip_src_uz_park_transformation_pkg.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_src_uz_park_transformation_pkg.vhd')">hdl\vhdl\uz_park_transform_ip_src_uz_park_transformation_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_src_Detect_Rise_Positive.vhd')">hdl\vhdl\uz_park_t_ip_src_Detect_Rise_Positive.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_src_Detect_Rise_Positive.vhd')">hdl\vhdl\uz_park_transform_ip_src_Detect_Rise_Positive.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_src_Sine_HDL_Optimized.vhd')">hdl\vhdl\uz_park_t_ip_src_Sine_HDL_Optimized.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_src_Sine_HDL_Optimized.vhd')">hdl\vhdl\uz_park_transform_ip_src_Sine_HDL_Optimized.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_src_uz_park_transformation.vhd')">hdl\vhdl\uz_park_t_ip_src_uz_park_transformation.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_src_uz_park_transformation.vhd')">hdl\vhdl\uz_park_transform_ip_src_uz_park_transformation.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_reset_sync.vhd')">hdl\vhdl\uz_park_t_ip_reset_sync.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_reset_sync.vhd')">hdl\vhdl\uz_park_transform_ip_reset_sync.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_dut.vhd')">hdl\vhdl\uz_park_t_ip_dut.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_dut.vhd')">hdl\vhdl\uz_park_transform_ip_dut.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_addr_decoder.vhd')">hdl\vhdl\uz_park_t_ip_addr_decoder.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_addr_decoder.vhd')">hdl\vhdl\uz_park_transform_ip_addr_decoder.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_axi_lite_module.vhd')">hdl\vhdl\uz_park_t_ip_axi_lite_module.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_axi_lite_module.vhd')">hdl\vhdl\uz_park_transform_ip_axi_lite_module.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip_axi_lite.vhd')">hdl\vhdl\uz_park_t_ip_axi_lite.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip_axi_lite.vhd')">hdl\vhdl\uz_park_transform_ip_axi_lite.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\hdl\vhdl\uz_park_t_ip.vhd')">hdl\vhdl\uz_park_t_ip.vhd</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\hdl\vhdl\uz_park_transform_ip.vhd')">hdl\vhdl\uz_park_transform_ip.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="matlab:edit('hdl_prj\ipcore\uz_park_t_ip_v1_0\include\uz_park_t_ip_addr.h')">include\uz_park_t_ip_addr.h</a>
+<a href="matlab:edit('hdl_prj\ipcore\uz_park_transform_ip_v1_0\include\uz_park_transform_ip_addr.h')">include\uz_park_transform_ip_addr.h</a>
 </div>
 </body>
 </html>

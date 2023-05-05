@@ -57,20 +57,22 @@ fixdt_type_xy_currents = fixdt(1,18,11);
 fixdt_type_dqxy_ref_currents = fixdt(1,18,15);
 fixdt_type_dqxy_voltages = fixdt(1,27,24);
 fixdt_type_angle = fixdt(1,24,20);
-fixdt_type_sin_cos = fixdt(1,18,16);
+% fixdt_type_sin_cos = fixdt(1,18,16);
+fixdt_type_sin_cos = fixdt(1,27,20);
 fixdt_type_lambda = fixdt(0,18,17);
 fixdt_type_polepairs = fixdt(0,32,0);
 fixdt_type_max_current = fixdt(0,18,15);
 fixdt_type_constants = fixdt(1,18,15);      % check range!!!
-fixdt_type_speed = fixdt(1,18,15);
+% fixdt_type_speed = fixdt(1,18,15);
+fixdt_type_speed = fixdt(1,24,11);
 fixdt_type_voltage = fixdt(1,18,15);
 fixdt_type_squared_current_error = fixdt(0,27,22);
 fixdt_type_delta_u_costs = fixdt(0,27,24);
 
 % reference values for simulation
 fixdt_type_vsd = fixdt(1,18,15);
-v_dc = 565.0;
-id_ref = 0.0;
+v_dc = 100.0;
+id_ref = -5.0;
 iq_ref = 10.0;
 ix_ref = 0.0;
 iy_ref = 0.0;

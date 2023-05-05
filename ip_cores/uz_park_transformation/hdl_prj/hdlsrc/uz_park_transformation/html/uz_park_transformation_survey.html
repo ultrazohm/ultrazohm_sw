@@ -36,7 +36,7 @@ uz_park_transformation
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.11
+1.16
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2022-08-12 13:06:51
+2023-05-05 14:55:37
 </td>
 
 </tr>
@@ -63,7 +63,7 @@ HDL code generated on
 HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_park_transformation:7')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_park_transformation:107')" name="code2model" class="code2model">
 uz_park_transformation
 </a>
 
@@ -132,7 +132,7 @@ uz_park_transformation/uz_park_transformation
 ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_park_t_ip_src_
+uz_park_transform_ip_src_
 </td>
 
 </tr>
@@ -238,7 +238,7 @@ Non-default block properties
 
 </a>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:7')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:107')" name="code2model" class="code2model">
 uz_park_transformation
 </a>
 
@@ -252,6 +252,15 @@ uz_park_transformation
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+IPCoreName
+</td>
+<td align="right" valign="top" style="border-style: none">
+uz_park_transform_ip
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -262,7 +271,7 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:8')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:108')" name="code2model" class="code2model">
 u1
 </a>
 
@@ -286,7 +295,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:9')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:109')" name="code2model" class="code2model">
 u2
 </a>
 
@@ -310,7 +319,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:51')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:110')" name="code2model" class="code2model">
 angle_el
 </a>
 
@@ -334,7 +343,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:52')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:111')" name="code2model" class="code2model">
 trigger
 </a>
 
@@ -358,7 +367,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:65')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:112')" name="code2model" class="code2model">
 factor_angle_el_AXI
 </a>
 
@@ -391,56 +400,8 @@ x"100"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:10')" name="code2model" class="code2model">
-y1
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:45')" name="code2model" class="code2model">
-y2
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:60')" name="code2model" class="code2model">
-y1_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:113')" name="code2model" class="code2model">
+offset_angle_el_AXI
 </a>
 
 </b>
@@ -472,8 +433,56 @@ x"104"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:61')" name="code2model" class="code2model">
-y2_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:158')" name="code2model" class="code2model">
+y1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:159')" name="code2model" class="code2model">
+y2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:160')" name="code2model" class="code2model">
+y1_AXI
 </a>
 
 </b>
@@ -505,7 +514,40 @@ x"108"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:102')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:161')" name="code2model" class="code2model">
+y2_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:162')" name="code2model" class="code2model">
 sin
 </a>
 
@@ -529,7 +571,7 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:103')" name="code2model" class="code2model">
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:163')" name="code2model" class="code2model">
 cos
 </a>
 
@@ -553,8 +595,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:89')" name="code2model" class="code2model">
-calc_done
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_park_transformation:164')" name="code2model" class="code2model">
+park_done
 </a>
 
 </b>

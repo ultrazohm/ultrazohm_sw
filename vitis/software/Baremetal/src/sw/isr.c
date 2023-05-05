@@ -89,6 +89,14 @@ float ADC_conv_faktor = -1.0f*1.4593f/2.77f;
 float voltage_divider_factor = (2*78700.0f+6650.0f)/6650.0f;
 float polepairs = 5.0f;
 
+
+//neutral config
+#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+float u_n1 = 0.0f;
+float u_n2 = 0.0f;
+float u_a1c1 = 0.0f;
+float u_a2c2 = 0.0f;
+
 // ParaID local
 uz_3ph_alphabeta_t local_i_XY = {0};
 uz_3ph_alphabeta_t local_v_XY = {0};
@@ -142,21 +150,39 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// ADC values from voltage Measurement
-	u_phase_UDC.a1 = Global_Data.aa.A3.me.ADC_A4 * ADC_conv_faktor;
-	u_phase_UDC.b1 = Global_Data.aa.A3.me.ADC_A3 * ADC_conv_faktor;
-	u_phase_UDC.c1 = Global_Data.aa.A3.me.ADC_A2 * ADC_conv_faktor;
-	u_phase_UDC.a2 = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor;
-	u_phase_UDC.b2 = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor;
-	u_phase_UDC.c2 = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor;
-	u_neutral = (u_phase_UDC.a1 + u_phase_UDC.b1 + u_phase_UDC.c1 + u_phase_UDC.a2 + u_phase_UDC.b2 + u_phase_UDC.c2) / 6.0f;
+	Global_Data.av.v_a1 = Global_Data.aa.A3.me.ADC_A4 * ADC_conv_faktor;
+	Global_Data.av.v_b1 = Global_Data.aa.A3.me.ADC_A3 * ADC_conv_faktor;
+	Global_Data.av.v_c1 = Global_Data.aa.A3.me.ADC_A2 * ADC_conv_faktor;
+	Global_Data.av.v_a2 = Global_Data.aa.A3.me.ADC_B8 * ADC_conv_faktor;
+	Global_Data.av.v_b2 = Global_Data.aa.A3.me.ADC_B7 * ADC_conv_faktor;
+	Global_Data.av.v_c2 = Global_Data.aa.A3.me.ADC_B6 * ADC_conv_faktor;
+	// calc u neutral voltage
+		switch(NEUTRAL_CONFIG){
+		case 1U:{
+			u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+			u_n2 = u_n1;
+			break;
+		}
+		case 2U:{
+			u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
+			u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
+			break;
+		}
+		case 3U:{
+			u_a1c1 = Global_Data.av.v_a1 - Global_Data.av.v_c1;
+			u_a2c2 = Global_Data.av.v_a2 - Global_Data.av.v_c2;
+		}
+		default: break;
+		}
+		// calc phase voltages with neutral voltage
+		u_phase.a1 = (Global_Data.av.v_a1 - u_n1)*voltage_divider_factor;
+		u_phase.b1 = (Global_Data.av.v_b1 - u_n1)*voltage_divider_factor;
+		u_phase.c1 = (Global_Data.av.v_c1 - u_n1)*voltage_divider_factor;
+		u_phase.a2 = (Global_Data.av.v_a2 - u_n2)*voltage_divider_factor;
+		u_phase.b2 = (Global_Data.av.v_b2 - u_n2)*voltage_divider_factor;
+		u_phase.c2 = (Global_Data.av.v_c2 - u_n2)*voltage_divider_factor;
 
-	// calculate phase voltages
-	u_phase.a1 = (u_phase_UDC.a1 - u_neutral)*voltage_divider_factor;
-	u_phase.b1 = (u_phase_UDC.b1 - u_neutral)*voltage_divider_factor;
-	u_phase.c1 = (u_phase_UDC.c1 - u_neutral)*voltage_divider_factor;
-	u_phase.a2 = (u_phase_UDC.a2 - u_neutral)*voltage_divider_factor;
-	u_phase.b2 = (u_phase_UDC.b2 - u_neutral)*voltage_divider_factor;
-	u_phase.c2 = (u_phase_UDC.c2 - u_neutral)*voltage_divider_factor;
+
 
 	//assign ADC values to motor current variables
     m_6ph_abc_currents.a1 = (-1.0*Global_Data.aa.A2.me.ADC_A4);

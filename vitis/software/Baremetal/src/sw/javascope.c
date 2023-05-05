@@ -48,7 +48,7 @@ float ArrayCounter = 0.0f;
 float values_milli[4];
 float index_array;
 
-
+extern uz_6ph_abc_t u_phase;
 extern float temp_avg;
 extern struct uz_DutyCycle_t dutyCycles_set1;
 extern struct uz_DutyCycle_t dutyCycles_set2;
@@ -93,6 +93,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ib2] = &(ParaID_Data.ActualValues.i_abc_6ph.b2);
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
 	js_ch_observable[JSO_omega_el] = &(ParaID_Data.ActualValues.omega_el);
+	js_ch_observable[JSO_Ua1] = &(u_phase.a1);
+	js_ch_observable[JSO_Ub1] = &(u_phase.b1);
+	js_ch_observable[JSO_Uc1] = &(u_phase.b1);
+	js_ch_observable[JSO_Ua2] = &(u_phase.a2);
+	js_ch_observable[JSO_Ub2] = &(u_phase.b2);
+	js_ch_observable[JSO_Uc2] = &(u_phase.c2);
 
 
   js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;

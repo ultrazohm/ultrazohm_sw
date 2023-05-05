@@ -111,6 +111,12 @@ typedef struct _actualValues_ {
 	float kp_q;
 	float ki_d;
 	float ki_q;
+	float v_a1;
+	float v_b1;
+	float v_c1;
+	float v_a2;
+	float v_b2;
+	float v_c2;
 	uint32_t heartbeatframe_content;
 	bool logging;
 } actualValues;

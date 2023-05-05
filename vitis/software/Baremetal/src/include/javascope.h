@@ -45,6 +45,8 @@ enum JS_OberservableData {
 	JSO_ia2,
 	JSO_ib2,
 	JSO_ic2,
+	JSO_i_dc1,
+	JSO_i_dc2,
 	JSO_avg_winding_temp,
 	JSO_ud,
 	JSO_uq,
@@ -52,6 +54,8 @@ enum JS_OberservableData {
 	JSO_uy,
 	JSO_uz1,
 	JSO_uz2,
+	JSO_v_dc1,
+	JSO_v_dc2,
 	JSO_theta_mech,
 	JSO_state,
 	JSO_ISR_ExecTime_us,
@@ -99,6 +103,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_v_dc1,
+	JSSD_FLOAT_v_dc2,
 	JSSD_FLOAT_ArrayCounter,
 	JSSD_FLOAT_measArraySpeed,
 	JSSD_FLOAT_measArrayTorque,
@@ -271,11 +277,11 @@ SND_LABELS_ENDMARKER
 
 RCV_FLD_ZEROVALUE=0,
 AvgWindingTemp,
-index,
-i_d,
-i_q,
-psi_d,
-psi_q,
+inv_1_tmp,
+inv_2_tmp,
+v_dc1,
+v_dc2,
+speed,
 RCV_FLD_ENDMARKER
 
 
@@ -283,12 +289,12 @@ RCV_FLD_ENDMARKER
 // Do not change the first (zero) and last (end) entries.
 
 RCV_LABELS_ZEROVALUE=0,
-degC,
-,
-mA,
-mA,
-mVs,
-mVs,
+°C,
+°C,
+°C,
+V,
+V,
+rpm,
 RCV_LABELS_ENDMARKER
 
 
@@ -298,11 +304,11 @@ RCV_LABELS_ENDMARKER
 
 SLOWDAT_DISPLAY_ZEROVALUE=0,
 JSSD_FLOAT_avg_winding_temp,
-JSSD_FLOAT_fluxmap_index,
-JSSD_FLOAT_fluxmap_id,
-JSSD_FLOAT_fluxmap_iq,
-JSSD_FLOAT_fluxmap_psid,
-JSSD_FLOAT_fluxmap_psiq,
+JSSD_FLOAT_temp_inv1,
+JSSD_FLOAT_temp_inv2,
+JSSD_FLOAT_v_dc1,
+JSSD_FLOAT_v_dc2,
+JSSD_FLOAT_speed,
 JSSD_FLOAT_Error_Code,
 SLOWDAT_DISPLAY_ENDMARKER
 */

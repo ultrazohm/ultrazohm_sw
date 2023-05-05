@@ -279,10 +279,10 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
-	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;
-	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
-	//ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
-	//ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
+//	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;
+//	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
 	ParaID_Data.ActualValues.average_winding_temp = Global_Data.av.avg_winding_temperature;
 	//////////////ParaID ende
 

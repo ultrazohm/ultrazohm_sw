@@ -109,8 +109,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_u_set_z2] = &(ParaID_Data.FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.q);
 	js_ch_observable[JSO_u_ref_z1] = &(cc_out_zero_rotating.d);
 	js_ch_observable[JSO_u_ref_z2] = &(cc_out_zero_rotating.q);
-
-
+	js_ch_observable[JSO_i_dc1]		= &(data->av.i_dc1);
+	js_ch_observable[JSO_i_dc2]		= &(data->av.i_dc2);
+	js_ch_observable[JSO_v_dc1]		= &(data->av.v_dc1);
+	js_ch_observable[JSO_v_dc2]		= &(data->av.v_dc2);
 	js_ch_observable[JSO_avg_winding_temp] = &(ParaID_Data.ActualValues.average_winding_temp);
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
 	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
@@ -134,6 +136,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(ParaID_Data.ActualValues.v_dq_6ph.q);
 	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(ParaID_Data.ActualValues.i_dq_6ph.d);
 	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(ParaID_Data.ActualValues.i_dq_6ph.q);
+	js_slowDataArray[JSSD_FLOAT_v_dc1]					= &(data->av.v_dc1);
+	js_slowDataArray[JSSD_FLOAT_v_dc2]					= &(data->av.v_dc2);
 	js_slowDataArray[JSSD_FLOAT_speed]                  = &(data->av.mechanicalRotorSpeedRPM);
 	js_slowDataArray[JSSD_FLOAT_torque]                 = &(data->av.mechanicalRotorSpeedRPM);
 	js_slowDataArray[JSSD_FLOAT_PsiPM_Offline]          = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);

@@ -161,54 +161,44 @@ These are optional features and can be left out if they aren't required.
  //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
  //Overtemperature for H1
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overtemperature for L1
  if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overtemperature for H2
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overtemperature for L2
  if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overtemperature for H3
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overtemperature for L3
  if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
  //Binding of the signals to the driver is slightly unintuitive 
  //Overcurrent for Phase A
  if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overcurrent for Phase B
  if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overcurrent for Phase C
  if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  //Overcurrent for DC-link
  if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     ultrazohm_state_machine_set_error(true);
  }
  

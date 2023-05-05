@@ -4,14 +4,9 @@
 Digital SI Inverter
 ===================
 
-
-|pic1| |pic2|
-
-.. |pic1| image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant_V1_Rev03.png
-   :width: 45%
-
-.. |pic2| image:: Digital_SI_Inverter_rev03/3D_View_Bot_UZ_D_Inverter_Variant_V1_Rev03.png
-   :width: 45%
+.. image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant_V1_Rev03.png
+  :height: 500
+  :align: center
 
 Functionality
 =============
@@ -20,6 +15,8 @@ The UltraZohm digital inverter consists of three half-bridges with conventional 
 It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages as well as temperature measurements for each semiconductor.  
 The voltage measurement is equipped with a 1st order low-pass filter.
 The current measurement is realized with shunt resistors.
+The inverter has a dedicated PWM enable pin. 
+If the ``PWM_EN`` is set to false, both semiconductors of each half-bridge are disabled. 
 An over current protection for the three phases and the DC-link is included. 
 The OCP is not designed for half-bridge shorts and will only be triggered, if the phase or DC-link currents exceed the safe operating window. 
 The OCP, when triggered, only flags a FAULT bit in the corresponding software driver. 
@@ -119,11 +116,28 @@ Set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file to an 
 A safe value with a considerable safety margin is ``200ns``. 
 No matter what, the deadtime should not be lower than ``150ns``.
 
+To enable respectively disable the ``PWM_EN`` for normal operation add the following code to the isr.c. 
+It should always be ensured, that the ``PWM_EN`` is handled correctly. 
+I.e. if the UltraZohm transitions into its error-state because e.g. the OCP is triggered, it must be ensured, that the ``PWM_EN`` is retracted.
+Pay attention to this during your error handling.
+
+.. code-block:: c
+ :caption: Additions for isr.c in regards to the ``PWM_EN``
+
+ if (current_state == running_state || current_state == control_state) {
+   // enable inverter adapter hardware
+   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+ } else {
+   // disable inverter adapter hardware
+   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+ }
+
+
 To read out the measured current and voltage signals both ethernet cables have to be connected to an ADC-Card.
 In the ``isr.c`` add the following conversion factors to the measured signals.
 
 .. code-block:: c
- :caption: Additions for isr.c if the ADC-Card is in the A1 slot
+ :caption: Additions for isr.c if the ADC-Card is in the A1 slot. For the A2/A3 slot adjust the code accordingly
 
  struct uz_3ph_abc_t v_abc_Volts = {0};
  struct uz_3ph_abc_t i_abc_Amps = {0};
@@ -209,10 +223,15 @@ References
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues
-------------
+============
 
 As of this moment, no issue in Rev03 is known.
 
 Designed by 
-"""""""""""
-Dennis Hufnagel (THN), Eyke Aufderheide (TUM), Michael Hoerner (THN)
+===========
+Dennis Hufnagel (THN)
+
+Acknowledgments
+---------------
+
+Special thank you for their support during the design and testing phase goes to Eyke Aufderheide (TUM), Michael Hoerner (THN) and Tobias Schindler (THN).

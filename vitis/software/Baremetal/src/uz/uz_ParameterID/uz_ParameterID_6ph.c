@@ -42,8 +42,10 @@ static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_Paramet
 static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
-static void uz_ParaID_6ph_AutoRefCurrents_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data);
+static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data);
+static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data);
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data);
 
 static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void);
 
@@ -67,6 +69,36 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data) {
 	self->OnlineID = uz_OnlineID_init();
 	uz_ParameterID_6ph_initialize_data_structs(self, Data);
 	return (self);
+}
+
+void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float u_a1c1, float u_a2c2){
+	uz_assert_not_NULL(Data);
+	uz_3ph_alphabeta_t local_i_XY;	
+	uz_3ph_alphabeta_t local_v_XY;	
+	uz_3ph_alphabeta_t local_v_ZERO;
+	uz_3ph_alphabeta_t local_i_ZERO;
+	// transform 6ph abc to dq
+	Data->ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.i_abc_6ph, Data->ActualValues.theta_el);
+	Data->ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.v_abc_6ph, Data->ActualValues.theta_el);
+	// map individual subsystem structs for dq
+	Data->ActualValues.i_dq.d = Data->ActualValues.i_dq_6ph.d;
+	Data->ActualValues.i_dq.q = Data->ActualValues.i_dq_6ph.q;
+	Data->ActualValues.v_dq.d = Data->ActualValues.v_dq_6ph.d;
+	Data->ActualValues.v_dq.q = Data->ActualValues.v_dq_6ph.q;
+	// map individual subsystem structs for xy with rotation
+	local_i_XY.alpha = Data->ActualValues.i_dq_6ph.x;
+	local_i_XY.beta = Data->ActualValues.i_dq_6ph.y;
+	Data->ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_XY, -1.0f*Data->ActualValues.theta_el);
+	local_v_XY.alpha = Data->ActualValues.v_dq_6ph.x;
+	local_v_XY.beta = Data->ActualValues.v_dq_6ph.y;
+	Data->ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*Data->ActualValues.theta_el);
+	// map individual subsystem structs for xy with rotation
+	local_v_ZERO.alpha = u_a1c1/3.0f;
+	local_v_ZERO.beta = u_a2c2/3.0f;
+	local_i_ZERO.alpha = Data->ActualValues.i_abc_6ph.a1;
+	local_i_ZERO.beta = Data->ActualValues.i_abc_6ph.a2;
+	Data->ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_ZERO, 3.0f*Data->ActualValues.theta_el);
+	Data->ActualValues.i_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(local_i_ZERO, 3.0f*Data->ActualValues.theta_el);
 }
 
 void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
@@ -133,7 +165,16 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		break;
 
 	default:
-		uz_ParaID_6ph_FOC_output_set_zero(Data);
+		if(Data->ParaID_Control_Selection == Current_Control){
+			Data->Controller_Parameters.enableFOC_current = true;
+			Data->Controller_Parameters.i_dq_ref = Data->GlobalConfig.i_dq_ref;
+			Data->Controller_Parameters.i_xy_ref = Data->GlobalConfig.i_xy_ref;
+			Data->Controller_Parameters.resonant_subsystem = Data->GlobalConfig.resonant_subsystem;
+			Data->Controller_Parameters.PI_subsystem = Data->GlobalConfig.PI_subsystem;
+			Data->Controller_Parameters.setpoint_filter = 0U;
+		}else{
+			uz_ParaID_6ph_FOC_output_set_zero(Data);
+		}
 		break;
 	}
 	
@@ -146,6 +187,8 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		Data->GlobalConfig.Reset = false;
 		Data->AutoRefCurrents_Config.Reset = false;
 		uz_OnlineID_set_AutoRefCurrents_Config(self->OnlineID, Data->AutoRefCurrents_Config);
+		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		Data->temp_initial_angle = 0.0f;
 	}
 	if (Data->OnlineID_Config.OnlineID_Reset) {
 		Data->OnlineID_Config.OnlineID_Reset = false;
@@ -171,40 +214,40 @@ static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.enableFOC_speed = false;
 	Data->Controller_Parameters.i_dq_ref.d = 0.0f;
 	Data->Controller_Parameters.i_dq_ref.q = 0.0f;
-	Data->Controller_Parameters.i_dq_ref.zero = 0.0f;
+	Data->Controller_Parameters.i_xy_ref.d = 0.0f;
+	Data->Controller_Parameters.i_xy_ref.q = 0.0f;
 	Data->Controller_Parameters.n_ref_FOC = 0.0f;
 	Data->Controller_Parameters.resetIntegrator = false;
-}
-
-static void uz_ParaID_6ph_AutoRefCurrents_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
-	uz_assert_not_NULL(self);
-	uz_assert_not_NULL(Data);
-	uz_OnlineID_set_AutoRefCurrents_ControlFlags(self->OnlineID, uz_ControlState_get_ControlFlags(self->ControlState));
-	uz_OnlineID_set_AutoRefCurrents_GlobalConfig(self->OnlineID, *uz_ControlState_get_GlobalConfig(self->ControlState));
-	uz_OnlineID_AutoRefCurrents_step(self->OnlineID, Data);
 }
 
 struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts) {
 	uz_assert_not_NULL(Data);
 	uz_6ph_abc_t V_abc_Volts = {0};
 	struct uz_DutyCycle_2x3ph_t output_DutyCycle = { 0 };
-    if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 151) {
+	
+	// during step responses use directly the given DutyCycles
+    if (Data->Controller_Parameters.activeState >= 110 && Data->Controller_Parameters.activeState <= 148) {
 		output_DutyCycle.system1.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_0;
 		output_DutyCycle.system1.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_2;
 		output_DutyCycle.system1.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_4;
 		output_DutyCycle.system2.DutyCycle_A = Data->ElectricalID_Output->PWM_Switch_a2;
 		output_DutyCycle.system2.DutyCycle_B = Data->ElectricalID_Output->PWM_Switch_b2;
 		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
-	} else if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 3){
+	
+	// during zero fluxmap everything changes
+	} else if(Data->Controller_Parameters.PI_subsystem & (0x04)){
 		V_abc_Volts.a1 = 3.0f/2.0f*v_dq_Volts.z1;
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
 		V_abc_Volts.c2 = -V_abc_Volts.a2;
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
-	} else if ((Data->FluxmapID_extended_controller_Output->selected_subsystem == 1) || (Data->FluxmapID_extended_controller_Output->selected_subsystem == 2) || (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true)
-	                || (Data->ControlFlags->finished_all_Offline_states == true && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control))) {
+	
+	// during normal operation give out calculated dutycycles from setpoints
+	} else if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true || Data->ParaID_Control_Selection == Current_Control) {		
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
 		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
+	
+	// anything else, set zero
 	} else {
 		output_DutyCycle.system1.DutyCycle_A = 0.5f;
 		output_DutyCycle.system1.DutyCycle_B = 0.5f;
@@ -213,6 +256,8 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle.system2.DutyCycle_B = 0.5f;
 		output_DutyCycle.system2.DutyCycle_C = 0.5f;
 	}
+
+	// if integrators are reset, also set zero
 	if (Data->Controller_Parameters.resetIntegrator == true) {
 		output_DutyCycle.system1.DutyCycle_A = 0.0f;
 		output_DutyCycle.system1.DutyCycle_B = 0.0f;
@@ -224,46 +269,222 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	return (output_DutyCycle);
 }
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t* res_instance_1, uz_resonantController_t* res_instance_2) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_6ph_dq_t out = {0};
-	if(Data->FluxmapID_extended_controller_Output->selected_subsystem == 1)
-	{
-		//out = uz_FluxMapID_6ph_step_controllers(Data, CC_instance_1, CC_instance_2, res_instance_1, res_instance_2);
-	}
-	/*else
-	{
-		uz_3ph_dq_t v_dq_Volts =  uz_ParameterID_Controller(Data, CC_instance_1, Speed_instance, SP_instance);
+	uz_3ph_dq_t v_dq_Volts = {0};
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(Data->cc_instance_1);
+	uz_assert_not_NULL(Data->cc_instance_2);
+	uz_assert_not_NULL(Data->resonant_instance_1);
+	uz_assert_not_NULL(Data->resonant_instance_2);
+	uz_assert_not_NULL(Data->speed_instance);
+	uz_assert_not_NULL(Data->setpoint_instance);
+	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
+	float SpeedControl_reference_torque = 0.0f;
+
+	// Speed control active
+	if (Data->Controller_Parameters.enableFOC_speed == true) {
+		//Change, if desired, the speed controller here
+		uz_SpeedControl_set_ext_clamping(Data->speed_instance, uz_CurrentControl_get_ext_clamping(Data->cc_instance_1));
+		SpeedControl_reference_torque = uz_SpeedControl_sample(Data->speed_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC);
+		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
+		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		out.d = v_dq_Volts.d;
 		out.q = v_dq_Volts.q;
-		out.x = 0.0f;
-		out.y = 0.0f;
-		out.z1 = 0.0f;
-		out.z2 = 0.0f;
-	}*/
+	// Torque control active
+	}else if (Data->Controller_Parameters.enableFOC_torque == true) {
+		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		out.d = v_dq_Volts.d;
+		out.q = v_dq_Volts.q;
+	}else if(Data->Controller_Parameters.enableFOC_current){
+		out = uz_ParaID_6ph_extended_control(Data);
+	}
+
+	// reset all integrators and controllers
+	if (Data->Controller_Parameters.resetIntegrator == true) {
+		uz_ParaID_6ph_reset_controllers(Data);
+	}
+
+	// configure fundamental controllers except for FluxMap
+	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 3U) {
+		if (Data->Controller_Parameters.activeState == 148U) {
+			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, no_decoupling);
+		} else if (Data->Controller_Parameters.activeState == 170U) {
+			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, linear_decoupling);
+		}
+		// cc instance 1
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->Controller_Parameters.Kp_id_out);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->Controller_Parameters.Kp_iq_out);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->Controller_Parameters.Ki_id_out);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->Controller_Parameters.Ki_iq_out);
+	}
+
+	// FluxmapID active and in start state
+	if(Data->Controller_Parameters.activeState == 400U){
+		uz_ParaID_configure_6ph_controllers(Data);
+	}else if(Data->GlobalConfig.controllers_updated){
+		uz_ParaID_configure_6ph_controllers(Data);
+		Data->GlobalConfig.controllers_updated = false;
+	}
 	return (out);
 }
 
-/*
-void uz_ParameterID_CleanPsiArray(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t* Data) {
-	uz_assert_not_NULL(self);
-	uz_assert_not_NULL(Data);
-	uz_assert(self->is_ready);
-	uz_OnlineID_CleanPsiArray(self->OnlineID, Data);
+
+// multi-phase current control
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
+{
+    // Initialize structs
+    uz_6ph_dq_t out = {0};
+	uz_3ph_dq_t cc_out_dq = {0};
+	uz_3ph_dq_t cc_out_xy = {0};
+	uz_3ph_alphabeta_t cc_out_XY = {0};
+	uz_3ph_dq_t cc_out_zero_rotating = {0};
+	uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
+
+	// if first (dq) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
+		if(Data->Controller_Parameters.setpoint_filter & (0x1)){
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}else{
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}
+		out.d = cc_out_dq.d;
+		out.q = cc_out_dq.q;
+	}
+	// if second (xy) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
+		if(Data->Controller_Parameters.setpoint_filter & (0x2)){
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+		}else{
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+		}   
+	}
+	// if third (zero) system PI control is selected and not zero system
+	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
+		if(Data->Controller_Parameters.setpoint_filter & (0x4)){
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}else{
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		}
+	}
+
+	// select resonant output
+	if(Data->Controller_Parameters.PI_subsystem & (0x1)){
+		out.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+		out.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x2)){
+		cc_out_xy.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
+		cc_out_xy.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		cc_out_zero_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
+		cc_out_zero_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
+	}
+
+	// back to stationary
+	cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy, -1.0f*Data->ActualValues.theta_el);
+	out.x = cc_out_XY.alpha;
+	out.y = cc_out_XY.beta;
+	cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
+	out.z1 = cc_out_zero_stationary.alpha;
+	out.z2 = cc_out_zero_stationary.beta;
+    return out;
 }
 
-void uz_ParameterID_CalcFluxMaps(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
-	uz_assert_not_NULL(self);
-	uz_assert_not_NULL(Data);
-	uz_assert(self->is_ready);
-	uz_OnlineID_CalcFluxMaps(self->OnlineID, Data);
+static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data){
+	// current control
+	if(Data->Controller_Parameters.PI_subsystem & (0x3)){
+		// cc instance 1 for dq
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Ki);
+		// cc instance 2 for xy
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Ki);
+	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		// cc instance 1 for zero
+		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
+	}
+	// resonant
+	if(Data->Controller_Parameters.resonant_subsystem & (0x1)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
+	}else if(Data->Controller_Parameters.resonant_subsystem & (0x2)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
+	}else if(Data->Controller_Parameters.resonant_subsystem & (0x4)){
+		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
+		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);
+		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_zero.harmonic_order);
+	}
+	uz_ParaID_6ph_reset_controllers(Data);
 }
-*/
+
+static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data){
+	uz_CurrentControl_reset(Data->cc_instance_1);
+	uz_CurrentControl_reset(Data->cc_instance_2);
+	uz_resonantController_reset(Data->resonant_instance_1);
+	uz_resonantController_reset(Data->resonant_instance_2);
+	uz_SpeedControl_reset(Data->speed_instance);
+}
+
+void uz_ParameterID_6ph_init_controllers(uz_ParameterID_Data_t* Data, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config, struct uz_CurrentControl_config config_cc_dq, struct uz_CurrentControl_config config_cc_xy, struct uz_CurrentControl_config config_cc_zero, struct uz_resonantController_config config_res_dq, struct uz_resonantController_config config_res_xy, struct uz_resonantController_config config_res_zero){
+	Data->config_cc_dq = config_cc_dq;
+	Data->config_res_dq = config_res_dq;
+	Data->config_cc_xy = config_cc_xy;
+	Data->config_res_xy = config_res_xy;
+	Data->config_cc_zero = config_cc_zero;
+	Data->config_res_zero = config_res_zero;
+	Data->cc_instance_1 = uz_CurrentControl_init(config_cc_dq);
+	Data->cc_instance_2 = uz_CurrentControl_init(config_cc_xy);
+	Data->resonant_instance_1 = uz_resonantController_init(config_res_dq);
+	Data->resonant_instance_2 = uz_resonantController_init(config_res_dq);
+	Data->setpoint_instance = uz_SetPoint_init(setpoint_config);
+	Data->speed_instance = uz_SpeedControl_init(speed_config);
+}
+
+void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_IIR_Filter_config config){
+	Data->filter_1 = uz_signals_IIR_Filter_init(config);
+	Data->filter_2 = uz_signals_IIR_Filter_init(config);
+	Data->filter_3 = uz_signals_IIR_Filter_init(config);
+	Data->filter_4 = uz_signals_IIR_Filter_init(config);
+	Data->filter_5 = uz_signals_IIR_Filter_init(config);
+	Data->filter_6 = uz_signals_IIR_Filter_init(config);
+}
+  
 
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
+
+	// extended encoder offset estimation
+	if(Data->Controller_Parameters.activeState==165U){
+		Data->temp_initial_angle = Data->ElectricalID_Output->thetaOffset;
+		Data->ElectricalID_Offset_Estimation.offset_angle_rad = Data->ElectricalID_Output->thetaOffset;
+		uz_encoder_offset_estimation_reset_states(Data->encoder_offset_estimation);
+		uz_encoder_offset_estimation_set_min_omega_el(Data->encoder_offset_estimation, Data->ElectricalID_Config.n_ref_measurement*Data->GlobalConfig.PMSM_config.polePairs/60.0f*2.0f*UZ_PIf);
+		uz_encoder_offset_estimation_set_setpoint_current(Data->encoder_offset_estimation, Data->ElectricalID_Config.goertzlTorque);
+	}
+	if(Data->Controller_Parameters.activeState==166U){
+		Data->ElectricalID_Offset_Estimation.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.finished_flag = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.progress = uz_encoder_offset_estimation_get_progress_status(Data->encoder_offset_estimation);
+	}
+
 	//Step the function
-	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT);
+	uz_ElectricalID_6ph_step(self->ElectricalID, Data->ElectricalID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->ElectricalID_FFT, Data->ElectricalID_Offset_Estimation);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID));
@@ -320,13 +541,8 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	Data->FluxMapID_Config.selected_subsystem = scope_selected_subsystem;
-	Data->FluxMapID_Config.lower_meas_temp = 40.0f;
-	Data->FluxMapID_Config.upper_meas_temp = 45.0f;
-
-
 	//Step the function
-	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags, Data->feedback_printed);
+	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_enteredFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_entered(self->FluxMapID));
@@ -340,22 +556,29 @@ void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, floa
 
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array){
 	uz_assert_not_NULL(self);
-	if(Data->finished_voltage_measurement && !Data->ElectricalID_FFT.finished_flag)
+	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U)
         {
 			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
         	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
         	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig, PARAMETERID6PH_ELECTRICAL_N_ORDER);
         	//print_paraID(uncorrected, Data->ElectricalID_FFT, Data->ElectricalID_Output);
         }
+	else{
+		Data->ElectricalID_FFT.finished_flag = false;
+	}
 }
 
-bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData){
-	bool feedback_printed = false;
-	bool logging_flag = uz_FluxMapID_6ph_transmit_calculated_values(Data->FluxmapID_extended_controller_Output, &feedback_printed, Data->Controller_Parameters.activeState, js_cnt_slowData);
-	Data->feedback_printed = feedback_printed;
-	return (logging_flag);
-}
 
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
+	struct uz_encoder_offset_estimation_config offset_estimation_config = {
+		.ptr_measured_rotor_angle = raw_rotor_angle,
+		.ptr_offset_angle = &Data->ElectricalID_Offset_Estimation.offset_angle_rad,
+		.ptr_actual_omega_el = &Data->ActualValues.omega_el,
+		.ptr_actual_u_q_V = u_q_ref,
+		.setpoint_current = 1.0f,
+		.min_omega_el = 1.0f};
+	Data->encoder_offset_estimation = uz_encoder_offset_estimation_init(offset_estimation_config);
+}
 
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
@@ -395,10 +618,13 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	//Initialize ElectricalID-Config
 	Data->ElectricalID_Config.goertzlFreq = 0.0f;
 	Data->ElectricalID_Config.dutyCyc = 0.0f;
-	Data->ElectricalID_Config.goertzlTorque= 0.0f;
+	Data->ElectricalID_Config.goertzlTorque = 0.0f;
 	Data->ElectricalID_Config.identLq = false;
 	Data->ElectricalID_Config.min_n_ratio = 0.015f;
 	Data->ElectricalID_Config.n_ref_measurement = 0.0f;
+	Data->ElectricalID_Config.extended_psi = false;
+	Data->ElectricalID_Config.extended_offset = false;
+	Data->ElectricalID_Config.manual_offset = -1.0f;
 
 	//Initialize FluxMapID-Config
 	Data->FluxMapID_Config.AMMsampleTime = 2.0f;
@@ -441,7 +667,6 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
 	Data->FrictionID_Output = uz_FrictionID_get_output(self->FrictionID);
 	Data->FluxMapID_Output = uz_get_FluxMapID_6ph_output(self->FluxMapID);
-	Data->FluxmapID_extended_controller_Output = uz_get_FluxMapID_6ph_extended_controller_output(self->FluxMapID);
 	Data->TwoMassID_Output = uz_TwoMassID_get_output(self->TwoMassID);
 	Data->OnlineID_Output = uz_OnlineID_get_output(self->OnlineID);
 	Data->ControlFlags = uz_ControlState_get_ControlFlags(self->ControlState);
@@ -453,8 +678,68 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->Psi_Q_pointer = 0.0f;
 	Data->ParaID_Control_Selection = No_Control;
 
-	//initialize fft in
+	//initialize flags
 	Data->ElectricalID_FFT.finished_flag = false;
+	Data->ElectricalID_Offset_Estimation.finished_flag = false;
+	Data->ElectricalID_Offset_Estimation.progress = 0.0f;
+	Data->ElectricalID_Offset_Estimation.offset_angle_rad = 0.0f;
+
+	// controller instances
+	Data->setpoint_instance = NULL;
+	Data->speed_instance = NULL;
+	Data->cc_instance_1 = NULL;
+	Data->cc_instance_2 = NULL;
+	Data->resonant_instance_1 = NULL;
+	Data->resonant_instance_2 = NULL;
+	Data->encoder_offset_estimation = NULL;
+
+	// filter instances
+	Data->filter_1 = NULL;
+	Data->filter_2 = NULL;
+	Data->filter_3 = NULL;
+	Data->filter_4 = NULL;
+	Data->filter_5 = NULL;
+	Data->filter_6 = NULL;
 }
+
+// Temp
+void print_paraID(uz_ParameterID_Data_t *Data) {
+	printf("Rd:%f\n", Data->ElectricalID_Output->resistances_6ph.d);
+	printf("Rq:%f\n", Data->ElectricalID_Output->resistances_6ph.q);
+	printf("Rx:%f\n", Data->ElectricalID_Output->resistances_6ph.x);
+	printf("Ry:%f\n", Data->ElectricalID_Output->resistances_6ph.y);
+	printf("Rz1:%f\n", Data->ElectricalID_Output->resistances_6ph.z1);
+	printf("Rz2:%f\n", Data->ElectricalID_Output->resistances_6ph.z2);
+
+	printf("Ld:%f\n", Data->ElectricalID_Output->inductances_6ph.d * 1000.0f);
+	printf("Lq:%f\n", Data->ElectricalID_Output->inductances_6ph.q * 1000.0f);
+	printf("Lx:%f\n", Data->ElectricalID_Output->inductances_6ph.x * 1000.0f);
+	printf("Ly:%f\n", Data->ElectricalID_Output->inductances_6ph.y * 1000.0f);
+	printf("Lz1:%f\n", Data->ElectricalID_Output->inductances_6ph.z1 * 1000.0f);
+	printf("Lz2:%f\n", Data->ElectricalID_Output->inductances_6ph.z2 * 1000.0f);
+
+	if(Data->ElectricalID_Config.extended_psi){
+	printf("Psi_speed:%f\n", Data->ElectricalID_Output->set_rpm_val);
+
+	printf("Psi_m1:%f\n", Data->ElectricalID_Output->psi_pm[0] * 1000.0f);
+	printf("Psi_m2:%f\n", Data->ElectricalID_Output->psi_pm[1] * 1000.0f);
+	printf("Psi_m3:%f\n", Data->ElectricalID_Output->psi_pm[2] * 1000.0f);
+	printf("Psi_m4:%f\n", Data->ElectricalID_Output->psi_pm[3] * 1000.0f);
+	printf("Psi_m5:%f\n", Data->ElectricalID_Output->psi_pm[4] * 1000.0f);
+
+	printf("Psi_a1:%f\n", Data->ElectricalID_Output->psi_pm_angle[0]);
+	printf("Psi_a2:%f\n", Data->ElectricalID_Output->psi_pm_angle[1]);
+	printf("Psi_a3:%f\n", Data->ElectricalID_Output->psi_pm_angle[2]);
+	printf("Psi_a4:%f\n", Data->ElectricalID_Output->psi_pm_angle[3]);
+	printf("Psi_a5:%f\n", Data->ElectricalID_Output->psi_pm_angle[4]);}
+
+	printf("theta_init:%f\n", Data->temp_initial_angle);
+	printf("theta_ext:%f\n", Data->ElectricalID_Output->thetaOffset);
+
+	printf("pmsm_j:%f\n", Data->ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
+	printf("pmsm_psi:%f\n", Data->ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
+	printf("pmsm_r:%f\n", Data->ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
+}
+
 
 #endif

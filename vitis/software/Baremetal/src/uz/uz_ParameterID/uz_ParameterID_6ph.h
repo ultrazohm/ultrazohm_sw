@@ -29,7 +29,8 @@
 #include "FrictionID/uz_ParaID_FrictionID.h"
 #include "OnlineID/uz_ParaID_OnlineID.h"
 #include "TwoMassID/uz_ParaID_TwoMassID.h"
-
+#include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../uz_signals/uz_signals.h"
 
 /**
  * @brief Object definition for uz_ParameterID_6ph_t
@@ -54,14 +55,40 @@ uz_ParameterID_6ph_t* uz_ParameterID_6ph_init(uz_ParameterID_Data_t *Data);
  */
 void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+/**
+ * @brief Includes multiple control functions of the UZ libraries controllers
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @return struct uz_6ph_dq_t reference voltages of controller
+ */
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 
-void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array);
-
+/**
+ * @brief Generates a DutyCycle corresponding to the commands from the uz_ParameterID_6ph_step function. To calculate the reference voltages of the uz_ParameterID_6ph_Controller function into DutyCycles for the inverter, the SPWM is used. 
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param v_dq_Volts reference voltage from control algorithm
+ * @return struct uz_DutyCycle_t DutyCycles for the inverter
+ */
 struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts);
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_SpeedControl_t* Speed_instance, uz_SetPoint_t* SP_instance, uz_resonantController_t* res_instance_1, uz_resonantController_t* res_instance_2);
+/**
+ * @brief processes the given actual values, mainly by rotating subspaces and saving the rotated variables in extra subspace variables 
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param u_a1c1 voltage between phases a1 and c1 used for FluxMapID zero system
+ * @param u_a2c2 voltage between phases a2 and c2 used for FluxMapID zero system
+ */
+void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float u_a1c1, float u_a2c2);
 
-bool uz_ParameterID_6ph_transmit_FluxMap_to_Console(uz_ParameterID_Data_t* Data, int js_cnt_slowData);
+
+void uz_ParameterID_6ph_init_controllers(uz_ParameterID_Data_t* Data, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config, struct uz_CurrentControl_config config_cc_dq, struct uz_CurrentControl_config config_cc_xy, struct uz_CurrentControl_config config_cc_zero, struct uz_resonantController_config config_res_dq, struct uz_resonantController_config config_res_xy, struct uz_resonantController_config config_res_zero);
+void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_IIR_Filter_config config);
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref);
+
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array);
+// Temp
+void print_paraID(uz_ParameterID_Data_t *Data);
 
 #endif // UZ_PARAMETERID_6PH_H

@@ -54,13 +54,14 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void) {
     return (self);
 }
 
-void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in)
+void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in)
 {
     self->input.ElectricalIDConfig=ID_config;
     self->input.ActualValues=actual;
     self->input.GlobalConfig_out=global_config;
     self->input.ControlFlags=flags;
     self->input.ElectricalID_fft_in=fft_in;
+    self->input.extended_offset_estimation=offset_est_in;
     ElectricalID_6ph_codegen_step(self->PtrToModelData);
 }
 

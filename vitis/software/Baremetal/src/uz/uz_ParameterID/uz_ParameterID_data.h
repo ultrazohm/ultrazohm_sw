@@ -19,11 +19,14 @@
 
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
+#include "../uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz_setpoint/uz_setpoint.h"
+#include "../uz_ResonantController/uz_resonant_controller.h"
+#include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../uz_signals/uz_signals.h"
 #include "rtwtypes.h"
 #include <stdbool.h>
-
-typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
-typedef struct tag_RTM_FluxMapID_6ph_codegen_t RT_MODEL_FluxMapID_6ph_codege_t;
 
 
 //----------------------------------------//
@@ -88,6 +91,11 @@ typedef struct {
   real32_T voltage_measurement_C;
   real32_T voltage_measurement_Rp;
   real32_T voltage_measurement_Rs;
+  uz_3ph_dq_t i_xy_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
+  uint16_T resonant_subsystem;
+  uint16_T PI_subsystem;
+  boolean_T controllers_updated;
+  boolean_T setpoint_filter;
 } uz_ParaID_GlobalConfig_t;
 
 
@@ -125,6 +133,11 @@ typedef struct {
   real32_T Ki_id_out; /**<Ki_id for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_iq_out; /**<Ki_iq for FOC control. Can be ignored, if another control algorithm is used */
   real32_T Ki_n_out; /**<Ki_n for FOC control. Can be ignored, if another control algorithm is used */
+  uz_3ph_dq_t i_xy_ref; 
+  uz_3ph_dq_t i_zero_ref;
+  uint16_T resonant_subsystem;
+  uint16_T PI_subsystem;
+  uint16_T setpoint_filter;
 } uz_ParaID_Controller_Parameters_output_t;
 
 //----------------------------------------//
@@ -144,6 +157,9 @@ typedef struct {
   boolean_T identLq; /**< flag to enable identification of Lq. If false, Lq=Ld */
   real32_T goertzlTorque; /**< max torque of sine wave for vibration to identify J */
   real32_T min_n_ratio; /**< minimal ratio of rated speed for automatic DutyCycle identification. i.e. 0.025f @3000rpm rated speed -> 75rpm. If this value is reached, the algorithm assumes the DutyCycle is strong enough to properly turn the rotor. */
+  boolean_T extended_psi;
+  boolean_T extended_offset;
+  real32_T manual_offset;
 } uz_ParaID_ElectricalIDConfig_t;
 
 
@@ -166,6 +182,7 @@ typedef struct {
   uz_6ph_dq_t resistances_6ph;
   real32_T psi_pm[5];
   real32_T psi_pm_angle[5];
+  real32_T set_rpm_val;
 } uz_ParaID_ElectricalID_output_t;
 
 typedef struct {
@@ -174,6 +191,13 @@ typedef struct {
   real32_T psi_pm_amplitude[5];
   real32_T psi_pm_angle[5];
 } uz_ParaID_ElectricalID_fft_in_t;
+
+typedef struct {
+  boolean_T finished_flag;
+  uz_3ph_dq_t i_dq_ref;
+  real32_T progress;
+  real32_T offset_angle_rad;
+} uz_ParaID_ElectricalID_offset_estimation_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -211,9 +235,11 @@ typedef struct {
   boolean_T external_Measurement_Flag; /**< trigger to signal, when an external measurement equipment should measure */
   real32_T R_s; /**< identified online resistance in ohm */
   real32_T WindingTemp; /**< identified winding temperature of the stator */
+  real32_T psi_array[4];
+  uint32_T array_index;
 } uz_ParaID_FluxMapID_output_t;
 
-
+/*
 typedef struct {
   boolean_T control_active;
   uint16_T selected_subsystem;
@@ -223,7 +249,7 @@ typedef struct {
   boolean_T finished_calculation;
   real32_T psi_array[4];
   uint32_T array_index;
-  } uz_ParaID_FluxMapID_extended_controller_output_t;
+  } uz_ParaID_FluxMapID_extended_controller_output_t;*/
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -407,9 +433,11 @@ typedef struct uz_ParameterID_Data_t {
 	uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_Output; /**<Output: output struct for reference currents of the AutoReference current generator*/
 	uz_ParaID_FluxMapsData_t* FluxMap_Data; /**<Storage for calculated OnlineID FluxMaps*/
   uz_ParaID_ElectricalID_fft_in_t ElectricalID_FFT;
-  uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
+  uz_ParaID_ElectricalID_offset_estimation_t ElectricalID_Offset_Estimation;
+ // uz_ParaID_FluxMapID_extended_controller_output_t *FluxmapID_extended_controller_Output;
 	bool calculate_flux_maps; /**<status bool to signal, that the OnlineID FluxMaps should be calculated */
   bool finished_voltage_measurement; /**<.. */
+  bool finished_extended_offset_estimation;
   bool feedback_printed;
 	int FluxMap_counter; /**<counter to transmit FluxMaps 1by1 to the uz_GUI */
 	int FluxMap_Control_counter; /**<control counter from the GUI to sync the FluxMaps counter */
@@ -424,6 +452,31 @@ typedef struct uz_ParameterID_Data_t {
 													0 = No_Control \n
 													1 = Current_Control \n
 													2 = Speed_Control*/
+  // controller instances
+  uz_SetPoint_t* setpoint_instance;
+  uz_SpeedControl_t* speed_instance;
+  uz_CurrentControl_t* cc_instance_1;
+  uz_CurrentControl_t* cc_instance_2;
+  uz_resonantController_t* resonant_instance_1;
+  uz_resonantController_t* resonant_instance_2;
+  uz_encoder_offset_estimation_t* encoder_offset_estimation;
+  // controller parameters
+  struct uz_CurrentControl_config config_cc_dq;
+  struct uz_CurrentControl_config config_cc_xy;
+  struct uz_CurrentControl_config config_cc_zero;
+  struct uz_resonantController_config config_res_dq;
+  struct uz_resonantController_config config_res_xy;
+  struct uz_resonantController_config config_res_zero;
+  // filter instances
+  uz_IIR_Filter_t* filter_1;
+  uz_IIR_Filter_t* filter_2;
+  uz_IIR_Filter_t* filter_3;
+  uz_IIR_Filter_t* filter_4;
+  uz_IIR_Filter_t* filter_5;
+  uz_IIR_Filter_t* filter_6;
+
+  // temp stuff
+  float temp_initial_angle;
 } uz_ParameterID_Data_t;
 
 #endif

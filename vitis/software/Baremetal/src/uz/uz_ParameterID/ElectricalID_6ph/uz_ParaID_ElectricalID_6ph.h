@@ -24,7 +24,7 @@ typedef struct uz_ParaID_ElectricalID_6ph_t uz_ParaID_ElectricalID_6ph_t;
 
 uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);
 
-void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in);
+void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in);
 bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self);
 bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self);
 bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self);

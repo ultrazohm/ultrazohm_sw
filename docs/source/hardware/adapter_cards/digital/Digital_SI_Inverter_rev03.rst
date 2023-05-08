@@ -103,54 +103,42 @@ An advanced actively cooled heatsink, either with air or water, can be installed
   :align: center
 
   \usetikzlibrary{shapes,arrows,patterns,calc};
-  \pgfdeclarepatternformonly{north east lines wide}{\pgfqpoint{-1pt}{-1pt}}{\pgfqpoint{10pt}{10pt}}{\pgfqpoint{9pt}{9pt}}%
-  {
-  \pgfsetlinewidth{0.4pt}
-  \pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
-  \pgfpathlineto{\pgfqpoint{9.1pt}{9.1pt}}
-  \pgfusepath{stroke}
-  }
   \tikzset{%
-    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick,pattern=north east lines wide},
-    dimen/.style={<->,>=latex,thin,every rectangle node/.style={fill=white,midway,font=\large}},
+    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick},
+    dimen/.style={<->,>=latex,color=gray,every rectangle node/.style={fill=white,midway,font=\large}},
     symmetry/.style={dashed,thin},
   }
   \node [body,minimum height=9.2cm,minimum width=3.5cm,anchor=south west] (body1) at (0,0) {};
   \draw (body1.south west) -- ++(-1,0) coordinate (D1) -- +(-5pt,0);
   \draw (body1.north west) -- ++(-1,0) coordinate (D2) -- +(-5pt,0);
-  \draw [dimen] (D1) -- (D2) node {92mm};
-  \draw (body1.north west) -- ++(0,1) coordinate (D1) -- +(0,5pt);
-  \draw (body1.north east) -- ++(0,1) coordinate (D2) -- +(0,5pt);
-  \draw [dimen] (D1) -- (D2) node {35mm};
-  \filldraw[color=black, fill=white, thin](0.6,1.6) circle (0.3cm);
-  \filldraw[color=black, fill=white, thin](2.9,1.6) circle (0.3cm);
-  \filldraw[color=black, fill=white, thin](0.6,7.2) circle (0.3cm);
-  \filldraw[color=black, fill=white, thin](2.9,7.2) circle (0.3cm);
-  \filldraw[color=black, fill=white, thin](0.6,1.6) circle (0.2cm);
-  \filldraw[color=black, fill=white, thin](2.9,1.6) circle (0.2cm);
-  \filldraw[color=black, fill=white, thin](0.6,7.2) circle (0.2cm);
-  \filldraw[color=black, fill=white, thin](2.9,7.2) circle (0.2cm);
-  \draw (2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
-  \draw (3.5,0) -- ++(1.5,0) coordinate (D2) -- +(5pt,0);
-  \draw [dimen] (D1) -- (D2) node {16mm};
-  \draw (body1.south west) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
-  \draw (0.6,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
-  \draw [dimen,-] (D1) -- (D2) node [below=5pt] {6mm};
+  \draw [dimen] (D1) -- (D2) node {92,00};
+  \draw[color=gray] (body1.north west) -- ++(0,1) coordinate (D1) -- +(0,5pt);
+  \draw [color=gray](body1.north east) -- ++(0,1) coordinate (D2) -- +(0,5pt);
+  \draw [dimen] (D1) -- (D2) node {35,00};
+  \filldraw[color=black, fill=white, thick](0.6,1.6) circle (0.3cm);
+  \draw (0.6,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (0.6,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \filldraw[color=black, fill=white, thick](2.9,1.6) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](0.6,7.2) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](2.9,7.2) circle (0.3cm);
+  \draw [color=gray](2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](3.5,0) -- ++(1.5,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {16,00};
+  \draw [color=gray](body1.south west) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](0.6,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen,-] (D1) -- (D2) node [right=15pt] {6,00};
   \draw [dimen,<-] (D1) -- ++(-5pt,0);
   \draw [dimen,<-] (D2) -- ++(+5pt,0);
-  \draw (body1.south east) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
-  \draw (2.9,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
-  \draw [dimen,-] (D1) -- (D2) node [below=5pt] {6mm};
-  \draw [dimen,<-] (D1) -- ++(-5pt,0);
-  \draw [dimen,<-] (D2) -- ++(+5pt,0);
-  \draw (2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
-  \draw (2.9,7.2) -- ++(2.1,0) coordinate (D2) -- +(5pt,0);
-  \draw [dimen] (D1) -- (D2) node {56mm};
-  \draw (0.3,1.6) -- ++(0,1) coordinate (D1) -- +(0,5pt);
-  \draw (0.9,1.6) -- ++(0,1) coordinate (D2) -- +(0,5pt);
-  \draw [dimen,-] (D1) -- (D2) node [above=5pt] {M3};
-  \draw [dimen,<-] (D1) -- ++(-5pt,0);
-  \draw [dimen,<-] (D2) -- ++(+5pt,0);
+  \draw [color=gray](body1.south west) -- ++(0,-2) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](2.9,1.6) -- ++(0,-3.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen] (D1) -- (D2) node  {29,00};
+  \draw [color=gray](3.5,0) -- ++(2.5,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](2.9,7.2) -- ++(3.1,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {72,00};
+  \draw[-latex,color=gray](5,9.0)--(3.15,7.35);
+  \node[rotate=45,color=gray]  at (4,8.5) {4x M3};
 
 Setup before first use and implementation with Inverter Interface IP-Core
 =========================================================================

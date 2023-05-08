@@ -1,0 +1,4 @@
+vlib work
+vcom  uz_pu_con_ip_src_uz_pu_conversion_pkg.vhd
+vcom  uz_pu_con_ip_src_Detect_Rise_Positive.vhd
+vcom  uz_pu_con_ip_src_uz_pu_conversion.vhd

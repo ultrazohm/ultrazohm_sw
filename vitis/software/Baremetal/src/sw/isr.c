@@ -33,7 +33,7 @@
 //#include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_FOC/uz_FOC.h"
-#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!

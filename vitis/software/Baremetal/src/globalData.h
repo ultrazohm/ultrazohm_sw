@@ -110,6 +110,7 @@ typedef struct _referenceAndSetValues_ {
 	// Add additional Variables
 	float i_d_ref;
 	float i_q_ref;
+	float n_ref_rpm;
 
 } referenceAndSetValues;
 
@@ -123,9 +124,16 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
-
-	// Add additional Variables
+	uz_resolverIP_t* resolver_IP;
 	uz_FOC* FOC_instance;
+	uz_SpeedControl_t* Speed_instance;
+	uz_IIR_Filter_t* iir_u_dc;
+	uz_IIR_Filter_t* iir_i_u;
+	uz_IIR_Filter_t* iir_i_v;
+	uz_IIR_Filter_t* iir_i_w;
+	uz_IIR_Filter_t* iir_u_u;
+	uz_IIR_Filter_t* iir_u_v;
+	uz_IIR_Filter_t* iir_u_w;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

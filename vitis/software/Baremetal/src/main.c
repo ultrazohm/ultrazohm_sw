@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 #include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -36,13 +37,18 @@ DS_Data Global_Data = {
 
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-	.av.theta_offset = 0.0f,
-	.av.polepairs = 2.0f,
 
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
+};
+
+
+struct uz_IIR_Filter_config iir_config_filt1 = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 500.0f,
+		.sample_frequency_Hz = SAMPLE_FREQUENCY
 };
 
 enum init_chain
@@ -101,12 +107,34 @@ int main(void)
                 .samplingTime_sec = 0.00005f,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
+
+        	struct uz_SpeedControl_config config_speed = {
+        	    .config_controller.Kp = 1.0f,
+        	    .config_controller.Ki = 1.0f,
+        	    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	    .config_controller.upper_limit = 10.0f,
+        	    .config_controller.lower_limit = -10.0f,
+        	};
+
             struct uz_FOC_config config_FOC = {
                 .decoupling_select = linear_decoupling,
                 .config_PMSM = config_SRM,
                 .config_id = config_id,
                 .config_iq = config_iq};
-            FOC_instance = uz_FOC_init(config_FOC);
+
+        	Global_Data.objects.FOC_instance = uz_FOC_init(config_FOC);
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
+        	Global_Data.av.theta_offset = 0.0f; // have to be set with duty cycle on first phase
+        	Global_Data.av.polepairs = 2.0f;
+        	Global_Data.av.flg_speed_control = 0U;	// Set 1U for active speed control, 0U for current control
+        	Global_Data.rasv.i_q_ref = 0.0f;
+        	Global_Data.rasv.i_d_ref = 0.0f;
+            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_w = uz_signals_IIR_Filter_init(iir_config_filt1);
+            initialization_chain = print_msg;
+
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

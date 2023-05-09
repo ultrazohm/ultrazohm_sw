@@ -20,9 +20,8 @@ Example
 Use-case
 ========
 
-This function can be used to limit angles to :math:`[0, 2\pi]`.
-The main intentended usa-case is for the electric rotor angle of a machine, which is usually a mechanic angle multiplied with the polepairs.
-For higher polepair numbered maschines, the resulting angle can reach high values which might be unintuitive to understand or showcase in plots.
+This function limits values (e.g., angles) to :math:`[0, 2\pi]`.
+The intended use case is for the electric rotor angle of a machine, which is usually a mechanic angle multiplied by the pole pairs.
 
 .. figure:: angle_wrap.svg
 
@@ -35,7 +34,8 @@ Description
 Wraps the input number to the range of :math:`[0, limit]` by using the ``remainderf`` function.
 Therefore, technically other upper limits than :math:`2\pi` can be used if desired.
 Only limits greater than 0 are allowed!
-If a lower limit other than 0 is needed, such as :math:`[-\pi, \pi]` are needed, apply :math:`[0, limit]` as limit and subtract :math:`\pi` afterwards.
+
+.. hint:: If a lower limit other than 0 is needed, e.g., as :math:`[-\pi, \pi]`, apply :math:`[0, limit]` as limit and subtract :math:`\pi` afterward.
 
 Calculation
 ===========

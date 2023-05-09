@@ -33,6 +33,7 @@
 //#include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_FOC/uz_FOC.h"
+#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -117,10 +118,14 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	// Set I_d and I_q currents for FOC
-		dq_reference_current.d = Global_Data.rasv.i_d_ref;
-		dq_reference_current.q = Global_Data.rasv.i_q_ref;
-		dq_reference_current.zero = 0.0f;
+    	if (Global_Data.av.flg_speed_control){
+    		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    	} else{
+			// Set I_d and I_q currents for FOC
+			dq_reference_current.d = Global_Data.rasv.i_d_ref;
+			dq_reference_current.q = Global_Data.rasv.i_q_ref;
+			dq_reference_current.zero = 0.0f;
+    	}
 
 		// FOC - get U_d and U_q as controlled variable
 		dq_ref_Volts = uz_FOC_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);

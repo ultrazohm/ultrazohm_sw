@@ -1,8 +1,8 @@
 .. _dig_si_inverter:
 
-===================
-Digital SI Inverter
-===================
+==========================================
+MOSFET 48V Inverter (Digital adapter slot)
+==========================================
 
 .. image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant_V1_Rev03.png
   :height: 500
@@ -11,29 +11,29 @@ Digital SI Inverter
 Functionality
 =============
 
-The UltraZohm digital inverter consists of three half-bridges with conventional SI-semiconductors. 
-It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages as well as temperature measurements for each semiconductor.  
+The UltraZohm digital inverter consists of three half-bridges with MOSFETs. 
+It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages, and temperature measurements for each semiconductor.  
 The voltage measurement is equipped with a 1st order low-pass filter.
 The current measurement is realized with shunt resistors.
 The inverter has a dedicated PWM enable pin. 
 If the ``PWM_EN`` is set to false, both semiconductors of each half-bridge are disabled. 
 An over current protection for the three phases and the DC-link is included. 
-The OCP is not designed for half-bridge shorts and will only be triggered, if the phase or DC-link currents exceed the safe operating window. 
+The OCP is not designed for half-bridge shorts and will only be triggered if the phase or DC-link currents exceed the safe operating window. 
 The OCP, when triggered, only flags a FAULT bit in the corresponding software driver. 
-The inverter won't be automatically shut down.
+The inverter will not shut down automatically.
 Each half-bridge is designed in a non-bootstrap configuration. 
 Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended into differential transmission to reduce the susceptibility to interference.
 The measurement signals are transmitted via ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 To increase heat dissipation and keep the switches cooler an additional heatsink can be installed.
-For additional information or an in depth look into the circuit design check the schematics in the :ref:`References <dig_si_inverter_references>` section.
+For additional information or an in-depth look into the circuit design, check the schematics in the :ref:`References <dig_si_inverter_references>` section.
 
-Maximum operation ratings
--------------------------
+Absolute maximum ratings
+------------------------
 
 .. warning ::
   - Current up to :math:`I_{peak}=\pm33.94\ A` or :math:`I_{rms}=\pm24\ A`  
   - Voltage up to :math:`V_{peak}=48\ V` or :math:`V_{rms}=33.94\ V`
-  - Operating temperature of the Mosfets :math:`T_{j,max}=175°C`
+  - Operating temperature of the MOSFET :math:`T_{j,max}=175°C`
 
 
 Additional ratings
@@ -43,9 +43,9 @@ Additional ratings
   - Current measurement up to :math:`I_{peak,meas}=\pm35\ A`
   - Voltage measurement up to :math:`V_{peak,meas}= 60\ V`
   - Temperature measurement up to :math:`T_{meas}=105°C`
-  - Temperature measurement is not build into the Mosfet. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
+  - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
   - DC-link capacitance :math:`C_{DC} = 570\mu F`
-  - OPC triggerpoint :math:`I_{OCP}=\pm29.85\ A`
+  - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
   - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
   
@@ -65,7 +65,7 @@ This digital adapter inverter board is directly compatible with the :ref:`uz_inv
 It can be used in any of the D1-D4 digital adapter card slots in the UltraZohm, provided the correct CPLD is flashed. 
 The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
 
-Switching behaviour
+Switching behavior
 -------------------
 
 In the figure below the general switching behaviour of the inverter with a PMSM as load is shown. 
@@ -77,10 +77,10 @@ Whilst there is further optimization potential, the resulting switching behaviou
    :include: Digital_SI_Inverter_rev03/switching_behaviour.tikz
    :align: right
 
-Used components
----------------
+Components
+----------
 
-- Mosfet (100 V, 97 A, 6.0 :math:`m\Omega`) `ISC060N10NM6ATMA1 <https://www.mouser.de/datasheet/2/196/Infineon_ISC060N10NM6_DataSheet_v02_02_EN-3166722.pdf>`_
+- MOSFET (100 V, 97 A, 6.0 :math:`m\Omega`) `ISC060N10NM6ATMA1 <https://www.mouser.de/datasheet/2/196/Infineon_ISC060N10NM6_DataSheet_v02_02_EN-3166722.pdf>`_
 - Gate-Driver `EiceDRIVER 2EDF7275KXUMA1 <https://www.mouser.de/datasheet/2/196/Infineon_2EDF7275K_DataSheet_v02_07_EN-1731004.pdf>`_
 - Isolated DC/DC Converter for gate 12V supply `PDSE1-S24-S12-M-TR <https://www.mouser.de/datasheet/2/670/pdse1_m-1596038.pdf>`_ 
 - Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
@@ -171,7 +171,11 @@ No matter what, the deadtime should not be lower than ``150ns``.
 .. code-block:: c
  :caption: set the deadtime in the ``uz_interlockDeadtime2L_staticAllocator.c`` file. Shown is an example for the D1 slot.
 
- static uz_interlockDeadtime2L interlock_slotD1_pin_0_to_5 = { .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR, .clock_frequency_MHz = 100, .deadtime_us = 0.2, .inverse_bottom_switch = false };
+ static uz_interlockDeadtime2L interlock_slotD1_pin_0_to_5 = { 
+    .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_INTERLOCKDEADTIME_0_BASEADDR,
+    .clock_frequency_MHz = 100,
+    .deadtime_us = 0.2,
+    .inverse_bottom_switch = false };
 
 To enable respectively disable the ``PWM_EN`` for normal operation add the following code to the isr.c. 
 It should always be ensured, that the ``PWM_EN`` is handled correctly. 
@@ -276,6 +280,7 @@ As of this moment, no issue in Rev03 is known.
 
 Designed by 
 ===========
+
 Dennis Hufnagel (THN)
 
 Acknowledgments

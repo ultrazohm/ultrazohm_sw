@@ -15,8 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-#include "uz/uz_FOC/uz_FOC.h"
-#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {

@@ -53,6 +53,8 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
 
 
 //----------------------------------------------------

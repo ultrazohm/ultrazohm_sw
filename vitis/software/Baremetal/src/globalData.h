@@ -88,6 +88,8 @@ typedef struct _actualValues_ {
 
 	// Add additional Variables
 	float polepairs;
+	// Speed Control
+	float flg_speed_control;
 
 } actualValues;
 

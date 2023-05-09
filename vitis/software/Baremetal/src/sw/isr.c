@@ -30,9 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-//#include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../uz/uz_FOC/uz_FOC.h"
+
 
 
 // Initialize the Interrupt structure

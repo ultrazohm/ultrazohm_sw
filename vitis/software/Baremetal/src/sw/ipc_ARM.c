@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 Sebastian Wendel, Philipp LÃ¶hdefink
+ * Copyright 2021 Sebastian Wendel, Philipp Löhdefink
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@
 #include <stdbool.h>
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
 
-extern DS_Data Global_Data;
-
-
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -32,7 +29,6 @@ extern uz_SpeedControl_t* SpeedControl_instance;
 
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
-uint16_t scope_selected_subsystem = 0U;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -49,20 +45,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			//Change Send_Filed 1-3
 			        case (Set_Send_Field_1):
-						scope_selected_subsystem = (int) value;
+			            ParaID_Data.GlobalConfig.i_dq_ref.d  = value;
 			            break;
 
 			        case (Set_Send_Field_2):
-			            ParaID_Data.GlobalConfig.i_dq_ref.d = value;
-			        	//Global_Data.rasv.xy_i_dq_PI_ref.d = value;
+			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
 			            break;
 
 			        case (Set_Send_Field_3):
-			            ParaID_Data.GlobalConfig.i_dq_ref.q = value;
-		        		//Global_Data.rasv.xy_i_dq_PI_ref.q = value;
-
+			            ParaID_Data.GlobalConfig.i_xy_ref.d = value;
 			            break;
-
+			        case (Set_Send_Field_4):
+						ParaID_Data.GlobalConfig.i_xy_ref.q = value;
+						break;
 		case (201): // SELECT_DATA_CH1_bits
 			if (value >= 0 && value < JSO_ENDMARKER)
 			{
@@ -212,75 +207,72 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (Set_Send_Field_4):
-			break;
-
 		case (Set_Send_Field_5):
-
+		data->rasv.kp_res = value;
 			break;
 
 		case (Set_Send_Field_6):
-			data->rasv.resonant_gain = value;
+
 			break;
 
 		case (My_Button_1):
-					data->rasv.halfBridge1DutyCycle = 0.043f;
-					data->rasv.halfBridge2DutyCycle = 0.01f;
-					data->rasv.halfBridge3DutyCycle = 0.01f;
-					data->rasv.halfBridge4DutyCycle = 0.01f;
-					data->rasv.halfBridge5DutyCycle = 0.01f;
-					data->rasv.halfBridge6DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.043f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
+					data->rasv.halfBridge4DutyCycle = 0.0f;
+					data->rasv.halfBridge5DutyCycle = 0.0f;
+					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_2):
-					data->rasv.halfBridge1DutyCycle = 0.01f;
-					data->rasv.halfBridge2DutyCycle = 0.043f;
-					data->rasv.halfBridge3DutyCycle = 0.01f;
-					data->rasv.halfBridge4DutyCycle = 0.01f;
-					data->rasv.halfBridge5DutyCycle = 0.01f;
-					data->rasv.halfBridge6DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.043f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
+					data->rasv.halfBridge4DutyCycle = 0.0f;
+					data->rasv.halfBridge5DutyCycle = 0.0f;
+					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_3):
-					data->rasv.halfBridge1DutyCycle = 0.01f;
-					data->rasv.halfBridge2DutyCycle = 0.01f;
-					data->rasv.halfBridge3DutyCycle = 0.043f;
-					data->rasv.halfBridge4DutyCycle = 0.01f;
-					data->rasv.halfBridge5DutyCycle = 0.01f;
-					data->rasv.halfBridge6DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.043f;
+					data->rasv.halfBridge4DutyCycle = 0.0f;
+					data->rasv.halfBridge5DutyCycle = 0.0f;
+					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_4):
-					data->rasv.halfBridge1DutyCycle = 0.01f;
-					data->rasv.halfBridge2DutyCycle = 0.01f;
-					data->rasv.halfBridge3DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.043f;
-					data->rasv.halfBridge5DutyCycle = 0.01f;
-					data->rasv.halfBridge6DutyCycle = 0.01f;
+					data->rasv.halfBridge5DutyCycle = 0.0f;
+					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_5):
-					data->rasv.halfBridge1DutyCycle = 0.01f;
-					data->rasv.halfBridge2DutyCycle = 0.01f;
-					data->rasv.halfBridge3DutyCycle = 0.01f;
-					data->rasv.halfBridge4DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
+					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.043f;
-					data->rasv.halfBridge6DutyCycle = 0.01f;
+					data->rasv.halfBridge6DutyCycle = 0.0f;
 					break;
 
 				case (My_Button_6):
-					data->rasv.halfBridge1DutyCycle = 0.01f;
-					data->rasv.halfBridge2DutyCycle = 0.01f;
-					data->rasv.halfBridge3DutyCycle = 0.01f;
-					data->rasv.halfBridge4DutyCycle = 0.01f;
-					data->rasv.halfBridge5DutyCycle = 0.01f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
+					data->rasv.halfBridge4DutyCycle = 0.0f;
+					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.043f;
 					break;
 
 				case (My_Button_7):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+					data->rasv.halfBridge7DutyCycle = 0.0f;
+					data->rasv.halfBridge8DutyCycle = 0.0f;
+					data->rasv.halfBridge9DutyCycle = 0.0f;
 					data->rasv.halfBridge4DutyCycle = 0.0f;
 					data->rasv.halfBridge5DutyCycle = 0.0f;
 					data->rasv.halfBridge6DutyCycle = 0.0f;
@@ -288,6 +280,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 		case (My_Button_8):
+				data->rasv.print_data = true;
 			break;
 		//After all My_Button cases add the following
 		        //ParameterID
@@ -330,6 +323,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ParaID_Control_Selection = No_Control;
 		            break;
 
+		        case (ParaID_Control_PI):
+				ParaID_Data.GlobalConfig.PI_subsystem = (uint16_t) value;
+		        ParaID_Data.GlobalConfig.controllers_updated = true;
+		        break;
+		        case (ParaID_Control_res):
+		        				ParaID_Data.GlobalConfig.resonant_subsystem = (uint16_t) value;
+		        		        ParaID_Data.GlobalConfig.controllers_updated = true;
+		        		        break;
+		        case (ParaID_Enable_setpoint_filter):
+				ParaID_Data.GlobalConfig.setpoint_filter = true;
+				break;
+				case (ParaID_Disable_setpoint_filter):
+								ParaID_Data.GlobalConfig.setpoint_filter = false;
+								break;
 		        case (ParaID_Enable_ElectricalID):
 		            ParaID_Data.GlobalConfig.ElectricalID = true;
 		            break;
@@ -398,7 +405,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		            ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
 		            break;
 
-		        case (ParaID_EID_goertzl_Torque):
+		        case (ParaID_EID_goertzl_Amp):
 		            ParaID_Data.ElectricalID_Config.goertzlTorque = value;
 		            break;
 
@@ -421,6 +428,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		        case (ParaID_EID_Disable_IdentLQ):
 		            ParaID_Data.ElectricalID_Config.identLq = false;
 		            break;
+
+		        case (ParaID_EID_Enable_EXT_PSI):
+					ParaID_Data.ElectricalID_Config.extended_psi = true;
+					break;
+
+				case (ParaID_EID_Disable_EXT_PSI):
+					ParaID_Data.ElectricalID_Config.extended_psi = false;
+					break;
+
+				case (ParaID_EID_Enable_EXT_THETA):
+					ParaID_Data.ElectricalID_Config.extended_offset = true;
+					break;
+
+				case (ParaID_EID_Disable_EXT_THETA):
+					ParaID_Data.ElectricalID_Config.extended_offset = false;
+					break;
+
+				case (ParaID_EID_ManualOffset):
+					ParaID_Data.ElectricalID_Config.manual_offset = value;
+					break;
 
 		        case (ParaID_EID_Admit_Params):
 		            //If FOC is used
@@ -588,6 +615,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		        case (ParaID_FID_Array_Control_counter):
 		            ParaID_Data.Array_Control_counter = value;
 		            break;
+		        case (ParaID_FMID_temperature_lower):
+					ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
+					break;
+		        case (ParaID_FMID_temperature_upper):
+					ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
+					break;
+
+		        case (ParaID_FMID_selected_subsystem):
+					ParaID_Data.FluxMapID_Config.selected_subsystem = (uint16_t) value;
+					break;
 
 		case (Error_Reset):
 
@@ -662,7 +699,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	 if (data->av.logging == true) {
+	 if (ParaID_Data.Controller_Parameters.activeState == 404U) {
 		js_status_BareToRTOS |= (1 << 12);
 	 } else {
 		js_status_BareToRTOS &= ~(1 << 12);
@@ -713,11 +750,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	    /* Bit 19 -ParameterID active */
 	    if (ParaID_Data.GlobalConfig.enableParameterID == true) {
-	        //ultrazohm_state_machine_set_userLED(true);
+	        ultrazohm_state_machine_set_userLED(true);
 	        js_status_BareToRTOS |= (1 << 19);
 	    } else {
 	        js_status_BareToRTOS &= ~(1 << 19);
-	        //ultrazohm_state_machine_set_userLED(false);
+	        ultrazohm_state_machine_set_userLED(false);
 	    }
+
+	    /* Bit 20 - ext offset */
+		if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
+			js_status_BareToRTOS |= (1 << 20);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 20);
+		}
+
+	    //* Bit 21 - ext psi */
+		if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
+			js_status_BareToRTOS |= (1 << 21);
+		} else {
+			js_status_BareToRTOS &= ~(1 << 21);
+		}
 
 }

@@ -83,40 +83,9 @@ uz_3ph_alphabeta_t voltage_stationary_zero = {0};
 uz_3ph_alphabeta_t current_stationary_zero = {0};
 uz_6ph_abc_t m_6ph_abc_currents = {0};
 uz_6ph_abc_t m_6ph_abc_voltage = {0};
-//RaraID end
-
-
-// controller
-extern uz_CurrentControl_t* CC_instance_1;
-extern uz_CurrentControl_t* CC_instance_2;
-extern uz_CurrentControl_t* CC_instance_3;
-extern uz_SpeedControl_t* Speed_instace;
-extern uz_SetPoint_t* sp_instance;
-extern uz_resonantController_t* res_instance_1;
-extern uz_resonantController_t* res_instance_2;
 uz_6ph_dq_t controller_out = {0};
+//ParaID end
 
-// temp controller
-uz_3ph_dq_t cc_3ph_dq = {0};
-uz_3ph_dq_t cc_setp = {0};
-uz_6ph_dq_t cc_6ph_dq = {0};
-uz_3ph_dq_t current_rotating_xy = {0};
-uz_3ph_dq_t cc_3ph_xy_rotating = {0};
-uz_3ph_alphabeta_t cc_3ph_xy_stationary = {0};
-
-// zero system
-uz_6ph_abc_t V_abc_zero_control = {0};
-uz_3ph_dq_t cc_out_zero_rotating = {0};
-uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
-
-// filter
-#include "../uz/uz_signals/uz_signals.h"
-extern uz_IIR_Filter_t* filter_1;
-extern uz_IIR_Filter_t* filter_2;
-extern uz_IIR_Filter_t* filter_3;
-extern uz_IIR_Filter_t* filter_4;
-extern uz_IIR_Filter_t* filter_5;
-extern uz_IIR_Filter_t* filter_6;
 
 // zeroing
 uz_6ph_abc_t zero_offset = {0};
@@ -131,8 +100,6 @@ extern uz_temperaturecard_t* uz_Tempcard;
 uz_temperaturecard_OneGroup channel_A_data;
 uz_6ph_abc_t winding_temperature = {0};
 
-
-uz_3ph_dq_t filtered_voltage = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -255,28 +222,7 @@ void ISR_Control(void *data)
 
 	////////////Para ID actual
 	ParaID_Data.ActualValues.i_abc_6ph = m_6ph_abc_currents;
-	ParaID_Data.ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.i_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.i_dq.d = ParaID_Data.ActualValues.i_dq_6ph.d;
-	ParaID_Data.ActualValues.i_dq.q = ParaID_Data.ActualValues.i_dq_6ph.q;
-	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;
-	ParaID_Data.ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(ParaID_Data.ActualValues.v_abc_6ph, ParaID_Data.ActualValues.theta_el);
-	// rotate zero
-	voltage_stationary_zero.alpha = u_a1c1/3.0f;
-	voltage_stationary_zero.beta = u_a2c2/3.0f;
-	current_stationary_zero.alpha = ParaID_Data.ActualValues.i_abc_6ph.a1;
-	current_stationary_zero.beta = ParaID_Data.ActualValues.i_abc_6ph.a2;
-	ParaID_Data.ActualValues.v_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.i_zero_rotating = uz_transformation_3ph_alphabeta_to_dq(current_stationary_zero, 3.0f*ParaID_Data.ActualValues.theta_el);
-	// rotate xy
-	voltage_stationary_xy.alpha = ParaID_Data.ActualValues.v_dq_6ph.x;
-	voltage_stationary_xy.beta = ParaID_Data.ActualValues.v_dq_6ph.y;
-	current_stationary_xy.alpha = ParaID_Data.ActualValues.i_dq_6ph.x;
-	current_stationary_xy.beta = ParaID_Data.ActualValues.i_dq_6ph.y;
-	ParaID_Data.ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(voltage_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.i_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(current_stationary_xy, -1.0f*ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.v_dq.d = ParaID_Data.ActualValues.v_dq_6ph.d;
-	ParaID_Data.ActualValues.v_dq.q = ParaID_Data.ActualValues.v_dq_6ph.q;
-	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
+	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
 //	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;
@@ -284,41 +230,18 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
 	ParaID_Data.ActualValues.average_winding_temp = Global_Data.av.avg_winding_temperature;
+	// inside:
+	uz_ParameterID_6ph_process_actual_values(&ParaID_Data, u_a1c1, u_a2c2);
 	//////////////ParaID ende
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	/*
-        // ParaID functions
-    	controller_out = uz_FluxMapID_6ph_step_controllers(&ParaID_Data, CC_instance_1, CC_instance_2, CC_instance_3, res_instance_1, res_instance_2, filter_1, filter_2, filter_3, filter_4, filter_5, filter_6);
+    	//ParaID
+		uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
+		controller_out = uz_ParameterID_6ph_Controller(ParameterID, &ParaID_Data);
 		ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-*/
-
- 	 	// dq and xy control
-    	cc_3ph_dq = uz_CurrentControl_sample(CC_instance_1, ParaID_Data.GlobalConfig.i_dq_ref, ParaID_Data.ActualValues.i_dq, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-		cc_6ph_dq.d = cc_3ph_dq.d;
-		cc_6ph_dq.q = cc_3ph_dq.q;
-        cc_3ph_xy_rotating = uz_CurrentControl_sample(CC_instance_2, cc_setp, ParaID_Data.ActualValues.i_xy_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        cc_3ph_xy_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_3ph_xy_rotating, -1.0f*ParaID_Data.ActualValues.theta_el);
-        cc_6ph_dq.x = cc_3ph_xy_stationary.alpha;
-        cc_6ph_dq.y = cc_3ph_xy_stationary.beta;
-    	ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(cc_6ph_dq, ParaID_Data.ActualValues.theta_el), ParaID_Data.ActualValues.V_DC);
-
-/*
-  		// zero system control
-        cc_out_zero_rotating = uz_CurrentControl_sample(CC_instance_3, ParaID_Data.FluxmapID_extended_controller_Output->zero_i_dq_PI_ref, ParaID_Data.ActualValues.i_zero_rotating, ParaID_Data.ActualValues.V_DC, ParaID_Data.ActualValues.omega_el);
-        //cc_out_zero_rotating.d += uz_resonantController_step(res_instance_1, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.d, ParaID_Data.ActualValues.omega_el);
-        //cc_out_zero_rotating.q += uz_resonantController_step(res_instance_2, 0.0f, ParaID_Data.ActualValues.i_zero_rotating.q, ParaID_Data.ActualValues.omega_el);
-        cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*ParaID_Data.ActualValues.theta_el);
-        V_abc_zero_control.a1 = 3.0f/2.0f*cc_out_zero_stationary.alpha;
-        V_abc_zero_control.c1 = -V_abc_zero_control.a1;
-        V_abc_zero_control.a2 = 3.0f/2.0f*cc_out_zero_stationary.beta;
-        V_abc_zero_control.c2 = -V_abc_zero_control.a2;
-        ParaID_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_zero_control, ParaID_Data.ActualValues.V_DC);
-*/
-
 		// change DutyCycles=0 to 0.01
 		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
 		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);

@@ -46,22 +46,10 @@ float para_state = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
 
-extern uz_3ph_dq_t current_rotating_xy;
-extern uz_3ph_dq_t  cc_3ph_xy_rotating;
-extern float temp_avg;
-extern struct uz_DutyCycle_t dutyCycles_set1;
-extern struct uz_DutyCycle_t dutyCycles_set2;
 
 float values_milli[4];
 float index_array;
 
-extern float u_a1c1;
-extern float u_a2c2;
-
-extern uz_3ph_dq_t cc_out_zero_rotating;
-extern uz_3ph_alphabeta_t cc_out_zero_stationary;
-
-extern uz_3ph_dq_t filtered_voltage;
 int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
@@ -82,17 +70,16 @@ int JavaScope_initalize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]            = &data->av.mechanicalRotorSpeedRPM;
 	js_ch_observable[JSO_ud] = &ParaID_Data.ActualValues.v_dq_6ph.d;
 	js_ch_observable[JSO_uq] = &ParaID_Data.ActualValues.v_dq_6ph.q;
-	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_dq_6ph.x;
-	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_dq_6ph.y;
+	js_ch_observable[JSO_ux] = &ParaID_Data.ActualValues.v_xy_rotating.d;
+	js_ch_observable[JSO_uy] = &ParaID_Data.ActualValues.v_xy_rotating.q;
 	js_ch_observable[JSO_uz1] = &ParaID_Data.ActualValues.v_dq_6ph.z1;
 	js_ch_observable[JSO_uz2] = &ParaID_Data.ActualValues.v_dq_6ph.z2;
 	js_ch_observable[JSO_id] = &ParaID_Data.ActualValues.i_dq_6ph.d;
 	js_ch_observable[JSO_iq] = &ParaID_Data.ActualValues.i_dq_6ph.q;
-	js_ch_observable[JSO_ix] = &ParaID_Data.ActualValues.i_dq_6ph.x;
-	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_dq_6ph.y;
+	js_ch_observable[JSO_ix] = &ParaID_Data.ActualValues.i_xy_rotating.d;
+	js_ch_observable[JSO_iy] = &ParaID_Data.ActualValues.i_xy_rotating.q;
 	js_ch_observable[JSO_iz1] = &ParaID_Data.ActualValues.i_dq_6ph.z1;
 	js_ch_observable[JSO_iz2] = &ParaID_Data.ActualValues.i_dq_6ph.z2;
 	js_ch_observable[JSO_ia1] = &(ParaID_Data.ActualValues.i_abc_6ph.a1);
@@ -101,22 +88,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ia2] = &(ParaID_Data.ActualValues.i_abc_6ph.a2);
 	js_ch_observable[JSO_ib2] = &(ParaID_Data.ActualValues.i_abc_6ph.b2);
 	js_ch_observable[JSO_ic2] = &(ParaID_Data.ActualValues.i_abc_6ph.c2);
-	js_ch_observable[JSO_u_z1_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.d);
-	js_ch_observable[JSO_u_z2_rot] = &(ParaID_Data.ActualValues.v_zero_rotating.q);
-	js_ch_observable[JSO_i_z1_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.d);
-	js_ch_observable[JSO_i_z2_rot] = &(ParaID_Data.ActualValues.i_zero_rotating.q);
-	js_ch_observable[JSO_u_set_z1] = &(ParaID_Data.FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.d);
-	js_ch_observable[JSO_u_set_z2] = &(ParaID_Data.FluxmapID_extended_controller_Output->ab_i_dq_PI_ref.q);
-	js_ch_observable[JSO_u_ref_z1] = &(cc_out_zero_rotating.d);
-	js_ch_observable[JSO_u_ref_z2] = &(cc_out_zero_rotating.q);
-	js_ch_observable[JSO_i_dc1]		= &(data->av.i_dc1);
-	js_ch_observable[JSO_i_dc2]		= &(data->av.i_dc2);
-	js_ch_observable[JSO_v_dc1]		= &(data->av.v_dc1);
-	js_ch_observable[JSO_v_dc2]		= &(data->av.v_dc2);
-	js_ch_observable[JSO_avg_winding_temp] = &(ParaID_Data.ActualValues.average_winding_temp);
+	js_ch_observable[JSO_omega_el] = &(ParaID_Data.ActualValues.omega_el);
+
 	js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
 	js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
 	js_ch_observable[JSO_state] = &(para_state);
+
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -184,7 +161,6 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
 	js_slowDataArray[JSSD_FLOAT_avg_winding_temp]		= &(ParaID_Data.ActualValues.average_winding_temp);
-	js_slowDataArray[JSSD_FLOAT_selected_subs]		= &(ParaID_Data.FluxmapID_extended_controller_Output->selected_subsystem);
 
 	return Status;
 }
@@ -202,11 +178,11 @@ void JavaScope_update(DS_Data* data){
 	para_state = activeState;
 	uz_ParameterID_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, &ArrayCounter);
 
-	values_milli[0] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[0];
-	values_milli[1] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[1];
-	values_milli[2] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[2];
-	values_milli[3] = 1000.0f*ParaID_Data.FluxmapID_extended_controller_Output->psi_array[3];
-	index_array = (float) ParaID_Data.FluxmapID_extended_controller_Output->array_index;
+	values_milli[0] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[0];
+	values_milli[1] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[1];
+	values_milli[2] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[2];
+	values_milli[3] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[3];
+	index_array = (float) ParaID_Data.FluxMapID_Output->array_index;
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
@@ -241,7 +217,6 @@ void JavaScope_update(DS_Data* data){
 	if(status != (u32)XST_SUCCESS) {
 		xil_printf("RPU: IPI reading from A53 failed\r\n");
 	}
-	data->av.logging = uz_ParameterID_6ph_transmit_FluxMap_to_Console(&ParaID_Data, js_cnt_slowData);
 
 	js_cnt_slowData++;
 	if (js_cnt_slowData >= JSSD_ENDMARKER){

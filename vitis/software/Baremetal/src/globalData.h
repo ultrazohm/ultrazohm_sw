@@ -98,7 +98,6 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	struct uz_resolverIP_position_velocity_t posVel_mech;
 	struct uz_resolverIP_position_velocity_t posVel_el;
-	bool logging;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -114,8 +113,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
-	uint16_t selected_subsystem;
-	float resonant_gain;
+	bool print_data;
+	float kp_res;
 } referenceAndSetValues;
 
 typedef struct{

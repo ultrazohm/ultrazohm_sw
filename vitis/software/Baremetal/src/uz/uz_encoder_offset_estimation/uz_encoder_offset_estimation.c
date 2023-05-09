@@ -19,7 +19,9 @@
 #if UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES > 0
 
 // arraysize is determined by the given range and stepsize for theta. sense making inputs from user are required
-#define OFFSET_ARRAYSIZE ((uint16_t) (2U*OFFSET_RANGE_RAD/OFFSET_STEP_RAD)+1U)
+#define OFFSET_ARRAYSIZE ((uint32_t) (2U*OFFSET_RANGE_RAD/OFFSET_STEP_RAD)+1U)
+#define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f     // a delay between the rotations (positive, negative and next theta's positive)
+#define OFFSET_ACCELERATE_TIME_SEC 3.0f             // the time to let the motor accelerate with the given q-current
 
 // enum for states of higher level state machine
 enum encoderoffset_states_high_level
@@ -147,11 +149,13 @@ void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* s
 
 float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self){
     uz_assert_not_NULL(self);
+    float progress = 0.0f;
     if(self->encoderoffset_current_state_hl == encoderoffset_hl_finished){
-        return 1.0f;
+        progress = 1.0f;
     }else{
-    return (((float)(self->meas_array_counter))/((float) (OFFSET_ARRAYSIZE)));
+        progress = ((float)(self->meas_array_counter))/((float)(OFFSET_ARRAYSIZE));
     }
+    return progress;
 }
 
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
@@ -204,14 +208,17 @@ bool uz_encoder_offset_estimation_get_finished(uz_encoder_offset_estimation_t* s
 }
 
 static float uz_encoder_offset_estimation_find_best_theta(const struct measurement meas_struct[OFFSET_ARRAYSIZE]){
-    float min_diff = INFINITY;
-    uint16_t index_min_diff = 0U;
-    for(uint16_t i = 0U; i < OFFSET_ARRAYSIZE; i++){
-        if((float)(fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative)) < min_diff){
+    // set min difference and index of it to the first (index=0) value
+    float min_diff = fabsf(meas_struct[0U].psi_d_positive-meas_struct[0U].psi_d_negative);
+    uint32_t index_min_diff = 0U;
+    // start with second value (index=1) to search for smaller difference
+    for(uint32_t i = 1U; i < OFFSET_ARRAYSIZE; i++){
+        if(fabsf(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative) < min_diff){
             index_min_diff = i;
-            min_diff = (float)(fabs(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative));
+            min_diff = fabsf(meas_struct[i].psi_d_positive-meas_struct[i].psi_d_negative);
         }
     }
+    // return only thete offset for min diff value
     return (meas_struct[index_min_diff].theta_offset);
 }
 
@@ -238,7 +245,7 @@ static void uz_encoder_offset_estimation_single_direction(uz_encoder_offset_esti
                 self->sub_max_speed = fabsf(*self->ptr_actual_omega_el);        // measure speed
                 self->encoderoffset_current_state_ll = encoderoffset_ll_measurement;   // set next state
                 self->i_reference_Ampere = zero_dq_struct;                             // set controller to zero
-            }else if(((uz_SystemTime_GetGlobalTimeInSec()-self->sub_temp_time) > OFFSET_ACCELLERATE_TIME_SEC) && (fabsf(*self->ptr_actual_omega_el) < self->min_omega_el)){ // if speed is not reached after waiting time 
+            }else if(((uz_SystemTime_GetGlobalTimeInSec()-self->sub_temp_time) > OFFSET_ACCELERATE_TIME_SEC) && (fabsf(*self->ptr_actual_omega_el) < self->min_omega_el)){ // if speed is not reached after waiting time 
                 self->diagnose = encoderoffset_speed_not_reached;                      // set diagnose message
                 self->i_reference_Ampere = zero_dq_struct;                             // set controller to zero
             }

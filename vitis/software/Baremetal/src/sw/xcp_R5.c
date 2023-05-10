@@ -10,7 +10,7 @@
 // Configuration
 // -------------------------------------------------------------------
 #define XCP_MEAS_R5_ADDR        0xFFFC0400
-#define XCP_MEAS_R5_LEN         0x00000400
+#define XCP_MEAS_R5_LEN         0x00001400
 
 #define SECTION_XCP_TS      __attribute__ ((section (".section_xcp_timestamp")))
 #define SECTION_XCP_MEAS    __attribute__ ((section (".section_xcp_meas")))
@@ -83,6 +83,17 @@ uint8_t xcp_80Byte_u8[DUMMY_LEN] SECTION_XCP_MEAS = {0};
 uint32_t xcp_80Byte_u32[DUMMY_LEN/4] SECTION_XCP_MEAS = {0};
 
 timing_R5_t timing_R5 SECTION_XCP_MEAS = {0};
+
+//#include "../Codegen/uz_codegen.h"
+//uz_codegen codegenInstance SECTION_XCP_MEAS = {0};
+
+
+#include "../Codegen/FOC_CurrentControl_ert_rtw/FOC_CurrentControl.h"
+RT_MODEL rtM_ SECTION_XCP_MEAS = {0};
+DW rtDW SECTION_XCP_MEAS = {0};
+ExtU rtU SECTION_XCP_MEAS = {0};
+ExtY rtY SECTION_XCP_MEAS = {0};
+
 
 //--------------------------------------------------------------------
 // Global functions

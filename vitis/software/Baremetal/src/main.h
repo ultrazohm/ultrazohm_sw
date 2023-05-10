@@ -73,12 +73,12 @@
 
 // Network definition
 #define NN_9_INPUT_1_128 0
-#define NN_9_INPUT_1_64  0
+#define NN_9_INPUT_1_64  1
 #define NN_9_INPUT_3_64  0
 
 #define NN_7_INPUT_1_64  0
 #define NN_7_INPUT_1_128 0
-#define NN_7_INPUT_3_64  1
+#define NN_7_INPUT_3_64  0
 
 void InitializeDataStructure(DS_Data* data);
 

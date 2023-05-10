@@ -23,13 +23,12 @@ extern "C" {
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
 #include "xstatus.h"
-#include "xil_printf.h"
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
 #include "xbasic_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
-#include <stdio.h>
+#include "uz/uz_HAL.h"
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
@@ -85,32 +84,6 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
     float slowDataID[NETWORK_SEND_FIELD_SIZE];
 } NetworkSendStruct;
 
-
-typedef struct _errorWord_ { // 16 bits
-	uint16_t  errorCodeXilinx:8;
-	_Bool wrongInterruptByIPI:1; //Wrong interrupt arrived
-	_Bool missingInterruptByIPI:1; //No Interrupt arrived
-	_Bool InitFailedInterruptByIPI:1; //Error during initialization
-	_Bool communicationTimeoutOccured:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
-	_Bool rsvd3:1;
-	_Bool rsvd4:1;
-} errorWord;
-
-typedef struct _errorReset_ { // 5 bits
-	_Bool communicationTimeoutOccured:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
-	_Bool rsvd3:1;
-	_Bool rsvd4:1;
-	//boolean rsvd5:1;
-} errorReset;
-
-typedef struct _A53_Data_ {
-	errorWord ew;
-	errorReset er;
-} A53_Data;
 
 // ========== Functions and Threads ======================================================================
 void Transfer_ipc(void);

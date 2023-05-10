@@ -4,38 +4,38 @@
 Xilinx Toolchain
 ================
 
-1. Install Vivado and Vitis 2020.1: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/archive-vitis.html>`_ (Xilinx account required)
+#. Install Vivado and Vitis 2020.1: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/archive-vitis.html>`_ (Xilinx account required)
 
-.. image:: ./images_installation/vitis_website1_2020.png
+    .. image:: ./images_installation/vitis_website1_2022.png
 
-2. Choose Name, Address, E-Mail, and the rest of the data
-3. File ``Xilinx_Unified_2020.1_0602_1208_Win64.exe`` run. Click Next
-4. Select Download and Install Now and sign in with your Xilinx user account. Click Next
+#. Choose Name, Address, E-Mail, and the rest of the data
+#. File ``Xilinx_Unified_2022.2_1014_8888_Win64.exe`` run. Click Next
+#. Select Download and Install Now and sign in with your Xilinx user account. Click Next
 
-.. image:: ./images_installation/vitis_website2_2020.png
+    .. image:: ./images_installation/vitis_website2_2022.png
 
-If the User Authentication in the installer results in an error, eventhough the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
+    .. note::
+
+      If the User Authentication in the installer results in an error, eventhough the Xilinx account is valid, an alternative installer without the need to sign in can be downloaded.
    
-.. image:: ./images_installation/vitis_website2_5_2020.png
+    .. image:: ./images_installation/vitis_website2_5_2022.png
 
-5. Agree to all license agreements, terms, and conditions. Click Next
+#. Select the specific products
 
-.. image:: ./images_installation/vitis_website3_2020.png
+    .. image:: ./images_installation/vitis_website3_2022.png
 
-6. Select the specific products
+#. Install what you want and what you need. It is recommended to install as shown below. Uncheck `System Generator for DSP` and do not install it because this is not used and can lead to errors in MATLAB since this is a MATLAB-Toolbox. To reduce the required disk space, it is sufficient to only install the **Zynq UltraScale+ MPSoC** Devices. Other devices can be added later, but cannot be removed. 
 
-.. image:: ./images_installation/vitis_website4_2020.png
+    .. image:: ./images_installation/vitis_website4_2022.png
 
-7. Install what you want and what you need. It is recommended to install as shown below. Uncheck `System Generator for DSP` and do not install it because this is not used and can lead to errors in MATLAB since this is a MATLAB-Toolbox. To reduce the required disk space, it is sufficient to only install the **Zynq UltraScale+ MPSoC** Devices. Other devices can be added later, but cannot be removed. 
+#. Agree to all license agreements, terms, and conditions. Click Next
 
-.. image:: ./images_installation/vitis_website5_2020.jpg
+    .. image:: ./images_installation/vitis_website5_2022.png
 
-8. Specify where to install
+#. Specify where to install
 
-.. image:: ./images_installation/vitis_website6_2020.png
+    .. image:: ./images_installation/vitis_website6_2022.png
 
-9. Install
+#. Install
 
-.. image:: ./images_installation/vitis_website7_2020.png
-
-10. Install the ``Vitis Core Development Kit Update 1`` in the same way
+    .. image:: ./images_installation/vitis_website7_2022.png

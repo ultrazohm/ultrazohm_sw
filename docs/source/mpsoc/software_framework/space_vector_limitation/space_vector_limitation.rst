@@ -4,7 +4,7 @@
 Space vector limitation
 =======================
 
-.. doxygenfunction:: uz_FOC_SpaceVector_Limitation
+.. doxygenfunction:: uz_CurrentControl_SpaceVector_Limitation
 
 Example
 =======
@@ -13,14 +13,15 @@ Example
   :linenos:
   :caption: Example function call for space vector limitation
 
-  #include "uz/uz_FOC/uz_space_vector_limitation.h"
+  #include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
   int main(void) {
      float V_dc_volts = 24.0f;
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
+     uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
+     uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
      bool ext_clamping = false;
-     struct uz_3ph_dq_t output = uz_FOC_SpaceVector_Limitation(v_input_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+     float max_modulation_index = 1.0f / sqrtf(3.0f);
+     struct uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
   }
 
 Description
@@ -28,11 +29,11 @@ Description
 
 Limits the input voltages according to the following flowchart. 
 Further information can be found in [#Quang]_ . 
-This function is already included in the :ref:`uz_FOC`.
+This function is already included in the :ref:`uz_CurrentControl`.
 
 .. math::
 
-  V_{SV,max} &= \dfrac{V_{DC}}{\sqrt{3}} \\
+  V_{SV,max} &= V_{DC} \cdot m_{max} \\
   V_{SV,abs} &= \sqrt{v_d^2 + v_q^2}
 
 .. tikz:: space vector limitation flow chart
@@ -53,9 +54,9 @@ This function is already included in the :ref:`uz_FOC`.
   \draw[-latex](Eval2.east) -| (Eval3right.north);
   \draw[-latex](Eval2.west) -| (Eval3left.north);
   \node[font=\Large] at($(Eval2.west)+(-2,0.3)$){Yes};
-  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){generator mode};
+  \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){motor mode};
   \node[font=\Large] at($(Eval2.east)+(2,0.3)$){No};
-  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){motor mode};
+  \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){generator mode};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.west)+(-2.2,-3)$)(End1){$v_{d,lim} = 0.95 \cdot sign(v_d) \cdot V_{SV,max}$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.east)+(2.2,-3)$)(End2){$v_{d,lim} = v_d$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
   \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{q,lim} = 0.95 \cdot sign(v_q) \cdot V_{SV,max}$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_{SV,max}^2 - v_{q,lim}^2}$};

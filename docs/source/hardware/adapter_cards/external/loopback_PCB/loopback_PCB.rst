@@ -2,12 +2,16 @@
 Loopback PCB
 =============
 	   
-Designed by Nina Diringer (TH Nürnberg), 07/2022
 
 .. figure:: Loopback_PCB.png
    :width: 37%
 
    Loopback PCB
+
+Source
+******
+
+- `Loopback PCB repository <https://bitbucket.org/ultrazohm/uz_per_loopback_tutorial/>`_
 
 Revisions
 *********
@@ -113,3 +117,9 @@ Rev01
  * :download:`Schematics <SCH_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.pdf>`
  * :download:`Bill of Material <BOM_JLC_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.xlsx>`
  * :download:`Assembly Drawing <ASM_UZ_PER_loopback_tutorial_[NoVariations]_Rev01.pdf>`
+
+
+Designer
+********
+
+Designed by Nina Diringer (TH Nürnberg), 07/2022

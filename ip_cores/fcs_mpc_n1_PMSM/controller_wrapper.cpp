@@ -25,12 +25,12 @@ void ctrl_wrapper(	float X_KK_src[Nx],		float Y_REF_KK_src[Nref],
 {
 	// AXI LITE Interface
 	#pragma HLS disaggregate variable=plant
-	#pragma HLS INTERFACE mode=s_axilite 	port=plant 				bundle=AXI_Lite_1
-	#pragma HLS INTERFACE mode=s_axilite 	port=U_OPT_out	 		bundle=AXI_Lite_1
-	#pragma HLS INTERFACE mode=s_axilite 	port=lambda_in 			bundle=AXI_Lite_1
-	#pragma HLS INTERFACE mode=s_axilite 	port=status_register 	bundle=AXI_Lite_1
-	#pragma HLS INTERFACE mode=s_axilite	port=copy_mats_flag 	bundle=AXI_Lite_1
-	#pragma HLS INTERFACE mode=s_axilite 	port=return 			bundle=AXI_Lite_1
+	#pragma HLS INTERFACE mode=s_axilite 	port=plant 				bundle=data
+	#pragma HLS INTERFACE mode=s_axilite 	port=U_OPT_out	 		bundle=data
+	#pragma HLS INTERFACE mode=s_axilite 	port=lambda_in 			bundle=data
+	#pragma HLS INTERFACE mode=s_axilite 	port=status_register 	bundle=data
+	#pragma HLS INTERFACE mode=s_axilite	port=copy_mats_flag 	bundle=data
+	#pragma HLS INTERFACE mode=s_axilite 	port=return 			bundle=data
 
 
 	// AXI STREAM Interfaces

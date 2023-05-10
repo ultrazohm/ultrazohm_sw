@@ -36,7 +36,7 @@
 
 // Address definitions for data exchange R5 <-> A53
 #define XCP_MEAS_R5_ADDR        0xFFFC0400
-#define XCP_MEAS_R5_LEN         0x00000400
+#define XCP_MEAS_R5_LEN         0x00001400
 // Timestamp from R5 is used
 #define XCP_TIMESTAMP_R5_ADDR   0xFFFC0400
 
@@ -426,11 +426,12 @@ void timer_irq_callback__(void)
 //        cnt++;
 //        xil_printf("%s(): %d\n", __func__, cnt);
 
-xil_printf("\n%5s, %5s\n", "now", "max");
-xil_printf("%7d, %8d WriteQ\n", time_WtoTxQ_ns, time_WtoTxQ_max_ns);
-xil_printf("%7d, %8d IRQ 10kHz\n", time_irq_ns, time_irq_max_ns);
-xil_printf("%7d, %8d T_irq 10kHz\n", time_irqLen_ns, time_irqLen_max_ns);
-xil_printf("%7d, %8d cacheFlush\n", time_cacheFlush_ns, time_cacheFlush_max_ns);
+//xil_printf("\n%5s, %5s\n", "now", "max");
+//xil_printf("%7d, %8d WriteQ\n", time_WtoTxQ_ns, time_WtoTxQ_max_ns);
+//xil_printf("%7d, %8d IRQ 10kHz\n", time_irq_ns, time_irq_max_ns);
+//xil_printf("%7d, %8d T_irq 10kHz\n", time_irqLen_ns, time_irqLen_max_ns);
+//xil_printf("%7d, %8d cacheFlush\n", time_cacheFlush_ns, time_cacheFlush_max_ns);
+
 time_WtoTxQ_max_ns = 0;
 time_irq_max_ns = 0;
 time_irqLen_max_ns = 0;

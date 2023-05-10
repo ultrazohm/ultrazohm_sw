@@ -73,7 +73,9 @@ void ISR_Control(void *data)
         void xcp_dummy_calculations(void);
         xcp_dummy_calculations();
 
-        uz_codegen_step(&codegenInstance);
+        //uz_codegen_step(&codegenInstance);
+        extern FOC_CurrentControl_step(void);
+        FOC_CurrentControl_step();
         Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.ChirpSine;
     }
 

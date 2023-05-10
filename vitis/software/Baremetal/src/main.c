@@ -17,6 +17,7 @@
 #include "main.h"
 #include "Codegen/uz_codegen.h"
 uz_codegen codegenInstance;
+//extern uz_codegen codegenInstance;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -74,7 +75,10 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            uz_codegen_init(&codegenInstance);
+            //uz_codegen_init(&codegenInstance);
+            extern void FOC_CurrentControl_initialize(void);
+            FOC_CurrentControl_initialize();
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

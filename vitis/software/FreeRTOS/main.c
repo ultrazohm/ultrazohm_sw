@@ -276,12 +276,12 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=1000) { // define timeout time here
+		if (mscnt >=5000) { // define timeout time here
 			uz_printf("APU: DHCP request timed out\r\n");
 			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
-			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
+			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 178, 233);	// 192, 168, 1, 233);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 255,  0);
-			IP4_ADDR(&(server_netif.gw),  192, 168, 1, 1);
+			IP4_ADDR(&(server_netif.gw),  192, 168, 178, 1);	// 192, 168, 1, 1);
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 			/* print all application headers */
 			uz_printf("\r\n");

@@ -46,7 +46,7 @@ DS_Data Global_Data = {
 struct uz_IIR_Filter_config iir_config_filt1 = {
 		.selection = LowPass_first_order,
 		.cutoff_frequency_Hz = 500.0f,
-		.sample_frequency_Hz = SAMPLE_FREQUENCY
+		.sample_frequency_Hz = UZ_PWM_FREQUENCY
 };
 
 enum init_chain
@@ -95,20 +95,20 @@ int main(void)
             struct uz_PI_Controller_config config_id = {
                 .Kp = 0.25f,
                 .Ki = 158.8f,
-                .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
+                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 1000.0f,
                 .lower_limit = -1000.0f};
             struct uz_PI_Controller_config config_iq = {
                 .Kp = 0.25f,
                 .Ki = 158.8f,
-                .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
+                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 1000.0f,
                 .lower_limit = -1000.0f};
 
         	struct uz_SpeedControl_config config_speed = {
         	    .config_controller.Kp = 1.0f,
         	    .config_controller.Ki = 1.0f,
-        	    .config_controller.samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
+        	    .config_controller.samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
         	    .config_controller.upper_limit = 10.0f,
         	    .config_controller.lower_limit = -10.0f,
         	};

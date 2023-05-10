@@ -3,7 +3,16 @@
 
 #include <stdbool.h>
 
-float uz_integrator_eulerforward(float current_value, float old_value, float time_step, bool clamping_active);
+/**
+ * @brief Discrete time integration using Euler forward method
+ *
+ * @param current_value Value of x(k) at current time step k
+ * @param old_value Value of x(k-1) at last time step k-1
+ * @param sample_time Sample time of the discrete integration
+ * @param clamping_active If true, clamping is active and integration is stopped
+ * @return float
+ */
+float uz_integrator_eulerforward(float current_value, float old_value, float sample_time, bool clamping_active);
 
 
 

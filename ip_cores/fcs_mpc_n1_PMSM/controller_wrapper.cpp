@@ -23,43 +23,41 @@ void ctrl_wrapper(	float X_KK_src[Nx],		float Y_REF_KK_src[Nref],
 				volatile bool *mpc_done, volatile bool *matrices_updated_out
 )
 {
-	// AXI LITE Interface
-	#pragma HLS disaggregate variable=plant
-	#pragma HLS INTERFACE mode=s_axilite 	port=plant 				bundle=data
-	#pragma HLS INTERFACE mode=s_axilite 	port=U_OPT_out	 		bundle=data
-	#pragma HLS INTERFACE mode=s_axilite 	port=lambda_in 			bundle=data
-	#pragma HLS INTERFACE mode=s_axilite 	port=status_register 	bundle=data
-	#pragma HLS INTERFACE mode=s_axilite	port=copy_mats_flag 	bundle=data
-	#pragma HLS INTERFACE mode=s_axilite 	port=return 			bundle=data
-
+	//AXI LITE Interface
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=plant
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=U_OPT_out
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=lambda_in
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=status_register
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=copy_mats_flag
+	#pragma HLS INTERFACE mode=s_axilite bundle=data port=return
 
 	// AXI STREAM Interfaces
-	DO_PRAGMA(HLS INTERFACE axis register depth= Nref	port = Y_REF_KK_src)
-	DO_PRAGMA(HLS INTERFACE axis register depth= Nx		port = X_KK_src )
+	#pragma HLS INTERFACE mode=axis depth=Nref port=Y_REF_KK_src register
+	#pragma HLS INTERFACE mode=axis depth=Nx port=X_KK_src register
 
 	// direct in/outputs
-	#pragma HLS interface ap_none register port=counter_in
-	#pragma HLS interface ap_none register port=counter_out
-	#pragma HLS interface ap_none register port=Uopt_out
-	#pragma HLS interface ap_none  port=copy_flag_out
-	#pragma HLS interface ap_none  port=mpc_done
-	#pragma HLS interface ap_none  port=matrices_updated_out
+	#pragma HLS INTERFACE mode=ap_none port=counter_in register
+	#pragma HLS INTERFACE mode=ap_none port=counter_out register
+	#pragma HLS INTERFACE mode=ap_none port=Uopt_out register
+	#pragma HLS INTERFACE mode=ap_none port=copy_flag_out
+	#pragma HLS INTERFACE mode=ap_none port=mpc_done
+	#pragma HLS INTERFACE mode=ap_none port=matrices_updated_out
 
 
 	float X_KK[Nx];
-	#pragma HLS ARRAY_PARTITION variable=X_KK complete dim=1
+	#pragma HLS ARRAY_PARTITION dim=1 type=complete variable=X_KK
 	
 	float Y_KK[Nref];
-	#pragma HLS ARRAY_PARTITION variable=Y_KK complete dim=1
+	#pragma HLS ARRAY_PARTITION dim=1 type=complete variable=Y_KK
 
 	sw_pos_t U_KK_a[3*Nh];
-	#pragma HLS ARRAY_PARTITION variable=U_KK_a complete dim=1
+	#pragma HLS ARRAY_PARTITION dim=1 type=complete variable=U_KK_a
 
 	static float lambda_ip = 0.0f;
 
 	sw_pos_t static U_opt[3 * Nh] = { 0,	1,	0}; // initalize previous switch position
 
-	#pragma HLS ARRAY_PARTITION variable=U_opt		complete dim=1
+	#pragma HLS ARRAY_PARTITION dim=1 type=complete variable=U_opt
 
 	x_kk_cpy:for(uint2 row=0;row<Nx;row++){
 	#pragma HLS PIPELINE
@@ -78,8 +76,8 @@ void ctrl_wrapper(	float X_KK_src[Nx],		float Y_REF_KK_src[Nref],
 
 	static float A_mat[Nx][Nx];
 	static float B_mat[Nx][Nin];
-#pragma HLS ARRAY_PARTITION variable=A_mat		complete dim=0
-#pragma HLS ARRAY_PARTITION variable=B_mat		complete dim=0
+	#pragma HLS ARRAY_PARTITION dim=0 type=complete variable=A_mat
+	#pragma HLS ARRAY_PARTITION dim=0 type=complete variable=B_mat
 
 	bool matrices_updated = false;
 	*matrices_updated_out = false;

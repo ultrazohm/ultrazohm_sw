@@ -2,7 +2,7 @@
  *
  * controller_wrapper.h
  *
- * Copyright (C) 2020 Institute EAL, TU München, All rights reserved.
+ * Copyright (C) 2020 Institute EAL, TU Mï¿½nchen, All rights reserved.
  *
  *  Created on: 12.05.2020
  *      Author: Eyke Liegmann (EL)
@@ -99,4 +99,4 @@ void fcsmpc_n1(
 		bool matrices_updated
 	);
 
-#endif Pred_controller_H_
+#endif

@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2020.1.1"
+      "tool_version": "2020.1.1",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -258,7 +259,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -331,12 +338,24 @@
       "D1_OUT": {
         "direction": "O",
         "left": "8",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "9",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       }
     },
     "components": {
@@ -2531,7 +2550,17 @@
                     "ports": {
                       "clock": {
                         "type": "clk",
-                        "direction": "I"
+                        "direction": "I",
+                        "parameters": {
+                          "CLK_DOMAIN": {
+                            "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                            "value_src": "default_prop"
+                          },
+                          "FREQ_HZ": {
+                            "value": "99999985",
+                            "value_src": "user_prop"
+                          }
+                        }
                       },
                       "enable": {
                         "direction": "I"
@@ -2539,7 +2568,13 @@
                       "switching_signals": {
                         "direction": "I",
                         "left": "5",
-                        "right": "0"
+                        "right": "0",
+                        "parameters": {
+                          "PortWidth": {
+                            "value": "6",
+                            "value_src": "ip_prop"
+                          }
+                        }
                       },
                       "deadtime": {
                         "direction": "I",
@@ -3793,7 +3828,17 @@
                 "ports": {
                   "clk": {
                     "type": "clk",
-                    "direction": "I"
+                    "direction": "I",
+                    "parameters": {
+                      "CLK_DOMAIN": {
+                        "value": "zusys_zynq_ultra_ps_e_0_0_pl_clk0",
+                        "value_src": "default_prop"
+                      },
+                      "FREQ_HZ": {
+                        "value": "99999985",
+                        "value_src": "user_prop"
+                      }
+                    }
                   },
                   "delay_cycles": {
                     "direction": "I",

@@ -62,13 +62,13 @@ float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 
 // Conversion factors for current and voltage
-#define NUMBER_OF_TURNS_CURRENT_MEASURING 3.0f	// Number of Turns Current Measuring
+#define NUMBER_OF_TURNS_CURRENT_MEASURING 1.0f	// Number of Turns Current Measuring
 #define ADC_CURRENT_SCALING	  	80.0f 			// NUMBER_OF_TURNS_CURRENT_MEASURING
 #define ADC_CURRENT_OFFSET    	2.5f			// Offset for LEM Sensors
 #define DC_VOLT_CONV		  	12.5f
 #define PHASE_VOLT_CONV		  	12.5f
 #define ADC_PH_VOLT_OFFSET	  	0.0f			// Offset for Voltage Sensor
-#define USE_RESOLVER		  	1U				// 0U: IncrementalEncoder on D5
+#define USE_RESOLVER		  	0U				// 0U: IncrementalEncoder on D5
 #define MAX_CURRENT_ASSERTION	50.0f 			// Max. Current
 #define MAX_SPEED_ASSERTION		2500.0f			// Max. Speed
 
@@ -100,7 +100,7 @@ void ISR_Control(void *data)
     	output.DutyCycle_U=0.0f;
     	output.DutyCycle_V=0.0f;
     	output.DutyCycle_W=0.0f;
-    	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
+    	//uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_U, output.DutyCycle_V, output.DutyCycle_W);
     	ultrazohm_state_machine_set_stop(true);
     }
 
@@ -119,7 +119,7 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	if (Global_Data.av.flg_speed_control){
-    		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_el_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
+    		dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm, Global_Data.av.U_ZK, dq_reference_current.d);
     	} else{
 			// Set I_d and I_q currents for FOC
 			dq_reference_current.d = Global_Data.rasv.i_d_ref;
@@ -132,12 +132,12 @@ void ISR_Control(void *data)
 		// inverse d/q-transformation
 		uvw_ref = uz_transformation_3ph_dq_to_abc(dq_ref_Volts, Global_Data.av.theta_elec);
 		// Generate PWM Signal for each phase
-		output = uz_FOC_generate_DutyCycles(uvw_ref, 24.0f);
+		output = uz_FOC_generate_DutyCycles(uvw_ref, Global_Data.av.U_ZK);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+  //  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+  //  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+  //  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

@@ -60,7 +60,6 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-uz_FOC* FOC_instance = NULL;
 
 enum init_chain initialization_chain = init_assertions;
 
@@ -96,20 +95,20 @@ int main(void)
             struct uz_PI_Controller_config config_id = {
                 .Kp = 0.25f,
                 .Ki = 158.8f,
-                .samplingTime_sec = 0.00005f,
-                .upper_limit = 10.0f,
-                .lower_limit = -10.0f};
+                .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
+                .upper_limit = 1000.0f,
+                .lower_limit = -1000.0f};
             struct uz_PI_Controller_config config_iq = {
                 .Kp = 0.25f,
                 .Ki = 158.8f,
-                .samplingTime_sec = 0.00005f,
-                .upper_limit = 10.0f,
-                .lower_limit = -10.0f};
+                .samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
+                .upper_limit = 1000.0f,
+                .lower_limit = -1000.0f};
 
         	struct uz_SpeedControl_config config_speed = {
         	    .config_controller.Kp = 1.0f,
         	    .config_controller.Ki = 1.0f,
-        	    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	    .config_controller.samplingTime_sec = 1.0f/SAMPLE_FREQUENCY,
         	    .config_controller.upper_limit = 10.0f,
         	    .config_controller.lower_limit = -10.0f,
         	};

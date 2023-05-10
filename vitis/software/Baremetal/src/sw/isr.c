@@ -94,6 +94,14 @@ void ISR_Control(void *data)
     measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
 
+    // Values to Scope
+    Global_Data.av.I_U = measurement_current.a;
+    Global_Data.av.I_V = measurement_current.b;
+    Global_Data.av.I_W = measurement_current.c;
+
+    Global_Data.av.I_d = dq_measurement_current.d;
+    Global_Data.av.I_q = dq_measurement_current.q;
+
     // Check if Max. Current or Max. Speed is reached
     if ((fabs(measurement_current.a) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.b) > MAX_CURRENT_ASSERTION) || (fabs(measurement_current.c) > MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION)){
     	// Assertion to Stop Machine if max. Current of max. Speed
@@ -108,11 +116,19 @@ void ISR_Control(void *data)
     measurement_voltage.a = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
     measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7 - ADC_PH_VOLT_OFFSET);// Values have to be adjusted to ADC Place and to Current sensors
+    dq_ref_Volts = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
 
+    // Values to Scope
+    Global_Data.av.U_U = measurement_voltage.a;
+    Global_Data.av.U_V = measurement_voltage.b;
+    Global_Data.av.U_W = measurement_voltage.c;
+
+    Global_Data.av.U_d = dq_ref_Volts.d;
+    Global_Data.av.U_q = dq_ref_Volts.q;
 
     // calculating values needed for control
-    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;// w_mech
-    omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * Global_Data.av.polepairs * (2.0f * M_PI) / 60.0f;
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;  // w_mech
+    omega_el_rad_per_sec = omega_m_rad_per_sec * Global_Data.av.polepairs; 				// W_el
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

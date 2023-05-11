@@ -4,8 +4,8 @@
 
 #include "uz_signals.h"
 #include "test_assert_with_exception.h"
-#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-#include "../uz_Transformation/uz_Transformation.h"
+#include <math.h>
+#include "uz_math_constants.h"
 
 void setUp(void)
 {
@@ -82,4 +82,23 @@ void test_uz_signals_saturation_output(void){
     input = -0.7f;
     TEST_ASSERT_EQUAL_FLOAT(lower_limit, uz_signals_saturation(input, upper_limit, lower_limit)); 
 }
+
+void uz_test_wrap_to_2pi_positive(void)
+{
+    float angle1 = 40.0f;
+    TEST_ASSERT_FLOAT_WITHIN(2.3009f, uz_signals_wrap(angle1, 2.0f*UZ_PIf), 0.0001f);    
+}
+
+void uz_test_wrap_to_2pi_negative(void)
+{
+    float angle2 = -30.0f;
+    TEST_ASSERT_FLOAT_WITHIN(1.4159f, uz_signals_wrap(angle2, 2.0f*UZ_PIf), 0.0001f);
+}
+
+void uz_test_wrap_to_2pi_none(void)
+{
+    float angle3 = 1.0f;
+    TEST_ASSERT_FLOAT_WITHIN(1.0f, uz_signals_wrap(angle3, 2.0f*UZ_PIf), 0.0001f);
+}
+
 #endif // TEST

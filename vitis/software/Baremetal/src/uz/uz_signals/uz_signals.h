@@ -1,8 +1,6 @@
-#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-#include "../uz_Transformation/uz_Transformation.h"
-
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
+#include "../uz_math_constants.h"
 
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {
@@ -76,7 +74,13 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
 
-struct uz_DutyCycle_t uz_sinusoidal_pwm(uz_3ph_abc_t input, float V_dc_volts);
-struct uz_DutyCycle_2x3ph_t uz_sinusoidal_pwm_6ph(uz_6ph_abc_t input, float V_dc_volts);
+/**
+ * @brief wraps a number to the range of [0, limit] 
+ * 
+ * @param number number to wrap
+ * @param limit defines the wrapping limit of [0, limit]
+ * @return wrapped number
+ */
+float uz_signals_wrap(float number, float limit);
 
 #endif // UZ_SIGNALS_H

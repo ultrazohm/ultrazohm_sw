@@ -19,7 +19,7 @@
 #include "uz_signals.h"
 #include "../uz_global_configuration.h"
 #include "../uz_HAL.h"
-#include "../uz_math_constants.h"
+#include <math.h>
 
 float uz_signals_dead_zone(float input, float upper_threshold, float lower_threshold) {
 	uz_assert(upper_threshold > lower_threshold);
@@ -47,7 +47,7 @@ float uz_signals_get_sign_of_value(float input) {
 	return (sign);
 }
 float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
-	uz_assert(upper_limit > lower_limit);
+	uz_assert(upper_limit >= lower_limit);
 	float output=0.0f;
 	if (input > upper_limit) {
 		output = upper_limit;
@@ -57,6 +57,22 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit) {
 		output=input;
 	}
 	return (output);
+}
+
+float uz_signals_wrap(float number, float limit){
+	uz_assert(limit > 0.0f);
+	float out  = 0.0f;
+    if((number < limit) && (number >= 0.0f)){
+        out = number;
+	} else {
+		float rem = remainderf(number, limit);
+		if((rem < limit) && (rem >= 0.0f)){
+			out = rem;
+		} else{
+			out = rem + limit;
+		}
+	}
+	return out;
 }
 
 #endif

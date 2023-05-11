@@ -34,3 +34,4 @@ Software Framework
     matrix/matrix_math
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
+    sinus_pwm/sinus_pwm

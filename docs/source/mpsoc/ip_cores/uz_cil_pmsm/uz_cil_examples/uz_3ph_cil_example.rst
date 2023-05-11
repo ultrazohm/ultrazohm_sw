@@ -53,23 +53,27 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
   #include "IP_Cores/uz_pmsm3ph_transformation/uz_pmsm3ph_transformation.h"
   #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
   #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-  #include "uz/uz_FOC/uz_FOC.h"
+  #include "uz/uz_CurrentControl/uz_CurrentControl.h"
+
+  const uz_PMSM_t pmsm_struct = {
+    .I_max_Ampere = 10.0f,
+    .J_kg_m_squared = 0.001f,
+    .Ld_Henry = 0.3f,
+    .Lq_Henry = 0.3f,
+    .Psi_PM_Vs = 0.08f,
+    .R_ph_Ohm = 0.3f,
+    .polePairs = 4.0f};
 
   // PMSM
   uz_pmsm_model3ph_t *pmsm = NULL;
   const struct uz_pmsm_model3ph_config_t cil_pmsm_comfig = {
     .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_3PH_DQ_0_BASEADDR,
     .ip_core_frequency_Hz = 100000000.0f,
-    .polepairs = 4.0f,
-    .r_1 = 0.3f,
-    .L_d = 0.3f,
-    .L_q = 0.3f,
-    .psi_pm = 0.0075f,
+    .pmsm = pmsm_struct,
     .friction_coefficient = 0.001f,
     .coulomb_friction_constant = 0.001f,
-    .inertia = 0.001f,
-    .simulate_mechanical_system = false, //false: set fixed rpm, true: set load torque
-    .switch_pspl = false};               //false: voltage input from CIL, true: voltage input from AXI
+    .simulate_mechanical_system = set_fixed_rpm,
+    .switch_pspl = src_PS};
 
   // Transformation
   uz_pmsm3ph_transformation_t *transformation = NULL;
@@ -102,38 +106,32 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
 
   // FOC (optional)
   const struct uz_PI_Controller_config cil_pi_config = {
-	  .Kp = 1250.0f,
-    .Ki = 78250.0f,
-	  .samplingTime_sec = 0.0001f,
-	  .upper_limit = 100.0f,
-	  .lower_limit = -100.0f};
-  const uz_PMSM_t foc_pmsm = {
-    .I_max_Ampere = 10.0f,
-    .J_kg_m_squared = 0.001f,
-    .Ld_Henry = cil_pmsm_comfig.L_d,
-    .Lq_Henry = cil_pmsm_comfig.L_q,
-    .Psi_PM_Vs = cil_pmsm_comfig.psi_pm,
-    .R_ph_Ohm = cil_pmsm_comfig.r_1,
-    .polePairs = cil_pmsm_comfig.polepairs};
-  uz_FOC *foc = NULL;
-  struct uz_FOC_config cil_foc_config = {
+          .Kp = 1250.0f,
+      .Ki = 78250.0f,
+          .samplingTime_sec = 0.0001f,
+          .upper_limit = 100.0f,
+          .lower_limit = -100.0f};
+
+  uz_CurrentControl_t *cc_instance = NULL;
+  struct uz_CurrentControl_config cil_cc_config = {
     .decoupling_select = no_decoupling,
     .config_id = cil_pi_config,
     .config_iq = cil_pi_config,
-    .config_PMSM = foc_pmsm};
-  ...
+    .config_PMSM = pmsm_struct,
+    .max_modulation_index = 1.0f/sqrtf(3.0f)};
+  //..
   int main(void)
   {
-    ...
+    //..
     case init_ip_cores:
       // init IP-cores
-      pmsm = uz_pmsm_model3ph_init(cil_pmsm_comfig);
-      transformation = uz_pmsm3ph_transformation_init(cil_transformation_config);
-      inverter = uz_inverter_3ph_init(cil_inverter_config);
-      PWM = uz_PWM_SS_2L_init(cil_pwm_config);
-      // init FOC
-      foc = uz_FOC_init(cil_foc_config);
-    ...
+			pmsm = uz_pmsm_model3ph_init(cil_pmsm_comfig);
+			transformation = uz_pmsm3ph_transformation_init(cil_transformation_config);
+			inverter = uz_inverter_3ph_init(cil_inverter_config);
+			PWM = uz_PWM_SS_2L_init(cil_pwm_config);
+			// init FOC
+			cc_instance = uz_CurrentControl_init(cil_cc_config);
+    //..
 
 
 To use the CIL setup, the IP-core's pointers have to be imported to the ``isr.c``.
@@ -146,16 +144,15 @@ Depending on the used controller, this might not be necessary.
 .. code-block:: c
   :caption: Changes in ``isr.c`` (R5)
 
-  ...
+  //..
   // Data for PMSM
   #include "../IP_Cores/uz_pmsm_model_3ph_dq/uz_pmsm_model3ph_dq.h"
   extern uz_pmsm_model3ph_t *pmsm;
   struct uz_pmsm_model3ph_outputs_t pmsm_output = {0};
   struct uz_pmsm_model3ph_inputs_t pmsm_input = {
-      .load_torque = 0.0f,								// torque or omega dont need to be set here, only as an example
+      .load_torque = 0.0f,
       .omega_mech_1_s = 100.0f,
-      .v_d_V = 0.0f,									    // AXI voltage inputs are not used if CIL setup inf FPGA is used
-      .v_q_V = 0.0f};
+      .voltages = {0}};
 
   // Data for Transformation
   #include "../IP_Cores/uz_pmsm3ph_transformation/uz_pmsm3ph_transformation.h"
@@ -165,36 +162,33 @@ Depending on the used controller, this might not be necessary.
   float theta_el = 0.0f;
 
   // Data for Controller
-  #include "../uz/uz_FOC/uz_FOC.h"
+  #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
   uz_3ph_dq_t transformed_currents = {0};
   uz_3ph_dq_t setpoint_currents = {0};
-  uz_3ph_abc_t abc_out_controller = {0};
-  extern uz_FOC *foc;
+  uz_3ph_dq_t out_controller = {0};
+  extern uz_CurrentControl_t *cc_instance;
 
   // Data for PWM
   #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
   extern uz_PWM_SS_2L_t *PWM;
   float V_dc_volts = 100.0f;
+  #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
   struct uz_DutyCycle_t duty_cycle = {0};
-
-  ...
-
+  //..
   void ISR_Control(void *data)
   {
-    ...
+    //..
     // CIL
-    uz_pmsm_model3ph_set_inputs(pmsm,pmsm_input);                                          						  // set omega and load torque (only one active)
-    uz_pmsm_model3ph_trigger_input_strobe(pmsm);																                        // write inputs to HW
-    uz_pmsm_model3ph_trigger_output_strobe(pmsm);																                        // update outputs from HW
+    uz_pmsm_model3ph_set_inputs(pmsm,pmsm_input);                                                       // set omega and load torque (only one active)
+    uz_pmsm_model3ph_trigger_input_strobe(pmsm);                                                        // write inputs to HW
+    uz_pmsm_model3ph_trigger_output_strobe(pmsm);                                                       // update outputs from HW
     pmsm_output = uz_pmsm_model3ph_get_outputs(pmsm);                                                   // read outputs from PMSM
     transformation_currents_abc = uz_pmsm3ph_transformation_get_currents(transformation);               // read current from transformation
     theta_el = uz_pmsm3ph_transformation_get_theta_el(transformation);                                  // read theta from transformation
-
     // Controller
-    transformed_currents = uz_transformation_3ph_abc_to_dq(transformation_currents_abc,theta_el);				         // transform currents to dq
-    abc_out_controller = uz_FOC_sample_abc(foc,setpoint_currents,transformed_currents,V_dc_volts,pmsm_output.omega_mech_1_s,theta_el); // controller
-
+    transformed_currents = uz_transformation_3ph_abc_to_dq(transformation_currents_abc, theta_el);      // transform currents to dq
+    out_controller = uz_CurrentControl_sample(cc_instance, setpoint_currents, transformed_currents, V_dc_volts, pmsm_output.omega_mech_1_s); // controller
     // Duty Cycles
-    duty_cycle = uz_FOC_generate_DutyCycles(abc_out_controller, V_dc_volts); 									                   // create Duty-Cycles
-    uz_PWM_SS_2L_set_duty_cycle(PWM, duty_cycle.DutyCycle_U, duty_cycle.DutyCycle_V, duty_cycle.DutyCycle_W);    // write Duty-Cycles to PWM module
-    ...
+    duty_cycle = uz_Space_Vector_Modulation(out_controller, V_dc_volts, theta_el);                               // create Duty-Cycles
+    uz_PWM_SS_2L_set_duty_cycle(PWM, duty_cycle.DutyCycle_A, duty_cycle.DutyCycle_B, duty_cycle.DutyCycle_C);    // write Duty-Cycles to PWM module
+    //..

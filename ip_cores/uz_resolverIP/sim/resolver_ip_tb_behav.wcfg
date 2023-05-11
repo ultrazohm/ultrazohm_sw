@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="resolver_ip_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="resolver_ip_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="60952187896fs"></ZoomStartTime>
+      <ZoomEndTime time="60969224476fs"></ZoomEndTime>
+      <Cursor1Time time="61005000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="328"></NameColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="27" />
+   <wvobject fp_name="/resolver_ip_tb/sample_trigger" type="logic">
+      <obj_property name="ElementShortName">sample_trigger</obj_property>
+      <obj_property name="ObjectShortName">sample_trigger</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/valid_m" type="logic">
+      <obj_property name="ElementShortName">valid_m</obj_property>
+      <obj_property name="ObjectShortName">valid_m</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/SPI_MOSI" type="logic">
+      <obj_property name="ElementShortName">SPI_MOSI</obj_property>
+      <obj_property name="ObjectShortName">SPI_MOSI</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/SPI_SCLK" type="logic">
+      <obj_property name="ElementShortName">SPI_SCLK</obj_property>
+      <obj_property name="ObjectShortName">SPI_SCLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/SPI_SS" type="logic">
+      <obj_property name="ElementShortName">SPI_SS</obj_property>
+      <obj_property name="ObjectShortName">SPI_SS</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/SPI_MISO" type="logic">
+      <obj_property name="ElementShortName">SPI_MISO</obj_property>
+      <obj_property name="ObjectShortName">SPI_MISO</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/AD2S1210_n_sample" type="logic">
+      <obj_property name="ElementShortName">AD2S1210_n_sample</obj_property>
+      <obj_property name="ObjectShortName">AD2S1210_n_sample</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/AD2S1210_n_fsync" type="logic">
+      <obj_property name="ElementShortName">AD2S1210_n_fsync</obj_property>
+      <obj_property name="ObjectShortName">AD2S1210_n_fsync</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/AD2S1210_mode_A0" type="logic">
+      <obj_property name="ElementShortName">AD2S1210_mode_A0</obj_property>
+      <obj_property name="ObjectShortName">AD2S1210_mode_A0</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/AD2S1210_mode_A1" type="logic">
+      <obj_property name="ElementShortName">AD2S1210_mode_A1</obj_property>
+      <obj_property name="ObjectShortName">AD2S1210_mode_A1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/s_axi_lite_aclk" type="logic">
+      <obj_property name="ElementShortName">s_axi_lite_aclk</obj_property>
+      <obj_property name="ObjectShortName">s_axi_lite_aclk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/uut/Resolver_Interface_v1_0_S00_AXI_inst/AD2S1210_Handler_1/go_sig" type="logic">
+      <obj_property name="ElementShortName">go_sig</obj_property>
+      <obj_property name="ObjectShortName">go_sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/uut/Resolver_Interface_v1_0_S00_AXI_inst/go_sig_s" type="logic">
+      <obj_property name="ElementShortName">go_sig_s</obj_property>
+      <obj_property name="ObjectShortName">go_sig_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/uut/Resolver_Interface_v1_0_S00_AXI_inst/slv_reg0" type="array">
+      <obj_property name="ElementShortName">slv_reg0[31:0]</obj_property>
+      <obj_property name="ObjectShortName">slv_reg0[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/error" type="logic">
+      <obj_property name="ElementShortName">error</obj_property>
+      <obj_property name="ObjectShortName">error</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/AD2S1210_n_reset" type="logic">
+      <obj_property name="ElementShortName">AD2S1210_n_reset</obj_property>
+      <obj_property name="ObjectShortName">AD2S1210_n_reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/position_out_m" type="array">
+      <obj_property name="ElementShortName">position_out_m[15:0]</obj_property>
+      <obj_property name="ObjectShortName">position_out_m[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/velocity_out_m" type="array">
+      <obj_property name="ElementShortName">velocity_out_m[15:0]</obj_property>
+      <obj_property name="ObjectShortName">velocity_out_m[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/s_axi_lite_aresetn" type="logic">
+      <obj_property name="ElementShortName">s_axi_lite_aresetn</obj_property>
+      <obj_property name="ObjectShortName">s_axi_lite_aresetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/stop_the_clock" type="other">
+      <obj_property name="ElementShortName">stop_the_clock</obj_property>
+      <obj_property name="ObjectShortName">stop_the_clock</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/C_S_AXI_Lite_ADDR_WIDTH" type="other">
+      <obj_property name="ElementShortName">C_S_AXI_Lite_ADDR_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">C_S_AXI_Lite_ADDR_WIDTH</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/C_S_AXI_Lite_DATA_WIDTH" type="other">
+      <obj_property name="ElementShortName">C_S_AXI_Lite_DATA_WIDTH</obj_property>
+      <obj_property name="ObjectShortName">C_S_AXI_Lite_DATA_WIDTH</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/clock_period" type="other">
+      <obj_property name="ElementShortName">clock_period</obj_property>
+      <obj_property name="ObjectShortName">clock_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/enable_measure_period" type="other">
+      <obj_property name="ElementShortName">enable_measure_period</obj_property>
+      <obj_property name="ObjectShortName">enable_measure_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/MSG_INIT_1" type="array">
+      <obj_property name="ElementShortName">MSG_INIT_1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">MSG_INIT_1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/resolver_ip_tb/MSG_INIT_2" type="array">
+      <obj_property name="ElementShortName">MSG_INIT_2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">MSG_INIT_2[15:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 3.93
+ * Model version                  : 3.107
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Thu Apr 27 10:33:21 2023
+ * C/C++ source code generated on : Thu May 11 15:36:35 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,10 +64,12 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
+
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
   uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
   uz_ParaID_Controller_Parameters_output_t FOC_out_old;
+  uint64_T u;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
@@ -180,17 +182,17 @@ typedef struct {
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sOrida1dLJHFhz3jwws1fnH_;
+  uint8_T is_c14_sv0Sckqau078RbGvGE1d5EB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_swiDrWmrnFiNemiFZhejbKE_;
+  uint8_T is_c14_sm0xnOfMB680cXA5vjPF5FD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_siDrVKQJrmgth2tO4iYKAXD_;
+  uint8_T is_c14_sLJE4sof4a7ccVLXp5UMVnF_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_sXsuRAan3TDX1V4pP05BViE_;
+  uint8_T is_c14_scoJVX4QYIuDvZKOMqLpBpG_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_suUPVh77ZXqqMHR03zyk1ZB_;
+  uint8_T is_c14_sdur09m9ZiNCBhgsFyDZcJH_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_sMWbr9x0gq9qn9qDdVLZeFF_;
+  uint8_T is_c14_sXPvdahdnwsCE5u1qqu58tE_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;

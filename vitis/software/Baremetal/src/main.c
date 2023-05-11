@@ -152,12 +152,14 @@ int main(void) {
 					.decoupling_select = linear_decoupling,
 					.config_id = PI_config_d,
 					.config_iq = PI_config_q,
-					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+					.max_modulation_index = 1.0f/sqrtf(3.0f)};
 			struct uz_CurrentControl_config cc_config_2 = {
 					.decoupling_select = no_decoupling,
 					.config_id = PI_config_x,
 					.config_iq = PI_config_y,
-					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config };
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+					.max_modulation_index = 1.0f/sqrtf(3.0f)};
 			struct uz_resonantController_config resonant_config_dq = {
 					.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
 					.gain = 50.0f,

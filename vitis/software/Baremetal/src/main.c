@@ -115,8 +115,8 @@ int main(void)
 
 
 			struct uz_PI_Controller_config PI_config_dq = {
-					.Ki = 1500.0f,
-					.Kp = 10.0f,
+					.Ki = 1000.0f,
+					.Kp = 5.0f,
 					.samplingTime_sec = ParaID_Data.GlobalConfig.sampleTimeISR,
 					.lower_limit = -20.0f,
 					.upper_limit = 20.0f };
@@ -130,12 +130,14 @@ int main(void)
 					.decoupling_select = linear_decoupling,
 					.config_id = PI_config_dq,
 					.config_iq = PI_config_dq,
-					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+					.max_modulation_index = 1/sqrtf(3.0f)};
 			struct uz_CurrentControl_config cc_config_2 = {
 					.decoupling_select = no_decoupling,
 					.config_id = PI_config_xy,
 					.config_iq = PI_config_xy,
-					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config };
+					.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+					.max_modulation_index = 1/sqrtf(3.0f)};
 			struct uz_PI_Controller_config PI_config_zero = {
 				.Ki = 100.0f,
 				.Kp = 15.0f,
@@ -146,7 +148,8 @@ int main(void)
 				.decoupling_select = no_decoupling,
 				.config_id = PI_config_zero,
 				.config_iq = PI_config_zero,
-				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
+				.config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+				.max_modulation_index = 1/sqrtf(3.0f)};
 			struct uz_resonantController_config resonant_config_dq = {
 					.sampling_time = ParaID_Data.GlobalConfig.sampleTimeISR,
 					.gain = 1000.0f,

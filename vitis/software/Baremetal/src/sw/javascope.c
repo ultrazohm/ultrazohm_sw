@@ -161,7 +161,36 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
 	js_slowDataArray[JSSD_FLOAT_avg_winding_temp]		= &(ParaID_Data.ActualValues.average_winding_temp);
-
+	js_slowDataArray[JSSD_FLOAT_Psi_0]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[0]);
+		js_slowDataArray[JSSD_FLOAT_Psi_1]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[1]);
+		js_slowDataArray[JSSD_FLOAT_Psi_2]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[2]);
+		js_slowDataArray[JSSD_FLOAT_Psi_3]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[3]);
+		js_slowDataArray[JSSD_FLOAT_Psi_4]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[4]);
+		js_slowDataArray[JSSD_FLOAT_Rs_d]      				= &(ParaID_Data.ElectricalID_Output->resistances_6ph.d);
+		js_slowDataArray[JSSD_FLOAT_Rs_q]      				= &(ParaID_Data.ElectricalID_Output->resistances_6ph.q);
+		js_slowDataArray[JSSD_FLOAT_Rs_X]      				= &(ParaID_Data.ElectricalID_Output->resistances_6ph.x);
+		js_slowDataArray[JSSD_FLOAT_Rs_Y]      				= &(ParaID_Data.ElectricalID_Output->resistances_6ph.y);
+		js_slowDataArray[JSSD_FLOAT_Rs_Z1]      			= &(ParaID_Data.ElectricalID_Output->resistances_6ph.z1);
+		js_slowDataArray[JSSD_FLOAT_Rs_Z2]      			= &(ParaID_Data.ElectricalID_Output->resistances_6ph.z2);
+		js_slowDataArray[JSSD_FLOAT_L_d]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.d);
+		js_slowDataArray[JSSD_FLOAT_L_q]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.q);
+		js_slowDataArray[JSSD_FLOAT_L_X]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.x);
+		js_slowDataArray[JSSD_FLOAT_L_Y]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.y);
+		js_slowDataArray[JSSD_FLOAT_L_Z1]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z1);
+		js_slowDataArray[JSSD_FLOAT_L_Z2]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z2);
+		js_slowDataArray[JSSD_FLOAT_set_rpm_val]      		= &(ParaID_Data.ElectricalID_Output->set_rpm_val);
+		js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation.progress);
+		js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(index_array);
+		js_slowDataArray[JSSD_FLOAT_out_i_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[0]);
+		js_slowDataArray[JSSD_FLOAT_out_i_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[1]);
+		js_slowDataArray[JSSD_FLOAT_out_psi_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[2]);
+		js_slowDataArray[JSSD_FLOAT_out_psi_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[3]);
+		js_slowDataArray[JSSD_FLOAT_average_winding_temp]	= &(ParaID_Data.ActualValues.average_winding_temp);
+		js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(index_array);
+		js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(values_milli[0]);
+		js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(values_milli[1]);
+		js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
+		js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
 	return Status;
 }
 

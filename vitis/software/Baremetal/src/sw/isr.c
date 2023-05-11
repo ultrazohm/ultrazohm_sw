@@ -64,7 +64,7 @@ extern DS_Data Global_Data;
 #define MAX_TEMP_DEG 90.0f
 
 //neutral config
-#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+#define NEUTRAL_CONFIG 1U //1U: 1N, 2U: 2N, 3U: zero fluxmap
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 float u_a1c1 = 0.0f;
@@ -225,10 +225,10 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.v_abc_6ph = m_6ph_abc_voltage;	ParaID_Data.ActualValues.V_DC = (Global_Data.av.v_dc1 + Global_Data.av.v_dc2)/2.0f;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
 	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
-//	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;
-//	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
-	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
-	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
+	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver;
+	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs - ParaID_Data.ElectricalID_Output->thetaOffset;
+//	ParaID_Data.ActualValues.theta_m = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
+//	ParaID_Data.ActualValues.theta_el = ParaID_Data.ActualValues.theta_m * Global_Data.av.polepairs;
 	ParaID_Data.ActualValues.average_winding_temp = Global_Data.av.avg_winding_temperature;
 	// inside:
 	uz_ParameterID_6ph_process_actual_values(&ParaID_Data, u_a1c1, u_a2c2);

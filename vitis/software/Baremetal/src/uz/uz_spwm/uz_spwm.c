@@ -32,10 +32,10 @@ struct uz_DutyCycle_t uz_spwm_abc(uz_3ph_abc_t input, float V_dc_volts){
 	output.DutyCycle_A = uz_signals_saturation(output.DutyCycle_A, 1.0f, 0.0f);
 	output.DutyCycle_B = uz_signals_saturation(output.DutyCycle_B, 1.0f, 0.0f);
 	output.DutyCycle_C = uz_signals_saturation(output.DutyCycle_C, 1.0f, 0.0f);
-	return(output);
+	return output;
 }
 
-struct uz_DutyCycle_2x3ph_t uz_spwm_abc_dq(uz_6ph_dq_t input, float V_dc_volts, float theta_el_rad){
+struct uz_DutyCycle_2x3ph_t uz_spwm_dq_6ph(uz_6ph_dq_t input, float V_dc_volts, float theta_el_rad){
 	return uz_spwm_abc_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(input, theta_el_rad), V_dc_volts);
 }
 
@@ -49,8 +49,8 @@ struct uz_DutyCycle_2x3ph_t uz_spwm_abc_6ph(uz_6ph_abc_t input, float V_dc_volts
 		.b = input.b2,
 		.c = input.c2};
     struct uz_DutyCycle_2x3ph_t output = {
-        .system1 = uz_sinusoidal_pwm(abc_system1, V_dc_volts),
-        .system2 = uz_sinusoidal_pwm(abc_system2, V_dc_volts)};
+        .system1 = uz_spwm_abc(abc_system1, V_dc_volts),
+        .system2 = uz_spwm_abc(abc_system2, V_dc_volts)};
 	return output;
 }
 

@@ -27,7 +27,7 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
  * @brief Calculates reference torque 
  * 
  * @param self pointer to uz_SpeedControl_t object
- * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
+ * @param omega_m_rad_per_sec mechanical rotational speed in rad/s
  * @param n_ref_rpm reference speed in 1/min
  * @return reference torque in Nm
  */

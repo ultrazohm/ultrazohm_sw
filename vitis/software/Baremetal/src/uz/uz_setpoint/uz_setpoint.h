@@ -48,7 +48,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config);
  * @brief Calculates reference currents based on MTPA or FW strategy and different motor topologies 
  * 
  * @param self pointer to uz_SetPoint_t object
- * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
+ * @param omega_m_rad_per_sec mechanical rotational speed in rad/s
  * @param M_ref_Nm reference torque in Nm
  * @param V_DC_Volts DC-link voltage in Volts
  * @param actual_currents_Ampere uz_3ph_dq_t struct with measured currents in Ampere

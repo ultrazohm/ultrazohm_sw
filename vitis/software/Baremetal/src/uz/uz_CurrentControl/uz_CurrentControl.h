@@ -47,7 +47,7 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
  * @return uz_dq_t Output dq-reference voltage struct
  */
 uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec);
@@ -59,7 +59,7 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
- * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
  * @param theta_el_rad electrical theta in rad
  * @return uz_3ph_abc_t Output abc-voltage struct
  */

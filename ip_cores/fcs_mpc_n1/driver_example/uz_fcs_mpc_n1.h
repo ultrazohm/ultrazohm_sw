@@ -37,3 +37,4 @@ void pred_ctrl_N1_read_Uopt(int Uopt[3]);
 void pred_ctrl_N1_set_copy_flag(u32 copy_flag);
 void pred_ctrl_N1_autostart_disable();
 
+void load_plant_model(plant_str* plant_model);

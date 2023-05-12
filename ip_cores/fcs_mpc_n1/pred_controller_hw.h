@@ -13,7 +13,7 @@
 #define Nh		1	// prediction horizon
 #define Nin		3	// number of inputs, size of U
 #define Nout	2	// number of outputs, size of Y
-#define Nx		2	// number of states, size of X
+#define Nx		4	// number of states, size of X
 #define Nopt    (Nh*Nin)	// size of the optimal solution
 #define Nref 	Nout	//Nout*Nh 	// horizon of reference vector reference, the IP core might be designed for longer horizons
 

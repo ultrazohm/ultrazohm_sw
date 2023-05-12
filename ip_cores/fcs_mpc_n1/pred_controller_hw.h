@@ -19,10 +19,6 @@
 
 #define Nsw_combs 8 // 2^3 - number of switching candidates
 
-#define BITS_NinNh 2	// how many bits are necessary to count to Nin*Nh = ceiling(log2(Nin*Nh)), 4bits works up to Nh=5
-
-
-
 
 // VISUAL_STUDIO is defined in VS project as pre-processor definition
 #ifdef VISUAL_STUDIO

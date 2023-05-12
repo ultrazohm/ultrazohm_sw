@@ -61,7 +61,7 @@ void ctrl_wrapper(	float X_KK_src[Nx],		float Y_REF_KK_src[Nref],
 
 	#pragma HLS ARRAY_PARTITION variable=U_opt		complete dim=1
 
-	x_kk_cpy:for(uint2 row=0;row<Nx;row++){
+	x_kk_cpy:for(uint3 row=0;row<Nx;row++){
 	#pragma HLS PIPELINE
 		X_KK[row] = X_KK_src[row];
 	}

@@ -185,7 +185,28 @@ void test_uz_matrix_transpose(void)
     uz_matrix_transpose(A);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
 }
+void test_uz_matrix_transpose2(void)
+{
+    uint32_t rows = 1;
+    uint32_t columns = 1;
+    float A_data[1] = {1};
+    // Initial 3x5
+    // 1  2  3  4  5
+    // 6  7  8  9  10
+    // 11 12 13 14 15
 
+    float expected[1] = {1};
+    // Transposed 5x3
+    // 1 6 11
+    // 2 7 12
+    // 3 8 13
+    // 4 9 14
+    // 5 10 15
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),rows,columns);
+
+    uz_matrix_transpose(A);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(expected, A_data, UZ_MATRIX_SIZE(expected));
+}
 
 void test_uz_matrix_copy_matrix(void){
     uint32_t rows = 3;

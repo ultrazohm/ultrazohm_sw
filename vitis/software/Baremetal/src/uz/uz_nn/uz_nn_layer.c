@@ -175,21 +175,21 @@ void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
 }
 
-void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    // loop to calculate error in the last layer
-    for(size_t i=0;i<self->output->length_of_data;i++){
+// void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     // loop to calculate error in the last layer
+//     for(size_t i=0;i<self->output->length_of_data;i++){
 
-        self->error->data[i]=reference[i]-self->output->data[i];
+//         self->error->data[i]=reference[i]-self->output->data[i];
 
-    }
-    uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-    uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-    uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
-}
+//     }
+//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
+//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
+//     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
+//     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
+// }
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
@@ -204,12 +204,13 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     // {
     // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
     // uz_matrix_transpose(self->cachegradients); 
-    
+    // }
     // /* diese Zeile ist nur damit am Schluss der Gradient gleich ist wie im Example, an sich ist es ja nicht nötig, da der Mittelwert
     // über alle Gradienten gebildet wird */
     // }
     // //layer 1
-    // else if(outputprev->rows==1 && outputprev->columns == 1){
+    // else if(outputprev->rows==1 && outputprev->columns == 1)
+    // {
     //     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
     // }
     // // layer 3
@@ -220,13 +221,21 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     // 20.03.23: Problem behoben, indem in der Config self->cachegradients als Zeilenvektor angelegt wurde,
     // somit gibt es auch kein Problem mehr in der Loop in schroeder_example und es muss nur eine instanz initialisiert werden,
     // damit die 13 Trainingspaare berechnet werden können*/
-    // //uz_matrix_transpose(outputprev);
+    // uz_matrix_transpose(outputprev);
     // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
     // }
 
     //matrizen zusammenstellen und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
     
 }
+void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);
+}
+
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
 uint32_t bias_index = self->bias->length_of_data;
@@ -273,7 +282,7 @@ void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *c
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_assert(self->gradients->data == gradientmatrix->data); //assert wenn matrix nichts gleiche länge haben
+    uz_assert(self->gradients->data == gradientmatrix->data); //assert wenn matrix nicht gleiche länge haben
     for(uint32_t i=0U;i<self->gradients->length_of_data;i++){
         self->gradients->data[i] = gradientmatrix->data[i];
     }

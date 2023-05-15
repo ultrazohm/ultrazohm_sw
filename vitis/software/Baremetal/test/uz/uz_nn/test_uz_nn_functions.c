@@ -294,12 +294,12 @@ void test_uz_nn_set_gradient_matrix(void)
     float t1[UZ_MATRIX_SIZE(g_32)]={1.0f,2.0f,3.0f,4.0,5.0f,60.0f,70.0f,80.0f,90.0f,100.0f,1000.0f};
     struct uz_matrix_t gradmax={0};
     uz_matrix_t* gradxx=uz_matrix_init(&gradmax, t1,UZ_MATRIX_SIZE(t1),UZ_MATRIX_SIZE(t1),1);
-    //uz_nn_set_gradient_matrix(testsetgrad,gradxx, 3);
-    // uz_matrix_t* gradsoll = uz_nn_get_gradient_data(testsetgrad,3);
-    // for(uint32_t i=0U;i<gradsoll->length_of_data;i++){
-    //         float x = 0.0f;
-    //         x = gradsoll->data[i];
-    //         TEST_ASSERT_EQUAL_FLOAT(x,f1[i]);
-    // }
+    uz_nn_set_gradient_matrix(testsetgrad,gradxx, 3);
+    uz_matrix_t* gradsoll = uz_nn_get_gradient_data(testsetgrad,3);
+    for(uint32_t i=0U;i<gradsoll->length_of_data;i++){
+            float x = 0.0f;
+            x = gradsoll->data[i];
+            TEST_ASSERT_EQUAL_FLOAT(x,f1[i]);
+    }
 }
 #endif // TEST

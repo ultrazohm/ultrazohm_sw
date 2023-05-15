@@ -282,7 +282,7 @@ void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *c
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_assert(self->gradients->data == gradientmatrix->data); //assert wenn matrix nicht gleiche länge haben
+    uz_assert(self->gradients->length_of_data == gradientmatrix->length_of_data); //assert wenn matrix nicht gleiche länge haben
     for(uint32_t i=0U;i<self->gradients->length_of_data;i++){
         self->gradients->data[i] = gradientmatrix->data[i];
     }

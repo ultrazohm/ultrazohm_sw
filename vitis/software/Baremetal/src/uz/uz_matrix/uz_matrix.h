@@ -104,6 +104,8 @@ void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz
  * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the elementwise product is written to C_out
  */
+void uz_matrix_hadamard_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+
 void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
 
 /**

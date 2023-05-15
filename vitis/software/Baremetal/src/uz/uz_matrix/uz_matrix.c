@@ -164,6 +164,24 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     }
 }
 
+
+void uz_matrix_hadamard_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    // see https://de.wikipedia.org/wiki/Hadamard-Produkt
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    // same length is mandatory
+    //uz_assert((A->length_of_data) == (B->length_of_data) == (C_out->length_of_data));
+    // same dimension for columns and rowsS
+    // uz_assert((A->rows) == (A->columns) == (B->rows) == (B->columns)  == (C_out->rows) == (C_out->columns));
+    // loop through data
+    for (uint32_t i = 0; i < C_out->length_of_data; i++)
+    {
+        C_out->data[i] = A->data[i] * B->data[i];
+    }
+}
+
 void uz_matrix_set_zero(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
@@ -416,12 +434,12 @@ uz_assert(A->length_of_data);
 uz_assert(B->length_of_data);
 uz_assert(C_out->length_of_data);
 uz_matrix_set_zero(C_out);
-for (uint32_t row = 0; row < A->rows; row++)
+for (uint32_t column = 0; column < A->columns; column++)
 {
-        for (uint32_t column = 0; column < A->columns; column++)
-        {
-            C_out->data[(row * A->columns) + column] = A->data[(row * A->columns) + column];
-        }
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+    C_out->data[(column * A->rows) + row] = A->data[(row * A->columns) + column];
+    }
 }
 
 for (uint32_t row2 = 0; row2 < B->rows; row2++)

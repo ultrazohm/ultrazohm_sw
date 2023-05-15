@@ -72,7 +72,6 @@ float bx12[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 };
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
-
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
 #include "functions_weights/g2.csv"
 };

@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 2000
+#define NUMBER_OF_EPOCHS 16
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -95,6 +95,11 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] =
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
+// float msetest [NUMBER_OF_EPOCHS] = {0.0f};
+//Mse array for testing reasons
+float msetest [16] ={
+#include "matlab_weights/mse.csv"
+};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -203,14 +208,13 @@ void test_uz_nn_matlab(void)
        // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
        // MSE Berechnen für Trainingsdatenpaar
-       float msetest [NUMBER_OF_EPOCHS];
-       msetest[i] =  uz_nn_mse(output,refout);
+       // msetest[i] =  uz_nn_mse(output,refout);
        float * mse = &msetest[i];
        float result=uz_matrix_get_element_zero_based(output,0,0);
        printf("output von step %d ist = %.8f \n",(int)i, (double)result);
        printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
        uz_nn_backward_pass(test,mse,input);
-       float lernrate = 0.01f;
+       float lernrate = 0.001f;
        uz_nn_gradient_descent(test,lernrate);
        }
        // exportieren nach matlab

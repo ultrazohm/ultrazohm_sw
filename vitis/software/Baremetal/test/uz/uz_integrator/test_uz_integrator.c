@@ -22,7 +22,7 @@ void test_uz_integrator_zero_input_zero_output(void)
     float result = uz_integrator_eulerforward(input, old_value, ts, clamping);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, result);
 }
-
+y
 void test_uz_integrator_zero_to_one(void)
 {
     float input = 1.0f;

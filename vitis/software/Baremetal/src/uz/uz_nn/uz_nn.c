@@ -131,13 +131,14 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
     }
          //Berechne alle Gradienten
     //Gradient output + alle hidden layer
-    // for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
-    // {
-    //         uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
-    // }
-    uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
-    uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+    for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
+    {
+            uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+    }
     uz_nn_layer_calc_gradients(self->layer[0],input);
+    // uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
+    // uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+    // uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
 
@@ -293,6 +294,12 @@ uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer)
     return uz_nn_layer_get_gradient_data(self->layer[layer - 1]);
 }
 
+uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_cachegradient_data(self->layer[layer - 1]);
+}
 
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const *const self)
 {

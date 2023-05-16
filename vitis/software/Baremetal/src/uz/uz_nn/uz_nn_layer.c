@@ -196,7 +196,7 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);
+    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
     // if else statement macht probleme => switch case
      // check for the dimension of outputprev and delta, if necessary transpose outputprev
     //layer 2
@@ -233,7 +233,7 @@ void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_1d(self->cachegradients,self->delta,self->gradients);
+    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
 }
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
@@ -332,6 +332,13 @@ uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self)
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return (self->delta);
+}
+
+uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const*const self)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return (self->cachegradients);
 }
 
 uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const*const self)

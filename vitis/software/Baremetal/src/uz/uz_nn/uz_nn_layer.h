@@ -101,4 +101,5 @@ uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_localgradients(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self);
 uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const*const self);
 #endif // UZ_NN_LAYER_H

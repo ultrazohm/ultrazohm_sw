@@ -31,6 +31,7 @@ void fcsmpc_n1(
 		#pragma HLS PIPELINE
 		for (uint3 j = 0; j < Nx; j++)
 		{
+		#pragma HLS PIPELINE
 			if(j==0)
 				A_x[i] =  A_mat[i][j] * xkk[j]; // reset value
 			else
@@ -44,6 +45,7 @@ void fcsmpc_n1(
 	float Ax_iref[Nout];
 	#pragma HLS ARRAY_PARTITION variable=Ax_iref complete dim=1
 	calc_Ax_iref:for (uint2 j = 0; j < Nout; j++){
+#pragma HLS PIPELINE
 		Ax_iref[j] = A_x[j] - ykk[j];
 	}
 	// all switch combinations, maybe naive :)
@@ -66,9 +68,11 @@ void fcsmpc_n1(
 	#pragma HLS ARRAY_PARTITION variable=B_u complete dim=0
 	if(matrices_updated == true) {
 		calc_Bu_Nsw:for (uint3 i = 0; i < Nout; i++){
+#pragma HLS PIPELINE
 			for (uint2 j = 0; j < Nin; j++){
+#pragma HLS PIPELINE
 				for (uint5 sw = 0; sw < Nsw_combs; sw++) {
-
+#pragma HLS PIPELINE
 						if(j==0) // reset value
 						{
 							if (u_cand[sw][j] ==	1){	// +1
@@ -113,6 +117,7 @@ void fcsmpc_n1(
 	if(lambda_u_local[1] != lambda_u){
 		lambda_u_local[1] = lambda_u;
 		calc_lambdau:for(uint4 i = 2; i< LAMBDA_VALUES_MAX; i++){
+#pragma HLS PIPELINE
 			lambda_u_local[i] = lambda_u*i;
 		}
 	}
@@ -126,7 +131,7 @@ void fcsmpc_n1(
 
 
 	calc_cost_u:for(uint5 i = 0; i < Nsw_combs; i++){
-
+#pragma HLS PIPELINE
 		u_delta[i]  = abs(ukk[0] - u_cand[i][0]);
 		u_delta[i] += abs(ukk[1] - u_cand[i][1]);
 		u_delta[i] += abs(ukk[2] - u_cand[i][2]);

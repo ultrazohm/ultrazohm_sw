@@ -603,7 +603,7 @@ proc create_hier_cell_adc_debug { parentCell nameHier } {
   # Create instance: system_ila_0, and set properties
   set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
   set_property -dict [list \
-    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_DATA_DEPTH {1024} \
     CONFIG.C_MON_TYPE {NATIVE} \
     CONFIG.C_NUM_OF_PROBES {12} \
   ] $system_ila_0
@@ -1105,7 +1105,7 @@ proc create_hier_cell_DataMover { parentCell nameHier } {
   # Create instance: system_ila_0, and set properties
   set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
   set_property -dict [list \
-    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_DATA_DEPTH {1024} \
     CONFIG.C_MON_TYPE {NATIVE} \
     CONFIG.C_NUM_OF_PROBES {5} \
   ] $system_ila_0
@@ -1193,7 +1193,7 @@ proc create_hier_cell_D5_adapter { parentCell nameHier } {
   # Create instance: system_ila_0, and set properties
   set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
   set_property -dict [list \
-    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_DATA_DEPTH {1024} \
     CONFIG.C_MON_TYPE {NATIVE} \
     CONFIG.C_NUM_MONITOR_SLOTS {8} \
     CONFIG.C_NUM_OF_PROBES {8} \

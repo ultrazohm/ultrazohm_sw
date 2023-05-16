@@ -406,8 +406,9 @@ for (uint32_t k = 0; k < n; k++)
 }
 }
 
-void uz_matrix_reshape_1d(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
-
+void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically
+// see cat(1,reshape(A,[],1),reshape(B,[],1))
 {
 uz_assert_not_NULL(A);
 uz_assert_not_NULL(B);

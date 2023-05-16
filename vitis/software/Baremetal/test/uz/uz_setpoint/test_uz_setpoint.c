@@ -25,6 +25,9 @@ void setUp(void)
     config.is_field_weakening_enabled = false;
     currents.d = 0.0f;
     currents.q = 0.0f;
+    omega_m_rad_per_sec = 0.0f;
+    M_ref_Nm = 0.045f;
+    V_DC_Volts = 24.0f;
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){
@@ -333,6 +336,28 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, M_output);
 }
 
+void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out_second_motor(void)
+{
+    // Results for comparision from simulation
+    config.motor_type = IPMSM;
+   config.config_PMSM.Ld_Henry= 30e-6f;
+    config.config_PMSM.Lq_Henry = 50e-6f;
+    config.config_PMSM.R_ph_Ohm = 0.01664f;
+    config.config_PMSM.Psi_PM_Vs = 7e-3f;
+    config.config_PMSM.polePairs = 5.0f;
+    config.config_PMSM.I_max_Ampere=1000.0f;
+    uz_SetPoint_t *instance = uz_SetPoint_init(config);
+    M_ref_Nm = 1.0f;
+    omega_m_rad_per_sec=50.0f;
+    V_DC_Volts=12.0f;
+    uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+
+   // TEST_ASSERT_FLOAT_WITHIN(1e-03, 36.9712f, output.q);
+   // TEST_ASSERT_FLOAT_WITHIN(1e-03, -15.1604f, output.d);
+   // float M_output = 1.5f * config.config_PMSM.polePairs * output.q * (config.config_PMSM.Psi_PM_Vs + (config.config_PMSM.Ld_Henry - config.config_PMSM.Lq_Henry) * output.d);
+   // TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, M_output);
+}
+
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_negative_M_out(void){
     //Results for comparision from simulation
     config.motor_type = IPMSM;
@@ -364,7 +389,6 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_multiple_instances(void){
     uz_3ph_dq_t output2 = uz_SetPoint_sample(instance2, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 33.3333f, output2.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -16.6667f, output2.d);
-
 }
 
 

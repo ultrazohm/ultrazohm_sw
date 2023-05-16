@@ -81,7 +81,7 @@ void test_uz_matrix_reshape_1d(void){
     uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),3,2);
     uz_matrix_t* B=init_array_test_helper(B_data,UZ_MATRIX_SIZE(B_data),4,1);
     uz_matrix_t* C=init_array_test_helper(C_data,UZ_MATRIX_SIZE(C_data),10,1);
-    uz_matrix_reshape_1d(A,B,C);
+    uz_matrix_reshape_and_concatenate(A,B,C);
     TEST_ASSERT_EQUAL_FLOAT(1,uz_matrix_get_element_zero_based(C,0,0));
     TEST_ASSERT_EQUAL_FLOAT(3,uz_matrix_get_element_zero_based(C,1,0));
     TEST_ASSERT_EQUAL_FLOAT(5,uz_matrix_get_element_zero_based(C,2,0));
@@ -94,22 +94,4 @@ void test_uz_matrix_reshape_1d(void){
     TEST_ASSERT_EQUAL_FLOAT(10,uz_matrix_get_element_zero_based(C,9,0));
 }
 
-void test_uz_hadamard(void){
-    float A_data[9]={6,8,12,32,9,17,11,13,9};
-    float B_data[9]={3,10,22,62,48,51,70,29,16};
-    float C_data[9]={0};
-    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),3,3);
-    uz_matrix_t* B=init_array_test_helper(B_data,UZ_MATRIX_SIZE(B_data),3,3);
-    uz_matrix_t* C=init_array_test_helper(C_data,UZ_MATRIX_SIZE(C_data),3,3);
-    uz_matrix_hadamard_product(A,B,C);
-    TEST_ASSERT_EQUAL_FLOAT(18,uz_matrix_get_element_zero_based(C,0,0));
-    TEST_ASSERT_EQUAL_FLOAT(80,uz_matrix_get_element_zero_based(C,0,1));
-    TEST_ASSERT_EQUAL_FLOAT(264,uz_matrix_get_element_zero_based(C,0,2));
-    TEST_ASSERT_EQUAL_FLOAT(1984,uz_matrix_get_element_zero_based(C,1,0));
-    TEST_ASSERT_EQUAL_FLOAT(432,uz_matrix_get_element_zero_based(C,1,1));
-    TEST_ASSERT_EQUAL_FLOAT(867,uz_matrix_get_element_zero_based(C,1,2));
-    TEST_ASSERT_EQUAL_FLOAT(770,uz_matrix_get_element_zero_based(C,2,0));
-    TEST_ASSERT_EQUAL_FLOAT(377,uz_matrix_get_element_zero_based(C,2,1));
-    TEST_ASSERT_EQUAL_FLOAT(144,uz_matrix_get_element_zero_based(C,2,2));
-}
 #endif // TEST

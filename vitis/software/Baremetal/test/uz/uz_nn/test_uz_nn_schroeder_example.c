@@ -15,6 +15,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 2
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 2
+#define NUMBER_OF_EPOCHS 200
 
 // stuff for training and update
 // sumout
@@ -224,19 +225,13 @@ void test_uz_nn_schroeder(void)
     uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     for (size_t i = 0; i < 13; i++)
     {
-    // uz_nn_t* testlooper = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
-    // testing around with derivatemat declaration
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* eingabe=uz_matrix_init(&x_matrix,&x[i],1,1,NUMBER_OF_INPUTS);
     uz_nn_ff(test,eingabe);
-    //
     uz_matrix_t* output=uz_nn_get_output_data(test);
     float result=uz_matrix_get_element_zero_based(output,0,0);
     float error = reference_output[i]- result;
-    float const *ptr = &error;
-    uz_nn_backward_pass(test,ptr,eingabe);
-    //
-    //uz_nn_calc_gradients(test,&reference_output[i],eingabe);
+    uz_nn_backward_pass(test,&error,eingabe);
     uz_matrix_t* gradhelp1 = uz_nn_get_gradient_data(test,1); // index 1-3 verwenden für nn mit 3 layern
     THETAhelper[i] = uz_matrix_get_element_zero_based(gradhelp1,0,0);// THETA 1,1 
     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);// bias 1,1

@@ -95,11 +95,11 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] =
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
-// float msetest [NUMBER_OF_EPOCHS] = {0.0f};
+//float msetest [NUMBER_OF_EPOCHS] = {0.0f};
 //Mse array for testing reasons
-float msetest [16] ={
-#include "matlab_weights/mse.csv"
-};
+ float msetest [16] ={
+ #include "matlab_weights/mse.csv"
+ };
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -205,11 +205,10 @@ void test_uz_nn_matlab(void)
        for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
        {
        uz_nn_ff(test,input);
-       // check output
        uz_matrix_t* output=uz_nn_get_output_data(test);
        // MSE Berechnen für Trainingsdatenpaar
-       // msetest[i] =  uz_nn_mse(output,refout);
-       float * mse = &msetest[i];
+       //msetest[i] =  uz_nn_mse(output,refout);
+       float *mse = &msetest[i];
        float result=uz_matrix_get_element_zero_based(output,0,0);
        printf("output von step %d ist = %.8f \n",(int)i, (double)result);
        printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
@@ -218,7 +217,7 @@ void test_uz_nn_matlab(void)
        uz_nn_gradient_descent(test,lernrate);
        }
        // exportieren nach matlab
-       uz_nn_mat_export(test);
+       //uz_nn_mat_export(test);
        clock_t end = clock();
        float seconds = (float)(end - start) / CLOCKS_PER_SEC;
        printf("Zeit des Tests = %.6f \n", (double)seconds);

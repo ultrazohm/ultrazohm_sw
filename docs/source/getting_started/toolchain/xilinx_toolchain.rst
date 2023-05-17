@@ -42,6 +42,6 @@ Xilinx Toolchain
 
     .. image:: ./images_installation/vitis_website7_2022.png
 
-#. After the installation, apply the following bugfix: `https://support.xilinx.com/s/article/000034848?language=en_US`_
+#. After the installation, apply the following bugfix: `Xilinx bugfix <https://support.xilinx.com/s/article/000034848?language=en_US>`_
 #. Download the .zip file from the support page
 #. Navigate to your Vitis installation (e.g., ``D:\Xilinx\Vitis\2022.2``) and copy the content of the .zip file to this folder (override existing files in the scripts folder inside Vitis installation)

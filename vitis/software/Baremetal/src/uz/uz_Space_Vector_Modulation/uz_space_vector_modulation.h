@@ -18,7 +18,7 @@ struct uz_DutyCycle_t {
  * 
  * @param v_ref_Volts reference voltages in Volts (e.g. from current controller)
  * @param V_dc_volts DC-Link voltage in volts
- * @param theta_el_rad electrical angle speed in rad/s
+ * @param theta_el_rad electrical rotor angle in rad
  * @return struct uz_DutyCycle_t generated DutyCycles
  */
 struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad);

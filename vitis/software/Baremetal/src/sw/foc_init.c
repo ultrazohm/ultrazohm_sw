@@ -1,7 +1,6 @@
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
-#include <math.h>
 
     const struct uz_PMSM_t Beckhoff_AM8141 = {
       .R_ph_Ohm = 0.45,
@@ -65,7 +64,7 @@
 	  .config_id = config_id_d1,
 	  .config_iq = config_iq_d1,
 	  .decoupling_select = no_decoupling,
-	  .max_modulation_index = 1.0f/sqrtf(3.0f)
+	  .max_modulation_index = 1.0f/sqrt(3.0f)
    };
 
    struct uz_CurrentControl_config config_current_ctrl_d2 = {
@@ -73,7 +72,7 @@
 	  .config_id = config_id_d2,
 	  .config_iq = config_iq_d2,
 	  .decoupling_select = no_decoupling,
-	  .max_modulation_index = 1.0f/sqrtf(3.0f)
+	  .max_modulation_index = 1.0f/sqrt(3.0f)
    };
 
    uz_CurrentControl_t* current_ctrl_d1_init(void) {

@@ -113,10 +113,10 @@ void ISR_Control(void *data)
     i_abc_d2.c = Global_Data.av.i_c_d2;
 
     // check for current limit
-//    if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
-//   		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
-//    	uz_assert(NULL);
-//    }
+    if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
+   		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
+    	uz_assert(NULL);
+    }
 
     // claculate mean temp values over all measured temps of each inverter
     Global_Data.av.mean_temp_inv_d1 = (Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L3) * 0.1667;

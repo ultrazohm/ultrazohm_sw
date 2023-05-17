@@ -187,7 +187,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			data->rasv.n_ref_d1 = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -195,11 +195,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+			data->rasv.i_dq_ref_d2.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			data->rasv.i_dq_ref_d2.q = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -211,31 +211,48 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.halfBridge1DutyCycle = 0.05f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.05f;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.05f;
 			break;
 
 		case (My_Button_4):
-
+			data->rasv.halfBridge4DutyCycle = 0.05f;
+			data->rasv.halfBridge5DutyCycle = 0.0f;
+			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.halfBridge4DutyCycle = 0.0f;
+			data->rasv.halfBridge5DutyCycle = 0.05f;
+			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_6):
-
+			data->rasv.halfBridge4DutyCycle = 0.0f;
+			data->rasv.halfBridge5DutyCycle = 0.0f;
+			data->rasv.halfBridge6DutyCycle = 0.05f;
 			break;
 
 		case (My_Button_7):
-
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
+			data->rasv.halfBridge4DutyCycle = 0.0f;
+			data->rasv.halfBridge5DutyCycle = 0.0f;
+			data->rasv.halfBridge6DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_8):

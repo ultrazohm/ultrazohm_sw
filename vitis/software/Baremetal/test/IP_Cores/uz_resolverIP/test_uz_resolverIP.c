@@ -20,7 +20,8 @@ struct uz_resolverIP_config_t testconfig={
     .freq_clockin = TEST_IP_CORE_CLKIN,
     .zero_position_mechanical = 0,
 	.pole_pairs_machine = 1,
-	.pole_pairs_resolver = 1
+	.pole_pairs_resolver = 1,
+    .mode_after_init = CONFIG_MODE,
 };
     
 void setUp(void)

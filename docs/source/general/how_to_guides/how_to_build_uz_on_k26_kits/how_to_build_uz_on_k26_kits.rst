@@ -28,6 +28,7 @@ The default Vivado project (see :ref:`default_vivado_project`) can be generated 
 Based on this, you can implement the default Vivado project (as a HiL version) on K26 kits by using the ``build_kria.tcl`` script.
 Since these scripts are coupled with the paths in the ultrazohm_sw/vivado folder, they are not included in tcl_scripts (see Tcl Scripts) but located in ultrazohm_sw/vivado.
 
+
 build_kria
 ----------
 
@@ -46,3 +47,37 @@ Usage:
 .. code-block::
 
     source build_kria.tcl
+
+#. Generate bitstream and export to vitis/vivado_exported_xsa folder. Make sure there is only one xsa file.
+
+Vitis
+=====
+
+#.  Open Vitis 2022.2 and XSCT Console in Vitis. Type the following commands:
+
+.. code-block:: 
+
+    cd [getws]
+    source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
+
+#. The script **WILL FAIL**, clean the "UZ-Plattform-Project" and both "C-Projects".
+#. Open the BSP-Packages for the "FreeRTOS_domain" and "Baremetal_domain" and ensure that ``stdin`` and ``stdout`` points to ``ps_uart_1``.
+#. For the K26 Starter Kits adaptation changes, type the following commands:
+
+.. code-block::
+
+    source {../../tcl_scripts/vitis_update_kria_workspace.tcl}
+
+#. If you use KR260 Robotics kit, the BSP-Hack should be applied. For that, type the following commands:
+    
+.. code-block::
+
+    source {../../tcl_scripts/vitis_update_kr260_hack.tcl}
+
+#. Restart Vitis to make the files accessible
+#. Build both C-Projects 
+#. Check out the Vitis Serial Terminal output, and Open the JavaScope to see lifecheck signal. 
+
+
+* Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
+    * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  

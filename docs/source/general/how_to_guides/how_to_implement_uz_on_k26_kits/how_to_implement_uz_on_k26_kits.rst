@@ -144,6 +144,7 @@ Creating Fresh Project
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_user]
 
     With this script, every IP-Core inside the generated hierarchy is configured and connected like in the UltraZohm-main-project
+
 #.  For the ``uz_user`` and ``uz_digital_adapter``, make the placement of IP blocks using the .tcl scripts: 
 
     .. code-block:: 
@@ -156,6 +157,7 @@ Creating Fresh Project
         create_hier_cell_uz_digital_adapter hier_0 uz_digital_adapter
         move_bd_cells [get_bd_cells /] [get_bd_cells hier_0/uz_digital_adapter]
        
+
 #.  Don't recreate the ``uz_analog_adapter`` since we don't have analog-Interfaces with the kits.
 #.  Delete every digital Slot inside ``uz_digital_adapter`` except D1.
     We only want to use the 2-LvL-PWM-Cores in this How-To.
@@ -250,7 +252,7 @@ This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII
 
     #. To create a suited software for the KR260 Robotics, follow these steps:
 
-        #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis_kria\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
+        #. “Hack” the LWIP-Stack of the BSP to handle the shared MDIO for the PS-PHY’s. The file is located under ``\vitis\workspace\UltraZohm\psu_cortexa53_0\FreeRTOS_domain\bsp\psu_cortexa53_0\libsrc\lwip211_v1_8\src\contrib\ports\xilinx\netif\xemacpsif_physpeed.c``
 
             * Inside the File ``xemacpsif_physpeed.c``, change line 291 to: ``for (phy_addr = 31; phy_addr >5; phy_addr--)``
      
@@ -275,32 +277,4 @@ Known Issues
 * The applied BSP-Hack is done in generated source files. This means regenerating the BSP **WILL DELETE THE HACK** and the FreeRTOS won't initialize the PHY properly. If the error "autonegation failed" show's up during the start, check if the hack is still present.
 * Vitis 2022.2 has known issues related with launching. You can use the referenced solution by Xilinx. 
     * `Patch - Xilinx <lhttps://support.xilinx.com/s/article/000034848?language=en_US&t=1677157377766>`_  
-
-Discussion
-==========
-
-With this How-To it's possible to port the UltraZohm-Framework to the KR260.
-Furthermore most steps and scripts could be also used for porting the Framework to other evaluation kits.
-The proposed flow is not finally finished and feedback is appreciated!
-
-Some points and ideas for discussion on how the workflow could be better integrated into the main UltraZohm Project:
-
-*   Use GEM 2 or 3 and route the Pins through the PL-part to use the PL-dedicated PHY’s? They’re not sharing a MDIO-Interface, so the BSP-hack should not be necessary!
-*   Add a CAN-Interface and route the pins through the PL to an PMOD-connector, for example? So we don't have to delete the CAN-related parts in the FreeRTOS-Project
-*   How a define should look like to tell the C-Code it’s a KR260/KV260-Hil? With this define some actions can be done:
-
-    *  Exclude some predefined IP-Cores from the Code?
-        *  Analog-IP’s
-        *  Encoder
-        *  …
-    *  Exclude critical functions from calling
-        *  enableAllMioWithLEDsAttached(); 
-        *  enableAllMioWithButonsAttached(); 
-        *  ReadAllADC(); 
-        *  update_speed_and_position_of_encoder_on_D5(&Global_Data); 
-        *  PWM_3L_SetDutyCycle(); 
-        *  uz_assert( uz_gpio_get_enable_output(self) ); 
-
-*   Edit the ``vitis_generate_UltraZohm_workspace.tcl`` to work with the KR260.
-*   Enable an EMIO for one TTC to create a PWM-Signal to control the Fan of the SoM. Would perhaps also be an idea for the real Ultrazohm?
 

@@ -1,0 +1,167 @@
+
+
+================================================================
+== Vitis HLS Report for 'Block_split13_proc'
+================================================================
+* Date:           Fri May 19 07:25:29 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 2.515 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        3|        3| 30.000 ns | 30.000 ns |    3|    3|   none  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+------+---------+--------+-----+
+|       Name      | BRAM_18K|  DSP |    FF   |   LUT  | URAM|
++-----------------+---------+------+---------+--------+-----+
+|DSP              |        -|     -|        -|       -|    -|
+|Expression       |        -|     -|        0|       4|    -|
+|FIFO             |        -|     -|        -|       -|    -|
+|Instance         |        -|     -|        -|       -|    -|
+|Memory           |        -|     -|        -|       -|    -|
+|Multiplexer      |        -|     -|        -|     141|    -|
+|Register         |        -|     -|      134|       -|    -|
++-----------------+---------+------+---------+--------+-----+
+|Total            |        0|     0|      134|     145|    0|
++-----------------+---------+------+---------+--------+-----+
+|Available        |     1968|  1968|  1045440|  522720|  128|
++-----------------+---------+------+---------+--------+-----+
+|Utilization (%)  |        0|     0|    ~0   |   ~0   |    0|
++-----------------+---------+------+---------+--------+-----+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-----------------+----------+----+---+----+------------+------------+
+    |  Variable Name  | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |ap_block_state1  |    or    |   0|  0|   2|           1|           1|
+    |ap_block_state4  |    or    |   0|  0|   2|           1|           1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |Total            |          |   0|  0|   4|           2|           2|
+    +-----------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------+----+-----------+-----+-----------+
+    |        Name        | LUT| Input Size| Bits| Total Bits|
+    +--------------------+----+-----------+-----+-----------+
+    |ap_NS_fsm           |  27|          5|    1|          5|
+    |ap_done             |   9|          2|    1|          2|
+    |cpy_in_0_out_blk_n  |   9|          2|    1|          2|
+    |cpy_in_1_out_blk_n  |   9|          2|    1|          2|
+    |cpy_in_2_out_blk_n  |   9|          2|    1|          2|
+    |cpy_in_3_out_blk_n  |   9|          2|    1|          2|
+    |cpy_in_4_out_blk_n  |   9|          2|    1|          2|
+    |cpy_in_5_out_blk_n  |   9|          2|    1|          2|
+    |in_r_address0       |  21|          4|    3|         12|
+    |in_r_address1       |  21|          4|    3|         12|
+    |real_start          |   9|          2|    1|          2|
+    +--------------------+----+-----------+-----+-----------+
+    |Total               | 141|         29|   15|         45|
+    +--------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-------------------+----+----+-----+-----------+
+    |        Name       | FF | LUT| Bits| Const Bits|
+    +-------------------+----+----+-----+-----------+
+    |ap_CS_fsm          |   4|   0|    4|          0|
+    |ap_done_reg        |   1|   0|    1|          0|
+    |in_load_1_reg_192  |  32|   0|   32|          0|
+    |in_load_2_reg_207  |  32|   0|   32|          0|
+    |in_load_3_reg_212  |  32|   0|   32|          0|
+    |in_load_reg_187    |  32|   0|   32|          0|
+    |start_once_reg     |   1|   0|    1|          0|
+    +-------------------+----+----+-----+-----------+
+    |Total              | 134|   0|  134|          0|
+    +-------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++---------------------+-----+-----+------------+---------------------+--------------+
+|      RTL Ports      | Dir | Bits|  Protocol  |    Source Object    |    C Type    |
++---------------------+-----+-----+------------+---------------------+--------------+
+|ap_clk               |  in |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_rst               |  in |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_start             |  in |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|start_full_n         |  in |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_done              | out |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_continue          |  in |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_idle              | out |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|ap_ready             | out |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|start_out            | out |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|start_write          | out |    1| ap_ctrl_hs | Block_.split13_proc | return value |
+|in_r_address0        | out |    3|  ap_memory |         in_r        |     array    |
+|in_r_ce0             | out |    1|  ap_memory |         in_r        |     array    |
+|in_r_q0              |  in |   32|  ap_memory |         in_r        |     array    |
+|in_r_address1        | out |    3|  ap_memory |         in_r        |     array    |
+|in_r_ce1             | out |    1|  ap_memory |         in_r        |     array    |
+|in_r_q1              |  in |   32|  ap_memory |         in_r        |     array    |
+|cpy_in_0_out_din     | out |   32|   ap_fifo  |     cpy_in_0_out    |    pointer   |
+|cpy_in_0_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_0_out    |    pointer   |
+|cpy_in_0_out_write   | out |    1|   ap_fifo  |     cpy_in_0_out    |    pointer   |
+|cpy_in_1_out_din     | out |   32|   ap_fifo  |     cpy_in_1_out    |    pointer   |
+|cpy_in_1_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_1_out    |    pointer   |
+|cpy_in_1_out_write   | out |    1|   ap_fifo  |     cpy_in_1_out    |    pointer   |
+|cpy_in_2_out_din     | out |   32|   ap_fifo  |     cpy_in_2_out    |    pointer   |
+|cpy_in_2_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_2_out    |    pointer   |
+|cpy_in_2_out_write   | out |    1|   ap_fifo  |     cpy_in_2_out    |    pointer   |
+|cpy_in_3_out_din     | out |   32|   ap_fifo  |     cpy_in_3_out    |    pointer   |
+|cpy_in_3_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_3_out    |    pointer   |
+|cpy_in_3_out_write   | out |    1|   ap_fifo  |     cpy_in_3_out    |    pointer   |
+|cpy_in_4_out_din     | out |   32|   ap_fifo  |     cpy_in_4_out    |    pointer   |
+|cpy_in_4_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_4_out    |    pointer   |
+|cpy_in_4_out_write   | out |    1|   ap_fifo  |     cpy_in_4_out    |    pointer   |
+|cpy_in_5_out_din     | out |   32|   ap_fifo  |     cpy_in_5_out    |    pointer   |
+|cpy_in_5_out_full_n  |  in |    1|   ap_fifo  |     cpy_in_5_out    |    pointer   |
+|cpy_in_5_out_write   | out |    1|   ap_fifo  |     cpy_in_5_out    |    pointer   |
++---------------------+-----+-----+------------+---------------------+--------------+
+

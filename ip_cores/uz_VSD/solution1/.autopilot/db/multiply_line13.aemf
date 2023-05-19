@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1684473940949">
+  <ports id="1" name="val_0" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="2" name="val_1" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="3" name="val_2" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="4" name="val_3" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="5" name="val_4" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="6" name="val_5" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>call</dataOutputObjs>
+  </ports>
+  <ports id="7" name="val_0_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="8" name="val_1_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="9" name="val_2_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="10" name="val_3_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="11" name="val_4_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="12" name="val_5_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="13" name="products_0_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="14" name="products_1_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="15" name="products_2_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="16" name="products_3_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="17" name="products_4_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <ports id="18" name="products_5_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>call</dataInputObjs>
+  </ports>
+  <edges id="81" source_obj="//@ports.5" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="82" source_obj="//@ports.4" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="83" source_obj="//@ports.3" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="84" source_obj="//@ports.2" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="85" source_obj="//@ports.1" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="86" source_obj="//@ports.0" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="87" source_obj="//@regions.0/@basic_blocks.0/@node_objs.5" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="88" source_obj="//@regions.0/@basic_blocks.0/@node_objs.4" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="89" source_obj="//@regions.0/@basic_blocks.0/@node_objs.3" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="90" source_obj="//@regions.0/@basic_blocks.0/@node_objs.2" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="91" source_obj="//@regions.0/@basic_blocks.0/@node_objs.1" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="92" source_obj="//@regions.0/@basic_blocks.0/@node_objs.0" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.6"/>
+  <edges id="95" source_obj="//@regions.0/@basic_blocks.0/@node_objs.0" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="96" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.6"/>
+  <edges id="97" source_obj="//@regions.0/@basic_blocks.0/@node_objs.1" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="98" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.7"/>
+  <edges id="99" source_obj="//@regions.0/@basic_blocks.0/@node_objs.2" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="100" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.8"/>
+  <edges id="101" source_obj="//@regions.0/@basic_blocks.0/@node_objs.3" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="102" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.9"/>
+  <edges id="103" source_obj="//@regions.0/@basic_blocks.0/@node_objs.4" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="104" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.10"/>
+  <edges id="105" source_obj="//@regions.0/@basic_blocks.0/@node_objs.5" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="106" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@ports.11"/>
+  <edges id="107" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.8"/>
+  <edges id="108" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.9"/>
+  <edges id="109" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.10"/>
+  <edges id="110" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.11"/>
+  <edges id="111" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.12"/>
+  <edges id="112" source_obj="//@regions.0/@basic_blocks.0/@node_objs.7" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.13"/>
+  <edges id="115" source_obj="//@regions.0/@basic_blocks.0/@node_objs.8" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.14"/>
+  <edges id="116" source_obj="//@regions.0/@basic_blocks.0/@node_objs.14" sink_obj="//@ports.12"/>
+  <edges id="119" source_obj="//@regions.0/@basic_blocks.0/@node_objs.9" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.15"/>
+  <edges id="120" source_obj="//@regions.0/@basic_blocks.0/@node_objs.15" sink_obj="//@ports.13"/>
+  <edges id="123" source_obj="//@regions.0/@basic_blocks.0/@node_objs.10" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.16"/>
+  <edges id="124" source_obj="//@regions.0/@basic_blocks.0/@node_objs.16" sink_obj="//@ports.14"/>
+  <edges id="127" source_obj="//@regions.0/@basic_blocks.0/@node_objs.11" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.17"/>
+  <edges id="128" source_obj="//@regions.0/@basic_blocks.0/@node_objs.17" sink_obj="//@ports.15"/>
+  <edges id="131" source_obj="//@regions.0/@basic_blocks.0/@node_objs.12" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.18"/>
+  <edges id="132" source_obj="//@regions.0/@basic_blocks.0/@node_objs.18" sink_obj="//@ports.16"/>
+  <edges id="135" source_obj="//@regions.0/@basic_blocks.0/@node_objs.13" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.19"/>
+  <edges id="136" source_obj="//@regions.0/@basic_blocks.0/@node_objs.19" sink_obj="//@ports.17"/>
+  <edges id="630" edge_type="VirtEdge" source_obj="//@regions.0/@basic_blocks.0/@node_objs.6" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <edges id="631" edge_type="VirtEdge" source_obj="//@regions.0/@basic_blocks.0/@node_objs.6" sink_obj="//@regions.0/@basic_blocks.0/@node_objs.7"/>
+  <regions anchor_node="-1" region_type="16" typeName="Dataflow" id="330" RegionName="multiply_line13">
+    <basic_blocks id="71" name="multiply_line13" type="BlockType">
+      <node_objs xsi:type="cdfg:CdfgNode" id="19" name="scalar_val_0_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_0_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="1" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="20" name="scalar_val_1_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_1_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="2" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="21" name="scalar_val_2_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_2_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="3" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="22" name="scalar_val_3_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_3_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="4" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="23" name="scalar_val_4_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_4_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="5" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="24" name="scalar_val_5_c" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="scalar_val_5_c_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="alloca" m_display="0" m_topoIndex="6" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataOutputObjs>call</dataOutputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+        <constName>empty</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="50" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="multiply_line13_entry165_U0" contextFuncName="multiply_line" opcode="call" m_display="0" m_topoIndex="7" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>val_5</dataInputObjs>
+        <dataInputObjs>val_4</dataInputObjs>
+        <dataInputObjs>val_3</dataInputObjs>
+        <dataInputObjs>val_2</dataInputObjs>
+        <dataInputObjs>val_1</dataInputObjs>
+        <dataInputObjs>val_0</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <constName>multiply_line13_entry165</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="51" name="call_ret" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="multiply_line13_Block_split1_proc164_U0" contextFuncName="multiply_line" bitwidth="192" opcode="call" nodeLabel="1.0" nodeLatency="1" m_display="0" m_isOnCriticalPath="true" m_isStartOfPath="true" m_topoIndex="8" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataInputObjs>alloca</dataInputObjs>
+        <dataOutputObjs>val_0_out</dataOutputObjs>
+        <dataOutputObjs>val_1_out</dataOutputObjs>
+        <dataOutputObjs>val_2_out</dataOutputObjs>
+        <dataOutputObjs>val_3_out</dataOutputObjs>
+        <dataOutputObjs>val_4_out</dataOutputObjs>
+        <dataOutputObjs>val_5_out</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <dataOutputObjs>extractvalue</dataOutputObjs>
+        <constName>multiply_line13_Block_split1_proc164</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="52" name="products_0_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_0_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_topoIndex="9" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="53" name="products_1_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_1_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_topoIndex="10" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="54" name="products_2_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_2_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_topoIndex="11" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="55" name="products_3_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_3_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_topoIndex="12" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="56" name="products_4_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_4_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_topoIndex="13" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="57" name="products_5_dc_channel" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="products_5_dc_channel_U" coreName="FIFO_SRL" contextFuncName="multiply_line" bitwidth="32" opcode="extractvalue" nodeLabel="2.0" m_display="0" m_isOnCriticalPath="true" m_topoIndex="14" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>call</dataInputObjs>
+        <dataOutputObjs>call</dataOutputObjs>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="59" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_0_dc_proc81_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.83" m_topoIndex="15" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_0_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_0_dc_proc81</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="61" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_1_dc_proc82_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.83" m_topoIndex="16" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_1_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_1_dc_proc82</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="63" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_2_dc_proc83_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.83" m_topoIndex="17" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_2_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_2_dc_proc83</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="65" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_3_dc_proc84_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.86" m_topoIndex="18" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_3_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_3_dc_proc84</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="67" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_4_dc_proc85_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.88" m_topoIndex="19" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_4_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_4_dc_proc85</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="69" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="p_prop_ret_products_OC_5_dc_proc86_U0" contextFuncName="multiply_line" opcode="call" nodeLabel="2.0" m_display="0" m_delay="1.9" m_isOnCriticalPath="true" m_topoIndex="20" m_clusterGroupNumber="-1">
+        <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+        <dataInputObjs>extractvalue</dataInputObjs>
+        <dataOutputObjs>products_5_out</dataOutputObjs>
+        <constName>p_prop_ret_products_OC_5_dc_proc86</constName>
+      </node_objs>
+      <node_objs xsi:type="cdfg:CdfgNode" id="70" name="_ln0" opcode="ret" nodeLabel="2.0" m_display="0" m_topoIndex="21" m_clusterGroupNumber="-1"/>
+      <fileValidLineNumbers fileName="uz_VSD/uz_VSD.cpp">
+        <validLinenumbers>34</validLinenumbers>
+      </fileValidLineNumbers>
+    </basic_blocks>
+  </regions>
+  <ScheduleInfo time="0"/>
+  <ScheduleInfo time="1"/>
+  <ScheduleInfo time="2"/>
+  <regnodes realName="scalar_val_0_c_reg_230">
+    <nodeIds>19</nodeIds>
+  </regnodes>
+  <regnodes realName="scalar_val_1_c_reg_236">
+    <nodeIds>20</nodeIds>
+  </regnodes>
+  <regnodes realName="scalar_val_4_c_reg_254">
+    <nodeIds>23</nodeIds>
+  </regnodes>
+  <regnodes realName="scalar_val_2_c_reg_242">
+    <nodeIds>21</nodeIds>
+  </regnodes>
+  <regnodes realName="scalar_val_3_c_reg_248">
+    <nodeIds>22</nodeIds>
+  </regnodes>
+  <regnodes realName="scalar_val_5_c_reg_260">
+    <nodeIds>24</nodeIds>
+  </regnodes>
+  <expressionNodes realName="products_5_dc_channel_fu_225">
+    <nodeIds>57</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_1_c_fu_94">
+    <nodeIds>20</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_2_c_fu_98">
+    <nodeIds>21</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="products_3_dc_channel_fu_215">
+    <nodeIds>55</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="products_4_dc_channel_fu_220">
+    <nodeIds>56</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_0_c_fu_90">
+    <nodeIds>19</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_3_c_fu_102">
+    <nodeIds>22</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="products_1_dc_channel_fu_205">
+    <nodeIds>53</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_5_c_fu_110">
+    <nodeIds>24</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="products_2_dc_channel_fu_210">
+    <nodeIds>54</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="scalar_val_4_c_fu_106">
+    <nodeIds>23</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="products_0_dc_channel_fu_200">
+    <nodeIds>52</nodeIds>
+  </expressionNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_2_dc_proc83_fu_172">
+    <nodeIds>63</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_3_dc_proc84_fu_179">
+    <nodeIds>65</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="grp_multiply_line13_Block_split1_proc164_fu_114">
+    <nodeIds>51</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_0_dc_proc81_fu_158">
+    <nodeIds>59</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_4_dc_proc85_fu_186">
+    <nodeIds>67</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_multiply_line13_entry165_fu_136">
+    <nodeIds>50</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_5_dc_proc86_fu_193">
+    <nodeIds>69</nodeIds>
+  </moduleNodes>
+  <moduleNodes realName="call_ln34_p_prop_ret_products_OC_1_dc_proc82_fu_165">
+    <nodeIds>61</nodeIds>
+  </moduleNodes>
+  <ioPorts name="products_0_out">
+    <contents name="call">
+      <nodeIds>59</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_1_out">
+    <contents name="call">
+      <nodeIds>61</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_2_out">
+    <contents name="call">
+      <nodeIds>63</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_3_out">
+    <contents name="call">
+      <nodeIds>65</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_4_out">
+    <contents name="call">
+      <nodeIds>67</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_5_out">
+    <contents name="call">
+      <nodeIds>69</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_0">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_0_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_1">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_1_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_2">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_2_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_3">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_3_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_4">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_4_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_5">
+    <contents name="call">
+      <nodeIds>50</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="val_5_out">
+    <contents name="call">
+      <nodeIds>51</nodeIds>
+    </contents>
+  </ioPorts>
+  <fsm>
+    <states id="1">
+      <operations id="19" stage="1" latency="1"/>
+      <operations id="20" stage="1" latency="1"/>
+      <operations id="21" stage="1" latency="1"/>
+      <operations id="22" stage="1" latency="1"/>
+      <operations id="23" stage="1" latency="1"/>
+      <operations id="24" stage="1" latency="1"/>
+      <operations id="50" stage="1" latency="1"/>
+    </states>
+    <states id="2">
+      <operations id="51" stage="2" latency="2"/>
+    </states>
+    <states id="3">
+      <operations id="25" stage="1" latency="1"/>
+      <operations id="26" stage="1" latency="1"/>
+      <operations id="27" stage="1" latency="1"/>
+      <operations id="28" stage="1" latency="1"/>
+      <operations id="29" stage="1" latency="1"/>
+      <operations id="30" stage="1" latency="1"/>
+      <operations id="31" stage="1" latency="1"/>
+      <operations id="32" stage="1" latency="1"/>
+      <operations id="33" stage="1" latency="1"/>
+      <operations id="34" stage="1" latency="1"/>
+      <operations id="35" stage="1" latency="1"/>
+      <operations id="36" stage="1" latency="1"/>
+      <operations id="37" stage="1" latency="1"/>
+      <operations id="38" stage="1" latency="1"/>
+      <operations id="39" stage="1" latency="1"/>
+      <operations id="40" stage="1" latency="1"/>
+      <operations id="41" stage="1" latency="1"/>
+      <operations id="42" stage="1" latency="1"/>
+      <operations id="43" stage="1" latency="1"/>
+      <operations id="44" stage="1" latency="1"/>
+      <operations id="45" stage="1" latency="1"/>
+      <operations id="46" stage="1" latency="1"/>
+      <operations id="47" stage="1" latency="1"/>
+      <operations id="48" stage="1" latency="1"/>
+      <operations id="49" stage="1" latency="1"/>
+      <operations id="51" stage="1" latency="2"/>
+      <operations id="52" stage="1" latency="1"/>
+      <operations id="53" stage="1" latency="1"/>
+      <operations id="54" stage="1" latency="1"/>
+      <operations id="55" stage="1" latency="1"/>
+      <operations id="56" stage="1" latency="1"/>
+      <operations id="57" stage="1" latency="1"/>
+      <operations id="58" stage="1" latency="1"/>
+      <operations id="59" stage="1" latency="1"/>
+      <operations id="60" stage="1" latency="1"/>
+      <operations id="61" stage="1" latency="1"/>
+      <operations id="62" stage="1" latency="1"/>
+      <operations id="63" stage="1" latency="1"/>
+      <operations id="64" stage="1" latency="1"/>
+      <operations id="65" stage="1" latency="1"/>
+      <operations id="66" stage="1" latency="1"/>
+      <operations id="67" stage="1" latency="1"/>
+      <operations id="68" stage="1" latency="1"/>
+      <operations id="69" stage="1" latency="1"/>
+      <operations id="70" stage="1" latency="1"/>
+    </states>
+    <transitions inState="1" outState="2">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="2" outState="3">
+      <condition id="-1"/>
+    </transitions>
+  </fsm>
+  <CFGRegionsRoot>
+    <cfgRegions mId="1" mTag="multiply_line13" mII="-1" mDepth="-1" mMinTripCount="-1" mMaxTripCount="-1" mMinLatency="5" mMaxLatency="5" mIsDfPipe="true">
+      <basicBlocks>71</basicBlocks>
+      <mDfPipe allPipePinInst="//@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.0/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.1/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.2/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.3/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.4/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.5/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.6/@pins.0/@inst //@CFGRegionsRoot/@cfgRegions.0/@mDfPipe/@processe_list.7/@pins.0/@inst">
+        <processe_list name="multiply_line13_entry165_U0" ssdmobj_id="50">
+          <pins>
+            <port name="scalar_val_5"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_4"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_3"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_2"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_1"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_0"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_5_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_4_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_3_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_2_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_1_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_0_out" type="BUSType"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </pins>
+        </processe_list>
+        <processe_list name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51">
+          <pins>
+            <port name="scalar_val_0"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_0_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_1"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_1_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_2"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_2_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_3"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_3_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_4"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_4_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="scalar_val_5"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="val_5_out" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+          <pins>
+            <port name="ap_return" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_0_dc_proc81_U0" ssdmobj_id="59">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_0_dc_proc81_U0" ssdmobj_id="59" object_id="_177"/>
+          </pins>
+          <pins>
+            <port name="products_0_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_0_dc_proc81_U0" ssdmobj_id="59" object_id="_177"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_1_dc_proc82_U0" ssdmobj_id="61">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_1_dc_proc82_U0" ssdmobj_id="61" object_id="_183"/>
+          </pins>
+          <pins>
+            <port name="products_1_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_1_dc_proc82_U0" ssdmobj_id="61" object_id="_183"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_2_dc_proc83_U0" ssdmobj_id="63">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_2_dc_proc83_U0" ssdmobj_id="63" object_id="_189"/>
+          </pins>
+          <pins>
+            <port name="products_2_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_2_dc_proc83_U0" ssdmobj_id="63" object_id="_189"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_3_dc_proc84_U0" ssdmobj_id="65">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_3_dc_proc84_U0" ssdmobj_id="65" object_id="_195"/>
+          </pins>
+          <pins>
+            <port name="products_3_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_3_dc_proc84_U0" ssdmobj_id="65" object_id="_195"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_4_dc_proc85_U0" ssdmobj_id="67">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_4_dc_proc85_U0" ssdmobj_id="67" object_id="_201"/>
+          </pins>
+          <pins>
+            <port name="products_4_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_4_dc_proc85_U0" ssdmobj_id="67" object_id="_201"/>
+          </pins>
+        </processe_list>
+        <processe_list name="p_prop_ret_products_OC_5_dc_proc86_U0" ssdmobj_id="69">
+          <pins>
+            <port name="p_read" dir="DirEnd"/>
+            <inst name="p_prop_ret_products_OC_5_dc_proc86_U0" ssdmobj_id="69" object_id="_207"/>
+          </pins>
+          <pins>
+            <port name="products_5_out" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_5_dc_proc86_U0" ssdmobj_id="69" object_id="_207"/>
+          </pins>
+        </processe_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_5_c" ssdmobj_id="24">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_4_c" ssdmobj_id="23">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_3_c" ssdmobj_id="22">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_2_c" ssdmobj_id="21">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_1_c" ssdmobj_id="20">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="2" suggested_depth="2" name="scalar_val_0_c" ssdmobj_id="19">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_entry165_U0" ssdmobj_id="50" object_id="_113"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_0_dc_channel" ssdmobj_id="52">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_0_dc_proc81_U0" ssdmobj_id="59" object_id="_177"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_1_dc_channel" ssdmobj_id="53">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_1_dc_proc82_U0" ssdmobj_id="61" object_id="_183"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_2_dc_channel" ssdmobj_id="54">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_2_dc_proc83_U0" ssdmobj_id="63" object_id="_189"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_3_dc_channel" ssdmobj_id="55">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_3_dc_proc84_U0" ssdmobj_id="65" object_id="_195"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_4_dc_channel" ssdmobj_id="56">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_4_dc_proc85_U0" ssdmobj_id="67" object_id="_201"/>
+          </sink>
+        </channel_list>
+        <channel_list depth="2" bitwidth="32" suggested_type="1" suggested_depth="2" name="products_5_dc_channel" ssdmobj_id="57">
+          <source>
+            <port name="in" dir="DirEnd"/>
+            <inst name="multiply_line13_Block_split1_proc164_U0" ssdmobj_id="51" object_id="_139"/>
+          </source>
+          <sink>
+            <port name="out" dir="DirEnd" type="BUSType"/>
+            <inst name="p_prop_ret_products_OC_5_dc_proc86_U0" ssdmobj_id="69" object_id="_207"/>
+          </sink>
+        </channel_list>
+      </mDfPipe>
+    </cfgRegions>
+  </CFGRegionsRoot>
+</cdfg:DBCdfg>

@@ -1,0 +1,122 @@
+<profile>
+
+<section name = "Vitis HLS Report for 'Block_split13108_proc'" level="0">
+<item name = "Date">Fri May 19 07:25:41 2023
+</item>
+<item name = "Version">2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)</item>
+<item name = "Project">uz_VSD</item>
+<item name = "Solution">solution1 (Vivado IP Flow Target)</item>
+<item name = "Product family">zynquplus</item>
+<item name = "Target device">xczu19eg-ffve1924-2-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">10.00 ns, 6.437 ns, 2.70 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 2, -</column>
+<column name="FIFO">-, -, -, -, -</column>
+<column name="Instance">-, 2, 227, 214, -</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, 60, -</column>
+<column name="Register">-, -, 70, -, -</column>
+<specialColumn name="Available">1968, 1968, 1045440, 522720, 128</specialColumn>
+<specialColumn name="Utilization (%)">0, ~0, ~0, ~0, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="fadd_32ns_32ns_32_4_full_dsp_1_U262">fadd_32ns_32ns_32_4_full_dsp_1, 0, 2, 227, 214, 0</column>
+</table>
+</item>
+<item name = "DSP"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="ap_block_state1">or, 0, 0, 2, 1, 1</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+<column name="ap_NS_fsm">33, 6, 1, 6</column>
+<column name="ap_done">9, 2, 1, 2</column>
+<column name="ap_return">9, 2, 32, 64</column>
+<column name="products_2_blk_n">9, 2, 1, 2</column>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+<column name="ap_CS_fsm">5, 0, 5, 0</column>
+<column name="ap_done_reg">1, 0, 1, 0</column>
+<column name="ap_return_preg">32, 0, 32, 0</column>
+<column name="products_2_read_reg_39">32, 0, 32, 0</column>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="ap_clk">in, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_rst">in, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_start">in, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_done">out, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_continue">in, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_idle">out, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_ready">out, 1, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="ap_return">out, 32, ap_ctrl_hs, Block_.split13108_proc, return value</column>
+<column name="products_2_dout">in, 32, ap_fifo, products_2, pointer</column>
+<column name="products_2_empty_n">in, 1, ap_fifo, products_2, pointer</column>
+<column name="products_2_read">out, 1, ap_fifo, products_2, pointer</column>
+<column name="p_read">in, 32, ap_none, p_read, scalar</column>
+</table>
+</item>
+</section>
+</profile>

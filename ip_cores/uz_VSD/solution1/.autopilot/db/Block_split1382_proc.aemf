@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1684473938240">
+  <ports id="1" name="products_4" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="2" name="p_read" type="PortType" bitwidth="32">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="12" name="ap_return" direction="DirOut">
+    <dataInputObjs>ret</dataInputObjs>
+  </ports>
+  <edges id="11" source_obj="//@ports.1" sink_obj="//@blocks.0/@node_objs.0"/>
+  <edges id="14" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.1"/>
+  <edges id="15" source_obj="//@blocks.0/@node_objs.1" sink_obj="//@blocks.0/@node_objs.2"/>
+  <edges id="16" source_obj="//@blocks.0/@node_objs.0" sink_obj="//@blocks.0/@node_objs.2"/>
+  <edges id="17" source_obj="//@blocks.0/@node_objs.2" sink_obj="//@blocks.0/@node_objs.3"/>
+  <edges source_obj="//@blocks.0/@node_objs.3" sink_obj="//@ports.2"/>
+  <blocks id="8" name="Block_.split1382_proc" type="BlockType">
+    <node_objs xsi:type="cdfg:CdfgNode" id="4" name="p_read_38" lineNumber="26" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_6ph_arraymul" bitwidth="32" opcode="read" nodeLabel="1.0" m_display="0" m_topoIndex="2" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="26" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_6ph_arraymul"/>
+      <dataInputObjs>p_read</dataInputObjs>
+      <dataOutputObjs>fadd</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="5" name="products_4_read" lineNumber="26" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_6ph_arraymul" bitwidth="32" opcode="read" m_display="0" m_delay="1.88" m_topoIndex="1" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="26" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_6ph_arraymul"/>
+      <dataInputObjs>products_4</dataInputObjs>
+      <dataOutputObjs>fadd</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="6" name="add7_i1_loc" lineNumber="26" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U179" contextFuncName="uz_6ph_arraymul" bitwidth="32" opcode="fadd" nodeLabel="1.0" nodeLatency="3" m_display="0" m_delay="6.43" m_topoIndex="3" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="26" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_6ph_arraymul"/>
+      <dataInputObjs>read</dataInputObjs>
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>ret</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="7" name="_ln26" lineNumber="26" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_6ph_arraymul" opcode="ret" nodeLabel="4.0" m_display="0" m_topoIndex="4" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="26" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_6ph_arraymul"/>
+      <dataInputObjs>fadd</dataInputObjs>
+      <dataOutputObjs>ap_return</dataOutputObjs>
+    </node_objs>
+    <fileValidLineNumbers fileName="uz_VSD/uz_VSD.cpp">
+      <validLinenumbers>26</validLinenumbers>
+    </fileValidLineNumbers>
+  </blocks>
+  <ScheduleInfo time="0"/>
+  <ScheduleInfo time="1"/>
+  <ScheduleInfo time="2"/>
+  <ScheduleInfo time="3"/>
+  <ScheduleInfo time="4"/>
+  <regnodes realName="products_4_read_reg_39">
+    <nodeIds>5</nodeIds>
+  </regnodes>
+  <regnodes realName="p_read_38_reg_44">
+    <nodeIds>4</nodeIds>
+  </regnodes>
+  <moduleNodes realName="grp_fu_34">
+    <nodeIds>6</nodeIds>
+  </moduleNodes>
+  <ioNodes realName="p_read_38_read_fu_28">
+    <nodeIds>4</nodeIds>
+  </ioNodes>
+  <ioNodes realName="products_4_read_read_fu_22">
+    <nodeIds>5</nodeIds>
+  </ioNodes>
+  <ioPorts name="p_read">
+    <contents name="read">
+      <nodeIds>4</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_4">
+    <contents name="read">
+      <nodeIds>5</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="ap_return">
+    <contents name="ret">
+      <nodeIds>7</nodeIds>
+    </contents>
+  </ioPorts>
+  <fsm>
+    <states id="1">
+      <operations id="5" stage="1" latency="1"/>
+    </states>
+    <states id="2">
+      <operations id="4" stage="1" latency="1"/>
+      <operations id="6" stage="4" latency="4"/>
+    </states>
+    <states id="3">
+      <operations id="6" stage="3" latency="4"/>
+    </states>
+    <states id="4">
+      <operations id="6" stage="2" latency="4"/>
+    </states>
+    <states id="5">
+      <operations id="3" stage="1" latency="1"/>
+      <operations id="6" stage="1" latency="4"/>
+      <operations id="7" stage="1" latency="1"/>
+    </states>
+    <transitions inState="1" outState="2">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="2" outState="3">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="3" outState="4">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="4" outState="5">
+      <condition id="-1"/>
+    </transitions>
+  </fsm>
+  <CFGRegionsRoot>
+    <cfgRegions mId="1" mTag="Block_split1382_proc" mII="-1" mDepth="-1" mMinTripCount="-1" mMaxTripCount="-1" mMinLatency="4" mMaxLatency="4">
+      <basicBlocks>8</basicBlocks>
+      <mDfPipe/>
+    </cfgRegions>
+  </CFGRegionsRoot>
+</cdfg:DBCdfg>

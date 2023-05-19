@@ -1,0 +1,364 @@
+<annotationInfo>
+<annotationInfo>
+<item  id="18" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_0" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_0_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_1" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_1_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="26" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_2" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_2_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="30" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_3" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_3_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="34" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_4" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_4_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="38" filename="uz_VSD/uz_VSD.cpp" linenumber="10" name="cpy_in_5" contextFuncName="uz_VSD_6ph_asym" contextNormFuncName="uz_VSD_6ph_asym" moduleName="Block_.split13_proc" rtlName="cpy_in_5_out_din" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_1_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line11_Block_.split1_proc144" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U20" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_3_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line11_Block_.split1_proc144" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U21" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_5_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line11_Block_.split1_proc144" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U22" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="19" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_0_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_0_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_1_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_1_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="21" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_2_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_2_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_3_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_3_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_4_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_4_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_5_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="scalar_val_5_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="50" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="multiply_line11_entry145_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="51" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="call_ret" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="multiply_line11_Block_split1_proc144_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="52" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_0_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_0_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="53" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_1_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_1_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="54" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_2_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_2_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_3_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_3_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_4_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_4_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_5_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="products_5_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_0_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="61" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_1_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="63" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_2_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="65" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_3_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="67" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_4_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="69" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line11" rtlName="p_prop_ret_products_OC_5_dc_proc_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1326_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U80" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1332_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U84" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1338_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U87" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1344_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U90" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1350_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U93" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1350_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_0_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line12_Block_.split1_proc154" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U109" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_1_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line12_Block_.split1_proc154" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U110" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_2_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line12_Block_.split1_proc154" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U111" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="58" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_3_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line12_Block_.split1_proc154" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U112" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_5_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line12_Block_.split1_proc154" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U113" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="19" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_0_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_0_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_1_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_1_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="21" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_2_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_2_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_3_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_3_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_4_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_4_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_5_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="scalar_val_5_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="50" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="multiply_line12_entry155_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="51" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="call_ret" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="multiply_line12_Block_split1_proc154_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="52" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_0_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_0_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="53" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_1_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_1_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="54" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_2_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_2_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_3_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_3_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_4_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_4_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_5_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="products_5_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_0_dc_proc62_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="61" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_1_dc_proc63_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="63" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_2_dc_proc64_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="65" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_3_dc_proc65_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="67" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_4_dc_proc66_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="69" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line12" rtlName="p_prop_ret_products_OC_5_dc_proc67_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i1_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1364_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U170" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i1_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1370_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U173" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i1_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1376_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U176" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i1_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1382_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U179" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i1_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1388_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U182" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split1388_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_0_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line13_Block_.split1_proc164" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U198" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_1_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line13_Block_.split1_proc164" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U199" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_2_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line13_Block_.split1_proc164" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U200" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="58" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_3_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line13_Block_.split1_proc164" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U201" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_5_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line13_Block_.split1_proc164" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U202" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="19" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_0_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_0_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_1_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_1_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="21" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_2_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_2_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_3_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_3_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_4_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_4_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_5_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="scalar_val_5_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="50" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="multiply_line13_entry165_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="51" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="call_ret" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="multiply_line13_Block_split1_proc164_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="52" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_0_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_0_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="53" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_1_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_1_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="54" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_2_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_2_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_3_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_3_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_4_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_4_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_5_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="products_5_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_0_dc_proc81_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="61" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_1_dc_proc82_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="63" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_2_dc_proc83_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="65" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_3_dc_proc84_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="67" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_4_dc_proc85_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="69" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line13" rtlName="p_prop_ret_products_OC_5_dc_proc86_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i2_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13102_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U259" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i2_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13108_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U262" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i2_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13114_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U265" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i2_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13120_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U268" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i2_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13126_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U271" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13126_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_0_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line14_Block_.split1_proc174" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U287" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_1_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line14_Block_.split1_proc174" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U288" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_2_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line14_Block_.split1_proc174" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U289" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="58" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_3_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line14_Block_.split1_proc174" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U290" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_4_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line14_Block_.split1_proc174" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U291" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="19" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_0_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_0_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_1_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_1_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="21" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_2_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_2_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_3_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_3_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_4_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_4_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_5_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="scalar_val_5_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="50" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="multiply_line14_entry175_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="51" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="call_ret" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="multiply_line14_Block_split1_proc174_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="52" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_0_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_0_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="53" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_1_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_1_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="54" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_2_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_2_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_3_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_3_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_4_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_4_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_5_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="products_5_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_0_dc_proc100_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="61" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_1_dc_proc101_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="63" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_2_dc_proc102_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="65" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_3_dc_proc103_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="67" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_4_dc_proc104_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="69" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line14" rtlName="p_prop_ret_products_OC_5_dc_proc105_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i3_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13140_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U348" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i3_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13146_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U351" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i3_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13152_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U354" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i3_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13158_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U357" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i3_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13164_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U360" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13164_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_0_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line15_Block_.split1_proc184" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U376" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_1_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line15_Block_.split1_proc184" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U377" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_2_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line15_Block_.split1_proc184" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U378" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="58" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_3_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line15_Block_.split1_proc184" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U379" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_4_dc" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line15_Block_.split1_proc184" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U380" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="19" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_0_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_0_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_1_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_1_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="21" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_2_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_2_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_3_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_3_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_4_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_4_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="scalar_val_5_c" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="scalar_val_5_c_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="50" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="multiply_line15_entry185_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="51" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="call_ret" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="multiply_line15_Block_split1_proc184_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="52" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_0_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_0_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="53" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_1_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_1_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="54" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_2_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_2_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="55" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_3_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_3_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="56" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_4_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_4_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="57" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="products_5_dc_channel" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="products_5_dc_channel_U" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="59" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_0_dc_proc119_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="61" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_1_dc_proc120_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="63" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_2_dc_proc121_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="65" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_3_dc_proc122_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="67" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_4_dc_proc123_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="69" filename="uz_VSD/uz_VSD.cpp" linenumber="34" name="_ln34" contextFuncName="multiply_line" contextNormFuncName="multiply_line" moduleName="multiply_line15" rtlName="p_prop_ret_products_OC_5_dc_proc124_U0" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i4_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13178_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U437" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i4_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13184_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U440" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i4_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13190_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U443" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i4_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13196_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U446" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i4_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13202_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U449" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13202_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="14" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U453" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="16" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="bitcast_ln31" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="bitcast_ln31_fu_85_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="17" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="xor_ln31" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="xor_ln31_fu_88_p2" latency="0" BRAM="-1" DSP="-1" FF="0" LUT="33" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="18" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="bitcast_ln31_1" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="bitcast_ln31_1_fu_94_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="20" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_2" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U454" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="22" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="bitcast_ln31_2" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="bitcast_ln31_2_fu_98_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="23" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="xor_ln31_1" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="xor_ln31_1_fu_101_p2" latency="0" BRAM="-1" DSP="-1" FF="0" LUT="33" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="24" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="bitcast_ln31_3" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="bitcast_ln31_3_fu_107_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="26" filename="uz_VSD/uz_VSD.cpp" linenumber="31" name="products_4" contextFuncName="multiply" contextNormFuncName="multiply" moduleName="multiply_line16_Block_.split1_proc" rtlName="fmul_32ns_32ns_32_3_max_dsp_1_U455" latency="2" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add_i5_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13216_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U493" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add3_i5_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13222_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U496" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add5_i5_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13228_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U499" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="6" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add7_i5_loc" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13234_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U502" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="7" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="add9_i5_i_i" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13240_proc" rtlName="fadd_32ns_32ns_32_4_full_dsp_1_U505" latency="3" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+<item  id="8" filename="uz_VSD/uz_VSD.cpp" linenumber="26" name="bitcast_ln26" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="Block_.split13240_proc" rtlName="bitcast_ln26_fu_50_p1" latency="0" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"&gt;&lt;\/item&gt;
+&lt;\/annotationInfo&gt;
+<annotationInfo>
+<item  id="134" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line11_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<item  id="165" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line12_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<item  id="196" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line13_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<item  id="227" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line14_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<item  id="258" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line15_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<item  id="277" filename="uz_VSD/uz_VSD.cpp" linenumber="25" name="_ln25" contextFuncName="uz_6ph_arraymul" contextNormFuncName="uz_6ph_arraymul" moduleName="uz_VSD_6ph_asym" rtlName="multiply_line16_U0" latency="1" BRAM="-1" DSP="-1" FF="-1" LUT="-1" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores"><\/item>
+<\/annotationInfo>
+</annotationInfo>

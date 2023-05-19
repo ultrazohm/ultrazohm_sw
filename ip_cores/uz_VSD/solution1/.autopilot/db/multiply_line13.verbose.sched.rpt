@@ -1,0 +1,173 @@
+
+
+================================================================
+== Vitis HLS Report for 'multiply_line13'
+================================================================
+* Date:           Fri May 19 07:25:08 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 8.924 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline |
+    |   min   |   max   |    min    |    max    | min | max |   Type   |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |        5|        5| 50.000 ns | 50.000 ns |    4|    4| dataflow |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 2
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 3
+* Pipeline : 0
+* Dataflow Pipeline: 1
+  DF-Pipeline-0: Size = 3, States = { 1 2 3 }
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 0.00>
+ST_1 : Operation 4 [1/1] (0.00ns)   --->   "%scalar_val_0_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 4 'alloca' 'scalar_val_0_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 5 [1/1] (0.00ns)   --->   "%scalar_val_1_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 5 'alloca' 'scalar_val_1_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 6 [1/1] (0.00ns)   --->   "%scalar_val_2_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 6 'alloca' 'scalar_val_2_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 7 [1/1] (0.00ns)   --->   "%scalar_val_3_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 7 'alloca' 'scalar_val_3_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 8 [1/1] (0.00ns)   --->   "%scalar_val_4_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 8 'alloca' 'scalar_val_4_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "%scalar_val_5_c = alloca i64" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 9 'alloca' 'scalar_val_5_c' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_1 : Operation 10 [1/1] (0.00ns)   --->   "%call_ln34 = call void @multiply_line13.entry165, i32 %val_5, i32 %val_4, i32 %val_3, i32 %val_2, i32 %val_1, i32 %val_0, i32 %scalar_val_5_c, i32 %scalar_val_4_c, i32 %scalar_val_3_c, i32 %scalar_val_2_c, i32 %scalar_val_1_c, i32 %scalar_val_0_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 10 'call' 'call_ln34' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 2 <SV = 1> <Delay = 0.00>
+ST_2 : Operation 11 [2/2] (0.00ns)   --->   "%call_ret = call i192 @multiply_line13_Block_.split1_proc164, i32 %scalar_val_0_c, i32 %val_0_out, i32 %scalar_val_1_c, i32 %val_1_out, i32 %scalar_val_2_c, i32 %val_2_out, i32 %scalar_val_3_c, i32 %val_3_out, i32 %scalar_val_4_c, i32 %val_4_out, i32 %scalar_val_5_c, i32 %val_5_out, void %call_ln34, void %call_ln34" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 11 'call' 'call_ret' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 3 <SV = 2> <Delay = 8.92>
+ST_3 : Operation 12 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_5, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 12 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 13 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_4, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 13 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 14 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_3, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 14 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 15 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_2, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 15 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 16 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_1, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 16 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 17 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_0, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 17 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 18 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_0_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 18 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 19 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_1_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 19 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 20 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_2_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 20 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 21 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_3_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 21 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 22 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_4_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 22 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 23 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %val_5_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 23 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 24 [1/1] (0.00ns)   --->   "%specdataflowpipeline_ln34 = specdataflowpipeline void @_ssdm_op_SpecDataflowPipeline, i32, i32, void @empty" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 24 'specdataflowpipeline' 'specdataflowpipeline_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 25 [1/1] (0.00ns)   --->   "%empty = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_5_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_5_c, i32 %scalar_val_5_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 25 'specchannel' 'empty' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 26 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_5_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 26 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 27 [1/1] (0.00ns)   --->   "%empty_88 = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_4_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_4_c, i32 %scalar_val_4_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 27 'specchannel' 'empty_88' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 28 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_4_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 28 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 29 [1/1] (0.00ns)   --->   "%empty_89 = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_3_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_3_c, i32 %scalar_val_3_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 29 'specchannel' 'empty_89' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 30 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_3_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 30 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 31 [1/1] (0.00ns)   --->   "%empty_90 = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_2_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_2_c, i32 %scalar_val_2_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 31 'specchannel' 'empty_90' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 32 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_2_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 32 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 33 [1/1] (0.00ns)   --->   "%empty_91 = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_1_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_1_c, i32 %scalar_val_1_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 33 'specchannel' 'empty_91' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 34 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_1_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 34 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 35 [1/1] (0.00ns)   --->   "%empty_92 = specchannel i32 @_ssdm_op_SpecChannel, void @scalar_val_OC_0_c_str, i32, void @p_str, void @p_str, i32, i32, i32 %scalar_val_0_c, i32 %scalar_val_0_c" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 35 'specchannel' 'empty_92' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 36 [1/1] (0.00ns)   --->   "%specinterface_ln34 = specinterface void @_ssdm_op_SpecInterface, i32 %scalar_val_0_c, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 36 'specinterface' 'specinterface_ln34' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 37 [1/2] (7.01ns)   --->   "%call_ret = call i192 @multiply_line13_Block_.split1_proc164, i32 %scalar_val_0_c, i32 %val_0_out, i32 %scalar_val_1_c, i32 %val_1_out, i32 %scalar_val_2_c, i32 %val_2_out, i32 %scalar_val_3_c, i32 %val_3_out, i32 %scalar_val_4_c, i32 %val_4_out, i32 %scalar_val_5_c, i32 %val_5_out, void %call_ln34, void %call_ln34" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 37 'call' 'call_ret' <Predicate = true> <Delay = 7.01> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 38 [1/1] (0.00ns)   --->   "%products_0_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 38 'extractvalue' 'products_0_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 39 [1/1] (0.00ns)   --->   "%products_1_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 39 'extractvalue' 'products_1_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 40 [1/1] (0.00ns)   --->   "%products_2_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 40 'extractvalue' 'products_2_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 41 [1/1] (0.00ns)   --->   "%products_3_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 41 'extractvalue' 'products_3_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 42 [1/1] (0.00ns)   --->   "%products_4_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 42 'extractvalue' 'products_4_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 43 [1/1] (0.00ns)   --->   "%products_5_dc_channel = extractvalue i192 %call_ret" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 43 'extractvalue' 'products_5_dc_channel' <Predicate = true> <Delay = 0.00> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_3 : Operation 44 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_0_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 44 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 45 [1/1] (1.83ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_0_dc_proc81, i32 %products_0_dc_channel, i32 %products_0_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 45 'call' 'call_ln34' <Predicate = true> <Delay = 1.83> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 46 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_1_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 46 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 47 [1/1] (1.83ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_1_dc_proc82, i32 %products_1_dc_channel, i32 %products_1_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 47 'call' 'call_ln34' <Predicate = true> <Delay = 1.83> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 48 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_2_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 48 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 49 [1/1] (1.83ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_2_dc_proc83, i32 %products_2_dc_channel, i32 %products_2_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 49 'call' 'call_ln34' <Predicate = true> <Delay = 1.83> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 50 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_3_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 50 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 51 [1/1] (1.86ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_3_dc_proc84, i32 %products_3_dc_channel, i32 %products_3_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 51 'call' 'call_ln34' <Predicate = true> <Delay = 1.86> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 52 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_4_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 52 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 53 [1/1] (1.88ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_4_dc_proc85, i32 %products_4_dc_channel, i32 %products_4_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 53 'call' 'call_ln34' <Predicate = true> <Delay = 1.88> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 54 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_5_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 54 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 55 [1/1] (1.90ns)   --->   "%call_ln34 = call void @__prop_ret_products_OC_5_dc_proc86, i32 %products_5_dc_channel, i32 %products_5_out" [uz_VSD/uz_VSD.cpp:34]   --->   Operation 55 'call' 'call_ln34' <Predicate = true> <Delay = 1.90> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_3 : Operation 56 [1/1] (0.00ns)   --->   "%ret_ln0 = ret"   --->   Operation 56 'ret' 'ret_ln0' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10ns, clock uncertainty: 2.7ns.
+
+ <State 1>: 0ns
+The critical path consists of the following:
+
+ <State 2>: 0ns
+The critical path consists of the following:
+
+ <State 3>: 8.92ns
+The critical path consists of the following:
+	'call' operation ('call_ret', uz_VSD/uz_VSD.cpp:34) to 'multiply_line13_Block_.split1_proc164' [51]  (7.02 ns)
+	'call' operation ('call_ln34', uz_VSD/uz_VSD.cpp:34) to '__prop_ret_products_OC_5_dc_proc86' [69]  (1.91 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

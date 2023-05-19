@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1684473944600">
+  <ports id="1" name="p_read" type="PortType" bitwidth="32">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="2" name="products_3_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <edges id="11" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.0"/>
+  <edges id="14" source_obj="//@blocks.0/@node_objs.1" sink_obj="//@ports.1"/>
+  <edges id="15" source_obj="//@blocks.0/@node_objs.0" sink_obj="//@blocks.0/@node_objs.1"/>
+  <blocks id="8" name="__prop_ret_products_OC_3_dc_proc103" type="BlockType">
+    <node_objs xsi:type="cdfg:CdfgNode" id="5" name="p_read_17" bitwidth="32" opcode="read" m_display="0" m_topoIndex="1" m_clusterGroupNumber="-1">
+      <dataInputObjs>p_read</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="6" name="products_3_out_write_ln0" opcode="write" m_display="0" m_delay="1.86" m_topoIndex="2" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>products_3_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="7" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="multiply_line" opcode="ret" m_display="0" m_topoIndex="3" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+    </node_objs>
+    <fileValidLineNumbers fileName="uz_VSD/uz_VSD.cpp">
+      <validLinenumbers>34</validLinenumbers>
+    </fileValidLineNumbers>
+  </blocks>
+  <ScheduleInfo time="0"/>
+  <ioNodes realName="p_read_17_read_fu_22">
+    <nodeIds>5</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_28">
+    <nodeIds>6</nodeIds>
+  </ioNodes>
+  <ioPorts name="p_read">
+    <contents name="read">
+      <nodeIds>5</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="products_3_out">
+    <contents name="write">
+      <nodeIds>6</nodeIds>
+    </contents>
+  </ioPorts>
+  <fsm>
+    <states id="1">
+      <operations id="3" stage="1" latency="1"/>
+      <operations id="4" stage="1" latency="1"/>
+      <operations id="5" stage="1" latency="1"/>
+      <operations id="6" stage="1" latency="1"/>
+      <operations id="7" stage="1" latency="1"/>
+    </states>
+  </fsm>
+  <CFGRegionsRoot>
+    <cfgRegions mId="1" mTag="p_prop_ret_products_OC_3_dc_proc103" mII="-1" mDepth="-1" mMinTripCount="-1" mMaxTripCount="-1">
+      <basicBlocks>8</basicBlocks>
+      <mDfPipe/>
+    </cfgRegions>
+  </CFGRegionsRoot>
+</cdfg:DBCdfg>

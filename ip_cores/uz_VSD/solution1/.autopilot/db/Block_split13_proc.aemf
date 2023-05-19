@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1684473929607">
+  <ports id="1" name="in_r" type="PortType" coreName="RAM" bitwidth="32" iftype="IfTypeRegister" arraysize="6">
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+    <dataOutputObjs>getelementptr</dataOutputObjs>
+  </ports>
+  <ports id="2" name="cpy_in_0_out" type="PortType" lineNumber="10" originalName="cpy_in[0]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="3" name="cpy_in_1_out" type="PortType" lineNumber="10" originalName="cpy_in[1]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="4" name="cpy_in_2_out" type="PortType" lineNumber="10" originalName="cpy_in[2]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="5" name="cpy_in_3_out" type="PortType" lineNumber="10" originalName="cpy_in[3]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="6" name="cpy_in_4_out" type="PortType" lineNumber="10" originalName="cpy_in[4]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="7" name="cpy_in_5_out" type="PortType" lineNumber="10" originalName="cpy_in[5]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." coreName="FIFO_SRL" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <edges id="42" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.0"/>
+  <edges id="46" source_obj="//@blocks.0/@node_objs.0" sink_obj="//@blocks.0/@node_objs.1"/>
+  <edges id="47" source_obj="//@blocks.0/@node_objs.1" sink_obj="//@blocks.0/@node_objs.2"/>
+  <edges id="50" source_obj="//@blocks.0/@node_objs.3" sink_obj="//@ports.1"/>
+  <edges id="51" source_obj="//@blocks.0/@node_objs.2" sink_obj="//@blocks.0/@node_objs.3"/>
+  <edges id="52" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.4"/>
+  <edges id="56" source_obj="//@blocks.0/@node_objs.4" sink_obj="//@blocks.0/@node_objs.5"/>
+  <edges id="57" source_obj="//@blocks.0/@node_objs.5" sink_obj="//@blocks.0/@node_objs.6"/>
+  <edges id="59" source_obj="//@blocks.0/@node_objs.7" sink_obj="//@ports.2"/>
+  <edges id="60" source_obj="//@blocks.0/@node_objs.6" sink_obj="//@blocks.0/@node_objs.7"/>
+  <edges id="61" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.8"/>
+  <edges id="65" source_obj="//@blocks.0/@node_objs.8" sink_obj="//@blocks.0/@node_objs.9"/>
+  <edges id="66" source_obj="//@blocks.0/@node_objs.9" sink_obj="//@blocks.0/@node_objs.10"/>
+  <edges id="68" source_obj="//@blocks.0/@node_objs.11" sink_obj="//@ports.3"/>
+  <edges id="69" source_obj="//@blocks.0/@node_objs.10" sink_obj="//@blocks.0/@node_objs.11"/>
+  <edges id="70" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.12"/>
+  <edges id="74" source_obj="//@blocks.0/@node_objs.12" sink_obj="//@blocks.0/@node_objs.13"/>
+  <edges id="75" source_obj="//@blocks.0/@node_objs.13" sink_obj="//@blocks.0/@node_objs.14"/>
+  <edges id="77" source_obj="//@blocks.0/@node_objs.15" sink_obj="//@ports.4"/>
+  <edges id="78" source_obj="//@blocks.0/@node_objs.14" sink_obj="//@blocks.0/@node_objs.15"/>
+  <edges id="79" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.16"/>
+  <edges id="83" source_obj="//@blocks.0/@node_objs.16" sink_obj="//@blocks.0/@node_objs.17"/>
+  <edges id="84" source_obj="//@blocks.0/@node_objs.17" sink_obj="//@blocks.0/@node_objs.18"/>
+  <edges id="86" source_obj="//@blocks.0/@node_objs.19" sink_obj="//@ports.5"/>
+  <edges id="87" source_obj="//@blocks.0/@node_objs.18" sink_obj="//@blocks.0/@node_objs.19"/>
+  <edges id="88" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.20"/>
+  <edges id="92" source_obj="//@blocks.0/@node_objs.20" sink_obj="//@blocks.0/@node_objs.21"/>
+  <edges id="93" source_obj="//@blocks.0/@node_objs.21" sink_obj="//@blocks.0/@node_objs.22"/>
+  <edges id="95" source_obj="//@blocks.0/@node_objs.23" sink_obj="//@ports.6"/>
+  <edges id="96" source_obj="//@blocks.0/@node_objs.22" sink_obj="//@blocks.0/@node_objs.23"/>
+  <blocks id="41" name="Block_.split13_proc" type="BlockType">
+    <node_objs xsi:type="cdfg:CdfgNode" id="16" name="in_addr" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" m_display="0" m_topoIndex="1" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="17" name="in_load" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="2" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="18" name="cpy_in_0" lineNumber="10" originalName="cpy_in[0]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_0_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="13" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="19" name="cpy_in_0_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="14" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_0_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="20" name="in_addr_1" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" m_display="0" m_topoIndex="3" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="21" name="in_load_1" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="4" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="22" name="cpy_in_1" lineNumber="10" originalName="cpy_in[1]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_1_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="15" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="23" name="cpy_in_1_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="16" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_1_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="24" name="in_addr_2" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" nodeLabel="1.0" m_display="0" m_topoIndex="5" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="25" name="in_load_2" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLabel="1.0" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="6" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="26" name="cpy_in_2" lineNumber="10" originalName="cpy_in[2]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_2_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="17" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="27" name="cpy_in_2_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="18" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_2_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="28" name="in_addr_3" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" nodeLabel="1.0" m_display="0" m_topoIndex="7" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="29" name="in_load_3" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLabel="1.0" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="8" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="30" name="cpy_in_3" lineNumber="10" originalName="cpy_in[3]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_3_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="19" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="31" name="cpy_in_3_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="20" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_3_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="32" name="in_addr_4" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" nodeLabel="2.0" m_display="0" m_topoIndex="9" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="33" name="in_load_4" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLabel="2.0" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="10" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="34" name="cpy_in_4" lineNumber="10" originalName="cpy_in[4]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_4_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="21" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="35" name="cpy_in_4_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="22" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_4_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="36" name="in_addr_5" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="3" opcode="getelementptr" nodeLabel="2.0" m_display="0" m_topoIndex="11" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>in_r</dataInputObjs>
+      <dataOutputObjs>load</dataOutputObjs>
+      <constName>empty</constName>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="37" name="in_load_5" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="load" nodeLabel="2.0" nodeLatency="1" m_display="0" m_delay="0.67" m_topoIndex="12" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>getelementptr</dataInputObjs>
+      <dataOutputObjs>bitcast</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="38" name="cpy_in_5" lineNumber="10" originalName="cpy_in[5]" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." rtlName="cpy_in_5_out_din" contextFuncName="uz_VSD_6ph_asym" bitwidth="32" opcode="bitcast" nodeLabel="3.0" m_display="0" m_topoIndex="23" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>load</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="39" name="cpy_in_5_out_write_ln10" lineNumber="10" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="uz_VSD_6ph_asym" opcode="write" nodeLabel="3.0" m_display="0" m_delay="1.83" m_topoIndex="24" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="10" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="uz_VSD_6ph_asym"/>
+      <dataInputObjs>bitcast</dataInputObjs>
+      <dataOutputObjs>cpy_in_5_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="40" name="_ln0" opcode="ret" nodeLabel="3.0" m_display="0" m_topoIndex="25" m_clusterGroupNumber="-1"/>
+    <fileValidLineNumbers fileName="uz_VSD/uz_VSD.cpp">
+      <validLinenumbers>10</validLinenumbers>
+    </fileValidLineNumbers>
+  </blocks>
+  <ScheduleInfo time="0"/>
+  <ScheduleInfo time="1"/>
+  <ScheduleInfo time="2"/>
+  <ScheduleInfo time="3"/>
+  <regnodes realName="in_addr_reg_177">
+    <nodeIds>16</nodeIds>
+  </regnodes>
+  <regnodes realName="in_load_2_reg_207">
+    <nodeIds>25</nodeIds>
+  </regnodes>
+  <regnodes realName="in_addr_1_reg_182">
+    <nodeIds>20</nodeIds>
+  </regnodes>
+  <regnodes realName="in_addr_5_reg_222">
+    <nodeIds>36</nodeIds>
+  </regnodes>
+  <regnodes realName="in_addr_4_reg_217">
+    <nodeIds>32</nodeIds>
+  </regnodes>
+  <regnodes realName="in_addr_3_reg_202">
+    <nodeIds>28</nodeIds>
+  </regnodes>
+  <regnodes realName="in_load_reg_187">
+    <nodeIds>17</nodeIds>
+  </regnodes>
+  <regnodes realName="in_load_3_reg_212">
+    <nodeIds>29</nodeIds>
+  </regnodes>
+  <regnodes realName="in_addr_2_reg_197">
+    <nodeIds>24</nodeIds>
+  </regnodes>
+  <regnodes realName="in_load_1_reg_192">
+    <nodeIds>21</nodeIds>
+  </regnodes>
+  <expressionNodes realName="in_addr_5_gep_fu_142">
+    <nodeIds>36</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_4_fu_167">
+    <nodeIds>34</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_0_fu_151">
+    <nodeIds>18</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="in_addr_1_gep_fu_106">
+    <nodeIds>20</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_1_fu_155">
+    <nodeIds>22</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="in_addr_4_gep_fu_133">
+    <nodeIds>32</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_3_fu_163">
+    <nodeIds>30</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="in_addr_2_gep_fu_115">
+    <nodeIds>24</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="in_addr_3_gep_fu_124">
+    <nodeIds>28</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_2_fu_159">
+    <nodeIds>26</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="cpy_in_5_fu_172">
+    <nodeIds>38</nodeIds>
+  </expressionNodes>
+  <expressionNodes realName="in_addr_gep_fu_88">
+    <nodeIds>16</nodeIds>
+  </expressionNodes>
+  <ioNodes realName="write_ln10_write_fu_81">
+    <nodeIds>39</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln10_write_fu_60">
+    <nodeIds>27</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln10_write_fu_74">
+    <nodeIds>35</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln10_write_fu_53">
+    <nodeIds>23</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln10_write_fu_67">
+    <nodeIds>31</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln10_write_fu_46">
+    <nodeIds>19</nodeIds>
+  </ioNodes>
+  <memoryPorts dataString="in_r">
+    <nodeIds>21</nodeIds>
+    <nodeIds>29</nodeIds>
+    <nodeIds>37</nodeIds>
+  </memoryPorts>
+  <memoryPorts dataString="in_r" portID="1">
+    <nodeIds>17</nodeIds>
+    <nodeIds>25</nodeIds>
+    <nodeIds>33</nodeIds>
+  </memoryPorts>
+  <ioPorts name="cpy_in_0_out">
+    <contents name="write">
+      <nodeIds>19</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="cpy_in_1_out">
+    <contents name="write">
+      <nodeIds>23</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="cpy_in_2_out">
+    <contents name="write">
+      <nodeIds>27</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="cpy_in_3_out">
+    <contents name="write">
+      <nodeIds>31</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="cpy_in_4_out">
+    <contents name="write">
+      <nodeIds>35</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="cpy_in_5_out">
+    <contents name="write">
+      <nodeIds>39</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="in_r(p0)">
+    <contents name="load">
+      <nodeIds>21</nodeIds>
+      <nodeIds>29</nodeIds>
+      <nodeIds>37</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="in_r(p1)">
+    <contents name="load">
+      <nodeIds>17</nodeIds>
+      <nodeIds>25</nodeIds>
+      <nodeIds>33</nodeIds>
+    </contents>
+  </ioPorts>
+  <fsm>
+    <states id="1">
+      <operations id="16" stage="1" latency="1"/>
+      <operations id="17" stage="2" latency="2"/>
+      <operations id="20" stage="1" latency="1"/>
+      <operations id="21" stage="2" latency="2"/>
+    </states>
+    <states id="2">
+      <operations id="17" stage="1" latency="2"/>
+      <operations id="21" stage="1" latency="2"/>
+      <operations id="24" stage="1" latency="1"/>
+      <operations id="25" stage="2" latency="2"/>
+      <operations id="28" stage="1" latency="1"/>
+      <operations id="29" stage="2" latency="2"/>
+    </states>
+    <states id="3">
+      <operations id="25" stage="1" latency="2"/>
+      <operations id="29" stage="1" latency="2"/>
+      <operations id="32" stage="1" latency="1"/>
+      <operations id="33" stage="2" latency="2"/>
+      <operations id="36" stage="1" latency="1"/>
+      <operations id="37" stage="2" latency="2"/>
+    </states>
+    <states id="4">
+      <operations id="8" stage="1" latency="1"/>
+      <operations id="9" stage="1" latency="1"/>
+      <operations id="10" stage="1" latency="1"/>
+      <operations id="11" stage="1" latency="1"/>
+      <operations id="12" stage="1" latency="1"/>
+      <operations id="13" stage="1" latency="1"/>
+      <operations id="14" stage="1" latency="1"/>
+      <operations id="15" stage="1" latency="1"/>
+      <operations id="18" stage="1" latency="1"/>
+      <operations id="19" stage="1" latency="1"/>
+      <operations id="22" stage="1" latency="1"/>
+      <operations id="23" stage="1" latency="1"/>
+      <operations id="26" stage="1" latency="1"/>
+      <operations id="27" stage="1" latency="1"/>
+      <operations id="30" stage="1" latency="1"/>
+      <operations id="31" stage="1" latency="1"/>
+      <operations id="33" stage="1" latency="2"/>
+      <operations id="34" stage="1" latency="1"/>
+      <operations id="35" stage="1" latency="1"/>
+      <operations id="37" stage="1" latency="2"/>
+      <operations id="38" stage="1" latency="1"/>
+      <operations id="39" stage="1" latency="1"/>
+      <operations id="40" stage="1" latency="1"/>
+    </states>
+    <transitions inState="1" outState="2">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="2" outState="3">
+      <condition id="-1"/>
+    </transitions>
+    <transitions inState="3" outState="4">
+      <condition id="-1"/>
+    </transitions>
+  </fsm>
+  <CFGRegionsRoot>
+    <cfgRegions mId="1" mTag="Block_split13_proc" mII="-1" mDepth="-1" mMinTripCount="-1" mMaxTripCount="-1" mMinLatency="3" mMaxLatency="3">
+      <basicBlocks>41</basicBlocks>
+      <mDfPipe/>
+    </cfgRegions>
+  </CFGRegionsRoot>
+</cdfg:DBCdfg>

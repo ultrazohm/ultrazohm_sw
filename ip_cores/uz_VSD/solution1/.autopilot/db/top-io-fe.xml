@@ -1,0 +1,14 @@
+<root versionMajor = "1" versionMinor = "5">
+  <kernel src_name="uz_VSD_6ph_asym" language="c" hwCtrl="ap_ctrl_hs" mem_layout="fpga64-xilinx-none">
+    <args>
+      <arg id="0" access_type="r" src_name="in" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="6" hw_interface="BRAM" hw_name="in" hw_bitwidth="32" hw_size_or_depth="6"/>
+      <arg id="1" access_type="w" src_name="out_1" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_1" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="2" access_type="w" src_name="out_2" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_2" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="3" access_type="w" src_name="out_3" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_3" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="4" access_type="w" src_name="out_4" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_4" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="5" access_type="w" src_name="out_5" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_5" hw_bitwidth="32" hw_size_or_depth="1"/>
+      <arg id="6" access_type="w" src_name="out_6" src_type="float*" src_isptr="1" src_bitwidth="32" src_size_or_depth="1" hw_interface="Register" hw_name="out_6" hw_bitwidth="32" hw_size_or_depth="1"/>
+    </args>
+    <return src_type="void" src_bitwidth="0" hw_interface="" hw_name="" hw_bitwidth="0" offset="0x0"/>
+  </kernel>
+</root>

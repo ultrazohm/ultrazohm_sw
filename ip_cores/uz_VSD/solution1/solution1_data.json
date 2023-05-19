@@ -1,0 +1,4707 @@
+{
+  "Top": "uz_VSD_6ph_asym",
+  "RtlTop": "uz_VSD_6ph_asym",
+  "RtlPrefix": "",
+  "RtlSubPrefix": "uz_VSD_6ph_asym_",
+  "SourceLanguage": "cpp",
+  "HostMachineBits": "64",
+  "FunctionProtocol": "ap_ctrl_hs",
+  "ResetStyle": "control",
+  "Target": {
+    "Family": "zynquplus",
+    "Device": "xczu19eg",
+    "Package": "-ffve1924",
+    "Speed": "-2-e",
+    "Triple": "fpga64-xilinx-none"
+  },
+  "Args": {
+    "in": {
+      "index": "0",
+      "direction": "in",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "in_r_address0",
+          "name": "in_r_address0",
+          "usage": "address",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_ce0",
+          "name": "in_r_ce0",
+          "usage": "control",
+          "direction": "in"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_d0",
+          "name": "in_r_d0",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_q0",
+          "name": "in_r_q0",
+          "usage": "data",
+          "direction": "in"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_we0",
+          "name": "in_r_we0",
+          "usage": "control",
+          "direction": "in"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_address1",
+          "name": "in_r_address1",
+          "usage": "address",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_ce1",
+          "name": "in_r_ce1",
+          "usage": "control",
+          "direction": "in"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_d1",
+          "name": "in_r_d1",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_q1",
+          "name": "in_r_q1",
+          "usage": "data",
+          "direction": "in"
+        },
+        {
+          "type": "port",
+          "interface": "in_r_we1",
+          "name": "in_r_we1",
+          "usage": "control",
+          "direction": "in"
+        }
+      ]
+    },
+    "out_1": {
+      "index": "1",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_1",
+          "name": "out_1",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_1_ap_vld",
+          "name": "out_1_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    },
+    "out_2": {
+      "index": "2",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_2",
+          "name": "out_2",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_2_ap_vld",
+          "name": "out_2_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    },
+    "out_3": {
+      "index": "3",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_3",
+          "name": "out_3",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_3_ap_vld",
+          "name": "out_3_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    },
+    "out_4": {
+      "index": "4",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_4",
+          "name": "out_4",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_4_ap_vld",
+          "name": "out_4_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    },
+    "out_5": {
+      "index": "5",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_5",
+          "name": "out_5",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_5_ap_vld",
+          "name": "out_5_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    },
+    "out_6": {
+      "index": "6",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [
+        {
+          "type": "port",
+          "interface": "out_6",
+          "name": "out_6",
+          "usage": "data",
+          "direction": "out"
+        },
+        {
+          "type": "port",
+          "interface": "out_6_ap_vld",
+          "name": "out_6_ap_vld",
+          "usage": "control",
+          "direction": "out"
+        }
+      ]
+    }
+  },
+  "HlsSolution": {
+    "FlowTarget": "vivado",
+    "DirectiveTcl": [
+      "set_directive_top uz_VSD_6ph_asym -name uz_VSD_6ph_asym",
+      "set_directive_top uz_VSD_6ph_asym -name uz_VSD_6ph_asym"
+    ],
+    "ProfileOption": "0",
+    "ProfileType": "none",
+    "KernelName": "uz_VSD_6ph_asym"
+  },
+  "ClockInfo": {
+    "ClockName": "ap_clk",
+    "ClockPeriod": "10",
+    "Uncertainty": "2.7",
+    "IsCombinational": "0",
+    "II": "x",
+    "Latency": "20"
+  },
+  "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
+  "Ipx": {
+    "Vendor": "xilinx.com",
+    "Library": "hls",
+    "Name": "uz_VSD_6ph_asym",
+    "Version": "1.0",
+    "DisplayName": "Uz_vsd_6ph_asym",
+    "Revision": "",
+    "Description": "An IP generated by Vivado HLS",
+    "Taxonomy": "\/VIVADO_HLS_IP",
+    "AutoFamilySupport": "",
+    "ZipFile": "xilinx_com_hls_uz_VSD_6ph_asym_1_0.zip"
+  },
+  "Files": {
+    "CSource": ["..\/uz_VSD.cpp"],
+    "Vhdl": [
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1320_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1326_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1332_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1338_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1344_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1350_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1358_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1364_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1370_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1376_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1382_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1388_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split1396_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13102_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13108_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13114_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13120_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13126_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13134_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13140_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13146_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13152_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13158_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13164_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13172_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13178_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13184_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13190_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13196_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13202_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13210_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13216_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13222_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13228_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13234_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_Block_split13240_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fadd_32ns_32ns_32_4_full_dsp_1.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x1.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x2.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x3.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d2_S_x4.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d3_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d4_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d5_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d6_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fifo_w32_d7_S.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_fmul_32ns_32ns_32_3_max_dsp_1.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line11.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line11_Block_split1_proc144.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line11_entry145.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line12.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line12_Block_split1_proc154.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line12_entry155.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line13.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line13_Block_split1_proc164.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line13_entry165.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line14.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line14_Block_split1_proc174.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line14_entry175.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line15.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line15_Block_split1_proc184.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line15_entry185.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line16.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_multiply_line16_Block_split1_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc62.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc81.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc100.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc119.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc132.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc63.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc82.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc101.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc120.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc133.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc64.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc83.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc102.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc121.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc134.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc65.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc84.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc103.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc122.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc135.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc66.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc85.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc104.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc123.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc136.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc67.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc86.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc105.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc124.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc137.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split1320_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split1358_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split1396_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split13134_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split13172_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_Block_split13210_proc_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line11_Block_split1_proc144_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line11_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line12_Block_split1_proc154_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line12_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line13_Block_split1_proc164_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line13_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line14_Block_split1_proc174_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line14_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line15_Block_split1_proc184_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line15_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym_start_for_multiply_line16_U0.vhd",
+      "impl\/vhdl\/uz_VSD_6ph_asym.vhd"
+    ],
+    "Verilog": [
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1320_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1326_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1332_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1338_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1344_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1350_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1358_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1364_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1370_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1376_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1382_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1388_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split1396_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13102_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13108_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13114_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13120_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13126_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13134_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13140_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13146_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13152_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13158_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13164_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13172_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13178_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13184_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13190_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13196_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13202_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13210_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13216_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13222_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13228_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13234_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_Block_split13240_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fadd_32ns_32ns_32_4_full_dsp_1.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x1.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x2.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x3.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d2_S_x4.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d3_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d4_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d5_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d6_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fifo_w32_d7_S.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_fmul_32ns_32ns_32_3_max_dsp_1.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line11.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line11_Block_split1_proc144.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line11_entry145.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line12.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line12_Block_split1_proc154.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line12_entry155.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line13.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line13_Block_split1_proc164.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line13_entry165.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line14.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line14_Block_split1_proc174.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line14_entry175.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line15.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line15_Block_split1_proc184.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line15_entry185.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line16.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_multiply_line16_Block_split1_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc62.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc81.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc100.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc119.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_0_dc_proc132.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc63.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc82.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc101.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc120.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_1_dc_proc133.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc64.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc83.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc102.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc121.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_2_dc_proc134.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc65.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc84.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc103.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc122.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_3_dc_proc135.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc66.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc85.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc104.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc123.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_4_dc_proc136.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc67.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc86.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc105.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc124.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_p_prop_ret_products_OC_5_dc_proc137.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split1320_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split1358_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split1396_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split13134_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split13172_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_Block_split13210_proc_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line11_Block_split1_proc144_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line11_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line12_Block_split1_proc154_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line12_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line13_Block_split1_proc164_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line13_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line14_Block_split1_proc174_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line14_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line15_Block_split1_proc184_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line15_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym_start_for_multiply_line16_U0.v",
+      "impl\/verilog\/uz_VSD_6ph_asym.v"
+    ],
+    "IpMisc": ["impl\/misc\/logo.png"],
+    "Subcore": [
+      "impl\/misc\/uz_VSD_6ph_asym_ap_fadd_2_full_dsp_32_ip.tcl",
+      "impl\/misc\/uz_VSD_6ph_asym_ap_fmul_1_max_dsp_32_ip.tcl"
+    ],
+    "DesignXml": ".autopilot\/db\/uz_VSD_6ph_asym.design.xml",
+    "DebugDir": ".debug",
+    "ProtoInst": ["C:\/Users\/valen\/Documents\/repos\/UZ\/ultrazohm_sw\/ip_cores\/uz_VSD\/solution1\/.debug\/uz_VSD_6ph_asym.protoinst"]
+  },
+  "SubcoreInfo": {
+    "HasXpmMemory": false,
+    "HasClockedDsp": false,
+    "Ip": [
+      {
+        "Name": "uz_VSD_6ph_asym_ap_fadd_2_full_dsp_32",
+        "Vlnv": "xilinx.com:ip:floating_point:7.1",
+        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Add CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 2 CONFIG.c_mult_usage Full_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_VSD_6ph_asym_ap_fadd_2_full_dsp_32 CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Add_Subtract CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
+      },
+      {
+        "Name": "uz_VSD_6ph_asym_ap_fmul_1_max_dsp_32",
+        "Vlnv": "xilinx.com:ip:floating_point:7.1",
+        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Both CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 1 CONFIG.c_mult_usage Max_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_VSD_6ph_asym_ap_fmul_1_max_dsp_32 CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Multiply CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
+      }
+    ]
+  },
+  "Interfaces": {
+    "ap_clk": {
+      "type": "clock",
+      "busTypeName": "clock",
+      "mode": "slave",
+      "busParams": {"ASSOCIATED_RESET": "ap_rst"},
+      "portMap": {"ap_clk": "CLK"},
+      "ports": ["ap_clk"]
+    },
+    "ap_ctrl": {
+      "type": "ap_ctrl",
+      "busTypeName": "acc_handshake",
+      "mode": "slave",
+      "portMap": {
+        "ap_start": "1",
+        "ap_done": "1",
+        "ap_ready": "1",
+        "ap_idle": "1"
+      },
+      "ports": [
+        "ap_done",
+        "ap_idle",
+        "ap_ready",
+        "ap_start"
+      ]
+    },
+    "ap_rst": {
+      "type": "reset",
+      "busTypeName": "reset",
+      "mode": "slave",
+      "busParams": {"POLARITY": "ACTIVE_HIGH"},
+      "portMap": {"ap_rst": "RST"},
+      "ports": ["ap_rst"]
+    },
+    "in_r_address0": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "3",
+      "ports": ["in_r_address0"]
+    },
+    "in_r_address1": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "3",
+      "ports": ["in_r_address1"]
+    },
+    "in_r_d0": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["in_r_d0"]
+    },
+    "in_r_d1": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["in_r_d1"]
+    },
+    "in_r_q0": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "slave",
+      "dataWidth": "32",
+      "ports": ["in_r_q0"]
+    },
+    "in_r_q1": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "slave",
+      "dataWidth": "32",
+      "ports": ["in_r_q1"]
+    },
+    "out_1": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_1"]
+    },
+    "out_2": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_2"]
+    },
+    "out_3": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_3"]
+    },
+    "out_4": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_4"]
+    },
+    "out_5": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_5"]
+    },
+    "out_6": {
+      "type": "data",
+      "busTypeName": "data",
+      "mode": "master",
+      "dataWidth": "32",
+      "ports": ["out_6"]
+    }
+  },
+  "RtlPorts": {
+    "in_r_address0": {
+      "dir": "out",
+      "width": "3"
+    },
+    "in_r_ce0": {
+      "dir": "out",
+      "width": "1"
+    },
+    "in_r_d0": {
+      "dir": "out",
+      "width": "32"
+    },
+    "in_r_q0": {
+      "dir": "in",
+      "width": "32"
+    },
+    "in_r_we0": {
+      "dir": "out",
+      "width": "1"
+    },
+    "in_r_address1": {
+      "dir": "out",
+      "width": "3"
+    },
+    "in_r_ce1": {
+      "dir": "out",
+      "width": "1"
+    },
+    "in_r_d1": {
+      "dir": "out",
+      "width": "32"
+    },
+    "in_r_q1": {
+      "dir": "in",
+      "width": "32"
+    },
+    "in_r_we1": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_1": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_1_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_2": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_2_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_3": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_3_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_4": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_4_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_5": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_5_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "out_6": {
+      "dir": "out",
+      "width": "32"
+    },
+    "out_6_ap_vld": {
+      "dir": "out",
+      "width": "1"
+    },
+    "ap_clk": {
+      "dir": "in",
+      "width": "1"
+    },
+    "ap_rst": {
+      "dir": "in",
+      "width": "1"
+    },
+    "ap_start": {
+      "dir": "in",
+      "width": "1"
+    },
+    "ap_done": {
+      "dir": "out",
+      "width": "1"
+    },
+    "ap_ready": {
+      "dir": "out",
+      "width": "1"
+    },
+    "ap_idle": {
+      "dir": "out",
+      "width": "1"
+    }
+  },
+  "ModuleInfo": {
+    "Hierarchy": {
+      "ModuleName": "uz_VSD_6ph_asym",
+      "Instances": [
+        {
+          "ModuleName": "multiply_line12",
+          "InstanceName": "multiply_line12_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line12_Block_split1_proc154",
+              "InstanceName": "multiply_line12_Block_split1_proc154_U0"
+            },
+            {
+              "ModuleName": "multiply_line12_entry155",
+              "InstanceName": "multiply_line12_entry155_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc62",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc62_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc63",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc63_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc64",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc64_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc65",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc65_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc66",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc66_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc67",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc67_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "multiply_line13",
+          "InstanceName": "multiply_line13_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line13_Block_split1_proc164",
+              "InstanceName": "multiply_line13_Block_split1_proc164_U0"
+            },
+            {
+              "ModuleName": "multiply_line13_entry165",
+              "InstanceName": "multiply_line13_entry165_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc81",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc81_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc82",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc82_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc83",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc83_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc84",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc84_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc85",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc85_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc86",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc86_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "multiply_line14",
+          "InstanceName": "multiply_line14_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line14_Block_split1_proc174",
+              "InstanceName": "multiply_line14_Block_split1_proc174_U0"
+            },
+            {
+              "ModuleName": "multiply_line14_entry175",
+              "InstanceName": "multiply_line14_entry175_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc100",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc100_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc101",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc101_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc102",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc102_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc103",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc103_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc104",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc104_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc105",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc105_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "multiply_line15",
+          "InstanceName": "multiply_line15_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line15_Block_split1_proc184",
+              "InstanceName": "multiply_line15_Block_split1_proc184_U0"
+            },
+            {
+              "ModuleName": "multiply_line15_entry185",
+              "InstanceName": "multiply_line15_entry185_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc119",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc119_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc120",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc120_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc121",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc121_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc122",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc122_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc123",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc123_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc124",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc124_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "multiply_line11",
+          "InstanceName": "multiply_line11_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line11_Block_split1_proc144",
+              "InstanceName": "multiply_line11_Block_split1_proc144_U0"
+            },
+            {
+              "ModuleName": "multiply_line11_entry145",
+              "InstanceName": "multiply_line11_entry145_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "multiply_line16",
+          "InstanceName": "multiply_line16_U0",
+          "Instances": [
+            {
+              "ModuleName": "multiply_line16_Block_split1_proc",
+              "InstanceName": "multiply_line16_Block_split1_proc_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_0_dc_proc132",
+              "InstanceName": "p_prop_ret_products_OC_0_dc_proc132_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_1_dc_proc133",
+              "InstanceName": "p_prop_ret_products_OC_1_dc_proc133_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_2_dc_proc134",
+              "InstanceName": "p_prop_ret_products_OC_2_dc_proc134_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_3_dc_proc135",
+              "InstanceName": "p_prop_ret_products_OC_3_dc_proc135_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_4_dc_proc136",
+              "InstanceName": "p_prop_ret_products_OC_4_dc_proc136_U0"
+            },
+            {
+              "ModuleName": "p_prop_ret_products_OC_5_dc_proc137",
+              "InstanceName": "p_prop_ret_products_OC_5_dc_proc137_U0"
+            }
+          ]
+        },
+        {
+          "ModuleName": "Block_split1350_proc",
+          "InstanceName": "Block_split1350_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1388_proc",
+          "InstanceName": "Block_split1388_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13126_proc",
+          "InstanceName": "Block_split13126_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13164_proc",
+          "InstanceName": "Block_split13164_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13202_proc",
+          "InstanceName": "Block_split13202_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13240_proc",
+          "InstanceName": "Block_split13240_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1326_proc",
+          "InstanceName": "Block_split1326_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1332_proc",
+          "InstanceName": "Block_split1332_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1364_proc",
+          "InstanceName": "Block_split1364_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1338_proc",
+          "InstanceName": "Block_split1338_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1370_proc",
+          "InstanceName": "Block_split1370_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13102_proc",
+          "InstanceName": "Block_split13102_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1344_proc",
+          "InstanceName": "Block_split1344_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1376_proc",
+          "InstanceName": "Block_split1376_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13108_proc",
+          "InstanceName": "Block_split13108_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13140_proc",
+          "InstanceName": "Block_split13140_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1382_proc",
+          "InstanceName": "Block_split1382_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13114_proc",
+          "InstanceName": "Block_split13114_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13146_proc",
+          "InstanceName": "Block_split13146_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13178_proc",
+          "InstanceName": "Block_split13178_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13120_proc",
+          "InstanceName": "Block_split13120_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13152_proc",
+          "InstanceName": "Block_split13152_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13184_proc",
+          "InstanceName": "Block_split13184_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13216_proc",
+          "InstanceName": "Block_split13216_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13158_proc",
+          "InstanceName": "Block_split13158_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13190_proc",
+          "InstanceName": "Block_split13190_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13222_proc",
+          "InstanceName": "Block_split13222_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13196_proc",
+          "InstanceName": "Block_split13196_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13228_proc",
+          "InstanceName": "Block_split13228_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13234_proc",
+          "InstanceName": "Block_split13234_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13_proc",
+          "InstanceName": "Block_split13_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1320_proc",
+          "InstanceName": "Block_split1320_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1358_proc",
+          "InstanceName": "Block_split1358_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split1396_proc",
+          "InstanceName": "Block_split1396_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13134_proc",
+          "InstanceName": "Block_split13134_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13172_proc",
+          "InstanceName": "Block_split13172_proc_U0"
+        },
+        {
+          "ModuleName": "Block_split13210_proc",
+          "InstanceName": "Block_split13210_proc_U0"
+        }
+      ]
+    },
+    "Info": {
+      "Block_split13_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line11_entry145": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line11_Block_split1_proc144": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line11": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1320_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split1326_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1332_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1338_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1344_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1350_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line12_entry155": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line12_Block_split1_proc154": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc62": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc63": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc64": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc65": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc66": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc67": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line12": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1358_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split1364_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1370_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1376_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1382_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1388_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line13_entry165": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line13_Block_split1_proc164": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc81": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc82": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc83": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc84": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc85": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc86": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line13": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split1396_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split13102_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13108_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13114_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13120_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13126_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line14_entry175": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line14_Block_split1_proc174": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc100": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc101": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc102": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc103": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc104": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc105": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line14": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13134_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split13140_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13146_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13152_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13158_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13164_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line15_entry185": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line15_Block_split1_proc184": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc119": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc120": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc121": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc122": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc123": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc124": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line15": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13172_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split13178_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13184_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13190_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13196_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13202_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "multiply_line16_Block_split1_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "p_prop_ret_products_OC_0_dc_proc132": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_1_dc_proc133": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_2_dc_proc134": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_3_dc_proc135": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_4_dc_proc136": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "p_prop_ret_products_OC_5_dc_proc137": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "multiply_line16": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13210_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "1"
+      },
+      "Block_split13216_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13222_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13228_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13234_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "Block_split13240_proc": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "0",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "uz_VSD_6ph_asym": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      }
+    },
+    "Metrics": {
+      "Block_split13_proc": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "2.515"
+        },
+        "Area": {
+          "FF": "134",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "145",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line11_entry145": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "3.676"
+        },
+        "Area": {
+          "FF": "3",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "128",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line11_Block_split1_proc144": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "9",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "581",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "551",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line11": {
+        "Latency": {
+          "LatencyBest": "5",
+          "LatencyAvg": "5",
+          "LatencyWorst": "5",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "9",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "1791",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1698",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1320_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1326_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1332_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1338_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1344_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1350_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line12_entry155": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "3.676"
+        },
+        "Area": {
+          "FF": "3",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "128",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line12_Block_split1_proc154": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "837",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "821",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc62": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc63": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc64": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc65": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc66": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc67": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line12": {
+        "Latency": {
+          "LatencyBest": "5",
+          "LatencyAvg": "5",
+          "LatencyWorst": "5",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "2047",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1968",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1358_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1364_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1370_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1376_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1382_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1388_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line13_entry165": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "3.676"
+        },
+        "Area": {
+          "FF": "3",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "128",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line13_Block_split1_proc164": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "837",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "821",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc81": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc82": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc83": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc84": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc85": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc86": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line13": {
+        "Latency": {
+          "LatencyBest": "5",
+          "LatencyAvg": "5",
+          "LatencyWorst": "5",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "2047",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1968",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split1396_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13102_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13108_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13114_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13120_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13126_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line14_entry175": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "3.676"
+        },
+        "Area": {
+          "FF": "3",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "128",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line14_Block_split1_proc174": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "837",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "821",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc100": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc101": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc102": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc103": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc104": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc105": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line14": {
+        "Latency": {
+          "LatencyBest": "5",
+          "LatencyAvg": "5",
+          "LatencyWorst": "5",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "2047",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1968",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13134_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13140_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13146_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13152_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13158_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13164_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line15_entry185": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "3.676"
+        },
+        "Area": {
+          "FF": "3",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "128",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line15_Block_split1_proc184": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "837",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "821",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc119": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc120": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc121": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc122": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc123": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc124": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line15": {
+        "Latency": {
+          "LatencyBest": "5",
+          "LatencyAvg": "5",
+          "LatencyWorst": "5",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "2047",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1968",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13172_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13178_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13184_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13190_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13196_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13202_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line16_Block_split1_proc": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "9",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "581",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "563",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_0_dc_proc132": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_1_dc_proc133": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_2_dc_proc134": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_3_dc_proc135": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.861"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_4_dc_proc136": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.885"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "p_prop_ret_products_OC_5_dc_proc137": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.908"
+        },
+        "Area": {
+          "FF": "2",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "20",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "multiply_line16": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "9",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "1194",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "1180",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13210_proc": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "0",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "1.838"
+        },
+        "Area": {
+          "FF": "34",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "29",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "DSP": "0",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13216_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13222_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13228_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13234_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "Block_split13240_proc": {
+        "Latency": {
+          "LatencyBest": "4",
+          "LatencyAvg": "4",
+          "LatencyWorst": "4",
+          "PipelineII": "4",
+          "PipelineDepth": "",
+          "PipelineType": "none"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "6.437"
+        },
+        "Area": {
+          "DSP": "2",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "~0",
+          "FF": "297",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "~0",
+          "LUT": "276",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "~0",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      },
+      "uz_VSD_6ph_asym": {
+        "Latency": {
+          "LatencyBest": "20",
+          "LatencyAvg": "20",
+          "LatencyWorst": "20",
+          "PipelineII": "5",
+          "PipelineDepth": "",
+          "PipelineType": "dataflow"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "8.924"
+        },
+        "Area": {
+          "DSP": "138",
+          "AVAIL_DSP": "1968",
+          "UTIL_DSP": "7",
+          "FF": "30519",
+          "AVAIL_FF": "1045440",
+          "UTIL_FF": "2",
+          "LUT": "26215",
+          "AVAIL_LUT": "522720",
+          "UTIL_LUT": "5",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "1968",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "128",
+          "UTIL_URAM": "0"
+        }
+      }
+    }
+  },
+  "GenerateBdFiles": "0",
+  "GenData": {
+    "DataVersion": "0.2",
+    "Time": "2023-05-19 07:26:17 +0200",
+    "ToolName": "vivado_hls",
+    "ToolVersion": "2020.1"
+  }
+}

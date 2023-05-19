@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cdfg:DBCdfg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cdfg="http://www.autoesl.com/DBCdfg" timeStamp="1684473930028">
+  <ports id="1" name="scalar_val_5" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="2" name="scalar_val_4" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="3" name="scalar_val_3" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="4" name="scalar_val_2" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="5" name="scalar_val_1" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="6" name="scalar_val_0" type="PortType" coreName="FIFO_SRL" bitwidth="32" iftype="IfTypeRom">
+    <dataOutputObjs>read</dataOutputObjs>
+  </ports>
+  <ports id="7" name="scalar_val_5_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="8" name="scalar_val_4_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="9" name="scalar_val_3_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="10" name="scalar_val_2_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="11" name="scalar_val_1_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <ports id="12" name="scalar_val_0_out" type="PortType" coreName="FIFO_SRL" bitwidth="32" direction="DirOut" iftype="IfTypeRom">
+    <dataInputObjs>write</dataInputObjs>
+  </ports>
+  <edges id="47" source_obj="//@ports.0" sink_obj="//@blocks.0/@node_objs.0"/>
+  <edges id="49" source_obj="//@ports.1" sink_obj="//@blocks.0/@node_objs.1"/>
+  <edges id="51" source_obj="//@ports.2" sink_obj="//@blocks.0/@node_objs.2"/>
+  <edges id="53" source_obj="//@ports.3" sink_obj="//@blocks.0/@node_objs.3"/>
+  <edges id="55" source_obj="//@ports.4" sink_obj="//@blocks.0/@node_objs.4"/>
+  <edges id="57" source_obj="//@ports.5" sink_obj="//@blocks.0/@node_objs.5"/>
+  <edges id="60" source_obj="//@blocks.0/@node_objs.6" sink_obj="//@ports.6"/>
+  <edges id="61" source_obj="//@blocks.0/@node_objs.0" sink_obj="//@blocks.0/@node_objs.6"/>
+  <edges id="63" source_obj="//@blocks.0/@node_objs.7" sink_obj="//@ports.7"/>
+  <edges id="64" source_obj="//@blocks.0/@node_objs.1" sink_obj="//@blocks.0/@node_objs.7"/>
+  <edges id="66" source_obj="//@blocks.0/@node_objs.8" sink_obj="//@ports.8"/>
+  <edges id="67" source_obj="//@blocks.0/@node_objs.2" sink_obj="//@blocks.0/@node_objs.8"/>
+  <edges id="69" source_obj="//@blocks.0/@node_objs.9" sink_obj="//@ports.9"/>
+  <edges id="70" source_obj="//@blocks.0/@node_objs.3" sink_obj="//@blocks.0/@node_objs.9"/>
+  <edges id="72" source_obj="//@blocks.0/@node_objs.10" sink_obj="//@ports.10"/>
+  <edges id="73" source_obj="//@blocks.0/@node_objs.4" sink_obj="//@blocks.0/@node_objs.10"/>
+  <edges id="75" source_obj="//@blocks.0/@node_objs.11" sink_obj="//@ports.11"/>
+  <edges id="76" source_obj="//@blocks.0/@node_objs.5" sink_obj="//@blocks.0/@node_objs.11"/>
+  <blocks id="44" name="multiply_line11.entry145" type="BlockType">
+    <node_objs xsi:type="cdfg:CdfgNode" id="25" name="scalar_val_5_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="1" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_5</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="26" name="scalar_val_4_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="2" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_4</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="27" name="scalar_val_3_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="3" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_3</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="28" name="scalar_val_2_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="4" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_2</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="29" name="scalar_val_1_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="5" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_1</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="30" name="scalar_val_0_read" bitwidth="32" opcode="read" m_display="0" m_delay="1.83" m_topoIndex="6" m_clusterGroupNumber="-1">
+      <dataInputObjs>scalar_val_0</dataInputObjs>
+      <dataOutputObjs>write</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="32" name="scalar_val_5_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="7" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_5_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="34" name="scalar_val_4_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="8" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_4_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="36" name="scalar_val_3_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="9" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_3_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="38" name="scalar_val_2_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="10" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_2_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="40" name="scalar_val_1_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="11" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_1_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="42" name="scalar_val_0_out_write_ln0" opcode="write" m_display="0" m_delay="1.83" m_topoIndex="12" m_clusterGroupNumber="-1">
+      <dataInputObjs>read</dataInputObjs>
+      <dataOutputObjs>scalar_val_0_out</dataOutputObjs>
+    </node_objs>
+    <node_objs xsi:type="cdfg:CdfgNode" id="43" name="_ln34" lineNumber="34" fileName="uz_VSD/uz_VSD.cpp" fileDirectory=".." contextFuncName="multiply_line" opcode="ret" m_display="0" m_topoIndex="13" m_clusterGroupNumber="-1">
+      <inlineStackInfo fileName="uz_VSD/uz_VSD.cpp" linenumber="34" fileDirectory="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores" functionName="multiply_line"/>
+    </node_objs>
+    <fileValidLineNumbers fileName="uz_VSD/uz_VSD.cpp">
+      <validLinenumbers>34</validLinenumbers>
+    </fileValidLineNumbers>
+  </blocks>
+  <ScheduleInfo time="0"/>
+  <ioNodes realName="write_ln0_write_fu_118">
+    <nodeIds>42</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_86">
+    <nodeIds>34</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_94">
+    <nodeIds>36</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_0_read_read_fu_72">
+    <nodeIds>30</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_1_read_read_fu_66">
+    <nodeIds>29</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_3_read_read_fu_54">
+    <nodeIds>27</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_110">
+    <nodeIds>40</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_2_read_read_fu_60">
+    <nodeIds>28</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_4_read_read_fu_48">
+    <nodeIds>26</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_78">
+    <nodeIds>32</nodeIds>
+  </ioNodes>
+  <ioNodes realName="scalar_val_5_read_read_fu_42">
+    <nodeIds>25</nodeIds>
+  </ioNodes>
+  <ioNodes realName="write_ln0_write_fu_102">
+    <nodeIds>38</nodeIds>
+  </ioNodes>
+  <ioPorts name="scalar_val_0">
+    <contents name="read">
+      <nodeIds>30</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_0_out">
+    <contents name="write">
+      <nodeIds>42</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_1">
+    <contents name="read">
+      <nodeIds>29</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_1_out">
+    <contents name="write">
+      <nodeIds>40</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_2">
+    <contents name="read">
+      <nodeIds>28</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_2_out">
+    <contents name="write">
+      <nodeIds>38</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_3">
+    <contents name="read">
+      <nodeIds>27</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_3_out">
+    <contents name="write">
+      <nodeIds>36</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_4">
+    <contents name="read">
+      <nodeIds>26</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_4_out">
+    <contents name="write">
+      <nodeIds>34</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_5">
+    <contents name="read">
+      <nodeIds>25</nodeIds>
+    </contents>
+  </ioPorts>
+  <ioPorts name="scalar_val_5_out">
+    <contents name="write">
+      <nodeIds>32</nodeIds>
+    </contents>
+  </ioPorts>
+  <fsm>
+    <states id="1">
+      <operations id="13" stage="1" latency="1"/>
+      <operations id="14" stage="1" latency="1"/>
+      <operations id="15" stage="1" latency="1"/>
+      <operations id="16" stage="1" latency="1"/>
+      <operations id="17" stage="1" latency="1"/>
+      <operations id="18" stage="1" latency="1"/>
+      <operations id="19" stage="1" latency="1"/>
+      <operations id="20" stage="1" latency="1"/>
+      <operations id="21" stage="1" latency="1"/>
+      <operations id="22" stage="1" latency="1"/>
+      <operations id="23" stage="1" latency="1"/>
+      <operations id="24" stage="1" latency="1"/>
+      <operations id="25" stage="1" latency="1"/>
+      <operations id="26" stage="1" latency="1"/>
+      <operations id="27" stage="1" latency="1"/>
+      <operations id="28" stage="1" latency="1"/>
+      <operations id="29" stage="1" latency="1"/>
+      <operations id="30" stage="1" latency="1"/>
+      <operations id="31" stage="1" latency="1"/>
+      <operations id="32" stage="1" latency="1"/>
+      <operations id="33" stage="1" latency="1"/>
+      <operations id="34" stage="1" latency="1"/>
+      <operations id="35" stage="1" latency="1"/>
+      <operations id="36" stage="1" latency="1"/>
+      <operations id="37" stage="1" latency="1"/>
+      <operations id="38" stage="1" latency="1"/>
+      <operations id="39" stage="1" latency="1"/>
+      <operations id="40" stage="1" latency="1"/>
+      <operations id="41" stage="1" latency="1"/>
+      <operations id="42" stage="1" latency="1"/>
+      <operations id="43" stage="1" latency="1"/>
+    </states>
+  </fsm>
+  <CFGRegionsRoot>
+    <cfgRegions mId="1" mTag="multiply_line11_entry145" mII="-1" mDepth="-1" mMinTripCount="-1" mMaxTripCount="-1">
+      <basicBlocks>44</basicBlocks>
+      <mDfPipe/>
+    </cfgRegions>
+  </CFGRegionsRoot>
+</cdfg:DBCdfg>

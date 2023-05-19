@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="uz_VSD.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_VSD\uz_VSD.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="test_uz_VSD.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_VSD\test_uz_VSD.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

@@ -1,0 +1,195 @@
+
+
+================================================================
+== Vitis HLS Report for 'multiply_line15_Block_split1_proc184'
+================================================================
+* Date:           Fri May 19 07:25:47 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 7.016 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        3|        3| 30.000 ns | 30.000 ns |    3|    3|   none  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+------+---------+--------+-----+
+|       Name      | BRAM_18K|  DSP |    FF   |   LUT  | URAM|
++-----------------+---------+------+---------+--------+-----+
+|DSP              |        -|     -|        -|       -|    -|
+|Expression       |        -|     -|        0|       2|    -|
+|FIFO             |        -|     -|        -|       -|    -|
+|Instance         |        -|    15|      640|     675|    -|
+|Memory           |        -|     -|        -|       -|    -|
+|Multiplexer      |        -|     -|        -|     144|    -|
+|Register         |        -|     -|      197|       -|    -|
++-----------------+---------+------+---------+--------+-----+
+|Total            |        0|    15|      837|     821|    0|
++-----------------+---------+------+---------+--------+-----+
+|Available        |     1968|  1968|  1045440|  522720|  128|
++-----------------+---------+------+---------+--------+-----+
+|Utilization (%)  |        0|  ~0  |    ~0   |   ~0   |    0|
++-----------------+---------+------+---------+--------+-----+
+
++ Detail: 
+    * Instance: 
+    +------------------------------------+-------------------------------+---------+----+-----+-----+-----+
+    |              Instance              |             Module            | BRAM_18K| DSP|  FF | LUT | URAM|
+    +------------------------------------+-------------------------------+---------+----+-----+-----+-----+
+    |fmul_32ns_32ns_32_3_max_dsp_1_U376  |fmul_32ns_32ns_32_3_max_dsp_1  |        0|   3|  128|  135|    0|
+    |fmul_32ns_32ns_32_3_max_dsp_1_U377  |fmul_32ns_32ns_32_3_max_dsp_1  |        0|   3|  128|  135|    0|
+    |fmul_32ns_32ns_32_3_max_dsp_1_U378  |fmul_32ns_32ns_32_3_max_dsp_1  |        0|   3|  128|  135|    0|
+    |fmul_32ns_32ns_32_3_max_dsp_1_U379  |fmul_32ns_32ns_32_3_max_dsp_1  |        0|   3|  128|  135|    0|
+    |fmul_32ns_32ns_32_3_max_dsp_1_U380  |fmul_32ns_32ns_32_3_max_dsp_1  |        0|   3|  128|  135|    0|
+    +------------------------------------+-------------------------------+---------+----+-----+-----+-----+
+    |Total                               |                               |        0|  15|  640|  675|    0|
+    +------------------------------------+-------------------------------+---------+----+-----+-----+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-----------------+----------+----+---+----+------------+------------+
+    |  Variable Name  | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |ap_block_state1  |    or    |   0|  0|   2|           1|           1|
+    +-----------------+----------+----+---+----+------------+------------+
+    |Total            |          |   0|  0|   2|           1|           1|
+    +-----------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------+----+-----------+-----+-----------+
+    |        Name        | LUT| Input Size| Bits| Total Bits|
+    +--------------------+----+-----------+-----+-----------+
+    |ap_NS_fsm           |  27|          5|    1|          5|
+    |ap_done             |   9|          2|    1|          2|
+    |scalar_val_0_blk_n  |   9|          2|    1|          2|
+    |scalar_val_1_blk_n  |   9|          2|    1|          2|
+    |scalar_val_2_blk_n  |   9|          2|    1|          2|
+    |scalar_val_3_blk_n  |   9|          2|    1|          2|
+    |scalar_val_4_blk_n  |   9|          2|    1|          2|
+    |scalar_val_5_blk_n  |   9|          2|    1|          2|
+    |val_0_out_blk_n     |   9|          2|    1|          2|
+    |val_1_out_blk_n     |   9|          2|    1|          2|
+    |val_2_out_blk_n     |   9|          2|    1|          2|
+    |val_3_out_blk_n     |   9|          2|    1|          2|
+    |val_4_out_blk_n     |   9|          2|    1|          2|
+    |val_5_out_blk_n     |   9|          2|    1|          2|
+    +--------------------+----+-----------+-----+-----------+
+    |Total               | 144|         31|   14|         31|
+    +--------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +---------------------------+----+----+-----+-----------+
+    |            Name           | FF | LUT| Bits| Const Bits|
+    +---------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                  |   4|   0|    4|          0|
+    |ap_done_reg                |   1|   0|    1|          0|
+    |scalar_val_0_read_reg_196  |  32|   0|   32|          0|
+    |scalar_val_1_read_reg_201  |  32|   0|   32|          0|
+    |scalar_val_2_read_reg_206  |  32|   0|   32|          0|
+    |scalar_val_3_read_reg_211  |  32|   0|   32|          0|
+    |scalar_val_4_read_reg_216  |  32|   0|   32|          0|
+    |scalar_val_5_read_reg_221  |  32|   0|   32|          0|
+    +---------------------------+----+----+-----+-----------+
+    |Total                      | 197|   0|  197|          0|
+    +---------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++----------------------+-----+-----+------------+---------------------------------------+--------------+
+|       RTL Ports      | Dir | Bits|  Protocol  |             Source Object             |    C Type    |
++----------------------+-----+-----+------------+---------------------------------------+--------------+
+|ap_clk                |  in |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_rst                |  in |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_start              |  in |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_done               | out |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_continue           |  in |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_idle               | out |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_ready              | out |    1| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_0           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_1           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_2           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_3           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_4           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|ap_return_5           | out |   32| ap_ctrl_hs | multiply_line15_Block_.split1_proc184 | return value |
+|scalar_val_0_dout     |  in |   32|   ap_fifo  |              scalar_val_0             |    pointer   |
+|scalar_val_0_empty_n  |  in |    1|   ap_fifo  |              scalar_val_0             |    pointer   |
+|scalar_val_0_read     | out |    1|   ap_fifo  |              scalar_val_0             |    pointer   |
+|val_0_out_din         | out |   32|   ap_fifo  |               val_0_out               |    pointer   |
+|val_0_out_full_n      |  in |    1|   ap_fifo  |               val_0_out               |    pointer   |
+|val_0_out_write       | out |    1|   ap_fifo  |               val_0_out               |    pointer   |
+|scalar_val_1_dout     |  in |   32|   ap_fifo  |              scalar_val_1             |    pointer   |
+|scalar_val_1_empty_n  |  in |    1|   ap_fifo  |              scalar_val_1             |    pointer   |
+|scalar_val_1_read     | out |    1|   ap_fifo  |              scalar_val_1             |    pointer   |
+|val_1_out_din         | out |   32|   ap_fifo  |               val_1_out               |    pointer   |
+|val_1_out_full_n      |  in |    1|   ap_fifo  |               val_1_out               |    pointer   |
+|val_1_out_write       | out |    1|   ap_fifo  |               val_1_out               |    pointer   |
+|scalar_val_2_dout     |  in |   32|   ap_fifo  |              scalar_val_2             |    pointer   |
+|scalar_val_2_empty_n  |  in |    1|   ap_fifo  |              scalar_val_2             |    pointer   |
+|scalar_val_2_read     | out |    1|   ap_fifo  |              scalar_val_2             |    pointer   |
+|val_2_out_din         | out |   32|   ap_fifo  |               val_2_out               |    pointer   |
+|val_2_out_full_n      |  in |    1|   ap_fifo  |               val_2_out               |    pointer   |
+|val_2_out_write       | out |    1|   ap_fifo  |               val_2_out               |    pointer   |
+|scalar_val_3_dout     |  in |   32|   ap_fifo  |              scalar_val_3             |    pointer   |
+|scalar_val_3_empty_n  |  in |    1|   ap_fifo  |              scalar_val_3             |    pointer   |
+|scalar_val_3_read     | out |    1|   ap_fifo  |              scalar_val_3             |    pointer   |
+|val_3_out_din         | out |   32|   ap_fifo  |               val_3_out               |    pointer   |
+|val_3_out_full_n      |  in |    1|   ap_fifo  |               val_3_out               |    pointer   |
+|val_3_out_write       | out |    1|   ap_fifo  |               val_3_out               |    pointer   |
+|scalar_val_4_dout     |  in |   32|   ap_fifo  |              scalar_val_4             |    pointer   |
+|scalar_val_4_empty_n  |  in |    1|   ap_fifo  |              scalar_val_4             |    pointer   |
+|scalar_val_4_read     | out |    1|   ap_fifo  |              scalar_val_4             |    pointer   |
+|val_4_out_din         | out |   32|   ap_fifo  |               val_4_out               |    pointer   |
+|val_4_out_full_n      |  in |    1|   ap_fifo  |               val_4_out               |    pointer   |
+|val_4_out_write       | out |    1|   ap_fifo  |               val_4_out               |    pointer   |
+|scalar_val_5_dout     |  in |   32|   ap_fifo  |              scalar_val_5             |    pointer   |
+|scalar_val_5_empty_n  |  in |    1|   ap_fifo  |              scalar_val_5             |    pointer   |
+|scalar_val_5_read     | out |    1|   ap_fifo  |              scalar_val_5             |    pointer   |
+|val_5_out_din         | out |   32|   ap_fifo  |               val_5_out               |    pointer   |
+|val_5_out_full_n      |  in |    1|   ap_fifo  |               val_5_out               |    pointer   |
+|val_5_out_write       | out |    1|   ap_fifo  |               val_5_out               |    pointer   |
++----------------------+-----+-----+------------+---------------------------------------+--------------+
+

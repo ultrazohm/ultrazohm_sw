@@ -1,0 +1,169 @@
+
+
+================================================================
+== Vitis HLS Report for 'Block_split13_proc'
+================================================================
+* Date:           Fri May 19 07:24:57 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 2.515 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        3|        3| 30.000 ns | 30.000 ns |    3|    3|   none  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 2
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 4
+* Pipeline : 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 0.67>
+ST_1 : Operation 5 [1/1] (0.00ns)   --->   "%in_addr = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 5 'getelementptr' 'in_addr' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 6 [2/2] (0.67ns)   --->   "%in_load = load i3 %in_addr" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 6 'load' 'in_load' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_1 : Operation 7 [1/1] (0.00ns)   --->   "%in_addr_1 = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 7 'getelementptr' 'in_addr_1' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 8 [2/2] (0.67ns)   --->   "%in_load_1 = load i3 %in_addr_1" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 8 'load' 'in_load_1' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+
+State 2 <SV = 1> <Delay = 0.67>
+ST_2 : Operation 9 [1/2] (0.67ns)   --->   "%in_load = load i3 %in_addr" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 9 'load' 'in_load' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_2 : Operation 10 [1/2] (0.67ns)   --->   "%in_load_1 = load i3 %in_addr_1" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 10 'load' 'in_load_1' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_2 : Operation 11 [1/1] (0.00ns)   --->   "%in_addr_2 = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 11 'getelementptr' 'in_addr_2' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 12 [2/2] (0.67ns)   --->   "%in_load_2 = load i3 %in_addr_2" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 12 'load' 'in_load_2' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_2 : Operation 13 [1/1] (0.00ns)   --->   "%in_addr_3 = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 13 'getelementptr' 'in_addr_3' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 14 [2/2] (0.67ns)   --->   "%in_load_3 = load i3 %in_addr_3" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 14 'load' 'in_load_3' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+
+State 3 <SV = 2> <Delay = 0.67>
+ST_3 : Operation 15 [1/2] (0.67ns)   --->   "%in_load_2 = load i3 %in_addr_2" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 15 'load' 'in_load_2' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_3 : Operation 16 [1/2] (0.67ns)   --->   "%in_load_3 = load i3 %in_addr_3" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 16 'load' 'in_load_3' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_3 : Operation 17 [1/1] (0.00ns)   --->   "%in_addr_4 = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 17 'getelementptr' 'in_addr_4' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 18 [2/2] (0.67ns)   --->   "%in_load_4 = load i3 %in_addr_4" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 18 'load' 'in_load_4' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_3 : Operation 19 [1/1] (0.00ns)   --->   "%in_addr_5 = getelementptr i32 %in_r, i64, i64" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 19 'getelementptr' 'in_addr_5' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 20 [2/2] (0.67ns)   --->   "%in_load_5 = load i3 %in_addr_5" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 20 'load' 'in_load_5' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+
+State 4 <SV = 3> <Delay = 2.51>
+ST_4 : Operation 21 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %in_r, void @empty_0, i32, i32, void @empty, i32, i32, void @empty, void @empty, void @empty, i32, i32, i32, i32, void @empty, void @empty"   --->   Operation 21 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 22 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_5_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 22 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 23 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_4_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 23 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 24 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_3_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 24 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 25 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_2_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 25 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 26 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_1_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 26 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 27 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %cpy_in_0_out, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @p_str"   --->   Operation 27 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 28 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %in_r, void @empty_0, i32, i32, void @empty, i32, i32, void @empty, void @empty, void @empty, i32, i32, i32, i32, void @empty, void @empty"   --->   Operation 28 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 29 [1/1] (0.00ns)   --->   "%cpy_in_0 = bitcast i32 %in_load" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 29 'bitcast' 'cpy_in_0' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 30 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_0_out, i32 %cpy_in_0" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 30 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 31 [1/1] (0.00ns)   --->   "%cpy_in_1 = bitcast i32 %in_load_1" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 31 'bitcast' 'cpy_in_1' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 32 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_1_out, i32 %cpy_in_1" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 32 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 33 [1/1] (0.00ns)   --->   "%cpy_in_2 = bitcast i32 %in_load_2" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 33 'bitcast' 'cpy_in_2' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 34 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_2_out, i32 %cpy_in_2" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 34 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 35 [1/1] (0.00ns)   --->   "%cpy_in_3 = bitcast i32 %in_load_3" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 35 'bitcast' 'cpy_in_3' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 36 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_3_out, i32 %cpy_in_3" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 36 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 37 [1/2] (0.67ns)   --->   "%in_load_4 = load i3 %in_addr_4" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 37 'load' 'in_load_4' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_4 : Operation 38 [1/1] (0.00ns)   --->   "%cpy_in_4 = bitcast i32 %in_load_4" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 38 'bitcast' 'cpy_in_4' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 39 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_4_out, i32 %cpy_in_4" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 39 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 40 [1/2] (0.67ns)   --->   "%in_load_5 = load i3 %in_addr_5" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 40 'load' 'in_load_5' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 23 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 6> <RAM>
+ST_4 : Operation 41 [1/1] (0.00ns)   --->   "%cpy_in_5 = bitcast i32 %in_load_5" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 41 'bitcast' 'cpy_in_5' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 42 [1/1] (1.83ns)   --->   "%write_ln10 = write void @_ssdm_op_Write.ap_fifo.floatP, i32 %cpy_in_5_out, i32 %cpy_in_5" [uz_VSD/uz_VSD.cpp:10]   --->   Operation 42 'write' 'write_ln10' <Predicate = true> <Delay = 1.83> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.83> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 2> <FIFO>
+ST_4 : Operation 43 [1/1] (0.00ns)   --->   "%ret_ln0 = ret"   --->   Operation 43 'ret' 'ret_ln0' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10ns, clock uncertainty: 2.7ns.
+
+ <State 1>: 0.677ns
+The critical path consists of the following:
+	'getelementptr' operation ('in_addr', uz_VSD/uz_VSD.cpp:10) [16]  (0 ns)
+	'load' operation ('in_load', uz_VSD/uz_VSD.cpp:10) on array 'in_r' [17]  (0.677 ns)
+
+ <State 2>: 0.677ns
+The critical path consists of the following:
+	'load' operation ('in_load', uz_VSD/uz_VSD.cpp:10) on array 'in_r' [17]  (0.677 ns)
+
+ <State 3>: 0.677ns
+The critical path consists of the following:
+	'load' operation ('in_load_2', uz_VSD/uz_VSD.cpp:10) on array 'in_r' [25]  (0.677 ns)
+
+ <State 4>: 2.52ns
+The critical path consists of the following:
+	'load' operation ('in_load_4', uz_VSD/uz_VSD.cpp:10) on array 'in_r' [33]  (0.677 ns)
+	fifo write on port 'cpy_in_4_out' (uz_VSD/uz_VSD.cpp:10) [35]  (1.84 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

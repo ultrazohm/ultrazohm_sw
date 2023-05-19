@@ -1,0 +1,249 @@
+
+
+================================================================
+== Vitis HLS Report for 'multiply_line14'
+================================================================
+* Date:           Fri May 19 07:25:45 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 8.924 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline |
+    |   min   |   max   |    min    |    max    | min | max |   Type   |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |        5|        5| 50.000 ns | 50.000 ns |    4|    4| dataflow |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        +-----------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+-----+---------+
+        |                                         |                                      |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+        |                 Instance                |                Module                |   min   |   max   |    min    |    max    | min | max |   Type  |
+        +-----------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+-----+---------+
+        |multiply_line14_Block_split1_proc174_U0  |multiply_line14_Block_split1_proc174  |        3|        3| 30.000 ns | 30.000 ns |    3|    3|   none  |
+        |multiply_line14_entry175_U0              |multiply_line14_entry175              |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_0_dc_proc100_U0   |p_prop_ret_products_OC_0_dc_proc100   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_1_dc_proc101_U0   |p_prop_ret_products_OC_1_dc_proc101   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_2_dc_proc102_U0   |p_prop_ret_products_OC_2_dc_proc102   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_3_dc_proc103_U0   |p_prop_ret_products_OC_3_dc_proc103   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_4_dc_proc104_U0   |p_prop_ret_products_OC_4_dc_proc104   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        |p_prop_ret_products_OC_5_dc_proc105_U0   |p_prop_ret_products_OC_5_dc_proc105   |        0|        0|    0 ns   |    0 ns   |    0|    0|   none  |
+        +-----------------------------------------+--------------------------------------+---------+---------+-----------+-----------+-----+-----+---------+
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+------+---------+--------+-----+
+|       Name      | BRAM_18K|  DSP |    FF   |   LUT  | URAM|
++-----------------+---------+------+---------+--------+-----+
+|DSP              |        -|     -|        -|       -|    -|
+|Expression       |        -|     -|        0|      32|    -|
+|FIFO             |        -|     -|     1188|     804|    -|
+|Instance         |        -|    15|      852|    1069|    -|
+|Memory           |        -|     -|        -|       -|    -|
+|Multiplexer      |        -|     -|        -|      63|    -|
+|Register         |        -|     -|        7|       -|    -|
++-----------------+---------+------+---------+--------+-----+
+|Total            |        0|    15|     2047|    1968|    0|
++-----------------+---------+------+---------+--------+-----+
+|Available        |     1968|  1968|  1045440|  522720|  128|
++-----------------+---------+------+---------+--------+-----+
+|Utilization (%)  |        0|  ~0  |    ~0   |   ~0   |    0|
++-----------------+---------+------+---------+--------+-----+
+
++ Detail: 
+    * Instance: 
+    +-----------------------------------------+--------------------------------------+---------+----+-----+-----+-----+
+    |                 Instance                |                Module                | BRAM_18K| DSP|  FF | LUT | URAM|
+    +-----------------------------------------+--------------------------------------+---------+----+-----+-----+-----+
+    |multiply_line14_Block_split1_proc174_U0  |multiply_line14_Block_split1_proc174  |        0|  15|  837|  821|    0|
+    |multiply_line14_entry175_U0              |multiply_line14_entry175              |        0|   0|    3|  128|    0|
+    |p_prop_ret_products_OC_0_dc_proc100_U0   |p_prop_ret_products_OC_0_dc_proc100   |        0|   0|    2|   20|    0|
+    |p_prop_ret_products_OC_1_dc_proc101_U0   |p_prop_ret_products_OC_1_dc_proc101   |        0|   0|    2|   20|    0|
+    |p_prop_ret_products_OC_2_dc_proc102_U0   |p_prop_ret_products_OC_2_dc_proc102   |        0|   0|    2|   20|    0|
+    |p_prop_ret_products_OC_3_dc_proc103_U0   |p_prop_ret_products_OC_3_dc_proc103   |        0|   0|    2|   20|    0|
+    |p_prop_ret_products_OC_4_dc_proc104_U0   |p_prop_ret_products_OC_4_dc_proc104   |        0|   0|    2|   20|    0|
+    |p_prop_ret_products_OC_5_dc_proc105_U0   |p_prop_ret_products_OC_5_dc_proc105   |        0|   0|    2|   20|    0|
+    +-----------------------------------------+--------------------------------------+---------+----+-----+-----+-----+
+    |Total                                    |                                      |        0|  15|  852| 1069|    0|
+    +-----------------------------------------+--------------------------------------+---------+----+-----+-----+-----+
+
+    * DSP: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    +-------------------------+---------+----+----+-----+------+-----+---------+
+    |           Name          | BRAM_18K| FF | LUT| URAM| Depth| Bits| Size:D*B|
+    +-------------------------+---------+----+----+-----+------+-----+---------+
+    |products_0_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |products_1_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |products_2_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |products_3_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |products_4_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |products_5_dc_channel_U  |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_0_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_1_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_2_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_3_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_4_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    |scalar_val_5_c_U         |        0|  99|   0|    -|     2|   32|       64|
+    +-------------------------+---------+----+----+-----+------+-----+---------+
+    |Total                    |        0|1188|   0|    0|    24|  384|      768|
+    +-------------------------+---------+----+----+-----+------+-----+---------+
+
+    * Expression: 
+    +-----------------------------------------------------+----------+----+---+----+------------+------------+
+    |                    Variable Name                    | Operation| DSP| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------------------------------------------+----------+----+---+----+------------+------------+
+    |ap_channel_done_products_0_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_channel_done_products_1_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_channel_done_products_2_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_channel_done_products_3_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_channel_done_products_4_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_channel_done_products_5_dc_channel                |    and   |   0|  0|   2|           1|           1|
+    |ap_idle                                              |    and   |   0|  0|   2|           1|           1|
+    |ap_sync_continue                                     |    and   |   0|  0|   2|           1|           1|
+    |ap_sync_done                                         |    and   |   0|  0|   2|           1|           1|
+    |multiply_line14_Block_split1_proc174_U0_ap_continue  |    and   |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_0_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_1_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_2_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_3_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_4_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    |ap_sync_channel_write_products_5_dc_channel          |    or    |   0|  0|   2|           1|           1|
+    +-----------------------------------------------------+----------+----+---+----+------------+------------+
+    |Total                                                |          |   0|  0|  32|          16|          16|
+    +-----------------------------------------------------+----------+----+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-------------------------------------------------+----+-----------+-----+-----------+
+    |                       Name                      | LUT| Input Size| Bits| Total Bits|
+    +-------------------------------------------------+----+-----------+-----+-----------+
+    |ap_sync_reg_channel_write_products_0_dc_channel  |   9|          2|    1|          2|
+    |ap_sync_reg_channel_write_products_1_dc_channel  |   9|          2|    1|          2|
+    |ap_sync_reg_channel_write_products_2_dc_channel  |   9|          2|    1|          2|
+    |ap_sync_reg_channel_write_products_3_dc_channel  |   9|          2|    1|          2|
+    |ap_sync_reg_channel_write_products_4_dc_channel  |   9|          2|    1|          2|
+    |ap_sync_reg_channel_write_products_5_dc_channel  |   9|          2|    1|          2|
+    |real_start                                       |   9|          2|    1|          2|
+    +-------------------------------------------------+----+-----------+-----+-----------+
+    |Total                                            |  63|         14|    7|         14|
+    +-------------------------------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-------------------------------------------------+---+----+-----+-----------+
+    |                       Name                      | FF| LUT| Bits| Const Bits|
+    +-------------------------------------------------+---+----+-----+-----------+
+    |ap_sync_reg_channel_write_products_0_dc_channel  |  1|   0|    1|          0|
+    |ap_sync_reg_channel_write_products_1_dc_channel  |  1|   0|    1|          0|
+    |ap_sync_reg_channel_write_products_2_dc_channel  |  1|   0|    1|          0|
+    |ap_sync_reg_channel_write_products_3_dc_channel  |  1|   0|    1|          0|
+    |ap_sync_reg_channel_write_products_4_dc_channel  |  1|   0|    1|          0|
+    |ap_sync_reg_channel_write_products_5_dc_channel  |  1|   0|    1|          0|
+    |start_once_reg                                   |  1|   0|    1|          0|
+    +-------------------------------------------------+---+----+-----+-----------+
+    |Total                                            |  7|   0|    7|          0|
+    +-------------------------------------------------+---+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++-----------------------+-----+-----+------------+-----------------+--------------+
+|       RTL Ports       | Dir | Bits|  Protocol  |  Source Object  |    C Type    |
++-----------------------+-----+-----+------------+-----------------+--------------+
+|ap_start               |  in |    1| ap_ctrl_hs | multiply_line14 | return value |
+|start_full_n           |  in |    1| ap_ctrl_hs | multiply_line14 | return value |
+|start_out              | out |    1| ap_ctrl_hs | multiply_line14 | return value |
+|start_write            | out |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_clk                 |  in |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_rst                 |  in |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_done                | out |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_ready               | out |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_idle                | out |    1| ap_ctrl_hs | multiply_line14 | return value |
+|ap_continue            |  in |    1| ap_ctrl_hs | multiply_line14 | return value |
+|val_0_dout             |  in |   32|   ap_fifo  |      val_0      |    pointer   |
+|val_0_empty_n          |  in |    1|   ap_fifo  |      val_0      |    pointer   |
+|val_0_read             | out |    1|   ap_fifo  |      val_0      |    pointer   |
+|val_1_dout             |  in |   32|   ap_fifo  |      val_1      |    pointer   |
+|val_1_empty_n          |  in |    1|   ap_fifo  |      val_1      |    pointer   |
+|val_1_read             | out |    1|   ap_fifo  |      val_1      |    pointer   |
+|val_2_dout             |  in |   32|   ap_fifo  |      val_2      |    pointer   |
+|val_2_empty_n          |  in |    1|   ap_fifo  |      val_2      |    pointer   |
+|val_2_read             | out |    1|   ap_fifo  |      val_2      |    pointer   |
+|val_3_dout             |  in |   32|   ap_fifo  |      val_3      |    pointer   |
+|val_3_empty_n          |  in |    1|   ap_fifo  |      val_3      |    pointer   |
+|val_3_read             | out |    1|   ap_fifo  |      val_3      |    pointer   |
+|val_4_dout             |  in |   32|   ap_fifo  |      val_4      |    pointer   |
+|val_4_empty_n          |  in |    1|   ap_fifo  |      val_4      |    pointer   |
+|val_4_read             | out |    1|   ap_fifo  |      val_4      |    pointer   |
+|val_5_dout             |  in |   32|   ap_fifo  |      val_5      |    pointer   |
+|val_5_empty_n          |  in |    1|   ap_fifo  |      val_5      |    pointer   |
+|val_5_read             | out |    1|   ap_fifo  |      val_5      |    pointer   |
+|val_0_out_din          | out |   32|   ap_fifo  |    val_0_out    |    pointer   |
+|val_0_out_full_n       |  in |    1|   ap_fifo  |    val_0_out    |    pointer   |
+|val_0_out_write        | out |    1|   ap_fifo  |    val_0_out    |    pointer   |
+|val_1_out_din          | out |   32|   ap_fifo  |    val_1_out    |    pointer   |
+|val_1_out_full_n       |  in |    1|   ap_fifo  |    val_1_out    |    pointer   |
+|val_1_out_write        | out |    1|   ap_fifo  |    val_1_out    |    pointer   |
+|val_2_out_din          | out |   32|   ap_fifo  |    val_2_out    |    pointer   |
+|val_2_out_full_n       |  in |    1|   ap_fifo  |    val_2_out    |    pointer   |
+|val_2_out_write        | out |    1|   ap_fifo  |    val_2_out    |    pointer   |
+|val_3_out_din          | out |   32|   ap_fifo  |    val_3_out    |    pointer   |
+|val_3_out_full_n       |  in |    1|   ap_fifo  |    val_3_out    |    pointer   |
+|val_3_out_write        | out |    1|   ap_fifo  |    val_3_out    |    pointer   |
+|val_4_out_din          | out |   32|   ap_fifo  |    val_4_out    |    pointer   |
+|val_4_out_full_n       |  in |    1|   ap_fifo  |    val_4_out    |    pointer   |
+|val_4_out_write        | out |    1|   ap_fifo  |    val_4_out    |    pointer   |
+|val_5_out_din          | out |   32|   ap_fifo  |    val_5_out    |    pointer   |
+|val_5_out_full_n       |  in |    1|   ap_fifo  |    val_5_out    |    pointer   |
+|val_5_out_write        | out |    1|   ap_fifo  |    val_5_out    |    pointer   |
+|products_0_out_din     | out |   32|   ap_fifo  |  products_0_out |    pointer   |
+|products_0_out_full_n  |  in |    1|   ap_fifo  |  products_0_out |    pointer   |
+|products_0_out_write   | out |    1|   ap_fifo  |  products_0_out |    pointer   |
+|products_1_out_din     | out |   32|   ap_fifo  |  products_1_out |    pointer   |
+|products_1_out_full_n  |  in |    1|   ap_fifo  |  products_1_out |    pointer   |
+|products_1_out_write   | out |    1|   ap_fifo  |  products_1_out |    pointer   |
+|products_2_out_din     | out |   32|   ap_fifo  |  products_2_out |    pointer   |
+|products_2_out_full_n  |  in |    1|   ap_fifo  |  products_2_out |    pointer   |
+|products_2_out_write   | out |    1|   ap_fifo  |  products_2_out |    pointer   |
+|products_3_out_din     | out |   32|   ap_fifo  |  products_3_out |    pointer   |
+|products_3_out_full_n  |  in |    1|   ap_fifo  |  products_3_out |    pointer   |
+|products_3_out_write   | out |    1|   ap_fifo  |  products_3_out |    pointer   |
+|products_4_out_din     | out |   32|   ap_fifo  |  products_4_out |    pointer   |
+|products_4_out_full_n  |  in |    1|   ap_fifo  |  products_4_out |    pointer   |
+|products_4_out_write   | out |    1|   ap_fifo  |  products_4_out |    pointer   |
+|products_5_out_din     | out |   32|   ap_fifo  |  products_5_out |    pointer   |
+|products_5_out_full_n  |  in |    1|   ap_fifo  |  products_5_out |    pointer   |
+|products_5_out_write   | out |    1|   ap_fifo  |  products_5_out |    pointer   |
++-----------------------+-----+-----+------------+-----------------+--------------+
+

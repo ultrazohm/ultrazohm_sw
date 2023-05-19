@@ -1,0 +1,323 @@
+<profile>
+
+<section name = "Vitis HLS Report for 'uz_VSD_6ph_asym'" level="0">
+<item name = "Date">Fri May 19 07:25:57 2023
+</item>
+<item name = "Version">2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)</item>
+<item name = "Project">uz_VSD</item>
+<item name = "Solution">solution1 (Vivado IP Flow Target)</item>
+<item name = "Product family">zynquplus</item>
+<item name = "Target device">xczu19eg-ffve1924-2-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">10.00 ns, 8.924 ns, 2.70 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">20, 20, 0.200 us, 0.200 us, 5, 5, dataflow</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+<column name="multiply_line12_U0">multiply_line12, 5, 5, 50.000 ns, 50.000 ns, 4, 4, dataflow</column>
+<column name="multiply_line13_U0">multiply_line13, 5, 5, 50.000 ns, 50.000 ns, 4, 4, dataflow</column>
+<column name="multiply_line14_U0">multiply_line14, 5, 5, 50.000 ns, 50.000 ns, 4, 4, dataflow</column>
+<column name="multiply_line15_U0">multiply_line15, 5, 5, 50.000 ns, 50.000 ns, 4, 4, dataflow</column>
+<column name="multiply_line11_U0">multiply_line11, 5, 5, 50.000 ns, 50.000 ns, 4, 4, dataflow</column>
+<column name="multiply_line16_U0">multiply_line16, 4, 4, 40.000 ns, 40.000 ns, 4, 4, dataflow</column>
+<column name="Block_split1350_proc_U0">Block_split1350_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1388_proc_U0">Block_split1388_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13126_proc_U0">Block_split13126_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13164_proc_U0">Block_split13164_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13202_proc_U0">Block_split13202_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13240_proc_U0">Block_split13240_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1326_proc_U0">Block_split1326_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1332_proc_U0">Block_split1332_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1364_proc_U0">Block_split1364_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1338_proc_U0">Block_split1338_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1370_proc_U0">Block_split1370_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13102_proc_U0">Block_split13102_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1344_proc_U0">Block_split1344_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1376_proc_U0">Block_split1376_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13108_proc_U0">Block_split13108_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13140_proc_U0">Block_split13140_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split1382_proc_U0">Block_split1382_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13114_proc_U0">Block_split13114_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13146_proc_U0">Block_split13146_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13178_proc_U0">Block_split13178_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13120_proc_U0">Block_split13120_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13152_proc_U0">Block_split13152_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13184_proc_U0">Block_split13184_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13216_proc_U0">Block_split13216_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13158_proc_U0">Block_split13158_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13190_proc_U0">Block_split13190_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13222_proc_U0">Block_split13222_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13196_proc_U0">Block_split13196_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13228_proc_U0">Block_split13228_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13234_proc_U0">Block_split13234_proc, 4, 4, 40.000 ns, 40.000 ns, 4, 4, none</column>
+<column name="Block_split13_proc_U0">Block_split13_proc, 3, 3, 30.000 ns, 30.000 ns, 3, 3, none</column>
+<column name="Block_split1320_proc_U0">Block_split1320_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+<column name="Block_split1358_proc_U0">Block_split1358_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+<column name="Block_split1396_proc_U0">Block_split1396_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+<column name="Block_split13134_proc_U0">Block_split13134_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+<column name="Block_split13172_proc_U0">Block_split13172_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+<column name="Block_split13210_proc_U0">Block_split13210_proc, 0, 0, 0 ns, 0 ns, 0, 0, none</column>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 14, -</column>
+<column name="FIFO">-, -, 10098, 6852, -</column>
+<column name="Instance">-, 138, 20421, 19349, -</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, -, -</column>
+<column name="Register">-, -, -, -, -</column>
+<specialColumn name="Available">1968, 1968, 1045440, 522720, 128</specialColumn>
+<specialColumn name="Utilization (%)">0, 7, 2, 5, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP, FF, LUT, URAM</keys>
+<column name="Block_split13102_proc_U0">Block_split13102_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13108_proc_U0">Block_split13108_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13114_proc_U0">Block_split13114_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13120_proc_U0">Block_split13120_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13126_proc_U0">Block_split13126_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13134_proc_U0">Block_split13134_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split13140_proc_U0">Block_split13140_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13146_proc_U0">Block_split13146_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13152_proc_U0">Block_split13152_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13158_proc_U0">Block_split13158_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13164_proc_U0">Block_split13164_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13172_proc_U0">Block_split13172_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split13178_proc_U0">Block_split13178_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13184_proc_U0">Block_split13184_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13190_proc_U0">Block_split13190_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13196_proc_U0">Block_split13196_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13202_proc_U0">Block_split13202_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1320_proc_U0">Block_split1320_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split13210_proc_U0">Block_split13210_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split13216_proc_U0">Block_split13216_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13222_proc_U0">Block_split13222_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13228_proc_U0">Block_split13228_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13234_proc_U0">Block_split13234_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split13240_proc_U0">Block_split13240_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1326_proc_U0">Block_split1326_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1332_proc_U0">Block_split1332_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1338_proc_U0">Block_split1338_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1344_proc_U0">Block_split1344_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1350_proc_U0">Block_split1350_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1358_proc_U0">Block_split1358_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split1364_proc_U0">Block_split1364_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1370_proc_U0">Block_split1370_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1376_proc_U0">Block_split1376_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1382_proc_U0">Block_split1382_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1388_proc_U0">Block_split1388_proc, 0, 2, 297, 276, 0</column>
+<column name="Block_split1396_proc_U0">Block_split1396_proc, 0, 0, 34, 29, 0</column>
+<column name="Block_split13_proc_U0">Block_split13_proc, 0, 0, 134, 145, 0</column>
+<column name="multiply_line11_U0">multiply_line11, 0, 9, 1791, 1698, 0</column>
+<column name="multiply_line12_U0">multiply_line12, 0, 15, 2047, 1968, 0</column>
+<column name="multiply_line13_U0">multiply_line13, 0, 15, 2047, 1968, 0</column>
+<column name="multiply_line14_U0">multiply_line14, 0, 15, 2047, 1968, 0</column>
+<column name="multiply_line15_U0">multiply_line15, 0, 15, 2047, 1968, 0</column>
+<column name="multiply_line16_U0">multiply_line16, 0, 9, 1194, 1180, 0</column>
+</table>
+</item>
+<item name = "DSP"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+<column name="add3_i1_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add3_i2_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add3_i3_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add3_i4_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add3_i5_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add3_i_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i1_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i2_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i3_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i4_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i5_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add5_i_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i1_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i2_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i3_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i4_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i5_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add7_i_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i1_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i2_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i3_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i4_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i5_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="add_i_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c283_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c289_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c301_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c313_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c325_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_0_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c284_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c290_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c302_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c314_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c326_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_1_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c285_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c291_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c303_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c315_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c327_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_2_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c286_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c292_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c304_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c316_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c328_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_3_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c287_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c293_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c305_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c317_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c329_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_4_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c288_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c294_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c306_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c318_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c330_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="cpy_in_5_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c295_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c307_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c319_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c331_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c337_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_c_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_1_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_2_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_3_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_4_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_5_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_0_load_loc_channel_U">0, 99, 0, -, 2, 32, 64</column>
+<column name="products_1_c296_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_1_c308_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_1_c320_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_1_c332_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_1_c338_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_1_c_U">0, 99, 0, -, 3, 32, 96</column>
+<column name="products_2_c297_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_2_c309_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_2_c321_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_2_c333_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_2_c339_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_2_c_U">0, 99, 0, -, 4, 32, 128</column>
+<column name="products_3_c298_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_3_c310_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_3_c322_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_3_c334_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_3_c340_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_3_c_U">0, 99, 0, -, 5, 32, 160</column>
+<column name="products_4_c299_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_4_c311_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_4_c323_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_4_c335_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_4_c341_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_4_c_U">0, 99, 0, -, 6, 32, 192</column>
+<column name="products_5_c300_U">0, 99, 0, -, 7, 32, 224</column>
+<column name="products_5_c312_U">0, 99, 0, -, 7, 32, 224</column>
+<column name="products_5_c324_U">0, 99, 0, -, 7, 32, 224</column>
+<column name="products_5_c336_U">0, 99, 0, -, 7, 32, 224</column>
+<column name="products_5_c342_U">0, 99, 0, -, 7, 32, 224</column>
+<column name="products_5_c_U">0, 99, 0, -, 7, 32, 224</column>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="ap_idle">and, 0, 0, 2, 1, 1</column>
+<column name="ap_sync_done">and, 0, 0, 2, 1, 1</column>
+<column name="multiply_line11_U0_start_full_n">and, 0, 0, 2, 1, 1</column>
+<column name="multiply_line12_U0_start_full_n">and, 0, 0, 2, 1, 1</column>
+<column name="multiply_line13_U0_start_full_n">and, 0, 0, 2, 1, 1</column>
+<column name="multiply_line14_U0_start_full_n">and, 0, 0, 2, 1, 1</column>
+<column name="multiply_line15_U0_start_full_n">and, 0, 0, 2, 1, 1</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="in_r_address0">out, 3, ap_memory, in_r, array</column>
+<column name="in_r_ce0">out, 1, ap_memory, in_r, array</column>
+<column name="in_r_d0">out, 32, ap_memory, in_r, array</column>
+<column name="in_r_q0">in, 32, ap_memory, in_r, array</column>
+<column name="in_r_we0">out, 1, ap_memory, in_r, array</column>
+<column name="in_r_address1">out, 3, ap_memory, in_r, array</column>
+<column name="in_r_ce1">out, 1, ap_memory, in_r, array</column>
+<column name="in_r_d1">out, 32, ap_memory, in_r, array</column>
+<column name="in_r_q1">in, 32, ap_memory, in_r, array</column>
+<column name="in_r_we1">out, 1, ap_memory, in_r, array</column>
+<column name="out_1">out, 32, ap_vld, out_1, pointer</column>
+<column name="out_1_ap_vld">out, 1, ap_vld, out_1, pointer</column>
+<column name="out_2">out, 32, ap_vld, out_2, pointer</column>
+<column name="out_2_ap_vld">out, 1, ap_vld, out_2, pointer</column>
+<column name="out_3">out, 32, ap_vld, out_3, pointer</column>
+<column name="out_3_ap_vld">out, 1, ap_vld, out_3, pointer</column>
+<column name="out_4">out, 32, ap_vld, out_4, pointer</column>
+<column name="out_4_ap_vld">out, 1, ap_vld, out_4, pointer</column>
+<column name="out_5">out, 32, ap_vld, out_5, pointer</column>
+<column name="out_5_ap_vld">out, 1, ap_vld, out_5, pointer</column>
+<column name="out_6">out, 32, ap_vld, out_6, pointer</column>
+<column name="out_6_ap_vld">out, 1, ap_vld, out_6, pointer</column>
+<column name="ap_clk">in, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+<column name="ap_rst">in, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+<column name="ap_start">in, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+<column name="ap_done">out, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+<column name="ap_ready">out, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+<column name="ap_idle">out, 1, ap_ctrl_hs, uz_VSD_6ph_asym, return value</column>
+</table>
+</item>
+</section>
+</profile>

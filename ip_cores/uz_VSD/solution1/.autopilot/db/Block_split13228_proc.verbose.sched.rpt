@@ -1,0 +1,145 @@
+
+
+================================================================
+== Vitis HLS Report for 'Block_split13228_proc'
+================================================================
+* Date:           Fri May 19 07:25:26 2023
+
+* Version:        2020.1 (Build 2902540 on Wed May 27 20:16:15 MDT 2020)
+* Project:        uz_VSD
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu19eg-ffve1924-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 6.437 ns |   2.70 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        4|        4| 40.000 ns | 40.000 ns |    4|    4|   none  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 2
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 5
+* Pipeline : 0
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 5 
+5 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 1.86>
+ST_1 : Operation 6 [1/1] (1.86ns)   --->   "%products_3_read = read i32 @_ssdm_op_Read.ap_fifo.floatP, i32 %products_3" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 6 'read' 'products_3_read' <Predicate = true> <Delay = 1.86> <CoreInst = "FIFO_SRL">   --->   Core 21 'FIFO_SRL' <Latency = 0> <II = 1> <Delay = 1.86> <Storage> <Opcode : 'read' 'write' 'nbread' 'nbwrite'> <Ports = 0> <Width = 32> <Depth = 5> <FIFO>
+
+State 2 <SV = 1> <Delay = 6.43>
+ST_2 : Operation 7 [1/1] (0.00ns)   --->   "%p_read_49 = read i32 @_ssdm_op_Read.ap_auto.float, i32 %p_read" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 7 'read' 'p_read_49' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 8 [4/4] (6.43ns)   --->   "%add5_i5_loc = fadd i32 %products_3_read, i32 %p_read_49" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 8 'fadd' 'add5_i5_loc' <Predicate = true> <Delay = 6.43> <CoreInst = "FAddSub_fulldsp">   --->   Core 74 'FAddSub_fulldsp' <Latency = 3> <II = 1> <Delay = 6.43> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 3 <SV = 2> <Delay = 6.43>
+ST_3 : Operation 9 [3/4] (6.43ns)   --->   "%add5_i5_loc = fadd i32 %products_3_read, i32 %p_read_49" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 9 'fadd' 'add5_i5_loc' <Predicate = true> <Delay = 6.43> <CoreInst = "FAddSub_fulldsp">   --->   Core 74 'FAddSub_fulldsp' <Latency = 3> <II = 1> <Delay = 6.43> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 4 <SV = 3> <Delay = 6.43>
+ST_4 : Operation 10 [2/4] (6.43ns)   --->   "%add5_i5_loc = fadd i32 %products_3_read, i32 %p_read_49" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 10 'fadd' 'add5_i5_loc' <Predicate = true> <Delay = 6.43> <CoreInst = "FAddSub_fulldsp">   --->   Core 74 'FAddSub_fulldsp' <Latency = 3> <II = 1> <Delay = 6.43> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 5 <SV = 4> <Delay = 6.43>
+ST_5 : Operation 11 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %products_3, void @ap_fifo_str, i32, i32, void @p_str, i32, i32, void @p_str, void @p_str, void @p_str, i32, i32, i32, i32, void @p_str, void @ScalarProp_str"   --->   Operation 11 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_5 : Operation 12 [1/4] (6.43ns)   --->   "%add5_i5_loc = fadd i32 %products_3_read, i32 %p_read_49" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 12 'fadd' 'add5_i5_loc' <Predicate = true> <Delay = 6.43> <CoreInst = "FAddSub_fulldsp">   --->   Core 74 'FAddSub_fulldsp' <Latency = 3> <II = 1> <Delay = 6.43> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 13 [1/1] (0.00ns)   --->   "%ret_ln26 = ret i32 %add5_i5_loc" [uz_VSD/uz_VSD.cpp:26]   --->   Operation 13 'ret' 'ret_ln26' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10ns, clock uncertainty: 2.7ns.
+
+ <State 1>: 1.86ns
+The critical path consists of the following:
+	fifo read on port 'products_3' (uz_VSD/uz_VSD.cpp:26) [5]  (1.86 ns)
+
+ <State 2>: 6.44ns
+The critical path consists of the following:
+	wire read on port 'p_read' (uz_VSD/uz_VSD.cpp:26) [4]  (0 ns)
+	'fadd' operation ('add5_i5_loc', uz_VSD/uz_VSD.cpp:26) [6]  (6.44 ns)
+
+ <State 3>: 6.44ns
+The critical path consists of the following:
+	'fadd' operation ('add5_i5_loc', uz_VSD/uz_VSD.cpp:26) [6]  (6.44 ns)
+
+ <State 4>: 6.44ns
+The critical path consists of the following:
+	'fadd' operation ('add5_i5_loc', uz_VSD/uz_VSD.cpp:26) [6]  (6.44 ns)
+
+ <State 5>: 6.44ns
+The critical path consists of the following:
+	'fadd' operation ('add5_i5_loc', uz_VSD/uz_VSD.cpp:26) [6]  (6.44 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

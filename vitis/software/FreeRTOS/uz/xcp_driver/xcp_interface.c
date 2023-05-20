@@ -21,6 +21,41 @@
 #include "../bsp_timer/bsp_timer.h"
 
 /*-------------------------------------------------------------------
+ * Types
+ *-----------------------------------------------------------------*/
+typedef struct _timing_A53_t {
+    struct {
+        float isr_period_us;
+        float isr_execution_time_us;
+        float xcp_cache_flush_stim_us;
+        float xcp_cache_flush_meas_us;
+        float xcp_event_1ms_us;
+        float write_to_tx_queue_us;
+        float write_to_tcp_socket_us;
+    } now;
+
+    struct {
+        float isr_period_us;
+        float isr_execution_time_us;
+        float xcp_cache_flush_stim_us;
+        float xcp_cache_flush_meas_us;
+        float xcp_event_1ms_us;
+        float write_to_tx_queue_us;
+        float write_to_tcp_socket_us;
+    } max;
+} timing_A53_t;
+
+#define TIMING_START() \
+        uint16_t _ts_start = bsp_timer_timestamp_get();
+
+#define TIMING_CALC(_name) \
+        timing_A53.now._name = bsp_timer_timestamp_get_time_delta_us( \
+                _ts_start, \
+                bsp_timer_timestamp_get()); \
+        if (timing_A53.now._name > timing_A53.max._name) \
+            timing_A53.max._name = timing_A53.now._name;
+
+/*-------------------------------------------------------------------
  * Configuration
  *-----------------------------------------------------------------*/
 #define STACKSIZE_XCP           (1024 * 10)
@@ -43,9 +78,6 @@
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
-static uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
-static uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
-
 #define QUEUE_XCP_TX_LEN        1000
 #define QUEUE_XCP_RX_LEN        10
 
@@ -53,6 +85,8 @@ static QueueHandle_t queue_xcp_tx;
 static QueueHandle_t queue_xcp_rx = NULL;
 
 static uint32_t xcp_timestamp;
+
+timing_A53_t timing_A53 = {0};
 
 /*-------------------------------------------------------------------
  * Local functions
@@ -67,12 +101,20 @@ static void my_print_ip(ip_addr_t *ip)
 
 static void xcp_interface_cache_flush_measure(void)
 {
+    TIMING_START();
     Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
+    TIMING_CALC(xcp_cache_flush_stim_us);
 }
 
+/* TODO
+ * Funktion überhaupt notwendig?
+ * Stim+Meas in gleichem Bereich..
+ */
 static void xcp_interface_cache_flush_stimulate(void)
 {
+    TIMING_START();
     Xil_DCacheFlushRange(XCP_MEAS_R5_ADDR, XCP_MEAS_R5_LEN);
+    TIMING_CALC(xcp_cache_flush_meas_us);
 }
 
 static void xcp_interface_init(void)
@@ -81,9 +123,9 @@ static void xcp_interface_init(void)
     queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
 
     XcpInit();
-
     bsp_timer_init();
     bsp_timer_start();
+
 #ifdef USE_XCP_CAN
     if (bsp_can_init() != XST_SUCCESS) {
         xil_printf("%s(): can init failed \n", __func__);
@@ -161,29 +203,27 @@ static void xcp_eth_tx(void *arg_p)
 
     xQueueReset(queue_xcp_tx);
 
-    uint16_t xcp_package_counter = 0;
     while (1) {
+        uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
         if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
             xil_printf("%s(): xQueueReceive() tx failed\n", __func__);
             xil_printf("%s(): critical error, can not recover\n", __func__);
             vTaskDelay(5);
             return;
         }
-
-        xcp_package_counter++;
         // length was already written before msg was given to queue
         uint16_t len_xcp_tx;
         len_xcp_tx = ((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
 
-        buf_xcp_tx[2] = (uint8_t) (xcp_package_counter >> 0);
-        buf_xcp_tx[3] = (uint8_t) (xcp_package_counter >> 8);
+        TIMING_START();
 
         if ((nwrote = write(sd, buf_xcp_tx, (len_xcp_tx + XCP_HEADER_LEN))) < 0) {
             xil_printf("%s(): write() failed\n", __func__);
             break;
         }
-
         XcpSendCallBack();
+
+        TIMING_CALC(write_to_tcp_socket_us);
     }
 
     xil_printf("%s(): delete\n", __func__);
@@ -197,6 +237,7 @@ static void xcp_eth_rx(void *arg_p)
     int n;
 
     xil_printf("%s() start\n", __func__);
+    uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
     while (1) {
         // Will block here until new data is available
@@ -229,32 +270,13 @@ static void xcp_eth_rx(void *arg_p)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-
-// TODO remove
-uint32_t time_irq_ns = 0;
-uint32_t time_irq_max_ns = 0;
-uint32_t time_irqLen_ns = 0;
-uint32_t time_irqLen_max_ns = 0;
-uint32_t time_cacheFlush_ns = 0;
-uint32_t time_cacheFlush_max_ns = 0;
-
-
 void timer_irq_callback_10kHz(void)
 {
-// todo remove
-static uint16_t ts_start = 0;
-time_irqLen_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
-if (time_irqLen_ns > time_irqLen_max_ns)
-    time_irqLen_max_ns = time_irqLen_ns;
-ts_start = bsp_timer_timestamp_get();
-
-
+    static uint16_t _ts_start = 0;
+    TIMING_CALC(isr_period_us);
+    _ts_start = bsp_timer_timestamp_get();
 
     xcp_interface_cache_flush_measure();
-time_cacheFlush_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
-    if (time_cacheFlush_ns > time_cacheFlush_max_ns){
-        time_cacheFlush_max_ns = time_cacheFlush_ns;}
-
 
     xcp_timestamp = *(uint32_t *)XCP_TIMESTAMP_R5_ADDR;
 
@@ -264,7 +286,10 @@ time_cacheFlush_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_t
     cnt_div_10++;
     if (cnt_div_10 >= 10) {
         cnt_div_10 = 0;
+
+        TIMING_START();
         XcpEvent(XCP_EVENT_1MS);
+        TIMING_CALC(xcp_event_1ms_us);
     }
 
     static uint32_t cnt_div_100 = 1;
@@ -279,11 +304,6 @@ time_cacheFlush_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_t
     if (cnt_div_1000 >= 1000) {
         cnt_div_1000 = 0;
         XcpEvent(XCP_EVENT_100MS);
-
-        XcpBackground();
-
-        // Todo correct position here?
-        xcp_interface_cache_flush_stimulate();
     }
 
     static uint32_t cnt_div_10000 = 3;
@@ -293,18 +313,15 @@ time_cacheFlush_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_t
         XcpEvent(XCP_EVENT_1S);
     }
 
-
     // This irq can occur before the queue is created (xcp main task)
     if (queue_xcp_rx != NULL) {
+        static uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
         if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) == pdPASS) {
             XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
         }
     }
 
-// todo remove
-time_irq_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
-if (time_irq_ns > time_irq_max_ns)
-    time_irq_max_ns = time_irq_ns;
+    TIMING_CALC(isr_execution_time_us);
 }
 
 void wait_for_xcp_master(void *p)
@@ -360,29 +377,30 @@ void wait_for_xcp_master(void *p)
     vTaskDelete(NULL);
 }
 
-uint32_t time_WtoTxQ_ns;
-uint32_t time_WtoTxQ_max_ns = 0;
 void ApplXcpSend( vuint8 len, const BYTEPTR msg )
 {
-uint16_t ts_start = bsp_timer_timestamp_get();
+    TIMING_START();
 
-    BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
     uint8_t *msg_with_header_p = (uint8_t *)msg - XCP_HEADER_LEN;
+    static uint16_t xcp_package_counter = 0;
 
     msg_with_header_p[0] = (uint8_t) (len >> 0);
     msg_with_header_p[1] = (uint8_t) (len >> 8);
+    msg_with_header_p[2] = (uint8_t) (xcp_package_counter >> 0);
+    msg_with_header_p[3] = (uint8_t) (xcp_package_counter >> 8);
+    xcp_package_counter++;
 
+    BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
     if(xQueueSendFromISR(queue_xcp_tx,
-                             msg_with_header_p,
+                         msg_with_header_p,
                          pxHigherPriorityTaskWoken_) != pdPASS) {
         xil_printf("%s(): xQueueSend() failed\n", __func__);
         xil_printf("%s(): critical error!\n", __func__);
         vTaskDelay(5);
         return;
     }
-uint32_t time_send_ns = bsp_timer_timestamp_get_time_delta_ns(ts_start, bsp_timer_timestamp_get());
-if (time_send_ns > time_WtoTxQ_max_ns)
-    time_WtoTxQ_max_ns = time_send_ns;
+
+    TIMING_CALC(write_to_tx_queue_us);
 }
 
 MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )
@@ -419,22 +437,15 @@ void timer_irq_callback__(void)
 {
     static uint32_t div_cnt = 0;
     div_cnt++;
-    if (div_cnt >= 10000) {
+    // f = 10 kHz
+    if (div_cnt >= (3 * 10000)) {
         div_cnt = 0;
 
 //        static uint8_t cnt = 0;
 //        cnt++;
 //        xil_printf("%s(): %d\n", __func__, cnt);
 
-//xil_printf("\n%5s, %5s\n", "now", "max");
-//xil_printf("%7d, %8d WriteQ\n", time_WtoTxQ_ns, time_WtoTxQ_max_ns);
-//xil_printf("%7d, %8d IRQ 10kHz\n", time_irq_ns, time_irq_max_ns);
-//xil_printf("%7d, %8d T_irq 10kHz\n", time_irqLen_ns, time_irqLen_max_ns);
-//xil_printf("%7d, %8d cacheFlush\n", time_cacheFlush_ns, time_cacheFlush_max_ns);
-
-time_WtoTxQ_max_ns = 0;
-time_irq_max_ns = 0;
-time_irqLen_max_ns = 0;
-time_cacheFlush_max_ns = 0;
+        // Reset max times each few seconds
+        memset(&timing_A53.max, 0x00, sizeof(timing_A53.max));
     }
 }

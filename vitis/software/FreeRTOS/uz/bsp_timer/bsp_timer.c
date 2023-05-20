@@ -185,11 +185,11 @@ uint16_t bsp_timer_timestamp_get(void)
     return XTtcPs_GetCounterValue(&TtcPsInst[TTC_TIMESTAMP_DEVICE_ID]);
 }
 
-uint32_t bsp_timer_timestamp_get_time_delta_ns(uint16_t time_start,
-                                               uint16_t time_end)
+float bsp_timer_timestamp_get_time_delta_us(uint16_t time_start,
+                                            uint16_t time_end)
 {
     uint16_t time_delta = (time_end - time_start);
-    uint32_t time_passed_ns = (((uint64_t)time_delta * (uint64_t)1e9)
+    float time_passed_us = (((float)time_delta * (float)1e6)
             / SettingsTable[TTC_TIMESTAMP_DEVICE_ID].OutputHz);
-    return time_passed_ns;
+    return time_passed_us;
 }

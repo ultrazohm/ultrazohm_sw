@@ -41,7 +41,9 @@ XTmrCtr Timer_Interrupt;
 
 // Global variable structure
 extern DS_Data Global_Data;
-extern uz_codegen codegenInstance;
+
+// Data structure from uz example simulink model
+//extern uz_codegen codegenInstance;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -67,16 +69,17 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        codegenInstance.input.time = uz_SystemTime_GetGlobalTimeInSec();
+//        codegenInstance.input.time = uz_SystemTime_GetGlobalTimeInSec();
 
         // TODO remove!
-        void xcp_dummy_calculations(void);
+        extern void xcp_dummy_calculations(void);
         xcp_dummy_calculations();
 
         //uz_codegen_step(&codegenInstance);
-        extern FOC_CurrentControl_step(void);
+        extern void FOC_CurrentControl_step(void);
         FOC_CurrentControl_step();
-        Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.ChirpSine;
+
+//        Global_Data.rasv.halfBridge1DutyCycle = codegenInstance.output.ChirpSine;
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

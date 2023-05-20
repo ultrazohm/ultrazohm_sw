@@ -12,9 +12,6 @@
 #define XCP_MEAS_R5_ADDR        0xFFFC0400
 #define XCP_MEAS_R5_LEN         0x00001400
 
-#define SECTION_XCP_TS      __attribute__ ((section (".section_xcp_timestamp")))
-#define SECTION_XCP_MEAS    __attribute__ ((section (".section_xcp_meas")))
-
 //--------------------------------------------------------------------
 // Types
 // -------------------------------------------------------------------

@@ -6,6 +6,9 @@
 //--------------------------------------------------------------------
 // Configuration
 // -------------------------------------------------------------------
+#define SECTION_XCP_TS      __attribute__ ((section (".section_xcp_timestamp")))
+#define SECTION_XCP_MEAS    __attribute__ ((section (".section_xcp_meas")))
+
 #define DUMMY_LEN            80
 
 //--------------------------------------------------------------------

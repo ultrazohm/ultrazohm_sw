@@ -26,13 +26,17 @@
 #include "xil_cache.h"
 #include "../uz/xcp_driver/xcp_interface.h"
 
+#define DISABLE_JAVASCOPE
+
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
 
 struct APU_to_RPU_t ControlData;
 
+#ifndef DISABLE_JAVASCOPE
 extern A53_Data Global_Data_A53;
 extern int js_connection_established;
+#endif
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
@@ -53,15 +57,13 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
+    int status;
+    BaseType_t xHigherPriorityTaskWoken;
+#ifndef DISABLE_JAVASCOPE
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
-	int status;
-	BaseType_t xHigherPriorityTaskWoken;
-
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
-
-	timer_irq_callback_10kHz();
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -76,6 +78,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 	// queue is purged when new connection is established
+#endif
+
+    timer_irq_callback_10kHz();
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

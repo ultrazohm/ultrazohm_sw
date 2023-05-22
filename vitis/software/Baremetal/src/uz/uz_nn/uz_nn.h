@@ -48,6 +48,7 @@ void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const 
 void uz_nn_schroeder_export(uz_nn_t *self);
 void uz_nn_mat_export(uz_nn_t *self);
 float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
+float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_t layer);
 uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer);
@@ -60,5 +61,6 @@ uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t la
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
+
 
 #endif // UZ_NN_H

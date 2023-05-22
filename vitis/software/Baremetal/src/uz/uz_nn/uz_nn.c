@@ -103,6 +103,17 @@ uz_assert(self->is_ready);
     }
 }
 
+float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float z = 0.0f;
+    // summiere alle Fehler auf
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        z+=-(expectedoutput->data[i]-output->data[i]);
+    }
+    return z;
+}
 
 float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
 {
@@ -111,11 +122,11 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
     // summiere alle Fehler auf
     for (uint32_t i = 0; i < output->length_of_data; i++)
     {
-        y+=(expectedoutput->data[i]-output->data[i]) * (expectedoutput->data[i]-output->data[i]);
+        y+=(expectedoutput->data[i]-output->data[i])* (expectedoutput->data[i]-output->data[i]);
     }
     // Wer als float ausgeben zum Debuggen 1/n * Summe = MSE
-    y = (1.0f/((float)output->length_of_data)) * y;
-    
+    y = (0.5f/((float)output->length_of_data)) * y;
+
     return y;
 }
 

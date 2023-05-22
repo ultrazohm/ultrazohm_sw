@@ -39,17 +39,12 @@
 set origin_dir "."
 
 # Set default board part according to your board
-
+#*****************************************************************************************
 # KR260 Robotics Starter Kit
+set board_part "xilinx.com:kr260_som:part0:1.1"
 #*****************************************************************************************
-#set board_part "xilinx.com:kr260_som:part0:1.1"
-#set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
-#*****************************************************************************************
-
 # KV260 Vision AI Starter Kit
-#*****************************************************************************************
-#set board_part "xilinx.com:kv260_som:part0:1.1"
-#set_property -name "board_part" -value "xilinx.com:kv260_som:part0:1.1" -objects $obj
+# set board_part "xilinx.com:kv260_som:part0:1.2"
 #*****************************************************************************************
 
 # Use origin directory path location variable, if specified in the tcl shell
@@ -120,20 +115,27 @@ set orig_proj_dir "[file normalize "$origin_dir/project"]"
 # Create project
 create_project ${_xil_proj_name_} ./project -force
 
-
-
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
 
 # Set project properties
+
 set obj [current_project]
 set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/../../AppData/Roaming/Xilinx/Vivado/2020.2.2/xhub/board_store/xilinx_board_store"]" -objects $obj
+#*****************************************************************************************
+# KR260 Robotics Starter Kit
+set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
+set_property -name "platform.board_id" -value "kr260_som" -objects $obj
+#*****************************************************************************************
+# KV260 Vision AI Starter Kit
+# set_property -name "board_part" -value "xilinx.com:kv260_som:part0:1.2" -objects $obj
+# set_property -name "platform.board_id" -value "kv260_som" -objects $obj
+#*****************************************************************************************
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
 set_property -name "ip_output_repo" -value "$proj_dir/${_xil_proj_name_}.cache/ip" -objects $obj
 set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
-set_property -name "platform.board_id" -value "kr260_som" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "VHDL" -objects $obj

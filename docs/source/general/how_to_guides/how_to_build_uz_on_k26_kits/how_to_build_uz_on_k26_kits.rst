@@ -66,12 +66,14 @@ Vitis
 
 .. code-block::
 
+    cd [getws]
     source {../../tcl_scripts/vitis_update_kria_workspace.tcl}
 
 #. If you use KR260 Robotics kit, the BSP-Hack should be applied. For that, type the following commands:
     
 .. code-block::
 
+    cd [getws]
     source {../../tcl_scripts/vitis_update_kr260_hack.tcl}
 
 #. Restart Vitis to make the files accessible

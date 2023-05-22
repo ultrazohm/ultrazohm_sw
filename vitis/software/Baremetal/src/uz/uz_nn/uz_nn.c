@@ -110,8 +110,9 @@ float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutpu
     // summiere alle Fehler auf
     for (uint32_t i = 0; i < output->length_of_data; i++)
     {
-        z+=-(expectedoutput->data[i]-output->data[i]);
+        z+=(expectedoutput->data[i]-output->data[i]);
     }
+    z = -1.0f*z;
     return z;
 }
 

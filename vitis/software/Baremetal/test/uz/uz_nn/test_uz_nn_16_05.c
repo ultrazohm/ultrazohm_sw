@@ -196,9 +196,9 @@ void test_uz_nn_checkgradients_test1(void)
     uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
     uz_nn_ff(nn1,input);
     uz_matrix_t* outputnn1=uz_nn_get_output_data(nn1);
-    float msederv =  uz_nn_mse_derv(outputnn1,refout);
+    float msederv1 =  uz_nn_mse_derv(outputnn1,refout);
     float result=uz_matrix_get_element_zero_based(outputnn1,0,0);
-    uz_nn_backward_pass(nn1,&msederv,input);
+    uz_nn_backward_pass(nn1,&msederv1,input);
     uz_matrix_t* gradhelptest1 = uz_nn_get_gradient_data(nn1,1); // index 1-2 verwenden für nn mit 2 layern
     uz_matrix_t* gradhelptest2 = uz_nn_get_gradient_data(nn1,2);
     uz_matrix_t* gradhelptest3 = uz_nn_get_gradient_data(nn1,3);

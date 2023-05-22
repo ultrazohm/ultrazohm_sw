@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 16
+#define NUMBER_OF_EPOCHS 30
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -95,11 +95,8 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] =
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
-//float msetest [NUMBER_OF_EPOCHS] = {0.0f};
-//Mse array for testing reasons
- float msetest [16] ={
- #include "matlab_weights/mse.csv"
- };
+float msetest [NUMBER_OF_EPOCHS] = {0.0f};
+float msederv [NUMBER_OF_EPOCHS] = {0.0f};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -200,19 +197,20 @@ void test_uz_nn_matlab(void)
       struct uz_matrix_t refmatrix={0};
       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
       struct uz_matrix_t x_matrix={0};
-      uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,13);
+      uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
       clock_t start = clock();
        for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
        {
        uz_nn_ff(test,input);
        uz_matrix_t* output=uz_nn_get_output_data(test);
        // MSE Berechnen für Trainingsdatenpaar
-       //msetest[i] =  uz_nn_mse(output,refout);
-       float *mse = &msetest[i];
+       msetest[i] = uz_nn_mse(output,refout);
+       msederv[i] = uz_nn_mse_derv(output,refout);
+       float *msed = &msederv[i];
        float result=uz_matrix_get_element_zero_based(output,0,0);
        printf("output von step %d ist = %.8f \n",(int)i, (double)result);
        printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
-       uz_nn_backward_pass(test,mse,input);
+       uz_nn_backward_pass(test,msed,input);
        float lernrate = 0.001f;
        uz_nn_gradient_descent(test,lernrate);
        }

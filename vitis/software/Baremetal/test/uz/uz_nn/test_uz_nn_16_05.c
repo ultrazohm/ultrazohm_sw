@@ -16,6 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 5
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 2
+#define NUMBER_OF_EPOCHS 200
 
 // stuff for training and update
 // sumout
@@ -89,7 +90,8 @@ float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten la
 float gradtest1[30] = {
 #include "functions_weights/gradmat.csv"
 };
-
+float msetest [NUMBER_OF_EPOCHS] = {0.0f};
+float msederv [NUMBER_OF_EPOCHS] = {0.0f};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -194,9 +196,9 @@ void test_uz_nn_checkgradients_test1(void)
     uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
     uz_nn_ff(nn1,input);
     uz_matrix_t* outputnn1=uz_nn_get_output_data(nn1);
-    float result1=uz_matrix_get_element_zero_based(outputnn1,0,0);
-    float msetest =  uz_nn_mse(outputnn1,refout);
-    uz_nn_backward_pass(nn1,&msetest,input);
+    float msederv =  uz_nn_mse_derv(outputnn1,refout);
+    float result=uz_matrix_get_element_zero_based(outputnn1,0,0);
+    uz_nn_backward_pass(nn1,&msederv,input);
     uz_matrix_t* gradhelptest1 = uz_nn_get_gradient_data(nn1,1); // index 1-2 verwenden für nn mit 2 layern
     uz_matrix_t* gradhelptest2 = uz_nn_get_gradient_data(nn1,2);
     uz_matrix_t* gradhelptest3 = uz_nn_get_gradient_data(nn1,3);
@@ -239,16 +241,26 @@ void test_uz_nn_checkgradients_test1(void)
 void test_uz_nn_checkgradients_test2(void)
 {
 // check cachegradients
-   uz_nn_t *test2 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t *test2 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix,x,2,1,NUMBER_OF_INPUTS);
+    struct uz_matrix_t refmatrix={0};
+    uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+    for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+    {
     uz_nn_ff(test2,input);
-    uz_matrix_t* output=uz_nn_get_output_data(test2);
-    float result2=uz_matrix_get_element_zero_based(output,0,0);
-    float error2 = reference_output[0]- result2;
-    uz_nn_backward_pass(test2,&error2,input);
-    uz_matrix_t* cachegradhelp1= uz_nn_get_cachegradient_data(test2,1); // index 1-2 verwenden für nn mit 2 layern
-    uz_matrix_t* cachegradhelp2 = uz_nn_get_cachegradient_data(test2,2);
+    uz_matrix_t* outputnn2=uz_nn_get_output_data(test2);
+    msetest[i] =  uz_nn_mse(outputnn2,refout);
+    msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
+    float *msed = &msederv[i];
+    float result=uz_matrix_get_element_zero_based(outputnn2,0,0);
+    printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+    printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+    uz_nn_backward_pass(test2,msed,input);
+    float lernrate = 0.001f;
+    uz_nn_gradient_descent(test2,lernrate);
+    }
+    uz_matrix_t* deltagradhelp1 = uz_nn_get_delta_data(test2,1); 
 }
 
 void test_uz_nn_checkgradients_test3(void)
@@ -256,7 +268,7 @@ void test_uz_nn_checkgradients_test3(void)
     // check delta
    uz_nn_t *test3 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     struct uz_matrix_t x_matrix={0};
-    uz_matrix_t* input=uz_matrix_init(&x_matrix,x,2,1,NUMBER_OF_INPUTS);
+    uz_matrix_t* input=uz_matrix_init(&x_matrix,x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
     uz_nn_ff(test3,input);
     uz_matrix_t* output=uz_nn_get_output_data(test3);
     float result3=uz_matrix_get_element_zero_based(output,0,0);

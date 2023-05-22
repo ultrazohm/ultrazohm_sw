@@ -187,7 +187,7 @@ uz_nn_t* gradientnet = uz_nn_init(config,NUMBER_OF_HIDDEN_LAYER);
     uz_nn_ff(gradientnet,eingabe);
     uz_matrix_t* output=uz_nn_get_output_data(gradientnet);
     float result=uz_matrix_get_element_zero_based(output,0,0);
-    float error = reference_output[0]- result;
+    float error = result- reference_output[0];
     float const *ptr = &error;
     uz_nn_backward_pass(gradientnet,ptr,eingabe);
     // extract gradient to uz_matrix and then into array to check with unity fct

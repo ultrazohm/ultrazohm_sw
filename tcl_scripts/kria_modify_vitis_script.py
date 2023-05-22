@@ -99,11 +99,13 @@ with open(main_c_path, 'w') as file_w:
 with open(main_c_path, 'r') as file_r:
     main_c_content = file_r.readlines()
 
-lines_to_delete = set(range(25, 29)).union(set(range(157, 165))).union(set(range(173, 196))).union(set(range(303, 371)))
+lines_to_comment = set(range(24, 29)).union(set(range(155, 203))).union(set(range(213, 216))).union(set(range(303, 371)))
 
 with open(main_c_path, 'w') as file_w:
     for number, line in enumerate(main_c_content):
-        if number not in lines_to_delete:
+        if number in lines_to_comment:
+            file_w.write("//" + line)
+        else:
             file_w.write(line)
 
 # main.h

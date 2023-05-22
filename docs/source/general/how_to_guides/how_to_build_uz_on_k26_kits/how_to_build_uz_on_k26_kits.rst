@@ -36,7 +36,7 @@ Generates the UltraZohm Vivado project (``ultrazohm.xpr``).
 Usage: 
 
 #. Open ``ultrazohm_sw/vivado`` repository on your local file system
-#. Edit build_kria.tcl (line: 41 - 53) according to your K26 kit and save 
+#. Edit build_kria.tcl (line: 41 - 48 and 125 - 133) according to your K26 kit and save 
 #. Open Vivado
 #. Click on ``Window`` -> ``Tcl Console``
 #. A window on the bottom of Vivado appears (*Tcl Console*)
@@ -47,8 +47,8 @@ Usage:
 .. code-block::
 
     source build_kria.tcl
-
-#. Generate bitstream and export to vitis/vivado_exported_xsa folder. Make sure there is only one xsa file.
+    
+Generate bitstream and export to vitis/vivado_exported_xsa folder. Make sure there is only one xsa file.
 
 Vitis
 =====

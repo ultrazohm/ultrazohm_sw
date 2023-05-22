@@ -129,51 +129,47 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
     {
         uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
     }
-         //Berechne alle Gradienten
-    //Gradient output + alle hidden layer
+    //Berechne alle Gradienten Gradient output + alle hidden layer
     for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
     {
             uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
     }
     uz_nn_layer_calc_gradients(self->layer[0],input);
-    // uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
-    // uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
-    // uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
 
-void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    // lokale Gradienten zurückrechnen vom letzten layer
-    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], reference);
-    for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
-    {
-        uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
-    }
-         //Berechne alle Gradienten
+// void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     lokale Gradienten zurückrechnen vom letzten layer
+//     uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], reference);
+//     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+//     {
+//         uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
+//     }
+//          Berechne alle Gradienten
 
-    //  uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
+//      uz_nn_layer_calc_gradients(self->layer[2],uz_nn_get_output_from_each_layer(self,2));
 
-    //  uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
+//      uz_nn_layer_calc_gradients(self->layer[1],uz_nn_get_output_from_each_layer(self,1));
 
-    //  uz_nn_layer_calc_gradients(self->layer[0],input);
+//      uz_nn_layer_calc_gradients(self->layer[0],input);
 
 
-    //Gradient output + alle hidden layer
-    for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
-    {
-            uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
-    }
-    //Gradient erster layer
-    uz_nn_layer_calc_gradients(self->layer[0],input);
-}
+//     Gradient output + alle hidden layer
+//     for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
+//     {
+//             uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+//     }
+//     Gradient erster layer
+//     uz_nn_layer_calc_gradients(self->layer[0],input);
+// }
 
-void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate)
-{
-    uz_nn_layer_update(self->layer[0],&THETA,&BIAS,&Lernrate);
-}
+// void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate)
+// {
+//     uz_nn_layer_update(self->layer[0],&THETA,&BIAS,&Lernrate);
+// }
 
 void uz_nn_mat_export(uz_nn_t *self)
 {

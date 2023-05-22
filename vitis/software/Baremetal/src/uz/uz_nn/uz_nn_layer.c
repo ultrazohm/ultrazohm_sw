@@ -228,13 +228,13 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     //matrizen zusammenstellen und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
     
 }
-void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
-}
+// void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+//     uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
+// }
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {

@@ -49,7 +49,8 @@ Setup
      struct uz_CurrentControl_config config_CC = {
           .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
           .config_id = config_id, 
-          .config_iq = config_iq };
+          .config_iq = config_iq,
+          .max_modulation_index = 1.0f/sqrtf(3.0f) }; //for SpaceVectorModulation
      struct uz_SetPoint_config config_SP = {
 	   .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
 	   .control_type = FOC,

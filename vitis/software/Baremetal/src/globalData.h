@@ -7,6 +7,11 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 
+// Add additional Header Files
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -83,6 +88,11 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+
+	// Add additional Variables
+	float polepairs;
+	float flg_speed_control;
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -98,6 +108,12 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+
+	// Add additional Variables
+	float i_d_ref;
+	float i_q_ref;
+	float n_ref_rpm;
+
 } referenceAndSetValues;
 
 typedef struct{
@@ -110,6 +126,17 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+
+	uz_CurrentControl_t* CurrentControl_instance;
+	uz_SpeedControl_t* Speed_instance;
+	uz_IIR_Filter_t* iir_u_dc;
+	uz_IIR_Filter_t* iir_i_u;
+	uz_IIR_Filter_t* iir_i_v;
+	uz_IIR_Filter_t* iir_i_w;
+	uz_IIR_Filter_t* iir_u_u;
+	uz_IIR_Filter_t* iir_u_v;
+	uz_IIR_Filter_t* iir_u_w;
+
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

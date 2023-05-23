@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 30
+#define NUMBER_OF_EPOCHS 100
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};

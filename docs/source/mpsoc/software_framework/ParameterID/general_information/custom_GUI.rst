@@ -233,8 +233,8 @@ Setup
         // Do not change the first (zero) and last (end) entries.
         extern uz_ParameterID_Data_t ParaID_Data;
         //If FOC is used
-        extern uz_FOC* FOC_instance;
-        extern uz_SpeedControl_t* SpeedControl_instance;
+        extern uz_CurrentControl_t* CC_instance;
+        extern uz_SetPoint_t* SP_instance;
 
         void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
         {       
@@ -393,8 +393,8 @@ Setup
 
                 case (ParaID_EID_Admit_Params):
                     //If FOC is used
-                    uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
-                    uz_SpeedControl_set_PMSM_config(SpeedControl_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_CurrentControl_set_PMSM_parameters(CC_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
+                    uz_SetPoint_set_PMSM_config(SP_instance, ParaID_Data.ElectricalID_Output->PMSM_parameters);
                     break;
 
                 case (ParaID_FID_max_speed):

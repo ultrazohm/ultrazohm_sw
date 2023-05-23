@@ -456,7 +456,7 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.FrictionID = false;
 	Data->GlobalConfig.TwoMassID = false;
 	Data->GlobalConfig.OnlineID = false;
-	Data->GlobalConfig.sampleTimeISR = 50.0e-06f;
+	Data->GlobalConfig.sampleTimeISR = 100.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config
 	Data->GlobalConfig.Ki_id = 158.8f;

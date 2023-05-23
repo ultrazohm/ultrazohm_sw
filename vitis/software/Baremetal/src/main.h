@@ -17,7 +17,6 @@
 #define main_H_
 
 #include <math.h>	//Include for math operations
-#include <time.h>
 #include <stdbool.h>
 
 // Xilinx library functions

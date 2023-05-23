@@ -16,6 +16,11 @@
 // Includes from own files
 #include "main.h"
 
+// time stopping variable
+bool nn_time=false;
+float nn_time_float =0.0f;
+float msejava=0.0f;
+float resultjava=0.0f;
 // nn init stuff
 
 #define NUMBER_OF_INPUTS 2
@@ -275,8 +280,13 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+
+            if(nn_time){
+            nn_time_float=0.0f;
             nn_train();
-            break;
+            nn_time=false;
+            nn_time_float=1.0f;
+            }
         default:
             break;
         }
@@ -295,13 +305,12 @@ static void nn_train(void)
     {
     uz_nn_ff(test2,input);
     uz_matrix_t* outputnn2=uz_nn_get_output_data(test2);
-    msetest[i] =  uz_nn_mse(outputnn2,refout);
+    msejava= uz_nn_mse(outputnn2,refout);
+	//msetest[i] =  uz_nn_mse(outputnn2,refout);
     // check mse
     msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
     float *msed = &msederv[i];
-    float result=uz_matrix_get_element_zero_based(outputnn2,0,0);
-    printf("output von step %d ist = %.8f \n",(int)i, (double)result);
-    printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+    resultjava=uz_matrix_get_element_zero_based(outputnn2,0,0);
     uz_nn_backward_pass(test2,msed,input);
     float lernrate = 0.001f;
     uz_nn_gradient_descent(test2,lernrate);

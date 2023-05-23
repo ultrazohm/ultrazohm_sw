@@ -45,6 +45,7 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl_rsm,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -73,6 +74,66 @@ int main(void)
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
+        case init_CurrentControl_rsm:
+            struct uz_PMSM_t config_RSM = {
+                .Ld_Henry = 20.45e-03f,
+                .Lq_Henry = 1.48e-03f,
+                .Psi_PM_Vs = 0.0f};
+
+            struct uz_PI_Controller_config config_id = {
+                .Kp = 2.0f,
+                .Ki = 2.83f,
+                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+
+            struct uz_PI_Controller_config config_iq = {
+                .Kp = 2.0f,
+                .Ki = 39.22f,
+                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+
+            struct uz_SpeedControl_config config_speed = {
+            		.config_controller.Kp = 1.0f,
+					.config_controller.Ki = 1.0f,
+					.config_controller.samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
+					.config_controller.upper_limit = 10.0f,
+					.config_controller.lower_limit = -10.0f,
+            };
+
+            struct uz_CurrentControl_config config_CurrentControl = {
+                .decoupling_select = linear_decoupling,
+                .config_PMSM = config_RSM,
+                .config_id = config_id,
+                .config_iq = config_iq};
+
+            struct uz_IIR_Filter_config iir_config_filt1={
+            		.selection = LowPass_first_order,
+            		.cutoff_frequency_Hz = 500.0f,
+            		.sample_frequency_Hz = UZ_PWM_FREQUENCY
+            };
+
+            // Initialize Global Objects
+            Global_Data.objects.CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
+            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);
+            Global_Data.objects.iir_i_w = uz_signals_IIR_Filter_init(iir_config_filt1);
+
+            // Initialize Global actualValues
+            Global_Data.av.theta_offset = 0.0f;
+            Global_Data.av.polepairs = 2.0f;
+            Global_Data.av.flg_speed_control = 0U;
+
+            // Initialize Global referenceAndSetValues
+            Global_Data.rasv.i_d_ref = 0.0f;
+            Global_Data.rasv.i_q_ref = 0.0f;
+            Global_Data.rasv.n_ref_rpm = 0.0f;
+
+        	initialization_chain = init_ip_cores;
+			break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

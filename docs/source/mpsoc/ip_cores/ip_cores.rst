@@ -29,3 +29,4 @@ IP Cores
     uz_inverter_adapter/uz_inverter_adapter
     uz_cil_pmsm/uz_cil_pmsm
     uz_resolverIP/uz_resolverIP
+    uz_axi_gpio/uz_axi_gpio

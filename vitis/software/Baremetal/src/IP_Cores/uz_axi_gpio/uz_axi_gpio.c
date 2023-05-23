@@ -41,5 +41,14 @@ uz_axi_gpio_t *uz_axi_gpio_init(struct uz_axi_gpio_config_t config)
     return (self);
 }
 
+void uz_axi_gpio_write_bitmask(uz_axi_gpio_t *self, uint32_t bitmask){
+    uz_assert_not_NULL(self);
+    XGpio_DiscreteWrite(&self->xinstance, 1U, bitmask);
+}
+
+uint32_t uz_axi_gpio_read_bitmask(uz_axi_gpio_t *self){
+    uz_assert_not_NULL(self);
+    return XGpio_DiscreteRead(&self->xinstance, 1U);
+}
 
 #endif

@@ -18,11 +18,11 @@ struct uz_axi_gpio_config_t
 
 uz_axi_gpio_t *uz_axi_gpio_init(struct uz_axi_gpio_config_t config);
 
-void uz_axi_gpio_write_pin(); // write to one pin
-bool uz_axi_gpio_read_pin();  // read one pin
+void uz_axi_gpio_write_pin(uz_axi_gpio_t *self,uint32_t pin_number, bool value); // write to one pin
+bool uz_axi_gpio_read_pin(uz_axi_gpio_t *self,uint32_t pin_number);                   // read one pin
 
-void uz_axi_gpio_write_bitmask(); // write to all pins at once with bitmask
-bool uz_axi_gpio_read_bitmask();  // read one pin
+void uz_axi_gpio_write_bitmask(uz_axi_gpio_t *self, uint32_t bitmask); // write to all pins at once with bitmask
+uint32_t uz_axi_gpio_read_bitmask(uz_axi_gpio_t *self);                        // read one pin
 
 #define UZ_AXI_GPIO_PIN1 (1U << 0)
 #define UZ_AXI_GPIO_PIN2 (1U << 1)

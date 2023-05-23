@@ -273,11 +273,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, uz_CurrentCon
 			}
 		}
 		v_dq_Volts = uz_CurrentControl_sample(CC_instance, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);		
-		} else {
-			v_dq_Volts.d = 0.0f;
-			v_dq_Volts.q = 0.0f;
-			v_dq_Volts.zero = 0.0f;
-		}
+	}
 	return (v_dq_Volts);
 }
 

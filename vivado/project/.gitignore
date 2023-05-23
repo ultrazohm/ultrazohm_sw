@@ -1,8 +1,11 @@
-### Xilinx Vivado ###
-# short gitignore for our project specific
-/*
-!zusys/
-!kria/
+*
+!zusys
+zusys/*
+!zusys/hdl/
+!zusys/zusys.bd
+!kria
+kria/*
+!kria/hdl/
+!kria/k26sys.bd
 !*.xpr
 !.gitignore
-

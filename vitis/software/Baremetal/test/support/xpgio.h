@@ -115,7 +115,6 @@ extern "C"
 #include "xil_types.h"
 #include "xil_assert.h"
 #include "xstatus.h"
-#include "xgpio_l.h"
 
     /************************** Constant Definitions ****************************/
 

@@ -1,29 +1,45 @@
 #include "../../uz/uz_global_configuration.h"
 #if UZ_AXI_GPIO_MAX_INSTANCES > 0U
-#include <stdbool.h> 
+#include <stdbool.h>
 #include "../../uz/uz_HAL.h"
-#include "uz_axi_gpio.h" 
+#include "uz_axi_gpio.h"
+#include "xpgio.h"
 
-struct uz_axi_gpio_t {
+#define UZ_AXI_INPUT 1U
+#define UZ_AXI_OUTPUT 0U
+
+struct uz_axi_gpio_t
+{
     bool is_ready;
+    XGpio xinstance;
+    struct uz_axi_gpio_config_t config;
 };
 
 static uint32_t instance_counter = 0U;
-static uz_axi_gpio_t instances[UZ_AXI_GPIO_MAX_INSTANCES] = { 0 };
+static uz_axi_gpio_t instances[UZ_AXI_GPIO_MAX_INSTANCES] = {0};
 
-static uz_axi_gpio_t* uz_axi_gpio_allocation(void);
+static uz_axi_gpio_t *uz_axi_gpio_allocation(void);
 
-static uz_axi_gpio_t* uz_axi_gpio_allocation(void){
+static uz_axi_gpio_t *uz_axi_gpio_allocation(void)
+{
     uz_assert(instance_counter < UZ_AXI_GPIO_MAX_INSTANCES);
-    uz_axi_gpio_t* self = &instances[instance_counter];
+    uz_axi_gpio_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
     return (self);
 }
 
-uz_axi_gpio_t* uz_axi_gpio_init() {
-    uz_axi_gpio_t* self = uz_axi_gpio_allocation();
+uz_axi_gpio_t *uz_axi_gpio_init(struct uz_axi_gpio_config_t config)
+{
+    uz_assert_not_zero_uint32(config.base_address);
+    uz_axi_gpio_t *self = uz_axi_gpio_allocation();
+    self->config=config;
+    XGpio_Initialize(&self->xinstance, self->config.device_id);
+    XGpio_SetDataDirection(&self->xinstance, 1U, self->config.direction_of_pins);
+
     return (self);
 }
+
+
 #endif

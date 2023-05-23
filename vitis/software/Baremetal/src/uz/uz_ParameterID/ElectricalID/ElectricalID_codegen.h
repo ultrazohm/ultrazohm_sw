@@ -83,7 +83,6 @@ typedef struct {
   real32_T lambda;                     /* '<Root>/ElectricalID' */
   real32_T V0;                         /* '<Root>/ElectricalID' */
   real32_T R_corr;                     /* '<Root>/ElectricalID' */
-  real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID' */
   real32_T psiOverJ;                   /* '<Root>/ElectricalID' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID' */

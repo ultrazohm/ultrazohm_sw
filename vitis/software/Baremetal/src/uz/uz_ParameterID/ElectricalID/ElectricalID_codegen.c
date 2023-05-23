@@ -297,9 +297,6 @@ static void initParams(ExtU_ElectricalID_t *rtElectricalID_U,
 
   /* 0.060 */
   /*  variables for controller calculation */
-  /* '<S1>:88:90' bandwidthCurrentControl = single(1000); */
-  rtElectricalID_DW->bandwidthCurrentControl = 1000.0F;
-
   /* '<S1>:88:91' dampingFactor           = single(10.0); */
   rtElectricalID_DW->dampingFactor = 10.0F;
 
@@ -418,6 +415,7 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
 {
   real32_T Ki_id_loc;
   real32_T Kp_id_loc;
+  real32_T Kp_id_loc_tmp;
 
   /* Outport: '<Root>/ElectricalID_FOC_output' */
   /* Entry 'calculatePIcontroller': '<S1>:284' */
@@ -425,25 +423,28 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* '<S1>:284:4' ElectricalID_FOC_output.activeState = uint16(144); */
   rtElectricalID_Y->ElectricalID_FOC_output.activeState = 144U;
 
+  /*  calculation according to Gemaßmer KIT */
+  /* '<S1>:284:6' Kp_id_loc = ElectricalID_output.PMSM_parameters.Ld_Henry / (3.0 * GlobalConfig.sampleTimeISR) ; */
+  Kp_id_loc_tmp = 3.0F * rtElectricalID_U->GlobalConfig_out.sampleTimeISR;
+
   /* Outport: '<Root>/ElectricalID_output' */
-  /*  calculation according to TI instaSpin */
-  /* '<S1>:284:6' Kp_id_loc = ElectricalID_output.PMSM_parameters.Ld_Henry * bandwidthCurrentControl; */
-  Kp_id_loc = rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Ld_Henry *
-    rtElectricalID_DW->bandwidthCurrentControl;
+  Kp_id_loc =
+    rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Ld_Henry /
+    Kp_id_loc_tmp;
 
-  /* '<S1>:284:7' Ki_id_loc = ElectricalID_output.PMSM_parameters.R_ph_Ohm * bandwidthCurrentControl; */
-  Ki_id_loc = rtElectricalID_Y->ElectricalID_output.PMSM_parameters.R_ph_Ohm *
-    rtElectricalID_DW->bandwidthCurrentControl;
+  /* '<S1>:284:7' Ki_id_loc = ElectricalID_output.PMSM_parameters.R_ph_Ohm / (3.0 * GlobalConfig.sampleTimeISR) ; */
+  Ki_id_loc =
+    rtElectricalID_Y->ElectricalID_output.PMSM_parameters.R_ph_Ohm /
+    Kp_id_loc_tmp;
 
-  /* Inport: '<Root>/ElectricalIDConfig' */
   /* '<S1>:284:8' Ki_iq_loc = Ki_id_loc; */
   /* '<S1>:284:9' if (ElectricalIDConfig.identLq == 1) */
   if (rtElectricalID_U->ElectricalIDConfig.identLq) {
     /* Outport: '<Root>/ElectricalID_output' */
-    /* '<S1>:284:10' Kp_iq_loc = ElectricalID_output.PMSM_parameters.Lq_Henry * bandwidthCurrentControl; */
+    /* '<S1>:284:10' Kp_iq_loc = ElectricalID_output.PMSM_parameters.Lq_Henry / (3.0 * GlobalConfig.sampleTimeISR) ; */
     rtElectricalID_DW->Kp_iq_loc =
-      rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry *
-      rtElectricalID_DW->bandwidthCurrentControl;
+      rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Lq_Henry /
+      Kp_id_loc_tmp;
   } else {
     /* Outport: '<Root>/ElectricalID_output' */
     /* '<S1>:284:11' elseif (ElectricalIDConfig.identLq == 0) */
@@ -457,10 +458,7 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
     rtElectricalID_DW->Kp_iq_loc = Kp_id_loc;
   }
 
-  /* End of Inport: '<Root>/ElectricalIDConfig' */
-
   /* Outport: '<Root>/ElectricalID_FOC_output' incorporates:
-   *  Inport: '<Root>/GlobalConfig'
    *  Outport: '<Root>/ElectricalID_output'
    */
   /* '<S1>:284:16' Kp_n_loc = Kp_iq_loc/(ElectricalID_output.PMSM_parameters.Lq_Henry*dampingFactor*.... */
@@ -470,7 +468,6 @@ static void enter_atomic_calculatePIcontrol(ExtU_ElectricalID_t
   /* '<S1>:284:19'     ElectricalID_output.PMSM_parameters.Lq_Henry  * dampingFactor * dampingFactor * .... */
   /* '<S1>:284:20'     dampingFactor * GlobalConfig.PMSM_config.polePairs... */
   /* '<S1>:284:21'     *3.0/2.0*psiOverJ); */
-  /* . */
   /* . */
   /* Output calculated values */
   /* '<S1>:284:23' ElectricalID_FOC_output.Kp_id_out = Kp_id_loc; */

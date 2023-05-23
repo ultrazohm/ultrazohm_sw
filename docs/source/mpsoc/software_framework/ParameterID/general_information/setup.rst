@@ -21,8 +21,9 @@ Setup
   uz_ParameterID_t* ParameterID = NULL;
   uz_ParameterID_Data_t ParaID_Data = { 0 };
   //Objects below are only needed, if the uz_FOC is used as the controller
-  uz_FOC* FOC_instance = NULL;
-  uz_SpeedControl_t* SpeedControl_instance = NULL;
+  uz_CurrentControl_t* CC_instance = NULL;
+  uz_SpeedControl_t* SC_instance = NULL;
+  uz_SetPoint_t* SP_instance = NULL;
 
   int main(void) {
       ParameterID = uz_ParameterID_init(&ParaID_Data);
@@ -30,42 +31,49 @@ Setup
      struct uz_PI_Controller_config config_id = { 
           .Kp = ParaID_Data.GlobalConfig.Kp_id, 
           .Ki = ParaID_Data.GlobalConfig.Ki_id, 
-          .samplingTime_sec = 0.00005f, 
+          .samplingTime_sec = 0.0001f, 
           .upper_limit = 15.0f,
           .lower_limit = -15.0f };
      struct uz_PI_Controller_config config_iq = { 
           .Kp = ParaID_Data.GlobalConfig.Kp_iq, 
           .Ki = ParaID_Data.GlobalConfig.Ki_iq, 
-          .samplingTime_sec = 0.00005f, 
+          .samplingTime_sec = 0.0001f, 
           .upper_limit = 15.0f,
           .lower_limit = -15.0f };
-     struct uz_SpeedControl_config config_n = {
+     struct uz_SpeedControl_config config_SC = {
           .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
           .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n, 
-          .config_controller.samplingTime_sec = 0.00005f, 
+          .config_controller.samplingTime_sec = 0.0001f, 
           .config_controller.upper_limit = 10.0f,
-          .config_controller.lower_limit = -10.0f,
-          .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
-          .is_field_weakening_active = false };
-     struct uz_FOC_config config_FOC = {
+          .config_controller.lower_limit = -10.0f };
+     struct uz_CurrentControl_config config_CC = {
           .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
           .config_id = config_id, 
           .config_iq = config_iq };
-     FOC_instance = uz_FOC_init(config_FOC);
-     SpeedControl_instance = uz_SpeedControl_init(config_n);
+     struct uz_SetPoint_config config_SP = {
+	   .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+	   .control_type = FOC,
+	   .id_ref_Ampere = 0.0f,
+	   .is_field_weakening_enabled = false,
+	   .motor_type = SMPMSM };
+     CC_instance = uz_CurrentControl_init(config_CC);
+     SC_instance = uz_SpeedControl_init(config_SC);
+     SP_instance = uz_SetPoint_init(config_SP);
      //....
      JavaScope_initalize(&Global_Data);
   }
 
-In the ``uz_ParameterID_init`` function, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. This struct carries, among other things, the configuration values of the ParameterID.
+In the ``uz_ParameterID_init`` function, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. 
+This struct carries, among other things, the configuration values of the ParameterID.
 To ease the setup of the ParameterID, this struct is initialized with default values. 
 To configure the ParameterID to your needs, change the values inside the ``uz_ParameterID_initialize_data_structs`` function. 
-Especially the configuration of the motor-related parameters is important. If they are not known, they can be left at 0.0f. In this case however, these parameters have to be identified first by using the :ref:`uz_ElectricalID` state. 
+Especially the configuration of the motor-related parameters is important. 
+If they are not known, they can be left at 0.0f. In this case however, these parameters have to be identified first by using the :ref:`uz_ElectricalID` state. 
 The ID-state specific configuration values can later be configured via the uz_GUI. 
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 442-533
+    :lines: 447-538
     :linenos:
     :emphasize-lines: 13,16-31
     :language: c
@@ -103,37 +111,38 @@ They are technically not required for the ParameterID and can, if desired, be re
   extern uz_ParameterID_Data_t ParaID_Data;
   extern uz_ParameterID_t* ParameterID;
   //Next lines only needed, if the uz_FOC is used as the controller
-  extern uz_FOC* FOC_instance;
-  extern uz_SpeedControl_t* SpeedControl_instance;
+  extern uz_CurrentControl_t* CC_instance;
+  extern uz_SpeedControl_t* SC_instance;
+  extern uz_SetPoint_t* SP_instance;
   uz_3ph_dq_t ParaID_v_dq = { 0 };
   struct uz_DutyCycle_t ParaID_DutyCycle = { 0 };
 
   void ISR_Control(void *data) {  
-     ParaID_Data.ActualValues.I_UVW.U = ....;
-	ParaID_Data.ActualValues.I_UVW.V = ....;
-	ParaID_Data.ActualValues.I_UVW.W = ....;
+     ParaID_Data.ActualValues.I_abc.a = ....;
+	ParaID_Data.ActualValues.I_abc.b = ....;
+	ParaID_Data.ActualValues.I_abc.c = ....;
 	ParaID_Data.ActualValues.V_DC = ....;
-	ParaID_Data.ActualValues.V_UVW.U = ....;
-	ParaID_Data.ActualValues.V_UVW.V = ....;
-	ParaID_Data.ActualValues.V_UVW.W = ....;
+	ParaID_Data.ActualValues.V_abc.a = ....;
+	ParaID_Data.ActualValues.V_abc.b = ....;
+	ParaID_Data.ActualValues.V_abc.c = ....;
 
 	ParaID_Data.ActualValues.omega_m = ....;
 	ParaID_Data.ActualValues.omega_el = ....;
 	ParaID_Data.ActualValues.theta_el = ....;
 
 	//Calculate missing ActualValues
-	ParaID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.I_UVW, ParaID_Data.ActualValues.theta_el);
-	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.V_UVW, ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.I_abc, ParaID_Data.ActualValues.theta_el);
+	ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.V_abc, ParaID_Data.ActualValues.theta_el);
 	ParaID_Data.ActualValues.theta_m = ....;
 
      if (ultrazohm_state_machine_get_state() == control_state) {
           uz_ParameterID_step(ParameterID, &ParaID_Data);
           //Next lines only needed, if the uz_FOC is used as the controller
-          ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, FOC_instance, SpeedControl_instance);
-          ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1);
-          Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.DutyCycle_U;
-          Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.DutyCycle_V;
-          Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.DutyCycle_W;
+          ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, CC_instance, SC_instance, SP_instance);
+          ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1_pin_0_to_5);
+          Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.DutyCycle_A;
+          Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.DutyCycle_B;
+          Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.DutyCycle_C;
 	} else {
           Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
           Global_Data.rasv.halfBridge2DutyCycle = 0.0f;

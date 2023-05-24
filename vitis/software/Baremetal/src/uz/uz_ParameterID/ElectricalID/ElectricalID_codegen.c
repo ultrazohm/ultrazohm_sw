@@ -2200,8 +2200,8 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
         /* Outport: '<Root>/ElectricalID_FOC_output' incorporates:
          *  Outport: '<Root>/ElectricalID_output'
          */
-        /* '<S1>:428:4' ElectricalID_FOC_output.enableFOC_current = boolean(0); */
-        rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_current = false;
+        /* '<S1>:428:4' ElectricalID_FOC_output.enableFOC_torque = boolean(0); */
+        rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_torque = false;
 
         /* '<S1>:428:5' ElectricalID_FOC_output.activeState = uint16(170); */
         rtElectricalID_Y->ElectricalID_FOC_output.activeState = 170U;
@@ -2571,8 +2571,8 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
         /* '<S1>:337:3' ElectricalID_FOC_output.enableFOC_speed = boolean(0); */
         rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_speed = false;
 
-        /* '<S1>:337:4' ElectricalID_FOC_output.enableFOC_current = boolean(1); */
-        rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_current = true;
+        /* '<S1>:337:4' ElectricalID_FOC_output.enableFOC_torque = boolean(1); */
+        rtElectricalID_Y->ElectricalID_FOC_output.enableFOC_torque = true;
 
         /* '<S1>:337:5' counter = uint32(1); */
         rtElectricalID_DW->counter = 1U;

@@ -1,9 +1,11 @@
+
 #include "../../uz/uz_global_configuration.h"
+
 #if UZ_AXI_GPIO_MAX_INSTANCES > 0U
 #include <stdbool.h>
 #include "../../uz/uz_HAL.h"
 #include "uz_axi_gpio.h"
-#include "xpgio.h"
+#include "xgpio.h"
 
 #define UZ_AXI_INPUT 1U
 #define UZ_AXI_OUTPUT 0U

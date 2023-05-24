@@ -21,7 +21,9 @@ Features:
 - All input or all output is recommended for simplicity
 - Static partitioning of pins using the pins ``gpio_oi_o`` for outputs and ``gpio_oi_i`` for inputs is possible
 - Refer to AXI GPIO product guide if dynamic IO (i.e., changing inputs to outputs and vice versa during run-time) is required (i.e., correct handling of 3-state buffer)
-- Number of pins is configurable between 1 and 32. If The bitmask accesses more pins than are available, an assertion is triggered
+- Number of pins is configurable between 1 and 32.
+- If the bitmask functions accesses more pins than are available, the spare bits are ignored
+- If the pin-wise function accesses more pins than are available, an assertion is triggered
 
 
 Relevant files:

@@ -5,7 +5,7 @@
 #include "uz_axi_gpio.h"
 #include "test_assert_with_exception.h"
 
-#include "mock_xpgio.h"
+#include "mock_xgpio.h"
 #include "mock_xstatus.h"
 #include <stdint.h>
 #include <stdbool.h>

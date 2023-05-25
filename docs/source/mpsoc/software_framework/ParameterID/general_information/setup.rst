@@ -74,7 +74,7 @@ The ID-state specific configuration values can later be configured via the uz_GU
 
 .. literalinclude:: ../../../../../../vitis/software/Baremetal/src/uz/uz_ParameterID/uz_ParameterID.c
     :caption: Code to initialize ``uz_ParameterID_Data_t``. Important parts are highlighted.
-    :lines: 447-538
+    :lines: 443-534
     :linenos:
     :emphasize-lines: 13,16-31
     :language: c
@@ -89,8 +89,9 @@ These functions are to compute heavy to be executed in the ISR.
   //....
   case infinite_loop:
      ultrazohm_state_machine_step();  
-     if (ParaID_Data.OnlineID_Output->clean_array) {
+     if (ParaID_Data.OnlineID_Output->clean_array || ParaID_Data.OnlineID_reset_was_pressed) {
           uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
+          ParaID_Data.OnlineID_reset_was_pressed = false;
      }
      if (ParaID_Data.calculate_flux_maps) {
           uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);

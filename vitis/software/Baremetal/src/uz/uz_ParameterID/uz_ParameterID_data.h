@@ -376,6 +376,7 @@ typedef struct uz_ParameterID_Data_t {
                                                             1 = Current_Control \n
                                                             2 = Speed_Control \n
                                                             3 = Torque Control*/
+	bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
 } uz_ParameterID_Data_t;
 
 #endif

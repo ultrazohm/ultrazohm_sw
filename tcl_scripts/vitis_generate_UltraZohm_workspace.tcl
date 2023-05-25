@@ -14,10 +14,10 @@
 #
 #
 # execute in XSCT console in Vitis workspace
-#	cd [getws] 
+#	cd [getws]
 #	source {../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl}
 #
-# XSCT Programming Reference UG1416 
+# XSCT Programming Reference UG1416
 # https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
 
@@ -28,7 +28,7 @@ proc app_clean {{name *}} {
   set index 0
   foreach element $tmplist {
     if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
+      if {![string match "*==*" $element] && ! [string match "*NAME*" $element] && ! [string match "" $element]} {
         set tmpname [lindex [split $element " "] 1];
         if {[string match $name $tmpname]} {
           app clean $tmpname
@@ -52,7 +52,7 @@ proc app_build {{name *}} {
   set index 0
   foreach element $tmplist {
     if {[catch {
-      if {![string match "*==*" $element] && ! [string match "*NAME*" $element]  && ! [string match "" $element]} {
+      if {![string match "*==*" $element] && ! [string match "*NAME*" $element] && ! [string match "" $element]} {
         set tmpname [lindex [split $element " "] 1];
         if {[string match $name $tmpname]} {
           app build $tmpname
@@ -101,7 +101,7 @@ set XSA_FILE [lindex $XSA_FILES 0]
 puts "WARNING (UltraZohm): Make sure there is only one xsa file in ${XSA_FOLDER} "
 puts "Info (UltraZohm): using {$XSA_FILE}"
 
-#create platform 
+#create platform
 platform create -name $PLATFORM_NAME -hw $XSA_FILE -no-boot-bsp
 
 #Domain FreeRTOS A53_0
@@ -117,14 +117,14 @@ bsp setlib -name lwip211
 # get list of configurable parameters for lwip lib
 #bsp listparams -lib lwip211
 bsp config api_mode SOCKET_API
-platform write 
+platform write
 bsp config dhcp_does_arp_check true
-platform write 
+platform write
 bsp config lwip_dhcp true
-platform write 
+platform write
 # increase heap size of freertos, to fix javascope glitches
-bsp config total_heap_size  200000000
-platform write 
+bsp config total_heap_size 200000000
+platform write
 
 puts "Info (UltraZohm): regenerate FreeRTOS BSP"
 #regenerate board support package
@@ -135,9 +135,9 @@ bsp regenerate
 #####################################################
 puts "Info (UltraZohm): create Baremetal_domain"
 #create Baremetal domain
-domain create -name Baremetal_domain -os standalone -proc psu_cortexr5_0 
+domain create -name Baremetal_domain -os standalone -proc psu_cortexr5_0
 #save changes
-platform write 
+platform write
 
 
 ##Domain FSBL (Standalone) A53_0
@@ -157,7 +157,7 @@ platform write
 ## get list of configurable parameters for xilffs lib
 ##bsp listparams -lib xilffs
 #bsp config zynqmp_fsbl_bsp true
-#platform write 
+#platform write
 #
 #puts "Info (UltraZohm): regenerate FSBL BSP"
 #regenerate board support package
@@ -172,26 +172,26 @@ platform generate
 #Application Baremetal R5_0
 #####################################################
 puts "Info (UltraZohm): create Baremetal Application"
-# create application 
+# create application
 app create -name Baremetal -template {Empty Application} -platform $PLATFORM_NAME -domain Baremetal_domain
 
 puts "Info (UltraZohm): import Baremetal Application sources"
 # import sources to baremetal project
 # first the source files are linked
 importsources -name Baremetal -path $filename_Baremetal -soft-link
-# add shared folder 
+# add shared folder
 importsources -name Baremetal -path $SHARED_FOLDER -soft-link
 # link to linker-script instead of copying it
 app config -name Baremetal -set linker-script $filename_Baremetal/lscript.ld
 
 #add math library to linker option
-app config -name Baremetal -add  libraries m
+app config -name Baremetal -add libraries m
 
 
 #Application FreeRTOS A53_0
 ####################################################
 puts "Info (UltraZohm): create FreeRTOS Application"
-#create application 
+#create application
 app create -name FreeRTOS -template {Empty Application} -platform $PLATFORM_NAME -domain FreeRTOS_domain
 
 puts "Info (UltraZohm): import FreeRTOS Application sources"
@@ -213,7 +213,7 @@ app config -name FreeRTOS -set linker-script $filename_FreeRTOS/lscript.ld
 app config -name Baremetal compiler-misc -I"$SHARED_FOLDER"
 app config -name FreeRTOS compiler-misc -I"$SHARED_FOLDER"
 
-# set optimization level 
+# set optimization level
 app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
 app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
@@ -234,8 +234,8 @@ app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
 puts "Info (UltraZohm): add standard FSBL.elf"
 platform config -remove-boot-bsp
-platform config -fsbl-elf $filename_FSBLelf/FSBL.elf 
-platform write 
+platform config -fsbl-elf $filename_FSBLelf/FSBL.elf
+platform write
 
 #Clean all
 ####################################################
@@ -243,7 +243,7 @@ puts "Info (UltraZohm): clean platform and all application projects"
 platform clean
 app_clean
 puts "Info (UltraZohm): build platform and all application projects"
-platform generate 
+platform generate
 app_build
 
 
@@ -278,12 +278,12 @@ vitis_main
 
 
 ## useful
-# change active domain 
-# domain list 
+# change active domain
+# domain list
 # domain active []
 
-##list of all os 
-#repo -os 
+##list of all os
+#repo -os
 
 
 

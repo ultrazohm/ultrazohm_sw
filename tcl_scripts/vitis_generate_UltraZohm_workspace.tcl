@@ -1,5 +1,5 @@
 ###########################################################################
-# Copyright 2021 Eyke Liegmann, Tobias Schindler
+# Copyright 2021-2023 Eyke Liegmann, Tobias Schindler, Martin Geier
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,19 @@
 # XSCT Programming Reference UG1416
 # https://www.xilinx.com/html_docs/xilinx2020_1/vitis_doc/
 ###########################################################################
+
+### Configuration Parameters (at the moment, most people do not have to change anything here)
+## - Supported values and the [default] are listed behind each parameter, e.g.: true, [false]
+## - More parameters to come in the future, including the selection of the hardware platform
+
+## uzcfg is global for now (but can easily be localized being a hash table)
+global uzcfg
+
+## System-wide Settings
+# Hardware platform: [UltraZohm]
+set uzcfg(PLATFORM_NAME) 	UltraZohm
+
+### End of the Configuration (i.e., you might not want to change anything after this line ;))
 
 
 proc app_clean {{name *}} {
@@ -73,13 +86,15 @@ proc app_build {{name *}} {
 
 proc vitis_main {} {
 
+  global uzcfg
+
   set WS_PATH [getws]
   cd $WS_PATH
   cd ..
   set FOLDER_PATH [pwd]
   cd $WS_PATH
 
-  set PLATFORM_NAME 	UltraZohm
+  set PLATFORM_NAME 	$uzcfg(PLATFORM_NAME)
   set XSA_FOLDER 	[file join $FOLDER_PATH vivado_exported_xsa]
   set EXPORT_FOLDER [file join $FOLDER_PATH software]
   set SHARED_FOLDER [file join $EXPORT_FOLDER shared]

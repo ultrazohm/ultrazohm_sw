@@ -32,6 +32,10 @@ global uzcfg
 # Hardware platform: [UltraZohm]
 set uzcfg(PLATFORM_NAME) 	UltraZohm
 
+## APU/FreeRTS Settings
+# Enable DHCP for automatic assignment of IPv4 address: true, [false]
+set uzcfg(ENABLE_DHCP)		false
+
 ### End of the Configuration (i.e., you might not want to change anything after this line ;))
 
 
@@ -133,9 +137,9 @@ proc vitis_main {} {
   #bsp listparams -lib lwip211
   bsp config api_mode SOCKET_API
   platform write
-  bsp config dhcp_does_arp_check true
+  bsp config dhcp_does_arp_check $uzcfg(ENABLE_DHCP)
   platform write
-  bsp config lwip_dhcp true
+  bsp config lwip_dhcp $uzcfg(ENABLE_DHCP)
   platform write
   # increase heap size of freertos, to fix javascope glitches
   bsp config total_heap_size 200000000

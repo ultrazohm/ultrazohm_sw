@@ -155,7 +155,12 @@ proc vitis_main {} {
   puts "Info (UltraZohm): create Baremetal_domain"
   #create Baremetal domain
   domain create -name Baremetal_domain -os standalone -proc psu_cortexr5_0
-  #save changes
+
+  puts "Info (UltraZohm): change Baremetal BSP settings"
+  # "Hide" peripherals used by FreeRTOS/Linux from Baremetal(_domain)
+  bsp setdriver -ip psu_ethernet_3 -driver generic
+  platform write
+  bsp setdriver -ip psu_i2c_1 -driver generic
   platform write
 
 

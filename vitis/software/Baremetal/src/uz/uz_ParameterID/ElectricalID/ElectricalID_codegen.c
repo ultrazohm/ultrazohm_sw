@@ -2239,6 +2239,7 @@ static void ElectricalID_p(ExtU_ElectricalID_t *rtElectricalID_U,
            2.0F *
            rtElectricalID_Y->ElectricalID_output.PMSM_parameters.Psi_PM_Vs /
            rtElectricalID_Y->ElectricalID_output.PMSM_parameters.J_kg_m_squared);
+        rtElectricalID_Y->ElectricalID_output.PMSM_parameters.I_max_Ampere = rtElectricalID_U->GlobalConfig_out.PMSM_config.I_max_Ampere;
       } else {
         /* '<S1>:356:9' counter = counter + 1; */
         qY = rtElectricalID_DW->counter + /*MW:OvSatOk*/ 1U;

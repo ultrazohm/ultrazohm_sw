@@ -54,6 +54,18 @@
 
 #include "include/pwm_init.h"
 
+// Includes for Inverter Adapter IP Core
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+
+// Includes for FOC
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+
+// Includes for Wavegen
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 //----------------------------------------------------
 // FUNCTIONS

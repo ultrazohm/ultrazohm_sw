@@ -40,12 +40,32 @@ DS_Data Global_Data = {
     }
 };
 
+// Declare Pointer for FOC
+uz_SpeedControl_t* SC_instance;
+uz_SetPoint_t* SP_instance;
+uz_CurrentControl_t* CC_instance;
+
+// Declare Pointer for Chirp
+uz_wavegen_chirp* chirp_instance;
+
+// Configuration of PMSM
+struct uz_PMSM_t config_PMSM = {
+   .R_ph_Ohm = 0.01664f,
+   .Ld_Henry = 0.00003f,
+   .Lq_Henry = 0.00005f,
+   .Psi_PM_Vs = 0.007f,
+   .polePairs = 5.0f,
+   .J_kg_m_squared = 0.00001773f,
+   .I_max_Ampere = 10.0f
+};//these parameters are only needed if linear decoupling is selected
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -55,6 +75,55 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    // Configuration of Speed Control
+    struct uz_SpeedControl_config SC_config = {
+       .config_controller.Kp = 0.4f,
+       .config_controller.Ki = 0.0f,
+       .config_controller.samplingTime_sec = 0.0001f,
+       .config_controller.upper_limit = 1.0f,
+       .config_controller.lower_limit = -1.0f,
+    };
+
+    // Configuration of Set Point
+    struct uz_SetPoint_config SP_config = {
+       .config_PMSM = config_PMSM,
+       .control_type = FOC,
+       .motor_type = SMPMSM,
+       .is_field_weakening_enabled = false,
+       .id_ref_Ampere = 0.0f
+    };
+
+    // Configuration of Current Control
+    struct uz_PI_Controller_config config_id = {
+       .Kp = 0.3f,
+       .Ki = 230.0f,
+       .samplingTime_sec = 0.0001f,
+    };
+    struct uz_PI_Controller_config config_iq = {
+       .Kp = 0.5f,
+       .Ki = 230.0f,
+       .samplingTime_sec = 0.0001f,
+    };
+    struct uz_CurrentControl_config CC_config = {
+       .decoupling_select = linear_decoupling,
+       .config_PMSM = config_PMSM,
+       .config_id = config_id,
+       .config_iq = config_iq,
+       .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+
+    // Configuration Wavegen Chirp
+    struct uz_wavegen_chirp_config config_chirp = {
+            .amplitude = 2.0f,
+            .start_frequency_Hz = 1.0f,
+            .end_frequency_Hz = 10.0f,
+            .duration_sec = 10.0f,
+            .initial_delay_sec = 0.0f,
+            .offset = 1.0f
+    };
+
+    // Initialization Chain
     while (1)
     {
         switch (initialization_chain)
@@ -91,14 +160,21 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            initialization_chain = init_foc;
             break;
+        case init_foc:
+        	SC_instance = uz_SpeedControl_init(SC_config);
+        	SP_instance = uz_SetPoint_init(SP_config);
+        	CC_instance = uz_CurrentControl_init(CC_config);
+        	chirp_instance=uz_wavegen_chirp_init(config_chirp);
+        	initialization_chain = print_msg;
+        	break;
 	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

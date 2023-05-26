@@ -28,6 +28,7 @@ struct uz_wavegen_chirp {
 	float elapsed_time_since_start;
 	float initial_global_time_sec;
 	float transition_angle;
+	float time;
 	struct uz_wavegen_chirp_config config;
 };
 static uint32_t instance_counter = 0U;
@@ -63,12 +64,14 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self) {
 	self->is_first_call_to_sample = true;
 	self->elapsed_time_since_start = 0.0f;
 	self->transition_angle = 0.0f;
+	self->time=0;
 }
 
-float uz_wavegen_chirp_sample(uz_wavegen_chirp* self) {
+float uz_wavegen_chirp_sample(uz_wavegen_chirp* self, sampling_time) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	float system_time_sec = uz_SystemTime_GetGlobalTimeInSec();
+	self->time+=sampling_time;
+	float system_time_sec = self->time;
 	// If its the first call, we take the current time as the initial time to have small numbers at start with 0
 	if (self->is_first_call_to_sample) {
 		self->initial_global_time_sec = system_time_sec; // system_time_sec holds the current global time, thus we take this value as the inital time

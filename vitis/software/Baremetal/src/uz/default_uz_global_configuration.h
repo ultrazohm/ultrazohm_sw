@@ -51,6 +51,7 @@
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
+#define UZ_SYSMON_PS_MAX_INSTANCES                      1U // Must be 1!
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -88,4 +89,5 @@
     #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
     #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
+    #define UZ_SYSMON_PS_MAX_INSTANCES                      10U 
 #endif

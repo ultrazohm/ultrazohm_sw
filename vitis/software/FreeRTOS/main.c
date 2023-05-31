@@ -44,8 +44,6 @@ err_t dhcp_start(struct netif *netif);
 
 static struct netif server_netif;
 
-A53_Data Global_Data_A53;
-
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
 {

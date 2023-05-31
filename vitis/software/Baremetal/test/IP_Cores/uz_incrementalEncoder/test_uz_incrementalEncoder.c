@@ -10,7 +10,7 @@
 
 struct uz_incrementalEncoder_config testconfig={
     .base_address=TEST_BASE_ADDRESS,
-    .ip_core_frequency_Hz=50000000U,
+    .ip_core_frequency_Hz=100000000U,
     .line_number_per_turn_mech=5000u,
     .OmegaPerOverSample_in_rpm=500.0f,
     .drive_pole_pair=4U
@@ -19,7 +19,7 @@ struct uz_incrementalEncoder_config testconfig={
 void setUp(void)
 {
     testconfig.base_address=TEST_BASE_ADDRESS;
-    testconfig.ip_core_frequency_Hz=50000000U;
+    testconfig.ip_core_frequency_Hz=100000000U;
     testconfig.line_number_per_turn_mech=5000u;
     testconfig.OmegaPerOverSample_in_rpm=500.0f;
     testconfig.drive_pole_pair=4U;
@@ -35,8 +35,8 @@ uz_incrementalEncoder_t* successful_init(){
     // PI2_Inc_AXI is 0.0013 in the Simulink model [(2*pi/(IncPerTurn*QuadratureFactor))*PolePair ]
     float expected_pi2_inc=0.0012566447257996f; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);
-    // (T_50MHz*IncPerTurn)/(2*pi) in Simulink
-    float expected_timer_fpga=1.5915604308248e-5f * 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
+    // (T_100MHz*IncPerTurn)/(2*pi) in Simulink
+    float expected_timer_fpga=1.5915604308248e-5f; // Half of the expected timer due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms_Expect(TEST_BASE_ADDRESS, expected_timer_fpga);
 
     uint32_t expected_inc_per_turn_mech=5000U*4U; // random encoder value, *4 due to quadrature factor
@@ -88,7 +88,7 @@ void test_uz_incrementalEncoder_non_integer_pole_pair(void){
     float expected_pi2_inc= (2.0f*UZ_PIf)/( (float)testconfig.line_number_per_turn_mech*4.0f)* (float)testconfig.drive_pole_pair; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);
     // (T_50MHz*IncPerTurn)/(2*pi) in Simulink
-    float expected_timer_fpga=1.5915604308248e-5f * 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
+    float expected_timer_fpga=1.5915604308248e-5f; // Half of the expected timer due to bug in IP-Core, see issue #145
     uz_incrementalEncoder_hw_set_timer_fpga_ms_Expect(TEST_BASE_ADDRESS, expected_timer_fpga);
 
     uint32_t expected_inc_per_turn_mech=5000U*4U; // random encoder value, *4 due to quadrature factor

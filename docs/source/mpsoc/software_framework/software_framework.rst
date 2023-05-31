@@ -35,3 +35,4 @@ Software Framework
     matrix/matrix_math
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
+    uz_integrator/uz_integrator

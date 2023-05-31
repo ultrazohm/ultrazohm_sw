@@ -8,7 +8,7 @@ Software User Model
 -------------------
 
 The interrupt triggers the ``ISR_Control`` function (in ``isr.c``) and the ADC conversion in the PL. 
-The trigger can be synchronized with the PWM (two- and three-level) modules or a timer. 
+The trigger can be synchronized with the PWM (two- and three-level) modules or the axi2tcm data mover. 
 The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning a value to ``Interrupt_ISR_source_user_choice``.
 
 .. code-block:: c 
@@ -27,7 +27,7 @@ The interrupt trigger is defined in ``uz_global_configuration.h``  by assigning 
     "3","Interrupt_3L_start_center","Three-Level PWM Module at **minimum** and **maximum** value of the triangular carrier"
     "4","Interrupt_3L_start","Three-Level PWM Module at **minimum** value of the triangular carrier"
     "5","Interrupt_3L_center","Three-Level PWM Module at **maximum** value of the triangular carrier"
-    "6","Interrupt_timer_fcc","PL Timer that is configured in ``Initialize_Timer``"
+    "6","axi2tcm_write_done","Triggers when axi2tcm data mover signals ``write_done``"
 
 
 Structure of the Interrupt
@@ -59,7 +59,6 @@ Structure in the PL
 
 The Interrupt module consists of:
 
-    * ``Trigger_f_cc``: a free running timer (asynchronous to the PWM modules)
     * ``mux_axi``: chose source of ADC conversion trigger 
     * ``delay_trigger``: adds delay to the ADC conversion trigger
     * ``vio_interrupt``: manually trigger delay by Vivado hardware manager for debugging

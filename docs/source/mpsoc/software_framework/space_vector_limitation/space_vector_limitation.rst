@@ -20,7 +20,8 @@ Example
      uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
      uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
      bool ext_clamping = false;
-     uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+     float max_modulation_index = 1.0f / sqrtf(3.0f);
+     struct uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
   }
 
 Description
@@ -32,7 +33,7 @@ This function is already included in the :ref:`uz_CurrentControl`.
 
 .. math::
 
-  V_{SV,max} &= \dfrac{V_{DC}}{\sqrt{3}} \\
+  V_{SV,max} &= V_{DC} \cdot m_{max} \\
   V_{SV,abs} &= \sqrt{v_d^2 + v_q^2}
 
 .. tikz:: space vector limitation flow chart

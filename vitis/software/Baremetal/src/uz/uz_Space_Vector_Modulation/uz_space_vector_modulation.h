@@ -14,7 +14,7 @@ struct uz_DutyCycle_t {
 };
 
 /**
- * @brief Generates a DutyCycle from dq-reference voltages via Space Vector Limitation for a carrier based PWM generation
+ * @brief Generates a DutyCycle from dq-reference voltages via Space Vector Modulation for a carrier based PWM generation
  * 
  * @param v_ref_Volts reference voltages in Volts (e.g. from current controller)
  * @param V_dc_volts DC-Link voltage in volts

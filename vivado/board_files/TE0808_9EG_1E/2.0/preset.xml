@@ -197,7 +197,7 @@
         <user_parameter  name="CONFIG.PSU__PJTAG__PERIPHERAL__ENABLE" value="1"/>
         <user_parameter  name="CONFIG.PSU__PJTAG__PERIPHERAL__IO" value="MIO 26 .. 29"/>
         <user_parameter  name="CONFIG.PSU__PL_CLK1_BUF" value="TRUE"/>
-        <user_parameter  name="CONFIG.PSU__PSS_REF_CLK__FREQMHZ" value="33.33333"/>
+        <user_parameter  name="CONFIG.PSU__PSS_REF_CLK__FREQMHZ" value="33.333333"/>
         <user_parameter  name="CONFIG.PSU__QSPI__GRP_FBCLK__ENABLE" value="1"/>
         <user_parameter  name="CONFIG.PSU__QSPI__GRP_FBCLK__IO" value="MIO 6"/>
         <user_parameter  name="CONFIG.PSU__QSPI__PERIPHERAL__DATA_MODE" value="x4"/>

@@ -78,20 +78,4 @@ float uz_resonantController_get_output(uz_resonantController_t *self);
  */
 void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_resonantController_config config);
 
-/**
- * @brief sets gain of resonant controller
- * @param self pointer to uz_resonantController_t* object
- * @param float new gain
- * @return void
- */
-void uz_resonantController_set_gain(uz_resonantController_t *self, float gain);
-
-/**
- * @brief sets harmonic order of resonant controller
- * @param self pointer to uz_resonantController_t* object
- * @param float new harmonic order
- * @return void
- */
-void uz_resonantController_set_harmonic_order(uz_resonantController_t *self, float harmonic_order);
-
 #endif // UZ_RESONANTCONTROLLER_H

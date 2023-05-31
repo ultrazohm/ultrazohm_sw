@@ -22,7 +22,7 @@
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-//#include "../include/encoder.h"
+#include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
@@ -30,14 +30,6 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-#include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
-#include "../uz/uz_math_constants.h"
-#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-
-#define		RAD_PER_S_2_RPM		30.0f/UZ_PIf
-#define 	CURRENT_2_SI_AMPERE	12.5f
-#define		VOLTAGE_2_SI_VOLTS	12.0f
-#define		MAX_CURRENT			15.0f
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -49,16 +41,6 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
-struct uz_3ph_abc_t i_abc_d1 = {0.0f};
-struct uz_3ph_abc_t i_abc_d2 = {0.0f};
-struct uz_3ph_dq_t i_dq_d1 = {0.0f};
-struct uz_3ph_dq_t i_dq_d2 = {0.0f};
-struct uz_3ph_dq_t i_dq_ref_d1 = {0.0f};
-struct uz_3ph_dq_t i_dq_ref_d2 = {0.0f};
-struct uz_3ph_dq_t v_dq_ref_d1 = {0.0f};
-struct uz_3ph_dq_t v_dq_ref_d2 = {0.0f};
-struct uz_DutyCycle_t dutycyc_d1 = {0.0f};
-struct uz_DutyCycle_t dutycyc_d2 = {0.0f};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -71,125 +53,13 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    // read electrical angle and speed from both resolvers
-    Global_Data.av.theta_el_omega_el_D5_1 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_1);
-    Global_Data.av.theta_el_omega_el_D5_2 = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_2);
-    // read mechanical angle and speed from both resolvers
-    Global_Data.av.theta_mech_omega_mech_D5_1 = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_1);
-    Global_Data.av.theta_mech_omega_mech_D5_2 = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.uz_d_resolver_D5_2);
-    Global_Data.av.speed_rpm_d5_1 = Global_Data.av.theta_mech_omega_mech_D5_1.velocity * RAD_PER_S_2_RPM;
-    Global_Data.av.speed_rpm_d5_2 = Global_Data.av.theta_mech_omega_mech_D5_2.velocity * RAD_PER_S_2_RPM;
-    // update status of both inverters
-    uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D1);
-    uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_D2);
-    // assign status to Global_Data
-    Global_Data.av.inverter_D1_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_D1);
-    Global_Data.av.inverter_D2_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_D2);
-
-    // assign measurements to Global_Data
-    Global_Data.av.i_a_d1 	= Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_b_d1 	= Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_c_d1 	= Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_dc_d1 	= Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.v_a_d1 	= Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_b_d1 	= Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_c_d1 	= Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_dc_d1 	= Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
-
-    Global_Data.av.i_a_d2 	= Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_b_d2 	= Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_c_d2 	= Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.i_dc_d2 	= Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-    Global_Data.av.v_a_d2 	= Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_b_d2 	= Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_c_d2 	= Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-    Global_Data.av.v_dc_d2 	= Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
-
-    i_abc_d1.a = Global_Data.av.i_a_d1;
-    i_abc_d1.b = Global_Data.av.i_b_d1;
-    i_abc_d1.c = Global_Data.av.i_c_d1;
-    i_abc_d2.a = Global_Data.av.i_a_d2;
-    i_abc_d2.b = Global_Data.av.i_b_d2;
-    i_abc_d2.c = Global_Data.av.i_c_d2;
-
-    // check for current limit
-    if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
-   		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
-    	uz_assert(NULL);
-    }
-
-    // claculate mean temp values over all measured temps of each inverter
-    Global_Data.av.mean_temp_inv_d1 = (Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L3) * 0.1667;
-    Global_Data.av.mean_temp_inv_d2 = (Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L3) * 0.1667;
-
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-
-    // if "Stop"
-    if (current_state==idle_state)
-    {
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, false);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, false);
-    	// reset controllers
-		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d1);
-		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_d2);
-		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_d1);
-		// write zero dutycycle
-		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-
-    }
-
-    // if "Enable System"
-    if (current_state==running_state)
-    {
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D1, true);
-    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_D2, true);
-    }
-
-
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-    	// park transformation of measured currents
-    	i_dq_d1 = uz_transformation_3ph_abc_to_dq(i_abc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
-    	i_dq_d2 = uz_transformation_3ph_abc_to_dq(i_abc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
-    	Global_Data.av.i_d_d1 = i_dq_d1.d;
-    	Global_Data.av.i_q_d1 = i_dq_d1.q;
-    	Global_Data.av.i_d_d2 = i_dq_d2.d;
-    	Global_Data.av.i_q_d2 = i_dq_d2.q;
-    	// calculate reference torque from speed ctrl of d1
-    	Global_Data.rasv.M_ref_d1 = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.n_ref_d1);
-    	// calculate current setpoint for speed control of d1
-    	i_dq_ref_d1 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.M_ref_d1, Global_Data.av.v_dc_d1, i_dq_d1);
-    	// get reference currents from Global_Data
-//    	i_dq_ref_d1 = Global_Data.rasv.i_dq_ref_d1;
-    	i_dq_ref_d2 = Global_Data.rasv.i_dq_ref_d2;
-    	// calculate reference voltages for current control
-    	v_dq_ref_d1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d1, i_dq_ref_d1, i_dq_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.velocity);
-    	v_dq_ref_d2 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d2, i_dq_ref_d2, i_dq_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.velocity);
-    	Global_Data.av.v_d_d1 = v_dq_ref_d1.d;
-    	Global_Data.av.v_q_d1 = v_dq_ref_d1.q;
-    	// calculate duty cycles from reference dq voltages
-    	dutycyc_d1 = uz_Space_Vector_Modulation(v_dq_ref_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
-    	dutycyc_d2 = uz_Space_Vector_Modulation(v_dq_ref_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);
-
-    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_d1.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_d1.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_d1.DutyCycle_C;
-    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_d2.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_d2.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_d2.DutyCycle_C;
-
-
     }
-
-
-
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

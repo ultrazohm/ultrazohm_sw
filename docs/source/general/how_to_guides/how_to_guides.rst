@@ -18,4 +18,3 @@ How to guides
     how_to_multi_axis_foc/how_to_multi_axis_foc
     how_to_create_framework_functions_from_embedded_coder/how_to_create_framework_functions_from_embedded_coder
     how_to_set_encoder_offset/how_to_set_encoder_offset
-    Porting_uz_Framework_to_KR260/Porting_uz_Framework_to_KR260

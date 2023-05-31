@@ -23,12 +23,13 @@ extern "C" {
 
 #include "xparameters.h"								//SW: Include for the implemented IP-Blocks from the PL
 #include "xstatus.h"
+#include "xil_printf.h"
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
 #include "xbasic_types.h" 								//Include for Datatypes
 #include "xtmrctr.h"									//Include of the Timer-Blocks
 #include "math.h"										//Include for math operations
-#include "uz/uz_HAL.h"
+#include <stdio.h>
 
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024

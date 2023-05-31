@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests3/ip_cores">
+	<Repository value="c:/Users/valen/Documents/repos/UZ/ultrazohm_sw_working/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -2413,58 +2413,6 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_pmsm_model_6ph_dq:1.0">
-		</VLNV>
-		<DisplayName value="uz_pmsm_model_6ph_dq">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112822800">
-		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_0/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
 		<VLNV value="xilinx.com:ip:uz_pmsm_model_9ph_dq:1.0">
 		</VLNV>
 		<DisplayName value="uz_pmsm_model_9ph_dq">
@@ -2515,40 +2463,6 @@
 			<Interface value="AXI4">
 			</Interface>
 		</Interfaces>
-	</IP>
-	<IP>
-		<VLNV value="ki_power:user:Resolver_Interface_v1_0:1.0">
-		</VLNV>
-		<DisplayName value="Resolver_Interface_v1_0">
-		</DisplayName>
-		<Description value="Resolver_Interface_v1_0">
-		</Description>
-		<CoreRevision value="1">
-		</CoreRevision>
-		<ComponentPath value="uz_resolverIP/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/UserIP">
-			</Taxonomy>
-		</Taxonomies>
-		<UpgradesFrom>
-			<Upgrade value="xilinx.com:user:Resolver_Interface_v1_0:1.0">
-			</Upgrade>
-		</UpgradesFrom>
-		<LockPrevVersions value="false">
-		</LockPrevVersions>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-		<VendorURL value="http://docs.ultrazohm.com">
-		</VendorURL>
 	</IP>
 	<IP>
 		<VLNV value="xilinx.com:ip:uz_rs_flip_flop:1.0">

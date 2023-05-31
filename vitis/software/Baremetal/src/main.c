@@ -72,10 +72,6 @@ int main(void)
             Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            Global_Data.objects.current_ctrl_d1 = current_ctrl_d1_init();
-            Global_Data.objects.setpoint_ctrl_d1 = setpoint_ctrl_d1_init();
-            Global_Data.objects.speed_ctrl_d1 = speed_ctrl_d1_init();
-			Global_Data.objects.current_ctrl_d2 = current_ctrl_d2_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -93,20 +89,14 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            Global_Data.objects.uz_d_resolver_D5_1 = initialize_resolver_D5_1();
-            Global_Data.objects.uz_d_resolver_D5_2 = initialize_resolver_D5_2();
-            Global_Data.objects.uz_d_inverter_D1 = initialize_inverter_D1();
-            Global_Data.objects.uz_d_inverter_D2 = initialize_inverter_D2();
-
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;
-	    case print_msg:
+        case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

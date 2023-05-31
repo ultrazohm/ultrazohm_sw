@@ -37,7 +37,12 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+extern uz_wavegen_chirp* chirp_instance1;
+extern uz_wavegen_chirp* chirp_instance2;
+extern uz_wavegen_chirp* chirp_instance3;
+float chirp_output1 = 0.0f;
+float chirp_output2 = 0.0f;
+float chirp_output3 = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -56,6 +61,9 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	chirp_output1 = uz_wavegen_chirp_sample(chirp_instance1);
+    	chirp_output2 = uz_wavegen_chirp_sample(chirp_instance2);
+    	chirp_output3 = uz_wavegen_chirp_sample(chirp_instance3);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

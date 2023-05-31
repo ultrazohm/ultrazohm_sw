@@ -45,6 +45,7 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_chirp,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -52,8 +53,18 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
+uz_wavegen_chirp* chirp_instance1 = NULL;
+
+uz_wavegen_chirp* chirp_instance2 = NULL;
+
+uz_wavegen_chirp* chirp_instance3 = NULL;
+
 int main(void)
 {
+
+
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -71,8 +82,39 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_chirp;
             break;
+        case init_chirp:
+        	//Tutorial Chirp Wave
+        	struct uz_wavegen_chirp_config config_chirp1 = {
+        	        .amplitude = 2.0f,
+        	        .start_frequency_Hz = 1.0f,
+        	        .end_frequency_Hz = 10.0f,
+        	        .duration_sec = 10.0f,
+        	        .initial_delay_sec = 0.0f,
+        	        .offset = 1.0f
+        	};
+        	struct uz_wavegen_chirp_config config_chirp2 = {
+        	        .amplitude = 4.0f,
+        	        .start_frequency_Hz = 2.0f,
+        	        .end_frequency_Hz = 20.0f,
+        	        .duration_sec = 20.0f,
+        	        .initial_delay_sec = 1.0f,
+        	        .offset = 2.0f
+        	};
+        	struct uz_wavegen_chirp_config config_chirp3 = {
+        	        .amplitude = 1.5f,
+        	        .start_frequency_Hz = 1.5f,
+        	        .end_frequency_Hz = 15.0f,
+        	        .duration_sec = 15.0f,
+        	        .initial_delay_sec = 2.0f,
+        	        .offset = 1.5f
+        	};
+            chirp_instance1 = uz_wavegen_chirp_init(config_chirp1);
+            chirp_instance2 = uz_wavegen_chirp_init(config_chirp2);
+            chirp_instance3 = uz_wavegen_chirp_init(config_chirp3);
+            initialization_chain = init_ip_cores;
+        	break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

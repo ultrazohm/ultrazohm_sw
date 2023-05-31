@@ -36,7 +36,9 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float chirp_output1;
+extern float chirp_output2;
+extern float chirp_output3;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -75,6 +77,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_Chirpwave1]   = &chirp_output1;
+	js_ch_observable[JSO_Chirpwave2]   = &chirp_output2;
+	js_ch_observable[JSO_Chirpwave3]   = &chirp_output3;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

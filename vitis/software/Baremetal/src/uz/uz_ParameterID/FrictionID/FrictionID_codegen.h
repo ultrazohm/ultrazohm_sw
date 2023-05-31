@@ -23,15 +23,12 @@
 
 #ifndef RTW_HEADER_FrictionID_h_
 #define RTW_HEADER_FrictionID_h_
-#include "../rtwtypes.h"
-#include <math.h>
-#include <string.h>
 #ifndef FrictionID_COMMON_INCLUDES_
 #define FrictionID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                                 /* FrictionID_COMMON_INCLUDES_ */
+#include <stddef.h>
 
-/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -109,7 +106,7 @@ typedef struct {
   boolean_T finishedFrictionID;        /* '<Root>/finishedFrictionID' */
   boolean_T enteredFrictionID;         /* '<Root>/enteredFrictionID' */
   uz_ParaID_Controller_Parameters_output_t FrictionID_FOC_output;/* '<Root>/FrictionID_FOC_output' */
-  uz_ParaID_FrictionID_output_t FrictionID_output;/* '<Root>/FrictionID_output' */
+  uz_ParaID_FrictionID_output_t FrictionID_state_output;/* '<Root>/FrictionID_state_output' */
 } ExtY_FrictionID_t;
 
 /* Real-time Model Data Structure */

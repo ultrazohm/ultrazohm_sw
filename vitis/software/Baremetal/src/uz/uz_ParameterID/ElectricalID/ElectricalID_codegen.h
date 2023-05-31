@@ -23,15 +23,12 @@
 
 #ifndef RTW_HEADER_ElectricalID_h_
 #define RTW_HEADER_ElectricalID_h_
-#include "../rtwtypes.h"
-#include <math.h>
-#include <string.h>
 #ifndef ElectricalID_COMMON_INCLUDES_
 #define ElectricalID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                                 /* ElectricalID_COMMON_INCLUDES_ */
+#include <stddef.h>
 
-/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -74,7 +71,7 @@ typedef struct {
   real32_T measArray1[1024];           /* '<Root>/ElectricalID' */
   real32_T fv[2048];
   real32_T fv1[2048];
-  real32_T c_y[5];
+  real32_T y[5];
   real32_T fv2[4];
   real32_T fv3[2];
   real32_T fv4[4];
@@ -89,6 +86,7 @@ typedef struct {
   real32_T omega_sum;                  /* '<Root>/ElectricalID' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID' */
+  real32_T DutyCycle_filt;
   int32_T i;
   int32_T k;
   uint32_T counter;                    /* '<Root>/ElectricalID' */
@@ -97,9 +95,9 @@ typedef struct {
   uint32_T sineCounter;                /* '<Root>/ElectricalID' */
   uint16_T n_iters;                    /* '<Root>/ElectricalID' */
   uint16_T z;                          /* '<Root>/ElectricalID' */
-  uint8_T is_active_c3_ElectricalID;   /* '<Root>/ElectricalID' */
   uint8_T is_c3_ElectricalID;          /* '<Root>/ElectricalID' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID' */
+  uint8_T is_active_c3_ElectricalID;   /* '<Root>/ElectricalID' */
   boolean_T updateJ;                   /* '<Root>/ElectricalID' */
   boolean_T om_con;                    /* '<Root>/ElectricalID' */
   boolean_T ia_valid;                  /* '<Root>/ElectricalID' */
@@ -119,7 +117,7 @@ typedef struct {
   boolean_T enteredElectricalID;       /* '<Root>/enteredElectricalID' */
   boolean_T finishedElectricalID;      /* '<Root>/finishedElectricalID' */
   uz_ParaID_Controller_Parameters_output_t ElectricalID_FOC_output;/* '<Root>/ElectricalID_FOC_output' */
-  uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_output' */
+  uz_ParaID_ElectricalID_output_t ElectricalID_state_output;/* '<Root>/ElectricalID_state_output' */
 } ExtY_ElectricalID_t;
 
 /* Real-time Model Data Structure */
@@ -146,17 +144,18 @@ extern void ElectricalID_step(RT_MODEL_ElectricalID_t *const rtElectricalID_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/ElectricalID')    - opens subsystem uz_ParameterID/ElectricalID
- * hilite_system('uz_ParameterID/ElectricalID/Kp') - opens and selects block Kp
+ * hilite_system('ElectricalID_ref/ElectricalID')    - opens subsystem ElectricalID_ref/ElectricalID
+ * hilite_system('ElectricalID_ref/ElectricalID/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/ElectricalID'
+ * '<Root>' : 'ElectricalID_ref'
+ * '<S1>'   : 'ElectricalID_ref/ElectricalID'
  */
 
 /*-
  * Requirements for '<Root>': ElectricalID
+
  */
 #endif                                 /* RTW_HEADER_ElectricalID_h_ */
 

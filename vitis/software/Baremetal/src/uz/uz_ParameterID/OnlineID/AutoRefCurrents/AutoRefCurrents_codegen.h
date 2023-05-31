@@ -20,16 +20,14 @@
  */
 
 #include "../../uz_ParameterID_data.h"
+
 #ifndef RTW_HEADER_AutoRefCurrents_h_
 #define RTW_HEADER_AutoRefCurrents_h_
-#include "../../rtwtypes.h"
-#include <math.h>
 #ifndef AutoRefCurrents_COMMON_INCLUDES_
 #define AutoRefCurrents_COMMON_INCLUDES_
 #include "../../rtwtypes.h"
 #endif                                 /* AutoRefCurrents_COMMON_INCLUDES_ */
-
-/* Model Code Variants */
+#include <stddef.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -67,9 +65,9 @@ typedef struct {
   real32_T idcount;                    /* '<Root>/AutoRefCurrents' */
   real32_T counter;                    /* '<Root>/AutoRefCurrents' */
   real32_T imax;                       /* '<Root>/AutoRefCurrents' */
-  uint8_T is_active_c10_AutoRefCurrents;/* '<Root>/AutoRefCurrents' */
   uint8_T is_c10_AutoRefCurrents;      /* '<Root>/AutoRefCurrents' */
   uint8_T is_superstate;               /* '<Root>/AutoRefCurrents' */
+  uint8_T is_active_c10_AutoRefCurrents;/* '<Root>/AutoRefCurrents' */
 } DW_AutoRefCurrents_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -82,7 +80,8 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_output;/* '<Root>/AutoRefCurrents_output' */
+  uz_ParaID_AutoRefCurrents_output_t AutoRefCurrents_state_output;
+                                     /* '<Root>/AutoRefCurrents_state_output' */
 } ExtY_AutoRefCurrents_t;
 
 /* Real-time Model Data Structure */
@@ -110,17 +109,18 @@ extern void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/AutoRefCurrents')    - opens subsystem uz_ParameterID/AutoRefCurrents
- * hilite_system('uz_ParameterID/AutoRefCurrents/Kp') - opens and selects block Kp
+ * hilite_system('uz_3ph_ParameterID/AutoRefCurrents')    - opens subsystem uz_3ph_ParameterID/AutoRefCurrents
+ * hilite_system('uz_3ph_ParameterID/AutoRefCurrents/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/AutoRefCurrents'
+ * '<Root>' : 'uz_3ph_ParameterID'
+ * '<S1>'   : 'uz_3ph_ParameterID/AutoRefCurrents'
  */
 
 /*-
  * Requirements for '<Root>': AutoRefCurrents
+
  */
 #endif                                 /* RTW_HEADER_AutoRefCurrents_h_ */
 

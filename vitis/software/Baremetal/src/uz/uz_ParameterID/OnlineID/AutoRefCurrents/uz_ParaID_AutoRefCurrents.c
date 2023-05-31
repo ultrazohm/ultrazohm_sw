@@ -83,6 +83,6 @@ void uz_AutoRefCurrents_set_ControlFlags(uz_ParaID_AutoRefCurrents_t *self, uz_P
 uz_ParaID_AutoRefCurrents_output_t* uz_AutoRefCurrents_get_output(uz_ParaID_AutoRefCurrents_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.AutoRefCurrents_output);
+	return(&self->output.AutoRefCurrents_state_output);
 }
 #endif

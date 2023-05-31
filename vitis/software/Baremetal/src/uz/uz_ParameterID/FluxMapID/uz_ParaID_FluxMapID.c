@@ -99,6 +99,6 @@ uz_ParaID_Controller_Parameters_output_t* uz_FluxMapID_get_FOC_output(uz_ParaID_
 uz_ParaID_FluxMapID_output_t* uz_FluxMapID_get_output(uz_ParaID_FluxMapID_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.FluxMapID_output);
+	return(&self->output.FluxMapID_state_output);
 }
 #endif

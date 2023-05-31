@@ -22,16 +22,12 @@
 
 #ifndef RTW_HEADER_TwoMassID_h_
 #define RTW_HEADER_TwoMassID_h_
-#include "../rtwtypes.h"
-#include <stddef.h>
-#include <math.h>
-#include <string.h>
 #ifndef TwoMassID_COMMON_INCLUDES_
 #define TwoMassID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                                 /* TwoMassID_COMMON_INCLUDES_ */
 
-/* Model Code Variants */
+#include <stddef.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -122,40 +118,36 @@ typedef struct {
   creal32_T X[2046];
   creal32_T wwc[2045];
   creal32_T ytmp[1023];
+  creal32_T fy[2048];
   creal32_T fv[2048];
   creal32_T reconVar1[1023];
   creal32_T reconVar2[1023];
-  creal32_T fcv[2048];
-  creal32_T fv_m[2048];
-  creal32_T y;
+  creal32_T fy_m;
   real32_T SpectrumEstimator_o1[1024]; /* '<S3>/Spectrum Estimator' */
   real32_T SpectrumEstimator_o2[1024]; /* '<S3>/Spectrum Estimator' */
-  real32_T x[2046];
-  real32_T x_c[2046];
-  real32_T xout[2046];
+  real32_T y[2046];
   real32_T hcostab[1024];
   real32_T hsintab[1024];
   real32_T hcostabinv[1024];
   real32_T hsintabinv[1024];
-  real32_T y_k;
-  real32_T varargin_2;
-  real32_T X_re;
-  real32_T X_im;
   real32_T nt_im;
-  real32_T b_re;
-  int32_T i;
-  int32_T b_xj;
-  int32_T i_c;
+  real32_T X_im;
   int32_T rt;
-  int32_T b_k;
-  int32_T y_b;
+  int32_T y_c;
+  int32_T i;
   int32_T xidx;
+  int32_T ix;
+  int32_T iy;
+  int32_T ju;
+  int32_T iheight;
+  int32_T istart;
   int16_T wrapIndex[1023];
 } DW_TwoMassIDWelch_TwoMassID_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  DW_TwoMassIDWelch_TwoMassID_t TwoMassIDWelch_l;/* '<S1>/TwoMassID.Welch' */
+  DW_TwoMassIDWelch_TwoMassID_t TwoMassIDWelch_c;/* '<S1>/TwoMassID.Welch' */
+  comm_PNSequence_0_TwoMassID_t pnSequence_cSFunObject;
   real_T dv[2047];
   real_T dv1[4];
   real32_T prbs_array[2048];           /* '<Root>/TwoMassID' */
@@ -163,6 +155,7 @@ typedef struct {
   real32_T omega_array[1024];          /* '<Root>/TwoMassID' */
   real32_T measArray2[2048];           /* '<Root>/TwoMassID' */
   real32_T J[4096];                    /* '<Root>/TwoMassID' */
+  real32_T measArray1[1024];
   real32_T Ustep[103];
   real32_T LbMq[5];
   real32_T H[4];
@@ -194,26 +187,29 @@ typedef struct {
   real32_T bim;
   real32_T d_est_tmp;
   real32_T c_est_start_idx_1_tmp;
+  real32_T c_est_start_idx_1_tmp_m;
   real32_T fehlerc_tmp;
+  real32_T br_tmp;
+  real32_T br_tmp_c;
   real32_T c_est_start_idx_0_tmp;
   real32_T c_est_start_idx_0_tmp_tmp;
-  real32_T c_est_start_idx_1_tmp_m;
-  real32_T br_tmp;
-  real32_T ee_lm_tmp_tmp;
-  real32_T c_est_start_idx_1_tmp_tmp;
+  real32_T c_est_start_idx_1_tmp_k;
+  real32_T a;
+  real32_T b;
   real32_T f;
   real32_T f1;
   real32_T r;
   real32_T t;
   real32_T b_x;
-  real32_T a;
+  real32_T f2;
   int32_T i;
-  int32_T i_c;
-  int32_T b;
+  int32_T b_c;
   int32_T c_k;
   int32_T f_k;
-  int32_T i_k;
+  int32_T i_b;
   int32_T c_k_tmp;
+  int32_T idx;
+  int32_T i_p;
   int32_T k;
   uint32_T counter;                    /* '<Root>/TwoMassID' */
   uint32_T mean_count;                 /* '<Root>/TwoMassID' */
@@ -224,10 +220,11 @@ typedef struct {
   uint32_T qY_c;
   uint16_T index_min;
   uint16_T index_max;
-  uint8_T is_active_c17_TwoMassID;     /* '<Root>/TwoMassID' */
   uint8_T is_c17_TwoMassID;            /* '<Root>/TwoMassID' */
   uint8_T is_TwoMassID;                /* '<Root>/TwoMassID' */
-  uint8_T updateJac;
+  uint8_T is_active_c17_TwoMassID;     /* '<Root>/TwoMassID' */
+  uint8_T tmp;
+  uint8_T tmp2;
 } DW_TwoMassID_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -243,7 +240,7 @@ typedef struct {
   boolean_T finishedTwoMassID;         /* '<Root>/finishedTwoMassID' */
   boolean_T enteredTwoMassID;          /* '<Root>/enteredTwoMassID' */
   uz_ParaID_Controller_Parameters_output_t TwoMassID_FOC_output;/* '<Root>/TwoMassID_FOC_output' */
-  uz_ParaID_TwoMassID_output_t TwoMassID_output;/* '<Root>/TwoMassID_output' */
+  uz_ParaID_TwoMassID_output_t TwoMassID_state_output;/* '<Root>/TwoMassID_state_output' */
 } ExtY_TwoMassID_t;
 
 /* Real-time Model Data Structure */
@@ -269,19 +266,20 @@ extern void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/TwoMassID')    - opens subsystem uz_ParameterID/TwoMassID
- * hilite_system('uz_ParameterID/TwoMassID/Kp') - opens and selects block Kp
+ * hilite_system('TwoMassID_ref/TwoMassID')    - opens subsystem TwoMassID_ref/TwoMassID
+ * hilite_system('TwoMassID_ref/TwoMassID/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/TwoMassID'
- * '<S2>'   : 'uz_ParameterID/TwoMassID/TwoMassID.Welch'
- * '<S3>'   : 'uz_ParameterID/TwoMassID/TwoMassID.Welch/Spectrum Estimator1'
+ * '<Root>' : 'TwoMassID_ref'
+ * '<S1>'   : 'TwoMassID_ref/TwoMassID'
+ * '<S2>'   : 'TwoMassID_ref/TwoMassID/TwoMassID.Welch'
+ * '<S3>'   : 'TwoMassID_ref/TwoMassID/TwoMassID.Welch/Spectrum Estimator1'
  */
 
 /*-
  * Requirements for '<Root>': TwoMassID
+
  */
 #endif                                 /* RTW_HEADER_TwoMassID_h_ */
 

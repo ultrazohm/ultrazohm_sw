@@ -100,7 +100,7 @@ uz_ParaID_Controller_Parameters_output_t* uz_TwoMassID_get_FOC_output(uz_ParaID_
 uz_ParaID_TwoMassID_output_t* uz_TwoMassID_get_output(uz_ParaID_TwoMassID_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.TwoMassID_output);
+	return(&self->output.TwoMassID_state_output);
 }
 
 #endif

@@ -22,6 +22,8 @@
 #include "TwoMassID_codegen.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#include <string.h>
+#include <math.h>
 
 /* Named constants for Chart: '<Root>/TwoMassID' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
@@ -37,44 +39,16 @@ static void TwoMassIDWelch(const real32_T rtu_In2[2046],
   DW_TwoMassIDWelch_TwoMassID_t *localDW);
 
 /* Forward declaration for local functions */
-static void SpectrumEstimator_setupImpl(dsp_simulink_SpectrumEstimato_t *obj);
-static void SpectrumEstimatorBase_windowDat(const
-  dsp_simulink_SpectrumEstimato_t *obj, const real32_T x[2046], real32_T xout
-  [2046]);
-static void FFTImplementationCallback_get_h(const real32_T costabinv[2049],
-  const real32_T sintabinv[2049], real32_T hcostab[1024], real32_T hsintab[1024],
-  real32_T hcostabinv[1024], real32_T hsintabinv[1024]);
-static void FFTImplementationCallback_r2br_(const creal32_T x[1023], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048]);
-static void FFTImplementationCallback_r2b_k(const creal32_T x[2045], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048]);
-static void FFTImplementationCallback_r2_kq(const creal32_T x[2048], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void FFTImplementationCallback_doH_n(const real32_T x[2046], creal32_T y
+static void SystemCore_setup(dsp_simulink_SpectrumEstimato_t *obj);
+static void FFTImplementationCallback_doH_g(const real32_T x[2046], creal32_T y
   [2046], const creal32_T wwc[2045], const real32_T costabinv[2049], const
   real32_T sintabinv[2049], DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void SpectrumEstimatorBase_computeFF(const real32_T xin[2046], creal32_T
-  xout[2046], DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void SpectrumEstimator_computeWindow(const
-  dsp_simulink_SpectrumEstimato_t *obj, const real32_T x[2046], real32_T Pxx
-  [2046], DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void SpectrumEstimator_convertAndSca(const real32_T P[2046], real32_T
-  Pout[1024]);
-static void SpectrumEstimatorBase_computeOu(dsp_simulink_SpectrumEstimato_t *obj,
-  const real32_T varargin_1[2046], real32_T P[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void SpectrumEstimator_stepImpl(dsp_simulink_SpectrumEstimato_t *obj,
-  const real32_T x[2046], real32_T varargout_1[1024], real32_T varargout_2[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW);
-static void SystemCore_step(dsp_simulink_SpectrumEstimato_t *obj, const real32_T
-  varargin_1[2046], real32_T varargout_1[1024], real32_T varargout_2[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW);
 
 /* Forward declaration for local functions */
-static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
-  *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW);
-static void PN(real_T u[2047]);
+static void initParams(real32_T measArray1[1024], ExtU_TwoMassID_t
+  *rtTwoMassID_U, ExtY_TwoMassID_t *rtTwoMassID_Y, DW_TwoMassID_t
+  *rtTwoMassID_DW);
+static void PN(real_T u[2047], DW_TwoMassID_t *rtTwoMassID_DW);
 static void reset_FOC_output(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   *rtTwoMassID_Y);
 static real32_T rt_powf_snf_m(real32_T u0, real32_T u1, DW_TwoMassID_t
@@ -89,14 +63,15 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
                      real32_T d_start, uint16_T b_fmin, uint16_T b_fmax,
                      boolean_T UseLevMar, real32_T uu[5], DW_TwoMassID_t
                      *rtTwoMassID_DW);
-static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
-  ExtY_TwoMassID_t *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW);
 static real_T rtGetInf(void);
 static real32_T rtGetInfF(void);
 static real_T rtGetMinusInf(void);
 static real32_T rtGetMinusInfF(void);
 static real_T rtGetNaN(void);
 static real32_T rtGetNaNF(void);
+
+#define NOT_USING_NONFINITE_LITERALS   1
+
 extern real_T rtInf;
 extern real_T rtMinusInf;
 extern real_T rtNaN;
@@ -104,7 +79,9 @@ extern real32_T rtInfF;
 extern real32_T rtMinusInfF;
 extern real32_T rtNaNF;
 static void rt_InitInfAndNaN(size_t realSize);
+static boolean_T rtIsInf(real_T value);
 static boolean_T rtIsInfF(real32_T value);
+static boolean_T rtIsNaN(real_T value);
 static boolean_T rtIsNaNF(real32_T value);
 typedef struct {
   struct {
@@ -255,10 +232,38 @@ static void rt_InitInfAndNaN(size_t realSize)
   rtMinusInfF = rtGetMinusInfF();
 }
 
+/* Test if value is infinite */
+static boolean_T rtIsInf(real_T value)
+{
+  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
+}
+
 /* Test if single-precision value is infinite */
 static boolean_T rtIsInfF(real32_T value)
 {
   return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
+}
+
+/* Test if value is not a number */
+static boolean_T rtIsNaN(real_T value)
+{
+  boolean_T result = (boolean_T) 0;
+  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
+  if (bitsPerReal == 32U) {
+    result = rtIsNaNF((real32_T)value);
+  } else {
+    union {
+      LittleEndianIEEEDouble bitVal;
+      real_T fltVal;
+    } tmpVal;
+
+    tmpVal.fltVal = value;
+    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
+                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
+                          (tmpVal.bitVal.words.wordL != 0) ));
+  }
+
+  return result;
 }
 
 /* Test if single-precision value is not a number */
@@ -270,7 +275,7 @@ static boolean_T rtIsNaNF(real32_T value)
                      (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
 }
 
-static void SpectrumEstimator_setupImpl(dsp_simulink_SpectrumEstimato_t *obj)
+static void SystemCore_setup(dsp_simulink_SpectrumEstimato_t *obj)
 {
   int32_T i;
   real32_T obj_0;
@@ -687,6 +692,214 @@ static void SpectrumEstimator_setupImpl(dsp_simulink_SpectrumEstimato_t *obj)
     8.48747877E-5F, 5.89413357E-5F, 3.77227225E-5F, 2.1219148E-5F,
     9.43076884E-6F, 2.35769789E-6F };
 
+  static const real32_T tmp_0[1024] = { 0.0F, 0.000488758553F, 0.000977517106F,
+    0.00146627566F, 0.00195503421F, 0.00244379276F, 0.00293255132F,
+    0.00342130987F, 0.00391006842F, 0.00439882698F, 0.00488758553F,
+    0.00537634408F, 0.00586510263F, 0.00635386119F, 0.00684261974F,
+    0.00733137829F, 0.00782013685F, 0.00830889586F, 0.00879765395F,
+    0.00928641297F, 0.00977517106F, 0.0102639301F, 0.0107526882F, 0.0112414472F,
+    0.0117302053F, 0.0122189643F, 0.0127077224F, 0.0131964814F, 0.0136852395F,
+    0.0141739985F, 0.0146627566F, 0.0151515156F, 0.0156402737F, 0.0161290318F,
+    0.0166177917F, 0.0171065498F, 0.0175953079F, 0.018084066F, 0.0185728259F,
+    0.019061584F, 0.0195503421F, 0.0200391F, 0.0205278601F, 0.0210166182F,
+    0.0215053763F, 0.0219941344F, 0.0224828944F, 0.0229716524F, 0.0234604105F,
+    0.0239491686F, 0.0244379286F, 0.0249266867F, 0.0254154447F, 0.0259042028F,
+    0.0263929628F, 0.0268817209F, 0.027370479F, 0.027859237F, 0.028347997F,
+    0.0288367551F, 0.0293255132F, 0.0298142713F, 0.0303030312F, 0.0307917893F,
+    0.0312805474F, 0.0317693055F, 0.0322580636F, 0.0327468216F, 0.0332355835F,
+    0.0337243415F, 0.0342131F, 0.0347018577F, 0.0351906158F, 0.0356793739F,
+    0.036168132F, 0.0366568901F, 0.0371456519F, 0.03763441F, 0.0381231681F,
+    0.0386119261F, 0.0391006842F, 0.0395894423F, 0.0400782F, 0.0405669585F,
+    0.0410557203F, 0.0415444784F, 0.0420332365F, 0.0425219946F, 0.0430107526F,
+    0.0434995107F, 0.0439882688F, 0.0444770269F, 0.0449657887F, 0.0454545468F,
+    0.0459433049F, 0.046432063F, 0.0469208211F, 0.0474095792F, 0.0478983372F,
+    0.0483870953F, 0.0488758571F, 0.0493646152F, 0.0498533733F, 0.0503421314F,
+    0.0508308895F, 0.0513196476F, 0.0518084057F, 0.0522971638F, 0.0527859256F,
+    0.0532746837F, 0.0537634417F, 0.0542522F, 0.0547409579F, 0.055229716F,
+    0.0557184741F, 0.0562072322F, 0.056695994F, 0.0571847521F, 0.0576735102F,
+    0.0581622683F, 0.0586510263F, 0.0591397844F, 0.0596285425F, 0.0601173F,
+    0.0606060624F, 0.0610948205F, 0.0615835786F, 0.0620723367F, 0.0625610948F,
+    0.0630498528F, 0.0635386109F, 0.064027369F, 0.0645161271F, 0.0650048852F,
+    0.0654936433F, 0.0659824F, 0.0664711669F, 0.066959925F, 0.0674486831F,
+    0.0679374412F, 0.0684262F, 0.0689149573F, 0.0694037154F, 0.0698924735F,
+    0.0703812316F, 0.0708699897F, 0.0713587478F, 0.0718475059F, 0.072336264F,
+    0.072825022F, 0.0733137801F, 0.0738025382F, 0.0742913038F, 0.0747800618F,
+    0.0752688199F, 0.075757578F, 0.0762463361F, 0.0767350942F, 0.0772238523F,
+    0.0777126104F, 0.0782013685F, 0.0786901265F, 0.0791788846F, 0.0796676427F,
+    0.0801564F, 0.0806451589F, 0.081133917F, 0.0816226751F, 0.0821114406F,
+    0.0826002F, 0.0830889568F, 0.0835777149F, 0.0840664729F, 0.084555231F,
+    0.0850439891F, 0.0855327472F, 0.0860215053F, 0.0865102634F, 0.0869990215F,
+    0.0874877796F, 0.0879765376F, 0.0884652957F, 0.0889540538F, 0.0894428119F,
+    0.0899315774F, 0.0904203355F, 0.0909090936F, 0.0913978517F, 0.0918866098F,
+    0.0923753679F, 0.092864126F, 0.0933528841F, 0.0938416421F, 0.0943304F,
+    0.0948191583F, 0.0953079164F, 0.0957966745F, 0.0962854326F, 0.0967741907F,
+    0.0972629488F, 0.0977517143F, 0.0982404724F, 0.0987292305F, 0.0992179886F,
+    0.0997067466F, 0.100195505F, 0.100684263F, 0.101173021F, 0.101661779F,
+    0.102150537F, 0.102639295F, 0.103128053F, 0.103616811F, 0.104105569F,
+    0.104594328F, 0.105083086F, 0.105571851F, 0.106060609F, 0.106549367F,
+    0.107038125F, 0.107526883F, 0.108015642F, 0.1085044F, 0.108993158F,
+    0.109481916F, 0.109970674F, 0.110459432F, 0.11094819F, 0.111436948F,
+    0.111925706F, 0.112414464F, 0.112903222F, 0.113391988F, 0.113880746F,
+    0.114369504F, 0.114858262F, 0.11534702F, 0.115835778F, 0.116324537F,
+    0.116813295F, 0.117302053F, 0.117790811F, 0.118279569F, 0.118768327F,
+    0.119257085F, 0.119745843F, 0.120234601F, 0.120723359F, 0.121212125F,
+    0.121700883F, 0.122189641F, 0.122678399F, 0.123167157F, 0.123655915F,
+    0.124144673F, 0.124633431F, 0.12512219F, 0.125610948F, 0.126099706F,
+    0.126588464F, 0.127077222F, 0.12756598F, 0.128054738F, 0.128543496F,
+    0.129032254F, 0.129521012F, 0.13000977F, 0.130498528F, 0.130987287F,
+    0.131476045F, 0.131964803F, 0.132453561F, 0.132942334F, 0.133431092F,
+    0.13391985F, 0.134408608F, 0.134897366F, 0.135386124F, 0.135874882F,
+    0.13636364F, 0.136852399F, 0.137341157F, 0.137829915F, 0.138318673F,
+    0.138807431F, 0.139296189F, 0.139784947F, 0.140273705F, 0.140762463F,
+    0.141251221F, 0.141739979F, 0.142228737F, 0.142717496F, 0.143206254F,
+    0.143695012F, 0.14418377F, 0.144672528F, 0.145161286F, 0.145650044F,
+    0.146138802F, 0.14662756F, 0.147116318F, 0.147605076F, 0.148093835F,
+    0.148582608F, 0.149071366F, 0.149560124F, 0.150048882F, 0.15053764F,
+    0.151026398F, 0.151515156F, 0.152003914F, 0.152492672F, 0.15298143F,
+    0.153470188F, 0.153958946F, 0.154447705F, 0.154936463F, 0.155425221F,
+    0.155913979F, 0.156402737F, 0.156891495F, 0.157380253F, 0.157869011F,
+    0.158357769F, 0.158846527F, 0.159335285F, 0.159824044F, 0.160312802F,
+    0.16080156F, 0.161290318F, 0.161779076F, 0.162267834F, 0.162756592F,
+    0.16324535F, 0.163734108F, 0.164222881F, 0.164711639F, 0.165200397F,
+    0.165689155F, 0.166177914F, 0.166666672F, 0.16715543F, 0.167644188F,
+    0.168132946F, 0.168621704F, 0.169110462F, 0.16959922F, 0.170087978F,
+    0.170576736F, 0.171065494F, 0.171554253F, 0.172043011F, 0.172531769F,
+    0.173020527F, 0.173509285F, 0.173998043F, 0.174486801F, 0.174975559F,
+    0.175464317F, 0.175953075F, 0.176441833F, 0.176930591F, 0.17741935F,
+    0.177908108F, 0.178396866F, 0.178885624F, 0.179374382F, 0.179863155F,
+    0.180351913F, 0.180840671F, 0.181329429F, 0.181818187F, 0.182306945F,
+    0.182795703F, 0.183284461F, 0.18377322F, 0.184261978F, 0.184750736F,
+    0.185239494F, 0.185728252F, 0.18621701F, 0.186705768F, 0.187194526F,
+    0.187683284F, 0.188172042F, 0.1886608F, 0.189149559F, 0.189638317F,
+    0.190127075F, 0.190615833F, 0.191104591F, 0.191593349F, 0.192082107F,
+    0.192570865F, 0.193059623F, 0.193548381F, 0.194037139F, 0.194525898F,
+    0.195014656F, 0.195503429F, 0.195992187F, 0.196480945F, 0.196969703F,
+    0.197458461F, 0.197947219F, 0.198435977F, 0.198924735F, 0.199413493F,
+    0.199902251F, 0.200391009F, 0.200879768F, 0.201368526F, 0.201857284F,
+    0.202346042F, 0.2028348F, 0.203323558F, 0.203812316F, 0.204301074F,
+    0.204789832F, 0.20527859F, 0.205767348F, 0.206256106F, 0.206744865F,
+    0.207233623F, 0.207722381F, 0.208211139F, 0.208699897F, 0.209188655F,
+    0.209677413F, 0.210166171F, 0.210654929F, 0.211143702F, 0.21163246F,
+    0.212121218F, 0.212609977F, 0.213098735F, 0.213587493F, 0.214076251F,
+    0.214565009F, 0.215053767F, 0.215542525F, 0.216031283F, 0.216520041F,
+    0.217008799F, 0.217497557F, 0.217986315F, 0.218475074F, 0.218963832F,
+    0.21945259F, 0.219941348F, 0.220430106F, 0.220918864F, 0.221407622F,
+    0.22189638F, 0.222385138F, 0.222873896F, 0.223362654F, 0.223851413F,
+    0.224340171F, 0.224828929F, 0.225317687F, 0.225806445F, 0.226295203F,
+    0.226783976F, 0.227272734F, 0.227761492F, 0.22825025F, 0.228739008F,
+    0.229227766F, 0.229716524F, 0.230205283F, 0.230694041F, 0.231182799F,
+    0.231671557F, 0.232160315F, 0.232649073F, 0.233137831F, 0.233626589F,
+    0.234115347F, 0.234604105F, 0.235092863F, 0.235581622F, 0.23607038F,
+    0.236559138F, 0.237047896F, 0.237536654F, 0.238025412F, 0.23851417F,
+    0.239002928F, 0.239491686F, 0.239980444F, 0.240469202F, 0.24095796F,
+    0.241446719F, 0.241935477F, 0.24242425F, 0.242913008F, 0.243401766F,
+    0.243890524F, 0.244379282F, 0.24486804F, 0.245356798F, 0.245845556F,
+    0.246334314F, 0.246823072F, 0.247311831F, 0.247800589F, 0.248289347F,
+    0.248778105F, 0.249266863F, 0.249755621F, 0.250244379F, 0.250733137F,
+    0.251221895F, 0.251710653F, 0.252199411F, 0.252688169F, 0.253176928F,
+    0.253665686F, 0.254154444F, 0.254643202F, 0.25513196F, 0.255620718F,
+    0.256109476F, 0.256598234F, 0.257087F, 0.25757575F, 0.258064508F,
+    0.258553267F, 0.259042025F, 0.259530783F, 0.260019541F, 0.260508299F,
+    0.260997057F, 0.261485815F, 0.261974573F, 0.262463331F, 0.262952089F,
+    0.263440847F, 0.263929605F, 0.264418364F, 0.264907122F, 0.26539588F,
+    0.265884668F, 0.266373426F, 0.266862184F, 0.267350942F, 0.2678397F,
+    0.268328458F, 0.268817216F, 0.269305974F, 0.269794732F, 0.27028349F,
+    0.270772249F, 0.271261F, 0.271749765F, 0.272238523F, 0.272727281F,
+    0.273216039F, 0.273704797F, 0.274193555F, 0.274682313F, 0.275171071F,
+    0.275659829F, 0.276148587F, 0.276637346F, 0.277126104F, 0.277614862F,
+    0.27810362F, 0.278592378F, 0.279081136F, 0.279569894F, 0.280058652F,
+    0.28054741F, 0.281036168F, 0.281524926F, 0.282013685F, 0.282502443F,
+    0.282991201F, 0.283479959F, 0.283968717F, 0.284457475F, 0.284946233F,
+    0.285435F, 0.285923749F, 0.286412507F, 0.286901265F, 0.287390023F,
+    0.287878782F, 0.28836754F, 0.288856298F, 0.289345056F, 0.289833814F,
+    0.290322572F, 0.29081133F, 0.291300088F, 0.291788846F, 0.292277604F,
+    0.292766362F, 0.293255121F, 0.293743879F, 0.294232637F, 0.294721395F,
+    0.295210153F, 0.295698911F, 0.296187669F, 0.296676427F, 0.297165215F,
+    0.297653973F, 0.298142731F, 0.298631489F, 0.299120247F, 0.299609F,
+    0.300097764F, 0.300586522F, 0.30107528F, 0.301564038F, 0.302052796F,
+    0.302541554F, 0.303030312F, 0.30351907F, 0.304007828F, 0.304496586F,
+    0.304985344F, 0.305474102F, 0.305962861F, 0.306451619F, 0.306940377F,
+    0.307429135F, 0.307917893F, 0.308406651F, 0.308895409F, 0.309384167F,
+    0.309872925F, 0.310361683F, 0.310850441F, 0.3113392F, 0.311827958F,
+    0.312316716F, 0.312805474F, 0.313294232F, 0.313783F, 0.314271748F,
+    0.314760506F, 0.315249264F, 0.315738022F, 0.31622678F, 0.316715539F,
+    0.317204297F, 0.317693055F, 0.318181813F, 0.318670571F, 0.319159329F,
+    0.319648087F, 0.320136845F, 0.320625603F, 0.321114361F, 0.321603119F,
+    0.322091877F, 0.322580636F, 0.323069394F, 0.323558152F, 0.32404691F,
+    0.324535668F, 0.325024426F, 0.325513184F, 0.326001942F, 0.3264907F,
+    0.326979458F, 0.327468216F, 0.327956975F, 0.328445762F, 0.32893452F,
+    0.329423279F, 0.329912037F, 0.330400795F, 0.330889553F, 0.331378311F,
+    0.331867069F, 0.332355827F, 0.332844585F, 0.333333343F, 0.333822101F,
+    0.334310859F, 0.334799618F, 0.335288376F, 0.335777134F, 0.336265892F,
+    0.33675465F, 0.337243408F, 0.337732166F, 0.338220924F, 0.338709682F,
+    0.33919844F, 0.339687198F, 0.340175956F, 0.340664715F, 0.341153473F,
+    0.341642231F, 0.342131F, 0.342619747F, 0.343108505F, 0.343597263F,
+    0.344086021F, 0.344574779F, 0.345063537F, 0.345552295F, 0.346041054F,
+    0.346529812F, 0.34701857F, 0.347507328F, 0.347996086F, 0.348484844F,
+    0.348973602F, 0.34946236F, 0.349951118F, 0.350439876F, 0.350928634F,
+    0.351417392F, 0.351906151F, 0.352394909F, 0.352883667F, 0.353372425F,
+    0.353861183F, 0.354349941F, 0.354838699F, 0.355327457F, 0.355816215F,
+    0.356304973F, 0.356793731F, 0.35728249F, 0.357771248F, 0.35826F,
+    0.358748764F, 0.359237522F, 0.35972631F, 0.360215068F, 0.360703826F,
+    0.361192584F, 0.361681342F, 0.3621701F, 0.362658858F, 0.363147616F,
+    0.363636374F, 0.364125133F, 0.364613891F, 0.365102649F, 0.365591407F,
+    0.366080165F, 0.366568923F, 0.367057681F, 0.367546439F, 0.368035197F,
+    0.368523955F, 0.369012713F, 0.369501472F, 0.36999023F, 0.370479F,
+    0.370967746F, 0.371456504F, 0.371945262F, 0.37243402F, 0.372922778F,
+    0.373411536F, 0.373900294F, 0.374389052F, 0.37487781F, 0.375366569F,
+    0.375855327F, 0.376344085F, 0.376832843F, 0.377321601F, 0.377810359F,
+    0.378299117F, 0.378787875F, 0.379276633F, 0.379765391F, 0.380254149F,
+    0.380742908F, 0.381231666F, 0.381720424F, 0.382209182F, 0.38269794F,
+    0.383186698F, 0.383675456F, 0.384164214F, 0.384652972F, 0.38514173F,
+    0.385630488F, 0.386119246F, 0.386608F, 0.387096763F, 0.387585521F,
+    0.388074279F, 0.388563037F, 0.389051795F, 0.389540553F, 0.390029311F,
+    0.390518069F, 0.391006857F, 0.391495615F, 0.391984373F, 0.392473131F,
+    0.39296189F, 0.393450648F, 0.393939406F, 0.394428164F, 0.394916922F,
+    0.39540568F, 0.395894438F, 0.396383196F, 0.396871954F, 0.397360712F,
+    0.39784947F, 0.398338228F, 0.398827F, 0.399315745F, 0.399804503F,
+    0.400293261F, 0.400782019F, 0.401270777F, 0.401759535F, 0.402248293F,
+    0.402737051F, 0.403225809F, 0.403714567F, 0.404203326F, 0.404692084F,
+    0.405180842F, 0.4056696F, 0.406158358F, 0.406647116F, 0.407135874F,
+    0.407624632F, 0.40811339F, 0.408602148F, 0.409090906F, 0.409579664F,
+    0.410068423F, 0.410557181F, 0.411045939F, 0.411534697F, 0.412023455F,
+    0.412512213F, 0.413000971F, 0.413489729F, 0.413978487F, 0.414467245F,
+    0.414956F, 0.415444762F, 0.41593352F, 0.416422278F, 0.416911036F,
+    0.417399794F, 0.417888552F, 0.41837731F, 0.418866068F, 0.419354826F,
+    0.419843584F, 0.420332342F, 0.4208211F, 0.421309859F, 0.421798617F,
+    0.422287405F, 0.422776163F, 0.423264921F, 0.423753679F, 0.424242437F,
+    0.424731195F, 0.425219953F, 0.425708711F, 0.426197469F, 0.426686227F,
+    0.427175F, 0.427663743F, 0.428152502F, 0.42864126F, 0.429130018F,
+    0.429618776F, 0.430107534F, 0.430596292F, 0.43108505F, 0.431573808F,
+    0.432062566F, 0.432551324F, 0.433040082F, 0.433528841F, 0.434017599F,
+    0.434506357F, 0.434995115F, 0.435483873F, 0.435972631F, 0.436461389F,
+    0.436950147F, 0.437438905F, 0.437927663F, 0.438416421F, 0.43890518F,
+    0.439393938F, 0.439882696F, 0.440371454F, 0.440860212F, 0.44134897F,
+    0.441837728F, 0.442326486F, 0.442815244F, 0.443304F, 0.44379276F,
+    0.444281518F, 0.444770277F, 0.445259035F, 0.445747793F, 0.446236551F,
+    0.446725309F, 0.447214067F, 0.447702825F, 0.448191583F, 0.448680341F,
+    0.449169099F, 0.449657857F, 0.450146616F, 0.450635374F, 0.451124132F,
+    0.45161289F, 0.452101648F, 0.452590406F, 0.453079164F, 0.453567952F,
+    0.45405671F, 0.454545468F, 0.455034226F, 0.455522984F, 0.456011742F,
+    0.4565005F, 0.456989259F, 0.457478017F, 0.457966775F, 0.458455533F,
+    0.458944291F, 0.459433049F, 0.459921807F, 0.460410565F, 0.460899323F,
+    0.461388081F, 0.461876839F, 0.462365597F, 0.462854356F, 0.463343114F,
+    0.463831872F, 0.46432063F, 0.464809388F, 0.465298146F, 0.465786904F,
+    0.466275662F, 0.46676442F, 0.467253178F, 0.467741936F, 0.468230695F,
+    0.468719453F, 0.469208211F, 0.469696969F, 0.470185727F, 0.470674485F,
+    0.471163243F, 0.471652F, 0.472140759F, 0.472629517F, 0.473118275F,
+    0.473607033F, 0.474095792F, 0.47458455F, 0.475073308F, 0.475562066F,
+    0.476050824F, 0.476539582F, 0.47702834F, 0.477517098F, 0.478005856F,
+    0.478494614F, 0.478983372F, 0.479472131F, 0.479960889F, 0.480449647F,
+    0.480938405F, 0.481427163F, 0.481915921F, 0.482404679F, 0.482893437F,
+    0.483382195F, 0.483870953F, 0.484359711F, 0.484848499F, 0.485337257F,
+    0.485826015F, 0.486314774F, 0.486803532F, 0.48729229F, 0.487781048F,
+    0.488269806F, 0.488758564F, 0.489247322F, 0.48973608F, 0.490224838F,
+    0.490713596F, 0.491202354F, 0.491691113F, 0.492179871F, 0.492668629F,
+    0.493157387F, 0.493646145F, 0.494134903F, 0.494623661F, 0.495112419F,
+    0.495601177F, 0.496089935F, 0.496578693F, 0.497067451F, 0.49755621F,
+    0.498044968F, 0.498533726F, 0.499022484F, 0.499511242F, 0.5F };
+
+  obj->isInitialized = 1;
   obj_0 = 0.0F;
   for (i = 0; i < 2046; i++) {
     obj->pWindowData[i] = tmp[i];
@@ -694,29 +907,33 @@ static void SpectrumEstimator_setupImpl(dsp_simulink_SpectrumEstimato_t *obj)
   }
 
   obj->pWindowPower = obj_0;
+  obj->pNumAvgsCounter = 0.0F;
+  obj->pNewPeriodogramIdx = 0.0F;
+  obj->pReferenceLoad = obj->ReferenceLoad;
+  obj->pFrameDelay = 0.0F;
   for (i = 0; i < 1024; i++) {
     obj->pW[i] = 0.000488758553F * (real32_T)i * 1000.0F;
+    obj->pFreq[i] = 1000.0F * tmp_0[i];
   }
 
-  obj->pReferenceLoad = obj->ReferenceLoad;
+  obj->pFrameCounter = 0.0F;
+  obj->isSetupComplete = true;
+  obj->TunablePropsChanged = false;
 }
 
-static void SpectrumEstimatorBase_windowDat(const
-  dsp_simulink_SpectrumEstimato_t *obj, const real32_T x[2046], real32_T xout
-  [2046])
+static void FFTImplementationCallback_doH_g(const real32_T x[2046], creal32_T y
+  [2046], const creal32_T wwc[2045], const real32_T costabinv[2049], const
+  real32_T sintabinv[2049], DW_TwoMassIDWelch_TwoMassID_t *localDW)
 {
-  int32_T k;
-  for (k = 0; k < 2046; k++) {
-    xout[k] = x[k] * obj->pWindowData[k];
-  }
-}
-
-static void FFTImplementationCallback_get_h(const real32_T costabinv[2049],
-  const real32_T sintabinv[2049], real32_T hcostab[1024], real32_T hsintab[1024],
-  real32_T hcostabinv[1024], real32_T hsintabinv[1024])
-{
-  int32_T b_i;
-  int32_T hcostab_tmp;
+  int32_T ihi;
+  int32_T j;
+  int32_T temp_re_tmp;
+  real32_T temp_im;
+  real32_T temp_re;
+  real32_T twid_im;
+  real32_T twid_re;
+  real32_T ytmp_re_tmp;
+  boolean_T tst;
   static const real32_T tmp[2049] = { 0.0F, -0.00153398025F, -0.00306795677F,
     -0.00460192608F, -0.00613588467F, -0.0076698293F, -0.00920375437F,
     -0.0107376594F, -0.0122715384F, -0.0138053885F, -0.0153392069F,
@@ -1545,289 +1762,7 @@ static void FFTImplementationCallback_get_h(const real32_T costabinv[2049],
     -0.999924719F, -0.999942362F, -0.999957621F, -0.999970615F, -0.999981165F,
     -0.99998939F, -0.999995291F, -0.999998808F, -1.0F };
 
-  const real32_T *costab;
-  const real32_T *sintab;
-  sintab = &tmp[0];
-  costab = &tmp_0[0];
-  for (b_i = 0; b_i < 1024; b_i++) {
-    hcostab_tmp = ((b_i + 1) << 1) - 2;
-    hcostab[b_i] = costab[hcostab_tmp];
-    hsintab[b_i] = sintab[hcostab_tmp];
-    hcostabinv[b_i] = costabinv[hcostab_tmp];
-    hsintabinv[b_i] = sintabinv[hcostab_tmp];
-  }
-}
-
-static void FFTImplementationCallback_r2br_(const creal32_T x[1023], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048])
-{
-  int32_T i;
-  int32_T iheight;
-  int32_T ihi;
-  int32_T istart;
-  int32_T ix;
-  int32_T iy;
-  int32_T j;
-  int32_T ju;
-  int32_T temp_re_tmp;
-  real32_T temp_im;
-  real32_T temp_re;
-  real32_T twid_im;
-  real32_T twid_re;
-  boolean_T tst;
-  memset(&y[0], 0, sizeof(creal32_T) << 11U);
-  iy = 0;
-  ju = 0;
-  for (i = 0; i < 1022; i++) {
-    y[iy] = x[i];
-    iy = 2048;
-    tst = true;
-    while (tst) {
-      iy >>= 1;
-      ju ^= iy;
-      tst = ((ju & iy) == 0);
-    }
-
-    iy = ju;
-  }
-
-  y[iy] = x[1022];
-  for (i = 0; i <= 2046; i += 2) {
-    temp_re = y[i + 1].re;
-    temp_im = y[i + 1].im;
-    y[i + 1].re = y[i].re - y[i + 1].re;
-    y[i + 1].im = y[i].im - y[i + 1].im;
-    y[i].re += temp_re;
-    y[i].im += temp_im;
-  }
-
-  ix = 2;
-  ju = 4;
-  iy = 512;
-  iheight = 2045;
-  while (iy > 0) {
-    for (i = 0; i < iheight; i += ju) {
-      temp_re_tmp = i + ix;
-      temp_re = y[temp_re_tmp].re;
-      temp_im = y[temp_re_tmp].im;
-      y[temp_re_tmp].re = y[i].re - temp_re;
-      y[temp_re_tmp].im = y[i].im - temp_im;
-      y[i].re += temp_re;
-      y[i].im += temp_im;
-    }
-
-    istart = 1;
-    for (j = iy; j < 1024; j += iy) {
-      twid_re = costab[j];
-      twid_im = sintab[j];
-      i = istart;
-      ihi = istart + iheight;
-      while (i < ihi) {
-        temp_re_tmp = i + ix;
-        temp_re = y[temp_re_tmp].re * twid_re - y[temp_re_tmp].im * twid_im;
-        temp_im = y[temp_re_tmp].im * twid_re + y[temp_re_tmp].re * twid_im;
-        y[temp_re_tmp].re = y[i].re - temp_re;
-        y[temp_re_tmp].im = y[i].im - temp_im;
-        y[i].re += temp_re;
-        y[i].im += temp_im;
-        i += ju;
-      }
-
-      istart++;
-    }
-
-    iy /= 2;
-    ix = ju;
-    ju += ju;
-    iheight -= ix;
-  }
-}
-
-static void FFTImplementationCallback_r2b_k(const creal32_T x[2045], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048])
-{
-  int32_T i;
-  int32_T iheight;
-  int32_T ihi;
-  int32_T istart;
-  int32_T ix;
-  int32_T iy;
-  int32_T j;
-  int32_T ju;
-  int32_T temp_re_tmp;
-  real32_T temp_im;
-  real32_T temp_re;
-  real32_T twid_im;
-  real32_T twid_re;
-  boolean_T tst;
-  memset(&y[0], 0, sizeof(creal32_T) << 11U);
-  iy = 0;
-  ju = 0;
-  for (i = 0; i < 2044; i++) {
-    y[iy] = x[i];
-    iy = 2048;
-    tst = true;
-    while (tst) {
-      iy >>= 1;
-      ju ^= iy;
-      tst = ((ju & iy) == 0);
-    }
-
-    iy = ju;
-  }
-
-  y[iy] = x[2044];
-  for (i = 0; i <= 2046; i += 2) {
-    temp_re = y[i + 1].re;
-    temp_im = y[i + 1].im;
-    y[i + 1].re = y[i].re - y[i + 1].re;
-    y[i + 1].im = y[i].im - y[i + 1].im;
-    y[i].re += temp_re;
-    y[i].im += temp_im;
-  }
-
-  ix = 2;
-  ju = 4;
-  iy = 512;
-  iheight = 2045;
-  while (iy > 0) {
-    for (i = 0; i < iheight; i += ju) {
-      temp_re_tmp = i + ix;
-      temp_re = y[temp_re_tmp].re;
-      temp_im = y[temp_re_tmp].im;
-      y[temp_re_tmp].re = y[i].re - temp_re;
-      y[temp_re_tmp].im = y[i].im - temp_im;
-      y[i].re += temp_re;
-      y[i].im += temp_im;
-    }
-
-    istart = 1;
-    for (j = iy; j < 1024; j += iy) {
-      twid_re = costab[j];
-      twid_im = sintab[j];
-      i = istart;
-      ihi = istart + iheight;
-      while (i < ihi) {
-        temp_re_tmp = i + ix;
-        temp_re = y[temp_re_tmp].re * twid_re - y[temp_re_tmp].im * twid_im;
-        temp_im = y[temp_re_tmp].im * twid_re + y[temp_re_tmp].re * twid_im;
-        y[temp_re_tmp].re = y[i].re - temp_re;
-        y[temp_re_tmp].im = y[i].im - temp_im;
-        y[i].re += temp_re;
-        y[i].im += temp_im;
-        i += ju;
-      }
-
-      istart++;
-    }
-
-    iy /= 2;
-    ix = ju;
-    ju += ju;
-    iheight -= ix;
-  }
-}
-
-static void FFTImplementationCallback_r2_kq(const creal32_T x[2048], const
-  real32_T costab[1024], const real32_T sintab[1024], creal32_T y[2048],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  int32_T i;
-  int32_T iheight;
-  int32_T ihi;
-  int32_T istart;
-  int32_T ix;
-  int32_T iy;
-  int32_T j;
-  int32_T ju;
-  int32_T temp_re_tmp;
-  real32_T temp_im;
-  real32_T temp_re;
-  real32_T twid_im;
-  real32_T twid_re;
-  boolean_T tst;
-  iy = 0;
-  ju = 0;
-  for (i = 0; i < 2047; i++) {
-    y[iy] = x[i];
-    iy = 2048;
-    tst = true;
-    while (tst) {
-      iy >>= 1;
-      ju ^= iy;
-      tst = ((ju & iy) == 0);
-    }
-
-    iy = ju;
-  }
-
-  y[iy] = x[2047];
-  for (i = 0; i <= 2046; i += 2) {
-    temp_re = y[i + 1].re;
-    temp_im = y[i + 1].im;
-    y[i + 1].re = y[i].re - y[i + 1].re;
-    y[i + 1].im = y[i].im - y[i + 1].im;
-    y[i].re += temp_re;
-    y[i].im += temp_im;
-  }
-
-  ix = 2;
-  ju = 4;
-  iy = 512;
-  iheight = 2045;
-  while (iy > 0) {
-    for (i = 0; i < iheight; i += ju) {
-      temp_re_tmp = i + ix;
-      temp_re = y[temp_re_tmp].re;
-      temp_im = y[temp_re_tmp].im;
-      y[temp_re_tmp].re = y[i].re - temp_re;
-      y[temp_re_tmp].im = y[i].im - temp_im;
-      y[i].re += temp_re;
-      y[i].im += temp_im;
-    }
-
-    istart = 1;
-    for (j = iy; j < 1024; j += iy) {
-      twid_re = costab[j];
-      twid_im = sintab[j];
-      i = istart;
-      ihi = istart + iheight;
-      while (i < ihi) {
-        temp_re_tmp = i + ix;
-        temp_re = y[temp_re_tmp].re * twid_re - y[temp_re_tmp].im * twid_im;
-        temp_im = y[temp_re_tmp].im * twid_re + y[temp_re_tmp].re * twid_im;
-        y[temp_re_tmp].re = y[i].re - temp_re;
-        y[temp_re_tmp].im = y[i].im - temp_im;
-        y[i].re += temp_re;
-        y[i].im += temp_im;
-        i += ju;
-      }
-
-      istart++;
-    }
-
-    iy /= 2;
-    ix = ju;
-    ju += ju;
-    iheight -= ix;
-  }
-
-  for (iy = 0; iy < 2048; iy++) {
-    localDW->y = y[iy];
-    localDW->y.re *= 0.00048828125F;
-    localDW->y.im *= 0.00048828125F;
-    y[iy] = localDW->y;
-  }
-}
-
-static void FFTImplementationCallback_doH_n(const real32_T x[2046], creal32_T y
-  [2046], const creal32_T wwc[2045], const real32_T costabinv[2049], const
-  real32_T sintabinv[2049], DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  int32_T b_re_tmp;
-  real32_T b_im;
-  int16_T wrapIndex;
-  static const creal32_T tmp[1023] = { { 1.0F,/* re */
+  static const creal32_T tmp_1[1023] = { { 1.0F,/* re */
       -1.0F                            /* im */
     }, { 0.996929049F,                 /* re */
       -0.999995291F                    /* im */
@@ -3875,7 +3810,7 @@ static void FFTImplementationCallback_doH_n(const real32_T x[2046], creal32_T y
       0.999995291F                     /* im */
     } };
 
-  static const creal32_T tmp_0[1023] = { { 1.0F,/* re */
+  static const creal32_T tmp_2[1023] = { { 1.0F,/* re */
       1.0F                             /* im */
     }, { 1.00307095F,                  /* re */
       0.999995291F                     /* im */
@@ -5923,7 +5858,7 @@ static void FFTImplementationCallback_doH_n(const real32_T x[2046], creal32_T y
       -0.999995291F                    /* im */
     } };
 
-  static const int16_T tmp_1[1023] = { 1, 1023, 1022, 1021, 1020, 1019, 1018,
+  static const int16_T tmp_3[1023] = { 1, 1023, 1022, 1021, 1020, 1019, 1018,
     1017, 1016, 1015, 1014, 1013, 1012, 1011, 1010, 1009, 1008, 1007, 1006, 1005,
     1004, 1003, 1002, 1001, 1000, 999, 998, 997, 996, 995, 994, 993, 992, 991,
     990, 989, 988, 987, 986, 985, 984, 983, 982, 981, 980, 979, 978, 977, 976,
@@ -5992,74 +5927,329 @@ static void FFTImplementationCallback_doH_n(const real32_T x[2046], creal32_T y
     30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12,
     11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
 
-  FFTImplementationCallback_get_h(costabinv, sintabinv, localDW->hcostab,
-    localDW->hsintab, localDW->hcostabinv, localDW->hsintabinv);
-  for (localDW->xidx = 0; localDW->xidx < 1023; localDW->xidx++) {
-    b_re_tmp = localDW->xidx << 1;
-    localDW->b_re = x[b_re_tmp];
-    b_im = x[b_re_tmp + 1];
-    localDW->ytmp[localDW->xidx].re = wwc[localDW->xidx + 1022].re *
-      localDW->b_re + wwc[localDW->xidx + 1022].im * b_im;
-    localDW->ytmp[localDW->xidx].im = wwc[localDW->xidx + 1022].re * b_im -
-      wwc[localDW->xidx + 1022].im * localDW->b_re;
+  const real32_T *costab;
+  const real32_T *sintab;
+  sintab = &tmp[0];
+  costab = &tmp_0[0];
+  for (localDW->ix = 0; localDW->ix < 1024; localDW->ix++) {
+    localDW->xidx = ((localDW->ix + 1) << 1) - 2;
+    localDW->hcostab[localDW->ix] = costab[localDW->xidx];
+    localDW->hsintab[localDW->ix] = sintab[localDW->xidx];
+    localDW->hcostabinv[localDW->ix] = costabinv[localDW->xidx];
+    localDW->hsintabinv[localDW->ix] = sintabinv[localDW->xidx];
   }
 
-  FFTImplementationCallback_r2br_(localDW->ytmp, localDW->hcostab,
-    localDW->hsintab, localDW->fv);
-  FFTImplementationCallback_r2b_k(wwc, localDW->hcostab, localDW->hsintab,
-    localDW->fcv);
-  for (localDW->xidx = 0; localDW->xidx < 2048; localDW->xidx++) {
-    localDW->fv_m[localDW->xidx].re = localDW->fv[localDW->xidx].re *
-      localDW->fcv[localDW->xidx].re - localDW->fv[localDW->xidx].im *
-      localDW->fcv[localDW->xidx].im;
-    localDW->fv_m[localDW->xidx].im = localDW->fv[localDW->xidx].re *
-      localDW->fcv[localDW->xidx].im + localDW->fv[localDW->xidx].im *
-      localDW->fcv[localDW->xidx].re;
+  for (localDW->ix = 0; localDW->ix < 1023; localDW->ix++) {
+    temp_re_tmp = localDW->ix << 1;
+    temp_re = x[temp_re_tmp];
+    temp_im = x[temp_re_tmp + 1];
+    twid_re = wwc[localDW->ix + 1022].re;
+    twid_im = wwc[localDW->ix + 1022].im;
+    localDW->ytmp[localDW->ix].re = twid_re * temp_re + twid_im * temp_im;
+    localDW->ytmp[localDW->ix].im = twid_re * temp_im - twid_im * temp_re;
   }
 
-  FFTImplementationCallback_r2_kq(localDW->fv_m, localDW->hcostabinv,
-    localDW->hsintabinv, localDW->fv, localDW);
-  for (localDW->xidx = 0; localDW->xidx < 1023; localDW->xidx++) {
-    localDW->ytmp[localDW->xidx].re = wwc[localDW->xidx + 1022].re * localDW->
-      fv[localDW->xidx + 1022].re + wwc[localDW->xidx + 1022].im * localDW->
-      fv[localDW->xidx + 1022].im;
-    localDW->ytmp[localDW->xidx].im = wwc[localDW->xidx + 1022].re * localDW->
-      fv[localDW->xidx + 1022].im - wwc[localDW->xidx + 1022].im * localDW->
-      fv[localDW->xidx + 1022].re;
-    localDW->reconVar1[localDW->xidx] = tmp[localDW->xidx];
-    localDW->reconVar2[localDW->xidx] = tmp_0[localDW->xidx];
-    localDW->wrapIndex[localDW->xidx] = tmp_1[localDW->xidx];
+  memset(&localDW->fy[0], 0, sizeof(creal32_T) << 11U);
+  localDW->iy = 0;
+  localDW->ju = 0;
+  for (localDW->xidx = 0; localDW->xidx < 1022; localDW->xidx++) {
+    localDW->fy[localDW->iy] = localDW->ytmp[localDW->xidx];
+    localDW->iy = 2048;
+    tst = true;
+    while (tst) {
+      localDW->iy >>= 1;
+      localDW->ju ^= localDW->iy;
+      tst = ((localDW->ju & localDW->iy) == 0);
+    }
+
+    localDW->iy = localDW->ju;
   }
 
-  for (localDW->xidx = 0; localDW->xidx < 1023; localDW->xidx++) {
-    wrapIndex = localDW->wrapIndex[localDW->xidx];
-    localDW->b_re = localDW->ytmp[wrapIndex - 1].re;
-    b_im = -localDW->ytmp[wrapIndex - 1].im;
-    y[localDW->xidx].re = ((localDW->ytmp[localDW->xidx].re * localDW->
-      reconVar1[localDW->xidx].re - localDW->ytmp[localDW->xidx].im *
-      localDW->reconVar1[localDW->xidx].im) + (localDW->b_re *
-      localDW->reconVar2[localDW->xidx].re - b_im * localDW->reconVar2
-      [localDW->xidx].im)) * 0.5F;
-    y[localDW->xidx].im = ((localDW->ytmp[localDW->xidx].re * localDW->
-      reconVar1[localDW->xidx].im + localDW->ytmp[localDW->xidx].im *
-      localDW->reconVar1[localDW->xidx].re) + (localDW->b_re *
-      localDW->reconVar2[localDW->xidx].im + b_im * localDW->reconVar2
-      [localDW->xidx].re)) * 0.5F;
-    y[localDW->xidx + 1023].re = ((localDW->ytmp[localDW->xidx].re *
-      localDW->reconVar2[localDW->xidx].re - localDW->ytmp[localDW->xidx].im *
-      localDW->reconVar2[localDW->xidx].im) + (localDW->b_re *
-      localDW->reconVar1[localDW->xidx].re - b_im * localDW->reconVar1
-      [localDW->xidx].im)) * 0.5F;
-    y[localDW->xidx + 1023].im = ((localDW->ytmp[localDW->xidx].re *
-      localDW->reconVar2[localDW->xidx].im + localDW->ytmp[localDW->xidx].im *
-      localDW->reconVar2[localDW->xidx].re) + (localDW->b_re *
-      localDW->reconVar1[localDW->xidx].im + b_im * localDW->reconVar1
-      [localDW->xidx].re)) * 0.5F;
+  localDW->fy[localDW->iy] = localDW->ytmp[1022];
+  for (localDW->ix = 0; localDW->ix <= 2046; localDW->ix += 2) {
+    temp_re = localDW->fy[localDW->ix + 1].re;
+    temp_im = localDW->fy[localDW->ix + 1].im;
+    localDW->fy[localDW->ix + 1].re = localDW->fy[localDW->ix].re - localDW->
+      fy[localDW->ix + 1].re;
+    localDW->fy[localDW->ix + 1].im = localDW->fy[localDW->ix].im - localDW->
+      fy[localDW->ix + 1].im;
+    localDW->fy[localDW->ix].re += temp_re;
+    localDW->fy[localDW->ix].im += temp_im;
+  }
+
+  localDW->ju = 2;
+  localDW->iy = 4;
+  localDW->ix = 512;
+  localDW->iheight = 2045;
+  while (localDW->ix > 0) {
+    localDW->xidx = 0;
+    while (localDW->xidx < localDW->iheight) {
+      temp_re_tmp = localDW->xidx + localDW->ju;
+      temp_re = localDW->fy[temp_re_tmp].re;
+      temp_im = localDW->fy[temp_re_tmp].im;
+      localDW->fy[temp_re_tmp].re = localDW->fy[localDW->xidx].re - temp_re;
+      localDW->fy[temp_re_tmp].im = localDW->fy[localDW->xidx].im - temp_im;
+      localDW->fy[localDW->xidx].re += temp_re;
+      localDW->fy[localDW->xidx].im += temp_im;
+      localDW->xidx += localDW->iy;
+    }
+
+    localDW->istart = 1;
+    for (j = localDW->ix; j < 1024; j += localDW->ix) {
+      twid_re = localDW->hcostab[j];
+      twid_im = localDW->hsintab[j];
+      localDW->xidx = localDW->istart;
+      ihi = localDW->istart + localDW->iheight;
+      while (localDW->xidx < ihi) {
+        temp_re_tmp = localDW->xidx + localDW->ju;
+        temp_im = localDW->fy[temp_re_tmp].im;
+        ytmp_re_tmp = localDW->fy[temp_re_tmp].re;
+        temp_re = ytmp_re_tmp * twid_re - temp_im * twid_im;
+        temp_im = temp_im * twid_re + ytmp_re_tmp * twid_im;
+        localDW->fy[temp_re_tmp].re = localDW->fy[localDW->xidx].re - temp_re;
+        localDW->fy[temp_re_tmp].im = localDW->fy[localDW->xidx].im - temp_im;
+        localDW->fy[localDW->xidx].re += temp_re;
+        localDW->fy[localDW->xidx].im += temp_im;
+        localDW->xidx += localDW->iy;
+      }
+
+      localDW->istart++;
+    }
+
+    localDW->ix = (int32_T)((uint32_T)localDW->ix >> 1);
+    localDW->ju = localDW->iy;
+    localDW->iy += localDW->iy;
+    localDW->iheight -= localDW->ju;
+  }
+
+  memset(&localDW->fv[0], 0, sizeof(creal32_T) << 11U);
+  localDW->iy = 0;
+  localDW->ju = 0;
+  for (localDW->xidx = 0; localDW->xidx < 2044; localDW->xidx++) {
+    localDW->fv[localDW->iy] = wwc[localDW->xidx];
+    localDW->iy = 2048;
+    tst = true;
+    while (tst) {
+      localDW->iy >>= 1;
+      localDW->ju ^= localDW->iy;
+      tst = ((localDW->ju & localDW->iy) == 0);
+    }
+
+    localDW->iy = localDW->ju;
+  }
+
+  localDW->fv[localDW->iy] = wwc[2044];
+  for (localDW->ix = 0; localDW->ix <= 2046; localDW->ix += 2) {
+    temp_re = localDW->fv[localDW->ix + 1].re;
+    temp_im = localDW->fv[localDW->ix + 1].im;
+    localDW->fv[localDW->ix + 1].re = localDW->fv[localDW->ix].re - localDW->
+      fv[localDW->ix + 1].re;
+    localDW->fv[localDW->ix + 1].im = localDW->fv[localDW->ix].im - localDW->
+      fv[localDW->ix + 1].im;
+    localDW->fv[localDW->ix].re += temp_re;
+    localDW->fv[localDW->ix].im += temp_im;
+  }
+
+  localDW->ju = 2;
+  localDW->iy = 4;
+  localDW->ix = 512;
+  localDW->iheight = 2045;
+  while (localDW->ix > 0) {
+    localDW->xidx = 0;
+    while (localDW->xidx < localDW->iheight) {
+      temp_re_tmp = localDW->xidx + localDW->ju;
+      temp_re = localDW->fv[temp_re_tmp].re;
+      temp_im = localDW->fv[temp_re_tmp].im;
+      localDW->fv[temp_re_tmp].re = localDW->fv[localDW->xidx].re - temp_re;
+      localDW->fv[temp_re_tmp].im = localDW->fv[localDW->xidx].im - temp_im;
+      localDW->fv[localDW->xidx].re += temp_re;
+      localDW->fv[localDW->xidx].im += temp_im;
+      localDW->xidx += localDW->iy;
+    }
+
+    localDW->istart = 1;
+    for (j = localDW->ix; j < 1024; j += localDW->ix) {
+      twid_re = localDW->hcostab[j];
+      twid_im = localDW->hsintab[j];
+      localDW->xidx = localDW->istart;
+      ihi = localDW->istart + localDW->iheight;
+      while (localDW->xidx < ihi) {
+        temp_re_tmp = localDW->xidx + localDW->ju;
+        temp_im = localDW->fv[temp_re_tmp].im;
+        ytmp_re_tmp = localDW->fv[temp_re_tmp].re;
+        temp_re = ytmp_re_tmp * twid_re - temp_im * twid_im;
+        temp_im = temp_im * twid_re + ytmp_re_tmp * twid_im;
+        localDW->fv[temp_re_tmp].re = localDW->fv[localDW->xidx].re - temp_re;
+        localDW->fv[temp_re_tmp].im = localDW->fv[localDW->xidx].im - temp_im;
+        localDW->fv[localDW->xidx].re += temp_re;
+        localDW->fv[localDW->xidx].im += temp_im;
+        localDW->xidx += localDW->iy;
+      }
+
+      localDW->istart++;
+    }
+
+    localDW->ix = (int32_T)((uint32_T)localDW->ix >> 1);
+    localDW->ju = localDW->iy;
+    localDW->iy += localDW->iy;
+    localDW->iheight -= localDW->ju;
+  }
+
+  for (localDW->ix = 0; localDW->ix < 2048; localDW->ix++) {
+    localDW->fy_m = localDW->fy[localDW->ix];
+    twid_re = localDW->fy_m.re;
+    twid_im = localDW->fv[localDW->ix].im;
+    temp_re = localDW->fv[localDW->ix].re;
+    localDW->fy_m.re = localDW->fy_m.re * temp_re - localDW->fy_m.im * twid_im;
+    localDW->fy_m.im = twid_re * twid_im + localDW->fy_m.im * temp_re;
+    localDW->fy[localDW->ix] = localDW->fy_m;
+  }
+
+  localDW->iy = 0;
+  localDW->ju = 0;
+  for (localDW->xidx = 0; localDW->xidx < 2047; localDW->xidx++) {
+    localDW->fv[localDW->iy] = localDW->fy[localDW->xidx];
+    localDW->iy = 2048;
+    tst = true;
+    while (tst) {
+      localDW->iy >>= 1;
+      localDW->ju ^= localDW->iy;
+      tst = ((localDW->ju & localDW->iy) == 0);
+    }
+
+    localDW->iy = localDW->ju;
+  }
+
+  localDW->fv[localDW->iy] = localDW->fy[2047];
+  for (localDW->ix = 0; localDW->ix <= 2046; localDW->ix += 2) {
+    temp_re = localDW->fv[localDW->ix + 1].re;
+    temp_im = localDW->fv[localDW->ix + 1].im;
+    localDW->fv[localDW->ix + 1].re = localDW->fv[localDW->ix].re - localDW->
+      fv[localDW->ix + 1].re;
+    localDW->fv[localDW->ix + 1].im = localDW->fv[localDW->ix].im - localDW->
+      fv[localDW->ix + 1].im;
+    localDW->fv[localDW->ix].re += temp_re;
+    localDW->fv[localDW->ix].im += temp_im;
+  }
+
+  localDW->ju = 2;
+  localDW->iy = 4;
+  localDW->ix = 512;
+  localDW->iheight = 2045;
+  while (localDW->ix > 0) {
+    localDW->xidx = 0;
+    while (localDW->xidx < localDW->iheight) {
+      temp_re_tmp = localDW->xidx + localDW->ju;
+      temp_re = localDW->fv[temp_re_tmp].re;
+      temp_im = localDW->fv[temp_re_tmp].im;
+      localDW->fv[temp_re_tmp].re = localDW->fv[localDW->xidx].re - temp_re;
+      localDW->fv[temp_re_tmp].im = localDW->fv[localDW->xidx].im - temp_im;
+      localDW->fv[localDW->xidx].re += temp_re;
+      localDW->fv[localDW->xidx].im += temp_im;
+      localDW->xidx += localDW->iy;
+    }
+
+    localDW->istart = 1;
+    for (j = localDW->ix; j < 1024; j += localDW->ix) {
+      twid_re = localDW->hcostabinv[j];
+      twid_im = localDW->hsintabinv[j];
+      localDW->xidx = localDW->istart;
+      ihi = localDW->istart + localDW->iheight;
+      while (localDW->xidx < ihi) {
+        temp_re_tmp = localDW->xidx + localDW->ju;
+        temp_im = localDW->fv[temp_re_tmp].im;
+        ytmp_re_tmp = localDW->fv[temp_re_tmp].re;
+        temp_re = ytmp_re_tmp * twid_re - temp_im * twid_im;
+        temp_im = temp_im * twid_re + ytmp_re_tmp * twid_im;
+        localDW->fv[temp_re_tmp].re = localDW->fv[localDW->xidx].re - temp_re;
+        localDW->fv[temp_re_tmp].im = localDW->fv[localDW->xidx].im - temp_im;
+        localDW->fv[localDW->xidx].re += temp_re;
+        localDW->fv[localDW->xidx].im += temp_im;
+        localDW->xidx += localDW->iy;
+      }
+
+      localDW->istart++;
+    }
+
+    localDW->ix = (int32_T)((uint32_T)localDW->ix >> 1);
+    localDW->ju = localDW->iy;
+    localDW->iy += localDW->iy;
+    localDW->iheight -= localDW->ju;
+  }
+
+  for (localDW->ix = 0; localDW->ix < 2048; localDW->ix++) {
+    localDW->fy_m = localDW->fv[localDW->ix];
+    localDW->fy_m.re *= 0.00048828125F;
+    localDW->fy_m.im *= 0.00048828125F;
+    localDW->fv[localDW->ix] = localDW->fy_m;
+  }
+
+  for (localDW->ix = 0; localDW->ix < 1023; localDW->ix++) {
+    twid_re = wwc[localDW->ix + 1022].re;
+    twid_im = localDW->fv[localDW->ix + 1022].im;
+    temp_re = wwc[localDW->ix + 1022].im;
+    temp_im = localDW->fv[localDW->ix + 1022].re;
+    localDW->ytmp[localDW->ix].re = twid_re * temp_im + temp_re * twid_im;
+    localDW->ytmp[localDW->ix].im = twid_re * twid_im - temp_re * temp_im;
+    localDW->reconVar1[localDW->ix] = tmp_1[localDW->ix];
+    localDW->reconVar2[localDW->ix] = tmp_2[localDW->ix];
+    localDW->wrapIndex[localDW->ix] = tmp_3[localDW->ix];
+  }
+
+  for (localDW->ix = 0; localDW->ix < 1023; localDW->ix++) {
+    real32_T temp_im_tmp;
+    real32_T tmp_4;
+    real32_T tmp_5;
+    int16_T wrapIndex;
+    wrapIndex = localDW->wrapIndex[localDW->ix];
+    ytmp_re_tmp = localDW->ytmp[wrapIndex - 1].re;
+    temp_re = -localDW->ytmp[wrapIndex - 1].im;
+    twid_re = localDW->ytmp[localDW->ix].re;
+    twid_im = localDW->reconVar1[localDW->ix].im;
+    temp_im = localDW->ytmp[localDW->ix].im;
+    temp_im_tmp = localDW->reconVar1[localDW->ix].re;
+    tmp_4 = localDW->reconVar2[localDW->ix].im;
+    tmp_5 = localDW->reconVar2[localDW->ix].re;
+    y[localDW->ix].re = ((twid_re * temp_im_tmp - temp_im * twid_im) +
+                         (ytmp_re_tmp * tmp_5 - temp_re * tmp_4)) * 0.5F;
+    y[localDW->ix].im = ((twid_re * twid_im + temp_im * temp_im_tmp) +
+                         (ytmp_re_tmp * tmp_4 + temp_re * tmp_5)) * 0.5F;
+    twid_re = localDW->ytmp[localDW->ix].re;
+    twid_im = localDW->reconVar1[localDW->ix].im;
+    y[localDW->ix + 1023].re = ((twid_re * tmp_5 - temp_im * tmp_4) +
+      (ytmp_re_tmp * temp_im_tmp - temp_re * twid_im)) * 0.5F;
+    y[localDW->ix + 1023].im = ((twid_re * tmp_4 + temp_im * tmp_5) +
+      (ytmp_re_tmp * twid_im + temp_re * temp_im_tmp)) * 0.5F;
   }
 }
 
-static void SpectrumEstimatorBase_computeFF(const real32_T xin[2046], creal32_T
-  xout[2046], DW_TwoMassIDWelch_TwoMassID_t *localDW)
+/* System initialize for function-call system: '<S1>/TwoMassID.Welch' */
+static void TwoMassIDWelch_Init(DW_TwoMassIDWelch_TwoMassID_t *localDW)
+{
+  /* SystemInitialize for Atomic SubSystem: '<S2>/Spectrum Estimator1' */
+  /* Start for MATLABSystem: '<S3>/Spectrum Estimator' */
+  localDW->obj.isInitialized = 0;
+  localDW->obj.matlabCodegenIsDeleted = false;
+  if (localDW->obj.isInitialized == 1) {
+    localDW->obj.TunablePropsChanged = true;
+  }
+
+  localDW->obj.ReferenceLoad = 1.0F;
+  SystemCore_setup(&localDW->obj);
+
+  /* End of Start for MATLABSystem: '<S3>/Spectrum Estimator' */
+
+  /* InitializeConditions for MATLABSystem: '<S3>/Spectrum Estimator' */
+  localDW->obj.pNumAvgsCounter = 0.0F;
+  localDW->obj.pNewPeriodogramIdx = 0.0F;
+  memset(&localDW->obj.pPeriodogramMatrix[0], 0, 2046U * sizeof(real32_T));
+
+  /* End of SystemInitialize for SubSystem: '<S2>/Spectrum Estimator1' */
+}
+
+/* Output and update for function-call system: '<S1>/TwoMassID.Welch' */
+static void TwoMassIDWelch(const real32_T rtu_In2[2046],
+  DW_TwoMassIDWelch_TwoMassID_t *localDW)
 {
   static const real32_T tmp[2049] = { 1.0F, 0.999998808F, 0.999995291F,
     0.99998939F, 0.999981165F, 0.999970615F, 0.999957621F, 0.999942362F,
@@ -6881,375 +7071,10 @@ static void SpectrumEstimatorBase_computeFF(const real32_T xin[2046], creal32_T
     0.0122715384F, 0.0107376594F, 0.00920375437F, 0.0076698293F, 0.00613588467F,
     0.00460192608F, 0.00306795677F, 0.00153398025F, 0.0F };
 
-  localDW->rt = 0;
-  localDW->wwc[1022].re = 1.0F;
-  localDW->wwc[1022].im = 0.0F;
-  for (localDW->b_k = 0; localDW->b_k < 1022; localDW->b_k++) {
-    localDW->y_b = ((localDW->b_k + 1) << 1) - 1;
-    if (2046 - localDW->rt <= localDW->y_b) {
-      localDW->rt = (localDW->y_b + localDW->rt) - 2046;
-    } else {
-      localDW->rt += localDW->y_b;
-    }
-
-    localDW->nt_im = -3.14159274F * (real32_T)localDW->rt / 1023.0F;
-    if (localDW->nt_im == 0.0F) {
-      localDW->wwc[1021 - localDW->b_k].re = 1.0F;
-      localDW->nt_im = 0.0F;
-    } else {
-      localDW->wwc[1021 - localDW->b_k].re = cosf(localDW->nt_im);
-      localDW->nt_im = sinf(localDW->nt_im);
-    }
-
-    localDW->wwc[1021 - localDW->b_k].im = -localDW->nt_im;
-  }
-
-  for (localDW->b_k = 1021; localDW->b_k >= 0; localDW->b_k--) {
-    localDW->wwc[localDW->b_k + 1023] = localDW->wwc[1021 - localDW->b_k];
-  }
-
-  FFTImplementationCallback_doH_n(xin, xout, localDW->wwc, tmp, tmp_0, localDW);
-}
-
-static void SpectrumEstimator_computeWindow(const
-  dsp_simulink_SpectrumEstimato_t *obj, const real32_T x[2046], real32_T Pxx
-  [2046], DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  SpectrumEstimatorBase_windowDat(obj, x, localDW->xout);
-  SpectrumEstimatorBase_computeFF(localDW->xout, localDW->X, localDW);
-  for (localDW->i_c = 0; localDW->i_c < 2046; localDW->i_c++) {
-    localDW->X_re = localDW->X[localDW->i_c].re;
-    localDW->X_im = localDW->X[localDW->i_c].im;
-    Pxx[localDW->i_c] = localDW->X_re * localDW->X_re - localDW->X_im *
-      -localDW->X_im;
-  }
-}
-
-static void SpectrumEstimator_convertAndSca(const real32_T P[2046], real32_T
-  Pout[1024])
-{
-  int32_T i;
-  Pout[0] = P[0] / 1000.0F;
-  for (i = 0; i < 1022; i++) {
-    Pout[i + 1] = P[i + 1] * 2.0F / 1000.0F;
-  }
-
-  Pout[1023] = P[1023] / 1000.0F;
-}
-
-static void SpectrumEstimatorBase_computeOu(dsp_simulink_SpectrumEstimato_t *obj,
-  const real32_T varargin_1[2046], real32_T P[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  SpectrumEstimator_computeWindow(obj, varargin_1, localDW->x, localDW);
-  localDW->y_k = obj->pWindowPower;
-  obj->pNumAvgsCounter = fminf(obj->pNumAvgsCounter + 1.0F, 1.0F);
-  if (rtIsNaNF(obj->pNewPeriodogramIdx + 1.0F) || rtIsInfF
-      (obj->pNewPeriodogramIdx + 1.0F)) {
-    localDW->varargin_2 = (rtNaNF);
-  } else if (obj->pNewPeriodogramIdx + 1.0F == 0.0F) {
-    localDW->varargin_2 = 0.0F;
-  } else {
-    localDW->varargin_2 = fmodf(obj->pNewPeriodogramIdx + 1.0F, 2.0F);
-    if (localDW->varargin_2 == 0.0F) {
-      localDW->varargin_2 = 0.0F;
-    } else if (obj->pNewPeriodogramIdx + 1.0F < 0.0F) {
-      localDW->varargin_2 += 2.0F;
-    }
-  }
-
-  obj->pNewPeriodogramIdx = fmaxf(1.0F, localDW->varargin_2);
-  for (localDW->b_xj = 0; localDW->b_xj < 2046; localDW->b_xj++) {
-    obj->pPeriodogramMatrix[localDW->b_xj] = localDW->x[localDW->b_xj] /
-      localDW->y_k;
-    localDW->varargin_2 = obj->pPeriodogramMatrix[localDW->b_xj];
-    localDW->x_c[localDW->b_xj] = localDW->varargin_2 / obj->pNumAvgsCounter;
-    localDW->x[localDW->b_xj] = localDW->varargin_2;
-  }
-
-  SpectrumEstimator_convertAndSca(localDW->x_c, P);
-}
-
-static void SpectrumEstimator_stepImpl(dsp_simulink_SpectrumEstimato_t *obj,
-  const real32_T x[2046], real32_T varargout_1[1024], real32_T varargout_2[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  if (obj->pFrameCounter >= obj->pFrameDelay) {
-    SpectrumEstimatorBase_computeOu(obj, x, varargout_1, localDW);
-    for (localDW->i = 0; localDW->i < 1024; localDW->i++) {
-      varargout_1[localDW->i] = 10.0F * log10f(varargout_1[localDW->i] /
-        obj->pReferenceLoad + 1.4013E-45F) + 30.0F;
-    }
-  } else {
-    obj->pFrameCounter++;
-    for (localDW->i = 0; localDW->i < 1024; localDW->i++) {
-      varargout_1[localDW->i] = (rtMinusInfF);
-    }
-  }
-
-  memcpy(&varargout_2[0], &obj->pFreq[0], sizeof(real32_T) << 10U);
-}
-
-static void SystemCore_step(dsp_simulink_SpectrumEstimato_t *obj, const real32_T
-  varargin_1[2046], real32_T varargout_1[1024], real32_T varargout_2[1024],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  if (obj->TunablePropsChanged) {
-    obj->TunablePropsChanged = false;
-    obj->pReferenceLoad = obj->ReferenceLoad;
-  }
-
-  SpectrumEstimator_stepImpl(obj, varargin_1, varargout_1, varargout_2, localDW);
-}
-
-/* System initialize for function-call system: '<S1>/TwoMassID.Welch' */
-static void TwoMassIDWelch_Init(DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
-  int32_T i;
-  static const real32_T tmp[1024] = { 0.0F, 0.000488758553F, 0.000977517106F,
-    0.00146627566F, 0.00195503421F, 0.00244379276F, 0.00293255132F,
-    0.00342130987F, 0.00391006842F, 0.00439882698F, 0.00488758553F,
-    0.00537634408F, 0.00586510263F, 0.00635386119F, 0.00684261974F,
-    0.00733137829F, 0.00782013685F, 0.00830889586F, 0.00879765395F,
-    0.00928641297F, 0.00977517106F, 0.0102639301F, 0.0107526882F, 0.0112414472F,
-    0.0117302053F, 0.0122189643F, 0.0127077224F, 0.0131964814F, 0.0136852395F,
-    0.0141739985F, 0.0146627566F, 0.0151515156F, 0.0156402737F, 0.0161290318F,
-    0.0166177917F, 0.0171065498F, 0.0175953079F, 0.018084066F, 0.0185728259F,
-    0.019061584F, 0.0195503421F, 0.0200391F, 0.0205278601F, 0.0210166182F,
-    0.0215053763F, 0.0219941344F, 0.0224828944F, 0.0229716524F, 0.0234604105F,
-    0.0239491686F, 0.0244379286F, 0.0249266867F, 0.0254154447F, 0.0259042028F,
-    0.0263929628F, 0.0268817209F, 0.027370479F, 0.027859237F, 0.028347997F,
-    0.0288367551F, 0.0293255132F, 0.0298142713F, 0.0303030312F, 0.0307917893F,
-    0.0312805474F, 0.0317693055F, 0.0322580636F, 0.0327468216F, 0.0332355835F,
-    0.0337243415F, 0.0342131F, 0.0347018577F, 0.0351906158F, 0.0356793739F,
-    0.036168132F, 0.0366568901F, 0.0371456519F, 0.03763441F, 0.0381231681F,
-    0.0386119261F, 0.0391006842F, 0.0395894423F, 0.0400782F, 0.0405669585F,
-    0.0410557203F, 0.0415444784F, 0.0420332365F, 0.0425219946F, 0.0430107526F,
-    0.0434995107F, 0.0439882688F, 0.0444770269F, 0.0449657887F, 0.0454545468F,
-    0.0459433049F, 0.046432063F, 0.0469208211F, 0.0474095792F, 0.0478983372F,
-    0.0483870953F, 0.0488758571F, 0.0493646152F, 0.0498533733F, 0.0503421314F,
-    0.0508308895F, 0.0513196476F, 0.0518084057F, 0.0522971638F, 0.0527859256F,
-    0.0532746837F, 0.0537634417F, 0.0542522F, 0.0547409579F, 0.055229716F,
-    0.0557184741F, 0.0562072322F, 0.056695994F, 0.0571847521F, 0.0576735102F,
-    0.0581622683F, 0.0586510263F, 0.0591397844F, 0.0596285425F, 0.0601173F,
-    0.0606060624F, 0.0610948205F, 0.0615835786F, 0.0620723367F, 0.0625610948F,
-    0.0630498528F, 0.0635386109F, 0.064027369F, 0.0645161271F, 0.0650048852F,
-    0.0654936433F, 0.0659824F, 0.0664711669F, 0.066959925F, 0.0674486831F,
-    0.0679374412F, 0.0684262F, 0.0689149573F, 0.0694037154F, 0.0698924735F,
-    0.0703812316F, 0.0708699897F, 0.0713587478F, 0.0718475059F, 0.072336264F,
-    0.072825022F, 0.0733137801F, 0.0738025382F, 0.0742913038F, 0.0747800618F,
-    0.0752688199F, 0.075757578F, 0.0762463361F, 0.0767350942F, 0.0772238523F,
-    0.0777126104F, 0.0782013685F, 0.0786901265F, 0.0791788846F, 0.0796676427F,
-    0.0801564F, 0.0806451589F, 0.081133917F, 0.0816226751F, 0.0821114406F,
-    0.0826002F, 0.0830889568F, 0.0835777149F, 0.0840664729F, 0.084555231F,
-    0.0850439891F, 0.0855327472F, 0.0860215053F, 0.0865102634F, 0.0869990215F,
-    0.0874877796F, 0.0879765376F, 0.0884652957F, 0.0889540538F, 0.0894428119F,
-    0.0899315774F, 0.0904203355F, 0.0909090936F, 0.0913978517F, 0.0918866098F,
-    0.0923753679F, 0.092864126F, 0.0933528841F, 0.0938416421F, 0.0943304F,
-    0.0948191583F, 0.0953079164F, 0.0957966745F, 0.0962854326F, 0.0967741907F,
-    0.0972629488F, 0.0977517143F, 0.0982404724F, 0.0987292305F, 0.0992179886F,
-    0.0997067466F, 0.100195505F, 0.100684263F, 0.101173021F, 0.101661779F,
-    0.102150537F, 0.102639295F, 0.103128053F, 0.103616811F, 0.104105569F,
-    0.104594328F, 0.105083086F, 0.105571851F, 0.106060609F, 0.106549367F,
-    0.107038125F, 0.107526883F, 0.108015642F, 0.1085044F, 0.108993158F,
-    0.109481916F, 0.109970674F, 0.110459432F, 0.11094819F, 0.111436948F,
-    0.111925706F, 0.112414464F, 0.112903222F, 0.113391988F, 0.113880746F,
-    0.114369504F, 0.114858262F, 0.11534702F, 0.115835778F, 0.116324537F,
-    0.116813295F, 0.117302053F, 0.117790811F, 0.118279569F, 0.118768327F,
-    0.119257085F, 0.119745843F, 0.120234601F, 0.120723359F, 0.121212125F,
-    0.121700883F, 0.122189641F, 0.122678399F, 0.123167157F, 0.123655915F,
-    0.124144673F, 0.124633431F, 0.12512219F, 0.125610948F, 0.126099706F,
-    0.126588464F, 0.127077222F, 0.12756598F, 0.128054738F, 0.128543496F,
-    0.129032254F, 0.129521012F, 0.13000977F, 0.130498528F, 0.130987287F,
-    0.131476045F, 0.131964803F, 0.132453561F, 0.132942334F, 0.133431092F,
-    0.13391985F, 0.134408608F, 0.134897366F, 0.135386124F, 0.135874882F,
-    0.13636364F, 0.136852399F, 0.137341157F, 0.137829915F, 0.138318673F,
-    0.138807431F, 0.139296189F, 0.139784947F, 0.140273705F, 0.140762463F,
-    0.141251221F, 0.141739979F, 0.142228737F, 0.142717496F, 0.143206254F,
-    0.143695012F, 0.14418377F, 0.144672528F, 0.145161286F, 0.145650044F,
-    0.146138802F, 0.14662756F, 0.147116318F, 0.147605076F, 0.148093835F,
-    0.148582608F, 0.149071366F, 0.149560124F, 0.150048882F, 0.15053764F,
-    0.151026398F, 0.151515156F, 0.152003914F, 0.152492672F, 0.15298143F,
-    0.153470188F, 0.153958946F, 0.154447705F, 0.154936463F, 0.155425221F,
-    0.155913979F, 0.156402737F, 0.156891495F, 0.157380253F, 0.157869011F,
-    0.158357769F, 0.158846527F, 0.159335285F, 0.159824044F, 0.160312802F,
-    0.16080156F, 0.161290318F, 0.161779076F, 0.162267834F, 0.162756592F,
-    0.16324535F, 0.163734108F, 0.164222881F, 0.164711639F, 0.165200397F,
-    0.165689155F, 0.166177914F, 0.166666672F, 0.16715543F, 0.167644188F,
-    0.168132946F, 0.168621704F, 0.169110462F, 0.16959922F, 0.170087978F,
-    0.170576736F, 0.171065494F, 0.171554253F, 0.172043011F, 0.172531769F,
-    0.173020527F, 0.173509285F, 0.173998043F, 0.174486801F, 0.174975559F,
-    0.175464317F, 0.175953075F, 0.176441833F, 0.176930591F, 0.17741935F,
-    0.177908108F, 0.178396866F, 0.178885624F, 0.179374382F, 0.179863155F,
-    0.180351913F, 0.180840671F, 0.181329429F, 0.181818187F, 0.182306945F,
-    0.182795703F, 0.183284461F, 0.18377322F, 0.184261978F, 0.184750736F,
-    0.185239494F, 0.185728252F, 0.18621701F, 0.186705768F, 0.187194526F,
-    0.187683284F, 0.188172042F, 0.1886608F, 0.189149559F, 0.189638317F,
-    0.190127075F, 0.190615833F, 0.191104591F, 0.191593349F, 0.192082107F,
-    0.192570865F, 0.193059623F, 0.193548381F, 0.194037139F, 0.194525898F,
-    0.195014656F, 0.195503429F, 0.195992187F, 0.196480945F, 0.196969703F,
-    0.197458461F, 0.197947219F, 0.198435977F, 0.198924735F, 0.199413493F,
-    0.199902251F, 0.200391009F, 0.200879768F, 0.201368526F, 0.201857284F,
-    0.202346042F, 0.2028348F, 0.203323558F, 0.203812316F, 0.204301074F,
-    0.204789832F, 0.20527859F, 0.205767348F, 0.206256106F, 0.206744865F,
-    0.207233623F, 0.207722381F, 0.208211139F, 0.208699897F, 0.209188655F,
-    0.209677413F, 0.210166171F, 0.210654929F, 0.211143702F, 0.21163246F,
-    0.212121218F, 0.212609977F, 0.213098735F, 0.213587493F, 0.214076251F,
-    0.214565009F, 0.215053767F, 0.215542525F, 0.216031283F, 0.216520041F,
-    0.217008799F, 0.217497557F, 0.217986315F, 0.218475074F, 0.218963832F,
-    0.21945259F, 0.219941348F, 0.220430106F, 0.220918864F, 0.221407622F,
-    0.22189638F, 0.222385138F, 0.222873896F, 0.223362654F, 0.223851413F,
-    0.224340171F, 0.224828929F, 0.225317687F, 0.225806445F, 0.226295203F,
-    0.226783976F, 0.227272734F, 0.227761492F, 0.22825025F, 0.228739008F,
-    0.229227766F, 0.229716524F, 0.230205283F, 0.230694041F, 0.231182799F,
-    0.231671557F, 0.232160315F, 0.232649073F, 0.233137831F, 0.233626589F,
-    0.234115347F, 0.234604105F, 0.235092863F, 0.235581622F, 0.23607038F,
-    0.236559138F, 0.237047896F, 0.237536654F, 0.238025412F, 0.23851417F,
-    0.239002928F, 0.239491686F, 0.239980444F, 0.240469202F, 0.24095796F,
-    0.241446719F, 0.241935477F, 0.24242425F, 0.242913008F, 0.243401766F,
-    0.243890524F, 0.244379282F, 0.24486804F, 0.245356798F, 0.245845556F,
-    0.246334314F, 0.246823072F, 0.247311831F, 0.247800589F, 0.248289347F,
-    0.248778105F, 0.249266863F, 0.249755621F, 0.250244379F, 0.250733137F,
-    0.251221895F, 0.251710653F, 0.252199411F, 0.252688169F, 0.253176928F,
-    0.253665686F, 0.254154444F, 0.254643202F, 0.25513196F, 0.255620718F,
-    0.256109476F, 0.256598234F, 0.257087F, 0.25757575F, 0.258064508F,
-    0.258553267F, 0.259042025F, 0.259530783F, 0.260019541F, 0.260508299F,
-    0.260997057F, 0.261485815F, 0.261974573F, 0.262463331F, 0.262952089F,
-    0.263440847F, 0.263929605F, 0.264418364F, 0.264907122F, 0.26539588F,
-    0.265884668F, 0.266373426F, 0.266862184F, 0.267350942F, 0.2678397F,
-    0.268328458F, 0.268817216F, 0.269305974F, 0.269794732F, 0.27028349F,
-    0.270772249F, 0.271261F, 0.271749765F, 0.272238523F, 0.272727281F,
-    0.273216039F, 0.273704797F, 0.274193555F, 0.274682313F, 0.275171071F,
-    0.275659829F, 0.276148587F, 0.276637346F, 0.277126104F, 0.277614862F,
-    0.27810362F, 0.278592378F, 0.279081136F, 0.279569894F, 0.280058652F,
-    0.28054741F, 0.281036168F, 0.281524926F, 0.282013685F, 0.282502443F,
-    0.282991201F, 0.283479959F, 0.283968717F, 0.284457475F, 0.284946233F,
-    0.285435F, 0.285923749F, 0.286412507F, 0.286901265F, 0.287390023F,
-    0.287878782F, 0.28836754F, 0.288856298F, 0.289345056F, 0.289833814F,
-    0.290322572F, 0.29081133F, 0.291300088F, 0.291788846F, 0.292277604F,
-    0.292766362F, 0.293255121F, 0.293743879F, 0.294232637F, 0.294721395F,
-    0.295210153F, 0.295698911F, 0.296187669F, 0.296676427F, 0.297165215F,
-    0.297653973F, 0.298142731F, 0.298631489F, 0.299120247F, 0.299609F,
-    0.300097764F, 0.300586522F, 0.30107528F, 0.301564038F, 0.302052796F,
-    0.302541554F, 0.303030312F, 0.30351907F, 0.304007828F, 0.304496586F,
-    0.304985344F, 0.305474102F, 0.305962861F, 0.306451619F, 0.306940377F,
-    0.307429135F, 0.307917893F, 0.308406651F, 0.308895409F, 0.309384167F,
-    0.309872925F, 0.310361683F, 0.310850441F, 0.3113392F, 0.311827958F,
-    0.312316716F, 0.312805474F, 0.313294232F, 0.313783F, 0.314271748F,
-    0.314760506F, 0.315249264F, 0.315738022F, 0.31622678F, 0.316715539F,
-    0.317204297F, 0.317693055F, 0.318181813F, 0.318670571F, 0.319159329F,
-    0.319648087F, 0.320136845F, 0.320625603F, 0.321114361F, 0.321603119F,
-    0.322091877F, 0.322580636F, 0.323069394F, 0.323558152F, 0.32404691F,
-    0.324535668F, 0.325024426F, 0.325513184F, 0.326001942F, 0.3264907F,
-    0.326979458F, 0.327468216F, 0.327956975F, 0.328445762F, 0.32893452F,
-    0.329423279F, 0.329912037F, 0.330400795F, 0.330889553F, 0.331378311F,
-    0.331867069F, 0.332355827F, 0.332844585F, 0.333333343F, 0.333822101F,
-    0.334310859F, 0.334799618F, 0.335288376F, 0.335777134F, 0.336265892F,
-    0.33675465F, 0.337243408F, 0.337732166F, 0.338220924F, 0.338709682F,
-    0.33919844F, 0.339687198F, 0.340175956F, 0.340664715F, 0.341153473F,
-    0.341642231F, 0.342131F, 0.342619747F, 0.343108505F, 0.343597263F,
-    0.344086021F, 0.344574779F, 0.345063537F, 0.345552295F, 0.346041054F,
-    0.346529812F, 0.34701857F, 0.347507328F, 0.347996086F, 0.348484844F,
-    0.348973602F, 0.34946236F, 0.349951118F, 0.350439876F, 0.350928634F,
-    0.351417392F, 0.351906151F, 0.352394909F, 0.352883667F, 0.353372425F,
-    0.353861183F, 0.354349941F, 0.354838699F, 0.355327457F, 0.355816215F,
-    0.356304973F, 0.356793731F, 0.35728249F, 0.357771248F, 0.35826F,
-    0.358748764F, 0.359237522F, 0.35972631F, 0.360215068F, 0.360703826F,
-    0.361192584F, 0.361681342F, 0.3621701F, 0.362658858F, 0.363147616F,
-    0.363636374F, 0.364125133F, 0.364613891F, 0.365102649F, 0.365591407F,
-    0.366080165F, 0.366568923F, 0.367057681F, 0.367546439F, 0.368035197F,
-    0.368523955F, 0.369012713F, 0.369501472F, 0.36999023F, 0.370479F,
-    0.370967746F, 0.371456504F, 0.371945262F, 0.37243402F, 0.372922778F,
-    0.373411536F, 0.373900294F, 0.374389052F, 0.37487781F, 0.375366569F,
-    0.375855327F, 0.376344085F, 0.376832843F, 0.377321601F, 0.377810359F,
-    0.378299117F, 0.378787875F, 0.379276633F, 0.379765391F, 0.380254149F,
-    0.380742908F, 0.381231666F, 0.381720424F, 0.382209182F, 0.38269794F,
-    0.383186698F, 0.383675456F, 0.384164214F, 0.384652972F, 0.38514173F,
-    0.385630488F, 0.386119246F, 0.386608F, 0.387096763F, 0.387585521F,
-    0.388074279F, 0.388563037F, 0.389051795F, 0.389540553F, 0.390029311F,
-    0.390518069F, 0.391006857F, 0.391495615F, 0.391984373F, 0.392473131F,
-    0.39296189F, 0.393450648F, 0.393939406F, 0.394428164F, 0.394916922F,
-    0.39540568F, 0.395894438F, 0.396383196F, 0.396871954F, 0.397360712F,
-    0.39784947F, 0.398338228F, 0.398827F, 0.399315745F, 0.399804503F,
-    0.400293261F, 0.400782019F, 0.401270777F, 0.401759535F, 0.402248293F,
-    0.402737051F, 0.403225809F, 0.403714567F, 0.404203326F, 0.404692084F,
-    0.405180842F, 0.4056696F, 0.406158358F, 0.406647116F, 0.407135874F,
-    0.407624632F, 0.40811339F, 0.408602148F, 0.409090906F, 0.409579664F,
-    0.410068423F, 0.410557181F, 0.411045939F, 0.411534697F, 0.412023455F,
-    0.412512213F, 0.413000971F, 0.413489729F, 0.413978487F, 0.414467245F,
-    0.414956F, 0.415444762F, 0.41593352F, 0.416422278F, 0.416911036F,
-    0.417399794F, 0.417888552F, 0.41837731F, 0.418866068F, 0.419354826F,
-    0.419843584F, 0.420332342F, 0.4208211F, 0.421309859F, 0.421798617F,
-    0.422287405F, 0.422776163F, 0.423264921F, 0.423753679F, 0.424242437F,
-    0.424731195F, 0.425219953F, 0.425708711F, 0.426197469F, 0.426686227F,
-    0.427175F, 0.427663743F, 0.428152502F, 0.42864126F, 0.429130018F,
-    0.429618776F, 0.430107534F, 0.430596292F, 0.43108505F, 0.431573808F,
-    0.432062566F, 0.432551324F, 0.433040082F, 0.433528841F, 0.434017599F,
-    0.434506357F, 0.434995115F, 0.435483873F, 0.435972631F, 0.436461389F,
-    0.436950147F, 0.437438905F, 0.437927663F, 0.438416421F, 0.43890518F,
-    0.439393938F, 0.439882696F, 0.440371454F, 0.440860212F, 0.44134897F,
-    0.441837728F, 0.442326486F, 0.442815244F, 0.443304F, 0.44379276F,
-    0.444281518F, 0.444770277F, 0.445259035F, 0.445747793F, 0.446236551F,
-    0.446725309F, 0.447214067F, 0.447702825F, 0.448191583F, 0.448680341F,
-    0.449169099F, 0.449657857F, 0.450146616F, 0.450635374F, 0.451124132F,
-    0.45161289F, 0.452101648F, 0.452590406F, 0.453079164F, 0.453567952F,
-    0.45405671F, 0.454545468F, 0.455034226F, 0.455522984F, 0.456011742F,
-    0.4565005F, 0.456989259F, 0.457478017F, 0.457966775F, 0.458455533F,
-    0.458944291F, 0.459433049F, 0.459921807F, 0.460410565F, 0.460899323F,
-    0.461388081F, 0.461876839F, 0.462365597F, 0.462854356F, 0.463343114F,
-    0.463831872F, 0.46432063F, 0.464809388F, 0.465298146F, 0.465786904F,
-    0.466275662F, 0.46676442F, 0.467253178F, 0.467741936F, 0.468230695F,
-    0.468719453F, 0.469208211F, 0.469696969F, 0.470185727F, 0.470674485F,
-    0.471163243F, 0.471652F, 0.472140759F, 0.472629517F, 0.473118275F,
-    0.473607033F, 0.474095792F, 0.47458455F, 0.475073308F, 0.475562066F,
-    0.476050824F, 0.476539582F, 0.47702834F, 0.477517098F, 0.478005856F,
-    0.478494614F, 0.478983372F, 0.479472131F, 0.479960889F, 0.480449647F,
-    0.480938405F, 0.481427163F, 0.481915921F, 0.482404679F, 0.482893437F,
-    0.483382195F, 0.483870953F, 0.484359711F, 0.484848499F, 0.485337257F,
-    0.485826015F, 0.486314774F, 0.486803532F, 0.48729229F, 0.487781048F,
-    0.488269806F, 0.488758564F, 0.489247322F, 0.48973608F, 0.490224838F,
-    0.490713596F, 0.491202354F, 0.491691113F, 0.492179871F, 0.492668629F,
-    0.493157387F, 0.493646145F, 0.494134903F, 0.494623661F, 0.495112419F,
-    0.495601177F, 0.496089935F, 0.496578693F, 0.497067451F, 0.49755621F,
-    0.498044968F, 0.498533726F, 0.499022484F, 0.499511242F, 0.5F };
-
-  /* SystemInitialize for Atomic SubSystem: '<S2>/Spectrum Estimator1' */
-  /* Start for MATLABSystem: '<S3>/Spectrum Estimator' */
-  localDW->obj.isInitialized = 0;
-  localDW->obj.matlabCodegenIsDeleted = false;
-  if (localDW->obj.isInitialized == 1) {
-    localDW->obj.TunablePropsChanged = true;
-  }
-
-  localDW->obj.ReferenceLoad = 1.0F;
-  localDW->obj.isSetupComplete = false;
-  localDW->obj.isInitialized = 1;
-  SpectrumEstimator_setupImpl(&localDW->obj);
-  localDW->obj.pFrameDelay = 0.0F;
-  for (i = 0; i < 1024; i++) {
-    localDW->obj.pFreq[i] = 1000.0F * tmp[i];
-  }
-
-  localDW->obj.pFrameCounter = 0.0F;
-  localDW->obj.isSetupComplete = true;
-  localDW->obj.TunablePropsChanged = false;
-
-  /* End of Start for MATLABSystem: '<S3>/Spectrum Estimator' */
-
-  /* InitializeConditions for MATLABSystem: '<S3>/Spectrum Estimator' */
-  localDW->obj.pNumAvgsCounter = 0.0F;
-  localDW->obj.pNewPeriodogramIdx = 0.0F;
-  memset(&localDW->obj.pPeriodogramMatrix[0], 0, 2046U * sizeof(real32_T));
-
-  /* End of SystemInitialize for SubSystem: '<S2>/Spectrum Estimator1' */
-}
-
-/* Output and update for function-call system: '<S1>/TwoMassID.Welch' */
-static void TwoMassIDWelch(const real32_T rtu_In2[2046],
-  DW_TwoMassIDWelch_TwoMassID_t *localDW)
-{
   /* Outputs for Atomic SubSystem: '<S2>/Spectrum Estimator1' */
-  /* MATLABSystem: '<S3>/Spectrum Estimator' */
+  /* MATLABSystem: '<S3>/Spectrum Estimator' incorporates:
+   *  Buffer: '<S3>/Buffer'
+   */
   if (localDW->obj.ReferenceLoad != 1.0F) {
     if (localDW->obj.isInitialized == 1) {
       localDW->obj.TunablePropsChanged = true;
@@ -7258,9 +7083,104 @@ static void TwoMassIDWelch(const real32_T rtu_In2[2046],
     localDW->obj.ReferenceLoad = 1.0F;
   }
 
+  if (localDW->obj.TunablePropsChanged) {
+    localDW->obj.TunablePropsChanged = false;
+    localDW->obj.pReferenceLoad = localDW->obj.ReferenceLoad;
+  }
+
+  if (localDW->obj.pFrameCounter >= localDW->obj.pFrameDelay) {
+    for (localDW->i = 0; localDW->i < 2046; localDW->i++) {
+      localDW->y[localDW->i] = rtu_In2[localDW->i] * localDW->
+        obj.pWindowData[localDW->i];
+    }
+
+    localDW->rt = 0;
+    localDW->wwc[1022].re = 1.0F;
+    localDW->wwc[1022].im = 0.0F;
+    for (localDW->i = 0; localDW->i < 1022; localDW->i++) {
+      localDW->y_c = ((localDW->i + 1) << 1) - 1;
+      if (2046 - localDW->rt <= localDW->y_c) {
+        localDW->rt = (localDW->y_c + localDW->rt) - 2046;
+      } else {
+        localDW->rt += localDW->y_c;
+      }
+
+      localDW->nt_im = -3.14159274F * (real32_T)localDW->rt / 1023.0F;
+      if (localDW->nt_im == 0.0F) {
+        localDW->wwc[1021 - localDW->i].re = 1.0F;
+        localDW->nt_im = 0.0F;
+      } else {
+        localDW->wwc[1021 - localDW->i].re = cosf(localDW->nt_im);
+        localDW->nt_im = sinf(localDW->nt_im);
+      }
+
+      localDW->wwc[1021 - localDW->i].im = -localDW->nt_im;
+    }
+
+    for (localDW->i = 1021; localDW->i >= 0; localDW->i--) {
+      localDW->wwc[localDW->i + 1023] = localDW->wwc[1021 - localDW->i];
+    }
+
+    FFTImplementationCallback_doH_g(localDW->y, localDW->X, localDW->wwc, tmp,
+      tmp_0, localDW);
+    localDW->obj.pNumAvgsCounter = fminf(localDW->obj.pNumAvgsCounter + 1.0F,
+      1.0F);
+    if (rtIsNaNF(localDW->obj.pNewPeriodogramIdx + 1.0F) || rtIsInfF
+        (localDW->obj.pNewPeriodogramIdx + 1.0F)) {
+      localDW->nt_im = (rtNaNF);
+    } else if (localDW->obj.pNewPeriodogramIdx + 1.0F == 0.0F) {
+      localDW->nt_im = 0.0F;
+    } else {
+      localDW->nt_im = fmodf(localDW->obj.pNewPeriodogramIdx + 1.0F, 2.0F);
+      if (localDW->nt_im == 0.0F) {
+        localDW->nt_im = 0.0F;
+      } else if (localDW->obj.pNewPeriodogramIdx + 1.0F < 0.0F) {
+        localDW->nt_im += 2.0F;
+      }
+    }
+
+    localDW->obj.pNewPeriodogramIdx = fmaxf(1.0F, localDW->nt_im);
+    for (localDW->i = 0; localDW->i < 2046; localDW->i++) {
+      localDW->nt_im = localDW->X[localDW->i].re;
+      localDW->X_im = localDW->X[localDW->i].im;
+      localDW->obj.pPeriodogramMatrix[localDW->i] = (localDW->nt_im *
+        localDW->nt_im - localDW->X_im * -localDW->X_im) /
+        localDW->obj.pWindowPower;
+      localDW->y[localDW->i] = localDW->obj.pPeriodogramMatrix[localDW->i] /
+        localDW->obj.pNumAvgsCounter;
+    }
+
+    localDW->SpectrumEstimator_o1[0] = localDW->y[0] / 1000.0F /
+      localDW->obj.pReferenceLoad + 1.4013E-45F;
+    for (localDW->i = 0; localDW->i < 1022; localDW->i++) {
+      localDW->SpectrumEstimator_o1[localDW->i + 1] = localDW->y[localDW->i + 1]
+        * 2.0F / 1000.0F / localDW->obj.pReferenceLoad + 1.4013E-45F;
+    }
+
+    localDW->SpectrumEstimator_o1[1023] = localDW->y[1023] / 1000.0F /
+      localDW->obj.pReferenceLoad + 1.4013E-45F;
+
+    /* MATLABSystem: '<S3>/Spectrum Estimator' incorporates:
+     *  Buffer: '<S3>/Buffer'
+     */
+    for (localDW->i = 0; localDW->i < 1024; localDW->i++) {
+      localDW->SpectrumEstimator_o1[localDW->i] = log10f
+        (localDW->SpectrumEstimator_o1[localDW->i]);
+      localDW->SpectrumEstimator_o1[localDW->i] = 10.0F *
+        localDW->SpectrumEstimator_o1[localDW->i] + 30.0F;
+    }
+  } else {
+    localDW->obj.pFrameCounter++;
+
+    /* MATLABSystem: '<S3>/Spectrum Estimator' */
+    for (localDW->i = 0; localDW->i < 1024; localDW->i++) {
+      localDW->SpectrumEstimator_o1[localDW->i] = (rtMinusInfF);
+    }
+  }
+
   /* MATLABSystem: '<S3>/Spectrum Estimator' */
-  SystemCore_step(&localDW->obj, rtu_In2, localDW->SpectrumEstimator_o1,
-                  localDW->SpectrumEstimator_o2, localDW);
+  memcpy(&localDW->SpectrumEstimator_o2[0], &localDW->obj.pFreq[0], sizeof
+         (real32_T) << 10U);
 
   /* End of Outputs for SubSystem: '<S2>/Spectrum Estimator1' */
 }
@@ -7271,18 +7191,17 @@ static void TwoMassIDWelch(const real32_T rtu_In2[2046],
  * This is used instead of "after(1.0,sec) to ensure the same transition time
  * independelty of the sampletime in the c-code
  */
-static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
-  *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW)
+static void initParams(real32_T measArray1[1024], ExtU_TwoMassID_t
+  *rtTwoMassID_U, ExtY_TwoMassID_t *rtTwoMassID_Y, DW_TwoMassID_t
+  *rtTwoMassID_DW)
 {
-  real32_T tmp;
-
-  /* Inport: '<Root>/GlobalConfig' */
   /* MATLAB Function 'initParams': '<S1>:686' */
   /* '<S1>:686:5' one_sec_transition_counter = uint32(1/GlobalConfig.sampleTimeISR); */
-  tmp = roundf(1.0F / rtTwoMassID_U->GlobalConfig_out.sampleTimeISR);
-  if (tmp < 4.2949673E+9F) {
-    if (tmp >= 0.0F) {
-      rtTwoMassID_DW->one_sec_transition_counter = (uint32_T)tmp;
+  rtTwoMassID_DW->f2 = roundf(1.0F /
+    rtTwoMassID_U->GlobalConfig_out.sampleTimeISR);
+  if (rtTwoMassID_DW->f2 < 4.2949673E+9F) {
+    if (rtTwoMassID_DW->f2 >= 0.0F) {
+      rtTwoMassID_DW->one_sec_transition_counter = (uint32_T)rtTwoMassID_DW->f2;
     } else {
       rtTwoMassID_DW->one_sec_transition_counter = 0U;
     }
@@ -7292,6 +7211,8 @@ static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
 
   /*  initialize variables */
   /* '<S1>:686:7' measArray1			= single(zeros(1024,1)); */
+  memset(&measArray1[0], 0, sizeof(real32_T) << 10U);
+
   /* '<S1>:686:8' J 					= single(zeros(2048,2)); */
   memset(&rtTwoMassID_DW->J[0], 0, sizeof(real32_T) << 12U);
 
@@ -7328,77 +7249,71 @@ static void initParams(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   /* '<S1>:686:20' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:686:21' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:686:21' TwoMassID_FOC_output.enableFOC_torque   = boolean(0); */
+  rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_torque = false;
+
+  /* '<S1>:686:22' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
 
-  /* Outport: '<Root>/finishedTwoMassID' */
-  /* '<S1>:686:22' finishedTwoMassID   = boolean(0); */
+  /* '<S1>:686:23' finishedTwoMassID   = boolean(0); */
   rtTwoMassID_Y->finishedTwoMassID = false;
 
-  /* Outport: '<Root>/TwoMassID_FOC_output' incorporates:
-   *  Inport: '<Root>/GlobalConfig'
-   */
-  /* '<S1>:686:23' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* Outport: '<Root>/TwoMassID_FOC_output' */
+  /* '<S1>:686:24' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:686:24' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:686:25' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:686:25' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
+  /* '<S1>:686:26' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_n_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:686:26' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
+  /* '<S1>:686:27' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:686:27' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:686:28' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:686:28' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
+  /* '<S1>:686:29' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
-  /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:29' TwoMassID_output.c_est_out              = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.c_est_out = 0.0F;
+  /* Outport: '<Root>/TwoMassID_state_output' */
+  /* '<S1>:686:30' TwoMassID_state_output.c_est_out              = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.c_est_out = 0.0F;
 
-  /* '<S1>:686:30' TwoMassID_output.d_est_out              = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.d_est_out = 0.0F;
+  /* '<S1>:686:31' TwoMassID_state_output.d_est_out              = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.d_est_out = 0.0F;
 
   /* Outport: '<Root>/TwoMassID_FOC_output' */
-  /* '<S1>:686:31' TwoMassID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:686:32' TwoMassID_FOC_output.activeState        = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 
-  /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:686:32' TwoMassID_output.LoadInertia            = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.LoadInertia = 0.0F;
+  /* Outport: '<Root>/TwoMassID_state_output' */
+  /* '<S1>:686:33' TwoMassID_state_output.LoadInertia            = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.LoadInertia = 0.0F;
 
-  /* '<S1>:686:33' TwoMassID_output.TrainInertia           = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.TrainInertia = 0.0F;
+  /* '<S1>:686:34' TwoMassID_state_output.TrainInertia           = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.TrainInertia = 0.0F;
 
-  /* '<S1>:686:34' TwoMassID_output.rotorInertia           = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.rotorInertia = 0.0F;
+  /* '<S1>:686:35' TwoMassID_state_output.rotorInertia           = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.rotorInertia = 0.0F;
 
-  /* '<S1>:686:35' TwoMassID_output.PRBS_out               = single(0.0); */
-  rtTwoMassID_Y->TwoMassID_output.PRBS_out = 0.0F;
+  /* '<S1>:686:36' TwoMassID_state_output.PRBS_out               = single(0.0); */
+  rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;
 }
 
 /*
  * Function for Chart: '<Root>/TwoMassID'
  * function u=PN
  */
-static void PN(real_T u[2047])
+static void PN(real_T u[2047], DW_TwoMassID_t *rtTwoMassID_DW)
 {
-  comm_PNSequence_0_TwoMassID_t pnSequence_cSFunObject;
-  int32_T i;
-  int32_T idx;
-  int8_T c;
-  uint8_T tmp;
-  uint8_T tmp2;
   static const int8_T b[12] = { 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
 
   static const int8_T c_0[11] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
@@ -7407,39 +7322,52 @@ static void PN(real_T u[2047])
   /* '<S1>:650:2' pnSequence = comm.PNSequence('Polynomial',[11 9 0], ... */
   /* '<S1>:650:3'     'SamplesPerFrame',2047,'InitialConditions',[0 0 0 0 0 0 0 0 0 0 1]); */
   /* System object Constructor function: comm.PNSequence */
-  for (i = 0; i < 12; i++) {
-    pnSequence_cSFunObject.P0_Polynomial[i] = (uint8_T)b[i];
+  for (rtTwoMassID_DW->i_p = 0; rtTwoMassID_DW->i_p < 12; rtTwoMassID_DW->i_p++)
+  {
+    rtTwoMassID_DW->pnSequence_cSFunObject.P0_Polynomial[rtTwoMassID_DW->i_p] =
+      (uint8_T)b[rtTwoMassID_DW->i_p];
   }
 
   /* '<S1>:650:4' u=pnSequence(); */
   /* System object Initialization function: comm.PNSequence */
-  for (i = 0; i < 11; i++) {
-    c = c_0[i];
-    pnSequence_cSFunObject.P1_IniState[i] = (uint8_T)c;
-    pnSequence_cSFunObject.P2_Mask[i] = (uint8_T)c;
-    pnSequence_cSFunObject.W0_shiftReg[i] = pnSequence_cSFunObject.P1_IniState[i];
+  for (rtTwoMassID_DW->i_p = 0; rtTwoMassID_DW->i_p < 11; rtTwoMassID_DW->i_p++)
+  {
+    int8_T c;
+    c = c_0[rtTwoMassID_DW->i_p];
+    rtTwoMassID_DW->pnSequence_cSFunObject.P1_IniState[rtTwoMassID_DW->i_p] =
+      (uint8_T)c;
+    rtTwoMassID_DW->pnSequence_cSFunObject.P2_Mask[rtTwoMassID_DW->i_p] =
+      (uint8_T)c;
+    rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg[rtTwoMassID_DW->i_p] =
+      rtTwoMassID_DW->pnSequence_cSFunObject.P1_IniState[rtTwoMassID_DW->i_p];
   }
 
   /* System object Outputs function: comm.PNSequence */
-  for (idx = 0; idx < 2047; idx++) {
-    tmp = 0U;
-    tmp2 = 0U;
-    for (i = 0; i < 11; i++) {
-      tmp = (uint8_T)((uint32_T)pnSequence_cSFunObject.P0_Polynomial[i + 1] *
-                      pnSequence_cSFunObject.W0_shiftReg[i] + tmp);
-      tmp2 = (uint8_T)((uint32_T)(uint8_T)((uint32_T)
-        pnSequence_cSFunObject.W0_shiftReg[i] * pnSequence_cSFunObject.P2_Mask[i])
-                       + tmp2);
+  for (rtTwoMassID_DW->idx = 0; rtTwoMassID_DW->idx < 2047; rtTwoMassID_DW->idx
+       ++) {
+    rtTwoMassID_DW->tmp = 0U;
+    rtTwoMassID_DW->tmp2 = 0U;
+    for (rtTwoMassID_DW->i_p = 0; rtTwoMassID_DW->i_p < 11; rtTwoMassID_DW->i_p
+         ++) {
+      rtTwoMassID_DW->tmp = (uint8_T)((uint32_T)
+        rtTwoMassID_DW->pnSequence_cSFunObject.P0_Polynomial[rtTwoMassID_DW->i_p
+        + 1] * rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg
+        [rtTwoMassID_DW->i_p] + rtTwoMassID_DW->tmp);
+      rtTwoMassID_DW->tmp2 = (uint8_T)((uint32_T)(uint8_T)((uint32_T)
+        rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg[rtTwoMassID_DW->i_p] *
+        rtTwoMassID_DW->pnSequence_cSFunObject.P2_Mask[rtTwoMassID_DW->i_p]) +
+        rtTwoMassID_DW->tmp2);
     }
 
-    tmp &= 1;
-    u[idx] = tmp2 & 1;
-    for (i = 9; i >= 0; i--) {
-      pnSequence_cSFunObject.W0_shiftReg[i + 1] =
-        pnSequence_cSFunObject.W0_shiftReg[i];
+    rtTwoMassID_DW->tmp &= 1;
+    u[rtTwoMassID_DW->idx] = rtTwoMassID_DW->tmp2 & 1;
+    for (rtTwoMassID_DW->i_p = 9; rtTwoMassID_DW->i_p >= 0; rtTwoMassID_DW->i_p
+         --) {
+      rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg[rtTwoMassID_DW->i_p + 1]
+        = rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg[rtTwoMassID_DW->i_p];
     }
 
-    pnSequence_cSFunObject.W0_shiftReg[0U] = tmp;
+    rtTwoMassID_DW->pnSequence_cSFunObject.W0_shiftReg[0U] = rtTwoMassID_DW->tmp;
   }
 }
 
@@ -7451,9 +7379,7 @@ static void PN(real_T u[2047])
 static void reset_FOC_output(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   *rtTwoMassID_Y)
 {
-  /* Outport: '<Root>/TwoMassID_FOC_output' incorporates:
-   *  Inport: '<Root>/GlobalConfig'
-   */
+  /* Outport: '<Root>/TwoMassID_FOC_output' */
   /* MATLAB Function 'reset_FOC_output': '<S1>:699' */
   /* '<S1>:699:4' TwoMassID_FOC_output.n_ref_FOC      	= single(0.0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
@@ -7476,34 +7402,37 @@ static void reset_FOC_output(ExtU_TwoMassID_t *rtTwoMassID_U, ExtY_TwoMassID_t
   /* '<S1>:699:10' TwoMassID_FOC_output.enableFOC_current	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
 
-  /* '<S1>:699:11' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
+  /* '<S1>:699:11' TwoMassID_FOC_output.enableFOC_torque   = boolean(0); */
+  rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_torque = false;
+
+  /* '<S1>:699:12' TwoMassID_FOC_output.resetIntegrator 	= boolean(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
 
-  /* '<S1>:699:12' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
+  /* '<S1>:699:13' TwoMassID_FOC_output.Kp_id_out          = single(GlobalConfig.Kp_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_id_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_id;
 
-  /* '<S1>:699:13' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
+  /* '<S1>:699:14' TwoMassID_FOC_output.Kp_iq_out          = single(GlobalConfig.Kp_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_iq;
 
-  /* '<S1>:699:14' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
+  /* '<S1>:699:15' TwoMassID_FOC_output.Kp_n_out           = single(GlobalConfig.Kp_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Kp_n_out =
     rtTwoMassID_U->GlobalConfig_out.Kp_n;
 
-  /* '<S1>:699:15' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
+  /* '<S1>:699:16' TwoMassID_FOC_output.Ki_id_out          = single(GlobalConfig.Ki_id); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_id;
 
-  /* '<S1>:699:16' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
+  /* '<S1>:699:17' TwoMassID_FOC_output.Ki_iq_out      	= single(GlobalConfig.Ki_iq); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_iq;
 
-  /* '<S1>:699:17' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
+  /* '<S1>:699:18' TwoMassID_FOC_output.Ki_n_out           = single(GlobalConfig.Ki_n); */
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
     rtTwoMassID_U->GlobalConfig_out.Ki_n;
 
-  /* '<S1>:699:18' TwoMassID_FOC_output.activeState        = uint16(0); */
+  /* '<S1>:699:19' TwoMassID_FOC_output.activeState        = uint16(0); */
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
 }
 
@@ -7557,14 +7486,16 @@ static real32_T rt_hypotf_snf_m(real32_T u0, real32_T u1, DW_TwoMassID_t
 {
   real32_T y;
   rtTwoMassID_DW->a = fabsf(u0);
-  y = fabsf(u1);
-  if (rtTwoMassID_DW->a < y) {
-    rtTwoMassID_DW->a /= y;
-    y *= sqrtf(rtTwoMassID_DW->a * rtTwoMassID_DW->a + 1.0F);
-  } else if (rtTwoMassID_DW->a > y) {
-    y /= rtTwoMassID_DW->a;
-    y = sqrtf(y * y + 1.0F) * rtTwoMassID_DW->a;
-  } else if (!rtIsNaNF(y)) {
+  rtTwoMassID_DW->b = fabsf(u1);
+  if (rtTwoMassID_DW->a < rtTwoMassID_DW->b) {
+    rtTwoMassID_DW->a /= rtTwoMassID_DW->b;
+    y = sqrtf(rtTwoMassID_DW->a * rtTwoMassID_DW->a + 1.0F) * rtTwoMassID_DW->b;
+  } else if (rtTwoMassID_DW->a > rtTwoMassID_DW->b) {
+    rtTwoMassID_DW->b /= rtTwoMassID_DW->a;
+    y = sqrtf(rtTwoMassID_DW->b * rtTwoMassID_DW->b + 1.0F) * rtTwoMassID_DW->a;
+  } else if (rtIsNaNF(rtTwoMassID_DW->b)) {
+    y = (rtNaNF);
+  } else {
     y = rtTwoMassID_DW->a * 1.41421354F;
   }
 
@@ -7621,9 +7552,6 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
                      boolean_T UseLevMar, real32_T uu[5], DW_TwoMassID_t
                      *rtTwoMassID_DW)
 {
-  boolean_T exitg1;
-  boolean_T guard1 = false;
-
   /* MATLAB Function 'Min_LbMq': '<S1>:647' */
   /* '<S1>:647:3' Mag_G=Mag_G'; */
   /* '<S1>:647:4' index_min=uint16(0); */
@@ -7673,20 +7601,20 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
   /*                  FINDE Auswerte Bereich */
   /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
   /* '<S1>:647:32' for k=single(1):single(length(f_G)) */
-  for (rtTwoMassID_DW->i_k = 0; rtTwoMassID_DW->i_k < 1024; rtTwoMassID_DW->i_k
+  for (rtTwoMassID_DW->i_b = 0; rtTwoMassID_DW->i_b < 1024; rtTwoMassID_DW->i_b
        ++) {
-    rtTwoMassID_DW->JT = f_G[rtTwoMassID_DW->i_k];
+    rtTwoMassID_DW->JT = f_G[rtTwoMassID_DW->i_b];
 
     /* '<S1>:647:33' if(f_G(k)<fmin) */
     if (rtTwoMassID_DW->JT < b_fmin) {
       /* '<S1>:647:34' index_min=uint16(k); */
-      rtTwoMassID_DW->index_min = (uint16_T)(rtTwoMassID_DW->i_k + 1);
+      rtTwoMassID_DW->index_min = (uint16_T)(rtTwoMassID_DW->i_b + 1);
     }
 
     /* '<S1>:647:36' if(f_G(k)<fmax) */
     if (rtTwoMassID_DW->JT < b_fmax) {
       /* '<S1>:647:37' index_max=uint16(k); */
-      rtTwoMassID_DW->index_max = (uint16_T)(rtTwoMassID_DW->i_k + 1);
+      rtTwoMassID_DW->index_max = (uint16_T)(rtTwoMassID_DW->i_b + 1);
     }
   }
 
@@ -7706,23 +7634,22 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
     rtTwoMassID_DW->qY_c = 0U;
   }
 
-  rtTwoMassID_DW->b = (int32_T)rtTwoMassID_DW->qY_c - rtTwoMassID_DW->index_min;
-  rtTwoMassID_DW->c_k = -1;
-  while (rtTwoMassID_DW->c_k + 1 <= rtTwoMassID_DW->b) {
-    rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min + rtTwoMassID_DW->c_k;
+  rtTwoMassID_DW->b_c = (int32_T)rtTwoMassID_DW->qY_c -
+    rtTwoMassID_DW->index_min;
+  for (rtTwoMassID_DW->c_k = 0; rtTwoMassID_DW->c_k <= rtTwoMassID_DW->b_c;
+       rtTwoMassID_DW->c_k++) {
+    rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min + rtTwoMassID_DW->c_k) - 1;
 
     /* '<S1>:647:50' if(Mag_G(k-1)>Mag_G(k)&&Mag_G(k)<Mag_G(k+1)&&Mag_G(k)<Tilgerwert) */
-    if ((Mag_G[rtTwoMassID_DW->i_k - 1] > Mag_G[rtTwoMassID_DW->i_k]) &&
-        (Mag_G[rtTwoMassID_DW->i_k] < Mag_G[rtTwoMassID_DW->i_k + 1]) &&
-        (Mag_G[rtTwoMassID_DW->i_k] < rtTwoMassID_DW->Tilgerwert)) {
+    if ((Mag_G[rtTwoMassID_DW->i_b - 1] > Mag_G[rtTwoMassID_DW->i_b]) &&
+        (Mag_G[rtTwoMassID_DW->i_b] < Mag_G[rtTwoMassID_DW->i_b + 1]) &&
+        (Mag_G[rtTwoMassID_DW->i_b] < rtTwoMassID_DW->Tilgerwert)) {
       /* '<S1>:647:51' Tilgerwert=Mag_G(k); */
-      rtTwoMassID_DW->Tilgerwert = Mag_G[rtTwoMassID_DW->i_k];
+      rtTwoMassID_DW->Tilgerwert = Mag_G[rtTwoMassID_DW->i_b];
 
       /* '<S1>:647:52' Tilgerfrequenz=f_G(k); */
-      rtTwoMassID_DW->Tilgerfrequenz = f_G[rtTwoMassID_DW->i_k];
+      rtTwoMassID_DW->Tilgerfrequenz = f_G[rtTwoMassID_DW->i_b];
     }
-
-    rtTwoMassID_DW->c_k++;
   }
 
   /* finde Resoanzfrequenz */
@@ -7738,23 +7665,22 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
     rtTwoMassID_DW->qY_c = 0U;
   }
 
-  rtTwoMassID_DW->b = (int32_T)rtTwoMassID_DW->qY_c - rtTwoMassID_DW->index_min;
-  rtTwoMassID_DW->c_k = -1;
-  while (rtTwoMassID_DW->c_k + 1 <= rtTwoMassID_DW->b) {
-    rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min + rtTwoMassID_DW->c_k;
+  rtTwoMassID_DW->b_c = (int32_T)rtTwoMassID_DW->qY_c -
+    rtTwoMassID_DW->index_min;
+  for (rtTwoMassID_DW->c_k = 0; rtTwoMassID_DW->c_k <= rtTwoMassID_DW->b_c;
+       rtTwoMassID_DW->c_k++) {
+    rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min + rtTwoMassID_DW->c_k) - 1;
 
     /* '<S1>:647:59' if(Mag_G(k-1)<Mag_G(k)&&Mag_G(k)>Mag_G(k+1)&&Mag_G(k)>Resonanzwert) */
-    if ((Mag_G[rtTwoMassID_DW->i_k - 1] < Mag_G[rtTwoMassID_DW->i_k]) &&
-        (Mag_G[rtTwoMassID_DW->i_k] > Mag_G[rtTwoMassID_DW->i_k + 1]) &&
-        (Mag_G[rtTwoMassID_DW->i_k] > rtTwoMassID_DW->Resonanzwert)) {
+    if ((Mag_G[rtTwoMassID_DW->i_b - 1] < Mag_G[rtTwoMassID_DW->i_b]) &&
+        (Mag_G[rtTwoMassID_DW->i_b] > Mag_G[rtTwoMassID_DW->i_b + 1]) &&
+        (Mag_G[rtTwoMassID_DW->i_b] > rtTwoMassID_DW->Resonanzwert)) {
       /* '<S1>:647:60' Resonanzwert=Mag_G(k); */
-      rtTwoMassID_DW->Resonanzwert = Mag_G[rtTwoMassID_DW->i_k];
+      rtTwoMassID_DW->Resonanzwert = Mag_G[rtTwoMassID_DW->i_b];
 
       /* '<S1>:647:61' Resonanzfrequenz=f_G(k); */
-      rtTwoMassID_DW->Resonanzfrequenz = f_G[rtTwoMassID_DW->i_k];
+      rtTwoMassID_DW->Resonanzfrequenz = f_G[rtTwoMassID_DW->i_b];
     }
-
-    rtTwoMassID_DW->c_k++;
   }
 
   /* Berechne JT */
@@ -7762,12 +7688,13 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
   rtTwoMassID_DW->JT = 0.0F;
 
   /* '<S1>:647:66' for k=single(index_min):single(index_min+10) */
-  for (rtTwoMassID_DW->b = 0; rtTwoMassID_DW->b < 11; rtTwoMassID_DW->b++) {
-    rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min + rtTwoMassID_DW->b;
+  for (rtTwoMassID_DW->c_k = 0; rtTwoMassID_DW->c_k < 11; rtTwoMassID_DW->c_k++)
+  {
+    rtTwoMassID_DW->i_b = rtTwoMassID_DW->index_min + rtTwoMassID_DW->c_k;
 
     /* '<S1>:647:67' JT=JT+1/(f_G(k+1)*2*pi*10^(Mag_G(k+1)/20)); */
-    rtTwoMassID_DW->JT += 1.0F / (f_G[rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F *
-      rt_powf_snf_m(10.0F, Mag_G[rtTwoMassID_DW->i_k] / 20.0F, rtTwoMassID_DW));
+    rtTwoMassID_DW->JT += 1.0F / (f_G[rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F *
+      rt_powf_snf_m(10.0F, Mag_G[rtTwoMassID_DW->i_b] / 20.0F, rtTwoMassID_DW));
 
     /* '<S1>:647:68' 1/(f_G(k+1)*2*pi*10^(Mag_G(k+1)/20)) */
   }
@@ -7796,13 +7723,13 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
     rtTwoMassID_DW->c_est_start_idx_0_tmp_tmp * rtTwoMassID_DW->JL;
   rtTwoMassID_DW->c_est_start_idx_1_tmp = rtTwoMassID_DW->JL +
     rtTwoMassID_DW->JT;
-  rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp = rtTwoMassID_DW->JL *
+  rtTwoMassID_DW->c_est_start_idx_1_tmp_m = rtTwoMassID_DW->JL *
     rtTwoMassID_DW->JT;
-  rtTwoMassID_DW->c_est_start_idx_1_tmp_m = rtTwoMassID_DW->fehlerc_tmp *
+  rtTwoMassID_DW->c_est_start_idx_1_tmp_k = rtTwoMassID_DW->fehlerc_tmp *
     rtTwoMassID_DW->fehlerc_tmp;
-  rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp /
+  rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->c_est_start_idx_1_tmp_m /
     rtTwoMassID_DW->c_est_start_idx_1_tmp *
-    rtTwoMassID_DW->c_est_start_idx_1_tmp_m;
+    rtTwoMassID_DW->c_est_start_idx_1_tmp_k;
 
   /* Fallunterscheidung Startwert nach Plausibliltaet */
   /* '<S1>:647:80' if(c_est_start(1,1)>10&&c_est_start(1,2)<10) */
@@ -7842,22 +7769,27 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
 
   /* '<S1>:647:95' if(UseLevMar==1) */
   if (UseLevMar) {
+    uint8_T updateJac;
+    boolean_T exitg1;
+
     /* Levenberg Marquardt Algorithm         */
     /* '<S1>:647:97' c_lm=single(c_est); */
     /* '<S1>:647:98' d_lm=single(d_est); */
     /* '<S1>:647:99' updateJac=uint8(1); */
-    rtTwoMassID_DW->updateJac = 1U;
+    updateJac = 1U;
 
     /* '<S1>:647:101' for itt=1:nn_iters */
-    rtTwoMassID_DW->b = 1;
+    rtTwoMassID_DW->b_c = 1;
     exitg1 = false;
-    while ((!exitg1) && (rtTwoMassID_DW->b - 1 < 50)) {
+    while ((!exitg1) && (rtTwoMassID_DW->b_c - 1 < 50)) {
+      boolean_T guard1 = false;
+
       /*  itt */
       /* coursor(itt,1)=c_est; */
       /* coursor(itt,2)=d_est; */
       /* coursor(itt,3)=updateJac; */
       /* '<S1>:647:108' if updateJac == 1 */
-      if (rtTwoMassID_DW->updateJac == 1) {
+      if (updateJac == 1) {
         /* Jacacobi-Matrix mit aktuellem Parametersatz berechnen */
         /* '<S1>:647:113' fehler0=single(0); */
         rtTwoMassID_DW->fehler0 = 0.0F;
@@ -7868,98 +7800,102 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         /* '<S1>:647:117' for k=single(index_min):single(index_max) */
         rtTwoMassID_DW->c_k_tmp = rtTwoMassID_DW->index_max -
           rtTwoMassID_DW->index_min;
-        rtTwoMassID_DW->f_k = -1;
-        while (rtTwoMassID_DW->f_k + 1 <= rtTwoMassID_DW->c_k_tmp) {
-          rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min + rtTwoMassID_DW->f_k;
+        for (rtTwoMassID_DW->f_k = 0; rtTwoMassID_DW->f_k <=
+             rtTwoMassID_DW->c_k_tmp; rtTwoMassID_DW->f_k++) {
+          rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min + rtTwoMassID_DW->f_k)
+            - 1;
 
           /* '<S1>:647:119' u=(c_est-JL*((f_G(k)*2*pi)^2)+d_est*(f_G(k)*2*pi)*i); */
-          rtTwoMassID_DW->fehlerc = f_G[rtTwoMassID_DW->i_k] * 2.0F *
+          rtTwoMassID_DW->fehlerc = f_G[rtTwoMassID_DW->i_b] * 2.0F *
             3.14159274F;
 
           /* '<S1>:647:120' v=(d_est*(-1)*((f_G(k)*2*pi)^2)*(JM+JL)+c_est*f_G(k)*2*pi*i*(JM+JL)-JM*JL*i*((f_G(k)*2*pi)^3)); */
           /* '<S1>:647:121' G_est= 20*log10(abs(u/v)); */
-          rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est - rtTwoMassID_DW->fehlerc *
-            rtTwoMassID_DW->fehlerc * rtTwoMassID_DW->JL;
+          rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->fehlerc *
+            rtTwoMassID_DW->fehlerc;
+          rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est -
+            rtTwoMassID_DW->c_est_start_idx_1 * rtTwoMassID_DW->JL;
           rtTwoMassID_DW->ai = rtTwoMassID_DW->fehlerc * rtTwoMassID_DW->d_est;
-          rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->c_est *
-            f_G[rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F;
-          rtTwoMassID_DW->fehlerd = rt_powf_snf_m(rtTwoMassID_DW->fehlerc, 3.0F,
+          rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->c_est * f_G
+            [rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F;
+          rtTwoMassID_DW->br_tmp_c = rt_powf_snf_m(rtTwoMassID_DW->fehlerc, 3.0F,
             rtTwoMassID_DW);
-          rtTwoMassID_DW->br = (rtTwoMassID_DW->ee_lm_tmp_tmp * 0.0F *
+          rtTwoMassID_DW->br = (rtTwoMassID_DW->br_tmp * 0.0F *
                                 rtTwoMassID_DW->c_est_start_idx_1_tmp +
-                                rtTwoMassID_DW->fehlerc *
-                                rtTwoMassID_DW->fehlerc * -rtTwoMassID_DW->d_est
-                                * rtTwoMassID_DW->c_est_start_idx_1_tmp) -
-            rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp * 0.0F *
-            rtTwoMassID_DW->fehlerd;
-          rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ee_lm_tmp_tmp *
-            rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->fehlerd *
-            rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp;
-          if (rtTwoMassID_DW->br_tmp == 0.0F) {
+                                rtTwoMassID_DW->c_est_start_idx_1 *
+                                -rtTwoMassID_DW->d_est *
+                                rtTwoMassID_DW->c_est_start_idx_1_tmp) -
+            rtTwoMassID_DW->c_est_start_idx_1_tmp_m * 0.0F *
+            rtTwoMassID_DW->br_tmp_c;
+          rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->br_tmp *
+            rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->br_tmp_c *
+            rtTwoMassID_DW->c_est_start_idx_1_tmp_m;
+          if (rtTwoMassID_DW->br_tmp_c == 0.0F) {
             if (rtTwoMassID_DW->ai == 0.0F) {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-                rtTwoMassID_DW->br;
-              rtTwoMassID_DW->br_tmp = 0.0F;
+              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp_c = 0.0F;
             } else if (rtTwoMassID_DW->ar == 0.0F) {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp = 0.0F;
+              rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
             } else {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-                rtTwoMassID_DW->br;
-              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
             }
           } else if (rtTwoMassID_DW->br == 0.0F) {
             if (rtTwoMassID_DW->ar == 0.0F) {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                rtTwoMassID_DW->br_tmp;
-              rtTwoMassID_DW->br_tmp = 0.0F;
+              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                rtTwoMassID_DW->br_tmp_c;
+              rtTwoMassID_DW->br_tmp_c = 0.0F;
             } else if (rtTwoMassID_DW->ai == 0.0F) {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-              rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                rtTwoMassID_DW->br_tmp);
+              rtTwoMassID_DW->br_tmp = 0.0F;
+              rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                rtTwoMassID_DW->br_tmp_c);
             } else {
-              rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                rtTwoMassID_DW->br_tmp;
-              rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                rtTwoMassID_DW->br_tmp);
+              rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                rtTwoMassID_DW->br_tmp_c;
+              rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                rtTwoMassID_DW->br_tmp_c);
             }
           } else {
             rtTwoMassID_DW->brm = fabsf(rtTwoMassID_DW->br);
-            rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp);
+            rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp_c);
             if (rtTwoMassID_DW->brm > rtTwoMassID_DW->bim) {
-              rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp / rtTwoMassID_DW->br;
-              rtTwoMassID_DW->br += rtTwoMassID_DW->brm * rtTwoMassID_DW->br_tmp;
-              rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-                rtTwoMassID_DW->ai + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
-              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai - rtTwoMassID_DW->brm
-                * rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp_c /
+                rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br += rtTwoMassID_DW->brm *
+                rtTwoMassID_DW->br_tmp_c;
+              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai
+                + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai -
+                rtTwoMassID_DW->brm * rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
             } else if (rtTwoMassID_DW->bim == rtTwoMassID_DW->brm) {
               rtTwoMassID_DW->br = rtTwoMassID_DW->br > 0.0F ? 0.5F : -0.5F;
-              rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp > 0.0F ? 0.5F : -0.5F;
-              rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->ar *
-                rtTwoMassID_DW->br + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) /
+              rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp_c > 0.0F ? 0.5F :
+                -0.5F;
+              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ar * rtTwoMassID_DW->br
+                + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) /
                 rtTwoMassID_DW->brm;
-              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai * rtTwoMassID_DW->br
-                - rtTwoMassID_DW->ar * rtTwoMassID_DW->bim) /
+              rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai *
+                rtTwoMassID_DW->br - rtTwoMassID_DW->ar * rtTwoMassID_DW->bim) /
                 rtTwoMassID_DW->brm;
             } else {
-              rtTwoMassID_DW->brm = rtTwoMassID_DW->br / rtTwoMassID_DW->br_tmp;
+              rtTwoMassID_DW->brm = rtTwoMassID_DW->br /
+                rtTwoMassID_DW->br_tmp_c;
               rtTwoMassID_DW->br = rtTwoMassID_DW->brm * rtTwoMassID_DW->br +
-                rtTwoMassID_DW->br_tmp;
-              rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-                rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
-              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai
-                - rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c;
+              rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ar
+                + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->brm *
+                rtTwoMassID_DW->ai - rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
             }
           }
 
           /* '<S1>:647:123' fehler0=fehler0+(Mag_G(1,k)-G_est)^2; */
-          rtTwoMassID_DW->fehlerc = Mag_G[rtTwoMassID_DW->i_k] - 20.0F * log10f
-            (rt_hypotf_snf_m(rtTwoMassID_DW->ee_lm_tmp_tmp,
-                             rtTwoMassID_DW->br_tmp, rtTwoMassID_DW));
+          rtTwoMassID_DW->fehlerc = Mag_G[rtTwoMassID_DW->i_b] - 20.0F * log10f
+            (rt_hypotf_snf_m(rtTwoMassID_DW->br_tmp, rtTwoMassID_DW->br_tmp_c,
+                             rtTwoMassID_DW));
           rtTwoMassID_DW->fehler0 += rtTwoMassID_DW->fehlerc *
             rtTwoMassID_DW->fehlerc;
-          rtTwoMassID_DW->f_k++;
         }
 
         /* '<S1>:647:126' for m=single(1):single(50) */
@@ -7974,106 +7910,103 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           rtTwoMassID_DW->c_est += rtTwoMassID_DW->Jac_idx_0;
 
           /* '<S1>:647:130' for k=single(index_min):single(index_max) */
-          rtTwoMassID_DW->f_k = -1;
-          while (rtTwoMassID_DW->f_k + 1 <= rtTwoMassID_DW->c_k_tmp) {
-            rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min +
-              rtTwoMassID_DW->f_k;
+          for (rtTwoMassID_DW->f_k = 0; rtTwoMassID_DW->f_k <=
+               rtTwoMassID_DW->c_k_tmp; rtTwoMassID_DW->f_k++) {
+            rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min +
+              rtTwoMassID_DW->f_k) - 1;
 
             /* '<S1>:647:132' u=(c_est-JL*((f_G(k)*2*pi)^2)+d_est*(f_G(k)*2*pi)*i); */
-            rtTwoMassID_DW->Jac_idx_1 = f_G[rtTwoMassID_DW->i_k] * 2.0F *
+            rtTwoMassID_DW->fehlerd = f_G[rtTwoMassID_DW->i_b] * 2.0F *
               3.14159274F;
 
             /* '<S1>:647:133' v=(d_est*(-1)*((f_G(k)*2*pi)^2)*(JM+JL)+c_est*f_G(k)*2*pi*i*(JM+JL)-JM*JL*i*((f_G(k)*2*pi)^3)); */
             /* '<S1>:647:134' G_est = 20*log10(abs(u/v)); */
-            rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->Jac_idx_1 *
-              rtTwoMassID_DW->Jac_idx_1;
-            rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est -
-              rtTwoMassID_DW->c_est_start_idx_1 * rtTwoMassID_DW->JL;
-            rtTwoMassID_DW->ai = rtTwoMassID_DW->Jac_idx_1 *
-              rtTwoMassID_DW->d_est;
-            rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->c_est *
-              f_G[rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F;
-            rtTwoMassID_DW->fehlerd = rt_powf_snf_m(rtTwoMassID_DW->Jac_idx_1,
+            rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est - rtTwoMassID_DW->fehlerd
+              * rtTwoMassID_DW->fehlerd * rtTwoMassID_DW->JL;
+            rtTwoMassID_DW->ai = rtTwoMassID_DW->fehlerd * rtTwoMassID_DW->d_est;
+            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->c_est * f_G
+              [rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F;
+            rtTwoMassID_DW->br_tmp_c = rt_powf_snf_m(rtTwoMassID_DW->fehlerd,
               3.0F, rtTwoMassID_DW);
-            rtTwoMassID_DW->br = (rtTwoMassID_DW->ee_lm_tmp_tmp * 0.0F *
-                                  rtTwoMassID_DW->c_est_start_idx_1_tmp +
-                                  rtTwoMassID_DW->c_est_start_idx_1 *
+            rtTwoMassID_DW->br = (rtTwoMassID_DW->fehlerd *
+                                  rtTwoMassID_DW->fehlerd *
                                   -rtTwoMassID_DW->d_est *
+                                  rtTwoMassID_DW->c_est_start_idx_1_tmp +
+                                  rtTwoMassID_DW->br_tmp * 0.0F *
                                   rtTwoMassID_DW->c_est_start_idx_1_tmp) -
               rtTwoMassID_DW->JT * rtTwoMassID_DW->JL * 0.0F *
-              rtTwoMassID_DW->fehlerd;
-            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ee_lm_tmp_tmp *
-              rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->fehlerd *
-              rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp;
-            if (rtTwoMassID_DW->br_tmp == 0.0F) {
+              rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->br_tmp *
+              rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->br_tmp_c *
+              rtTwoMassID_DW->c_est_start_idx_1_tmp_m;
+            if (rtTwoMassID_DW->br_tmp_c == 0.0F) {
               if (rtTwoMassID_DW->ai == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = 0.0F;
               } else if (rtTwoMassID_DW->ar == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
-              } else {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
+                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai /
                   rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+              } else {
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br;
               }
             } else if (rtTwoMassID_DW->br == 0.0F) {
               if (rtTwoMassID_DW->ar == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp_c = 0.0F;
               } else if (rtTwoMassID_DW->ai == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-                rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br_tmp);
+                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                  rtTwoMassID_DW->br_tmp_c);
               } else {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br_tmp);
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                  rtTwoMassID_DW->br_tmp_c);
               }
             } else {
               rtTwoMassID_DW->brm = fabsf(rtTwoMassID_DW->br);
-              rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp);
+              rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp_c);
               if (rtTwoMassID_DW->brm > rtTwoMassID_DW->bim) {
-                rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp /
+                rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp_c /
                   rtTwoMassID_DW->br;
                 rtTwoMassID_DW->br += rtTwoMassID_DW->brm *
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm *
                   rtTwoMassID_DW->ai + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai -
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai -
                   rtTwoMassID_DW->brm * rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
               } else if (rtTwoMassID_DW->bim == rtTwoMassID_DW->brm) {
                 rtTwoMassID_DW->br = rtTwoMassID_DW->br > 0.0F ? 0.5F : -0.5F;
-                rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp > 0.0F ? 0.5F :
+                rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp_c > 0.0F ? 0.5F :
                   -0.5F;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->ar *
+                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ar *
                   rtTwoMassID_DW->br + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim)
                   / rtTwoMassID_DW->brm;
-                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai *
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai *
                   rtTwoMassID_DW->br - rtTwoMassID_DW->ar * rtTwoMassID_DW->bim)
                   / rtTwoMassID_DW->brm;
               } else {
                 rtTwoMassID_DW->brm = rtTwoMassID_DW->br /
-                  rtTwoMassID_DW->br_tmp;
+                  rtTwoMassID_DW->br_tmp_c;
                 rtTwoMassID_DW->br = rtTwoMassID_DW->brm * rtTwoMassID_DW->br +
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-                  rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+                  rtTwoMassID_DW->br_tmp_c;
                 rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm *
+                  rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->brm *
                   rtTwoMassID_DW->ai - rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
               }
             }
 
             /* '<S1>:647:136' fehlerc=fehlerc+(Mag_G(1,k)-G_est)^2; */
-            rtTwoMassID_DW->fehlerd = Mag_G[rtTwoMassID_DW->i_k] - 20.0F *
-              log10f(rt_hypotf_snf_m(rtTwoMassID_DW->ee_lm_tmp_tmp,
-                      rtTwoMassID_DW->br_tmp, rtTwoMassID_DW));
+            rtTwoMassID_DW->fehlerd = Mag_G[rtTwoMassID_DW->i_b] - 20.0F *
+              log10f(rt_hypotf_snf_m(rtTwoMassID_DW->br_tmp,
+                      rtTwoMassID_DW->br_tmp_c, rtTwoMassID_DW));
             rtTwoMassID_DW->fehlerc += rtTwoMassID_DW->fehlerd *
               rtTwoMassID_DW->fehlerd;
-            rtTwoMassID_DW->f_k++;
           }
 
           /* '<S1>:647:138' c_est=c_est-0.1*(m-25.5); */
@@ -8088,105 +8021,104 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           rtTwoMassID_DW->d_est += rtTwoMassID_DW->Jac_idx_1;
 
           /* '<S1>:647:143' for k=single(index_min):single(index_max) */
-          rtTwoMassID_DW->f_k = -1;
-          while (rtTwoMassID_DW->f_k + 1 <= rtTwoMassID_DW->c_k_tmp) {
-            rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min +
-              rtTwoMassID_DW->f_k;
+          for (rtTwoMassID_DW->f_k = 0; rtTwoMassID_DW->f_k <=
+               rtTwoMassID_DW->c_k_tmp; rtTwoMassID_DW->f_k++) {
+            rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min +
+              rtTwoMassID_DW->f_k) - 1;
 
             /* '<S1>:647:145' u=(c_est-JL*((f_G(k)*2*pi)^2)+d_est*(f_G(k)*2*pi)*i); */
-            rtTwoMassID_DW->ee_lm_tmp_tmp = f_G[rtTwoMassID_DW->i_k] * 2.0F *
+            rtTwoMassID_DW->ee_lm = f_G[rtTwoMassID_DW->i_b] * 2.0F *
               3.14159274F;
 
             /* '<S1>:647:146' v=(d_est*(-1)*((f_G(k)*2*pi)^2)*(JM+JL)+c_est*f_G(k)*2*pi*i*(JM+JL)-JM*JL*i*((f_G(k)*2*pi)^3)); */
             /* '<S1>:647:147' G_est = 20*log10(abs(u/v)); */
-            rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->ee_lm_tmp_tmp *
-              rtTwoMassID_DW->ee_lm_tmp_tmp;
+            rtTwoMassID_DW->c_est_start_idx_1 = rtTwoMassID_DW->ee_lm *
+              rtTwoMassID_DW->ee_lm;
             rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est -
               rtTwoMassID_DW->c_est_start_idx_1 * rtTwoMassID_DW->JL;
-            rtTwoMassID_DW->ai = rtTwoMassID_DW->ee_lm_tmp_tmp *
-              rtTwoMassID_DW->d_est;
+            rtTwoMassID_DW->ai = rtTwoMassID_DW->ee_lm * rtTwoMassID_DW->d_est;
             rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->c_est * f_G
-              [rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F;
+              [rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F;
+            rtTwoMassID_DW->br_tmp_c = rt_powf_snf_m(rtTwoMassID_DW->ee_lm, 3.0F,
+              rtTwoMassID_DW);
             rtTwoMassID_DW->br = (rtTwoMassID_DW->br_tmp * 0.0F *
                                   rtTwoMassID_DW->c_est_start_idx_1_tmp +
                                   rtTwoMassID_DW->c_est_start_idx_1 *
                                   -rtTwoMassID_DW->d_est *
                                   rtTwoMassID_DW->c_est_start_idx_1_tmp) -
-              rtTwoMassID_DW->JT * rtTwoMassID_DW->JL * 0.0F * rt_powf_snf_m
-              (rtTwoMassID_DW->ee_lm_tmp_tmp, 3.0F, rtTwoMassID_DW);
-            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->br_tmp *
-              rtTwoMassID_DW->c_est_start_idx_1_tmp - rt_powf_snf_m
-              (rtTwoMassID_DW->ee_lm_tmp_tmp, 3.0F, rtTwoMassID_DW) *
-              rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp;
-            if (rtTwoMassID_DW->br_tmp == 0.0F) {
+              rtTwoMassID_DW->JT * rtTwoMassID_DW->JL * 0.0F *
+              rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->br_tmp *
+              rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->br_tmp_c *
+              rtTwoMassID_DW->c_est_start_idx_1_tmp_m;
+            if (rtTwoMassID_DW->br_tmp_c == 0.0F) {
               if (rtTwoMassID_DW->ai == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = 0.0F;
               } else if (rtTwoMassID_DW->ar == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
-              } else {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
+                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai /
                   rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+              } else {
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br;
               }
             } else if (rtTwoMassID_DW->br == 0.0F) {
               if (rtTwoMassID_DW->ar == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp_c = 0.0F;
               } else if (rtTwoMassID_DW->ai == 0.0F) {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-                rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br_tmp);
+                rtTwoMassID_DW->br_tmp = 0.0F;
+                rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                  rtTwoMassID_DW->br_tmp_c);
               } else {
-                rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-                  rtTwoMassID_DW->br_tmp);
+                rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+                  rtTwoMassID_DW->br_tmp_c);
               }
             } else {
               rtTwoMassID_DW->brm = fabsf(rtTwoMassID_DW->br);
-              rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp);
+              rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp_c);
               if (rtTwoMassID_DW->brm > rtTwoMassID_DW->bim) {
-                rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp /
+                rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp_c /
                   rtTwoMassID_DW->br;
                 rtTwoMassID_DW->br += rtTwoMassID_DW->brm *
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
+                  rtTwoMassID_DW->br_tmp_c;
+                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm *
                   rtTwoMassID_DW->ai + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
-                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai -
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai -
                   rtTwoMassID_DW->brm * rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
               } else if (rtTwoMassID_DW->bim == rtTwoMassID_DW->brm) {
                 rtTwoMassID_DW->br = rtTwoMassID_DW->br > 0.0F ? 0.5F : -0.5F;
-                rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp > 0.0F ? 0.5F :
+                rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp_c > 0.0F ? 0.5F :
                   -0.5F;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->ar *
+                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ar *
                   rtTwoMassID_DW->br + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim)
                   / rtTwoMassID_DW->brm;
-                rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai *
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai *
                   rtTwoMassID_DW->br - rtTwoMassID_DW->ar * rtTwoMassID_DW->bim)
                   / rtTwoMassID_DW->brm;
               } else {
                 rtTwoMassID_DW->brm = rtTwoMassID_DW->br /
-                  rtTwoMassID_DW->br_tmp;
+                  rtTwoMassID_DW->br_tmp_c;
                 rtTwoMassID_DW->br = rtTwoMassID_DW->brm * rtTwoMassID_DW->br +
-                  rtTwoMassID_DW->br_tmp;
-                rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-                  rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+                  rtTwoMassID_DW->br_tmp_c;
                 rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm *
+                  rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+                rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->brm *
                   rtTwoMassID_DW->ai - rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
               }
             }
 
             /* '<S1>:647:149' fehlerd=fehlerd+(Mag_G(1,k)-G_est)^2; */
-            rtTwoMassID_DW->ee_lm = Mag_G[rtTwoMassID_DW->i_k] - 20.0F * log10f
-              (rt_hypotf_snf_m(rtTwoMassID_DW->ee_lm_tmp_tmp,
-                               rtTwoMassID_DW->br_tmp, rtTwoMassID_DW));
+            rtTwoMassID_DW->ee_lm = Mag_G[rtTwoMassID_DW->i_b] - 20.0F * log10f
+              (rt_hypotf_snf_m(rtTwoMassID_DW->br_tmp, rtTwoMassID_DW->br_tmp_c,
+                               rtTwoMassID_DW));
             rtTwoMassID_DW->fehlerd += rtTwoMassID_DW->ee_lm *
               rtTwoMassID_DW->ee_lm;
-            rtTwoMassID_DW->f_k++;
           }
 
           /* '<S1>:647:151' d_est=d_est-0.00001*(m-25.5); */
@@ -8198,8 +8130,8 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
 
           /* '<S1>:647:154' Ustep(50+m)=(fehlerd-fehler0)/(0.00001*(m-25.5)); */
           rtTwoMassID_DW->Ustep[rtTwoMassID_DW->c_k + 50] =
-            (rtTwoMassID_DW->fehlerd - rtTwoMassID_DW->fehler0) / ((((real32_T)
-            rtTwoMassID_DW->c_k + 1.0F) - 25.5F) * 1.0E-5F);
+            (rtTwoMassID_DW->fehlerd - rtTwoMassID_DW->fehler0) /
+            rtTwoMassID_DW->Jac_idx_1;
         }
 
         /* '<S1>:647:157' Ustep(1:50); */
@@ -8215,8 +8147,8 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         /* '<S1>:647:161' d1=fehler0; */
         /* Bestimmung Hessematrix          %%%%%%%%%%%%%%%%%%%%%%%%%%%%ana: Gauss Newton: H = Jac'*Jac; */
         /* '<S1>:647:164' if itt==uint16(1) */
-        if ((uint16_T)rtTwoMassID_DW->b == 1) {
-          /* '<S1>:647:165' ee = d1 %t(d1,d1)           % Fehlerquadrat berechnen */
+        if ((uint16_T)rtTwoMassID_DW->b_c == 1) {
+          /* '<S1>:647:165' ee = d1 */
           rtTwoMassID_DW->ee = rtTwoMassID_DW->fehler0;
 
           /* t(d1,d1)           % Fehlerquadrat berechnen */
@@ -8234,7 +8166,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         }
 
         /* '<S1>:647:173' if itt>1 */
-        if ((uint16_T)rtTwoMassID_DW->b > 1) {
+        if ((uint16_T)rtTwoMassID_DW->b_c > 1) {
           /* '<S1>:647:174' itt */
           /*  Gauss Newton: H = Jac'*Jac; */
           /* '<S1>:647:176' H=Jac'*Jac; */
@@ -8336,92 +8268,90 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* '<S1>:647:234' for k=single(index_min):single(index_max) */
       rtTwoMassID_DW->c_k = rtTwoMassID_DW->index_max -
         rtTwoMassID_DW->index_min;
-      rtTwoMassID_DW->f_k = -1;
-      while (rtTwoMassID_DW->f_k + 1 <= rtTwoMassID_DW->c_k) {
-        rtTwoMassID_DW->i_k = rtTwoMassID_DW->index_min + rtTwoMassID_DW->f_k;
+      for (rtTwoMassID_DW->f_k = 0; rtTwoMassID_DW->f_k <= rtTwoMassID_DW->c_k;
+           rtTwoMassID_DW->f_k++) {
+        rtTwoMassID_DW->i_b = (rtTwoMassID_DW->index_min + rtTwoMassID_DW->f_k)
+          - 1;
 
         /* '<S1>:647:235' G_est2= 20*log10(abs((c_lm-JL*((f_G(k)*2*pi)^2)+d_lm*(f_G(k)*2*pi)*i)/(d_lm*(-1)*((f_G(k)*2*pi)^2)*(JM+JL)+c_lm*f_G(k)*2*pi*i*(JM+JL)-JM*JL*i*((f_G(k)*2*pi)^3)))); */
-        rtTwoMassID_DW->br = f_G[rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F;
+        rtTwoMassID_DW->br = f_G[rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F;
         rtTwoMassID_DW->ar = rtTwoMassID_DW->fehlerc - rtTwoMassID_DW->br *
           rtTwoMassID_DW->br * rtTwoMassID_DW->JL;
         rtTwoMassID_DW->ai = rtTwoMassID_DW->br * rtTwoMassID_DW->fehlerd;
-        rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->fehlerc *
-          f_G[rtTwoMassID_DW->i_k] * 2.0F * 3.14159274F;
-        rtTwoMassID_DW->br_tmp = rt_powf_snf_m(rtTwoMassID_DW->br, 3.0F,
+        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->fehlerc * f_G
+          [rtTwoMassID_DW->i_b] * 2.0F * 3.14159274F;
+        rtTwoMassID_DW->br_tmp_c = rt_powf_snf_m(rtTwoMassID_DW->br, 3.0F,
           rtTwoMassID_DW);
-        rtTwoMassID_DW->br = (rtTwoMassID_DW->ee_lm_tmp_tmp * 0.0F *
-                              rtTwoMassID_DW->c_est_start_idx_1_tmp +
-                              rtTwoMassID_DW->br * rtTwoMassID_DW->br *
+        rtTwoMassID_DW->br = (rtTwoMassID_DW->br * rtTwoMassID_DW->br *
                               -rtTwoMassID_DW->fehlerd *
+                              rtTwoMassID_DW->c_est_start_idx_1_tmp +
+                              rtTwoMassID_DW->br_tmp * 0.0F *
                               rtTwoMassID_DW->c_est_start_idx_1_tmp) -
           rtTwoMassID_DW->JT * rtTwoMassID_DW->JL * 0.0F *
-          rtTwoMassID_DW->br_tmp;
-        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ee_lm_tmp_tmp *
-          rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->br_tmp *
-          rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp;
-        if (rtTwoMassID_DW->br_tmp == 0.0F) {
+          rtTwoMassID_DW->br_tmp_c;
+        rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->br_tmp *
+          rtTwoMassID_DW->c_est_start_idx_1_tmp - rtTwoMassID_DW->br_tmp_c *
+          rtTwoMassID_DW->c_est_start_idx_1_tmp_m;
+        if (rtTwoMassID_DW->br_tmp_c == 0.0F) {
           if (rtTwoMassID_DW->ai == 0.0F) {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-              rtTwoMassID_DW->br;
-            rtTwoMassID_DW->br_tmp = 0.0F;
+            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp_c = 0.0F;
           } else if (rtTwoMassID_DW->ar == 0.0F) {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp = 0.0F;
+            rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
           } else {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar /
-              rtTwoMassID_DW->br;
-            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
           }
         } else if (rtTwoMassID_DW->br == 0.0F) {
           if (rtTwoMassID_DW->ar == 0.0F) {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-              rtTwoMassID_DW->br_tmp;
-            rtTwoMassID_DW->br_tmp = 0.0F;
+            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+              rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp_c = 0.0F;
           } else if (rtTwoMassID_DW->ai == 0.0F) {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-            rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-              rtTwoMassID_DW->br_tmp);
+            rtTwoMassID_DW->br_tmp = 0.0F;
+            rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+              rtTwoMassID_DW->br_tmp_c);
           } else {
-            rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-              rtTwoMassID_DW->br_tmp;
-            rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
-              rtTwoMassID_DW->br_tmp);
+            rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai /
+              rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
+              rtTwoMassID_DW->br_tmp_c);
           }
         } else {
           rtTwoMassID_DW->brm = fabsf(rtTwoMassID_DW->br);
-          rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp);
+          rtTwoMassID_DW->bim = fabsf(rtTwoMassID_DW->br_tmp_c);
           if (rtTwoMassID_DW->brm > rtTwoMassID_DW->bim) {
-            rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp / rtTwoMassID_DW->br;
-            rtTwoMassID_DW->br += rtTwoMassID_DW->brm * rtTwoMassID_DW->br_tmp;
-            rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-              rtTwoMassID_DW->ai + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
-            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai - rtTwoMassID_DW->brm *
+            rtTwoMassID_DW->brm = rtTwoMassID_DW->br_tmp_c / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br += rtTwoMassID_DW->brm * rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai +
               rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai - rtTwoMassID_DW->brm
+              * rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
           } else if (rtTwoMassID_DW->bim == rtTwoMassID_DW->brm) {
             rtTwoMassID_DW->br = rtTwoMassID_DW->br > 0.0F ? 0.5F : -0.5F;
-            rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp > 0.0F ? 0.5F : -0.5F;
-            rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->ar *
-              rtTwoMassID_DW->br + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) /
-              rtTwoMassID_DW->brm;
-            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai * rtTwoMassID_DW->br -
-              rtTwoMassID_DW->ar * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
+            rtTwoMassID_DW->bim = rtTwoMassID_DW->br_tmp_c > 0.0F ? 0.5F : -0.5F;
+            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ar * rtTwoMassID_DW->br +
+              rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
+            rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai * rtTwoMassID_DW->br
+              - rtTwoMassID_DW->ar * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
           } else {
-            rtTwoMassID_DW->brm = rtTwoMassID_DW->br / rtTwoMassID_DW->br_tmp;
+            rtTwoMassID_DW->brm = rtTwoMassID_DW->br / rtTwoMassID_DW->br_tmp_c;
             rtTwoMassID_DW->br = rtTwoMassID_DW->brm * rtTwoMassID_DW->br +
-              rtTwoMassID_DW->br_tmp;
-            rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-              rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
-            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai -
-              rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+              rtTwoMassID_DW->br_tmp_c;
+            rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ar +
+              rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+            rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai
+              - rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
           }
         }
 
         /* '<S1>:647:236' if(d2<single(1*10^38)) */
         if (rtTwoMassID_DW->d2 < 1.0E+38F) {
           /* '<S1>:647:237' d2 = d2 +abs(Mag_G(1,k) - G_est2)^2; */
-          rtTwoMassID_DW->ar = fabsf(Mag_G[rtTwoMassID_DW->i_k] - 20.0F * log10f
-            (rt_hypotf_snf_m(rtTwoMassID_DW->ee_lm_tmp_tmp,
-                             rtTwoMassID_DW->br_tmp, rtTwoMassID_DW)));
+          rtTwoMassID_DW->ar = fabsf(Mag_G[rtTwoMassID_DW->i_b] - 20.0F * log10f
+            (rt_hypotf_snf_m(rtTwoMassID_DW->br_tmp, rtTwoMassID_DW->br_tmp_c,
+                             rtTwoMassID_DW)));
           rtTwoMassID_DW->d2 += rtTwoMassID_DW->ar * rtTwoMassID_DW->ar;
         } else {
           /* '<S1>:647:238' else */
@@ -8431,14 +8361,12 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           /* '<S1>:647:240' ee_lm=single(1*10^38); */
           rtTwoMassID_DW->ee_lm = 1.0E+38F;
         }
-
-        rtTwoMassID_DW->f_k++;
       }
 
       /* Auswertefehler setzen */
       /* '<S1>:647:245' if(ee_lm==0) */
       if (rtTwoMassID_DW->ee_lm == 0.0F) {
-        /* '<S1>:647:246' ee_lm = d2         */
+        /* '<S1>:647:246' ee_lm = d2 */
         rtTwoMassID_DW->ee_lm = rtTwoMassID_DW->d2;
       }
 
@@ -8464,7 +8392,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         rtTwoMassID_DW->ee = rtTwoMassID_DW->ee_lm;
 
         /* '<S1>:647:260' updateJac = uint8(1); */
-        rtTwoMassID_DW->updateJac = 1U;
+        updateJac = 1U;
 
         /* '<S1>:647:261' if(abs(dp(1))< single(0.0001) && abs(dp(2))< single(0.0000001)) */
         if ((fabsf(rtTwoMassID_DW->c_est_start_idx_0) < 0.0001F) && (fabsf
@@ -8483,7 +8411,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         /* '<S1>:647:270' if ee_lm > ee */
         if (rtTwoMassID_DW->ee_lm > rtTwoMassID_DW->ee) {
           /* '<S1>:647:271' updateJac = uint8(0); */
-          rtTwoMassID_DW->updateJac = 0U;
+          updateJac = 0U;
 
           /* '<S1>:647:272' lambda = lambda*10; */
           rtTwoMassID_DW->lambda *= 10.0F;
@@ -8495,7 +8423,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
           /* '<S1>:647:279' ee */
           exitg1 = true;
         } else {
-          rtTwoMassID_DW->b++;
+          rtTwoMassID_DW->b_c++;
         }
       }
     }
@@ -8512,7 +8440,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
     rtTwoMassID_DW->lambda = rtTwoMassID_DW->c_est_start_idx_1_tmp *
       rtTwoMassID_DW->c_est;
     rtTwoMassID_DW->ai = (rtTwoMassID_DW->lambda -
-                          rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp *
+                          rtTwoMassID_DW->c_est_start_idx_1_tmp_m *
                           rtTwoMassID_DW->c_est_start_idx_0_tmp_tmp) *
       rtTwoMassID_DW->Tilgerfrequenz * 2.0F * 3.14159274F *
       rtTwoMassID_DW->fehler0;
@@ -8521,28 +8449,26 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       rtTwoMassID_DW->c_est_start_idx_1_tmp;
     if (rtTwoMassID_DW->d_est_tmp == 0.0F) {
       if (rtTwoMassID_DW->ai == 0.0F) {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
-        rtTwoMassID_DW->br_tmp = 0.0F;
+        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp_c = 0.0F;
       } else if (rtTwoMassID_DW->ar == 0.0F) {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp = 0.0F;
+        rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
       } else {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
-        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ar / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp_c = rtTwoMassID_DW->ai / rtTwoMassID_DW->br;
       }
     } else if (rtTwoMassID_DW->br == 0.0F) {
       if (rtTwoMassID_DW->ar == 0.0F) {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-          rtTwoMassID_DW->d_est_tmp;
-        rtTwoMassID_DW->br_tmp = 0.0F;
+        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->d_est_tmp;
+        rtTwoMassID_DW->br_tmp_c = 0.0F;
       } else if (rtTwoMassID_DW->ai == 0.0F) {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = 0.0F;
-        rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
+        rtTwoMassID_DW->br_tmp = 0.0F;
+        rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
           rtTwoMassID_DW->d_est_tmp);
       } else {
-        rtTwoMassID_DW->ee_lm_tmp_tmp = rtTwoMassID_DW->ai /
-          rtTwoMassID_DW->d_est_tmp;
-        rtTwoMassID_DW->br_tmp = -(rtTwoMassID_DW->ar /
+        rtTwoMassID_DW->br_tmp = rtTwoMassID_DW->ai / rtTwoMassID_DW->d_est_tmp;
+        rtTwoMassID_DW->br_tmp_c = -(rtTwoMassID_DW->ar /
           rtTwoMassID_DW->d_est_tmp);
       }
     } else {
@@ -8551,40 +8477,40 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       if (rtTwoMassID_DW->brm > rtTwoMassID_DW->bim) {
         rtTwoMassID_DW->brm = rtTwoMassID_DW->d_est_tmp / rtTwoMassID_DW->br;
         rtTwoMassID_DW->br += rtTwoMassID_DW->brm * rtTwoMassID_DW->d_est_tmp;
-        rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-          rtTwoMassID_DW->ai + rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
-        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai - rtTwoMassID_DW->brm *
+        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai +
+          rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai - rtTwoMassID_DW->brm *
           rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
       } else if (rtTwoMassID_DW->bim == rtTwoMassID_DW->brm) {
         rtTwoMassID_DW->br = rtTwoMassID_DW->br > 0.0F ? 0.5F : -0.5F;
         rtTwoMassID_DW->bim = rtTwoMassID_DW->d_est_tmp > 0.0F ? 0.5F : -0.5F;
-        rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->ar * rtTwoMassID_DW->br
-          + rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
-        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ai * rtTwoMassID_DW->br -
+        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->ar * rtTwoMassID_DW->br +
+          rtTwoMassID_DW->ai * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
+        rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->ai * rtTwoMassID_DW->br -
           rtTwoMassID_DW->ar * rtTwoMassID_DW->bim) / rtTwoMassID_DW->brm;
       } else {
         rtTwoMassID_DW->brm = rtTwoMassID_DW->br / rtTwoMassID_DW->d_est_tmp;
         rtTwoMassID_DW->br = rtTwoMassID_DW->brm * rtTwoMassID_DW->br +
           rtTwoMassID_DW->d_est_tmp;
-        rtTwoMassID_DW->ee_lm_tmp_tmp = (rtTwoMassID_DW->brm *
-          rtTwoMassID_DW->ar + rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
-        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai -
+        rtTwoMassID_DW->br_tmp = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ar +
+          rtTwoMassID_DW->ai) / rtTwoMassID_DW->br;
+        rtTwoMassID_DW->br_tmp_c = (rtTwoMassID_DW->brm * rtTwoMassID_DW->ai -
           rtTwoMassID_DW->ar) / rtTwoMassID_DW->br;
       }
     }
 
     /* '<S1>:647:290' d_res =  abs((JL*(Resonanzfrequenz*2*pi)^2 - c_est+(c_est*(JM+JL)-JM*JL*(Resonanzfrequenz*2*pi)^2)*Resonanzfrequenz*2*pi*10^(Resonanzwert/20)*i)    /   ((10^(Resonanzwert/20))*(Resonanzfrequenz*2*pi)^2 *(JM+JL)  + Resonanzfrequenz*2*pi*i   )  ) */
-    rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est_start_idx_1_tmp_m *
+    rtTwoMassID_DW->ar = rtTwoMassID_DW->c_est_start_idx_1_tmp_k *
       rtTwoMassID_DW->JL - rtTwoMassID_DW->c_est;
     rtTwoMassID_DW->fehler0 = rt_powf_snf_m(10.0F, rtTwoMassID_DW->Resonanzwert /
       20.0F, rtTwoMassID_DW);
     rtTwoMassID_DW->ai = (rtTwoMassID_DW->lambda -
-                          rtTwoMassID_DW->c_est_start_idx_1_tmp_tmp *
-                          rtTwoMassID_DW->c_est_start_idx_1_tmp_m) *
+                          rtTwoMassID_DW->c_est_start_idx_1_tmp_m *
+                          rtTwoMassID_DW->c_est_start_idx_1_tmp_k) *
       rtTwoMassID_DW->Resonanzfrequenz * 2.0F * 3.14159274F *
       rtTwoMassID_DW->fehler0;
     rtTwoMassID_DW->br = rtTwoMassID_DW->fehler0 *
-      rtTwoMassID_DW->c_est_start_idx_1_tmp_m *
+      rtTwoMassID_DW->c_est_start_idx_1_tmp_k *
       rtTwoMassID_DW->c_est_start_idx_1_tmp;
     if (rtTwoMassID_DW->fehlerc_tmp == 0.0F) {
       if (rtTwoMassID_DW->ai == 0.0F) {
@@ -8644,8 +8570,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
     /* '<S1>:647:291' d_est=single((d_res+d_til)/2); */
     rtTwoMassID_DW->d_est = (rt_hypotf_snf_m(rtTwoMassID_DW->Tilgerfrequenz,
       rtTwoMassID_DW->fehlerc_tmp, rtTwoMassID_DW) + rt_hypotf_snf_m
-      (rtTwoMassID_DW->ee_lm_tmp_tmp, rtTwoMassID_DW->br_tmp, rtTwoMassID_DW)) /
-      2.0F;
+      (rtTwoMassID_DW->br_tmp, rtTwoMassID_DW->br_tmp_c, rtTwoMassID_DW)) / 2.0F;
   }
 
   /* '<S1>:647:297' uuu(2,1)=c_est; */
@@ -8664,103 +8589,6 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
   /* '<S1>:647:302' uu=uuu; */
 }
 
-/* Function for Chart: '<Root>/TwoMassID' */
-static void enter_atomic_TMS_calculate_stat(ExtU_TwoMassID_t *rtTwoMassID_U,
-  ExtY_TwoMassID_t *rtTwoMassID_Y, DW_TwoMassID_t *rtTwoMassID_DW)
-{
-  real32_T *measArray1;
-
-  /* Outport: '<Root>/TwoMassID_FOC_output' */
-  /* Entry 'TMS_calculate_state': '<S1>:648' */
-  /* '<S1>:648:3' TwoMassID_FOC_output.activeState = uint16(230); */
-  rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 230U;
-
-  /* '<S1>:648:4' J(1:2048,2)=J(1:2048,2)*1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs; */
-  for (rtTwoMassID_DW->i_c = 0; rtTwoMassID_DW->i_c < 2048; rtTwoMassID_DW->i_c
-       ++) {
-    /* Inport: '<Root>/GlobalConfig' */
-    rtTwoMassID_DW->J[rtTwoMassID_DW->i_c + 2048] = rtTwoMassID_DW->
-      J[rtTwoMassID_DW->i_c + 2048] * 1.5F *
-      rtTwoMassID_U->GlobalConfig_out.PMSM_config.polePairs *
-      rtTwoMassID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
-  }
-
-  /* Outputs for Function Call SubSystem: '<S1>/TwoMassID.Welch' */
-  /* omega Welch */
-  /* '<S1>:648:6' measArray1(1:1024)=zeros(1024,1); */
-  /* '<S1>:648:7' [measArray1(1:1024,1),measArray2(1:1024)] = Welch(J(1:2046,1)); */
-  /* Simulink Function 'Welch': '<S1>:635' */
-  TwoMassIDWelch(&rtTwoMassID_DW->J[0], &rtTwoMassID_DW->TwoMassIDWelch_l);
-
-  /* End of Outputs for SubSystem: '<S1>/TwoMassID.Welch' */
-  memcpy(&rtTwoMassID_DW->measArray2[0],
-         &rtTwoMassID_DW->TwoMassIDWelch_l.SpectrumEstimator_o1[0], sizeof
-         (real32_T) << 10U);
-
-  /* torque Welch */
-  /* '<S1>:648:9' measArray2(1025:2048)=measArray2(1:1024); */
-  for (rtTwoMassID_DW->i_c = 0; rtTwoMassID_DW->i_c < 1024; rtTwoMassID_DW->i_c
-       ++) {
-    rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i_c + 1024] =
-      rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i_c];
-  }
-
-  /* Outputs for Function Call SubSystem: '<S1>/TwoMassID.Welch' */
-  /* '<S1>:648:10' [measArray1(1:1024,1),measArray2(1:1024,1)] = Welch(J(1:2046,2)); */
-  /* Simulink Function 'Welch': '<S1>:635' */
-  TwoMassIDWelch(&rtTwoMassID_DW->J[2048], &rtTwoMassID_DW->TwoMassIDWelch_l);
-
-  /* End of Outputs for SubSystem: '<S1>/TwoMassID.Welch' */
-  measArray1 = &rtTwoMassID_DW->TwoMassIDWelch_l.SpectrumEstimator_o2[0];
-  memcpy(&rtTwoMassID_DW->measArray2[0],
-         &rtTwoMassID_DW->TwoMassIDWelch_l.SpectrumEstimator_o1[0], sizeof
-         (real32_T) << 10U);
-
-  /* G TMS */
-  /* '<S1>:648:12' measArray2(1:1024,1)=measArray2(1025:2048,1)-measArray2(1:1024,1); */
-  for (rtTwoMassID_DW->i_c = 0; rtTwoMassID_DW->i_c < 1024; rtTwoMassID_DW->i_c
-       ++) {
-    rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i_c] = rtTwoMassID_DW->
-      measArray2[rtTwoMassID_DW->i_c + 1024] - rtTwoMassID_DW->
-      measArray2[rtTwoMassID_DW->i_c];
-  }
-
-  /* Inport: '<Root>/TwoMassIDConfig' */
-  /* Division in Time-Domain = Substraction in Frequ-Domain */
-  /* TMS Noise */
-  /* '<S1>:648:14' LbMq=single(zeros(5,1)); */
-  /* '<S1>:648:15' LbMq=Min_LbMq(measArray2(1:1024),measArray1(1:1024,1),TwoMassIDConfig.d_TMS_start,TwoMassIDConfig.f_min,TwoMassIDConfig.f_max,TwoMassIDConfig.UseLbMq); */
-  Min_LbMq(&rtTwoMassID_DW->measArray2[0], measArray1,
-           rtTwoMassID_U->TwoMassIDConfig.d_TMS_start,
-           rtTwoMassID_U->TwoMassIDConfig.f_min,
-           rtTwoMassID_U->TwoMassIDConfig.f_max,
-           rtTwoMassID_U->TwoMassIDConfig.UseLbMq, rtTwoMassID_DW->LbMq,
-           rtTwoMassID_DW);
-
-  /* Outport: '<Root>/TwoMassID_output' */
-  /* '<S1>:648:16' c_0_out=single(LbMq(1,1)); */
-  /* '<S1>:648:17' TwoMassID_output.c_est_out=LbMq(2,1); */
-  rtTwoMassID_Y->TwoMassID_output.c_est_out = rtTwoMassID_DW->LbMq[1];
-
-  /* '<S1>:648:18' TwoMassID_output.d_est_out=LbMq(3,1); */
-  rtTwoMassID_Y->TwoMassID_output.d_est_out = rtTwoMassID_DW->LbMq[2];
-
-  /* '<S1>:648:19' TwoMassID_output.rotorInertia=LbMq(4,1); */
-  rtTwoMassID_Y->TwoMassID_output.rotorInertia = rtTwoMassID_DW->LbMq[3];
-
-  /* '<S1>:648:20' TwoMassID_output.LoadInertia=LbMq(5,1); */
-  rtTwoMassID_Y->TwoMassID_output.LoadInertia = rtTwoMassID_DW->LbMq[4];
-
-  /* '<S1>:648:21' TwoMassID_output.TrainInertia=TwoMassID_output.rotorInertia+TwoMassID_output.LoadInertia; */
-  rtTwoMassID_Y->TwoMassID_output.TrainInertia =
-    rtTwoMassID_Y->TwoMassID_output.rotorInertia +
-    rtTwoMassID_Y->TwoMassID_output.LoadInertia;
-
-  /* '<S1>:648:22' c_max=single(TwoMassID_output.TrainInertia*4*3.14*3.14*500*500); */
-  /* '<S1>:648:23' counter=uint32(1); */
-  rtTwoMassID_DW->counter = 1U;
-}
-
 /* Model step function */
 void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
 {
@@ -8769,12 +8597,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   ExtY_TwoMassID_t *rtTwoMassID_Y = (ExtY_TwoMassID_t *) rtTwoMassID_M->outputs;
 
   /* Chart: '<Root>/TwoMassID' incorporates:
-   *  Inport: '<Root>/ActualValues'
-   *  Inport: '<Root>/ControlFlags'
-   *  Inport: '<Root>/GlobalConfig'
-   *  Inport: '<Root>/TwoMassIDConfig'
    *  Outport: '<Root>/TwoMassID_FOC_output'
-   *  Outport: '<Root>/TwoMassID_output'
+   *  Outport: '<Root>/TwoMassID_state_output'
    */
   /* Gateway: TwoMassID */
   /* During: TwoMassID */
@@ -8804,14 +8628,15 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
       rtTwoMassID_Y->enteredTwoMassID = false;
 
       /* '<S1>:595:3' initParams; */
-      initParams(rtTwoMassID_U, rtTwoMassID_Y, rtTwoMassID_DW);
+      initParams(rtTwoMassID_DW->measArray1, rtTwoMassID_U, rtTwoMassID_Y,
+                 rtTwoMassID_DW);
 
       /* Exit Internal 'TwoMassID': '<S1>:39' */
       switch (rtTwoMassID_DW->is_TwoMassID) {
        case IN_TMS_Noise_State:
         /* Exit 'TMS_Noise_State': '<S1>:652' */
-        /* '<S1>:652:28' TwoMassID_output.PRBS_out=single(0); */
-        rtTwoMassID_Y->TwoMassID_output.PRBS_out = 0.0F;
+        /* '<S1>:652:28' TwoMassID_state_output.PRBS_out=single(0); */
+        rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;
 
         /* '<S1>:652:29' TwoMassID_FOC_output.n_ref_FOC=single(0); */
         rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
@@ -8832,16 +8657,21 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
         break;
 
        case IN_TMS_calculate_state:
-        /* Outport: '<Root>/finishedTwoMassID' */
         /* Exit 'TMS_calculate_state': '<S1>:648' */
-        /* '<S1>:648:28' finishedTwoMassID = boolean(1); */
+        /* '<S1>:648:28' TwoMassID_FOC_output.resetIntegrator=boolean(0); */
+        rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
+
+        /* '<S1>:648:29' TwoMassID_FOC_output.enableFOC_speed=boolean(0); */
+        rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
+
+        /* Outport: '<Root>/finishedTwoMassID' incorporates:
+         *  Outport: '<Root>/TwoMassID_FOC_output'
+         */
+        /* '<S1>:648:30' finishedTwoMassID = boolean(1); */
         rtTwoMassID_Y->finishedTwoMassID = true;
 
-        /* Outport: '<Root>/enteredTwoMassID' */
-        /* '<S1>:648:29' enteredTwoMassID = boolean(0); */
-        rtTwoMassID_Y->enteredTwoMassID = false;
-
-        /* '<S1>:648:30' reset_FOC_output; */
+        /* '<S1>:648:31' enteredTwoMassID = boolean(0); */
+        /* '<S1>:648:32' reset_FOC_output; */
         reset_FOC_output(rtTwoMassID_U, rtTwoMassID_Y);
         rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
         break;
@@ -8866,8 +8696,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
         if (rtTwoMassID_DW->nextstate == 2046U) {
           /* Transition: '<S1>:662' */
           /* Exit 'TMS_Noise_State': '<S1>:652' */
-          /* '<S1>:652:28' TwoMassID_output.PRBS_out=single(0); */
-          rtTwoMassID_Y->TwoMassID_output.PRBS_out = 0.0F;
+          /* '<S1>:652:28' TwoMassID_state_output.PRBS_out=single(0); */
+          rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;
 
           /* '<S1>:652:29' TwoMassID_FOC_output.n_ref_FOC=single(0); */
           rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
@@ -8880,8 +8710,100 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
           rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out =
             rtTwoMassID_U->GlobalConfig_out.Ki_n;
           rtTwoMassID_DW->is_TwoMassID = IN_TMS_calculate_state;
-          enter_atomic_TMS_calculate_stat(rtTwoMassID_U, rtTwoMassID_Y,
-            rtTwoMassID_DW);
+
+          /* Entry 'TMS_calculate_state': '<S1>:648' */
+          /* '<S1>:648:3' TwoMassID_FOC_output.activeState = uint16(230); */
+          rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 230U;
+
+          /* '<S1>:648:4' J(1:2048,2)=J(1:2048,2)*1.5*GlobalConfig.PMSM_config.polePairs*GlobalConfig.PMSM_config.Psi_PM_Vs; */
+          for (rtTwoMassID_DW->i = 0; rtTwoMassID_DW->i < 2048;
+               rtTwoMassID_DW->i++) {
+            rtTwoMassID_DW->J[rtTwoMassID_DW->i + 2048] = rtTwoMassID_DW->
+              J[rtTwoMassID_DW->i + 2048] * 1.5F *
+              rtTwoMassID_U->GlobalConfig_out.PMSM_config.polePairs *
+              rtTwoMassID_U->GlobalConfig_out.PMSM_config.Psi_PM_Vs;
+          }
+
+          /* Outputs for Function Call SubSystem: '<S1>/TwoMassID.Welch' */
+          /* omega Welch */
+          /* '<S1>:648:6' measArray1(1:1024)=zeros(1024,1); */
+          /* '<S1>:648:7' [measArray1(1:1024,1),measArray2(1:1024)] = Welch(J(1:2046,1)); */
+          /* Simulink Function 'Welch': '<S1>:635' */
+          TwoMassIDWelch(&rtTwoMassID_DW->J[0],
+                         &rtTwoMassID_DW->TwoMassIDWelch_c);
+
+          /* End of Outputs for SubSystem: '<S1>/TwoMassID.Welch' */
+          memcpy(&rtTwoMassID_DW->measArray2[0],
+                 &rtTwoMassID_DW->TwoMassIDWelch_c.SpectrumEstimator_o1[0],
+                 sizeof(real32_T) << 10U);
+
+          /* torque Welch */
+          /* '<S1>:648:9' measArray2(1025:2048)=measArray2(1:1024); */
+          for (rtTwoMassID_DW->i = 0; rtTwoMassID_DW->i < 1024;
+               rtTwoMassID_DW->i++) {
+            rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i + 1024] =
+              rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i];
+          }
+
+          /* Outputs for Function Call SubSystem: '<S1>/TwoMassID.Welch' */
+          /* '<S1>:648:10' [measArray1(1:1024,1),measArray2(1:1024,1)] = Welch(J(1:2046,2)); */
+          /* Simulink Function 'Welch': '<S1>:635' */
+          TwoMassIDWelch(&rtTwoMassID_DW->J[2048],
+                         &rtTwoMassID_DW->TwoMassIDWelch_c);
+
+          /* End of Outputs for SubSystem: '<S1>/TwoMassID.Welch' */
+          memcpy(&rtTwoMassID_DW->measArray1[0],
+                 &rtTwoMassID_DW->TwoMassIDWelch_c.SpectrumEstimator_o2[0],
+                 sizeof(real32_T) << 10U);
+          memcpy(&rtTwoMassID_DW->measArray2[0],
+                 &rtTwoMassID_DW->TwoMassIDWelch_c.SpectrumEstimator_o1[0],
+                 sizeof(real32_T) << 10U);
+
+          /* G TMS */
+          /* '<S1>:648:12' measArray2(1:1024,1)=measArray2(1025:2048,1)-measArray2(1:1024,1); */
+          for (rtTwoMassID_DW->i = 0; rtTwoMassID_DW->i < 1024;
+               rtTwoMassID_DW->i++) {
+            rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i] =
+              rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i + 1024] -
+              rtTwoMassID_DW->measArray2[rtTwoMassID_DW->i];
+          }
+
+          /* Division in Time-Domain = Substraction in Frequ-Domain */
+          /* TMS Noise */
+          /* '<S1>:648:14' LbMq=single(zeros(5,1)); */
+          /* '<S1>:648:15' LbMq=Min_LbMq(measArray2(1:1024),measArray1(1:1024,1),TwoMassIDConfig.d_TMS_start,TwoMassIDConfig.f_min,TwoMassIDConfig.f_max,TwoMassIDConfig.UseLbMq); */
+          Min_LbMq(&rtTwoMassID_DW->measArray2[0], rtTwoMassID_DW->measArray1,
+                   rtTwoMassID_U->TwoMassIDConfig.d_TMS_start,
+                   rtTwoMassID_U->TwoMassIDConfig.f_min,
+                   rtTwoMassID_U->TwoMassIDConfig.f_max,
+                   rtTwoMassID_U->TwoMassIDConfig.UseLbMq, rtTwoMassID_DW->LbMq,
+                   rtTwoMassID_DW);
+
+          /* '<S1>:648:16' c_0_out=single(LbMq(1,1)); */
+          /* '<S1>:648:17' TwoMassID_state_output.c_est_out=LbMq(2,1); */
+          rtTwoMassID_Y->TwoMassID_state_output.c_est_out = rtTwoMassID_DW->
+            LbMq[1];
+
+          /* '<S1>:648:18' TwoMassID_state_output.d_est_out=LbMq(3,1); */
+          rtTwoMassID_Y->TwoMassID_state_output.d_est_out = rtTwoMassID_DW->
+            LbMq[2];
+
+          /* '<S1>:648:19' TwoMassID_state_output.rotorInertia=LbMq(4,1); */
+          rtTwoMassID_Y->TwoMassID_state_output.rotorInertia =
+            rtTwoMassID_DW->LbMq[3];
+
+          /* '<S1>:648:20' TwoMassID_state_output.LoadInertia=LbMq(5,1); */
+          rtTwoMassID_Y->TwoMassID_state_output.LoadInertia =
+            rtTwoMassID_DW->LbMq[4];
+
+          /* '<S1>:648:21' TwoMassID_state_output.TrainInertia=TwoMassID_state_output.rotorInertia+TwoMassID_state_output.LoadInertia; */
+          rtTwoMassID_Y->TwoMassID_state_output.TrainInertia =
+            rtTwoMassID_Y->TwoMassID_state_output.rotorInertia +
+            rtTwoMassID_Y->TwoMassID_state_output.LoadInertia;
+
+          /* '<S1>:648:22' c_max=single(TwoMassID_state_output.TrainInertia*4*3.14*3.14*500*500); */
+          /* '<S1>:648:23' counter=uint32(1); */
+          rtTwoMassID_DW->counter = 1U;
         } else {
           /* '<S1>:652:9' counter=counter+1; */
           rtTwoMassID_DW->qY = rtTwoMassID_DW->counter + /*MW:OvSatOk*/ 1U;
@@ -8930,9 +8852,9 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
             rtTwoMassID_DW->prbs_count = rtTwoMassID_DW->qY;
           }
 
-          /* '<S1>:652:14' TwoMassID_output.PRBS_out=prbs_array(prbs_count); */
-          rtTwoMassID_Y->TwoMassID_output.PRBS_out = rtTwoMassID_DW->prbs_array
-            [(int32_T)rtTwoMassID_DW->prbs_count - 1];
+          /* '<S1>:652:14' TwoMassID_state_output.PRBS_out=prbs_array(prbs_count); */
+          rtTwoMassID_Y->TwoMassID_state_output.PRBS_out =
+            rtTwoMassID_DW->prbs_array[(int32_T)rtTwoMassID_DW->prbs_count - 1];
 
           /* '<S1>:652:15' if(mean_count<1023) */
           if (rtTwoMassID_DW->mean_count < 1023U) {
@@ -9051,17 +8973,25 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
         /* '<S1>:658:1' sf_internal_predicateOutput = one_sec_transition_counter == counter; */
         if (rtTwoMassID_DW->one_sec_transition_counter ==
             rtTwoMassID_DW->counter) {
-          /* Outport: '<Root>/finishedTwoMassID' */
           /* Transition: '<S1>:658' */
           /* Exit 'TMS_calculate_state': '<S1>:648' */
-          /* '<S1>:648:28' finishedTwoMassID = boolean(1); */
+          /* '<S1>:648:28' TwoMassID_FOC_output.resetIntegrator=boolean(0); */
+          rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
+
+          /* '<S1>:648:29' TwoMassID_FOC_output.enableFOC_speed=boolean(0); */
+          rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
+
+          /* Outport: '<Root>/finishedTwoMassID' incorporates:
+           *  Outport: '<Root>/TwoMassID_FOC_output'
+           */
+          /* '<S1>:648:30' finishedTwoMassID = boolean(1); */
           rtTwoMassID_Y->finishedTwoMassID = true;
 
           /* Outport: '<Root>/enteredTwoMassID' */
-          /* '<S1>:648:29' enteredTwoMassID = boolean(0); */
+          /* '<S1>:648:31' enteredTwoMassID = boolean(0); */
           rtTwoMassID_Y->enteredTwoMassID = false;
 
-          /* '<S1>:648:30' reset_FOC_output; */
+          /* '<S1>:648:32' reset_FOC_output; */
           reset_FOC_output(rtTwoMassID_U, rtTwoMassID_Y);
           rtTwoMassID_DW->is_TwoMassID = IN_NO_ACTIVE_CHILD;
 
@@ -9100,7 +9030,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
 
     /* Entry 'TwoMassID': '<S1>:39' */
     /* '<S1>:39:3' initParams; */
-    initParams(rtTwoMassID_U, rtTwoMassID_Y, rtTwoMassID_DW);
+    initParams(rtTwoMassID_DW->measArray1, rtTwoMassID_U, rtTwoMassID_Y,
+               rtTwoMassID_DW);
 
     /* Outport: '<Root>/enteredTwoMassID' */
     /* '<S1>:39:4' enteredTwoMassID=boolean(1); */
@@ -9133,9 +9064,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
     rtTwoMassID_DW->prbs_count = 1U;
 
     /* '<S1>:636:9' prbs_array(1:2047,1)=(single(PN)-0.5)*2*TwoMassIDConfig.ScaleTorquePRBS; */
-    PN(rtTwoMassID_DW->dv);
+    PN(rtTwoMassID_DW->dv, rtTwoMassID_DW);
     for (rtTwoMassID_DW->i = 0; rtTwoMassID_DW->i < 2047; rtTwoMassID_DW->i++) {
-      rtTwoMassID_DW->prbs_array[rtTwoMassID_DW->i] = 0.0F;
       rtTwoMassID_DW->prbs_array[rtTwoMassID_DW->i] = ((real32_T)
         rtTwoMassID_DW->dv[rtTwoMassID_DW->i] - 0.5F) * 2.0F *
         rtTwoMassID_U->TwoMassIDConfig.ScaleTorquePRBS;
@@ -9156,7 +9086,8 @@ void TwoMassID_step(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
     rtTwoMassID_Y->enteredTwoMassID = false;
 
     /* '<S1>:693:4' initParams; */
-    initParams(rtTwoMassID_U, rtTwoMassID_Y, rtTwoMassID_DW);
+    initParams(rtTwoMassID_DW->measArray1, rtTwoMassID_U, rtTwoMassID_Y,
+               rtTwoMassID_DW);
     rtTwoMassID_DW->is_c17_TwoMassID = IN_Waiting;
 
     /* Entry 'Waiting': '<S1>:594' */
@@ -9186,6 +9117,7 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.M_ref_FOC = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.activeState = 0U;
   rtTwoMassID_Y->TwoMassID_FOC_output.n_ref_FOC = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_torque = false;
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_speed = false;
   rtTwoMassID_Y->TwoMassID_FOC_output.enableFOC_current = false;
   rtTwoMassID_Y->TwoMassID_FOC_output.resetIntegrator = false;
@@ -9196,18 +9128,18 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out = 0.0F;
 
-  /* SystemInitialize for Outport: '<Root>/TwoMassID_output' */
-  rtTwoMassID_Y->TwoMassID_output.PRBS_out = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.c_est_out = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.d_est_out = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.LoadInertia = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.TrainInertia = 0.0F;
-  rtTwoMassID_Y->TwoMassID_output.rotorInertia = 0.0F;
+  /* SystemInitialize for Outport: '<Root>/TwoMassID_state_output' */
+  rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;
+  rtTwoMassID_Y->TwoMassID_state_output.c_est_out = 0.0F;
+  rtTwoMassID_Y->TwoMassID_state_output.d_est_out = 0.0F;
+  rtTwoMassID_Y->TwoMassID_state_output.LoadInertia = 0.0F;
+  rtTwoMassID_Y->TwoMassID_state_output.TrainInertia = 0.0F;
+  rtTwoMassID_Y->TwoMassID_state_output.rotorInertia = 0.0F;
 
   /* SystemInitialize for Chart: '<Root>/TwoMassID' incorporates:
    *  SubSystem: '<S1>/TwoMassID.Welch'
    */
-  TwoMassIDWelch_Init(&rtTwoMassID_DW->TwoMassIDWelch_l);
+  TwoMassIDWelch_Init(&rtTwoMassID_DW->TwoMassIDWelch_c);
 }
 
 /*

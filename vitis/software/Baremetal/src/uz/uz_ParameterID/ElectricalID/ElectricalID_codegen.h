@@ -82,6 +82,11 @@ typedef struct {
   real32_T R_corr;                     /* '<Root>/ElectricalID' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID' */
   real32_T psiOverJ;                   /* '<Root>/ElectricalID' */
+  real32_T Kp_n_loc;                   /* '<Root>/ElectricalID' */
+  real32_T Ki_n_loc;                   /* '<Root>/ElectricalID' */
+  real32_T Ki_id_loc;                  /* '<Root>/ElectricalID' */
+  real32_T Kp_id_loc;                  /* '<Root>/ElectricalID' */
+  real32_T Ki_iq_loc;                  /* '<Root>/ElectricalID' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID' */
   real32_T omega_sum;                  /* '<Root>/ElectricalID' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID' */

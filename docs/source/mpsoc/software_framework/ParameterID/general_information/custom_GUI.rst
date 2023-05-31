@@ -206,6 +206,19 @@ Setup
         V,
         RCV_LABELS_ENDMARKER
 
+        // Physical unit label (printed text) for the MyButtons top to bottom
+        // Do not change the first (zero) and last (end) entries.
+
+        MYBUTTONS_LABELS_ZEROVALUE=0,
+        MyButton1,
+        MyButton2,
+        MyButton3,
+        MyButton4,
+        MyButton5,
+        MyButton6,
+        MyButton7,
+        MyButton8,
+        MYBUTTONS_LABELS_ENDMARKER
 
         // Slow Data values that are displayed in the receive_fields top to bottom
         // Do not change the first (zero) and last (end) entries.
@@ -226,7 +239,7 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :emphasize-lines: 16,29,329,385
+        :emphasize-lines: 16,29,329,333,385
         :caption: Changes to the ``ipc_ARM.c`` file. (Breaks in the code are marked with ``....``).
     
         // slowData Naming Convention: Use JSSD_FLOAT_ as prefix

@@ -92,7 +92,7 @@ Signalflow in the ParameterID
   \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(ControlS)(GlobalCin) (state1),inner sep=5pt,minimum width=18cm,minimum height=10.5cm] {};
   \end{scope}
   \node[block,name=output, right= 1cm of ParameterID,drop shadow,minimum width=2cm, align=center] {output\\ \tiny{uz\_ParameterID\_Data\_t}};
-  \node[block,name=stateoutput, below= -5.5cm of state1,drop shadow,minimum width=2cm, align=center] {individual output\\ \tiny{uz\_StateID\_output\_t}};
+  \node[block,name=stateoutput, below= -5.5cm of state1,drop shadow,minimum width=2cm, align=center] {individual output\\ \tiny{uz\_StateID\_state\_output\_t}};
   \node[block,name=FOCoutput, below= -2.5cm of state1,drop shadow,minimum width=2cm, align=center] {Controller output\\ \tiny{uz\_PID\_Controller}\\ \tiny{   \_Parameters\_output\_t}};
   \node[above  =1.2cm of GlobalCout](entered){enteredStateID};
   \node[above  =0.2cm of GlobalCout](finished){finishedStateID};
@@ -128,7 +128,7 @@ These are the following:
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
 
   * ``uz_StateIDConfig_t`` (i.e. for ElectricalID :ref:`uz_ElectricalIDConfig_t<uz_ParaID_ElectricalIDConfig>`), which is meant for all configuration values, which are unique to this specific ``ID-state``.
-  * ``uz_StateID_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_output_t<uz_ParaID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables.
+  * ``uz_StateID_state_output_t`` (i.e. for ElectricalID :ref:`uz_ElectricalID_state_output_t<uz_ParaID_ElectricalIDoutput>`), which is meant for the identified output variables and supporting variables.
   * ``enteredStateID`` flag for OfflineID- and OnlineID-states, which signals that the state has been entered.
   * ``finishedStateID`` flag for OfflineID-states, which signals that the ``ID-state`` is finished and another can be started.
   

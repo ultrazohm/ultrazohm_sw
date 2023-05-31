@@ -11,7 +11,7 @@ Setup
 
 .. code-block:: c
   :linenos:
-  :emphasize-lines: 7,13,40-41
+  :emphasize-lines: 7,14,47-48
   :caption: Example to initialize the ParameterID. The ParameterID must be initialized before the Javascope is initialized. 
     
   #include "uz/uz_ParameterID/uz_ParameterID.h"
@@ -60,8 +60,9 @@ Setup
      CC_instance = uz_CurrentControl_init(config_CC);
      SC_instance = uz_SpeedControl_init(config_SC);
      SP_instance = uz_SetPoint_init(config_SP);
+     //Initialize the code above before the JavaScope is initialized 
      //....
-     JavaScope_initalize(&Global_Data);
+     JavaScope_initialize(&Global_Data);
   }
 
 In the ``uz_ParameterID_init`` function, the struct of the type ``uz_ParameterID_Data_t`` is initialized as well. 
@@ -107,7 +108,7 @@ They are technically not required for the ParameterID and can, if desired, be re
 
 .. code-block:: c
   :linenos:
-  :emphasize-lines: 3,29
+  :emphasize-lines: 3,30
   :caption: Changes in the isr.c
 
   extern uz_ParameterID_Data_t ParaID_Data;
@@ -141,6 +142,7 @@ They are technically not required for the ParameterID and can, if desired, be re
           uz_ParameterID_step(ParameterID, &ParaID_Data);
           //Next lines only needed, if the uz_FOC is used as the controller
           ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, CC_instance, SC_instance, SP_instance);
+          //If Gate-output is on the first 6 DIG-IO Pins. Otherwise use different PWM object
           ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1_pin_0_to_5);
           Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.DutyCycle_A;
           Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.DutyCycle_B;
@@ -178,7 +180,7 @@ In the ``javascope.c`` the measurement values from ``ActualValues`` struct shoul
      ....
      }  
 
-The ParameterID is now setup and can be controlled via the debugger window. Since this is not a practical task, the :ref:`Javascope` has a separate panel to control the ParmaeterID. 
+The ParameterID is now setup and can be controlled via the debugger window. Since this is not recommended and potentially dangerous, the :ref:`Javascope` has a separate panel to control the ParmaeterID. 
 The additional setup steps are detailed in :ref:`uz_ParaID_GUI_setup`.
 
 Functions

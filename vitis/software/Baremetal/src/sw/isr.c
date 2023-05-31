@@ -91,7 +91,7 @@ float polepairs = 5.0f;
 
 
 //neutral config
-#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3U: zero fluxmap
+#define NEUTRAL_CONFIG 1U //1U: 1N, 2U: 2N, 3U: zero fluxmap
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 float u_a1c1 = 0.0f;
@@ -101,8 +101,6 @@ float u_a2c2 = 0.0f;
 uz_3ph_alphabeta_t local_i_XY = {0};
 uz_3ph_alphabeta_t local_v_XY = {0};
 
-// temp
-float temp_theta_off = -0.78f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -129,7 +127,7 @@ void ISR_Control(void *data)
 	ParaID_Data.ActualValues.V_DC = Global_Data.av.U_ZK;
 	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed*2.0f*M_PI/60;
 	ParaID_Data.ActualValues.omega_el = omega_el_rad_per_sec;
-	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - 5.48;//ParaID_Data.ElectricalID_Output->thetaOffset;
+	ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_elec - ParaID_Data.ElectricalID_Output->thetaOffset;
 	ParaID_Data.ActualValues.average_winding_temp = ParaID_Data.FluxMapID_Output->WindingTemp;
 	// inside:
 	uz_ParameterID_6ph_process_actual_values(&ParaID_Data, u_a1c1, u_a2c2);

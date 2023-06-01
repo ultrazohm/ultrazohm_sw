@@ -84,31 +84,31 @@ int main(void)
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_chirp;
             break;
-        case init_chirp:
+        case init_chirp:;
         	//Tutorial Chirp Wave
         	struct uz_wavegen_chirp_config config_chirp1 = {
         	        .amplitude = 2.0f,
         	        .start_frequency_Hz = 1.0f,
         	        .end_frequency_Hz = 10.0f,
-        	        .duration_sec = 10.0f,
+        	        .duration_sec = 5.0f,
         	        .initial_delay_sec = 0.0f,
         	        .offset = 1.0f
         	};
         	struct uz_wavegen_chirp_config config_chirp2 = {
-        	        .amplitude = 4.0f,
-        	        .start_frequency_Hz = 2.0f,
+        	        .amplitude = 3.0f,
+        	        .start_frequency_Hz = 1.0f,
         	        .end_frequency_Hz = 20.0f,
         	        .duration_sec = 20.0f,
-        	        .initial_delay_sec = 1.0f,
-        	        .offset = 2.0f
+        	        .initial_delay_sec = 5.0f,
+        	        .offset = 1.0f
         	};
         	struct uz_wavegen_chirp_config config_chirp3 = {
-        	        .amplitude = 1.5f,
-        	        .start_frequency_Hz = 1.5f,
-        	        .end_frequency_Hz = 15.0f,
-        	        .duration_sec = 15.0f,
-        	        .initial_delay_sec = 2.0f,
-        	        .offset = 1.5f
+        	        .amplitude = 4.0f,
+        	        .start_frequency_Hz = 1.0f,
+        	        .end_frequency_Hz = 50.0f,
+        	        .duration_sec = 30.0f,
+        	        .initial_delay_sec = 10.0f,
+        	        .offset = 2.0f
         	};
             chirp_instance1 = uz_wavegen_chirp_init(config_chirp1);
             chirp_instance2 = uz_wavegen_chirp_init(config_chirp2);

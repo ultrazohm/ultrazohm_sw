@@ -201,6 +201,16 @@ Generate the Vitis workspace
 
 .. image:: ./img_vitis_import/6_sucess.png
 
+.. _vitis_restart_debug:
+
+.. note:: After the script has finished and the workspace has been build, restart Vitis by clicking on ``File -> Restart`` . 
+          This is recommended, because otherwise the pre-defined debug configurations are not visible.
+          This is only necessary after the **initial build** of the workspace. 
+          For subsequent uses of the workspace, the debug configurations will be visible without additional steps.
+ 
+          .. image:: ./img_vitis_import/7_restart.png  
+
+
 
 Physical Setup of the UltraZohm
 *******************************
@@ -218,12 +228,13 @@ Physical Setup of the UltraZohm
 Program (Debug)
 ***************
 
-- Click on the red-marked windows to see the design perspective in Vitis
-- Click the arrow next to the debug-icon and choose ``Debug Configurations``
-- Choose ``Debug_FreeRTOS_Baremetal_FPGA``
-- Click on ``Debug``
-- After the first debug run, it is sufficient to click the debug-icon
-- Start all processors (click on the play button)
+- Click on the red-marked windows to see the design perspective in Vitis.
+- Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
+- Choose ``Debug_FreeRTOS_Baremetal_FPGA`` .
+  If the debug configurations are not visible, follow the advise :ref:`here <vitis_restart_debug>` .
+- Click on ``Debug`` .
+- After the first debug run, it is sufficient to click the debug-icon.
+- Start all processors (click on the play button).
 
 .. image:: ./img_debug/1_vitis_show_design.png
 

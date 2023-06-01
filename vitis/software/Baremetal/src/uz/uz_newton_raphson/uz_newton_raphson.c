@@ -42,11 +42,6 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         f_x = 0.0f;
         f_derivate_x = 0.0f;  
     }
-    f_x=0.0f;
-    f_x = uz_newton_raphson_calculate_f_x(config, xpow, result);
-    if( (f_x > config.root_absolute_tolerance ) || ( f_x< -config.root_absolute_tolerance) ){
-        uz_assert(0U); // Root could not be approximated with sufficient precision
-    }
     return (result);
 }
 

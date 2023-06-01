@@ -231,7 +231,7 @@ Program (Debug)
 - Click on the red-marked windows to see the design perspective in Vitis.
 - Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
 - Choose ``Debug_FreeRTOS_Baremetal_FPGA`` .
-  If the debug configurations are not visible, follow the advise :ref:`here <vitis_restart_debug>` .
+  If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>` .
 - Click on ``Debug`` .
 - After the first debug run, it is sufficient to click the debug-icon.
 - Start all processors (click on the play button).

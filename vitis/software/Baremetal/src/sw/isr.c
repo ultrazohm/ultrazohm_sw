@@ -37,14 +37,12 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
-
 extern uz_wavegen_chirp* chirp_instance1;
 extern uz_wavegen_chirp* chirp_instance2;
 extern uz_wavegen_chirp* chirp_instance3;
 float chirp_output1 = 0.0f;
 float chirp_output2 = 0.0f;
 float chirp_output3 = 0.0f;
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS

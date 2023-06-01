@@ -10,7 +10,7 @@
  *
  * @param v_input_Volts uz_dq_t struct with the voltages, which shall be limited
  * @param V_dc_volts DC-link voltage
- * @param max_modulation_index Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation
+ * @param max_modulation_index Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
  * @param ext_clamping flag which states, if the SVL is active

@@ -50,9 +50,10 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, flo
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_FE_max, uz_3ph_dq_t actual_currents_Ampere);
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
 static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
-static void uz_SetPoint_newton_MTPA_raphson_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm); 
+static void uz_SetPoint_newton_raphson_MTPA_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm); 
 static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self, float M_ref_Nm, float V_FE_max, float omega_el_rad_per_sec);
 static float uz_SetPoint_calculate_IPMSM_id_current(uz_SetPoint_t* self, float iq_ref_Ampere);
+static void uz_SetPoint_newton_raphson_field_weakening_check(uz_SetPoint_t* self, float iq_ref_Ampere, float V_FE_squared, float omega_squared, float Lq_squared, float M_ref_Nm);
 
 static uz_SetPoint_t* uz_SetPoint_allocation(void){
  uz_assert(instance_counter < UZ_SETPOINT_MAX_INSTANCES);
@@ -247,6 +248,7 @@ static float uz_SetPoint_newton_FW_raphson_iq_approximation(uz_SetPoint_t* self,
     	self->newton_FW.initial_value = -self->config.config_PMSM.I_max_Ampere / 2.0f;
     }
     float iq_ref_Ampere = uz_newton_raphson(self->newton_FW);
+    uz_SetPoint_newton_raphson_field_weakening_check(self,iq_ref_Ampere,V_FE_squared, omega_squared, Lq_squared, M_ref_Nm);
     iq_ref_Ampere = uz_signals_saturation(iq_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     return(iq_ref_Ampere);
 
@@ -261,7 +263,7 @@ static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* sel
     self->newton_MTPA.coefficients.data[0] = -(4.0f * M_ref_squared) / (9.0f * Ld_Lq_squared * polePairs_squared);
     self->newton_MTPA.initial_value = i_ref_Ampere;
     float iq_ref_Ampere = uz_newton_raphson(self->newton_MTPA);
-    uz_SetPoint_newton_MTPA_raphson_check(self, iq_ref_Ampere, Ld_Lq_squared, M_ref_Nm);
+    uz_SetPoint_newton_raphson_MTPA_check(self, iq_ref_Ampere, Ld_Lq_squared, M_ref_Nm);
     iq_ref_Ampere = uz_signals_saturation(iq_ref_Ampere, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     return(iq_ref_Ampere);
 }
@@ -295,11 +297,22 @@ static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, flo
     self->omega_cut_rad_per_sec = (-b_omega + sqrtf((b_omega * b_omega) - (4.0f * a_omega * c_omega) )) / (2.0f * a_omega);
 }
 
-static void uz_SetPoint_newton_MTPA_raphson_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm) {
+static void uz_SetPoint_newton_raphson_MTPA_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm) {
     float iq_ref_squared = iq_ref_Ampere * iq_ref_Ampere;
     float psi_pm_squared = self->config.config_PMSM.Psi_PM_Vs * self->config.config_PMSM.Psi_PM_Vs;
     float sqrt_term = sqrtf(psi_pm_squared + (4.0f * Ld_Lq_squared * iq_ref_squared) );
     float M_estimated_Nm = 1.5f * self->config.config_PMSM.polePairs * iq_ref_Ampere * (self->config.config_PMSM.Psi_PM_Vs + (0.5f * (-self->config.config_PMSM.Psi_PM_Vs + sqrt_term)));
+    float M_difference_percent = (fabsf(M_ref_Nm - M_estimated_Nm)) / M_ref_Nm;
+    if( M_difference_percent > self->config.relative_torque_tolerance ){
+        uz_assert(0);
+    }
+}
+
+static void uz_SetPoint_newton_raphson_field_weakening_check(uz_SetPoint_t* self, float iq_ref_Ampere, float V_FE_squared, float omega_squared, float Lq_squared, float M_ref_Nm) {
+    float iq_ref_squared = iq_ref_Ampere * iq_ref_Ampere;
+    float sqrt_term = sqrtf((V_FE_squared / omega_squared) - (Lq_squared * iq_ref_squared));
+    float Ld_minus_Lq_div_Ld = (self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry) / self->config.config_PMSM.Ld_Henry;
+    float M_estimated_Nm = 1.5f * self->config.config_PMSM.polePairs * iq_ref_Ampere * (self->config.config_PMSM.Psi_PM_Vs + ( Ld_minus_Lq_div_Ld * (-self->config.config_PMSM.Psi_PM_Vs + sqrt_term)));
     float M_difference_percent = (fabsf(M_ref_Nm - M_estimated_Nm)) / M_ref_Nm;
     if( M_difference_percent > self->config.relative_torque_tolerance ){
         uz_assert(0);

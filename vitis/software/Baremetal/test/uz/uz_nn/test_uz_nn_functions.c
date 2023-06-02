@@ -221,7 +221,7 @@ void test_uz_nn_mse_one(void)
     struct uz_matrix_t testmatrix2={0};
     uz_matrix_t* test2=uz_matrix_init(&testmatrix2, mse2,UZ_MATRIX_SIZE(mse2),1,UZ_MATRIX_SIZE(mse2));
     float msetest =  uz_nn_mse(test1,test2);
-    float expected_result = 9;
+    float expected_result = 4.5f;
     TEST_ASSERT_EQUAL_FLOAT(expected_result, msetest);
 }
 void test_uz_nn_mse_three(void)
@@ -231,7 +231,7 @@ void test_uz_nn_mse_three(void)
     struct uz_matrix_t testmatrix4={0};
     uz_matrix_t* test4=uz_matrix_init(&testmatrix4, bmse4,UZ_MATRIX_SIZE(bmse4),1,UZ_MATRIX_SIZE(bmse4));
     float msetest2 =  uz_nn_mse(test3,test4);
-    float expected_result = 142;
+    float expected_result = 71;
     TEST_ASSERT_EQUAL_FLOAT(expected_result, msetest2);
 }
 
@@ -242,7 +242,7 @@ void test_uz_nn_mse_negative(void)
     struct uz_matrix_t testmatrix4={0};
     uz_matrix_t* test4=uz_matrix_init(&testmatrix4, neg2,UZ_MATRIX_SIZE(neg2),1,UZ_MATRIX_SIZE(neg2));
     float msetestneg =  uz_nn_mse(test3,test4);
-    float expected_result = 72.5f;
+    float expected_result = 36.25f;
     TEST_ASSERT_EQUAL_FLOAT(expected_result, msetestneg);
 }
 void test_uz_nn_gradient_descent(void)

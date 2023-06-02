@@ -64,7 +64,7 @@ I-PMSM[[#Schroeder]_ S.1095ff.]
   :math:`L_d \neq L_q` is necessary and will be checked.
 
 .. math::
-  M_{ref} &= \frac{3}{2}  p  \left(\psi_{PM}  I_{q,MTPA} + \frac{1}{2}  \left(-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}\right)\right)\\
+  M_{ref} &= \frac{3}{2}  p I_{q,MTPA} \left(\psi_{PM} + \frac{1}{2}  \left(-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}\right)\right)\\
   0 &= I_{q,MTPA}^4 + \frac{2 M_{ref}  \psi_{PM}}{3 (L_d - L_q)^2  p}  I_{q,MTPA} - \frac{4 M_{ref}^2}{9 (L_d - L_q)^2  p^2} \\
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess being:

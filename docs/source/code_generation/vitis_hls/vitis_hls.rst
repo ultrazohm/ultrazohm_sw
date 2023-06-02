@@ -1,3 +1,5 @@
+.. _vitis_hls:
+
 =========
 Vitis HLS 
 =========
@@ -204,3 +206,11 @@ Select the appropriate flow target for your project, such as generating a bitstr
 .. figure:: tutorial_img/22_report.png
    :width: 800px
    :align: center
+
+- For the next part of the tutorial, you have the option to either create a new project or modify the current one, depending on your preferences.
+  
+So far, you have gained an understanding of the basics of Vitis HLS. Now, let's move on to the port settings, AXI interface configuration, and other important modifications.
+HLS gives a space and chance to change the IP core according to the system needs. You can make modifications with Pragmas. 
+This page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
+
+

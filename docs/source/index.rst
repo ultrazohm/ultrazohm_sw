@@ -192,7 +192,7 @@ Syllabus
    :caption: Codegeneration
 
    code_generation/hdl_coder/hdl_coder
-   code_generation/vivado_hls/index
+   code_generation/vitis_hls/vitis_hls
    code_generation/embedded_coder/embedded_coder
 
 .. toctree::

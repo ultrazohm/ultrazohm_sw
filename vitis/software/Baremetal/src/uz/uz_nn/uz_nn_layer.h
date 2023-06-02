@@ -83,7 +83,8 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @return uz_matrix* 
  */
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
-void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference);
+void uz_nn_layer_back2(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
+void uz_nn_backward_last_layer2(uz_nn_layer_t *const self,float *error);
 void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error);
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);

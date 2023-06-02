@@ -145,95 +145,57 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
     uz_matrix_multiply(self->derivate_gradients,weightprev,self->temporarybackprop);
+    //alternativ ohne so große matrizen, gleiche dimension wie sumout
+    // uz_matrix_copy(self->derivate_gradients,self->sumout);
+    // uz_matrix_apply_function_to_each_element(self->derivate_gradients,self->activation_function_derivative);
+    // uz_matrix_elementwise_product(self->derivate_gradients,self->error,self->delta);
     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
 }
 
-// void uz_nn_layer_back_last_layer_matrix(uz_nn_layer_t *const self,uz_matrix_t *const reference)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     // loop to calculate error in the last layer
-//     for(size_t i=0;i<self->output->length_of_data;i++){
-
-//         self->error->data[i]=reference[i]-self->output->data[i];
-
-//     }
-//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-//     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-//     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
-// }
-
+void uz_nn_layer_back2(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    //alternativ ohne so große matrizen, gleiche dimension wie sumout
+    //uz_matrix_copy(self->derivate_gradients,self->sumout);
+    uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
+    uz_matrix_transpose(self->sumout);
+    uz_matrix_elementwise_product(self->sumout,weightprev,self->temporarybackprop); //hier ist das dimensionproblem!
+    uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
+}
+void uz_nn_backward_last_layer2(uz_nn_layer_t *const self,float *error)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->error->data = error;
+    //alternativ ohne so große matrizen, gleiche dimension wie sumout
+    uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
+    uz_matrix_elementwise_product(self->sumout,self->error,self->delta);
+    // uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
+    // uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
+    // uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
+}
 void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->error->data = error;
+    //alternativ ohne so große matrizen, gleiche dimension wie sumout
+    // uz_matrix_copy(self->derivate_gradients,self->sumout);
+    // uz_matrix_apply_function_to_each_element(self->derivate_gradients,self->activation_function_derivative);
+    // uz_matrix_elementwise_product(self->derivate_gradients,self->error,self->delta);
     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    uz_matrix_multiply(self->derivate_gradients,self->error,self->delta); //-1 Am Ausgang, 20.04. Test weil mse nicht funktioniert
+    uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
 }
-
-// void uz_nn_layer_back_last_layer(uz_nn_layer_t *const self,float *reference)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     // loop to calculate error in the last layer
-//     for(size_t i=0;i<self->output->length_of_data;i++){
-
-//         self->error->data[i]=reference[i]-self->output->data[i];
-
-//     }
-//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-//     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-//     uz_matrix_multiply_by_scalar(self->delta,-1.0f); //-1 Am Ausgang
-// }
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
-    // if else statement macht probleme => switch case
-     // check for the dimension of outputprev and delta, if necessary transpose outputprev
-    //layer 2
-    // if (outputprev->rows==self->delta->columns && outputprev->columns==self->delta->rows)
-    // {
-    // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    // uz_matrix_transpose(self->cachegradients); 
-    // }
-    // /* diese Zeile ist nur damit am Schluss der Gradient gleich ist wie im Example, an sich ist es ja nicht nötig, da der Mittelwert
-    // über alle Gradienten gebildet wird */
-    // }
-    // //layer 1
-    // else if(outputprev->rows==1 && outputprev->columns == 1)
-    // {
-    //     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    // }
-    // // layer 3
-    // else if (self->delta->columns==1 && self->delta->rows==1)
-    // {
-    // /* in der uz_matrix_multiply funktion ist es nicht möglich einen float mit einem Zeilenvektor zu multiplizieren,
-    // ist durch uz_assert festgelegt 
-    // 20.03.23: Problem behoben, indem in der Config self->cachegradients als Zeilenvektor angelegt wurde,
-    // somit gibt es auch kein Problem mehr in der Loop in schroeder_example und es muss nur eine instanz initialisiert werden,
-    // damit die 13 Trainingspaare berechnet werden können*/
-    // uz_matrix_transpose(outputprev);
-    // uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    // }
-
-    //matrizen zusammenstellen und in self->gradients speichern, delta = gradient für bias in diesem Beispiel
-    
+    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
 }
-// void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-//     uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
-// }
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
@@ -249,7 +211,6 @@ for(size_t i=weight_index;i<(weight_index+bias_index);i++)
 {
 self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
 }
-// sinnvoller wäre es verschiedene Speicher anzulegen, dann kann man nicht durcheinander kommen!
 }
 
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)

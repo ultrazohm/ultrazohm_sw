@@ -72,7 +72,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_CurrentControl_rsm;
             break;
         case init_CurrentControl_rsm:
             struct uz_PMSM_t config_RSM = {

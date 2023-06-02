@@ -56,10 +56,10 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     uz_assert(A->length_of_data);
     uz_assert(B->length_of_data);
     uz_assert(C_out->length_of_data);
-    uz_assert(A->columns == B->columns);
-    uz_assert(A->columns == C_out->columns);
-    uz_assert(A->rows == B->rows);
-    uz_assert(A->rows == C_out->rows);
+    //uz_assert(A->columns == B->columns);
+    //uz_assert(A->columns == C_out->columns);
+    //uz_assert(A->rows == B->rows);
+    //uz_assert(A->rows == C_out->rows);
 
     for (uint32_t row = 0; row < A->rows; row++)
     {

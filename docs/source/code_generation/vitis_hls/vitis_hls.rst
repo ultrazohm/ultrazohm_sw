@@ -213,4 +213,12 @@ So far, you have gained an understanding of the basics of Vitis HLS. Now, let's 
 HLS gives a space and chance to change the IP core according to the system needs. You can make modifications with Pragmas. 
 This page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
 
+- 
 
+
+..	toctree::
+		:maxdepth: 2
+		:hidden:
+		:caption: Vitis HLS
+
+		definitions

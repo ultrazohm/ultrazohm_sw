@@ -101,7 +101,7 @@ void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_
         }
         // else if (A->rows == 1){
         //     C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
-        }
+        //}
         else if (A->columns == B-> columns){
             C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
         }

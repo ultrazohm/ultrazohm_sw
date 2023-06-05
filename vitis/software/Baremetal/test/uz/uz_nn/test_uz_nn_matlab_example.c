@@ -214,8 +214,7 @@ void test_uz_nn_matlab(void)
        float lernrate = 0.001f;
        uz_nn_gradient_descent(test,lernrate);
        }
-       // exportieren nach matlab
-       //uz_nn_mat_export(test);
+       uz_nn_mat_export(test);
        clock_t end = clock();
        float seconds = (float)(end - start) / CLOCKS_PER_SEC;
        printf("Zeit des Tests = %.6f \n", (double)seconds);

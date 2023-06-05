@@ -35,6 +35,12 @@ struct uz_VSD_6ph_FD_config
     uint32_t mov_average_filter_length;    /**< mov_average_filter_length maximal length of moving average filter */
     float sample_frequency_Hz;             /**< sample_frequency_Hz sample frequency in Hz */
     float percent_of_el_period;         /**< percent_of_el_period desired filter length in percent of an electric period */
+    uz_movingAverageFilter_t* movingAverageFilter_R1; /**< moving average filter for fault index R1*/
+    uz_movingAverageFilter_t* movingAverageFilter_R2; /**< moving average filter for fault index R2*/
+    uz_movingAverageFilter_t* movingAverageFilter_R3; /**< moving average filter for fault index R3*/
+    uz_movingAverageFilter_t* movingAverageFilter_R4; /**< moving average filter for fault index R4*/
+    uz_movingAverageFilter_t* movingAverageFilter_R5; /**< moving average filter for fault index R5*/
+    uz_movingAverageFilter_t* movingAverageFilter_R6; /**< moving average filter for fault index R6*/
 };
 
 /**
@@ -50,15 +56,9 @@ uz_VSD_6ph_FD_t *uz_VSD_6ph_FD_init(struct uz_VSD_6ph_FD_config config);
  * @brief Function for 6-phase open-phase-fault detection
  * @param vsdcurrents VSD currents
  * @param omega_el_rad_per_sec omega_el in rad per seconds
- * @param movingAverageFilter_R1 moving average filter for phase 1
- * @param movingAverageFilter_R2 moving average filter for phase 2
- * @param movingAverageFilter_R3 moving average filter for phase 3
- * @param movingAverageFilter_R4 moving average filter for phase 4
- * @param movingAverageFilter_R5 moving average filter for phase 5
- * @param movingAverageFilter_R6 moving average filter for phase 6
  * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated 
  */
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec, uz_movingAverageFilter_t* movingAverageFilter_R1, uz_movingAverageFilter_t* movingAverageFilter_R2, uz_movingAverageFilter_t* movingAverageFilter_R3, uz_movingAverageFilter_t* movingAverageFilter_R4, uz_movingAverageFilter_t* movingAverageFilter_R5, uz_movingAverageFilter_t* movingAverageFilter_R6 );
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec);
 
 
 

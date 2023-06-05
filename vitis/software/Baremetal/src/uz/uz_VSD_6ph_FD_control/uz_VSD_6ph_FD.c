@@ -32,6 +32,12 @@ typedef struct uz_VSD_6ph_FD_t{
     uint32_t mov_average_filter_length;    /**< mov_average_filter_length maximal length of moving average filter */
     float sample_frequency_Hz;          /**< sample_frequency_Hz sample frequency in Hz */
     float percent_of_el_period;         /**< percent_of_el_period desired filter length in percent of an electric period */
+	uz_movingAverageFilter_t* movingAverageFilter_R1; /**< moving average filter for fault index R1*/
+    uz_movingAverageFilter_t* movingAverageFilter_R2; /**< moving average filter for fault index R2*/
+    uz_movingAverageFilter_t* movingAverageFilter_R3; /**< moving average filter for fault index R3*/
+    uz_movingAverageFilter_t* movingAverageFilter_R4; /**< moving average filter for fault index R4*/
+    uz_movingAverageFilter_t* movingAverageFilter_R5; /**< moving average filter for fault index R5*/
+    uz_movingAverageFilter_t* movingAverageFilter_R6; /**< moving average filter for fault index R6*/
 }uz_VSD_6ph_FD_t;
 
 static uint32_t instance_VSD_6ph_FD_counter = 0U;
@@ -58,10 +64,16 @@ uz_VSD_6ph_FD_t* uz_VSD_6ph_FD_init(struct uz_VSD_6ph_FD_config config){
     self->mov_average_filter_length = config.mov_average_filter_length;    
     self->sample_frequency_Hz = config.sample_frequency_Hz;            
     self->percent_of_el_period = config.percent_of_el_period;
+	self->movingAverageFilter_R1 = config.movingAverageFilter_R1;
+	self->movingAverageFilter_R2 = config.movingAverageFilter_R2;
+	self->movingAverageFilter_R3 = config.movingAverageFilter_R3;
+	self->movingAverageFilter_R4 = config.movingAverageFilter_R4;
+	self->movingAverageFilter_R5 = config.movingAverageFilter_R5;
+	self->movingAverageFilter_R6 = config.movingAverageFilter_R6;
     return(self);
 }
 
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec, uz_movingAverageFilter_t* movingAverageFilter_R1, uz_movingAverageFilter_t* movingAverageFilter_R2, uz_movingAverageFilter_t* movingAverageFilter_R3, uz_movingAverageFilter_t* movingAverageFilter_R4, uz_movingAverageFilter_t* movingAverageFilter_R5, uz_movingAverageFilter_t* movingAverageFilter_R6 ){
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
 	uz_6phFD_indices indices = {0};
 
 	// calculate fault indices
@@ -83,20 +95,20 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_
 	}
 
 
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R1, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R2, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R3, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R4, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R5, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(movingAverageFilter_R6, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R1, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R2, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R3, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R4, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R5, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R6, new_filterLength);
 
 	// moving average filter
-	indices.R1 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R1, indices.R1);
-	indices.R2 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R2, indices.R2);
-	indices.R3 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R3, indices.R3);
-	indices.R4 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R4, indices.R4);
-	indices.R5 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R5, indices.R5);
-	indices.R6 = uz_movingAverageFilter_sample_variable_length(movingAverageFilter_R6, indices.R6);
+	indices.R1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R1, indices.R1);
+	indices.R2 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R2, indices.R2);
+	indices.R3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R3, indices.R3);
+	indices.R4 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R4, indices.R4);
+	indices.R5 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R5, indices.R5);
+	indices.R6 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R6, indices.R6);
 
 
 	// evaluation of fault indices

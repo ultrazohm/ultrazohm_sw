@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
   <source>
-    <originFiles name="uz_FOC.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\uz_FOC.h"/>
     <originFiles name="uz_FOC.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\uz_FOC.cpp"/>
+    <originFiles name="uz_FOC.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\uz_FOC.h"/>
   </source>
   <testbench>
     <originFiles name="testbench.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\testbench.cpp"/>

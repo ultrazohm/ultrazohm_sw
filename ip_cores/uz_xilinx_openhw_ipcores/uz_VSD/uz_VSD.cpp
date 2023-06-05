@@ -1,6 +1,6 @@
 #include "uz_VSD.h"
-#include "../uz_VSD_shared/uz_VSD_shared.h"
-#include "../uz_VSD_shared/uz_VSD_shared.cpp"
+#include "../lib/uz_VSD_shared/uz_VSD_shared.h"
+#include "../lib/uz_VSD_shared/uz_VSD_shared.cpp"
 void uz_VSD_6ph_asym(float in_a1, float in_b1, float in_c1, float in_a2, float in_b2, float in_c2, float *out_alpha, float *out_beta){
 #pragma HLS INTERFACE mode=ap_none port=out_beta
 #pragma HLS INTERFACE mode=ap_none port=out_alpha

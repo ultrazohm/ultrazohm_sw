@@ -5,9 +5,9 @@
 ############################################################
 open_project uz_VSD
 set_top uz_VSD_6ph_asym
-add_files uz_VSD/uz_VSD.cpp
 add_files uz_VSD/uz_VSD.h
-add_files -tb uz_VSD/test_uz_VSD.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas" -csimflags "-Wno-unknown-pragmas"
+add_files uz_VSD/uz_VSD.cpp
+add_files -tb uz_VSD/test_uz_VSD.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas" -csimflags "-Wno-unknown-pragmas"
 open_solution "solution1" -flow_target vivado
 set_part {xczu9eg-ffvb1156-1-e}
 create_clock -period 100MHz -name default

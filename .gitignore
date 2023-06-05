@@ -3,6 +3,7 @@
 !/vitis/workspace/create_Vitis_workspace_here.txt
 
 ip_cores/*/simulation/slprj/*
+vivado/.Xil
 
 vitis/software/Baremetal/src/uz/uz_global_configuration.h
 

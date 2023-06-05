@@ -4,6 +4,17 @@
 Vitis HLS 
 =========
 
+Vitis HLS is a tool that simplifies hardware design by allowing designers to create efficient hardware designs from high-level programming languages like C and C++.
+It automates the process of converting high-level code into optimized hardware descriptions, reducing development time and enabling the integration of hardware accelerators.
+With Vitis HLS, designers can leverage their software skills, experiment with different optimizations, and promote design reuse and modularity.
+Overall, it enables faster time-to-market and the development of highly optimized hardware accelerators.
+
+Related Tutorials & Literature
+
+- https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas
+- https://github.com/Xilinx/Vitis-HLS-Introductory-Examples
+- https://docs.xilinx.com/r/2022.2-English/ug1399-vitis-hls/Introduction-to-Vitis-HLS
+
 Tutorial
 ========
 
@@ -22,11 +33,8 @@ Tutorial
    :align: center
 
 - Click "Next" to proceed to the Source and Testbench file add sections. We will add these files later in the tutorial.
-
 - In the Solution Configuration section, you have the option to change the clock settings, board specification, and flow target.
-Adjust the clock settings based on your project requirements. Specify the clock frequency, and any relevant parameters.
-Select the appropriate flow target for your project, such as generating a bitstream for FPGA programming or producing simulation files for software testing.
-
+- Adjust the clock settings based on your project requirements. Specify the clock frequency, and any relevant parameters. Select the appropriate flow target for your project, such as generating a bitstream for FPGA programming or producing simulation files for software testing.
 - Keep the Solution Configuration parameters at their default settings, simply leave them unchanged.
 
 .. figure:: tutorial_img/3_project_settings.png
@@ -34,7 +42,6 @@ Select the appropriate flow target for your project, such as generating a bitstr
    :align: center
 
 - Modify the board specification if needed in future applications, ensuring compatibility between the design and the physical board you're using. When you click the Device Selection Dialog, you will see a list of all the available boards from the Xilinx Library. This dialog allows you to choose the specific board that matches your hardware setup and requirements.
-
 - Keep the Device Selection at default settings, simply leave them unchanged. This step included for informing.
 
 .. figure:: tutorial_img/4_board_option.png
@@ -78,7 +85,8 @@ Select the appropriate flow target for your project, such as generating a bitstr
 .. code-block::
 	
 	#include "stdint.h"
-	
+	#include "uz_axi_mytestIP.h"
+
 	uint16_t testIP (uint16_t a, uint16_t b )
 	{
 		uint16_t result;
@@ -213,7 +221,125 @@ So far, you have gained an understanding of the basics of Vitis HLS. Now, let's 
 HLS gives a space and chance to change the IP core according to the system needs. You can make modifications with Pragmas. 
 This page includes introductory information about the usage of the `HLS Pragmas <https://docs.xilinx.com/r/en-US/ug1399-vitis-hls/HLS-Pragmas>`_.
 
-- 
+- As the next step, we will read the data from the AXI ports and write it back.
+- So we need to add the pragmas which specifies the AXI port type in the 'uz_axi_mytestIP.cpp'
+
+.. code-block::
+
+   #include <stdint.h>
+   #include "uz_axi_mytestIP.h"
+
+   int32_t testIP (int32_t a, int32_t b ) {
+   
+   #pragma HLS INTERFACE mode=s_axilite port=a
+   #pragma HLS INTERFACE mode=s_axilite port=b
+   #pragma HLS INTERFACE mode=s_axilite port=return
+   
+      int32_t result = a * b;
+      return result; 
+   }
+
+.. figure:: tutorial_img/23_source_code_ip.png
+   :width: 400px
+   :align: center
+
+- mode = s_axilite: This specifies the interface mode as s_axilite, which stands for AXI Lite.
+- port =  " ": This specifies that the interface is connected to the input port of the module. You can replace input with the name of the actual port in your design.
+- Feel free to write your own code through image or copy and paste the desired code into the 'uz_axi_mytestIP.h' file.
+
+.. figure:: tutorial_img/24_header_code_ip.png
+   :width: 400px
+   :align: center
+
+.. code-block::
+
+	int32_t testIP (int32_t a, int32_t b);
+
+- Feel free to write your own code through image or copy and paste the desired code into the 'tb_uz_axi_mytestIP.cpp' file.
+
+.. figure:: tutorial_img/25_tb_code_ip.png
+   :width: 600px
+   :align: center
+
+.. code-block::
+	
+	#include <cstdint>
+	#include <cstdio>
+	#include <cstdlib>
+	#include "uz_axi_mytestIP.h"
+
+	#define size 32
+	#define max_val 1000
+
+	int32_t a[size],b[size];
+	int32_t result;
+	int32_t hls_result;
+
+	int main (void)
+	{
+		int i;
+		for ( i = 0; i < size; i++){
+			a[i] = rand() % max_val;
+			b[i] = rand() % max_val;
+		}
+		for (i = 0; i < size; i++){
+			result = a[i] * b[i];
+			hls_result = testIP(a[i],b[i]);
+			if (result == hls_result){
+				std::printf("TestIP result is correct\n\r");
+			}
+			else
+				std::printf("The test has failed\n\r");
+		}
+	}
+
+- As additional way to check pragmas from code and add specific settings to it, you can use Directive section.
+
+.. figure:: tutorial_img/26_directive.png
+   :width: 1200px
+   :align: center
+
+- If you have a closer look to inside of the Directive,  This is an additional way to add pragmas to the code. 
+
+.. figure:: tutorial_img/27_insert_directive.png
+   :width: 400px
+   :align: center
+
+- For instance with right click to 'a' variable, the tab that includes the pragmas as more visualized version.
+
+.. figure:: tutorial_img/28_directive_editor.png
+   :width: 400px
+   :align: center
+
+- Click the C Synthesis. Change the period with 100MHz, and choose a MPSoC+ board.
+
+.. figure:: tutorial_img/29_c_synt.png
+   :width: 400px
+   :align: center
+
+- After that click Export RTL
+  
+.. figure:: tutorial_img/30_export_rtl_tab.png
+   :width: 400px
+   :align: center
+
+- Export your IP to Vivado workspace
+
+.. figure:: tutorial_img/31_export_rtl.png
+   :width: 400px
+   :align: center
+
+- At the end of the last step, you will have the designed IP core as .zip version. Unzip the file, and place at the ultrazohm_sw/ip_cores folder.
+- For video implementation of these steps check out :ref:`hdl_coder` last step.
+- Open Vivado and the block design
+- Right click into the block design and select IP settings
+- Refresh the IP catalogue
+- Extend uz_user subblock
+- Extend the smartconnect by one master port to connect AXI ports to the processor
+- Add the new IP-Core and connect it to the system
+- Go to the Address editor and assign a base address to the new IP-Core
+- Build the bitstream, export the XSA and update the Vitis workspace as done in :ref:`gen_bitstream`
+- Follow the :ref:`how_to_create_ipcore_driver` tutorial to create a software driver for the IP-Core
 
 
 ..	toctree::

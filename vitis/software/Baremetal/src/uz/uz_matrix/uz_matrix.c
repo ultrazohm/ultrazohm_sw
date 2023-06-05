@@ -56,10 +56,11 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     uz_assert(A->length_of_data);
     uz_assert(B->length_of_data);
     uz_assert(C_out->length_of_data);
-    //uz_assert(A->columns == B->columns);
-    //uz_assert(A->columns == C_out->columns);
-    //uz_assert(A->rows == B->rows);
-    //uz_assert(A->rows == C_out->rows);
+    // https://de.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html
+    uz_assert(A->columns == B->columns);
+    uz_assert(A->columns == C_out->columns);
+    uz_assert(A->rows == B->rows);
+    uz_assert(A->rows == C_out->rows);
 
     for (uint32_t row = 0; row < A->rows; row++)
     {
@@ -70,6 +71,43 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     }
 }
 
+void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    // check asserts for compatible array sizes, must not just be the same length
+    // https://de.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html
+    //uz_assert(A->columns == B->columns);
+    //uz_assert(A->columns == C_out->columns);
+    //uz_assert(A->rows == B->rows);
+    //uz_assert(A->rows == C_out->rows);
+    // check for array dimension and set up loop variables
+    // hardcoden for first test
+    // C_out->data[0]=A->data[0] * B->data[0];
+    // C_out->data[1]=A->data[0] * B->data[1];
+    // C_out->data[2]=A->data[1] * B->data[2];
+    // C_out->data[3]=A->data[1] * B->data[3];
+    for (uint32_t row = 0; row < B->rows; row++)
+    {
+        for (uint32_t column = 0; column < B->columns; column++)
+        {
+        if (A->columns == 1)
+        {
+            C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+        // else if (A->rows == 1){
+        //     C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+        else if (A->columns == B-> columns){
+            C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+        }
+    }
+}
 float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, uint32_t row, uint32_t column)
 {
     uz_assert_not_NULL(A);

@@ -215,6 +215,7 @@ void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
  * 
  * @param vector Pointer to a uz_matrix_t instance 
  */
+void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 void uz_matrix_set_vector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const vector);
 void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
 void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);

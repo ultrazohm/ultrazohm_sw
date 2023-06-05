@@ -223,37 +223,7 @@ Example of complete open phase fault detection
   }
 
 
-Example of using the individual functions for open phase fault detection
-------------------------------------------------------------------------
 
-.. code-block:: c
-  :linenos:
-  :caption: Example for using the functions of the module for the fault detection.
-
-  int main(void) {
-
-    uz_6ph_alphabeta_t m_6ph_alphabeta_currents;    // measured vsd-currents
-
-    uz_6phFD_indices R_indices = {0};            // fault indices unfiltered values
-    uz_6phFD_indices R_indices_Filt = {0};       // fault indices filtered values
-    uz_6phFD_indices R_indices_eval = {0};       // fault indices evaluated values
-
-    float upper_limit = 1.1f;
-    float lower_limit = 0.9f;
-    float threshold = 0.4f;
-
-    // calculate fault indices
-    R_indices = uz_vsd_opf_6ph_faultdetection(m_6ph_alphabeta_currents);
-
-    // use hysteresis filer on faultindices
-    R_indices_Filt = uz_vsd_fd_hysteresis_filter(R_indices, lower_limit, upper_limit);
-
-    // use further filters e.g. moving average filter or lowpass filter on fault indices (not included in this module)
-
-    // evaluate fault indices with threshold value
-    R_indices_eval = uz_fsd_fd_evaluation(R_indices_Filt, threshold);
-    
-  }
 
 .. [#DuranGonzalez] M. J. Duran, I. Gonzalez-Prieto, N. Rios-Garcia, and F. Barrero, "A Simple, Fast, and Robust Open-Phase Fault Detection Technique for Six-Phase Induction Motor Drives," IEEE Transaction on Power Electronics, vol. 33, no. 1, pp. 547-557, 2018. 
 

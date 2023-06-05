@@ -34,18 +34,28 @@
 #    "${origin_dir}/../ip_cores/Extend_Interrupt/extend_interrupt.vhd"
 #
 #*****************************************************************************************
-
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
 
-# Set default board part according to your board
-#*****************************************************************************************
-# KR260 Robotics Starter Kit
-set board_part "xilinx.com:kr260_som:part0:1.1"
-#*****************************************************************************************
-# KV260 Vision AI Starter Kit
-# set board_part "xilinx.com:kv260_som:part0:1.2"
-#*****************************************************************************************
+proc run_build_flow {} {
+    global option board_part
+
+    # Check the selected option
+    if {$option eq "KR"} {
+        # Code for KR scenario
+        puts "Executing the build flow for KR260 Robotics"
+        set board_part "xilinx.com:kr260_som:part0:1.1"
+    } elseif {$option eq "KV"} {
+        # Code for KV scenario
+        puts "Executing the build flow for KV260 Vision"
+        set board_part "xilinx.com:kv260_som:part0:1.2"
+    } else {
+        # Invalid option
+        puts "Invalid option selected!"
+        exit 1 ;# Exit the script if an invalid option is selected
+    }
+}
+run_build_flow
 
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
@@ -121,16 +131,17 @@ set proj_dir [get_property directory [current_project]]
 # Set project properties
 
 set obj [current_project]
+if {$option eq "KR"} {
+    set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
+    set_property -name "platform.board_id" -value "kr260_som" -objects $obj
+} elseif {$option eq "KV"} {
+    set_property -name "board_part" -value "xilinx.com:kv260_som:part0:1.2" -objects $obj
+    set_property -name "platform.board_id" -value "kv260_som" -objects $obj
+} else {
+    # Invalid option
+    exit 1  ;# Exit the script if an invalid option is selected
+}
 set_property -name "board_part_repo_paths" -value "[file normalize "$origin_dir/../../AppData/Roaming/Xilinx/Vivado/2020.2.2/xhub/board_store/xilinx_board_store"]" -objects $obj
-#*****************************************************************************************
-# KR260 Robotics Starter Kit
-set_property -name "board_part" -value "xilinx.com:kr260_som:part0:1.1" -objects $obj
-set_property -name "platform.board_id" -value "kr260_som" -objects $obj
-#*****************************************************************************************
-# KV260 Vision AI Starter Kit
-# set_property -name "board_part" -value "xilinx.com:kv260_som:part0:1.2" -objects $obj
-# set_property -name "platform.board_id" -value "kv260_som" -objects $obj
-#*****************************************************************************************
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
@@ -242,4 +253,3 @@ set bd_exists [file isfile $bd_path]
 # Create block design
 source $origin_dir/bd/k26sys.tcl
 regenerate_bd_layout
-

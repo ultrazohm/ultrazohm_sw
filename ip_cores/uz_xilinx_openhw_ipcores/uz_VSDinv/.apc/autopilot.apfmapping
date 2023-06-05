@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="uz_VSDinv.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_VSDinv\uz_VSDinv.h"/>
+    <originFiles name="uz_VSDinv.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_VSDinv\uz_VSDinv.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="test_uz_VSDinv.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_VSDinv\test_uz_VSDinv.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

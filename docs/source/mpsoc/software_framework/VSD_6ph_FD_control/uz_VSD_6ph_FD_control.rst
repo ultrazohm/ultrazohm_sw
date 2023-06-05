@@ -85,13 +85,13 @@ The VSD can be applied to the the phase voltages, currents and flux linkage to d
     \mathbf{f}_\mathrm{s}^\mathrm{VSD} = \mathbf{T}_\mathrm{VSD} \cdot \mathbf{f}_\mathrm{s}^{a_1 \rightarrow c_2}
 
 .. math::
-    [\mathbf{f}_\mathrm{s}^\mathrm{\alpha\beta}, \mathbf{f}_\mathrm{s}^\mathrm{xy}, \mathbf{f}_\mathrm{s}^\mathrm{0^+0^-}]^T = \mathbf{T}_\mathrm{VSD} \cdot \mathbf{u}_\mathrm{s}^{a_1 \rightarrow c_2}
+    [\mathbf{f}_\mathrm{s}^\mathrm{\alpha\beta}, \mathbf{f}_\mathrm{s}^\mathrm{xy}, \mathbf{f}_\mathrm{s}^\mathrm{0^+0^-}]^T = \mathbf{T}_\mathrm{VSD} \cdot \mathbf{f}_\mathrm{s}^{a_1 \rightarrow c_2}
 
 The three planes are the :math:`\alpha\beta`-system, :math:`xy`-system and :math:`0^+0^-`- system with :math:`\mathbf{f}_\mathrm{s}^\mathrm{\alpha\beta} = [f_\mathrm{s}^\mathrm{\alpha}, f_\mathrm{s}^\mathrm{\beta} ]^T`, :math:`\mathbf{f}_\mathrm{s}^\mathrm{xy} = [f_\mathrm{s}^\mathrm{x}, f_\mathrm{s}^\mathrm{y} ]^T` and :math:`\mathbf{f}_\mathrm{s}^\mathrm{0^+0^-} = [f_\mathrm{s}^\mathrm{0^+}, f_\mathrm{s}^\mathrm{0^-} ]^T`.
 The :math:`0^+0^-`- system is also called the zero-system, containing zero sequence components from both three-phase subsystems.
 The VSD maps different harmonics to different subspaces, such that the :math:`\alpha\beta`-plane holds the :math:`12\lambda\pm1` harmonics for :math:`\lambda \in \{1,2,3,... \}`, the :math:`xy`-plane holds the :math:`6\lambda\pm1` harmonics for :math:`\lambda \in \{1,3,5,... \}` and the :math:`0^+0^-`-plane holds the :math:`3\lambda\pm1` harmonics for :math:`\lambda \in \{1,3,5,... \}`.
 
-In the VSD system a new model of the six phase PMSM can be defined:
+In the VSD system a new model of the six phase PMSM can be derived:
 
 .. math::
 	\mathbf{u}_\mathrm{s}^{VSD} = R_\mathrm{s}\cdot \mathbf{i}_\mathrm{s}^{VSD} + \tfrac{d}{dt}\boldsymbol{\Psi}_\mathrm{s}^{VSD}
@@ -136,7 +136,7 @@ with
 	\end{matrix}\right].
 
 :math:`\theta_\mathrm{e}` represents the angular position of the rotor, while :math:`\omega_\mathrm{e}` represents the angular velocity of the rotor.
-The :math:`\alpha\beta`-system is thereby transformed into the, with while :math:`\omega_\mathrm{e}` synchronous to the rotor rotating, :math:`dq`-system, the  :math:`xy`-system is transformed into the, with :math:`-\omega_\mathrm{e}` antisynchronous to the rotor rotating, :math:`x'y'`-system, while the :math:`0^+0^-`- system. The :math:`0^+0^-`- system is not transformed.
+The :math:`\alpha\beta`-system is thereby transformed into the, with while :math:`\omega_\mathrm{e}` synchronous to the rotor rotating, :math:`dq`-system, the  :math:`xy`-system is transformed into the, with :math:`-\omega_\mathrm{e}` antisynchronous to the rotor rotating, :math:`x'y'`-system, while the :math:`0^+0^-`- system is not transformed into a rotating system.
 
 
 With these model equations of the six phase PMSM VSD based methods for controlling the machine are possible.
@@ -153,7 +153,7 @@ Fault tolerant machines
 
 One advantage of asymmetric six phase machines over classical three phase machines is their fault tolerance against open phase faults.
 This type of machine can continue to operate even in the event of multiple phase failures, while still producing constant torque.
-To achieve open phase fault (OPF) tolerance a fault detection and an adaptation of the control by using adjusted reference values according to the fault scenario is necessary.
+To achieve optimal open phase fault (OPF) tolerance a fault detection and an adaptation of the control by using adjusted reference values according to the fault scenario is necessary.
 This module contains a collection of functions for OPF detection and reference value generation for control during OPF in asymmetric six phase machines.
 
 

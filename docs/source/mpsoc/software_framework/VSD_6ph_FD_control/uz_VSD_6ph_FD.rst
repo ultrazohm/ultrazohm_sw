@@ -3,53 +3,59 @@ VSD Open-phase-fault detection
 ==============================
 
 This module provides functions for open phase fault (OPF) detection based on Vector Space Decompositon (VSD) for an asymmetric six phase machine.
-The stator of an asymmetric six phase phase machine consists of two three-phase windig sets shifted by :math:`\gamma = \pi/6`.
 Since the VSD transformation can be used for both PMSM and asynchronous machines, this module can be used for both machine types.
 The OPF detection can be extended to other stator arrangements, eg. symmetrical six phase machines or 5 and 9 phase machines.
 However, this is not included in this module, since the underlying equations for the fault indices have to be adjusted for it according to the stator arrangement.
 
+The open phase fault detection for asymmetric six phase machines is described in detail in [[#DuranGonzalez]_].
+
 The fault detection is based on six fault indices, one for each phase of the machine.
 The fault indices are calculated based on the measured VSD-currents with the following equations.
 :math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 to 6 in the order :math:`a_1, b_1, c_1, a_2, b_2, c_2`.
-
-:math:`i_\alpha, i_\beta, i_x, i_y, i_{01}, i_{02}` are the VSD-currents calculated with the :ref:`VSD-Transformation <6ph_abc_to_alphabeta>`.
+:math:`i_\alpha, i_\beta, i_x, i_y, i_{0^+}, i_{0^-}` are the VSD-currents calculated from the measured phasecurrent with the :ref:`VSD-Transformation <6ph_abc_to_alphabeta>`.
 
 .. _fault_indices:
 
 .. math::
 
-	{R_{1}} =-\frac{i_x}{i_\alpha+i_{01}} 
+	{R_{1}} =-\frac{i_x}{i_\alpha+i_{0^+}} 
 
 .. math::
 
-	R_{2} =\frac{i_x}{-i_\alpha+\sqrt3\ i_\beta-\sqrt3\ i_y+2\ i_{01}}\\
+	R_{2} =\frac{i_x}{-i_\alpha+\sqrt3\ i_\beta-\sqrt3\ i_y+2\ i_{0^+}}\\
 
 .. math::
 
-	R_{3} =\frac{i_x}{-i_\alpha-\sqrt3\ i_\beta+\sqrt3\ i_y+2\ i_{01}}\\
+	R_{3} =\frac{i_x}{-i_\alpha-\sqrt3\ i_\beta+\sqrt3\ i_y+2\ i_{0^+}}\\
 
 .. math::
 
-	R_{4} =\frac{i_x}{i_\alpha+\frac{1}{\sqrt3}\ i_\beta+\frac{1}{\sqrt3}\ i_y+\frac{2}{\sqrt3}\ i_{02}}\\
+	R_{4} =\frac{i_x}{i_\alpha+\frac{1}{\sqrt3}\ i_\beta+\frac{1}{\sqrt3}\ i_y+\frac{2}{\sqrt3}\ i_{0^-}}\\
 
 .. math::
 
-	R_{5} = \frac{i_x}{i_\alpha-\frac{1}{\sqrt3}\ i_\beta-\frac{1}{\sqrt3}\ i_y-\frac{2}{\sqrt3}\ i_{02}}\\
+	R_{5} = \frac{i_x}{i_\alpha-\frac{1}{\sqrt3}\ i_\beta-\frac{1}{\sqrt3}\ i_y-\frac{2}{\sqrt3}\ i_{0^-}}\\
 
 .. math::
 
-	R_{6} =-\frac{i_y}{i_\beta-i_{02}}\\
+	R_{6} =-\frac{i_y}{i_\beta-i_{0^+}}\\
 
-The fault indices are in pre-fault operation zero. 
-After a phase failure, the fault indices are no longer zero.
+The fault indices are in pre-fault operation zero as the torque producing currents are mapped only into the :math:`\alpha\beta`-plane while into the :math:`xy`- and :math:`0^+0^-`-planes only currents because of asymmetries and some harmonics are mapped, which are close to zero, especially if a proper control system is used and if the PMSM contains few harmonic and asymmetric components.
+After a phase failure, the fault indices are no longer zero as now significant current components occur in the :math:`xy`- and :math:`0^+0^-`-system as the three subsystems are no longer uncoupled.
 The fault index of the faulted phase is on average one.
 The remaining fault indices follow different non-zero functions depending on the fault scenario.
 
 By filtering the fault indices, they can be converted so that only the fault indices of the faulted phases are constant one, while all other fault indices are zero.
-For the filtering an hysteresis band filter followed by an moving average filter is used. 
+For the filtering an hysteresis band filter followed by an moving average filter is used.
+The hysteresis band filter set the value of a fault index to zero if the value is not in a narrow band around one defined by an upper and lower hysteresis band limit.
+The moving average smoothes the fault indices so that short disturbances do not affect the fault detection.
+The length of the smoothing intervall is defined as a portion of one electrical period of the phase currents.
+The filtered fault indices are evaluated by a threshold value.
+A phase detected as faulted if its fault index exceeds this threshold.
+
 After the filtering the fault indices have two possible states and are either 0 (no fault in the corresponding phase) or 1 (fault in the corresponding phase) and can therefore be used for OPF detection.
 
-The open phase fault detection is described in detail in [[#DuranGonzalez]_].
+
 
 The following module contains functions for calculating the fault indices, applying hysteresis band and moving average filtering and evaluating the filtered fault indices.
 The obtained results of the evaluated fault indices can be used for an control scheme during OPF.

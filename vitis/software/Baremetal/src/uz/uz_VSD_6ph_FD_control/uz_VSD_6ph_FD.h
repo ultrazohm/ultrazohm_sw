@@ -6,7 +6,7 @@
 #include "../uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 /**
- * @brief struct for fault indices for 6ph Open-Phase-Fault-Detection
+ * @brief Struct for fault indices for the six phase Open-Phase-Fault-Detection
  */
 typedef struct uz_6phFD_indices{
     float R1;    	/**< Fault index for phase 1 (a1) */
@@ -25,7 +25,7 @@ typedef struct uz_6phFD_indices{
 typedef struct uz_VSD_6ph_FD_t uz_VSD_6ph_FD_t;
 
 /**
- * @brief Configuration struct for 6ph VSD fault detection. Pass to init function. Accessible by the user.
+ * @brief Configuration struct for six phase VSD fault detection. Pass to init function. Accessible by the user.
  */
 struct uz_VSD_6ph_FD_config
 {
@@ -44,7 +44,7 @@ struct uz_VSD_6ph_FD_config
 };
 
 /**
- * @brief init function for the 6ph OPF detection
+ * @brief Init function for the six phase OPF detection
  * @param struct uz_VSD_6ph_FD_config, config for the fault detection
  * @return uz_VSD_6ph_FD_t*, pointer to the fault detection
 */
@@ -53,7 +53,7 @@ uz_VSD_6ph_FD_t *uz_VSD_6ph_FD_init(struct uz_VSD_6ph_FD_config config);
 
 
 /**
- * @brief Function for 6-phase open-phase-fault detection
+ * @brief Function for six-phase open-phase-fault detection, has to be cyclicly called with a the frequency configured in sample_frequency_Hz
  * @param vsdcurrents VSD currents
  * @param omega_el_rad_per_sec omega_el in rad per seconds
  * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated 

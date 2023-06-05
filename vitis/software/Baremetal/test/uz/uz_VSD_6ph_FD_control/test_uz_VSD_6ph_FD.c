@@ -337,7 +337,7 @@ movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
 movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
 movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
-struct uz_VSD_6ph_FD_config VSD_config = {
+struct uz_VSD_6ph_FD_config OPF_FD_config = {
     .upperlimit = 1.1f,
     .lowerlimit = 0.9f,
     .threshold = 0.4f,
@@ -352,7 +352,7 @@ struct uz_VSD_6ph_FD_config VSD_config = {
     .movingAverageFilter_R6 = movAvFilter_R6,
 };
 
-uz_VSD_6ph_FD_t* VSD_FD = uz_VSD_6ph_FD_init(VSD_config);
+uz_VSD_6ph_FD_t* OPF_FD = uz_VSD_6ph_FD_init(OPF_FD_config);
 
 
 uz_6phFD_indices output = {0};
@@ -360,7 +360,7 @@ uz_6ph_abc_t currents_abc = get_vaild_abcdef_currents_without_fault(0.5f, 5.4f, 
 uz_6ph_alphabeta_t vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
 float omega_el_rad_per_sec = 100.0f;
 
-output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec);
+output = uz_vsd_opf_6ph_faultdetection_step(OPF_FD, vsdcurrents, omega_el_rad_per_sec);
 
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R5);
@@ -369,13 +369,13 @@ currents_abc.b2=0.0f; // open phase fault one phase 2
 
 vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
 
-output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec);
+output = uz_vsd_opf_6ph_faultdetection_step(OPF_FD, vsdcurrents, omega_el_rad_per_sec);
 
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R5);
 int i = 0;
 for(i = 0; i<10; i++){
-    output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec);
+    output = uz_vsd_opf_6ph_faultdetection_step(OPF_FD, vsdcurrents, omega_el_rad_per_sec);
 }
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R2);

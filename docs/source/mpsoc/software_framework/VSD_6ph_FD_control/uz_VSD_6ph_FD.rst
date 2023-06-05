@@ -76,10 +76,21 @@ Struct for 6 fault indices, each indicating if the corresponding phase of the ma
 .. _uz_vsd_opf_6ph_faultdetection:
 
 
+Fault detection module
+----------------------
+
+.. doxygentypedef:: uz_VSD_6ph_FD_t
+
+.. doxygenstruct:: uz_VSD_6ph_FD_config
+  :members:
+
+.. doxygenfunction:: uz_VSD_6ph_FD_init
+
+
 Fault detection
 ---------------
 
-.. doxygenfunction:: uz_vsd_opf_6ph_faultdetection
+.. doxygenfunction:: uz_vsd_opf_6ph_faultdetection_step
 
 
 Description
@@ -197,13 +208,24 @@ Example of complete open phase fault detection
     movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
     movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
-    // initialize fault detection
-    float upperlimit = 1.1f;
-    float lowerlimit = 0.9f;
-    float threshold = 0.4f;
-    uint32_t mov_average_filter_length = 500;
-    float sample_frequency_Hz = 1000;
-    float percent_of_el_period = 0.4f;
+    // config for OPF fault detection
+    struct uz_VSD_6ph_FD_config OPF_FD_config = {
+        .upperlimit = 1.1f,
+        .lowerlimit = 0.9f,
+        .threshold = 0.4f,
+        .mov_average_filter_length = 500,
+        .sample_frequency_Hz = 1000,
+        .percent_of_el_period = 0.4f,
+        .movingAverageFilter_R1 = movAvFilter_R1,
+        .movingAverageFilter_R2 = movAvFilter_R2,
+        .movingAverageFilter_R3 = movAvFilter_R3,
+        .movingAverageFilter_R4 = movAvFilter_R4,
+        .movingAverageFilter_R5 = movAvFilter_R5,
+        .movingAverageFilter_R6 = movAvFilter_R6,
+    };
+
+    // fault detection module
+    uz_VSD_6ph_FD_t* OPF_FD = uz_VSD_6ph_FD_init(OPF_FD_config);
 
     float omega_el_rad_per_sec = 0.0f;
     uz_6ph_abc_t currents_abc = {0};
@@ -212,12 +234,12 @@ Example of complete open phase fault detection
 
     // open phase fault detection (in ISR) called with sample_frequency_Hz
     while(1){
-      // current omega el
+      // current omega el from measurement
       omega_el_rad_per_sec = 100.0f;
       // current vsd-currents
-      vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
+      vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_i_abc);
       // calculate fault indices
-      faultindices = uz_vsd_opf_6ph_faultdetection(vsdcurrents, upperlimit, lowerlimit, threshold, mov_average_filter_length, sample_frequency_Hz, percent_of_el_period, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
+      faultindices = uz_vsd_opf_6ph_faultdetection_step(OPF_FD, vsdcurrents, omega_el_rad_per_sec);
     }
 
   }

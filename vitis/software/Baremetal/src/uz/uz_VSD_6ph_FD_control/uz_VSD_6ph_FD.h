@@ -9,12 +9,12 @@
  * @brief struct for fault indices for 6ph Open-Phase-Fault-Detection
  */
 typedef struct uz_6phFD_indices{
-    float R1;    	/**< Fault index for phase 1 */
-    float R2;     	/**< Fault index for phase 2 */
-    float R3;       /**< Fault index for phase 3 */
-    float R4;       /**< Fault index for phase 4 */
-    float R5;       /**< Fault index for phase 5 */
-    float R6;       /**< Fault index for phase 6 */
+    float R1;    	/**< Fault index for phase 1 (a1) */
+    float R2;     	/**< Fault index for phase 2 (b1)*/
+    float R3;       /**< Fault index for phase 3 (c1)*/
+    float R4;       /**< Fault index for phase 4 (a2)*/
+    float R5;       /**< Fault index for phase 5 (b2)*/
+    float R6;       /**< Fault index for phase 6 (c2)*/
 }uz_6phFD_indices;
 
 
@@ -63,7 +63,7 @@ uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_
 
 
 /**
- * @brief Function to calculate the fault indices (unfiltered) for 6-phase open-phase-fault detection
+ * @brief Function to calculate the fault indices (unfiltered) for 6-phase open-phase-fault detection (used by uz_vsd_opf_6ph_faultdetection_step)
  * @param vsdcurrents uz_6ph_alphabeta_t struct, vsd currents of 6-phase system
  * @return uz_6phFD_indices fault indices for the six phases
  */
@@ -71,7 +71,7 @@ uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t vsd
 
 
 /**
- * @brief Hysteresis filter function for the vsd open phase fault detection. Sets fault indices to zero if they are not in the hysteresis band bounded by the limits
+ * @brief Hysteresis filter function for the vsd open phase fault detection. Sets fault indices to zero if they are not in the hysteresis band bounded by the limits (used by uz_vsd_opf_6ph_faultdetection_step)
  * @param input fault indices, value is set to 0 if the value of the index is outside of the hysteresis band
  * @param upperlimit upper limit of hysteresis band
  * @param lowerlimit lower limit of hysteresis band
@@ -80,7 +80,7 @@ uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t vsd
 uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lowerlimit, float upperlimit);
 
 /**
- * @brief Evaluates uz_6phFD_indices values with a threshold value
+ * @brief Evaluates uz_6phFD_indices values with a threshold value (used by uz_vsd_opf_6ph_faultdetection_step)
  * @param input input fault indices
  * @param threshold value from which a fault index is judged as an error
  * @return uz_6phFD_indices fault indices set to 0 if fault index is below or set to 1 if fault index is above the threshold value

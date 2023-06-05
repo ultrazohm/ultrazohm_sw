@@ -279,7 +279,14 @@ void test_uz_vsd_fd_evaluation(void)
 
 
 
-void test_uz_vsd_opf_6ph_faultdetection(void){
+
+
+
+
+
+
+
+void test_uz_vsd_opf_6ph_faultdetection_step(void){
 
 struct uz_movingAverageFilter_config movAvF_config = {
     .filterLength = 300U
@@ -330,18 +337,24 @@ movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
 movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
 movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
+struct uz_VSD_6ph_FD_config VSD_config = {
+    .upperlimit = 1.1f,
+    .lowerlimit = 0.9f,
+    .threshold = 0.4f,
+    .mov_average_filter_length = 500,
+    .sample_frequency_Hz = 1000,
+    .percent_of_el_period = 0.4f
+};
+
+uz_VSD_6ph_FD_t* VSD_FD = uz_VSD_6ph_FD_init(VSD_config);
+
+
 uz_6phFD_indices output = {0};
 uz_6ph_abc_t currents_abc = get_vaild_abcdef_currents_without_fault(0.5f, 5.4f, 0.3f);
 uz_6ph_alphabeta_t vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
-float upperlimit = 1.1f;
-float lowerlimit = 0.9f;
-float threshold = 0.4f;
-uint32_t mov_average_filter_length = 500;
-float sample_frequency_Hz = 1000;
-float percent_of_el_period = 0.4f;
 float omega_el_rad_per_sec = 100.0f;
 
-output = uz_vsd_opf_6ph_faultdetection(vsdcurrents, upperlimit, lowerlimit, threshold, mov_average_filter_length, sample_frequency_Hz, percent_of_el_period, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
+output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
 
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R5);
@@ -350,13 +363,13 @@ currents_abc.b2=0.0f; // open phase fault one phase 2
 
 vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_abc);
 
-output = uz_vsd_opf_6ph_faultdetection(vsdcurrents, upperlimit, lowerlimit, threshold, mov_average_filter_length, sample_frequency_Hz, percent_of_el_period, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
+output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
 
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R5);
 int i = 0;
 for(i = 0; i<10; i++){
-    output = uz_vsd_opf_6ph_faultdetection(vsdcurrents, upperlimit, lowerlimit, threshold, mov_average_filter_length, sample_frequency_Hz, percent_of_el_period, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
+    output = uz_vsd_opf_6ph_faultdetection_step(VSD_FD, vsdcurrents, omega_el_rad_per_sec, movAvFilter_R1, movAvFilter_R2, movAvFilter_R3, movAvFilter_R4, movAvFilter_R5, movAvFilter_R6 );
 }
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R1);
 TEST_ASSERT_EQUAL_FLOAT(0.0f, output.R2);

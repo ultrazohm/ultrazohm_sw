@@ -19,14 +19,36 @@ typedef struct uz_6phFD_indices{
 
 
 /**
+ * @brief Struct definition for uz_VSD_6ph_FD_t
+ *
+ */
+typedef struct uz_VSD_6ph_FD_t uz_VSD_6ph_FD_t;
+
+/**
+ * @brief Configuration struct for 6ph VSD fault detection. Pass to init function. Accessible by the user.
+ */
+struct uz_VSD_6ph_FD_config
+{
+    float upperlimit;                   /**< upper limit of hysteresis band */
+    float lowerlimit;                   /**< lowerlimit lower limit of hysteresis band */
+    float threshold;                    /**< threshold value from which a fault index is judged as an error */
+    uint32_t mov_average_filter_length;    /**< mov_average_filter_length maximal length of moving average filter */
+    float sample_frequency_Hz;             /**< sample_frequency_Hz sample frequency in Hz */
+    float percent_of_el_period;         /**< percent_of_el_period desired filter length in percent of an electric period */
+};
+
+/**
+ * @brief init function for the 6ph OPF detection
+ * @param struct uz_VSD_6ph_FD_config, config for the fault detection
+ * @return uz_VSD_6ph_FD_t*, pointer to the fault detection
+*/
+uz_VSD_6ph_FD_t *uz_VSD_6ph_FD_init(struct uz_VSD_6ph_FD_config config);
+
+
+
+/**
  * @brief Function for 6-phase open-phase-fault detection
- * @param vsdcurrents uz_6ph_alphabeta_t struct, vsd currents of 6-phase system
- * @param upperlimit upper limit of hysteresis band
- * @param lowerlimit lower limit of hysteresis band
- * @param threshold value from which a fault index is judged as an error
- * @param mov_average_filter_length maximal length of moving average filter
- * @param sample_frequency_Hz sample frequency in Hz
- * @param percent_of_el_period desired filter length in percent of an electric period
+ * @param vsdcurrents VSD currents
  * @param omega_el_rad_per_sec omega_el in rad per seconds
  * @param movingAverageFilter_R1 moving average filter for phase 1
  * @param movingAverageFilter_R2 moving average filter for phase 2
@@ -36,7 +58,7 @@ typedef struct uz_6phFD_indices{
  * @param movingAverageFilter_R6 moving average filter for phase 6
  * @return uz_6phFD_indices fault indices for the six phases filtered and evaluated 
  */
-uz_6phFD_indices uz_vsd_opf_6ph_faultdetection(uz_6ph_alphabeta_t vsdcurrents, float upperlimit, float lowerlimit, float threshold, uint32_t mov_average_filter_length, float sample_frequency_Hz, float percent_of_el_period, float omega_el_rad_per_sec, uz_movingAverageFilter_t* movingAverageFilter_R1, uz_movingAverageFilter_t* movingAverageFilter_R2, uz_movingAverageFilter_t* movingAverageFilter_R3, uz_movingAverageFilter_t* movingAverageFilter_R4, uz_movingAverageFilter_t* movingAverageFilter_R5, uz_movingAverageFilter_t* movingAverageFilter_R6 );
+uz_6phFD_indices uz_vsd_opf_6ph_faultdetection_step(uz_VSD_6ph_FD_t* VSD_FD, uz_6ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec, uz_movingAverageFilter_t* movingAverageFilter_R1, uz_movingAverageFilter_t* movingAverageFilter_R2, uz_movingAverageFilter_t* movingAverageFilter_R3, uz_movingAverageFilter_t* movingAverageFilter_R4, uz_movingAverageFilter_t* movingAverageFilter_R5, uz_movingAverageFilter_t* movingAverageFilter_R6 );
 
 
 
@@ -54,7 +76,6 @@ uz_6phFD_indices uz_vsd_opf_6ph_fault_indices_calculation(uz_6ph_alphabeta_t vsd
  * @param upperlimit upper limit of hysteresis band
  * @param lowerlimit lower limit of hysteresis band
  * @return uz_6phFD_indices fault indices after filtering with the hysteresis band
- *
  */
 uz_6phFD_indices uz_vsd_fd_hysteresis_filter(uz_6phFD_indices input, float lowerlimit, float upperlimit);
 

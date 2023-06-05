@@ -35,12 +35,60 @@
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-// Initialize the Timer structure
-XTmrCtr Timer_Interrupt;
-
 // Global variable structure
 extern DS_Data Global_Data;
 
+float KP_d_out, id_ref;
+bool KP_d_vld, id_ref_vld;
+bool status, status_vld;
+
+// Data for PMSM
+#include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+extern uz_pmsm_model6ph_dq_t *pmsm;
+float omega_mech = 100.0f;
+float load_torque = 0.0f;
+struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_output = {0};
+
+// Data for Transformation
+#include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+extern uz_pmsm6ph_transformation_t *transformation;
+uz_6ph_abc_t transformation_currents_abc = {0};
+float theta_el = 0.0f;
+
+// Data for PI
+#include "../uz/uz_piController/uz_piController.h"
+extern uz_PI_Controller *PI_d_current;
+extern uz_PI_Controller *PI_q_current;
+uz_6ph_dq_t transformed_currents = {0};
+uz_3ph_dq_t setp_currents = {0};
+uz_6ph_dq_t output_voltage_dq = {0};
+uz_6ph_abc_t out_voltage_abc = {0};
+uz_3ph_abc_t out_voltage_abc1 = {0};
+uz_3ph_abc_t out_voltage_abc2 = {0};
+
+// Data for PWM
+#include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+extern uz_PWM_SS_2L_t *PWM1;
+extern uz_PWM_SS_2L_t *PWM2;
+float V_dc_volts = 100.0f;
+
+#include "../uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
+
+uz_6ph_dq_t voltages = {
+		.d = 100.0f,
+		.q = -100.0f,
+		.x = 5.0f,
+		.y = 4.0f,
+		.z1 = -1.0f,
+		.z2 = -5.0f
+};
+
+#include "../uz/FOC_IP/xuz_foc.h"
+extern XUz_foc *InstancePtr;
+bool reset = false;
+float set_id = -1000.0f;
+int32_t reset_out;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -60,10 +108,56 @@ void ISR_Control(void *data)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     }
+    // CIL
+      uz_pmsm_model6ph_dq_set_inputs_general(pmsm,omega_mech,load_torque);                                          // set omega and load torque (only one active)
+      pmsm_output = uz_pmsm_model6ph_dq_get_outputs_general(pmsm);                                                  // read outputs from PMSM
+      transformation_currents_abc = uz_pmsm6ph_transformation_get_currents(transformation);                         // read current from transformation
+      theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);
+      uz_pmsm_model6ph_dq_set_voltage(pmsm, voltages);
+
+      // read theta from transformation
+
+      // Controller
+      transformed_currents = uz_transformation_asym30deg_6ph_abc_to_dq(transformation_currents_abc, theta_el);      // transform currents
+      output_voltage_dq.d = uz_PI_Controller_sample(PI_d_current, setp_currents.d, transformed_currents.d, false);  // sample d-current controller
+      output_voltage_dq.q = uz_PI_Controller_sample(PI_q_current, setp_currents.q, transformed_currents.q, false);  // sample q-current controller
+      out_voltage_abc = uz_transformation_asym30deg_6ph_dq_to_abc(output_voltage_dq, theta_el);                     // transform setpoint voltages to phase voltages
+      out_voltage_abc1.a = out_voltage_abc.a1;                                                                      // seperate voltages into 3ph structs
+      out_voltage_abc1.b = out_voltage_abc.b1;
+      out_voltage_abc1.c = out_voltage_abc.c1;
+      out_voltage_abc2.a = out_voltage_abc.a2;
+      out_voltage_abc2.b = out_voltage_abc.b2;
+      out_voltage_abc2.c = out_voltage_abc.c2;
+
+      // Duty Cycles
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+    if(reset)
+    	XUz_foc_Set_reset_PS(InstancePtr, true);
+    else
+    	XUz_foc_Set_reset_PS(InstancePtr, false);
+    XUz_foc_Set_set_i_d(InstancePtr, 100.0f);
+	XUz_foc_Set_set_i_q(InstancePtr, 100.0f);
+	XUz_foc_Set_KP_d(InstancePtr, 10.0f);
+	XUz_foc_Set_KI_d(InstancePtr, 10.0f);
+	XUz_foc_Set_KP_q(InstancePtr, 10.0f);
+	XUz_foc_Set_KI_q(InstancePtr, 10.0f);
+	XUz_foc_Set_limit(InstancePtr, 100.0f);
+	set_id = XUz_foc_Get_set_i_d(InstancePtr);
+	reset_out = XUz_foc_Get_reset_PS(InstancePtr);
+
+
+	KP_d_out = XUz_foc_Get_out_KP_d(InstancePtr);
+	KP_d_vld = XUz_foc_Get_out_KP_d_vld(InstancePtr);
+	id_ref = XUz_foc_Get_out_idref(InstancePtr);
+	id_ref_vld = XUz_foc_Get_out_idref_vld(InstancePtr);
+	status = XUz_foc_Get_out_status(InstancePtr);
+	status_vld = XUz_foc_Get_out_status_vld(InstancePtr);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
@@ -95,7 +189,7 @@ int Initialize_ISR()
     }
 
     // Initialize interrupt controller for the GIC
-    Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
+    Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG);
     if (Status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: GIC initialization failed\r\n");
@@ -111,33 +205,6 @@ int Initialize_ISR()
     return Status;
 }
 
-//==============================================================================================================================================================
-//----------------------------------------------------
-// INITIALIZE AXI-TIMER FOR ISRs
-// - "TIMER_LOAD_VALUE" sets the counter-end-value in order to set the ISR-frequency f_c
-// - "Con_TIMER_DEVICE_ID" uses the Device-ID of the used timer in Vivado
-// - "Timer_Interrupt" is the used timer structure instance
-// - "XTC_INT_MODE_OPTION" activates the Interrupt function
-// - "XTC_AUTO_RELOAD_OPTION" activates an automatic reload of the timer
-// - By default, the counter counts up
-//----------------------------------------------------
-int Initialize_Timer()
-{
-
-    int Status;
-
-    // SETUP THE TIMER 1 for Interrupts
-    Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_UZ_SYSTEM_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
-    if (Status != XST_SUCCESS)
-        return XST_FAILURE;
-    // XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
-    XTmrCtr_SetOptions(&Timer_Interrupt, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
-    XTmrCtr_SetResetValue(&Timer_Interrupt, 0, TIMER_LOAD_VALUE);
-    XTmrCtr_Reset(&Timer_Interrupt, 0);
-    XTmrCtr_Start(&Timer_Interrupt, 0);
-
-    return Status;
-}
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -148,7 +215,7 @@ int Initialize_Timer()
 // @Handler			Associated handler for the Interrupt ID
 // @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
 //----------------------------------------------------
-int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_InstancePtr)
+int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId)
 {
     XScuGic_Config *IntcConfig;
     int status;

@@ -39,6 +39,96 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+#include "uz/FOC_IP/xuz_foc.h"
+XUz_foc instance;
+XUz_foc *InstancePtr = &instance;
+
+
+// includes
+#include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+#include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+#include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
+#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+
+// PMSM
+uz_pmsm_model6ph_dq_t *pmsm = NULL;
+struct uz_pmsm_model6ph_dq_config_t cil_pmsm_comfig = {
+    .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .polepairs = 4.0f,
+    .r_1 = 0.3f,
+    .inductance.d = 0.003f,
+    .inductance.q = 0.003f,
+    .inductance.x = 2.00e-03f,
+    .inductance.y = 4.00e-03f,
+    .inductance.z1 = 5.00e-03f,
+    .inductance.z2 = 6.00e-03f,
+    .psi_pm = 0.0075f,
+    .friction_coefficient = 0.001f,
+    .coulomb_friction_constant = 0.001f,
+    .inertia = 0.001f,
+    .simulate_mechanical_system = false,
+    .switch_pspl = true};
+
+// Transformation
+uz_pmsm6ph_transformation_t *transformation = NULL;
+struct uz_pmsm6ph_config_t cil_transformation_config = {
+  .base_address = XPAR_UZ_USER_UZ_SIXPHASE_VSD_TRAN_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f};
+
+// Inverter
+uz_inverter_3ph_t *inverter1 = NULL;
+uz_inverter_3ph_t *inverter2 = NULL;
+struct uz_inverter_3ph_config_t cil_inverter1_config = {
+    .base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .switch_pspl_abc = false,
+    .switch_pspl_gate = false,
+    .udc = 100.0f};
+struct uz_inverter_3ph_config_t cil_inverter2_config = {
+    .base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_1_BASEADDR,
+    .ip_core_frequency_Hz = 100000000.0f,
+    .switch_pspl_abc = false,
+    .switch_pspl_gate = false,
+    .udc = 100.0f};
+
+// PWM (optional, only necessary if default PWM blocks are not used)
+uz_PWM_SS_2L_t *PWM1 = NULL;
+uz_PWM_SS_2L_t *PWM2 = NULL;
+struct uz_PWM_SS_2L_config_t cil_pwm1_config = {
+  .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+  .ip_clk_frequency_Hz=100000000.0f,
+  .Tristate_HB1 = false,
+  .Tristate_HB2 = false,
+  .Tristate_HB3 = false,
+  .min_pulse_width = 0.01f,
+  .PWM_freq_Hz = UZ_PWM_FREQUENCY,
+  .PWM_mode = normalized_input_via_AXI,
+  .PWM_en = true,
+  .use_external_counter = true};
+struct uz_PWM_SS_2L_config_t cil_pwm2_config = {
+  .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+  .ip_clk_frequency_Hz=100000000.0f,
+  .Tristate_HB1 = false,
+  .Tristate_HB2 = false,
+  .Tristate_HB3 = false,
+  .min_pulse_width = 0.01f,
+  .PWM_freq_Hz = UZ_PWM_FREQUENCY,
+  .PWM_mode = normalized_input_via_AXI,
+  .PWM_en = true,
+  .use_external_counter = true};
+
+// PI controllers, only necessary for example, you can use your own controller
+#include "uz/uz_piController/uz_piController.h"
+const struct uz_PI_Controller_config PI_config = {
+  .Kp = 1250.0f,
+  .Ki = 78250.0f,
+  .samplingTime_sec = 0.0001f,
+  .upper_limit = 100.0f,
+  .lower_limit = -100.0f};
+uz_PI_Controller *PI_d_current=NULL;
+uz_PI_Controller *PI_q_current=NULL;
+
 
 enum init_chain
 {
@@ -51,7 +141,8 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-
+int status_1;
+int status_2;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -69,7 +160,6 @@ int main(void)
             initialization_chain = init_software;
             break;
         case init_software:
-            Initialize_Timer();
             uz_SystemTime_init();
             JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
@@ -89,6 +179,29 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
+			transformation = uz_pmsm6ph_transformation_init(cil_transformation_config);
+			inverter1 = uz_inverter_3ph_init(cil_inverter1_config);
+			inverter2 = uz_inverter_3ph_init(cil_inverter2_config);
+			PWM1 = uz_PWM_SS_2L_init(cil_pwm1_config);
+			PWM2 = uz_PWM_SS_2L_init(cil_pwm2_config);
+			// init PI-controllers
+			PI_d_current = uz_PI_Controller_init(PI_config);
+			PI_q_current = uz_PI_Controller_init(PI_config);
+
+            XUz_foc_Config config={
+				.Control_BaseAddress = 0x0080130000
+            };
+            status_1 = XUz_foc_CfgInitialize(InstancePtr, &config);
+
+            XUz_foc_Set_set_i_d(InstancePtr, 0.0f);
+            XUz_foc_Set_set_i_q(InstancePtr, 10.0f);
+            XUz_foc_Set_KP_d(InstancePtr, 10.0f);
+            XUz_foc_Set_KI_d(InstancePtr, 10.0f);
+            XUz_foc_Set_KP_q(InstancePtr, 10.0f);
+            XUz_foc_Set_KI_q(InstancePtr, 10.0f);
+            XUz_foc_Set_limit(InstancePtr, 100.0f);
+
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;

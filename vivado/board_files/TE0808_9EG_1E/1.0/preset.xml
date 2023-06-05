@@ -55,7 +55,7 @@
         <user_parameter  name="CONFIG.PSU__DDRC__T_RP" value="16"/>
         <user_parameter  name="CONFIG.PSU__DDR__INTERFACE__FREQMHZ" value="600.000"/>
         <user_parameter  name="CONFIG.PSU__M_AXI_GP2__FREQMHZ" value="100.0"/>
-        <user_parameter  name="CONFIG.PSU__PSS_REF_CLK__FREQMHZ" value="33.33333"/>
+        <user_parameter  name="CONFIG.PSU__PSS_REF_CLK__FREQMHZ" value="33.333333"/>
         <user_parameter  name="CONFIG.PSU__QSPI__GRP_FBCLK__ENABLE" value="1"/>
         <user_parameter  name="CONFIG.PSU__QSPI__GRP_FBCLK__IO" value="MIO 6"/>
         <user_parameter  name="CONFIG.PSU__QSPI__PERIPHERAL__DATA_MODE" value="x4"/>

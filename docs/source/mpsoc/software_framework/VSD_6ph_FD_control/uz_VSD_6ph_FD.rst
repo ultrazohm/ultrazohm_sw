@@ -10,7 +10,8 @@ However, this is not included in this module, since the underlying equations for
 
 The fault detection is based on six fault indices, one for each phase of the machine.
 The fault indices are calculated based on the measured VSD-currents with the following equations.
-:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 to 6.
+:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 to 6 in the order :math:`a_1, b_1, c_1, a_2, b_2, c_2`.
+
 :math:`i_\alpha, i_\beta, i_x, i_y, i_{01}, i_{02}` are the VSD-currents calculated with the :ref:`VSD-Transformation <6ph_abc_to_alphabeta>`.
 
 .. _fault_indices:

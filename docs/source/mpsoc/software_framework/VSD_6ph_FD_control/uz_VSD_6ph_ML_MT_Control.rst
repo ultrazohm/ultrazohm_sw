@@ -28,7 +28,7 @@ Since in the post-fault situation the VSD-subsystems are no longer independent c
 As :math:`\mathbf{i}^{\alpha\beta}` are torque producing their reference values is given by the desired torque.
 The reference values of the other VSD-currents has to be specified as a function of the alpha-beta currents to adhere to the coupling between the VSD-currents and to not interfere with the control of the alpha-beta currents for constant torque.
 
-The reference values of the VSD-currents are therefore defined depending on the alpha-beta currents.
+The reference values of the VSD-currents are therefore defined depending on the alpha-beta currents:
 
 .. math::
     \begin{bmatrix}
@@ -49,6 +49,10 @@ Frequently used for determining the k-parameters are the Minimum Loss (ML) and M
 
 The following module with the function ``uz_get_k_parameter`` contains the ML and MT optimized k-parameters for up to 3 OPFs of an asymmetric six-phase PMSM with one (1N) or two (2N) neutral points.
 Based on these parameters a fault tolerant control system for asymmetric six-phase PMSM can be created by controlling the VSD-Currents with the calculated reference values.
+
+In addition to the k-parameters a derating factor for the fault scenario is supplied, by which the nominal currents of the machine have to be scaled down to ensure a safe continuous operation.
+The derating is needed as the phase currents in post-fault operation are increased compared to the pre-fault operation for the same torque produced as fewer phases are accessible.
+
 
 .. _kparameter:
 

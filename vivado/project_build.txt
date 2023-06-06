@@ -1,0 +1,30 @@
+How-to 
+1. Open fresh vivado project
+2. Open Tcl Console
+3. cd to directory
+set work_directory [get_property DIRECTORY [current_project]]
+cd $work_directory
+
+4. create hierarchy
+create_bd_cell -type hier uz_user_new
+
+5. Call block design
+source ../exported_hierarchy.tcl
+
+6. Call the script with uz_user
+create_hier_cell_uz_user uz_user_new uz_user
+
+7. Connect the new uz_user with the same ports old uz_user
+S00_AXI -> M10_AXI
+ff_set -> trigger_conv
+triangle_in -> digital adapter PWM
+
+8. Delete old one, change the new ones name from uz_user_1 to uz_user
+9. Delete hierarchy
+
+
+Command for block design gen
+
+set work_directory [get_property DIRECTORY [current_project]] 
+cd $work_directory 
+write_bd_tcl -hier_blks [get_bd_cells /"Hierarchy to export"] ./exported_hierarchy.tcl

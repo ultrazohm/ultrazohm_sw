@@ -16,7 +16,7 @@ pipelines:
           - apk add git-lfs
           - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
           - git lfs fetch --all
-          - git push --mirror mirrorOrigin
+          - git push --all mirrorOrigin
 
    branches:
    #   develop:

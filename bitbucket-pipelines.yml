@@ -8,6 +8,16 @@ clone:
   lfs: true
 
 pipelines:
+   default:
+      - step:
+         name: Github-Mirror
+         image: alpine/git
+         script:
+          - apk add git-lfs
+          - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
+          - git lfs fetch --all
+          - git push --mirror mirrorOrigin
+
    branches:
    #   develop:
       #   - step:
@@ -64,11 +74,4 @@ pipelines:
                  # for everybody and directories get accessable
                  EXTRA_ARGS: '-a --delete --chmod=D0755,F0640,+X'
                  SSH_PORT: '22'
-      - step:
-         name: Github-Mirror
-         image: alpine/git
-         script:
-          - apk add git-lfs
-          - git remote add mirrorOrigin git@github.com:ultrazohm/ultrazohm_sw.git
-          - git lfs fetch --all
-          - git push --all mirrorOrigin
+

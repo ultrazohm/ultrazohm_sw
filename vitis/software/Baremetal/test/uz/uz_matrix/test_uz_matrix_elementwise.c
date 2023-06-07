@@ -65,4 +65,18 @@ void test_uz_matrix_matrix_elementwise_multiplication_1_times_4(void){
     TEST_ASSERT_EQUAL_FLOAT(16,uz_matrix_get_element_zero_based(C,0,3) );
 }
 
+void test_uz_matrix_matrix_elementwise_matlab_multiplication_schroeder(void){
+    float A_data[2]={0.0f,0.6f};
+    float B_data[4]={-0.02f,-0.78f,5.36f,-1.26f};
+    float C_data[4]={0.0f};
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),2, 1 );
+    uz_matrix_t* B=init_array_test_helper(B_data,UZ_MATRIX_SIZE(B_data),2, 2 );
+    uz_matrix_t* C=init_array_test_helper(C_data,UZ_MATRIX_SIZE(C_data),2, 2 );
+    // // C=A .* B
+    uz_matrix_matlab_elementwise_product(A,B,C);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f, 0.0f, uz_matrix_get_element_zero_based(C,0,0) );
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0f, uz_matrix_get_element_zero_based(C,0,1) );
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,3.22f, uz_matrix_get_element_zero_based(C,1,0) );
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,-0.76f ,uz_matrix_get_element_zero_based(C,1,1) );
+}
 #endif // TEST

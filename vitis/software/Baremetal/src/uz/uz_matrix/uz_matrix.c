@@ -56,6 +56,7 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     uz_assert(A->length_of_data);
     uz_assert(B->length_of_data);
     uz_assert(C_out->length_of_data);
+    // https://de.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html
     uz_assert(A->columns == B->columns);
     uz_assert(A->columns == C_out->columns);
     uz_assert(A->rows == B->rows);
@@ -70,6 +71,43 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     }
 }
 
+void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    // check asserts for compatible array sizes, must not just be the same length
+    // https://de.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html
+    //uz_assert(A->columns == B->columns);
+    //uz_assert(A->columns == C_out->columns);
+    //uz_assert(A->rows == B->rows);
+    //uz_assert(A->rows == C_out->rows);
+    // check for array dimension and set up loop variables
+    // hardcoden for first test
+    // C_out->data[0]=A->data[0] * B->data[0];
+    // C_out->data[1]=A->data[0] * B->data[1];
+    // C_out->data[2]=A->data[1] * B->data[2];
+    // C_out->data[3]=A->data[1] * B->data[3];
+    for (uint32_t row = 0; row < B->rows; row++)
+    {
+        for (uint32_t column = 0; column < B->columns; column++)
+        {
+        if (A->columns == 1)
+        {
+            C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+        // else if (A->rows == 1){
+        //     C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        //}
+        else if (A->columns == B-> columns){
+            C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+        }
+    }
+}
 float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, uint32_t row, uint32_t column)
 {
     uz_assert_not_NULL(A);
@@ -177,6 +215,73 @@ void uz_matrix_set_zero(uz_matrix_t *const A)
     }
 }
 
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+            A->data[(row * A->columns) + column] = 1.0f;
+        }
+            else{
+            A->data[(row * A->columns) + column] = 0.0f;
+            }
+        }
+    }
+}
+
+void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){}
+            
+            else{
+            A->data[(row * A->columns) + column] = 0.0f;
+            }
+        }
+    }
+}
+
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = rowvector->data[column];
+        }
+        else{
+            }
+        }
+    }
+}
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = columnvector->data[row];
+        }
+        else{
+            }
+        }
+    }
+}
 void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);
@@ -222,6 +327,25 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float (*f)(f
     for (uint32_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] = f(A->data[i]);
+    }
+}
+
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float))
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(f);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        { 
+        if (row == column){
+            A->data[(row * A->columns) + column] = f(A->data[(row * A->columns) + column]);
+        }
+        else{
+            }
+        }
     }
 }
 
@@ -294,4 +418,56 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
         destination->data[i]=source->data[i];
     }
 
+}
+void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+uz_assert(A->columns == B->columns == C_out->columns == 1);
+uz_assert((A->rows + B->rows) == C_out->rows);
+uz_matrix_set_zero(C_out);
+uint32_t m = A->rows;
+uint32_t n = B->rows;
+// loop first through A, then through B
+for (uint32_t i = 0; i < m; i++)
+{
+C_out->data[i] = A->data[i];
+}
+for (uint32_t k = 0; k < n; k++)
+{
+ C_out->data[m + k] = B->data[k];
+}
+}
+
+void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically
+// see cat(1,reshape(A,[],1),reshape(B,[],1))
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+uz_matrix_set_zero(C_out);
+for (uint32_t column = 0; column < A->columns; column++)
+{
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+    C_out->data[(column * A->rows) + row] = A->data[(row * A->columns) + column];
+    }
+}
+
+for (uint32_t row2 = 0; row2 < B->rows; row2++)
+{
+for (uint32_t column2 = 0; column2 < B->columns; column2++)
+{
+    C_out->data[(A->rows*A->columns)+(row2 * B->columns) + column2] =  B->data[(row2 * B->columns) + column2];
+}
+}
 }

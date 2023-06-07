@@ -38,12 +38,29 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  * @param self 
  * @return uz_matrix_t* 
  */
-uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 
+void uz_nn_calc_gradients(uz_nn_t *self,float *const reference, uz_matrix_t *const input);
+void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *const input);
+void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate);
+void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer);
+void uz_nn_set_gradients_zero(uz_nn_t *self);
+void uz_nn_update(uz_nn_t *self,float const THETA, float const BIAS,float const Lernrate);
+void uz_nn_schroeder_export(uz_nn_t *self);
+void uz_nn_mat_export(uz_nn_t *self);
+float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
+float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
+uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
+uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_t layer);
+uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, uint32_t layer);
+//uz_matrix_t* uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer);
+uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer);
+uz_matrix_t* uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer);
+uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t layer);
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
+
 
 #endif // UZ_NN_H

@@ -156,10 +156,16 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
  * @param f Function pointer, function has to accept one float as argument and return one float
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
-
+/**
+ * @brief Applies a function f, that is passed as a function pointer, to the diagonal of a uz_matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param f Function pointer, function has to accept one float as argument and return one float
+ */
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float) );
 
 /**
- * @brief Retruns the value of the biggest element of the matrix
+ * @brief Returns the value of the biggest element of the matrix
  * 
  * @param A Pointer to a uz_matrix_t instance 
  * @return float 
@@ -188,6 +194,31 @@ void uz_matrix_transpose(uz_matrix_t* A);
  * @param destination Matrix where the data is copied to
  */
 void uz_matrix_copy(uz_matrix_t const*const source, uz_matrix_t *const destination);
+/**
+ * @brief Sets matrix A to a unity/identity matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 
+/**
+ * @brief Sets whole matrix zero except diagonal axis (see unity matrix)
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 
+/**
+ * @brief Assigns vector elements to the diagonal in A
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * 
+ * @param vector Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+void uz_matrix_set_vector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const vector);
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
+void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 #endif // UZ_MATRIX_H

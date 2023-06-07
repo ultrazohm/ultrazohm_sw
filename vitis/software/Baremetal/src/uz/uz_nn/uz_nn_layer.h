@@ -3,7 +3,7 @@
 #include "../uz_matrix/uz_matrix.h"
 #include "uz_nn_activation_functions.h"
 #include <stdint.h>
-#include <stdint.h>
+#include <stdio.h>
 
 
 /**
@@ -33,14 +33,30 @@ struct uz_nn_layer_config{
     enum activation_function activation_function; /**< Activation function of all neurons in this layer */
     uint32_t number_of_neurons; /**< Number of neurons in the layer */
     uint32_t number_of_inputs; /**< Number of inputs to the layer. Is either the number of inputs to the network or the number of neurons of the previouse layer */
+    uint32_t number_of_temporarycolumns;
+    uint32_t number_of_temporaryrows;
+    uint32_t number_of_cachegradcolumns;
+    uint32_t number_of_cachegradrows;
     uint32_t length_of_weights; /**< Number of weights in the layer, has to be calculated by UZ_MATRIX_SIZE(weights) */
     uint32_t length_of_bias; /**< Number of bias in the layer, has to be calculated by UZ_MATRIX_SIZE(bias) */
-    uint32_t length_of_output; /**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
+    uint32_t length_of_output;/**< Number of outputs in the layer, has to be calculated by UZ_MATRIX_SIZE(output) and is equal to the number of weights */
+    uint32_t length_of_sumout; 
+    uint32_t length_of_delta; 
+    uint32_t length_of_error;
+    uint32_t length_of_temporarybackprop;
+    uint32_t length_of_gradients;
+    uint32_t length_of_cachegradients;
+
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
     float *const output; /** Pointer to an array that holds the output / where the output is written to */
+    float *const sumout;
+    float *const delta;
+    float *const temporarybackprop;
+    float *const error;
+    float *const gradients;
+    float *const cachegradients;
 };
-
 /**
  * @brief Initializes a layer of a neural network.
  * 
@@ -64,9 +80,25 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @param self 
  * @return uz_matrix* 
  */
-uz_matrix_t* uz_nn_layer_get_output_data(uz_nn_layer_t const*const self);
-
+//void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
+void uz_nn_layer_back2(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev);
+void uz_nn_backward_last_layer2(uz_nn_layer_t *const self,float *error);
+//void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error);
+void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
+void uz_nn_layer_calc_gradients_last_layer(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
+void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate);
+void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
+void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname);
+void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname);
+void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *const gradientmatrix);
+void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self);
+uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self);
+uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 uz_matrix_t* uz_nn_layer_get_bias_matrix(uz_nn_layer_t const*const self);
-uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
-
+uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_localgradients(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const*const self);
+uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const*const self);
 #endif // UZ_NN_LAYER_H

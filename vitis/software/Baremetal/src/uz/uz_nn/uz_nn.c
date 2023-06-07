@@ -16,6 +16,7 @@
 
 #include "../uz_global_configuration.h"
 #if UZ_NN_MAX_INSTANCES > 0U
+#include <stdio.h>
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_nn.h"
@@ -26,7 +27,7 @@ struct uz_nn_t
     bool is_ready;
     uint32_t number_of_layer;
     uint32_t number_of_inputs;
-    uint32_t number_of_outpts;
+    uint32_t number_of_outputs;
     uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
 };
 
@@ -52,7 +53,7 @@ uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
     uz_nn_t *self = uz_nn_allocation();
     self->number_of_layer = number_of_layer;
     self->number_of_inputs = config[0U].number_of_inputs;
-    self->number_of_outpts = config[number_of_layer - 1U].length_of_output;
+    self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
     for (uint32_t i = 0U; i < number_of_layer; i++)
     {
         self->layer[i] = uz_nn_layer_init(config[i]);
@@ -64,18 +65,138 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_nn_layer_ff(self->layer[0], input);
+     uz_nn_layer_ff(self->layer[0], input);
     for (uint32_t i = 0; i < (self->number_of_layer - 1U); i++)
     {
         uz_nn_layer_ff(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
     }
 }
 
+void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param(self->layer[i], learnrate);
+    }
+}
+
+float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float z = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        z+=(expectedoutput->data[i]-output->data[i]);
+    }
+    z = -1.0f*z;
+    return z;
+}
+
+float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float y = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        y+=(expectedoutput->data[i]-output->data[i])* (expectedoutput->data[i]-output->data[i]);
+    }
+    y = (0.5f/((float)output->length_of_data)) * y;
+
+    return y;
+}
+
+void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *const input)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_nn_backward_last_layer2(self->layer[self->number_of_layer - 1U], error);
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+    {
+        uz_nn_layer_back2(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
+    }
+    for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
+    {
+            uz_nn_layer_calc_gradients(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+    }
+    uz_nn_layer_calc_gradients(self->layer[0],input);
+}
+
+
+void uz_nn_mat_export(uz_nn_t *self)
+{
+        char *fname = "test/uz/uz_nn/matlab_weights/c_layer1_weights.csv";
+        uz_nn_layer_matw_export(self->layer[0], fname);
+        char *fname1 = "test/uz/uz_nn/matlab_weights/c_layer2_weights.csv";
+        uz_nn_layer_matw_export(self->layer[1], fname1);
+        char *fname2 = "test/uz/uz_nn/matlab_weights/c_layer3_weights.csv";
+        uz_nn_layer_matw_export(self->layer[2], fname2);
+        char *fname3 = "test/uz/uz_nn/matlab_weights/c_layer1_bias.csv";
+        uz_nn_layer_matb_export(self->layer[0], fname3);
+        char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
+        uz_nn_layer_matb_export(self->layer[1], fname4);
+        char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
+        uz_nn_layer_matb_export(self->layer[2], fname5);
+}
+
+void uz_nn_set_gradients_zero(uz_nn_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_set_gradient_in_layer_zero(self->layer[i]);
+    }
+}
+
+void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_nn_set_gradient_in_layer(self->layer[layer - 1], gradientmatrix);
+}
+
+void uz_nn_schroeder_export(uz_nn_t *self)
+{
+    uz_matrix_t* weightshelper = uz_nn_get_weight_matrix(self,1);
+    uz_matrix_t* biasoutput = uz_nn_get_bias_matrix(self,1);
+    float x11 = 0.0f;
+    float x12 = 0.0f;
+    float b11 = 0.0f;
+    float b12 = 0.0f;
+    x11 = uz_matrix_get_element_zero_based(weightshelper,0,0);
+    x12 = uz_matrix_get_element_zero_based(weightshelper,0,1);
+    b11 = uz_matrix_get_element_zero_based(biasoutput,0,0);
+    b12 = uz_matrix_get_element_zero_based(biasoutput,0,1);
+    printf("Neuer Wert für THETA 1.1 ist %.2f \n", (double)x11);
+    printf("Neuer Wert für BIAS 1.1 ist %.2f \n", (double)b11);
+// Daten in .csv datei überschreiben
+FILE* file1 = fopen("test/uz/uz_nn/schroeder_weights/layer1_weights.csv", "w");
+if (file1 != NULL)
+{
+    fprintf(file1, "%.2ff,%.2ff", (double)x11, (double)x12);
+}
+
+FILE* file2 = fopen("test/uz/uz_nn/schroeder_weights/layer1_bias.csv", "w");
+if (file2 != NULL)
+{
+    fprintf(file2, "%.2ff,%.2ff", (double)b11, (double)b12);
+}
+
+}
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_output_data(self->layer[(self->number_of_layer - 1U)]);
+}
+
+uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_output_data(self->layer[layer - 1]);
 }
 
 uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer)
@@ -84,11 +205,46 @@ uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer)
     uz_assert(self->is_ready);
     return uz_nn_layer_get_bias_matrix(self->layer[layer - 1]);
 }
+
 uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_weight_matrix(self->layer[layer - 1]);
+}
+
+// uz_matrix_t *uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert(self->is_ready);
+//     return uz_nn_layer_get_derivate_data(self->layer[layer - 1]);
+// }
+uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_delta_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_sumout_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_gradient_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_cachegradient_data(self->layer[layer - 1]);
 }
 
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const *const self)
@@ -109,7 +265,7 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return self->number_of_outpts;
+    return self->number_of_outputs;
 }
 
 #endif

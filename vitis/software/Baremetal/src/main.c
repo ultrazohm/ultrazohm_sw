@@ -12,9 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
-
+#include <stdio.h>
 // Includes from own files
 #include "main.h"
+#include "xdummy_data_generator.h"
+#include "xuz_log_data.h"
+#include "xbram.h"
+#include <stdlib.h> // only for exit() function
+
+#include "xtime_l.h"
+#include "sleep.h"
+#include "xil_cache.h"
+#include "xil_mmu.h" // for NORM_WB_CACHE attribute
+
+#include "xparameters.h" //??????????????????????????????????????
+
+int PS_TO_BRAM_WORDCOUNT;
+
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -43,8 +57,18 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+XDummy_data_generator PL_Data_1;// instance of dummy_data_generator IP Core
+XUz_log_data PL_Logger_1;		// instance of uz_log_data IP Core
+XBram BRAM_LogData;				// instance of BRAM
+
+XTime xStart, xEnd;						// XTime = u64
+float xDifference_us, xDifference_s;
+
 int main(void)
 {
+	XDummy_data_generator_Config *PL_Data_Config;
+	XUz_log_data_Config *PL_Logger_Config;
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -74,6 +98,55 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
+
+            //call the test_data_pl signal generation
+            PL_Data_Config = XDummy_data_generator_LookupConfig(XPAR_UZ_USER_DUMMY_DATA_GENERATOR_0_DEVICE_ID);
+            if (!PL_Data_Config) {
+            	print("ERROR: Lookup of accelerator configuration failed.\n\r");
+            	return XST_FAILURE;
+            }
+
+            XDummy_data_generator_CfgInitialize(&PL_Data_1, PL_Data_Config);
+            if (status != XST_SUCCESS) {
+            print("ERROR: Could not initialize accelerator.\n\r");
+            exit(-1);
+            }
+
+            // Initialize data logger IP
+            PL_Logger_Config = XUz_log_data_LookupConfig(XPAR_UZ_USER_UZ_LOG_DATA_0_DEVICE_ID);
+            XUz_log_data_CfgInitialize(&PL_Logger_1, PL_Logger_Config);
+
+            // Initialize the BRAM generator IP for generating shared PL-PS memory
+            XBram_Config *BRAM_LogData_Config;
+            BRAM_LogData_Config = XBram_LookupConfig(XPAR_UZ_USER_AXI_BRAM_CTRL_0_DEVICE_ID);
+            XBram_CfgInitialize(&BRAM_LogData, BRAM_LogData_Config, BRAM_LogData_Config->CtrlBaseAddress);
+            //Xil_UpdateMPUConfig(1, XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, REGION_1G, NORM_IN_POLICY_WB_WA | PRIV_RW_USER_RW );
+            //Xil_SetMPURegionByRegNum(1, XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, REGION_1G, NORM_IN_POLICY_WB_WA | PRIV_RW_USER_RW);
+
+            //control for int-float-apfixed-float-apfixed-float-apfixed
+            u32 control_signal_1 = 0b00000000000000000010101011010101;
+            u32 control_signal_2 = 0b00000000000000000011111101111110;
+            XUz_log_data_Set_control_1(&PL_Logger_1, control_signal_1);
+            XUz_log_data_Set_control_2(&PL_Logger_1, control_signal_2);
+
+            //u64 OCM_BASE_ADDRESS = 0x00FFFC0000;
+            //int *OCM_BASE_ADDRESS = (int *) 0x00FFFC0000;
+            float PL_Data_amp = 2.0f;
+            float PL_Data_freq = 5e-2f;
+            int PL_Data_period = 16;//0.5f;
+            u32 *PL_Data_amp_u32 = ((u32*)&PL_Data_amp);
+            u32 *PL_Data_freq_u32 = ((u32*)&PL_Data_freq);
+            u32 *PL_Data_period_u32 = ((u32*)&PL_Data_period);
+
+            // OCM:
+            //XUz_log_data_Set_dlog_1(&PL_Logger_1, OCM_BASE_ADDRESS);
+
+            XDummy_data_generator_Set_amplitude(&PL_Data_1, *PL_Data_amp_u32);
+            //XDummy_data_generator_Set_frequency(&PL_Data_1, 5e2f);
+            //XDummy_data_generator_Set_dutycycle(&PL_Data_1, 0.5f);
+            //XDummy_data_generator_Set_increment(&PL_Data_1, 1.0f);
+            XDummy_data_generator_Set_frequency(&PL_Data_1, *PL_Data_freq_u32);
+            XDummy_data_generator_Set_period(&PL_Data_1, *PL_Data_period_u32);
             break;
         case print_msg:
             uz_printf("\r\n\r\n");
@@ -85,6 +158,8 @@ int main(void)
             uz_axigpio_enable_datamover();
             Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
             initialization_chain = infinite_loop;
+            // Necessary flush to enter javascope.c (initializing pwm) when changing MPU regions
+            Xil_DCacheFlush();
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();

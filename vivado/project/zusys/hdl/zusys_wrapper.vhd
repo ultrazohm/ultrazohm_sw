@@ -1,8 +1,8 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2020.1 (lin64) Build 2902540 Wed May 27 19:54:35 MDT 2020
---Date        : Wed May 11 16:10:45 2022
---Host        : 0d824a15086c running 64-bit unknown
+--Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
+--Date        : Fri Nov  4 09:55:32 2022
+--Host        : TUEIEAL-TS03 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -60,7 +60,8 @@ entity zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    Interrupt6_0 : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
 end zusys_wrapper;
 
@@ -114,7 +115,8 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    Interrupt6_0 : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -167,6 +169,7 @@ zusys_i: component zusys
       Dig_21_Ch5 => Dig_21_Ch5,
       Dig_22_Ch5 => Dig_22_Ch5,
       Dig_23_Ch5 => Dig_23_Ch5,
-      Dig_8_Ch5 => Dig_8_Ch5
+      Dig_8_Ch5 => Dig_8_Ch5,
+      Interrupt6_0(0) => Interrupt6_0(0)
     );
 end STRUCTURE;

@@ -33,6 +33,15 @@
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
+#include "xbram.h"
+#include "xil_mmu.h"
+#include "xil_cache.h"
+#include "xtime_l.h"
+#include "sleep.h"
+#include "uz/uz_HAL.h"
+#include "xgpio.h"
+#include "xgpiops.h"
+#include "xil_mem.h"
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -45,6 +54,23 @@ err_t dhcp_start(struct netif *netif);
 static struct netif server_netif;
 
 A53_Data Global_Data_A53;
+
+/*
+#define PL_TO_BRAM_WORDCOUNT 14;// number of data words stored in BRAM from PL
+float log_array_local[350];		// local array in PS for BRAM data (memcpy-destination)
+
+XGpio PLtoggle;
+XTime xStart, xEnd;						// XTime = u64
+float xDifference_us, xDifference_s; 	// define BRAM read-out latency benchmark variables
+
+int PS_TO_BRAM_WORDCOUNT;
+int BRAM_OFFSET;
+float DiffArray[50];
+int cnt_to_50 = 0;
+
+extern XGpioPs myPlGpio;
+*/
+
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -74,6 +100,53 @@ int main()
 {
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
+
+	// Initialize GPIO for PL signal during measurement
+	//XGpio_Initialize(&PLtoggle, XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID);
+	//XGpio_SetDataDirection(&PLtoggle, 1, 0x00000000); // bits set to 0 are output
+
+	//XGpioPs_Config *PL_IOreference_Config;
+	//PL_IOreference_Config = XGpioPs_LookupConfig(XPAR_PSU_GPIO_0_DEVICE_ID);
+	//XGpioPs_CfgInitialize(&myPlGpio, PL_IOreference_Config, PL_IOreference_Config->BaseAddr);
+/*	XGpio_Config *PL_IOreference_Config;
+	PL_IOreference_Config =  XGpio_LookupConfig(XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID);
+	XGpio_CfgInitialize(&PLtoggle, PL_IOreference_Config, PL_IOreference_Config->BaseAddress);
+	XGpio_SetDataDirection(&PLtoggle, 1, 0x00000000); // bits set to 0 are output
+*/
+
+	// Cache Functionality
+	//Xil_DCacheEnable();
+	//Xil_ConfigureL1Prefetch(4);
+	//Xil_SetTlbAttributes(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, NORM_WB_CACHE);
+
+	// Write specific values to BRAM baseadress with offset
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 60, 8);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 64, 9);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 56, 10);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 72, 11);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 76, 12);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 80, 13);
+	//XBram_WriteReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 84, 14);
+
+	// Store random values in BRAM directly after the last PL-written word
+/*
+	PS_TO_BRAM_WORDCOUNT = sizeof(log_array_local)/sizeof(log_array_local[0]) - PL_TO_BRAM_WORDCOUNT; // number of data words stored in BRAM from PS
+	BRAM_OFFSET = sizeof(log_array_local[0]) * PL_TO_BRAM_WORDCOUNT;
+	int WriteBuffer[PS_TO_BRAM_WORDCOUNT];
+	for(int i=0; i<PS_TO_BRAM_WORDCOUNT; i++){
+		WriteBuffer[i] = rand();
+	}
+	memcpy((void*)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + BRAM_OFFSET, WriteBuffer, sizeof(WriteBuffer));
+*/
+
+/*	for(int i=0; i<128; i++){
+		log_array_local[i] = rand();
+	}
+*/
+	// Define a callback function used for the instantiated timer
+
+	// Generate new software timer instance
+
 
 	//Start the main-threat
 	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
@@ -167,6 +240,51 @@ void network_thread(void *p)
     dhcp_start(netif);
     while (1) {
     	lifeCheck_networkThread++;
+
+    	//log_array_local[0] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 0);
+    	//log_array_local[1] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 4);
+    	//Xil_DCacheFlushRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+
+    	// Measurement of BRAM readout process
+    	//Xil_DCacheInvalidateRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+    	//Xil_DCacheFlush();
+    	//Xil_DCacheInvalidate();
+
+ /*   	PS_TO_BRAM_WORDCOUNT = sizeof(log_array_local)/sizeof(log_array_local[0]);
+    	for(int i=0; i<PS_TO_BRAM_WORDCOUNT; i++){
+    		log_array_local[i] = rand();
+    	}
+//for writing */
+
+    	//memcpy(log_array_local, (void*)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+    	//XGpio_DiscreteWrite(&PLtoggle, 1, 0xffffffff);
+    	//XGpioPs_WritePin(&myPlGpio, 164, 1);
+/*    	XGpioPs_WritePin(&myPlGpio, 163, 1);
+    	XTime_GetTime(&xStart);
+    	Xil_DCacheInvalidateRange(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+    	memcpy(log_array_local, (void*)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+    	XTime_GetTime(&xEnd);
+    	asm("nop;");
+    	XGpioPs_WritePin(&myPlGpio, 163, 0);
+    	XGpioPs_WritePin(&myPlGpio, 164, 0);
+    	//XGpio_DiscreteWrite(&PLtoggle, 1, 0x00000000);
+    	xDifference_us = (float)(xEnd-xStart)/(COUNTS_PER_SECOND/1000000);
+    	xDifference_s = (float)(xEnd-xStart)/COUNTS_PER_SECOND;
+    	printf("Time diff: %.10f us\n", xDifference_us);
+    	printf("Time diff: %.10f s\n", xDifference_s);
+
+    	if(cnt_to_50<50){
+    		DiffArray[cnt_to_50] = xDifference_us;
+    	}
+    	cnt_to_50++;
+*/
+    	//int TmpArray[PS_TO_BRAM_WORDCOUNT];
+    	//for(int i=0; i<PS_TO_BRAM_WORDCOUNT; i++){
+    	//	TmpArray[i] = rand();
+    	//}
+    	//memcpy((void*)XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR + BRAM_OFFSET, TmpArray, sizeof(TmpArray));
+
+
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}

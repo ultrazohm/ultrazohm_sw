@@ -25,6 +25,8 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+#include "xbram_hw.h"
+
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
 
@@ -32,6 +34,8 @@ struct APU_to_RPU_t ControlData;
 
 extern A53_Data Global_Data_A53;
 extern int js_connection_established;
+
+//float log_array_local[6];
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
@@ -59,6 +63,14 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// flush cache of shared memory
 	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+
+    //float log_array_local[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    //memcpy(log_array_local, XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, sizeof(log_array_local));
+	//log_array_local[0] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 0);
+	//log_array_local[1] = XBram_ReadReg(XPAR_UZ_USER_AXI_BRAM_CTRL_0_S_AXI_BASEADDR, 4);
+	//float log_sample = log_array_local[1];
+    //*(float *)0x00FFFC0000 = log_sample;
+
 
 	// if javascope connection is established
 	if(js_connection_established!=0)

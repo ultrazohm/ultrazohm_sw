@@ -30,6 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "xdummy_data_generator.h"
+#include "xuz_log_data.h"
+
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -41,6 +44,7 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -49,16 +53,27 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+extern XDummy_data_generator PL_Data_1;
+extern XUz_log_data PL_Logger_1;
+
+float DataLogger_out;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    XDummy_data_generator_Start(&PL_Data_1);
+    XUz_log_data_Start(&PL_Logger_1);
+    //DataLogger_out = (float)XUz_log_data_Get_dlog_1(&PL_Logger_1);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	//PL_Data_1_output = XTest_data_signal_generation_Start(PL_Data_1);
+    //	XTest_data_signal_generation_Start(PL_Data_1);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     // Set duty cycles for three-level modulator
@@ -212,7 +227,7 @@ u32 Rpu_IpiInit(u16 DeviceId)
         return XST_FAILURE;
     }
 
-    XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+   // XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
     xil_printf("RPU: RPU_IpiInit: Done\r\n");
     return XST_SUCCESS;

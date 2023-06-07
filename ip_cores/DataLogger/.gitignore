@@ -1,0 +1,13 @@
+*.log
+
+# ignore everything inside DataLogger_PL folder ...
+/DataLogger_PL/*
+
+# ... except the source files
+!/DataLogger_PL/data_logger_pl.cpp
+!/DataLogger_PL/data_logger_pl.h
+!/DataLogger_PL/data_logger_pl_TestBench.cpp
+
+# ... and except the tcl files
+!/DataLogger_PL/solution1/directives.tcl
+!/DataLogger_PL/solution1/script.tcl

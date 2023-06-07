@@ -1,0 +1,13 @@
+*.log
+
+# ignore everything inside TestData_PL folder ...
+/TestData_PL/*
+
+# ... except the source files
+!/TestData_PL/test_data_pl.cpp
+!/TestData_PL/test_data_pl.h
+!/TestData_PL/test_data_pl_TestBench.cpp
+
+# ... and except the tcl files
+!/TestData_PL/solution1/directives.tcl
+!/TestData_PL/solution1/script.tcl

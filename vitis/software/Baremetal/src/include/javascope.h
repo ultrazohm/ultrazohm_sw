@@ -21,6 +21,13 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
+	JSO_PL_Data_1,
+	JSO_PL_Data_2,
+	JSO_PL_Data_3,
+	JSO_PL_Data_4,
+	JSO_PL_Data_5,
+	JSO_PL_Data_6,
+	JSO_PL_Data_7,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,

@@ -209,16 +209,34 @@ void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 
 /**
- * @brief Assigns vector elements to the diagonal in A
+ * @brief Calculates the elementwise product C_out= A .* B of all elements of the matrix A and B, differs from the uz_matrix_elemtwise_product, because it can handle different dimensions.
+ * See https://de.mathworks.com/help/matlab/ref/times.html.
  * 
  * @param A Pointer to a uz_matrix_t instance 
- * 
- * @param vector Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the elementwise product is written to C_out
  */
 void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
-void uz_matrix_set_vector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const vector);
+/**
+ * @brief Set a columnvector of length V to the diagonal elements of an matrix A with dimension V x V.
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param vector Pointer to a uz_matrix_t instance, which is a columnvector 
+ */
 void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
+/**
+ * @brief Set a rowvector of length V to the diagonal elements of an matrix A with dimension V x V.
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param vector Pointer to a uz_matrix_t instance, which is a rowvector 
+ */
 void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
-void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+/**
+ * @brief Reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the operation is written to C_out
+ */
 void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 #endif // UZ_MATRIX_H

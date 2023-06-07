@@ -26,9 +26,9 @@ struct uz_nn_layer_t
     uz_matrix_t *weights;
     uz_matrix_t *bias;
     uz_matrix_t *output;
-    uz_matrix_t *sumout;// wird benötigt für backprop
-    uz_matrix_t *delta;// wird benötigt für backprop
-    uz_matrix_t *error;//Speichern des zwischenwert für den Fehler
+    uz_matrix_t *sumout;
+    uz_matrix_t *delta;
+    uz_matrix_t *error;
     uz_matrix_t *temporarybackprop;
     uz_matrix_t *gradients;
     uz_matrix_t *cachegradients;
@@ -74,7 +74,6 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.cachegradients);
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
-    // uz_assert((layer_config.length_of_sumout * layer_config.length_of_sumout) == layer_config.length_of_derivate_gradients);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_delta);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_error);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
@@ -87,7 +86,6 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
     self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
-    //self->derivate_gradients = uz_matrix_init(&self->derivate_gradients_matrix, layer_config.derivate_gradients, layer_config.length_of_derivate_gradients, layer_config.length_of_sumout, layer_config.length_of_sumout);
     self->delta = uz_matrix_init(&self->delta_matrix, layer_config.delta, layer_config.length_of_delta,layer_config.number_of_neurons,1);
     self->error = uz_matrix_init(&self->error_matrix,layer_config.error, layer_config.length_of_error,layer_config.number_of_neurons,1);
     self->temporarybackprop = uz_matrix_init(&self->temporarybackprop_matrix,layer_config.temporarybackprop, layer_config.length_of_temporarybackprop,layer_config.number_of_temporaryrows,layer_config.number_of_temporarycolumns);
@@ -131,63 +129,27 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
-    uz_matrix_copy(self->output,self->sumout);// speichere Wert für Summenausgang
+    uz_matrix_copy(self->output,self->sumout);
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
-// void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-//     uz_matrix_multiply(self->derivate_gradients,weightprev,self->temporarybackprop);
-//     //alternativ ohne so große matrizen, gleiche dimension wie sumout
-//     // uz_matrix_copy(self->derivate_gradients,self->sumout);
-//     // uz_matrix_apply_function_to_each_element(self->derivate_gradients,self->activation_function_derivative);
-//     // uz_matrix_elementwise_product(self->derivate_gradients,self->error,self->delta);
-//     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
-// }
-
-void uz_nn_layer_back2(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
+void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    //alternativ ohne so große matrizen, gleiche dimension wie sumout
-    //uz_matrix_copy(self->derivate_gradients,self->sumout);
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
     uz_matrix_transpose(self->sumout);
     uz_matrix_matlab_elementwise_product(self->sumout,weightprev,self->temporarybackprop); 
-    //hier ist das dimensionproblem!02.06: weightprev umgedreht wegen elementwise product
-    // uz_matrix_elementwise macht nicht das gleiche wie in matlab!
-    // funktion ändern anpassen!
     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
 }
-void uz_nn_backward_last_layer2(uz_nn_layer_t *const self,float *error)
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->error->data = error;
-    //alternativ ohne so große matrizen, gleiche dimension wie sumout
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
     uz_matrix_elementwise_product(self->sumout,self->error,self->delta);
-    // uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-    // uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-    // uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
 }
-// void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     self->error->data = error;
-//     //alternativ ohne so große matrizen, gleiche dimension wie sumout
-//     // uz_matrix_copy(self->derivate_gradients,self->sumout);
-//     // uz_matrix_apply_function_to_each_element(self->derivate_gradients,self->activation_function_derivative);
-//     // uz_matrix_elementwise_product(self->derivate_gradients,self->error,self->delta);
-//     uz_matrix_set_columnvector_as_diagonal(self->derivate_gradients,self->sumout);
-//     uz_matrix_apply_function_to_diagonal(self->derivate_gradients,self->activation_function_derivative);
-//     uz_matrix_multiply(self->derivate_gradients,self->error,self->delta);
-// }
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
@@ -201,12 +163,12 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
 uint32_t bias_index = self->bias->length_of_data;
 uint32_t weight_index = self->weights->length_of_data;
-//erst weights (loop von 0-649)
+//erst weights
 for(size_t i=0;i< weight_index;i++)
 {
 self->weights->data[i] = self->weights->data[i] + ( lernrate * (-1.0f * self->gradients->data[i]));
 }
-//dann bias (loop von 650-700 z.B.)
+//dann bias
 for(size_t i=weight_index;i<(weight_index+bias_index);i++)
 {
 self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
@@ -242,7 +204,7 @@ void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *c
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_assert(self->gradients->length_of_data == gradientmatrix->length_of_data); //assert wenn matrix nicht gleiche länge haben
+    uz_assert(self->gradients->length_of_data == gradientmatrix->length_of_data);
     for(uint32_t i=0U;i<self->gradients->length_of_data;i++){
         self->gradients->data[i] = gradientmatrix->data[i];
     }
@@ -279,13 +241,6 @@ uz_matrix_t* uz_nn_layer_get_weight_matrix(uz_nn_layer_t const*const self){
 	uz_assert(self->is_ready);
 	return self->weights;
 }
-
-// uz_matrix_t *uz_nn_layer_get_derivate_data(uz_nn_layer_t const*const self)
-// {
-// 	uz_assert_not_NULL(self);
-// 	uz_assert(self->is_ready);
-// 	return (self->derivate_gradients);
-// }
 
 uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const*const self)
 {

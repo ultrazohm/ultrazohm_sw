@@ -85,12 +85,6 @@ void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_
     //uz_assert(A->columns == C_out->columns);
     //uz_assert(A->rows == B->rows);
     //uz_assert(A->rows == C_out->rows);
-    // check for array dimension and set up loop variables
-    // hardcoden for first test
-    // C_out->data[0]=A->data[0] * B->data[0];
-    // C_out->data[1]=A->data[0] * B->data[1];
-    // C_out->data[2]=A->data[1] * B->data[2];
-    // C_out->data[3]=A->data[1] * B->data[3];
     for (uint32_t row = 0; row < B->rows; row++)
     {
         for (uint32_t column = 0; column < B->columns; column++)
@@ -419,34 +413,9 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
     }
 
 }
-void uz_matrix_columnvec_concatenate_horizontal(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
-
-{
-uz_assert_not_NULL(A);
-uz_assert_not_NULL(B);
-uz_assert_not_NULL(C_out);
-uz_assert(A->length_of_data);
-uz_assert(B->length_of_data);
-uz_assert(C_out->length_of_data);
-uz_assert(A->columns == B->columns == C_out->columns == 1);
-uz_assert((A->rows + B->rows) == C_out->rows);
-uz_matrix_set_zero(C_out);
-uint32_t m = A->rows;
-uint32_t n = B->rows;
-// loop first through A, then through B
-for (uint32_t i = 0; i < m; i++)
-{
-C_out->data[i] = A->data[i];
-}
-for (uint32_t k = 0; k < n; k++)
-{
- C_out->data[m + k] = B->data[k];
-}
-}
 
 void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
-// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically
-// see cat(1,reshape(A,[],1),reshape(B,[],1))
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
 {
 uz_assert_not_NULL(A);
 uz_assert_not_NULL(B);

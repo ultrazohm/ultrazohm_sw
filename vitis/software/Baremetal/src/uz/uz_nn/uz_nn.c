@@ -111,10 +111,10 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_nn_backward_last_layer2(self->layer[self->number_of_layer - 1U], error);
+    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
     {
-        uz_nn_layer_back2(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
+        uz_nn_layer_back(self->layer[i-1],uz_nn_get_delta_data(self,i+1),uz_nn_get_weight_matrix(self,i+1));
     }
     for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
     {
@@ -213,12 +213,6 @@ uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, uint32_t layer)
     return uz_nn_layer_get_weight_matrix(self->layer[layer - 1]);
 }
 
-// uz_matrix_t *uz_nn_get_derivate_data(uz_nn_t const *const self, uint32_t layer)
-// {
-//     uz_assert_not_NULL(self);
-//     uz_assert(self->is_ready);
-//     return uz_nn_layer_get_derivate_data(self->layer[layer - 1]);
-// }
 uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);

@@ -19,11 +19,11 @@ The two three-phase systems are shifted against each other by an angle of :math:
 
     Statorconfiguration of an asymmetric six phase machine
 
-Different types of machines can be implemented as asymmetric six phase machines, for example asynchronous, permanent-magnet synchronous or synchronous reluctance machines.
+Different types of machines can be implemented as asymmetric six phase machines, for example induction, permanent-magnet synchronous or synchronous reluctance machines.
 
 As an example a permanent-magnet synchronous motor (PMSM) is considered here, as described in [[#EldeebH]_].
 In :numref:`6ph_pmsm_circuit_diagram` the equivalent circuit diagram of the six phase PMSM is shown.
-Worth mentioning are the two possible neutral point configurations N1 with all phases connected in a single neutral point and N2 with two neutral points one per three-phase system.
+Worth mentioning are the two possible neutral point configurations N1 with all phases connected in a single neutral point and N2 with two neutral points, one per three-phase system.
 
 .. _6ph_pmsm_circuit_diagram:
 
@@ -139,7 +139,7 @@ with
 The :math:`\alpha\beta`-system is thereby transformed into the, with while :math:`\omega_\mathrm{e}` synchronous to the rotor rotating, :math:`dq`-system, the  :math:`xy`-system is transformed into the, with :math:`-\omega_\mathrm{e}` antisynchronous to the rotor rotating, :math:`x'y'`-system, while the :math:`0^+0^-`- system is not transformed into a rotating system.
 
 
-With these model equations of the six phase PMSM VSD based methods for controlling the machine are possible.
+With these model equations of the six phase PMSM, VSD based methods for controlling the machine are possible.
 
 
 
@@ -151,7 +151,7 @@ With these model equations of the six phase PMSM VSD based methods for controlli
 Fault tolerant machines
 =======================
 
-One advantage of asymmetric six phase machines over classical three phase machines is their fault tolerance against open phase faults.
+One advantage of asymmetric six phase machines over conventional three phase machines is their fault tolerance against open phase faults.
 This type of machine can continue to operate even in the event of multiple phase failures, while still producing constant torque.
 To achieve optimal open phase fault (OPF) tolerance a fault detection and an adaptation of the control by using adjusted reference values according to the fault scenario is necessary.
 This module contains a collection of functions for OPF detection and reference value generation for control during OPF in asymmetric six phase machines.

@@ -81,22 +81,22 @@ int main(void)
                 .Psi_PM_Vs = 0.0f};
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 2.0f,
-                .Ki = 2.83f,
+                .Kp = 2.2f, //2
+                .Ki = 2.0f, //2.83
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 2.0f,
-                .Ki = 39.22f,
+                .Kp = 1.0f, // 2
+                .Ki = 0.0f, // 39.22
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_SpeedControl_config config_speed = {
-            		.config_controller.Kp = 1.0f,
-					.config_controller.Ki = 1.0f,
+            		.config_controller.Kp = 0.0f,
+					.config_controller.Ki = 0.0f,
 					.config_controller.samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
 					.config_controller.upper_limit = 10.0f,
 					.config_controller.lower_limit = -10.0f,
@@ -106,31 +106,70 @@ int main(void)
                 .decoupling_select = linear_decoupling,
                 .config_PMSM = config_RSM,
                 .config_id = config_id,
-                .config_iq = config_iq};
+                .config_iq = config_iq,
+				.max_modulation_index = 1.0f / sqrt(3.0f)};
 
-            struct uz_IIR_Filter_config iir_config_filt1={
+            struct uz_IIR_Filter_config iir_config_filt1 = {
             		.selection = LowPass_first_order,
-            		.cutoff_frequency_Hz = 500.0f,
+            		.cutoff_frequency_Hz = 1.0f,
             		.sample_frequency_Hz = UZ_PWM_FREQUENCY
+            };
+
+            struct uz_IIR_Filter_config iir_config_filt2 = {
+            		.selection = LowPass_first_order,
+            		.cutoff_frequency_Hz = 1.0f,
+            		.sample_frequency_Hz = UZ_PWM_FREQUENCY
+            };
+
+            struct uz_IIR_Filter_config iir_config_filt_DC = {
+            		.selection = LowPass_first_order,
+            		.cutoff_frequency_Hz = 1.0f,
+            		.sample_frequency_Hz = UZ_PWM_FREQUENCY
+            };
+
+            struct uz_axi_gpio_config_t config_output = {
+            		.base_address = XPAR_GPIO_1_BASEADDR,
+            		.device_id = XPAR_GPIO_1_DEVICE_ID,
+            		.number_of_pins = 11,
+            		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
             };
 
             // Initialize Global Objects
             Global_Data.objects.CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
             Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
-            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt1);
+
             Global_Data.objects.iir_i_u = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_v = uz_signals_IIR_Filter_init(iir_config_filt1);
             Global_Data.objects.iir_i_w = uz_signals_IIR_Filter_init(iir_config_filt1);
 
+            Global_Data.objects.iir_u_u = uz_signals_IIR_Filter_init(iir_config_filt2);
+            Global_Data.objects.iir_u_v = uz_signals_IIR_Filter_init(iir_config_filt2);
+            Global_Data.objects.iir_u_w = uz_signals_IIR_Filter_init(iir_config_filt2);
+            Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt_DC);
+
+            Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
+
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 0.0f;
+            Global_Data.av.theta_offset = 4.327050f;
             Global_Data.av.polepairs = 2.0f;
-            Global_Data.av.flg_speed_control = 0U;
+            Global_Data.av.kp_d = 2.2f;
+			Global_Data.av.ki_d = 2.0f;
+            Global_Data.av.kp_q = 0.0f;
+			Global_Data.av.ki_q = 0.0f;
+
+            Global_Data.av.flg_speed_control = false;
 
             // Initialize Global referenceAndSetValues
+            Global_Data.rasv.state_of_statemachine = 0U;
+            Global_Data.rasv.enable_FU = 0U;
+            Global_Data.rasv.enable_LMG_continues = 1U;
+            Global_Data.rasv.enable_LMG_transient = 2U;
+            Global_Data.rasv.LMG_measurement_typ = 1U;
+
             Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.rasv.i_q_ref = 0.0f;
             Global_Data.rasv.n_ref_rpm = 0.0f;
+            Global_Data.rasv.t_measurement = 5.0f;
 
         	initialization_chain = init_ip_cores;
 			break;

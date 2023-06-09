@@ -6,6 +6,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // Add additional Header Files
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
@@ -56,42 +57,61 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
+	float I_L1; 							// Grid side current in A
+	float I_L2; 							// Grid side current in A
+	float I_L3; 							// Grid side current in A
+	float U_L1; 							// Grid side voltage in V
+	float U_L2; 							// Grid side voltage in V
+	float U_L3; 							// Grid side voltage in V
+	float I_U; 								// Machine side current in A
+	float I_V; 								// Machine side current in A
+	float I_W; 								// Machine side current in A
+	float I_U_filt; 						// Machine side current in A
+	float I_V_filt; 						// Machine side current in A
+	float I_W_filt; 						// Machine side current in A
+	float U_U; 								// Machine side voltage in V
+	float U_V; 								// Machine side voltage in V
+	float U_W; 								// Machine side voltage in V
+	float U_U_filt; 						// Machine side voltage in V
+	float U_V_filt; 						// Machine side voltage in V
+	float U_W_filt; 						// Machine side voltage in V
+	float U_ZK; 							// DC-Link voltage in V
+	float U_ZK_filt; 						// DC-Link voltage in V
+	float U_ZK2; 							// DC-Link voltage 2 in V
+	float Res1; 							// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
+	float Res2; 							// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
+	float mechanicalRotorSpeed; 			// in rpm
+	float mechanicalRotorSpeed_filtered; 	// in rpm
+	float mechanicalPosition; 				// in m
+	float mechanicalTorque; 				// in Nm
+	float mechanicalTorqueSensitive; 		// in Nm
+	float mechanicalTorqueObserved; 		// in Nm for observing the load torque
+	float I_d;								// calculated d current from measured values in A
+	float I_q;								// calculated q current from measured values in A
+	float U_d;								// calculated d voltage from measured values in V
+	float U_q;								// calculated q voltage from measured values in V
+	float theta_elec;						// Electrical angle in rad
+	float theta_mech;						// Mechanical angle in rad
+	float theta_offset; 					// Mechanical angle in rad
+	float temperature;						// Variable for temperature (currently not used)
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 
 	// Add additional Variables
-	float polepairs;
-	float flg_speed_control;
+	float polepairs;						// Machine polepairs
+	bool flg_speed_control;					// Flag to start / stop speed control - 0: current control / 1: speed control
+	bool flg_enable_FU;						// Flag to check if FU is enabled or disabled
+	bool flg_enable_LMG_continues;			// Flag to check if LMG continues measurement is enabled or disabled
+	bool flg_enable_LMG_transient;			// Flag to check if LMG transient measurement is enabled or disabled
+
+	float kp_d;								// Kp for d-current controller
+	float ki_d;								// Ki for d-current controller
+	float kp_q;								// Kp for q-current controller
+	float ki_q;								// Ki for q-current controller
+
+	float duty_cycle_A;						// Duty Cycle for Phase A
+	float duty_cycle_B;						// Duty Cycle for Phase B
+	float duty_cycle_C;						// Duty Cycle for Phase C
 
 } actualValues;
 
@@ -109,10 +129,24 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 
+	// state of state machine
+	uint32_t state_of_statemachine;
+
+	// Pin number for GPIO_0
+	uint32_t enable_FU;				// Pin 0 for enable frequenz converter
+	uint32_t enable_LMG_continues;	// Pin 1 for start/stop continues measurement on LMG
+	uint32_t enable_LMG_transient;	// Pin 2 for start/stop transient measurement on LMG
+
+	uint32_t LMG_measurement_typ;
+
 	// Add additional Variables
 	float i_d_ref;
 	float i_q_ref;
+	float U_d_ref;
+	float U_q_ref;
+
 	float n_ref_rpm;
+	float t_measurement;			// Measurements time in s
 
 } referenceAndSetValues;
 
@@ -136,6 +170,8 @@ typedef struct{
 	uz_IIR_Filter_t* iir_u_u;
 	uz_IIR_Filter_t* iir_u_v;
 	uz_IIR_Filter_t* iir_u_w;
+
+	uz_axi_gpio_t* Output_instance;
 
 }object_pointers_t;
 

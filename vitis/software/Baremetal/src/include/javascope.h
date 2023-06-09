@@ -21,6 +21,7 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
+	JSO_LMG_Switch,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -31,10 +32,25 @@ enum JS_OberservableData {
 	JSO_ia,
 	JSO_ib,
 	JSO_ic,
+	JSO_ua_filt,
+	JSO_ub_filt,
+	JSO_uc_filt,
+	JSO_ia_filt,
+	JSO_ib_filt,
+	JSO_ic_filt,
 	JSO_id,
 	JSO_iq,
+	JSO_iq_ref,
+	JSO_id_ref,
 	JSO_ud,
 	JSO_uq,
+	JSO_uq_ref,
+	JSO_ud_ref,
+	JSO_U_ZK,
+	JSO_U_ZK_filt,
+	JSO_duty_cycle_A,
+	JSO_duty_cycle_B,
+	JSO_duty_cycle_C,
 	JSO_Speed_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
@@ -76,6 +92,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
+	JSSD_FLOAT_U_ZK,
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
@@ -157,8 +174,8 @@ enum gui_button_mapping {
 	set_Torque,
 	set_I_d,
 	set_I_q,
-	send_field_5,
-	send_field_6,
+	kp_d,
+	ki_d,
 	SND_FLD_ENDMARKER
 
 
@@ -170,8 +187,8 @@ enum gui_button_mapping {
 	Nm,
 	A,
 	A,
-	A,
-	A,
+	--,
+	--,
 	SND_LABELS_ENDMARKER
 
 
@@ -183,7 +200,7 @@ enum gui_button_mapping {
 	Torque,
 	i_d,
 	i_q,
-	receive_field_5,
+	U_ZK,
 	receive_field_6,
 	RCV_FLD_ENDMARKER
 
@@ -204,11 +221,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 MYBUTTONS_LABELS_ZEROVALUE=0,
-MyButton1,
-MyButton2,
-MyButton3,
-MyButton4,
-MyButton5,
+All OFF,
+Manual Control,
+ Angle Offset ,
+ Current Angle,
+Efficiency Map,
 MyButton6,
 MyButton7,
 MyButton8,
@@ -219,11 +236,11 @@ MYBUTTONS_LABELS_ENDMARKER
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_torque,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_U_ZK,
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER

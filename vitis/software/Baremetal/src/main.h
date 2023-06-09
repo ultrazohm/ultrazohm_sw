@@ -56,6 +56,7 @@
 
 // User define includes
 #include "xparameters.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"

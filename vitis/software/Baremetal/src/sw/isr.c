@@ -56,16 +56,33 @@ struct uz_DutyCycle_t output = {
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 
+float unfiltered_signal = 0.0f;
+
+bool measure = false;
+float n_measurements = 0.0f;
+static float counter_n_measurements = 0.0f;
+
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 	1.0f 	// Number of turns Current Measuring FU
-#define ADC_CURRENT_SCALING 				80.0f	// Scaling factor for current measurement
-#define ADC_CURRENT_OFFSET 					2.5f	// Offset for LEM Sensors
-#define DC_VOLT_CONV						12.5f	// Scaling factor for voltage measurement
-#define PHASE_VOLT_CONV						12.5f	// Scaling factor for voltage measurement
+#define ADC_CURRENT_SCALING_U 				39.89f //80.0f	// Scaling factor for current measurement
+#define ADC_CURRENT_OFFSET_U				-0.55849f // 2.5f	// Offset for LEM Sensors
+#define ADC_CURRENT_SCALING_V 				32.887f
+#define ADC_CURRENT_OFFSET_V				0.3298f
+#define ADC_CURRENT_SCALING_W               -32.887f
+#define ADC_CURRENT_OFFSET_W				-0.08244f
+
+#define PHASE_CURRENT_CONV_U					33.722//37.735
+#define PHASE_CURRENT_CONV_V					35.983//37.735
+#define PHASE_CURRENT_CONV_W					34.206//37.735
+
+#define DC_VOLT_CONV						240 // -240.0f //12.5f	// Scaling factor for voltage measurement
+#define DC_VOLT_OFFSET						240 //-1.0f    // Offset for DC voltage sensor
+#define PHASE_VOLT_CONV						1.0f //12.5f	// Scaling factor for voltage measurement
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
 #define MAX_CURRENT_ASSERTION				55.0f	// Maximum Current
 #define MAX_SPEED_ASSERTION					2500.0f	// Maximum Speed
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -83,17 +100,26 @@ void ISR_Control(void *data)
 
     // Calculate theta_elec
     Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-
+    Global_Data.av.theta_mech = 1.0f / Global_Data.av.polepairs * Global_Data.av.theta_elec;
     // convert ADC currents
-    measurement_current.a = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A1 - ADC_CURRENT_OFFSET);
-    measurement_current.b = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A2 - ADC_CURRENT_OFFSET);
-    measurement_current.c = ADC_CURRENT_SCALING * (Global_Data.aa.A1.me.ADC_A3 - ADC_CURRENT_OFFSET);
+
+    Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV_U;
+    Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV_V;
+    Global_Data.av.I_W = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV_W;
+
+    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U);
+    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V);
+    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W);
+
+//    measurement_current.a = ADC_CURRENT_SCALING_U * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.aa.A1.me.ADC_B5)) - ADC_CURRENT_OFFSET_U;
+//    measurement_current.b = ADC_CURRENT_SCALING_V * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.aa.A1.me.ADC_B7)) - ADC_CURRENT_OFFSET_V;
+//    measurement_current.c = ADC_CURRENT_SCALING_W * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.aa.A1.me.ADC_B6)) - ADC_CURRENT_OFFSET_W;
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
 
     // Value to Scope
-    Global_Data.av.I_U = measurement_current.a;
-    Global_Data.av.I_V = measurement_current.b;
-    Global_Data.av.I_W = measurement_current.c;
+    Global_Data.av.I_U_filt = measurement_current.a;
+    Global_Data.av.I_V_filt = measurement_current.b;
+    Global_Data.av.I_W_filt = measurement_current.c;
 
     Global_Data.av.I_d = dq_measurement_current.d;
     Global_Data.av.I_q = dq_measurement_current.q;
@@ -105,14 +131,19 @@ void ISR_Control(void *data)
     	output.DutyCycle_A = 0.0f;
     	output.DutyCycle_B = 0.0f;
     	output.DutyCycle_C = 0.0f;
-    	//ultrazohm_state_machine_set_stop(true);
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 0);
+//    	ultrazohm_state_machine_set_stop(true);
     }
 
     // convert ADC voltages
-    measurement_voltage.a = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B5 - ADC_PH_VOLT_OFFSET);
-    measurement_voltage.b = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B6 - ADC_PH_VOLT_OFFSET);
-    measurement_voltage.c = PHASE_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B7 - ADC_PH_VOLT_OFFSET);
+    measurement_voltage.a = PHASE_VOLT_CONV * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_u, Global_Data.aa.A1.me.ADC_A2)) - ADC_PH_VOLT_OFFSET;
+    measurement_voltage.b = PHASE_VOLT_CONV * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_v, Global_Data.aa.A1.me.ADC_A1)) - ADC_PH_VOLT_OFFSET;
+    measurement_voltage.c = PHASE_VOLT_CONV * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_w, Global_Data.aa.A1.me.ADC_A3)) - ADC_PH_VOLT_OFFSET;
     dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
+
+//    unfiltered_signal = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET); //Global_Data.aa.A1.me.ADC_A4;
+    Global_Data.av.U_ZK  = -1.0f * DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET;
+    Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
     // Value to Scope
     Global_Data.av.U_U = measurement_voltage.a;
@@ -128,33 +159,140 @@ void ISR_Control(void *data)
 
     // Value to Scope
 
+    n_measurements = Global_Data.rasv.t_measurement * UZ_PWM_FREQUENCY;
+
+    // Set kp and ki for current control (only for the first initialization or for modifying)
+    uz_CurrentControl_set_Kp_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_d);
+    uz_CurrentControl_set_Ki_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_d);
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        if (Global_Data.av.flg_speed_control){
-        	//dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
-        }else{
-        	// Set I_d and I_q currents for current control
-        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
-        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
-        	dq_reference_current.zero = 0.0f;
-        }
+    	switch (Global_Data.rasv.state_of_statemachine)
+    	{
+    		case 0U: // All Off
+    			// Disable FU
+    			// Set DutyCycles to zero
+    	    	output.DutyCycle_A = 0.0f;
+    	    	output.DutyCycle_B = 0.0f;
+    	    	output.DutyCycle_C = 0.0f;
+    	    	// Set state of Half-Brides of FU in tristate
+    	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    			// Disable Half-Bridges of FU
+    	    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 0);
+    	    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
-        // FOC - get U_d and U_q as controlled variables
-        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, omega_el_rad_per_sec);
-        // Generate PWM Signal for each phase
-        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    	    	// Reset Measurement
+    	    	counter_n_measurements = 0.0f;
+    	    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 0);
+    	    	Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
+				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient, 0);
+				Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
+
+
+    			break;
+			case 1U: // Manual Control
+		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
+
+		        if (Global_Data.av.flg_speed_control){
+		        	//dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+		        	// currently not implemented !!!
+		        }else{
+		        	// Set I_d and I_q currents for current control
+		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
+		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
+		        	dq_reference_current.zero = 0.0f;
+		        }
+
+		        // FOC - get U_d and U_q as controlled variables
+		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
+		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
+
+		        // Generate PWM Signal for each phase
+		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec);
+		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
+		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
+		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
+
+		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+
+		        break;
+			case 2U: // Detect initial Angle
+		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
+
+		       	output.DutyCycle_A = 0.1f;
+		       	output.DutyCycle_B = 0.0f;
+		       	output.DutyCycle_C = 0.0f;
+
+		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+
+		        break;
+
+			case 3U: // Torque Current Angle
+
+				// Counter for continues measurement
+				if(counter_n_measurements <= n_measurements)
+				{
+					counter_n_measurements = counter_n_measurements + 1.0f;
+				} else {
+					counter_n_measurements = 0.0f;
+					measure = ! measure;
+				}
+
+				switch (Global_Data.rasv.LMG_measurement_typ) {
+					case 1U: // Continiues
+						if(measure) {
+							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 1);
+							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
+
+						} else {
+							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 0);
+							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
+						}
+						break;
+
+					case 2U: // Transient
+						break;
+					default:
+						break;
+
+				}
+
+
+				break;
+
+			case 4U: // Efficiency Map
+
+				break;
+
+	        default:
+	            break;
+    	}
+    } else {
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 0);
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    	output.DutyCycle_A = 0.0f;
+    	output.DutyCycle_B = 0.0f;
+    	output.DutyCycle_C = 0.0f;
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

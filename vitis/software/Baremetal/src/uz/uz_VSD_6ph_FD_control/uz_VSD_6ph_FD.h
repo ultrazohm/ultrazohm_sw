@@ -29,12 +29,12 @@ typedef struct uz_VSD_6ph_FD_t uz_VSD_6ph_FD_t;
  */
 struct uz_VSD_6ph_FD_config
 {
-    float upperlimit;                   /**< upper limit of hysteresis band */
-    float lowerlimit;                   /**< lowerlimit lower limit of hysteresis band */
-    float threshold;                    /**< threshold value from which a fault index is judged as an error */
-    uint32_t mov_average_filter_length;    /**< mov_average_filter_length maximal length of moving average filter */
-    float sample_frequency_Hz;             /**< sample_frequency_Hz sample frequency in Hz */
-    float percent_of_el_period;         /**< percent_of_el_period desired filter length in percent of an electric period */
+    float upperlimit;                   /**< upper limit of hysteresis band, recommended values: 1.1 (1 ... 1.5) */
+    float lowerlimit;                   /**< lowerlimit lower limit of hysteresis band, recommended values: 0.9 (0.6 ... 1) */
+    float threshold;                    /**< threshold value above which a fault index is judged as an error, recommended values: 0.4 (0.2 ... 0.7) */
+    uint32_t mov_average_filter_length;    /**< maximal length of moving average filter, needs to be sufficiently long for all sampling values according to the operating motor speeds and the parameter percent_of_el_period*/
+    float sample_frequency_Hz;             /**< sample frequency in Hz, frequency with which the OPF detection is called during operation */
+    float percent_of_el_period;         /**< desired filter length as portion of an electric period, recommended values: 0.4 (0.3 ... 0.7) */
     uz_movingAverageFilter_t* movingAverageFilter_R1; /**< moving average filter for fault index R1*/
     uz_movingAverageFilter_t* movingAverageFilter_R2; /**< moving average filter for fault index R2*/
     uz_movingAverageFilter_t* movingAverageFilter_R3; /**< moving average filter for fault index R3*/

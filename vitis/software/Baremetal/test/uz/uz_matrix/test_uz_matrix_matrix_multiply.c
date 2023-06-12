@@ -51,12 +51,12 @@ void test_uz_matrix_matrix_multiply_acc(void){
     for (uint32_t i = 0; i < 5; i++){
     uz_matrix_multiply_acc(A,B, C);
     }
-    TEST_ASSERT_EQUAL_FLOAT(90,uz_matrix_get_element_zero_based(C,0,0) );
-    TEST_ASSERT_EQUAL_FLOAT(55,uz_matrix_get_element_zero_based(C,0,1) );
-    TEST_ASSERT_EQUAL_FLOAT(190,uz_matrix_get_element_zero_based(C,1,0) );
-    TEST_ASSERT_EQUAL_FLOAT(115,uz_matrix_get_element_zero_based(C,1,1) );
-    TEST_ASSERT_EQUAL_FLOAT(290,uz_matrix_get_element_zero_based(C,2,0) );
-    TEST_ASSERT_EQUAL_FLOAT(175,uz_matrix_get_element_zero_based(C,2,1) );
+    TEST_ASSERT_EQUAL_FLOAT(90,uz_matrix_get_element_zero_based(C,0,0));
+    TEST_ASSERT_EQUAL_FLOAT(55,uz_matrix_get_element_zero_based(C,0,1));
+    TEST_ASSERT_EQUAL_FLOAT(190,uz_matrix_get_element_zero_based(C,1,0));
+    TEST_ASSERT_EQUAL_FLOAT(115,uz_matrix_get_element_zero_based(C,1,1));
+    TEST_ASSERT_EQUAL_FLOAT(290,uz_matrix_get_element_zero_based(C,2,0));
+    TEST_ASSERT_EQUAL_FLOAT(175,uz_matrix_get_element_zero_based(C,2,1));
 }
 void test_uz_matrix_matrix_multiply_scalar_result(void){
     float A_data[3]={1,2,3};

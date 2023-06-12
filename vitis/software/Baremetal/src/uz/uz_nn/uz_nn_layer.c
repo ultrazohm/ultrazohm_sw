@@ -161,18 +161,28 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
-uint32_t bias_index = self->bias->length_of_data;
+uz_matrix_multiply_by_scalar(self->cachegradients,lernrate);
+uz_matrix_multiply_by_scalar(self->cachegradients,-1.0f);
+uz_matrix_transpose(self->weights);
+uz_matrix_add(self->cachegradients,self->weights);
+uz_matrix_transpose(self->weights);
+// uint32_t bias_index = self->bias->length_of_data;
 uint32_t weight_index = self->weights->length_of_data;
 //erst weights
-for(size_t i=0;i< weight_index;i++)
-{
-self->weights->data[i] = self->weights->data[i] + ( lernrate * (-1.0f * self->gradients->data[i]));
-}
+// for(size_t i=0;i< weight_index;i++)
+// {
+// self->weights->data[i] = self->weights->data[i] + ( lernrate * (-1.0f * self->gradients->data[i]));
+// }
+uz_matrix_multiply_by_scalar(self->delta,lernrate);
+uz_matrix_multiply_by_scalar(self->delta,-1.0f);
+uz_matrix_transpose(self->delta);
+uz_matrix_add(self->delta,self->bias);
+uz_matrix_transpose(self->delta);
 //dann bias
-for(size_t i=weight_index;i<(weight_index+bias_index);i++)
-{
-self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
-}
+// for(size_t i=weight_index;i<(weight_index+bias_index);i++)
+// {
+// self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
+// }
 }
 
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)

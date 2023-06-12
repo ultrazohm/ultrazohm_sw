@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -48,6 +49,25 @@ float theta_mech_calc_from_resolver = 0.0f;
 float theta_m_max = 0.0f;
 float theta_m_min = 0.0f;
 
+uz_6ph_abc_t six_ph_currents = {0.0f};
+uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
+uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
+uz_3ph_dq_t rotating_dq = {0};
+
+uz_3ph_dq_t i_dq_ref = {0.0f};
+uz_3ph_dq_t i_dq_actual = {0.0f};
+uz_3ph_dq_t u_dq_ref = {0.0f};
+uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
+uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
+uz_6ph_abc_t phase_ref_volts = {0.0f};
+
+uz_3ph_abc_t input1 = {0.0f};
+uz_3ph_abc_t input2 = {0.0f};
+struct uz_DutyCycle_t output1 = {0};
+struct uz_DutyCycle_t output2 = {0};
+
+uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
+
 // Global variable structure
 extern DS_Data Global_Data;
 
@@ -60,6 +80,10 @@ extern DS_Data Global_Data;
 
 // software current limit
 #define MAX_PHASE_CURRENT_AMP  18.0f
+#define MAX_DC_VOLT 590.0f
+
+
+
 
 bool first_ISR = false;
 //==============================================================================================================================================================
@@ -74,23 +98,34 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    // read resolver
+    Global_Data.av.pl_interface = uz_resolver_pl_interface_get_outputs(Global_Data.objects.pl_interface);
+    //read resolver PL interface IP
+    Global_Data.av.theta_elec_rad_ip = Global_Data.av.pl_interface.position_el_2pi;
+    Global_Data.av.theta_mech_rad_ip = Global_Data.av.pl_interface.position_mech_2pi;
+    Global_Data.av.mechanicalRotorSpeedRPM_ip = Global_Data.av.pl_interface.n_mech_rpm;
+    Global_Data.av.mechanicalRotorSpeedRADpS_ip = Global_Data.av.pl_interface.omega_mech_rad_s;
+    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRPM_ip*Global_Data.av.polepairs;
+    Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.mechanicalRotorSpeedRADpS_ip*Global_Data.av.polepairs;
+
+
+
+//    // read resolver
     Global_Data.av.posVel_mech = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
     Global_Data.av.posVel_el = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
-
-    // save raw angles to variables
-    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
-    Global_Data.av.theta_elec_rad = Global_Data.av.posVel_el.position;
-
-    Global_Data.av.theta_mech_calculated = theta_mech_calc_from_resolver-Global_Data.av.theta_mech_offset_rad;
-
-    // save speeds in rad/s to variables
-    Global_Data.av.mechanicalRotorSpeedRADpS = Global_Data.av.posVel_mech.velocity;
-    Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.posVel_el.velocity;
-
-    // calculate speeds in rpm
-    Global_Data.av.mechanicalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRADpS * 30.0f/UZ_PIf;
-    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.electricalRotorSpeedRADpS * 30.0f/UZ_PIf;
+//
+//    // save raw angles to variables
+//    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
+//    Global_Data.av.theta_elec_rad = Global_Data.av.posVel_el.position;
+//
+//    Global_Data.av.theta_mech_calculated = theta_mech_calc_from_resolver-Global_Data.av.theta_mech_offset_rad;
+//
+//    // save speeds in rad/s to variables
+//    Global_Data.av.mechanicalRotorSpeedRADpS = Global_Data.av.posVel_mech.velocity;
+//    Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.posVel_el.velocity;
+//
+//    // calculate speeds in rpm
+//    Global_Data.av.mechanicalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRADpS * 30.0f/UZ_PIf;
+//    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.electricalRotorSpeedRADpS * 30.0f/UZ_PIf;
 
     // convert ADC readings to currents in Amps
     Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
@@ -117,16 +152,75 @@ void ISR_Control(void *data)
 		uz_assert(0);
 	}
 
+	// check DC Bus
+	if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
+			uz_assert(0);
+	}
+
 	// read temperature values from inverters
 	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
 	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
 	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
 	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
 
+    // transform phase currents
+    six_ph_currents.a1 = Global_Data.av.i_a1;
+    six_ph_currents.b1 = Global_Data.av.i_b1;
+    six_ph_currents.c1 = Global_Data.av.i_c1;
+    six_ph_currents.a2 = Global_Data.av.i_a2;
+    six_ph_currents.b2 = Global_Data.av.i_b2;
+    six_ph_currents.c2 = Global_Data.av.i_c2;
+    six_ph_alphabeta = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_currents);
+
+    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
+    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
+    Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
+    Global_Data.av.i_beta = three_ph_alphabeta.beta;
+    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec_rad_ip);
+    Global_Data.av.i_d = rotating_dq.d;
+    Global_Data.av.i_q = rotating_dq.q;
+
+    i_dq_actual.d = Global_Data.av.i_d;
+    i_dq_actual.q = Global_Data.av.i_q;
+
+	i_dq_ref.d = Global_Data.av.i_d_ref;
+	i_dq_ref.q = Global_Data.av.i_q_ref;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (current_state==idle_state)
+    {
+    	uz_FOC_reset(Global_Data.objects.foc_current);
+    }
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
+
+    	//    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
+    	    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+    	    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec_rad_ip);
+    	    	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
+    	    	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
+    	    	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
+
+    	    	input1.a = phase_ref_volts.a1;
+    	    	input1.b = phase_ref_volts.b1;
+    	    	input1.c = phase_ref_volts.c1;
+    	    	input2.a = phase_ref_volts.a2;
+    	    	input2.b = phase_ref_volts.b2;
+    	    	input2.c = phase_ref_volts.c2;
+
+    	    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.v_dc1);
+    	    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.v_dc2);
+
+    	    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
+    	    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
+    	    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
+    	    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
+    	    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
+    	    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

@@ -15,6 +15,40 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_FOC/uz_FOC.h"
+
+const struct uz_PMSM_t config_PMSM = {
+		.Ld_Henry = 0.002,
+		.Lq_Henry = 0.006,
+		.Psi_PM_Vs = 0.19,
+		.polePairs = 5.0f,
+		.I_max_Ampere = 18.0f
+};
+
+const struct uz_PI_Controller_config config_id = {
+		.Kp = 10.0f,
+		.Ki = 1500.0f,
+		.samplingTime_sec = 0.0001f,
+		.type = ideal,
+		.upper_limit = 326.0f,
+		.lower_limit = -326.0f
+};
+
+const struct uz_PI_Controller_config config_iq = {
+		.Kp = 10.0f,
+		.Ki = 1500.0f,
+		.samplingTime_sec = 0.0001f,
+		.type = ideal,
+		.upper_limit = 326.0f,
+		.lower_limit = -326.0f
+};
+
+struct uz_FOC_config config = {
+		.config_PMSM = config_PMSM,
+		.config_id = config_id,
+		.config_iq = config_iq,
+		.decoupling_select = no_decoupling
+};
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -74,8 +108,10 @@ int main(void)
             JavaScope_initalize(&Global_Data);
 //            Global_Data.av.theta_offset = 1.120014f; //!!! if cnt is reset to zero at init we have to add pi to 1.120014 = 4.261607
 //            Global_Data.av.theta_offset = 4.261607f;
-            Global_Data.av.theta_mech_offset_rad = 6.1205;
+            Global_Data.av.theta_mech_offset_rad = 6.1205; //4.420
             Global_Data.av.polepairs = 5.0f;
+            Global_Data.objects.foc_current = uz_FOC_init(config);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -95,6 +131,7 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
+            Global_Data.objects.pl_interface = initialize_resolver_pl_interface();
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
             initialization_chain = print_msg;

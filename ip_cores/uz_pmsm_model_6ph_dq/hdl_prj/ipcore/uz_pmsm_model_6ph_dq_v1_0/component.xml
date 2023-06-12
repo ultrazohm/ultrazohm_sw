@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2a16f5b2</spirit:value>
+            <spirit:value>577d0a90</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2a16f5b2</spirit:value>
+            <spirit:value>577d0a90</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1244,43 +1244,35 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single2double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_mul_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_add_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_single_block.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single_to_sfix_18_En14.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double2single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_27_En18.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single_to_sfix_27_En18.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1298,7 +1290,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_e290bab0</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_c7601fb3</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1364,52 +1356,42 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single2double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_mul_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_sub_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_add_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_single_block.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single_to_sfix_18_En14.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double2single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_27_En18.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single_to_sfix_27_En18.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1501,14 +1483,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model_6ph_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2112822800</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-12-21T10:20:44Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2112972913</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-04-04T15:13:34Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="7139251d"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="278410fd"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="49598ac1"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="74ba95fa"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d9bb375a"/>
     </xilinx:packagingInfo>

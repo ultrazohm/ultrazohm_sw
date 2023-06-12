@@ -17,6 +17,91 @@
         <fractionWidth>24</fractionWidth>
       </RtlPort>
       <RtlPort>
+        <name>s_axi_control_ARADDR</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_ARREADY</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_ARVALID</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_AWADDR</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_AWREADY</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_AWVALID</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_BREADY</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_BRESP</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_BVALID</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_RDATA</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_RREADY</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_RRESP</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_RVALID</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_WDATA</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_WREADY</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_WSTRB</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>s_axi_control_WVALID</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
         <name>u_a</name>
         <type>Floating-point</type>
         <fractionWidth>24</fractionWidth>
@@ -28,11 +113,6 @@
       </RtlPort>
       <RtlPort>
         <name>u_c</name>
-        <type>Floating-point</type>
-        <fractionWidth>24</fractionWidth>
-      </RtlPort>
-      <RtlPort>
-        <name>u_dc</name>
         <type>Floating-point</type>
         <fractionWidth>24</fractionWidth>
       </RtlPort>

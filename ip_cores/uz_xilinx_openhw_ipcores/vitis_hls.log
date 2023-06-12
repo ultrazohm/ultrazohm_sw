@@ -1,34 +1,34 @@
 INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis_HLS/2022.2/bin/unwrapped/win64.o/vitis_hls.exe'
-INFO: [HLS 200-10] For user 'valen' on host 'laptop-me665jgb' (Windows NT_amd64 version 6.2) on Mon Jun 12 11:10:59 +0200 2023
+INFO: [HLS 200-10] For user 'valen' on host 'laptop-me665jgb' (Windows NT_amd64 version 6.2) on Mon Jun 12 11:39:49 +0200 2023
 INFO: [HLS 200-10] In directory 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores'
-Sourcing Tcl script 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/export.tcl'
-INFO: [HLS 200-1510] Running: source C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/export.tcl
-INFO: [HLS 200-1510] Running: open_project uz_FOC 
-INFO: [HLS 200-10] Opening project 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC'.
-INFO: [HLS 200-1510] Running: set_top uz_FOC 
-INFO: [HLS 200-1510] Running: add_files uz_FOC/uz_FOC.cpp 
-INFO: [HLS 200-10] Adding design file 'uz_FOC/uz_FOC.cpp' to the project
-INFO: [HLS 200-1510] Running: add_files uz_FOC/uz_FOC.h 
-INFO: [HLS 200-10] Adding design file 'uz_FOC/uz_FOC.h' to the project
-INFO: [HLS 200-1510] Running: add_files -tb uz_FOC/testbench.cpp -cflags -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -csimflags -Wno-unknown-pragmas 
-INFO: [HLS 200-10] Adding test bench file 'uz_FOC/testbench.cpp' to the project
+Sourcing Tcl script 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/export.tcl'
+INFO: [HLS 200-1510] Running: source C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/export.tcl
+INFO: [HLS 200-1510] Running: open_project uz_SPWM_3ph 
+INFO: [HLS 200-10] Opening project 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph'.
+INFO: [HLS 200-1510] Running: set_top uz_SPWM_3ph 
+INFO: [HLS 200-1510] Running: add_files uz_SPWM_3ph/uz_SPWM_3ph.cpp 
+INFO: [HLS 200-10] Adding design file 'uz_SPWM_3ph/uz_SPWM_3ph.cpp' to the project
+INFO: [HLS 200-1510] Running: add_files uz_SPWM_3ph/uz_SPWM_3ph.h 
+INFO: [HLS 200-10] Adding design file 'uz_SPWM_3ph/uz_SPWM_3ph.h' to the project
+INFO: [HLS 200-1510] Running: add_files -tb uz_SPWM_3ph/testbench.cpp -cflags -Wno-unknown-pragmas -Wno-unknown-pragmas -csimflags -Wno-unknown-pragmas 
+INFO: [HLS 200-10] Adding test bench file 'uz_SPWM_3ph/testbench.cpp' to the project
 INFO: [HLS 200-1510] Running: open_solution solution1 -flow_target vivado 
-INFO: [HLS 200-10] Opening solution 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1'.
+INFO: [HLS 200-10] Opening solution 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1'.
 INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
 INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
 INFO: [HLS 200-1505] Using flow_target 'vivado'
 Resolution: For help on HLS 200-1505 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-1505.html
 INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
 INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
-INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
 INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
 INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
 INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
-INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
-INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
-INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
-INFO: [HLS 200-1510] Running: export_design -flow syn -rtl vhdl -format ip_catalog 
-Running Dispatch Server on port: 52879
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl verilog -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_SPWM_3ph/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_SPWM_3ph uz_SPWM_3ph 
+INFO: [HLS 200-1510] Running: export_design -flow syn -rtl verilog -format ip_catalog 
+Running Dispatch Server on port: 53393
 INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
 
 ****** Vivado v2022.2 (64-bit)
@@ -37,29 +37,26 @@ INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source run_ippack.tcl -notrace
-create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1002.320 ; gain = 116.965
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:06 . Memory (MB): peak = 1003.266 ; gain = 119.457
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
-WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
-WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
-WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip'...
-WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_SPWM_3ph_fadd_32ns_32ns_32_4_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_SPWM_3ph_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_SPWM_3ph_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_SPWM_3ph_fcmp_32ns_32ns_1_2_no_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_SPWM_3ph_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_SPWM_3ph_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_SPWM_3ph_fdiv_32ns_32ns_32_9_no_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_SPWM_3ph_fdiv_32ns_32ns_32_9_no_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_SPWM_3ph_fdiv_32ns_32ns_32_9_no_dsp_1_ip'...
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
-INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:11:38 2023...
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:40:23 2023...
 INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
 
-C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl>C:/Xilinx/Vivado/2022.2/bin/vivado  -mode batch -source run_vivadosyn.tcl   || exit $? 
+C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\solution1\impl\verilog>C:/Xilinx/Vivado/2022.2/bin/vivado  -mode batch -source run_vivadosyn.tcl   || exit $? 
 
 ****** Vivado v2022.2 (64-bit)
   **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
@@ -68,8 +65,8 @@ C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores
 
 source run_vivadosyn.tcl
 # source ./settings.tcl
-## set top_module uz_FOC
-## set language vhdl
+## set top_module uz_SPWM_3ph
+## set language verilog
 ## set family zynquplus
 ## set device xck26
 ## set package -sfvc784
@@ -83,7 +80,7 @@ source run_vivadosyn.tcl
 # set target_device "${device}${package}${speed}"
 # set target_clk_period_ns "10"
 # set target_clk_freq_hz [expr {floor(1000 / $target_clk_period_ns) * 1000000}]
-# set ip_vlnv xilinx.com:hls:uz_FOC:1.0
+# set ip_vlnv xilinx.com:hls:uz_SPWM_3ph:1.0
 # set ip_repo_path ../ip
 # set bd_design_name bd_0
 # set bd_inst_name hls_inst
@@ -99,7 +96,7 @@ source run_vivadosyn.tcl
 # dict set report_options report_max_paths 10
 # dict set report_options stdout_hls_reports 1
 # dict set report_options stdout_vivado_reports 0
-# dict set report_options hls_project uz_FOC
+# dict set report_options hls_project uz_SPWM_3ph
 # dict set report_options hls_solution solution1
 # dict set report_options has_synth $has_synth
 # dict set report_options has_impl $has_impl
@@ -112,10 +109,10 @@ source run_vivadosyn.tcl
 # dict set report_options language $language
 # dict set report_options clock_name $clock
 # dict set report_options error_if_impl_timing_fails false
-# dict set report_options bindmodules {uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1 uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1 uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1 uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1 uz_FOC_control_s_axi}
+# dict set report_options bindmodules {uz_SPWM_3ph_fadd_32ns_32ns_32_4_full_dsp_1 uz_SPWM_3ph_fdiv_32ns_32ns_32_9_no_dsp_1 uz_SPWM_3ph_fcmp_32ns_32ns_1_2_no_dsp_1 uz_SPWM_3ph_control_s_axi}
 # dict set report_options max_module_depth 6
 # create_project $vivado_proj_name $vivado_proj_dir -part $target_device -force
-create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1001.957 ; gain = 117.676
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1003.660 ; gain = 120.020
 # set_property target_language $language [current_project]
 # if { ![file exists $ip_repo_path] } {
 #   error "Cannot find packaged HLS IP"
@@ -123,10 +120,10 @@ create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): pea
 # set_property ip_repo_paths [file normalize $ip_repo_path] [current_project]
 # update_ip_catalog
 INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/ip'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/ip'.
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
 # create_bd_design $bd_design_name
-Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
+Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\solution1\impl\verilog\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
 # set cell_inst [create_bd_cell -type ip -vlnv $ip_vlnv $bd_inst_name]
 # if { [llength $bd_props] } { 
 #   set_property -dict $bd_props $cell_inst 
@@ -155,10 +152,10 @@ INFO: Updating /s_axi_control CONFIG.ADDR_WIDTH to 32
 # set_msg_config -id {[BD 41-1265]} -severity {CRITICAL WARNING} -new_severity {INFO}
 # assign_bd_address
 Slave segment '/hls_inst/s_axi_control/Reg' is being assigned into address space '/s_axi_control' at <0x0000_0000 [ 64K ]>.
-Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/sim/bd_0.vhd
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd
+Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\solution1\impl\verilog\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/synth/bd_0.v
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/sim/bd_0.v
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.v
 # set toprtl [make_wrapper -files [get_files ${bd_design_name}.bd] -top]
 # add_files -norecurse $toprtl
 # set top_inst_name [file root [file tail $toprtl]]
@@ -170,22 +167,20 @@ Using BD top: bd_0_wrapper
 # }
 # launch_runs synth_1 -scripts_only
 INFO: [BD 41-1662] The design 'bd_0.bd' is already validated. Therefore parameter propagation will not be re-run.
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/sim/bd_0.vhd
-VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd
-WARNING: [IP_Flow 19-519] IP 'bd_0_hls_inst_0' detected a language mismatch between 'Verilog Simulation Wrapper' and 'VHDL Simulation' output products. Please check with the IP provider to see if this is expected.
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/synth/bd_0.v
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/sim/bd_0.v
+Verilog Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.v
 INFO: [BD 41-1029] Generation completed for the IP Integrator block hls_inst .
-Exporting to file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hw_handoff/bd_0.hwh
-Generated Hardware Definition File C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.hwdef
+Exporting to file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/hw_handoff/bd_0.hwh
+Generated Hardware Definition File C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/synth/bd_0.hwdef
 INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: bd_0_hls_inst_0
 WARNING: [Vivado 12-7122] Auto Incremental Compile:: No reference checkpoint was found in run synth_1. Auto-incremental flow will not be run, the standard flow will be run instead.
-launch_runs: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 1310.145 ; gain = 0.000
 # foreach run [get_runs -filter {IS_SYNTHESIS == 1}] {
 #   reset_run [get_runs $run]
 # }
 # set_property XPM_LIBRARIES {XPM_MEMORY XPM_FIFO} [current_project]
 # hls_vivado_reports_setup $report_options
-TIMESTAMP: HLS-REPORT: initialize report directories: 2023-06-12 11:12:10 +0200
+TIMESTAMP: HLS-REPORT: initialize report directories: 2023-06-12 11:40:50 +0200
 # if { $has_synth || $has_impl } {
 #   # synth properties setting
 #   set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]
@@ -220,11 +215,11 @@ TIMESTAMP: HLS-REPORT: initialize report directories: 2023-06-12 11:12:10 +0200
 # }
 INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: bd_0_hls_inst_0
 WARNING: [Vivado 12-7122] Auto Incremental Compile:: No reference checkpoint was found in run synth_1. Auto-incremental flow will not be run, the standard flow will be run instead.
-[Mon Jun 12 11:12:10 2023] Launched bd_0_hls_inst_0_synth_1...
-Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/bd_0_hls_inst_0_synth_1/runme.log
-[Mon Jun 12 11:12:10 2023] Launched synth_1...
-Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/runme.log
-[Mon Jun 12 11:12:10 2023] Waiting for synth_1 to finish...
+[Mon Jun 12 11:40:50 2023] Launched bd_0_hls_inst_0_synth_1...
+Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/bd_0_hls_inst_0_synth_1/runme.log
+[Mon Jun 12 11:40:50 2023] Launched synth_1...
+Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/runme.log
+[Mon Jun 12 11:40:50 2023] Waiting for synth_1 to finish...
 
 
 *** Running vivado
@@ -238,13 +233,13 @@ Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source bd_0_wrapper.tcl -notrace
-INFO: Dispatch client connection id - 52879
-create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1003.285 ; gain = 119.594
+INFO: Dispatch client connection id - 53393
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1002.055 ; gain = 119.105
 INFO: [IP_Flow 19-234] Refreshing IP repositories
-INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/ip'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/ip'.
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
 WARNING: [IP_Flow 19-4995] The host OS only allows 260 characters in a normal path. The IP cache path is more than 80 characters. If you experience issues with IP caching, please consider changing the IP cache to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. 
-Current IP cache path is c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.cache/ip 
+Current IP cache path is c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.cache/ip 
 Command: synth_design -top bd_0_wrapper -part xck26-sfvc784-2LV-c -mode out_of_context
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xck26'
@@ -252,52 +247,51 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xck26'
 INFO: [Device 21-403] Loading part xck26-sfvc784-2LV-c
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 11792
+INFO: [Synth 8-7075] Helper process launched with PID 21340
 INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2382.723 ; gain = 332.777
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 2381.340 ; gain = 332.336
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'bd_0_wrapper' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:47]
-INFO: [Synth 8-3491] module 'bd_0' declared at 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:14' bound to instance 'bd_0_i' of component 'bd_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:81]
-INFO: [Synth 8-638] synthesizing module 'bd_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:51]
-INFO: [Synth 8-3491] module 'bd_0_hls_inst_0' declared at 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/.Xil/Vivado-11620-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.vhdl:5' bound to instance 'hls_inst' of component 'bd_0_hls_inst_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:179]
-INFO: [Synth 8-638] synthesizing module 'bd_0_hls_inst_0' [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/.Xil/Vivado-11620-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.vhdl:39]
-INFO: [Synth 8-256] done synthesizing module 'bd_0' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:51]
-INFO: [Synth 8-256] done synthesizing module 'bd_0_wrapper' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:47]
+INFO: [Synth 8-6157] synthesizing module 'bd_0_wrapper' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.v:12]
+INFO: [Synth 8-6157] synthesizing module 'bd_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/synth/bd_0.v:12]
+INFO: [Synth 8-6157] synthesizing module 'bd_0_hls_inst_0' [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/.Xil/Vivado-22380-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'bd_0_hls_inst_0' (0#1) [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/.Xil/Vivado-22380-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'bd_0' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/synth/bd_0.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'bd_0_wrapper' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.v:12]
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2477.891 ; gain = 427.945
+Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2475.957 ; gain = 426.953
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2495.801 ; gain = 445.855
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2493.875 ; gain = 444.871
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2495.801 ; gain = 445.855
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2493.875 ; gain = 444.871
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2495.801 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2493.875 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
-Finished Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
-Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
-create_clock: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2532.277 ; gain = 0.000
-Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
-Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/dont_touch.xdc]
-Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/dont_touch.xdc]
+Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
+Finished Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/uz_SPWM_3ph.xdc]
+create_clock: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2530.328 ; gain = 0.000
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/uz_SPWM_3ph.xdc]
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/dont_touch.xdc]
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2532.277 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2530.328 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.024 . Memory (MB): peak = 2532.277 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.023 . Memory (MB): peak = 2530.328 ; gain = 0.000
 INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+Finished Constraint Validation : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 2530.328 ; gain = 481.324
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
@@ -305,7 +299,7 @@ Start Loading Part and Timing Information
 Loading part: xck26-sfvc784-2LV-c
 INFO: [Synth 8-6742] Reading net delay rules and data
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 2530.328 ; gain = 481.324
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
@@ -313,10 +307,10 @@ Start Applying 'set_property' XDC Constraints
 Applied set_property KEEP_HIERARCHY = SOFT for bd_0_i. (constraint file  auto generated constraint).
 Applied set_property KEEP_HIERARCHY = SOFT for bd_0_i/hls_inst. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 2530.328 ; gain = 481.324
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 2530.328 ; gain = 481.324
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -339,25 +333,25 @@ Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 2532.277 ; gain = 482.332
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:24 ; elapsed = 00:00:25 . Memory (MB): peak = 2530.328 ; gain = 481.324
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3030.883 ; gain = 980.938
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:39 ; elapsed = 00:00:41 . Memory (MB): peak = 3028.895 ; gain = 979.891
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3030.883 ; gain = 980.938
+Finished Timing Optimization : Time (s): cpu = 00:00:39 ; elapsed = 00:00:41 . Memory (MB): peak = 3028.895 ; gain = 979.891
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3049.969 ; gain = 1000.023
+Finished Technology Mapping : Time (s): cpu = 00:00:39 ; elapsed = 00:00:41 . Memory (MB): peak = 3048.012 ; gain = 999.008
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -375,37 +369,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished IO Insertion : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -419,82 +413,82 @@ Report BlackBoxes:
 +------+----------------+----------+
 
 Report Cell Usage: 
-+------+---------------------+------+
-|      |Cell                 |Count |
-+------+---------------------+------+
-|1     |bd_0_hls_inst_0_bbox |     1|
-+------+---------------------+------+
++------+--------------+------+
+|      |Cell          |Count |
++------+--------------+------+
+|1     |bd_0_hls_inst |     1|
++------+--------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:32 ; elapsed = 00:00:42 . Memory (MB): peak = 3055.781 ; gain = 969.359
-Synthesis Optimization Complete : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:29 ; elapsed = 00:00:38 . Memory (MB): peak = 3054.789 ; gain = 969.332
+Synthesis Optimization Complete : Time (s): cpu = 00:00:44 ; elapsed = 00:00:46 . Memory (MB): peak = 3054.789 ; gain = 1005.785
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 3055.781 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 3054.789 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3098.004 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3098.680 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Synth Design complete, checksum: 28425213
+Synth Design complete, checksum: 358c3054
 INFO: [Common 17-83] Releasing license: Synthesis
-25 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+24 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:57 ; elapsed = 00:01:00 . Memory (MB): peak = 3098.004 ; gain = 2024.004
-INFO: [Common 17-1381] The checkpoint 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/bd_0_wrapper.dcp' has been generated.
+synth_design: Time (s): cpu = 00:00:54 ; elapsed = 00:00:57 . Memory (MB): peak = 3098.680 ; gain = 2025.281
+INFO: [Common 17-1381] The checkpoint 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.runs/synth_1/bd_0_wrapper.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file bd_0_wrapper_utilization_synth.rpt -pb bd_0_wrapper_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:15:33 2023...
-[Mon Jun 12 11:15:36 2023] synth_1 finished
-wait_on_runs: Time (s): cpu = 00:00:00 ; elapsed = 00:03:26 . Memory (MB): peak = 1310.145 ; gain = 0.000
-TIMESTAMP: HLS-REPORT: synthesis open_run: 2023-06-12 11:15:36 +0200
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:44:04 2023...
+[Mon Jun 12 11:44:08 2023] synth_1 finished
+wait_on_runs: Time (s): cpu = 00:00:00 ; elapsed = 00:03:18 . Memory (MB): peak = 1309.910 ; gain = 0.000
+TIMESTAMP: HLS-REPORT: synthesis open_run: 2023-06-12 11:44:08 +0200
 INFO: HLS-REPORT: Opening synthesis design database: open_run synth_1
 Design is defaulting to impl run constrset: constrs_1
 Design is defaulting to synth run part: xck26-sfvc784-2LV-c
 INFO: [Device 21-403] Loading part xck26-sfvc784-2LV-c
-INFO: [Project 1-454] Reading design checkpoint 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0.dcp' for cell 'bd_0_i/hls_inst'
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.329 . Memory (MB): peak = 2324.770 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 139 Unisim elements for replacement
-INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0.dcp' for cell 'bd_0_i/hls_inst'
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.272 . Memory (MB): peak = 2323.684 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 399 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-479] Netlist was created with Vivado 2022.2
 INFO: [Project 1-570] Preparing netlist for logic optimization
-Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
-create_clock: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2324.770 ; gain = 0.000
-Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/uz_SPWM_3ph.xdc]
+create_clock: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2323.684 ; gain = 0.000
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/uz_SPWM_3ph.xdc]
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2324.770 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 2323.684 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 30 instances were transformed.
-  DSP48E1 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD, DSP_PREADD_DATA): 30 instances
+  A total of 6 instances were transformed.
+  DSP48E1 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD, DSP_PREADD_DATA): 6 instances
 
-open_run: Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 2324.770 ; gain = 1014.625
-TIMESTAMP: HLS-REPORT: synthesis generate_reports_vivado: 2023-06-12 11:15:55 +0200
-INFO: HLS-REPORT: Running report: report_utilization -file ./report/uz_FOC_utilization_synth.rpt
-INFO: HLS-REPORT: Running report: report_utilization -hierarchical -hierarchical_depth 6 -file ./report/uz_FOC_utilization_hierarchical_synth.rpt
-INFO: HLS-REPORT: Running report: report_timing_summary -file ./report/uz_FOC_timing_synth.rpt
+open_run: Time (s): cpu = 00:00:17 ; elapsed = 00:00:19 . Memory (MB): peak = 2323.684 ; gain = 1013.773
+TIMESTAMP: HLS-REPORT: synthesis generate_reports_vivado: 2023-06-12 11:44:27 +0200
+INFO: HLS-REPORT: Running report: report_utilization -file ./report/uz_SPWM_3ph_utilization_synth.rpt
+INFO: HLS-REPORT: Running report: report_utilization -hierarchical -hierarchical_depth 6 -file ./report/uz_SPWM_3ph_utilization_hierarchical_synth.rpt
+INFO: HLS-REPORT: Running report: report_timing_summary -file ./report/uz_SPWM_3ph_timing_synth.rpt
 INFO: [Timing 38-35] Done setting XDC timing constraints.
 INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2LV, Temperature grade: C, Delay Type: min_max.
 INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
 WARNING: [Timing 38-242] The property HD.CLK_SRC of clock port "ap_clk" is not set. In out-of-context mode, this prevents timing estimation for clock delay/skew
 Resolution: Set the HD.CLK_SRC property of the out-of-context port to the location of the clock buffer instance in the top-level design
-report_timing_summary: Time (s): cpu = 00:00:42 ; elapsed = 00:00:41 . Memory (MB): peak = 4044.070 ; gain = 1719.301
-INFO: HLS-REPORT: Running report: report_timing -max_paths 10 -file ./report/uz_FOC_timing_paths_synth.rpt
+report_timing_summary: Time (s): cpu = 00:00:40 ; elapsed = 00:00:41 . Memory (MB): peak = 4018.559 ; gain = 1694.875
+INFO: HLS-REPORT: Running report: report_timing -max_paths 10 -file ./report/uz_SPWM_3ph_timing_paths_synth.rpt
 INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2LV, Temperature grade: C, Delay Type: max.
 INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
 INFO: [Timing 38-78] ReportTimingParams: -max_paths 10 -nworst 1 -delay_type max -sort_by slack.
-INFO: HLS-REPORT: Running report: report_design_analysis -file ./report/uz_FOC_design_analysis_synth.rpt
+INFO: HLS-REPORT: Running report: report_design_analysis -file ./report/uz_SPWM_3ph_design_analysis_synth.rpt
 INFO: [Implflow 30-839]  
-INFO: HLS-REPORT: Running report: ::tclapp::xilinx::designutils::report_failfast -detailed_report synth -file ./report/uz_FOC_failfast_synth.rpt
- -I- design metrics completed in 1 seconds
- -I- DONT_TOUCH metric completed in 0 seconds
+INFO: HLS-REPORT: Running report: ::tclapp::xilinx::designutils::report_failfast -detailed_report synth -file ./report/uz_SPWM_3ph_failfast_synth.rpt
+ -I- design metrics completed in 0 seconds
+ -I- DONT_TOUCH metric completed in 1 seconds
  -I- MARK_DEBUG metric completed in 0 seconds
  -I- utilization metrics completed in 1 seconds
  -I- control set metrics completed in 0 seconds
- -I- methodology check metrics completed in 2 seconds
+ -I- methodology check metrics completed in 1 seconds
  -I- average fanout metrics completed in 1 seconds (0 modules)
  -I- non-FD high fanout nets completed in 1 seconds
- -I- path budgeting metrics completed in 1 seconds
+ -I- path budgeting metrics completed in 0 seconds
 #  +-----------------------------------------------------------------------------------------+
 #  | Design Summary                                                                          |
 #  | design_1                                                                                |
@@ -502,19 +496,19 @@ INFO: HLS-REPORT: Running report: ::tclapp::xilinx::designutils::report_failfast
 #  +-----------------------------------------------------------+-----------+--------+--------+
 #  | Criteria                                                  | Guideline | Actual | Status |
 #  +-----------------------------------------------------------+-----------+--------+--------+
-#  | LUT                                                       | 70%       | 2.29%  | OK     |
-#  | FD                                                        | 50%       | 1.26%  | OK     |
-#  | LUTRAM+SRL                                                | 25%       | 0.56%  | OK     |
-#  | CARRY8                                                    | 25%       | 0.72%  | OK     |
-#  | MUXF7                                                     | 15%       | 0.01%  | OK     |
-#  | DSP                                                       | 80%       | 2.40%  | OK     |
+#  | LUT                                                       | 70%       | 2.91%  | OK     |
+#  | FD                                                        | 50%       | 0.94%  | OK     |
+#  | LUTRAM+SRL                                                | 25%       | 0.17%  | OK     |
+#  | CARRY8                                                    | 25%       | 2.68%  | OK     |
+#  | MUXF7                                                     | 15%       | 0.00%  | OK     |
+#  | DSP                                                       | 80%       | 0.48%  | OK     |
 #  | RAMB/FIFO                                                 | 80%       | 0.00%  | OK     |
 #  | URAM                                                      | 80%       | 0.00%  | OK     |
-#  | DSP+RAMB+URAM (Avg)                                       | 70%       | 2.40%  | OK     |
+#  | DSP+RAMB+URAM (Avg)                                       | 70%       | 0.48%  | OK     |
 #  | BUFGCE* + BUFGCTRL                                        | 24        | 0      | OK     |
 #  | DONT_TOUCH (cells/nets)                                   | 0         | 0      | OK     |
 #  | MARK_DEBUG (nets)                                         | 0         | 0      | OK     |
-#  | Control Sets                                              | 2196      | 36     | OK     |
+#  | Control Sets                                              | 2196      | 21     | OK     |
 #  | Average Fanout for modules > 100k cells                   | 4         | 0      | OK     |
 #  | Non-FD high fanout nets > 10k loads                       | 0         | 0      | OK     |
 #  +-----------------------------------------------------------+-----------+--------+--------+
@@ -527,47 +521,47 @@ INFO: HLS-REPORT: Running report: ::tclapp::xilinx::designutils::report_failfast
 #  | Number of paths above max LUT budgeting (0.391ns)         | 0         | 0      | OK     |
 #  | Number of paths above max Net budgeting (0.263ns)         | 0         | 0      | OK     |
 #  +-----------------------------------------------------------+-----------+--------+--------+
- -I- Generated file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/report/uz_FOC_failfast_synth.rpt
+ -I- Generated file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/report/uz_SPWM_3ph_failfast_synth.rpt
  -I- Number of criteria to review: 0
  -I- This report should be run before placing the design and uses conservative guidelines beyond which runtime and timing closure will likely be more challenging
- -I- report_failfast completed in 7 seconds
-TIMESTAMP: HLS-REPORT: synthesis gen_data_dict_vivado: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synth extract_util_hier: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synth get_cell_hier_data: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synth get_timing_paths: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synth process timing paths: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synth get_all_vv_rpt_files: 2023-06-12 11:16:43 +0200
-TIMESTAMP: HLS-REPORT: synthesis write_reports_vivado: 2023-06-12 11:16:43 +0200
+ -I- report_failfast completed in 5 seconds
+TIMESTAMP: HLS-REPORT: synthesis gen_data_dict_vivado: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synth extract_util_hier: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synth get_cell_hier_data: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synth get_timing_paths: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synth process timing paths: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synth get_all_vv_rpt_files: 2023-06-12 11:45:14 +0200
+TIMESTAMP: HLS-REPORT: synthesis write_reports_vivado: 2023-06-12 11:45:14 +0200
 HLS EXTRACTION: synth area_totals:  0 117120 234240 1248 288 0 64
-HLS EXTRACTION: synth area_current: 0 2683 2957 30 0 0 324 0 0 0
-HLS EXTRACTION: synth resources_dict: AVAIL_LUT 117120 LUT 2683 AVAIL_FF 234240 FF 2957 AVAIL_DSP 1248 DSP 30 AVAIL_BRAM 288 BRAM 0 AVAIL_URAM 64 URAM 0 LATCH 0 SRL 324 AVAIL_CLB 0 CLB 0
-INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/report/vivado_syn.xml
-INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/report/vhdl/uz_FOC_export.rpt
+HLS EXTRACTION: synth area_current: 0 3405 2192 6 0 0 96 0 0 0
+HLS EXTRACTION: synth resources_dict: AVAIL_LUT 117120 LUT 3405 AVAIL_FF 234240 FF 2192 AVAIL_DSP 1248 DSP 6 AVAIL_BRAM 288 BRAM 0 AVAIL_URAM 64 URAM 0 LATCH 0 SRL 96 AVAIL_CLB 0 CLB 0
+INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/verilog/report/vivado_syn.xml
+INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_SPWM_3ph/solution1/impl/report/verilog/uz_SPWM_3ph_export.rpt
 
 
 Implementation tool: Xilinx Vivado v.2022.2
-Project:             uz_FOC
+Project:             uz_SPWM_3ph
 Solution:            solution1
 Device target:       xck26-sfvc784-2LV-c
-Report date:         Mon Jun 12 11:16:45 +0200 2023
+Report date:         Mon Jun 12 11:45:16 +0200 2023
 
 #=== Post-Synthesis Resource usage ===
 SLICE:            0
-LUT:           2683
-FF:            2957
-DSP:             30
+LUT:           3405
+FF:            2192
+DSP:              6
 BRAM:             0
 URAM:             0
 LATCH:            0
-SRL:            324
+SRL:             96
 CLB:              0
 
 #=== Final timing ===
 CP required:                     10.000
-CP achieved post-synthesis:      4.994
+CP achieved post-synthesis:      4.652
 Timing met
 
-TIMESTAMP: HLS-REPORT: synthesis end: 2023-06-12 11:16:45 +0200
+TIMESTAMP: HLS-REPORT: synthesis end: 2023-06-12 11:45:16 +0200
 # if { $has_impl } {
 #   # launch run impl
 #   if { [llength $impl_props] } {
@@ -579,8 +573,8 @@ TIMESTAMP: HLS-REPORT: synthesis end: 2023-06-12 11:16:45 +0200
 #   hls_vivado_reports_impl impl_1 $report_options
 # }
 # hls_vivado_reports_finalize $report_options
-TIMESTAMP: HLS-REPORT: all reports complete: 2023-06-12 11:16:45 +0200
-INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:16:45 2023...
-INFO: [HLS 200-802] Generated output file uz_FOC/solution1/impl/export.zip
-INFO: [HLS 200-111] Finished Command export_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 332.524 seconds; current allocated memory: 9.031 MB.
-INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 347.536 seconds; peak allocated memory: 686.000 MB.
+TIMESTAMP: HLS-REPORT: all reports complete: 2023-06-12 11:45:16 +0200
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:45:16 2023...
+INFO: [HLS 200-802] Generated output file uz_SPWM_3ph/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 314.386 seconds; current allocated memory: 9.492 MB.
+INFO: [HLS 200-112] Total CPU user time: 5 seconds. Total CPU system time: 2 seconds. Total elapsed time: 329.078 seconds; peak allocated memory: 686.582 MB.

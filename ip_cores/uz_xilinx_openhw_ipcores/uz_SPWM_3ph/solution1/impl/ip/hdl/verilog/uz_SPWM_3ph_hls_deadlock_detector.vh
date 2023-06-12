@@ -1,7 +1,7 @@
 
     wire dl_reset;
     wire dl_clock;
-    assign dl_reset = ~ap_rst;
+    assign dl_reset = ap_rst_n;
     assign dl_clock = ap_clk;
     wire [1:0] proc_0_data_FIFO_blk;
     wire [1:0] proc_0_data_PIPO_blk;

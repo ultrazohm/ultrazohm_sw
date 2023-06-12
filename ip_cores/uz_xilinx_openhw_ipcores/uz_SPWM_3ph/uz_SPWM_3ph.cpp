@@ -1,9 +1,9 @@
 #include "uz_SPWM_3ph.h"
 void uz_SPWM_3ph(float u_a, float u_b, float u_c, float u_dc, float *DC_a, float *DC_b, float *DC_c){
+#pragma HLS INTERFACE mode=s_axilite port=u_dc
 #pragma HLS INTERFACE mode=ap_none port=u_a
 #pragma HLS INTERFACE mode=ap_none port=u_b
 #pragma HLS INTERFACE mode=ap_none port=u_c
-#pragma HLS INTERFACE mode=ap_none port=u_dc
 #pragma HLS INTERFACE mode=ap_none port=DC_a
 #pragma HLS INTERFACE mode=ap_none port=DC_b
 #pragma HLS INTERFACE mode=ap_none port=DC_c

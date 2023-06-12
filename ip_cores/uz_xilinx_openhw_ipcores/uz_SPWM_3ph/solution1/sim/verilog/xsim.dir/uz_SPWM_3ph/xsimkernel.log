@@ -1,0 +1,7 @@
+Running: xsim.dir/uz_SPWM_3ph/xsimk.exe -simmode gui -wdb uz_SPWM_3ph.wdb -simrunnum 0 -socket 53264
+Design successfully loaded
+Design Loading Memory Usage: 16848 KB (Peak: 16848 KB)
+Design Loading CPU Usage: 46 ms
+Simulation completed
+Simulation Memory Usage: 19980 KB (Peak: 19980 KB)
+Simulation CPU Usage: 77 ms

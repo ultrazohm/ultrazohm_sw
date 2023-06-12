@@ -1,6 +1,6 @@
 #include "uz_SPWM_3ph.h"
-#include "../uz_HLS_test.h"
-#include "../uz_HLS_test.c"
+#include "../lib/uz_HLS_test/uz_HLS_test.h"
+#include "../lib/uz_HLS_test/uz_HLS_test.c"
 
 #define TEST_RANGE 1e-3
 

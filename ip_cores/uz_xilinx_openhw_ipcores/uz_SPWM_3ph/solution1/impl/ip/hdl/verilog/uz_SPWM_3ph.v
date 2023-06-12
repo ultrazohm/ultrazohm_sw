@@ -7,39 +7,79 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="uz_SPWM_3ph_uz_SPWM_3ph,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=1,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvb1156-2-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=dataflow,HLS_SYN_CLOCK=7.057000,HLS_SYN_LAT=14,HLS_SYN_TPT=15,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=1020,HLS_SYN_LUT=1245,HLS_VERSION=2022_2}" *)
+(* CORE_GENERATION_INFO="uz_SPWM_3ph_uz_SPWM_3ph,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=1,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xck26-sfvc784-2LV-c,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=dataflow,HLS_SYN_CLOCK=7.057000,HLS_SYN_LAT=14,HLS_SYN_TPT=15,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=1088,HLS_SYN_LUT=1349,HLS_VERSION=2022_2}" *)
 
 module uz_SPWM_3ph (
+        s_axi_control_AWVALID,
+        s_axi_control_AWREADY,
+        s_axi_control_AWADDR,
+        s_axi_control_WVALID,
+        s_axi_control_WREADY,
+        s_axi_control_WDATA,
+        s_axi_control_WSTRB,
+        s_axi_control_ARVALID,
+        s_axi_control_ARREADY,
+        s_axi_control_ARADDR,
+        s_axi_control_RVALID,
+        s_axi_control_RREADY,
+        s_axi_control_RDATA,
+        s_axi_control_RRESP,
+        s_axi_control_BVALID,
+        s_axi_control_BREADY,
+        s_axi_control_BRESP,
+        ap_clk,
+        ap_rst_n,
         u_a,
         u_b,
         u_c,
-        u_dc,
         DC_a,
         DC_b,
         DC_c,
-        ap_clk,
-        ap_rst,
         ap_start,
         ap_done,
         ap_ready,
         ap_idle
 );
 
+parameter    C_S_AXI_CONTROL_DATA_WIDTH = 32;
+parameter    C_S_AXI_CONTROL_ADDR_WIDTH = 5;
+parameter    C_S_AXI_DATA_WIDTH = 32;
 
+parameter C_S_AXI_CONTROL_WSTRB_WIDTH = (32 / 8);
+parameter C_S_AXI_WSTRB_WIDTH = (32 / 8);
+
+input   s_axi_control_AWVALID;
+output   s_axi_control_AWREADY;
+input  [C_S_AXI_CONTROL_ADDR_WIDTH - 1:0] s_axi_control_AWADDR;
+input   s_axi_control_WVALID;
+output   s_axi_control_WREADY;
+input  [C_S_AXI_CONTROL_DATA_WIDTH - 1:0] s_axi_control_WDATA;
+input  [C_S_AXI_CONTROL_WSTRB_WIDTH - 1:0] s_axi_control_WSTRB;
+input   s_axi_control_ARVALID;
+output   s_axi_control_ARREADY;
+input  [C_S_AXI_CONTROL_ADDR_WIDTH - 1:0] s_axi_control_ARADDR;
+output   s_axi_control_RVALID;
+input   s_axi_control_RREADY;
+output  [C_S_AXI_CONTROL_DATA_WIDTH - 1:0] s_axi_control_RDATA;
+output  [1:0] s_axi_control_RRESP;
+output   s_axi_control_BVALID;
+input   s_axi_control_BREADY;
+output  [1:0] s_axi_control_BRESP;
+input   ap_clk;
+input   ap_rst_n;
 input  [31:0] u_a;
 input  [31:0] u_b;
 input  [31:0] u_c;
-input  [31:0] u_dc;
 output  [31:0] DC_a;
 output  [31:0] DC_b;
 output  [31:0] DC_c;
-input   ap_clk;
-input   ap_rst;
 input   ap_start;
 output   ap_done;
 output   ap_ready;
 output   ap_idle;
 
+ reg    ap_rst_n_inv;
+wire   [31:0] u_dc;
 wire    SPWM_single_phase_U0_ap_start;
 wire    SPWM_single_phase_U0_ap_done;
 wire    SPWM_single_phase_U0_ap_continue;
@@ -78,9 +118,36 @@ initial begin
 #0 ap_sync_reg_SPWM_single_phase_2_U0_ap_ready = 1'b0;
 end
 
+uz_SPWM_3ph_control_s_axi #(
+    .C_S_AXI_ADDR_WIDTH( C_S_AXI_CONTROL_ADDR_WIDTH ),
+    .C_S_AXI_DATA_WIDTH( C_S_AXI_CONTROL_DATA_WIDTH ))
+control_s_axi_U(
+    .AWVALID(s_axi_control_AWVALID),
+    .AWREADY(s_axi_control_AWREADY),
+    .AWADDR(s_axi_control_AWADDR),
+    .WVALID(s_axi_control_WVALID),
+    .WREADY(s_axi_control_WREADY),
+    .WDATA(s_axi_control_WDATA),
+    .WSTRB(s_axi_control_WSTRB),
+    .ARVALID(s_axi_control_ARVALID),
+    .ARREADY(s_axi_control_ARREADY),
+    .ARADDR(s_axi_control_ARADDR),
+    .RVALID(s_axi_control_RVALID),
+    .RREADY(s_axi_control_RREADY),
+    .RDATA(s_axi_control_RDATA),
+    .RRESP(s_axi_control_RRESP),
+    .BVALID(s_axi_control_BVALID),
+    .BREADY(s_axi_control_BREADY),
+    .BRESP(s_axi_control_BRESP),
+    .ACLK(ap_clk),
+    .ARESET(ap_rst_n_inv),
+    .ACLK_EN(1'b1),
+    .u_dc(u_dc)
+);
+
 uz_SPWM_3ph_SPWM_single_phase SPWM_single_phase_U0(
     .ap_clk(ap_clk),
-    .ap_rst(ap_rst),
+    .ap_rst(ap_rst_n_inv),
     .ap_start(SPWM_single_phase_U0_ap_start),
     .ap_done(SPWM_single_phase_U0_ap_done),
     .ap_continue(SPWM_single_phase_U0_ap_continue),
@@ -94,7 +161,7 @@ uz_SPWM_3ph_SPWM_single_phase SPWM_single_phase_U0(
 
 uz_SPWM_3ph_SPWM_single_phase_1 SPWM_single_phase_1_U0(
     .ap_clk(ap_clk),
-    .ap_rst(ap_rst),
+    .ap_rst(ap_rst_n_inv),
     .ap_start(SPWM_single_phase_1_U0_ap_start),
     .ap_done(SPWM_single_phase_1_U0_ap_done),
     .ap_continue(SPWM_single_phase_1_U0_ap_continue),
@@ -108,7 +175,7 @@ uz_SPWM_3ph_SPWM_single_phase_1 SPWM_single_phase_1_U0(
 
 uz_SPWM_3ph_SPWM_single_phase_2 SPWM_single_phase_2_U0(
     .ap_clk(ap_clk),
-    .ap_rst(ap_rst),
+    .ap_rst(ap_rst_n_inv),
     .ap_start(SPWM_single_phase_2_U0_ap_start),
     .ap_done(SPWM_single_phase_2_U0_ap_done),
     .ap_continue(SPWM_single_phase_2_U0_ap_continue),
@@ -121,7 +188,7 @@ uz_SPWM_3ph_SPWM_single_phase_2 SPWM_single_phase_2_U0(
 );
 
 always @ (posedge ap_clk) begin
-    if (ap_rst == 1'b1) begin
+    if (ap_rst_n_inv == 1'b1) begin
         ap_sync_reg_SPWM_single_phase_1_U0_ap_ready <= 1'b0;
     end else begin
         if (((ap_sync_ready & ap_start) == 1'b1)) begin
@@ -133,7 +200,7 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (ap_rst == 1'b1) begin
+    if (ap_rst_n_inv == 1'b1) begin
         ap_sync_reg_SPWM_single_phase_2_U0_ap_ready <= 1'b0;
     end else begin
         if (((ap_sync_ready & ap_start) == 1'b1)) begin
@@ -145,7 +212,7 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (ap_rst == 1'b1) begin
+    if (ap_rst_n_inv == 1'b1) begin
         ap_sync_reg_SPWM_single_phase_U0_ap_ready <= 1'b0;
     end else begin
         if (((ap_sync_ready & ap_start) == 1'b1)) begin
@@ -179,6 +246,10 @@ assign ap_done = ap_sync_done;
 assign ap_idle = (SPWM_single_phase_U0_ap_idle & SPWM_single_phase_2_U0_ap_idle & SPWM_single_phase_1_U0_ap_idle);
 
 assign ap_ready = ap_sync_ready;
+
+always @ (*) begin
+    ap_rst_n_inv = ~ap_rst_n;
+end
 
 assign ap_sync_SPWM_single_phase_1_U0_ap_ready = (ap_sync_reg_SPWM_single_phase_1_U0_ap_ready | SPWM_single_phase_1_U0_ap_ready);
 

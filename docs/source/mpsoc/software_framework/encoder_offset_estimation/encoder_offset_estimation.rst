@@ -4,19 +4,28 @@
 Encoder Offset Estimation
 =========================
 
+General
+-------
+
+This software module addresses the challenges with determining encoder offset mentioned in :ref:`how_to_set_encoder_offset`.
+Using this method has proven to deliver significantly better results, than using the basic method of just applying a space vector to phase a.
+The results from two different testbenches are listed in the following table.
+Here the basic and the advanced methods where used ten times.
+The medium values show quite similar results, however the standard deviation of the advanced method is significantly lower.
+
+.. csv-table:: Measurement results wit both methods
+   :file: measurements.csv
+   :widths: 50 50 50
+   :header-rows: 1
+
 Workflow
 --------
 
-Estimate Theta with "wrong" method.
-Use estimated theta in code below and algorithm will find true theta in that range.
-
-Example Result
---------------
-.. figure:: theta_offset_plot.svg
-   :width: 800px
-   :align: center
-
-   Measurement Result for 6ph Brose 
+To use this function, first an inital offset angle must be determined.
+It is recommended to use the basic method for that, meaning a space vector is applied to the :math:`\alpha`-axis and the resulting rotor angle can be used.
+Afterwards the code shown below can be implemented.
+Using this code, 40 points will be measured around the given inital offset angle.
+The final offset angle is saved in the specified ``uz_encoder_offset_estimation_t`` object.
 
 Example Code
 ------------
@@ -24,74 +33,75 @@ Example Code
 It is important to use the global data struct at least for the measured theta electric, theta offset, omega electric and u_q
 
 .. code-block:: c
-    :caption: main
+    :caption: ``main.c``
 
+    // above loop
     #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
-    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {
-            .actual = &Global_Data.av,
-            .polepair = UZ_D5_MOTOR_POLE_PAIR_NUMBER,
-            .setpoint_current = 3.0f
-    };
-    uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;
-
-    // your own current controller stuff here, e.g.
-    #include "uz/uz_Current_Control/uz_Current_Control.h"
-    struct uz_PI_Controller_config PI_config = {
-        			.Ki = ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm/(2.0f*tau_sum),
-					.Kp = ParaID_Data.GlobalConfig.PMSM_config.Ld_Henry/(2.0f*tau_sum),
-					.samplingTime_sec = isr_ts,
-					.lower_limit = -20.0f,
-					.upper_limit = 20.0f
-        	};
-    struct uz_CurrentControl_config cc_config = {
-        	        .decoupling_select = no_decoupling,
-        	        .config_id = PI_config,
-					.config_iq = PI_config,
-        	        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config};
-    uz_CurrentControl_t* CC_instance = NULL;
-
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+		.ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+		.ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
+		.ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+		.ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
+		.min_omega_el = 400.0f,                                                     // target electric rotor angular speed (USE OWN)
+		.setpoint_current = 4.0f};                                                  // current setpoint to reach speed (USE OWN)
+    uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;                      // object pointer
     ..
-    // in main loop
-    CC_instance = uz_CurrentControl_init(cc_config);
-    Global_Data.av.theta_offset = 5.4f; // set inital theta offset, MUST be before init encoder offset object!!
-    encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
+    // in loop
+    Global_Data.av.theta_offset = 5.4f;                                             // inital offset (USE OWN)
+    encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
     ..
 
 .. code-block:: c
-    :caption: isr
+    :caption: ``isr.c``
 
-    #include "../uz/uz_EncOffEst/uz_EncOffEst.h"
-    extern uz_EncOffEst_t* enc_off;
-    float theta = 0.0f;
-    uz_3ph_dq_t enc_off_set = {0};
-    uz_3ph_dq_t cc_3ph_out = {0};
-
-    // encoder offset
+    // aboce loop
     #include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+    uz_6ph_dq_t transformed_voltage = {0};
     uz_3ph_dq_t setpoint_current = {0};
-    uz_3ph_dq_t ref_voltage_3ph_dq = {0};
-    uz_3ph_abc_t ref_voltage_3ph_abc = {0};
-
+    uz_3ph_dq_t ref_voltage_3ph;
+    float theta_el = 0.0f;
     extern uz_encoder_offset_estimation_t* encoder_offset_obj;
-
-    // use current control of choice
-    extern uz_CurrentControl_t* CC_instance_1;
     ..
-    //in isr loop
-    Global_Data.av.U_q = cc_3ph_out.q;
-	theta = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-    actual_i_dq = Park(abc_current, theta);
+    //in loop
+    Global_Data.av.U_q = cc_3ph_out.q;                                              // write controller output ref voltage to global data
+	theta_el = Global_Data.av.theta_elec - Global_Data.av.theta_offset;             // calculate resulting theta
+    actual_i_dq = uz_transformation_3ph_abc_to_dq(abc_current, theta_el);           // transform measured abc currents to dq with corrected angle                           
 
-    if (current_state==control_state)
+    if (current_state==control_state)                                               // in control state
     {
-        if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){
-            setpoint_current = uz_encoder_offset_estimation_step(encoder_offset_obj);
+        if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
+            setpoint_current = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
         }else{
-            setpoint_current.d = 0.0f;
+            setpoint_current.d = 0.0f;                                              // else: it is finished, setpoints are 0
             setpoint_current.q = 0.0f;
         }
-        ref_voltage_3ph_dq = uz_CurrentControl_sample(CC_instance, setpoint_current, actual_i_dq, actual_UDC, actual_omega_el);
-        ref_voltage_3ph_abc = invPark(ref_voltage_3ph_dq, theta);
+
+        // control function, use your own
+        ref_voltage_3ph = uz_CurrentControl_sample(CC_instance, setpoint_current, actual_i_dq, actual_UDC, actual_omega_el);
+        ref_voltage_3ph_abc = invPark(ref_voltage_3ph, theta);
         //write duty-cycles
         ..
        }
+
+Example Result
+--------------
+
+The following figure shows how the measurement results look like.
+The black line indicates the determined offet angle.
+The inital angle was 5.4 rad.
+
+.. figure:: theta_off-eps-converted-to.pdf
+   :width: 800px
+   :align: center
+
+   Measurement Result
+
+
+Known Problems
+--------------
+
+If the rotor does not move, or does not reach the necessary speed in time, the function will stop.
+The variable ``diagnose`` inside of the object pointer will indicate this error with the status ``encoderoffset_speed_not_reached``.
+To fix this, increase the setpoint current in the config struct.
+Furthermore, even if a voltage measurement is available on the testbench setup, the results have proven to be more reliable when the controller reference voltage is used for calculation.
+Therefore it is not recommended to use a measured voltage.

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="uz_SPWM_3ph.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\uz_SPWM_3ph.h"/>
+    <originFiles name="uz_SPWM_3ph.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\uz_SPWM_3ph.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="testbench.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_SPWM_3ph\testbench.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

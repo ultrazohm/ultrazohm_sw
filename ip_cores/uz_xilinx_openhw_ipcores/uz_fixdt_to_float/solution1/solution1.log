@@ -1,0 +1,1112 @@
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csynth_design 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.059 seconds; current allocated memory: 677.531 MB.
+INFO: [HLS 200-10] Analyzing design file 'uz_fixdt_to_float/uz_fixdt_to_float.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.256 seconds; current allocated memory: 678.234 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 3.892 seconds; current allocated memory: 678.418 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.003 seconds; current allocated memory: 678.418 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.023 seconds; current allocated memory: 683.297 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.019 seconds; current allocated memory: 684.387 MB.
+INFO: [XFORM 203-401] Performing if-conversion on hyperblock from (uz_fixdt_to_float/uz_fixdt_to_float.cpp:3:16) to (uz_fixdt_to_float/uz_fixdt_to_float.cpp:12:1) in function 'uz_fixdt_to_float'... converting 3 basic blocks.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.037 seconds; current allocated memory: 704.922 MB.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.019 seconds; current allocated memory: 704.926 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'uz_fixdt_to_float' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.149 seconds; current allocated memory: 704.926 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.116 seconds; current allocated memory: 704.926 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/in_r' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/fraction' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/word' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/sign' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/out_r' to 'ap_vld'.
+INFO: [RTGEN 206-500] Setting interface mode on function 'uz_fixdt_to_float' to 'ap_ctrl_hs'.
+INFO: [RTGEN 206-100] Generating core module 'fdiv_32ns_32ns_32_9_no_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'sitofp_32ns_32_4_no_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'uitofp_32ns_32_4_no_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_fixdt_to_float'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.146 seconds; current allocated memory: 704.926 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.461 seconds; current allocated memory: 709.875 MB.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.529 seconds; current allocated memory: 712.801 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for uz_fixdt_to_float.
+INFO: [VLOG 209-307] Generating Verilog RTL for uz_fixdt_to_float.
+INFO: [HLS 200-789] **** Estimated Fmax: 141.70 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 6.717 seconds; current allocated memory: 35.336 MB.
+INFO: [HLS 200-112] Total CPU user time: 5 seconds. Total CPU system time: 2 seconds. Total elapsed time: 21.575 seconds; peak allocated memory: 712.934 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.134 seconds; current allocated memory: 0.434 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 16.047 seconds; peak allocated memory: 677.383 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 0.468 seconds; current allocated memory: 0.234 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.279 seconds; peak allocated memory: 677.398 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 1.741 seconds; current allocated memory: 0.219 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 16.444 seconds; peak allocated memory: 677.859 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.682 seconds; current allocated memory: 0.223 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.51 seconds; peak allocated memory: 676.941 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.668 seconds; current allocated memory: 0.219 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.389 seconds; peak allocated memory: 677.387 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.945 seconds; current allocated memory: 0.520 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.724 seconds; peak allocated memory: 677.062 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.442 seconds; current allocated memory: 0.234 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.134 seconds; peak allocated memory: 676.395 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 0.889 seconds; current allocated memory: 0.309 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.628 seconds; peak allocated memory: 676.223 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.964 seconds; current allocated memory: 0.309 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.788 seconds; peak allocated memory: 677.691 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.896 seconds; current allocated memory: 0.234 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.676 seconds; peak allocated memory: 676.809 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.664 seconds; current allocated memory: 0.227 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.452 seconds; peak allocated memory: 677.387 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.955 seconds; current allocated memory: 0.324 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.734 seconds; peak allocated memory: 676.656 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.762 seconds; current allocated memory: 0.312 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.602 seconds; peak allocated memory: 676.578 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.739 seconds; current allocated memory: 0.324 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.56 seconds; peak allocated memory: 677.637 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.722 seconds; current allocated memory: 0.301 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.435 seconds; peak allocated memory: 677.227 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.731 seconds; current allocated memory: 0.312 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.423 seconds; peak allocated memory: 677.520 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.908 seconds; current allocated memory: 0.281 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.623 seconds; peak allocated memory: 677.527 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.971 seconds; current allocated memory: 0.414 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.901 seconds; peak allocated memory: 677.516 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.704 seconds; current allocated memory: 0.297 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.42 seconds; peak allocated memory: 677.203 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.888 seconds; current allocated memory: 0.270 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.647 seconds; peak allocated memory: 677.805 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.684 seconds; current allocated memory: 0.270 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.401 seconds; peak allocated memory: 678.000 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.905 seconds; current allocated memory: 0.363 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.644 seconds; peak allocated memory: 677.508 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.855 seconds; current allocated memory: 0.297 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.61 seconds; peak allocated memory: 677.016 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.728 seconds; current allocated memory: 0.305 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.492 seconds; peak allocated memory: 676.598 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.721 seconds; current allocated memory: 0.371 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.421 seconds; peak allocated memory: 676.785 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 0.889 seconds; current allocated memory: 0.266 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.613 seconds; peak allocated memory: 677.023 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.996 seconds; current allocated memory: 0.309 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.889 seconds; peak allocated memory: 678.234 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.764 seconds; current allocated memory: 0.328 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.487 seconds; peak allocated memory: 677.160 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.892 seconds; current allocated memory: 0.305 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.864 seconds; peak allocated memory: 677.395 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.758 seconds; current allocated memory: 0.344 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.543 seconds; peak allocated memory: 678.195 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 0.91 seconds; current allocated memory: 0.219 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.654 seconds; peak allocated memory: 677.438 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.701 seconds; current allocated memory: 0.230 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.43 seconds; peak allocated memory: 677.281 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.004 seconds; current allocated memory: 0.316 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.835 seconds; peak allocated memory: 677.613 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.46 seconds; current allocated memory: 0.223 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.476 seconds; peak allocated memory: 677.035 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 0.895 seconds; current allocated memory: 0.395 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.586 seconds; peak allocated memory: 677.504 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -setup -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim file generation done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.913 seconds; current allocated memory: 0.250 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.618 seconds; peak allocated memory: 677.152 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.957 seconds; current allocated memory: 0.320 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.675 seconds; peak allocated memory: 677.918 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: csynth_design 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.066 seconds; current allocated memory: 676.828 MB.
+INFO: [HLS 200-10] Analyzing design file 'uz_fixdt_to_float/uz_fixdt_to_float.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.349 seconds; current allocated memory: 677.371 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 214-131] Inlining function 'ssdm_int<8, false>::ssdm_int(unsigned char)' into 'ap_int_base<8, false>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base(int)' into 'ap_uint<8>::ap_uint(int)'
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base(unsigned int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:215:76)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base(unsigned int)' into 'ap_uint<32>::ap_uint(unsigned int)'
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::ap_bit_ref(ap_int_base<32, false>*, int)' into 'ap_int_base<32, false>::operator[](int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1129:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::ap_bit_ref(ap_int_base<1, false>*, int)' into 'ap_int_base<1, false>::operator[](int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1129:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::operator bool() const' into 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:845:38)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::operator=(unsigned long long)' into 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:845:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>::ap_range_ref(ap_int_base<32, false>*, int, int)' into 'ap_int_base<32, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::range(int, int)' into 'ap_int_base<32, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::ap_range_ref(ap_int_base<8, false>*, int, int)' into 'ap_int_base<8, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::range(int, int)' into 'ap_int_base<8, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>::get() const' into 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<8, false>::ssdm_int(unsigned char)' into 'ap_int_base<8, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::ap_range_ref(ap_int_base<23, false>*, int, int)' into 'ap_int_base<23, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::range(int, int)' into 'ap_int_base<23, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function '_ZN8ssdm_intILi23ELb0EEC2EDq23_j' into 'ap_int_base<23, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:18)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:20)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:19)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<1, false>::operator[](int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator[](int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:19)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, true>::ssdm_int(int)' into 'ap_int_base<32, true>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:1853)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<8, false>::operator==<32, true>(ap_int_base<32, true> const&) const' into 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:1850)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:897)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<32, true>::operator>=<8, false>(ap_int_base<8, false> const&) const' into 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:935)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:2233)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<23, false>::operator!=<32, true>(ap_int_base<32, true> const&) const' into 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:2230)
+INFO: [HLS 214-131] Inlining function 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:18:22)
+INFO: [HLS 214-131] Inlining function 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:18:62)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::ap_bit_ref(ap_int_base<1, false> const*, int)' into 'ap_int_base<1, false>::operator[](int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1145:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::to_bool() const' into 'ap_int_base<1, false>::operator[](int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1146:15)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::ap_range_ref(ap_int_base<8, false>*, int, int)' into 'ap_int_base<8, false>::range(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1055:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::range(int, int) const' into 'ap_int_base<8, false>::operator()(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1089:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::get() const' into 'ap_int_base<8, false>::ap_int_base<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base<8, false>(ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<8, false>(ap_int_base<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base<8, false>(ap_range_ref<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_int_base<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::ap_range_ref(ap_int_base<23, false>*, int, int)' into 'ap_int_base<23, false>::range(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1055:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::range(int, int) const' into 'ap_int_base<23, false>::operator()(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1089:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::get() const' into 'ap_int_base<23, false>::ap_int_base<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base<23, false>(ap_int_base<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<23, false>(ap_int_base<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_int_base<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base<23, false>(ap_range_ref<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_int_base<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<1, false>::operator[](int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:17)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::operator()(int, int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:19)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:18)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator()(int, int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:20)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::operator=(bool)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:15)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator[](int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::to_uint() const' into 'fp_struct<float>::to_float() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:355:24)
+INFO: [HLS 214-131] Inlining function '_ZN8ssdm_intILi23ELb0EEC2EDq23_j' into 'ap_int_base<23, false>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base(int)' into 'ap_uint<23>::ap_uint(int)'
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator unsigned long long() const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:17:10)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<8, false>::operator==<8, false>(ap_int_base<8, false> const&) const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:18:24)
+INFO: [HLS 214-131] Inlining function 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:19:23)
+INFO: [HLS 214-131] Inlining function 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:20:28)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:16:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::data() const (.51.61.70.81.90.101.110.121.130.141)' into 'fp_struct<float>::to_float() const (.48.58.67.78.87.98.107.118.127.138)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:351:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_float() const (.48.58.67.78.87.98.107.118.127.138)' into 'fp_struct<float>::to_ieee() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:375:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'float generic_copysign<float>(float, float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_copysign.h:10:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_ieee() const' into 'float generic_copysign<float>(float, float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_copysign.h:10:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'int generic_isnan<float>(float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'float generic_copysign<float>(float, float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_ieee() const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'ldexpf' into 'uz_fixdt_to_float(int, unsigned char, unsigned char, bool, float*)' (uz_fixdt_to_float/uz_fixdt_to_float.cpp:3:0)
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 6.297 seconds; current allocated memory: 679.961 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.003 seconds; current allocated memory: 680.207 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.212 seconds; current allocated memory: 726.699 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [XFORM 203-602] Inlining function 'generic_ldexp<float>' into 'uz_fixdt_to_float' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib\hlsmath\src\c\ldexpfloat.cpp:10) automatically.
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.446 seconds; current allocated memory: 785.320 MB.
+INFO: [XFORM 203-602] Inlining function 'generic_ldexp<float>' into 'uz_fixdt_to_float' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib\hlsmath\src\c\ldexpfloat.cpp:10) automatically.
+INFO: [XFORM 203-401] Performing if-conversion on hyperblock from (uz_fixdt_to_float/uz_fixdt_to_float.cpp:3:16) to (uz_fixdt_to_float/uz_fixdt_to_float.cpp:15:1) in function 'uz_fixdt_to_float'... converting 8 basic blocks.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.555 seconds; current allocated memory: 864.992 MB.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.238 seconds; current allocated memory: 886.836 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'uz_fixdt_to_float' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.218 seconds; current allocated memory: 886.836 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.107 seconds; current allocated memory: 886.836 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/input_r' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/fraction' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/word' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/sign' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/output_r' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'output_r' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on function 'uz_fixdt_to_float' to 'ap_ctrl_hs'.
+INFO: [RTGEN 206-100] Generating core module 'sitofp_32ns_32_4_no_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_fixdt_to_float'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.2 seconds; current allocated memory: 886.836 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.766 seconds; current allocated memory: 888.238 MB.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.564 seconds; current allocated memory: 890.141 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for uz_fixdt_to_float.
+INFO: [VLOG 209-307] Generating Verilog RTL for uz_fixdt_to_float.
+INFO: [HLS 200-789] **** Estimated Fmax: 144.32 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 3 seconds. CPU system time: 1 seconds. Elapsed time: 11.054 seconds; current allocated memory: 213.676 MB.
+INFO: [HLS 200-112] Total CPU user time: 7 seconds. Total CPU system time: 2 seconds. Total elapsed time: 25.859 seconds; peak allocated memory: 890.527 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: export_design -rtl verilog -format ip_catalog 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+INFO: [HLS 200-802] Generated output file uz_fixdt_to_float/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 19.105 seconds; current allocated memory: 7.008 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 33.926 seconds; peak allocated memory: 683.949 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -format ip_catalog -rtl verilog 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: csim_design -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.975 seconds; current allocated memory: 0.297 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 15.839 seconds; peak allocated memory: 677.680 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -format ip_catalog -rtl verilog 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: csynth_design 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.062 seconds; current allocated memory: 676.883 MB.
+INFO: [HLS 200-10] Analyzing design file 'uz_fixdt_to_float/uz_fixdt_to_float.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 1.394 seconds; current allocated memory: 677.621 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 214-131] Inlining function 'ssdm_int<8, false>::ssdm_int(unsigned char)' into 'ap_int_base<8, false>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base(int)' into 'ap_uint<8>::ap_uint(int)'
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base(unsigned int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:215:76)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base(unsigned int)' into 'ap_uint<32>::ap_uint(unsigned int)'
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::ap_bit_ref(ap_int_base<32, false>*, int)' into 'ap_int_base<32, false>::operator[](int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1129:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::ap_bit_ref(ap_int_base<1, false>*, int)' into 'ap_int_base<1, false>::operator[](int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1129:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::operator bool() const' into 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:845:38)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::operator=(unsigned long long)' into 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:845:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>::ap_range_ref(ap_int_base<32, false>*, int, int)' into 'ap_int_base<32, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::range(int, int)' into 'ap_int_base<32, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::ap_range_ref(ap_int_base<8, false>*, int, int)' into 'ap_int_base<8, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::range(int, int)' into 'ap_int_base<8, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>::get() const' into 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<8, false>::ssdm_int(unsigned char)' into 'ap_int_base<8, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::ap_range_ref(ap_int_base<23, false>*, int, int)' into 'ap_int_base<23, false>::range(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1048:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::range(int, int)' into 'ap_int_base<23, false>::operator()(int, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1085:18)
+INFO: [HLS 214-131] Inlining function '_ZN8ssdm_intILi23ELb0EEC2EDq23_j' into 'ap_int_base<23, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_int_base<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<32, false>(ap_range_ref<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_int_base<32, false> const&)' into 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>& ap_range_ref<23, false>::operator=<32, false>(ap_range_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:18)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:325:20)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>& ap_range_ref<8, false>::operator=<32, false>(ap_range_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:324:19)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>& ap_bit_ref<1, false>::operator=<32, false>(ap_bit_ref<32, false> const&)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<1, false>::operator[](int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator[](int)' into 'fp_struct<float>::fp_struct(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:323:19)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, true>::ssdm_int(int)' into 'ap_int_base<32, true>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:1853)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<8, false>::operator==<32, true>(ap_int_base<32, true> const&) const' into 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:1850)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:897)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<32, true>::operator>=<8, false>(ap_int_base<8, false> const&) const' into 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:935)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, true>::ap_int_base(int)' into 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:2233)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<23, false>::operator!=<32, true>(ap_int_base<32, true> const&) const' into 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1788:2230)
+INFO: [HLS 214-131] Inlining function 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:18:22)
+INFO: [HLS 214-131] Inlining function 'bool operator!=<23, false>(ap_int_base<23, false> const&, int)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:18:62)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::ap_bit_ref(ap_int_base<1, false> const*, int)' into 'ap_int_base<1, false>::operator[](int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1145:30)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<1, false>::to_bool() const' into 'ap_int_base<1, false>::operator[](int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1146:15)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::ap_range_ref(ap_int_base<8, false>*, int, int)' into 'ap_int_base<8, false>::range(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1055:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::range(int, int) const' into 'ap_int_base<8, false>::operator()(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1089:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<8, false>::get() const' into 'ap_int_base<8, false>::ap_int_base<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base<8, false>(ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<8, false>(ap_int_base<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_int_base<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::ap_int_base<8, false>(ap_range_ref<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_int_base<8, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::ap_range_ref(ap_int_base<23, false>*, int, int)' into 'ap_int_base<23, false>::range(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1055:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::range(int, int) const' into 'ap_int_base<23, false>::operator()(int, int) const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:1089:18)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<23, false>::get() const' into 'ap_int_base<23, false>::ap_int_base<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:358:20)
+INFO: [HLS 214-131] Inlining function 'ssdm_int<32, false>::ssdm_int(unsigned int)' into 'ap_int_base<32, false>::ap_int_base<23, false>(ap_int_base<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:185:106)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::ap_int_base<23, false>(ap_int_base<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_int_base<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:367:31)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base<23, false>(ap_range_ref<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:22)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_int_base<23, false> const&)' into 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_ref.h:382:12)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<1, false>::operator[](int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:17)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<23, false>(ap_range_ref<23, false> const&)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:17)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::operator()(int, int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:342:19)
+INFO: [HLS 214-131] Inlining function 'ap_range_ref<32, false>& ap_range_ref<32, false>::operator=<8, false>(ap_range_ref<8, false> const&)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:18)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator()(int, int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator()(int, int) const' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:341:20)
+INFO: [HLS 214-131] Inlining function 'ap_bit_ref<32, false>::operator=(bool)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:15)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::operator[](int)' into 'fp_struct<float>::data() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:340:9)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<32, false>::to_uint() const' into 'fp_struct<float>::to_float() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:355:24)
+INFO: [HLS 214-131] Inlining function '_ZN8ssdm_intILi23ELb0EEC2EDq23_j' into 'ap_int_base<23, false>::ap_int_base(int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/include/header_files\ap_int_base.h:214:67)
+INFO: [HLS 214-131] Inlining function 'ap_int_base<23, false>::ap_int_base(int)' into 'ap_uint<23>::ap_uint(int)'
+INFO: [HLS 214-131] Inlining function 'ap_int_base<8, false>::operator unsigned long long() const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:17:10)
+INFO: [HLS 214-131] Inlining function 'bool ap_int_base<8, false>::operator==<8, false>(ap_int_base<8, false> const&) const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:18:24)
+INFO: [HLS 214-131] Inlining function 'bool operator==<8, false>(ap_int_base<8, false> const&, int)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:19:23)
+INFO: [HLS 214-131] Inlining function 'bool operator>=<8, false>(int, ap_int_base<8, false> const&)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:20:28)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'int generic_isnan<float>(float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_isnan.h:16:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::data() const (.51.61.70.81.90.101.110.121.130.141)' into 'fp_struct<float>::to_float() const (.48.58.67.78.87.98.107.118.127.138)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:351:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_float() const (.48.58.67.78.87.98.107.118.127.138)' into 'fp_struct<float>::to_ieee() const' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/src/hls\utils/x_hls_utils.h:375:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'float generic_copysign<float>(float, float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_copysign.h:10:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_ieee() const' into 'float generic_copysign<float>(float, float)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint/hls_copysign.h:10:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::fp_struct(float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'int generic_isnan<float>(float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'float generic_copysign<float>(float, float)' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'fp_struct<float>::to_ieee() const' into 'float generic_ldexp<float>(float, int)' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib/hlsmath/include/FloatingPoint\hls_ldexp.h:13:0)
+INFO: [HLS 214-178] Inlining function 'ldexpf' into 'uz_fixdt_to_float(int, unsigned char, unsigned char, bool, float*)' (uz_fixdt_to_float/uz_fixdt_to_float.cpp:3:0)
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 6.143 seconds; current allocated memory: 679.953 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.004 seconds; current allocated memory: 679.957 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.205 seconds; current allocated memory: 726.848 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [XFORM 203-602] Inlining function 'generic_ldexp<float>' into 'uz_fixdt_to_float' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib\hlsmath\src\c\ldexpfloat.cpp:10) automatically.
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.482 seconds; current allocated memory: 785.250 MB.
+INFO: [XFORM 203-602] Inlining function 'generic_ldexp<float>' into 'uz_fixdt_to_float' (C:\scratch\2022.2\hls_product\608\2022.2\src\shared\hls\clib\hlsmath\src\c\ldexpfloat.cpp:10) automatically.
+INFO: [XFORM 203-401] Performing if-conversion on hyperblock from (uz_fixdt_to_float/uz_fixdt_to_float.cpp:3:16) to (uz_fixdt_to_float/uz_fixdt_to_float.cpp:15:1) in function 'uz_fixdt_to_float'... converting 8 basic blocks.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.512 seconds; current allocated memory: 864.844 MB.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.237 seconds; current allocated memory: 886.105 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'uz_fixdt_to_float' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.231 seconds; current allocated memory: 886.105 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.116 seconds; current allocated memory: 886.105 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_fixdt_to_float' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/in_fixed' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/fraction' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/word' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/sign' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_fixdt_to_float/out_float' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'out_float' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on function 'uz_fixdt_to_float' to 'ap_ctrl_hs'.
+INFO: [RTGEN 206-100] Generating core module 'sitofp_32ns_32_4_no_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_fixdt_to_float'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.236 seconds; current allocated memory: 886.105 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.736 seconds; current allocated memory: 887.121 MB.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.544 seconds; current allocated memory: 890.402 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for uz_fixdt_to_float.
+INFO: [VLOG 209-307] Generating Verilog RTL for uz_fixdt_to_float.
+INFO: [HLS 200-789] **** Estimated Fmax: 144.32 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 4 seconds. CPU system time: 1 seconds. Elapsed time: 10.94 seconds; current allocated memory: 213.953 MB.
+INFO: [HLS 200-112] Total CPU user time: 7 seconds. Total CPU system time: 2 seconds. Total elapsed time: 25.681 seconds; peak allocated memory: 890.855 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -format ip_catalog -rtl verilog 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: export_design -rtl verilog -format ip_catalog 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+INFO: [HLS 200-802] Generated output file uz_fixdt_to_float/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 19.605 seconds; current allocated memory: 7.531 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 34.6 seconds; peak allocated memory: 683.863 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-2-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-2-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -format ip_catalog -rtl verilog -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_fixdt_to_float/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_fixdt_to_float uz_fixdt_to_float 
+INFO: [HLS 200-1510] Running: export_design -flow syn -rtl verilog -format ip_catalog 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
+INFO: [HLS 200-802] Generated output file uz_fixdt_to_float/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 275.122 seconds; current allocated memory: 8.516 MB.
+INFO: [HLS 200-112] Total CPU user time: 5 seconds. Total CPU system time: 2 seconds. Total elapsed time: 289.946 seconds; peak allocated memory: 685.074 MB.

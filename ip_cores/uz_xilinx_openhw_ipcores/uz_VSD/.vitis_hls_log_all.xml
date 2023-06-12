@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog/>
+      <simLog/>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="WARNING: [RTGEN 206-101] Port 'out_beta' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:48.773+0200" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Port 'out_alpha' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:48.730+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_5_1 (from multiply33_U0 to Block_entry1439_proc_U0) to 7 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.316+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_4_1 (from multiply_1132_U0 to Block_entry1438_proc_U0) to 6 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.289+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_3_1 (from multiply_1031_U0 to Block_entry1437_proc_U0) to 5 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.260+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_2_1 (from multiply_930_U0 to Block_entry1436_proc_U0) to 4 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.237+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_1_1 (from multiply_829_U0 to Block_entry1435_proc_U0) to 3 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.211+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_5 (from multiply_628_U0 to Block_entry1426_proc_U0) to 7 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.186+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_4 (from multiply_527_U0 to Block_entry1425_proc_U0) to 6 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.167+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_3 (from multiply_426_U0 to Block_entry1424_proc_U0) to 5 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.145+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_2 (from multiply_325_U0 to Block_entry1423_proc_U0) to 4 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.122+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-1020] Increasing the depth of FIFO products_1 (from multiply_224_U0 to Block_entry1422_proc_U0) to 3 to improve performance and/or avoid deadlocks." projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.090+0200" type="Warning"/>
+        <logs message="WARNING: [HLS 200-893] User specified latency constraint discarded for region uz_VSD_6ph_asym since region contains function calls with variable latency.&#xD;&#xA;Resolution: For help on HLS 200-893 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-893.html" projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:46:43.050+0200" type="Warning"/>
+      </synLog>
+      <simLog>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:47:53.000+0200" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.&#xD;" projectName="uz_VSD" solutionName="solution1" date="2023-06-06T16:47:52.962+0200" type="Warning"/>
+      </simLog>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>

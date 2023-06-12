@@ -1,0 +1,29 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Tue Jun  6 16:48:23 2023
+# Process ID: 31660
+# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog
+# Command line: xsim.exe -mode tcl -source {xsim.dir/uz_VSD_6ph_asym/xsim_script.tcl}
+# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/xsim.log
+# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog\xsim.jou
+# Running On: LAPTOP-ME665JGB, OS: Windows, CPU Frequency: 2208 MHz, CPU Physical cores: 6, Host memory: 34081 MB
+#-----------------------------------------------------------
+source xsim.dir/uz_VSD_6ph_asym/xsim_script.tcl
+# xsim {uz_VSD_6ph_asym} -autoloadwcfg -tclbatch {uz_VSD_6ph_asym.tcl}
+Time resolution is 1 ps
+source uz_VSD_6ph_asym.tcl
+## run all
+////////////////////////////////////////////////////////////////////////////////////
+// Inter-Transaction Progress: Completed Transaction / Total Transaction
+// Intra-Transaction Progress: Measured Latency / Latency Estimation * 100%
+//
+// RTL Simulation : "Inter-Transaction Progress" ["Intra-Transaction Progress"] @ "Simulation Time"
+////////////////////////////////////////////////////////////////////////////////////
+// RTL Simulation : 0 / 1 [0.00%] @ "125000"
+// RTL Simulation : 1 / 1 [100.00%] @ "485000"
+////////////////////////////////////////////////////////////////////////////////////
+$finish called at time : 545 ns : File "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym.autotb.v" Line 626
+## quit
+INFO: [Common 17-206] Exiting xsim at Tue Jun  6 16:48:25 2023...

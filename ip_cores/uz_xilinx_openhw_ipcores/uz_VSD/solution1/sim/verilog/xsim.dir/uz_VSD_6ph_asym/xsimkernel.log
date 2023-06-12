@@ -1,0 +1,7 @@
+Running: xsim.dir/uz_VSD_6ph_asym/xsimk.exe -simmode gui -wdb uz_VSD_6ph_asym.wdb -simrunnum 0 -socket 49161
+Design successfully loaded
+Design Loading Memory Usage: 23724 KB (Peak: 23724 KB)
+Design Loading CPU Usage: 77 ms
+Simulation completed
+Simulation Memory Usage: 28660 KB (Peak: 28660 KB)
+Simulation CPU Usage: 202 ms

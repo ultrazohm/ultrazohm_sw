@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="uz_float_to_sfixdt.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_float_to_sfixdt\uz_float_to_sfixdt.h"/>
+    <originFiles name="uz_float_to_sfixdt.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_float_to_sfixdt\uz_float_to_sfixdt.cpp"/>
+    <originFiles name="uz_HLS_test.h" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_HLS_test.h"/>
+    <originFiles name="uz_HLS_test.c" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_HLS_test.c"/>
+  </source>
+  <testbench>
+    <originFiles name="testbench.cpp" path="C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_float_to_sfixdt\testbench.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

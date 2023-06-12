@@ -1,0 +1,6 @@
+   Build using "C:/Xilinx/Vitis_HLS/2022.2/tps/win64/msys64/mingw64/bin/g++"
+   Compiling testbench.cpp_pre.cpp.tb.cpp
+   Compiling apatb_uz_PI_controller.cpp
+   Compiling uz_PI_controller.cpp_pre.cpp.tb.cpp
+   Compiling apatb_uz_PI_controller_ir.ll
+   Generating cosim.tv.exe

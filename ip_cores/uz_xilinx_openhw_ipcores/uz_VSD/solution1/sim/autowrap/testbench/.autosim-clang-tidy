@@ -1,0 +1,1 @@
+ {CheckOptions: [ {key: xilinx-tb-process.TopFunctionName, value: 'uz_VSD_6ph_asym'}, {key: xilinx-tb-process.KeepTopName, value: 1}, {key: xilinx-tb-process.BCSim, value: '0'} ] } 

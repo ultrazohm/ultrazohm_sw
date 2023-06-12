@@ -94,6 +94,7 @@ Example
         .motor_type = SMPMSM,
         .is_field_weakening_enabled = false,
         .id_ref_Ampere = 0.0f
+        .relative_torque_tolerance = 0.001f;
      };
   }
 

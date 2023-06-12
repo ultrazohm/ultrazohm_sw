@@ -57,6 +57,9 @@
 #include "uz/uz_wavegen/uz_wavegen.h"
 #include "uz/uz_Transformation/uz_Transformation.h"
 
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 
 //----------------------------------------------------

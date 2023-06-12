@@ -31,10 +31,11 @@ enum JS_OberservableData {
 	JSO_ia,
 	JSO_ib,
 	JSO_ic,
-	JSO_id,
-	JSO_iq,
-	JSO_ud,
-	JSO_uq,
+	JSO_i_d,
+	JSO_i_q,
+	JSO_omega,
+	JSO_v_d,
+	JSO_v_q,
 	JSO_Speed_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
@@ -153,9 +154,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	amplitude,
-	frequency,
-	offset,
+	iq,
+	id,
+	send_field_3,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -166,8 +167,8 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
+	A,
+	A,
 	A,
 	A,
 	A,
@@ -179,12 +180,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
-	receive_field_6,
+	 i_q,
+ 	 i_d,
+ 	 omega_m,
+ 	 v_q,
+ 	 v_d,
+ 	 receive_field_6,
 	RCV_FLD_ENDMARKER
 
 
@@ -192,12 +193,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
-	V,
-	V,
+	 A,
+ 	 A,
+ 	 rad/s,
+ 	 V,
+ 	 V,
+ 	 sec,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
@@ -219,13 +220,14 @@ MYBUTTONS_LABELS_ENDMARKER
 // Make sure that the signal names below are also present in the JS_SlowData enum!
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
-	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_i_q,
+    JSSD_FLOAT_i_d,
+    JSSD_FLOAT_speed,
+    JSSD_FLOAT_u_q,
+    JSSD_FLOAT_u_d,
+    JSSD_FLOAT_SecondsSinceSystemStart,
+    JSSD_FLOAT_Error_Code,
+    SLOWDAT_DISPLAY_ENDMARKER
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

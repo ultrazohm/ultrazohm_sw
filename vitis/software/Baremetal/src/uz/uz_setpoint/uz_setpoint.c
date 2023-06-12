@@ -66,6 +66,7 @@ static uz_SetPoint_t* uz_SetPoint_allocation(void){
 
 uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     uz_SetPoint_t* self = uz_SetPoint_allocation();
+    uz_assert(config.relative_torque_tolerance >= 0.0f);
     uz_SetPoint_assert_motor_parameters(config.config_PMSM, config.motor_type);
 	self->newton_MTPA.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(self->derivate_poly_coefficients_MTPA);
 	self->newton_MTPA.derivate_poly_coefficients.data = &self->derivate_poly_coefficients_MTPA[0];

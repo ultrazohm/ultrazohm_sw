@@ -1,422 +1,586 @@
 INFO: [HLS 200-10] Running 'C:/Xilinx/Vitis_HLS/2022.2/bin/unwrapped/win64.o/vitis_hls.exe'
-INFO: [HLS 200-10] For user 'valen' on host 'laptop-me665jgb' (Windows NT_amd64 version 6.2) on Tue Jun 06 16:47:06 +0200 2023
+INFO: [HLS 200-10] For user 'valen' on host 'laptop-me665jgb' (Windows NT_amd64 version 6.2) on Mon Jun 12 11:10:59 +0200 2023
 INFO: [HLS 200-10] In directory 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores'
-Sourcing Tcl script 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/cosim.tcl'
-INFO: [HLS 200-1510] Running: source C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/cosim.tcl
-INFO: [HLS 200-1510] Running: open_project uz_VSD 
-INFO: [HLS 200-10] Opening project 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD'.
-INFO: [HLS 200-1510] Running: set_top uz_VSD_6ph_asym 
-INFO: [HLS 200-1510] Running: add_files uz_VSD/uz_VSD.h 
-INFO: [HLS 200-10] Adding design file 'uz_VSD/uz_VSD.h' to the project
-INFO: [HLS 200-1510] Running: add_files uz_VSD/uz_VSD.cpp 
-INFO: [HLS 200-10] Adding design file 'uz_VSD/uz_VSD.cpp' to the project
-INFO: [HLS 200-1510] Running: add_files -tb uz_VSD/test_uz_VSD.cpp -cflags -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -csimflags -Wno-unknown-pragmas 
-INFO: [HLS 200-10] Adding test bench file 'uz_VSD/test_uz_VSD.cpp' to the project
+Sourcing Tcl script 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/export.tcl'
+INFO: [HLS 200-1510] Running: source C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/export.tcl
+INFO: [HLS 200-1510] Running: open_project uz_FOC 
+INFO: [HLS 200-10] Opening project 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC'.
+INFO: [HLS 200-1510] Running: set_top uz_FOC 
+INFO: [HLS 200-1510] Running: add_files uz_FOC/uz_FOC.cpp 
+INFO: [HLS 200-10] Adding design file 'uz_FOC/uz_FOC.cpp' to the project
+INFO: [HLS 200-1510] Running: add_files uz_FOC/uz_FOC.h 
+INFO: [HLS 200-10] Adding design file 'uz_FOC/uz_FOC.h' to the project
+INFO: [HLS 200-1510] Running: add_files -tb uz_FOC/testbench.cpp -cflags -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -csimflags -Wno-unknown-pragmas 
+INFO: [HLS 200-10] Adding test bench file 'uz_FOC/testbench.cpp' to the project
 INFO: [HLS 200-1510] Running: open_solution solution1 -flow_target vivado 
-INFO: [HLS 200-10] Opening solution 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1'.
+INFO: [HLS 200-10] Opening solution 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1'.
 INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
-INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvb1156-1-e'
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
 INFO: [HLS 200-1505] Using flow_target 'vivado'
 Resolution: For help on HLS 200-1505 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-1505.html
 INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
 INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
-INFO: [HLS 200-1464] Running solution command: config_export -rtl=verilog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
 INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
-INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvb1156-1-e 
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
 INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
-INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl verilog -vivado_clock 100MHz 
-INFO: [HLS 200-1510] Running: source ./uz_VSD/solution1/directives.tcl
-INFO: [HLS 200-1510] Running: set_directive_top -name uz_VSD_6ph_asym uz_VSD_6ph_asym 
-INFO: [HLS 200-1510] Running: cosim_design 
-Running Dispatch Server on port: 49153
-INFO: [COSIM 212-47] Using XSIM for RTL simulation.
-INFO: [COSIM 212-14] Instrumenting C test bench ...
-   Build using "C:/Xilinx/Vitis_HLS/2022.2/tps/win64/msys64/mingw64/bin/g++"
-   Compiling apatb_uz_VSD_6ph_asym.cpp
-   Compiling test_uz_VSD.cpp_pre.cpp.tb.cpp
-   Compiling uz_VSD.cpp_pre.cpp.tb.cpp
-   Compiling apatb_uz_VSD_6ph_asym_ir.ll
-   Generating cosim.tv.exe
-INFO: [COSIM 212-302] Starting C TB testing ... 
-Test result:
-passed: Expected: -0.788, was: -0.789
-passed: Expected: -0.789, was: -0.789
-passedINFO: [COSIM 212-333] Generating C post check test bench ...
-INFO: [COSIM 212-12] Generating RTL test bench ...
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: export_design -flow syn -rtl vhdl -format ip_catalog 
+Running Dispatch Server on port: 52879
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
 
 ****** Vivado v2022.2 (64-bit)
   **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
   **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
-source run_vivado_gen_ip.tcl -notrace
-create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 1002.184 ; gain = 116.992
+source run_ippack.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1002.320 ; gain = 116.965
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
-WARNING: [IP_Flow 19-4832] The IP name 'uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip'...
-WARNING: [IP_Flow 19-4832] The IP name 'uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
-INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip'...
-INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip'...
-INFO: [Common 17-206] Exiting Vivado at Tue Jun  6 16:47:53 2023...
-INFO: [COSIM 212-1] *** C/RTL co-simulation file generation completed. ***
-INFO: [COSIM 212-323] Starting verilog simulation. 
-INFO: [COSIM 212-15] Starting XSIM ...
-
-C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_VSD\solution1\sim\verilog>set PATH= 
-
-C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_VSD\solution1\sim\verilog>call C:/Xilinx/Vivado/2022.2/bin/xelab xil_defaultlib.apatb_uz_VSD_6ph_asym_top glbl -Oenable_linking_all_libraries  -prj uz_VSD_6ph_asym.prj -L smartconnect_v1_0 -L axi_protocol_checker_v1_1_12 -L axi_protocol_checker_v1_1_13 -L axis_protocol_checker_v1_1_11 -L axis_protocol_checker_v1_1_12 -L xil_defaultlib -L unisims_ver -L xpm  -L floating_point_v7_0_20 -L floating_point_v7_1_15 --lib "ieee_proposed=./ieee_proposed" -s uz_VSD_6ph_asym  
-Vivado Simulator v2022.2
-Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2022.2/bin/unwrapped/win64.o/xelab.exe xil_defaultlib.apatb_uz_VSD_6ph_asym_top glbl -Oenable_linking_all_libraries -prj uz_VSD_6ph_asym.prj -L smartconnect_v1_0 -L axi_protocol_checker_v1_1_12 -L axi_protocol_checker_v1_1_13 -L axis_protocol_checker_v1_1_11 -L axis_protocol_checker_v1_1_12 -L xil_defaultlib -L unisims_ver -L xpm -L floating_point_v7_0_20 -L floating_point_v7_1_15 --lib ieee_proposed=./ieee_proposed -s uz_VSD_6ph_asym 
-Multi-threading is on. Using 10 slave threads.
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/ip/xil_defaultlib/uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1_ip
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/ip/xil_defaultlib/uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1_ip
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/glbl.v" into library work
-INFO: [VRFC 10-311] analyzing module glbl
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/AESL_deadlock_detection_unit.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module AESL_deadlock_detect_unit
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/AESL_deadlock_detector.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module AESL_deadlock_detector
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/AESL_deadlock_report_unit.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module AESL_deadlock_report_unit
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym.autotb.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module apatb_uz_VSD_6ph_asym_top
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1421_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1421_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1422_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1422_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1423_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1423_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1424_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1424_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1425_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1425_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1426_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1426_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1434_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1434_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1435_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1435_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1436_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1436_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1437_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1437_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1438_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1438_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_Block_entry1439_proc.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_Block_entry1439_proc
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fadd_32ns_32ns_32_5_full_dsp_1
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d2_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d2_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d2_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d3_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d3_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d3_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d4_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d4_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d4_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d5_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d5_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d5_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d6_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d6_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d6_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fifo_w32_d7_S.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d7_S
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fifo_w32_d7_S_ShiftReg
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_fmul_32ns_32ns_32_4_max_dsp_1
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply33.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply33
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_1.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_1
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_1031.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_1031
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_1132.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_1132
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_224.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_224
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_325.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_325
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_426.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_426
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_527.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_527
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_628.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_628
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_7.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_7
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_829.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_829
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym_multiply_930.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module uz_VSD_6ph_asym_multiply_930
-INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/dataflow_monitor.sv" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module dataflow_monitor
-Starting static elaboration
-Pass Through NonSizing Optimizer
-Completed static elaboration
-Starting simulation data flow analysis
-Completed simulation data flow analysis
-Time Resolution for simulation is 1ps
-Compiling package std.standard
-Compiling package std.textio
-Compiling package ieee.std_logic_1164
-Compiling package floating_point_v7_1_15.floating_point_v7_1_15_viv_comp
-Compiling package ieee.numeric_std
-Compiling package xbip_utils_v3_0_10.xbip_utils_v3_0_10_pkg
-Compiling package axi_utils_v2_0_6.axi_utils_v2_0_6_pkg
-Compiling package floating_point_v7_1_15.floating_point_v7_1_15_consts
-Compiling package ieee.math_real
-Compiling package floating_point_v7_1_15.floating_point_v7_1_15_exp_table...
-Compiling package mult_gen_v12_0_18.mult_gen_v12_0_18_pkg
-Compiling package ieee.std_logic_arith
-Compiling package ieee.std_logic_signed
-Compiling package floating_point_v7_1_15.floating_point_v7_1_15_pkg
-Compiling package floating_point_v7_1_15.flt_utils
-Compiling package unisim.vcomponents
-Compiling package xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv_comp
-Compiling package ieee.vital_timing
-Compiling package ieee.vital_primitives
-Compiling package unisim.vpkg
-Compiling package xil_defaultlib.$unit_dataflow_monitor_sv
-Compiling architecture dsp48e1_v of entity unisim.DSP48E1 [\DSP48E1(acascreg=0,adreg=0,alum...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=7,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=4,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=16,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=24,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=17,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=25,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.dsp48e1_wrapper [\dsp48e1_wrapper(a_width=24,b_wi...]
-Compiling architecture dsp48e1_v of entity unisim.DSP48E1 [\DSP48E1(acascreg=0,adreg=0,alum...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=48,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.dsp48e1_wrapper [\dsp48e1_wrapper(a_width=24,b_wi...]
-Compiling architecture struct of entity floating_point_v7_1_15.fix_mult_dsp48e1_sgl [\fix_mult_dsp48e1_sgl(registers=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.fix_mult [\fix_mult(c_xdevicefamily="zynqu...]
-Compiling architecture muxcy_v of entity unisim.MUXCY [muxcy_default]
-Compiling architecture xorcy_v of entity unisim.XORCY [xorcy_default]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=8,length=0,fast_inp...]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=32,length=0)\]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity floating_point_v7_1_15.compare_eq_im [\compare_eq_im(c_xdevicefamily="...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(length=0,fast_input=true)...]
-Compiling architecture rtl of entity floating_point_v7_1_15.special_detect [\special_detect(c_xdevicefamily=...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [delay_default]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=2,fast_input=true)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(fast_input=true)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=4,fast_input=true)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=8)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=3,length=0,fast_inp...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=4,length=0,fast_inp...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=14,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_mult_exp [\flt_mult_exp(c_xdevicefamily="z...]
-Compiling architecture dsp48e1_v of entity unisim.DSP48E1 [\DSP48E1(acascreg=0,adreg=0,alum...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=30,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=18,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.dsp48e1_wrapper [\dsp48e1_wrapper(a_width=30,b_wi...]
-Compiling architecture struct of entity floating_point_v7_1_15.flt_round_dsp_opt_full [\flt_round_dsp_opt_full(c_xdevic...]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_mult_round [\flt_mult_round(c_xdevicefamily=...]
-Compiling architecture synth of entity floating_point_v7_1_15.flt_dec_op_lat [\flt_dec_op_lat(c_xdevicefamily=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_mult [\flt_mult(c_xdevicefamily="zynqu...]
-Compiling module unisims_ver.x_lut1_mux2
-Compiling module unisims_ver.LUT1
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture xilinx of entity floating_point_v7_1_15.floating_point_v7_1_15_viv [\floating_point_v7_1_15_viv(c_xd...]
-Compiling architecture xilinx of entity floating_point_v7_1_15.floating_point_v7_1_15 [\floating_point_v7_1_15(c_xdevic...]
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fmul_32ns_32ns_3...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fmul_32ns_32ns_3...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_1
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_224
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_325
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_426
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_527
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_628
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1421_...
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity floating_point_v7_1_15.compare_eq_im [\compare_eq_im(c_xdevicefamily="...]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=24,length=0,fast_in...]
-Compiling architecture dsp48e1_v of entity unisim.DSP48E1 [\DSP48E1(acascreg=0,adreg=0,alum...]
-Compiling architecture rtl of entity floating_point_v7_1_15.dsp48e1_wrapper [\dsp48e1_wrapper(c_part="xczu9eg...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=13,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=27,length=0)\]
-Compiling architecture synth of entity floating_point_v7_1_15.align_add_dsp48e1_sgl [\align_add_dsp48e1_sgl(c_xdevice...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="00000000000000001111...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="00000000000000000000...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=5,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.lead_zero_encode_shift [\lead_zero_encode_shift(ab_fw=24...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=3,length=0)\]
-Compiling architecture lut6_v of entity unisim.LUT6 [\LUT6(init="11111110010101001011...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="00010001010111110000...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="11101110101000001111...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=2)\]
-Compiling architecture dsp48e1_v of entity unisim.DSP48E1 [\DSP48E1(adreg=0,alumodereg=0,ca...]
-Compiling architecture rtl of entity floating_point_v7_1_15.dsp48e1_wrapper [\dsp48e1_wrapper(a_width=24,c_wi...]
-Compiling architecture rtl of entity floating_point_v7_1_15.norm_and_round_dsp48e1_sgl [\norm_and_round_dsp48e1_sgl(c_mu...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="10011001100110011001...]
-Compiling architecture lut5_v of entity unisim.LUT5 [\LUT5(init="11111111000000001111...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=9,length=0)\]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=8,length=0)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=10)\]
-Compiling architecture fdre_v of entity unisim.FDRE [fdre_default]
-Compiling architecture fde_v of entity unisim.FDE [fde_default]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity floating_point_v7_1_15.compare_eq_im [\compare_eq_im(c_xdevicefamily="...]
-Compiling architecture rtl of entity floating_point_v7_1_15.special_detect [\special_detect(c_xdevicefamily=...]
-Compiling architecture struct of entity floating_point_v7_1_15.carry_chain [\carry_chain(c_xdevicefamily="zy...]
-Compiling architecture synth of entity floating_point_v7_1_15.compare_gt [\compare_gt(c_xdevicefamily="zyn...]
-Compiling architecture synth of entity floating_point_v7_1_15.compare [\compare(c_xdevicefamily="zynqup...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=9)\]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=2,length=2,fast_inp...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(length=2,fast_input=true)...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=2,length=0,fast_inp...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_has_ce=1...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=12,length=0)\]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_add_exp_sp [\flt_add_exp_sp(c_xdevicefamily=...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture rtl of entity floating_point_v7_1_15.delay [\delay(width=23)\]
-Compiling architecture synth of entity floating_point_v7_1_15.flt_dec_op [\flt_dec_op(c_xdevicefamily="zyn...]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_add_dsp [\flt_add_dsp(c_xdevicefamily="zy...]
-Compiling architecture rtl of entity floating_point_v7_1_15.flt_add [\flt_add(c_xdevicefamily="zynqup...]
-Compiling architecture synth of entity xbip_pipe_v3_0_6.xbip_pipe_v3_0_6_viv [\xbip_pipe_v3_0_6_viv(c_latency=...]
-Compiling architecture xilinx of entity floating_point_v7_1_15.floating_point_v7_1_15_viv [\floating_point_v7_1_15_viv(c_xd...]
-Compiling architecture xilinx of entity floating_point_v7_1_15.floating_point_v7_1_15 [\floating_point_v7_1_15(c_xdevic...]
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fadd_32ns_32ns_3...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fadd_32ns_32ns_3...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1422_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1423_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1424_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1425_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1426_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_7
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_829
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_930
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_1031
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply_1132
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_multiply33
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1434_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1435_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1436_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1437_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1438_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_Block_entry1439_...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d2_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d2_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d3_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d3_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d4_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d4_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d5_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d5_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d6_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d6_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d7_S_Sh...
-Compiling module xil_defaultlib.uz_VSD_6ph_asym_fifo_w32_d7_S
-Compiling module xil_defaultlib.uz_VSD_6ph_asym
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detect_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_report_unit(PROC_N...
-Compiling module xil_defaultlib.AESL_deadlock_detector_1
-Compiling module xil_defaultlib.df_fifo_intf
-Compiling module xil_defaultlib.df_process_intf
-Compiling module xil_defaultlib.nodf_module_intf
-Compiling module xil_defaultlib.dataflow_monitor_1
-Compiling module xil_defaultlib.apatb_uz_VSD_6ph_asym_top
-Compiling module work.glbl
-Built simulation snapshot uz_VSD_6ph_asym
-
-****** xsim v2022.2 (64-bit)
-  **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
-  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
-
-source xsim.dir/uz_VSD_6ph_asym/xsim_script.tcl
-# xsim {uz_VSD_6ph_asym} -autoloadwcfg -tclbatch {uz_VSD_6ph_asym.tcl}
-Time resolution is 1 ps
-source uz_VSD_6ph_asym.tcl
-## run all
-////////////////////////////////////////////////////////////////////////////////////
-// Inter-Transaction Progress: Completed Transaction / Total Transaction
-// Intra-Transaction Progress: Measured Latency / Latency Estimation * 100%
-//
-// RTL Simulation : "Inter-Transaction Progress" ["Intra-Transaction Progress"] @ "Simulation Time"
-////////////////////////////////////////////////////////////////////////////////////
-// RTL Simulation : 0 / 1 [0.00%] @ "125000"
-// RTL Simulation : 1 / 1 [100.00%] @ "485000"
-////////////////////////////////////////////////////////////////////////////////////
-$finish called at time : 545 ns : File "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_VSD/solution1/sim/verilog/uz_VSD_6ph_asym.autotb.v" Line 626
-## quit
-INFO: [Common 17-206] Exiting xsim at Tue Jun  6 16:48:25 2023...
-INFO: [COSIM 212-316] Starting C post checking ...
-Test result:
-passed: Expected: -0.788, was: -0.789
-passed: Expected: -0.789, was: -0.789
-passedINFO: [COSIM 212-1000] *** C/RTL co-simulation finished: PASS ***
-INFO: [COSIM 212-211] II is measurable only when transaction number is greater than 1 in RTL simulation. Otherwise, they will be marked as all NA. If user wants to calculate them, please make sure there are at least 2 transactions in RTL simulation.
-INFO: [HLS 200-111] Finished Command cosim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 64.858 seconds; current allocated memory: 6.836 MB.
-INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 80.98 seconds; peak allocated memory: 683.887 MB.
+WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip'...
+WARNING: [IP_Flow 19-4832] The IP name 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues.
+INFO: [IP_Flow 19-1686] Generating 'Synthesis' target for IP 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip'...
+INFO: [IP_Flow 19-1686] Generating 'Simulation' target for IP 'uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip'...
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:11:38 2023...
+INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
+
+C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl>C:/Xilinx/Vivado/2022.2/bin/vivado  -mode batch -source run_vivadosyn.tcl   || exit $? 
+
+****** Vivado v2022.2 (64-bit)
+  **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+source run_vivadosyn.tcl
+# source ./settings.tcl
+## set top_module uz_FOC
+## set language vhdl
+## set family zynquplus
+## set device xck26
+## set package -sfvc784
+## set speed -2LV-c
+## set clock ap_clk
+## set fsm_ext "off"
+## set add_io_buffers false ;
+# source -notrace ./extraction.tcl
+# set vivado_proj_name project
+# set vivado_proj_dir .
+# set target_device "${device}${package}${speed}"
+# set target_clk_period_ns "10"
+# set target_clk_freq_hz [expr {floor(1000 / $target_clk_period_ns) * 1000000}]
+# set ip_vlnv xilinx.com:hls:uz_FOC:1.0
+# set ip_repo_path ../ip
+# set bd_design_name bd_0
+# set bd_inst_name hls_inst
+# set bd_props {}
+# set has_synth true
+# set synth_design_args {-directive sdx_optimization_effort_high}
+# set synth_dcp ""
+# set synth_props {}
+# set has_impl false
+# set impl_props {}
+# set report_options [dict create]
+# dict set report_options report_level 2
+# dict set report_options report_max_paths 10
+# dict set report_options stdout_hls_reports 1
+# dict set report_options stdout_vivado_reports 0
+# dict set report_options hls_project uz_FOC
+# dict set report_options hls_solution solution1
+# dict set report_options has_synth $has_synth
+# dict set report_options has_impl $has_impl
+# dict set report_options vivado_reportbasename $top_module
+# dict set report_options vivado_reportdir ./report
+# dict set report_options hls_impl_dir ..
+# dict set report_options hls_reportdir ../report/$language
+# dict set report_options target_clk_period $target_clk_period_ns
+# dict set report_options target_device $target_device
+# dict set report_options language $language
+# dict set report_options clock_name $clock
+# dict set report_options error_if_impl_timing_fails false
+# dict set report_options bindmodules {uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1 uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1 uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1 uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1 uz_FOC_control_s_axi}
+# dict set report_options max_module_depth 6
+# create_project $vivado_proj_name $vivado_proj_dir -part $target_device -force
+create_project: Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1001.957 ; gain = 117.676
+# set_property target_language $language [current_project]
+# if { ![file exists $ip_repo_path] } {
+#   error "Cannot find packaged HLS IP"
+# }
+# set_property ip_repo_paths [file normalize $ip_repo_path] [current_project]
+# update_ip_catalog
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/ip'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+# create_bd_design $bd_design_name
+Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
+# set cell_inst [create_bd_cell -type ip -vlnv $ip_vlnv $bd_inst_name]
+# if { [llength $bd_props] } { 
+#   set_property -dict $bd_props $cell_inst 
+# }
+# make_bd_pins_external $cell_inst
+# make_bd_intf_pins_external $cell_inst
+# set bd_clk_ports [get_bd_ports -filter {TYPE==clk}]
+# if { [llength $bd_clk_ports] && $target_clk_freq_hz ne "" } { 
+#   set_property CONFIG.FREQ_HZ $target_clk_freq_hz $bd_clk_ports 
+# }
+# foreach bd_port [get_bd_intf_ports] {
+#   set_property name [regsub {_0$} [get_property name $bd_port] {}] $bd_port
+# }
+# foreach bd_port [get_bd_ports -filter {INTF!=TRUE}] {
+#   set_property name [regsub {_0$} [get_property name $bd_port] {}] $bd_port
+# }
+# set s_axi_addr_width_min 32
+# foreach bd_port [get_bd_intf_ports -filter {MODE == "Slave" && VLNV =~ "xilinx.com:interface:aximm_rtl:*"}] {
+#   set bd_port_addr_width [get_property CONFIG.ADDR_WIDTH $bd_port]
+#   if { $bd_port_addr_width < $s_axi_addr_width_min } {
+#     puts "INFO: Updating $bd_port CONFIG.ADDR_WIDTH to $s_axi_addr_width_min"
+#     set_property CONFIG.ADDR_WIDTH $s_axi_addr_width_min $bd_port
+#   }
+# }
+INFO: Updating /s_axi_control CONFIG.ADDR_WIDTH to 32
+# set_msg_config -id {[BD 41-1265]} -severity {CRITICAL WARNING} -new_severity {INFO}
+# assign_bd_address
+Slave segment '/hls_inst/s_axi_control/Reg' is being assigned into address space '/s_axi_control' at <0x0000_0000 [ 64K ]>.
+Wrote  : <C:\Users\valen\Documents\repos\UZ\ultrazohm_sw\ip_cores\uz_xilinx_openhw_ipcores\uz_FOC\solution1\impl\vhdl\project.srcs\sources_1\bd\bd_0\bd_0.bd> 
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/sim/bd_0.vhd
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd
+# set toprtl [make_wrapper -files [get_files ${bd_design_name}.bd] -top]
+# add_files -norecurse $toprtl
+# set top_inst_name [file root [file tail $toprtl]]
+# puts "Using BD top: $top_inst_name"
+Using BD top: bd_0_wrapper
+# set xdc_files [glob -nocomplain ./*.xdc]
+# if { [llength $xdc_files] } {
+#     add_files -fileset constrs_1 -norecurse $xdc_files
+# }
+# launch_runs synth_1 -scripts_only
+INFO: [BD 41-1662] The design 'bd_0.bd' is already validated. Therefore parameter propagation will not be re-run.
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/sim/bd_0.vhd
+VHDL Output written to : C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd
+WARNING: [IP_Flow 19-519] IP 'bd_0_hls_inst_0' detected a language mismatch between 'Verilog Simulation Wrapper' and 'VHDL Simulation' output products. Please check with the IP provider to see if this is expected.
+INFO: [BD 41-1029] Generation completed for the IP Integrator block hls_inst .
+Exporting to file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hw_handoff/bd_0.hwh
+Generated Hardware Definition File C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.hwdef
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: bd_0_hls_inst_0
+WARNING: [Vivado 12-7122] Auto Incremental Compile:: No reference checkpoint was found in run synth_1. Auto-incremental flow will not be run, the standard flow will be run instead.
+launch_runs: Time (s): cpu = 00:00:01 ; elapsed = 00:00:06 . Memory (MB): peak = 1310.145 ; gain = 0.000
+# foreach run [get_runs -filter {IS_SYNTHESIS == 1}] {
+#   reset_run [get_runs $run]
+# }
+# set_property XPM_LIBRARIES {XPM_MEMORY XPM_FIFO} [current_project]
+# hls_vivado_reports_setup $report_options
+TIMESTAMP: HLS-REPORT: initialize report directories: 2023-06-12 11:12:10 +0200
+# if { $has_synth || $has_impl } {
+#   # synth properties setting
+#   set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value {-mode out_of_context} -objects [get_runs synth_1]
+#   set ip_inst [get_ips -quiet ${bd_design_name}*${bd_inst_name}*]
+#   if { ![llength $ip_inst] } {
+#       error "Cannot find HLS IP instance: ${bd_design_name}*${bd_inst_name}*"
+#   }
+#   set synth_run [get_runs -filter {IS_SYNTHESIS == 1} ${ip_inst}*]
+#   if { ![llength $synth_run] } {
+#       error "Cannot find synth run for HLS IP: ${ip_inst}*"
+#   }
+# 
+#   if { [llength $synth_design_args] } {
+#       set_property -name {STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS} -value $synth_design_args -objects $synth_run
+#   }
+# 
+#   if { [llength $synth_props] } {
+#     set_property -dict $synth_props $synth_run
+#   }
+# 
+#   # launch run synth
+#   launch_runs synth_1
+#   wait_on_run synth_1
+#   # synth reports
+#   hls_vivado_reports_synth synth_1 $report_options
+#   if { $synth_dcp ne "" } {
+#     file mkdir [file dirname $synth_dcp]
+#     set run_dcp [glob -nocomplain [get_property DIRECTORY $synth_run]/*.dcp]
+#     if { [llength $run_dcp] != 1 } { error "Cannot find single dcp file for run $synth_run" }
+#     file copy -force $run_dcp $synth_dcp
+#   }
+# }
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: bd_0_hls_inst_0
+WARNING: [Vivado 12-7122] Auto Incremental Compile:: No reference checkpoint was found in run synth_1. Auto-incremental flow will not be run, the standard flow will be run instead.
+[Mon Jun 12 11:12:10 2023] Launched bd_0_hls_inst_0_synth_1...
+Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/bd_0_hls_inst_0_synth_1/runme.log
+[Mon Jun 12 11:12:10 2023] Launched synth_1...
+Run output will be captured here: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/runme.log
+[Mon Jun 12 11:12:10 2023] Waiting for synth_1 to finish...
+
+
+*** Running vivado
+    with args -log bd_0_wrapper.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source bd_0_wrapper.tcl
+
+
+
+****** Vivado v2022.2 (64-bit)
+  **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+source bd_0_wrapper.tcl -notrace
+INFO: Dispatch client connection id - 52879
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1003.285 ; gain = 119.594
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/ip'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+WARNING: [IP_Flow 19-4995] The host OS only allows 260 characters in a normal path. The IP cache path is more than 80 characters. If you experience issues with IP caching, please consider changing the IP cache to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. 
+Current IP cache path is c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.cache/ip 
+Command: synth_design -top bd_0_wrapper -part xck26-sfvc784-2LV-c -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xck26'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xck26'
+INFO: [Device 21-403] Loading part xck26-sfvc784-2LV-c
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 11792
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2382.723 ; gain = 332.777
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'bd_0_wrapper' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:47]
+INFO: [Synth 8-3491] module 'bd_0' declared at 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:14' bound to instance 'bd_0_i' of component 'bd_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:81]
+INFO: [Synth 8-638] synthesizing module 'bd_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:51]
+INFO: [Synth 8-3491] module 'bd_0_hls_inst_0' declared at 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/.Xil/Vivado-11620-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.vhdl:5' bound to instance 'hls_inst' of component 'bd_0_hls_inst_0' [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:179]
+INFO: [Synth 8-638] synthesizing module 'bd_0_hls_inst_0' [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/.Xil/Vivado-11620-LAPTOP-ME665JGB/realtime/bd_0_hls_inst_0_stub.vhdl:39]
+INFO: [Synth 8-256] done synthesizing module 'bd_0' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/synth/bd_0.vhd:51]
+INFO: [Synth 8-256] done synthesizing module 'bd_0_wrapper' (0#1) [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/hdl/bd_0_wrapper.vhd:47]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2477.891 ; gain = 427.945
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2495.801 ; gain = 445.855
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 2495.801 ; gain = 445.855
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.006 . Memory (MB): peak = 2495.801 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
+Finished Parsing XDC File [c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0/bd_0_hls_inst_0_in_context.xdc] for cell 'bd_0_i/hls_inst'
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
+create_clock: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2532.277 ; gain = 0.000
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/dont_touch.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2532.277 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.024 . Memory (MB): peak = 2532.277 ; gain = 0.000
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xck26-sfvc784-2LV-c
+INFO: [Synth 8-6742] Reading net delay rules and data
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property KEEP_HIERARCHY = SOFT for bd_0_i. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for bd_0_i/hls_inst. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 2532.277 ; gain = 482.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 1248 (col length:96)
+BRAMs: 288 (col length: RAMB18 96 RAMB36 48)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 2532.277 ; gain = 482.332
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3030.883 ; gain = 980.938
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3030.883 ; gain = 980.938
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:42 ; elapsed = 00:00:44 . Memory (MB): peak = 3049.969 ; gain = 1000.023
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+----------------+----------+
+|      |BlackBox name   |Instances |
++------+----------------+----------+
+|1     |bd_0_hls_inst_0 |         1|
++------+----------------+----------+
+
+Report Cell Usage: 
++------+---------------------+------+
+|      |Cell                 |Count |
++------+---------------------+------+
+|1     |bd_0_hls_inst_0_bbox |     1|
++------+---------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:32 ; elapsed = 00:00:42 . Memory (MB): peak = 3055.781 ; gain = 969.359
+Synthesis Optimization Complete : Time (s): cpu = 00:00:48 ; elapsed = 00:00:49 . Memory (MB): peak = 3055.781 ; gain = 1005.836
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 3055.781 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3098.004 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 28425213
+INFO: [Common 17-83] Releasing license: Synthesis
+25 Infos, 2 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:57 ; elapsed = 00:01:00 . Memory (MB): peak = 3098.004 ; gain = 2024.004
+INFO: [Common 17-1381] The checkpoint 'C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.runs/synth_1/bd_0_wrapper.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file bd_0_wrapper_utilization_synth.rpt -pb bd_0_wrapper_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:15:33 2023...
+[Mon Jun 12 11:15:36 2023] synth_1 finished
+wait_on_runs: Time (s): cpu = 00:00:00 ; elapsed = 00:03:26 . Memory (MB): peak = 1310.145 ; gain = 0.000
+TIMESTAMP: HLS-REPORT: synthesis open_run: 2023-06-12 11:15:36 +0200
+INFO: HLS-REPORT: Opening synthesis design database: open_run synth_1
+Design is defaulting to impl run constrset: constrs_1
+Design is defaulting to synth run part: xck26-sfvc784-2LV-c
+INFO: [Device 21-403] Loading part xck26-sfvc784-2LV-c
+INFO: [Project 1-454] Reading design checkpoint 'c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/project.gen/sources_1/bd/bd_0/ip/bd_0_hls_inst_0/bd_0_hls_inst_0.dcp' for cell 'bd_0_i/hls_inst'
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.329 . Memory (MB): peak = 2324.770 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 139 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2022.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
+create_clock: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2324.770 ; gain = 0.000
+Finished Parsing XDC File [C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/uz_FOC.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2324.770 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 30 instances were transformed.
+  DSP48E1 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD, DSP_PREADD_DATA): 30 instances
+
+open_run: Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 2324.770 ; gain = 1014.625
+TIMESTAMP: HLS-REPORT: synthesis generate_reports_vivado: 2023-06-12 11:15:55 +0200
+INFO: HLS-REPORT: Running report: report_utilization -file ./report/uz_FOC_utilization_synth.rpt
+INFO: HLS-REPORT: Running report: report_utilization -hierarchical -hierarchical_depth 6 -file ./report/uz_FOC_utilization_hierarchical_synth.rpt
+INFO: HLS-REPORT: Running report: report_timing_summary -file ./report/uz_FOC_timing_synth.rpt
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2LV, Temperature grade: C, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+WARNING: [Timing 38-242] The property HD.CLK_SRC of clock port "ap_clk" is not set. In out-of-context mode, this prevents timing estimation for clock delay/skew
+Resolution: Set the HD.CLK_SRC property of the out-of-context port to the location of the clock buffer instance in the top-level design
+report_timing_summary: Time (s): cpu = 00:00:42 ; elapsed = 00:00:41 . Memory (MB): peak = 4044.070 ; gain = 1719.301
+INFO: HLS-REPORT: Running report: report_timing -max_paths 10 -file ./report/uz_FOC_timing_paths_synth.rpt
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2LV, Temperature grade: C, Delay Type: max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 2 CPUs
+INFO: [Timing 38-78] ReportTimingParams: -max_paths 10 -nworst 1 -delay_type max -sort_by slack.
+INFO: HLS-REPORT: Running report: report_design_analysis -file ./report/uz_FOC_design_analysis_synth.rpt
+INFO: [Implflow 30-839]  
+INFO: HLS-REPORT: Running report: ::tclapp::xilinx::designutils::report_failfast -detailed_report synth -file ./report/uz_FOC_failfast_synth.rpt
+ -I- design metrics completed in 1 seconds
+ -I- DONT_TOUCH metric completed in 0 seconds
+ -I- MARK_DEBUG metric completed in 0 seconds
+ -I- utilization metrics completed in 1 seconds
+ -I- control set metrics completed in 0 seconds
+ -I- methodology check metrics completed in 2 seconds
+ -I- average fanout metrics completed in 1 seconds (0 modules)
+ -I- non-FD high fanout nets completed in 1 seconds
+ -I- path budgeting metrics completed in 1 seconds
+#  +-----------------------------------------------------------------------------------------+
+#  | Design Summary                                                                          |
+#  | design_1                                                                                |
+#  | xck26-sfvc784-2LV-c                                                                     |
+#  +-----------------------------------------------------------+-----------+--------+--------+
+#  | Criteria                                                  | Guideline | Actual | Status |
+#  +-----------------------------------------------------------+-----------+--------+--------+
+#  | LUT                                                       | 70%       | 2.29%  | OK     |
+#  | FD                                                        | 50%       | 1.26%  | OK     |
+#  | LUTRAM+SRL                                                | 25%       | 0.56%  | OK     |
+#  | CARRY8                                                    | 25%       | 0.72%  | OK     |
+#  | MUXF7                                                     | 15%       | 0.01%  | OK     |
+#  | DSP                                                       | 80%       | 2.40%  | OK     |
+#  | RAMB/FIFO                                                 | 80%       | 0.00%  | OK     |
+#  | URAM                                                      | 80%       | 0.00%  | OK     |
+#  | DSP+RAMB+URAM (Avg)                                       | 70%       | 2.40%  | OK     |
+#  | BUFGCE* + BUFGCTRL                                        | 24        | 0      | OK     |
+#  | DONT_TOUCH (cells/nets)                                   | 0         | 0      | OK     |
+#  | MARK_DEBUG (nets)                                         | 0         | 0      | OK     |
+#  | Control Sets                                              | 2196      | 36     | OK     |
+#  | Average Fanout for modules > 100k cells                   | 4         | 0      | OK     |
+#  | Non-FD high fanout nets > 10k loads                       | 0         | 0      | OK     |
+#  +-----------------------------------------------------------+-----------+--------+--------+
+#  | TIMING-6 (No common primary clock between related clocks) | 0         | 0      | OK     |
+#  | TIMING-7 (No common node between related clocks)          | 0         | 0      | OK     |
+#  | TIMING-8 (No common period between related clocks)        | 0         | 0      | OK     |
+#  | TIMING-14 (LUT on the clock tree)                         | 0         | 0      | OK     |
+#  | TIMING-35 (No common node in paths with the same clock)   | 0         | 0      | OK     |
+#  +-----------------------------------------------------------+-----------+--------+--------+
+#  | Number of paths above max LUT budgeting (0.391ns)         | 0         | 0      | OK     |
+#  | Number of paths above max Net budgeting (0.263ns)         | 0         | 0      | OK     |
+#  +-----------------------------------------------------------+-----------+--------+--------+
+ -I- Generated file C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/report/uz_FOC_failfast_synth.rpt
+ -I- Number of criteria to review: 0
+ -I- This report should be run before placing the design and uses conservative guidelines beyond which runtime and timing closure will likely be more challenging
+ -I- report_failfast completed in 7 seconds
+TIMESTAMP: HLS-REPORT: synthesis gen_data_dict_vivado: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synth extract_util_hier: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synth get_cell_hier_data: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synth get_timing_paths: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synth process timing paths: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synth get_all_vv_rpt_files: 2023-06-12 11:16:43 +0200
+TIMESTAMP: HLS-REPORT: synthesis write_reports_vivado: 2023-06-12 11:16:43 +0200
+HLS EXTRACTION: synth area_totals:  0 117120 234240 1248 288 0 64
+HLS EXTRACTION: synth area_current: 0 2683 2957 30 0 0 324 0 0 0
+HLS EXTRACTION: synth resources_dict: AVAIL_LUT 117120 LUT 2683 AVAIL_FF 234240 FF 2957 AVAIL_DSP 1248 DSP 30 AVAIL_BRAM 288 BRAM 0 AVAIL_URAM 64 URAM 0 LATCH 0 SRL 324 AVAIL_CLB 0 CLB 0
+INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/vhdl/report/vivado_syn.xml
+INFO: HLS-REPORT: generated C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/impl/report/vhdl/uz_FOC_export.rpt
+
+
+Implementation tool: Xilinx Vivado v.2022.2
+Project:             uz_FOC
+Solution:            solution1
+Device target:       xck26-sfvc784-2LV-c
+Report date:         Mon Jun 12 11:16:45 +0200 2023
+
+#=== Post-Synthesis Resource usage ===
+SLICE:            0
+LUT:           2683
+FF:            2957
+DSP:             30
+BRAM:             0
+URAM:             0
+LATCH:            0
+SRL:            324
+CLB:              0
+
+#=== Final timing ===
+CP required:                     10.000
+CP achieved post-synthesis:      4.994
+Timing met
+
+TIMESTAMP: HLS-REPORT: synthesis end: 2023-06-12 11:16:45 +0200
+# if { $has_impl } {
+#   # launch run impl
+#   if { [llength $impl_props] } {
+#     set_property -dict $impl_props [get_runs impl_1]
+#   }
+#   launch_runs impl_1
+#   wait_on_run impl_1
+#   # impl reports
+#   hls_vivado_reports_impl impl_1 $report_options
+# }
+# hls_vivado_reports_finalize $report_options
+TIMESTAMP: HLS-REPORT: all reports complete: 2023-06-12 11:16:45 +0200
+INFO: [Common 17-206] Exiting Vivado at Mon Jun 12 11:16:45 2023...
+INFO: [HLS 200-802] Generated output file uz_FOC/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 332.524 seconds; current allocated memory: 9.031 MB.
+INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 347.536 seconds; peak allocated memory: 686.000 MB.

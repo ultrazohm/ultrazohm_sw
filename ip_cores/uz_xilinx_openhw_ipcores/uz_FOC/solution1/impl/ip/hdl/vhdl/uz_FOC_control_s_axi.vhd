@@ -32,21 +32,15 @@ port (
     RRESP                 :out  STD_LOGIC_VECTOR(1 downto 0);
     RVALID                :out  STD_LOGIC;
     RREADY                :in   STD_LOGIC;
-    sampletime            :out  STD_LOGIC_VECTOR(31 downto 0);
-    set_i_d               :out  STD_LOGIC_VECTOR(31 downto 0);
-    set_i_q               :out  STD_LOGIC_VECTOR(31 downto 0);
-    KP_d                  :out  STD_LOGIC_VECTOR(31 downto 0);
-    KI_d                  :out  STD_LOGIC_VECTOR(31 downto 0);
-    KP_q                  :out  STD_LOGIC_VECTOR(31 downto 0);
-    KI_q                  :out  STD_LOGIC_VECTOR(31 downto 0);
-    reset_PS              :out  STD_LOGIC_VECTOR(0 downto 0);
-    limit                 :out  STD_LOGIC_VECTOR(31 downto 0);
-    out_KP_d              :in   STD_LOGIC_VECTOR(31 downto 0);
-    out_KP_d_ap_vld       :in   STD_LOGIC;
-    out_idref             :in   STD_LOGIC_VECTOR(31 downto 0);
-    out_idref_ap_vld      :in   STD_LOGIC;
-    out_status            :in   STD_LOGIC_VECTOR(0 downto 0);
-    out_status_ap_vld     :in   STD_LOGIC
+    axi_id_reference      :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_iq_reference      :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_sampletime        :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_id_KI             :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_id_KP             :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_iq_KI             :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_iq_KP             :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_limit             :out  STD_LOGIC_VECTOR(31 downto 0);
+    axi_reset             :out  STD_LOGIC_VECTOR(0 downto 0)
 );
 end entity uz_FOC_control_s_axi;
 
@@ -55,50 +49,34 @@ end entity uz_FOC_control_s_axi;
 -- 0x04 : reserved
 -- 0x08 : reserved
 -- 0x0c : reserved
--- 0x10 : Data signal of sampletime
---        bit 31~0 - sampletime[31:0] (Read/Write)
+-- 0x10 : Data signal of axi_id_reference
+--        bit 31~0 - axi_id_reference[31:0] (Read/Write)
 -- 0x14 : reserved
--- 0x18 : Data signal of set_i_d
---        bit 31~0 - set_i_d[31:0] (Read/Write)
+-- 0x18 : Data signal of axi_iq_reference
+--        bit 31~0 - axi_iq_reference[31:0] (Read/Write)
 -- 0x1c : reserved
--- 0x20 : Data signal of set_i_q
---        bit 31~0 - set_i_q[31:0] (Read/Write)
+-- 0x20 : Data signal of axi_sampletime
+--        bit 31~0 - axi_sampletime[31:0] (Read/Write)
 -- 0x24 : reserved
--- 0x28 : Data signal of KP_d
---        bit 31~0 - KP_d[31:0] (Read/Write)
+-- 0x28 : Data signal of axi_id_KI
+--        bit 31~0 - axi_id_KI[31:0] (Read/Write)
 -- 0x2c : reserved
--- 0x30 : Data signal of KI_d
---        bit 31~0 - KI_d[31:0] (Read/Write)
+-- 0x30 : Data signal of axi_id_KP
+--        bit 31~0 - axi_id_KP[31:0] (Read/Write)
 -- 0x34 : reserved
--- 0x38 : Data signal of KP_q
---        bit 31~0 - KP_q[31:0] (Read/Write)
+-- 0x38 : Data signal of axi_iq_KI
+--        bit 31~0 - axi_iq_KI[31:0] (Read/Write)
 -- 0x3c : reserved
--- 0x40 : Data signal of KI_q
---        bit 31~0 - KI_q[31:0] (Read/Write)
+-- 0x40 : Data signal of axi_iq_KP
+--        bit 31~0 - axi_iq_KP[31:0] (Read/Write)
 -- 0x44 : reserved
--- 0x48 : Data signal of reset_PS
---        bit 0  - reset_PS[0] (Read/Write)
---        others - reserved
+-- 0x48 : Data signal of axi_limit
+--        bit 31~0 - axi_limit[31:0] (Read/Write)
 -- 0x4c : reserved
--- 0x50 : Data signal of limit
---        bit 31~0 - limit[31:0] (Read/Write)
+-- 0x50 : Data signal of axi_reset
+--        bit 0  - axi_reset[0] (Read/Write)
+--        others - reserved
 -- 0x54 : reserved
--- 0x58 : Data signal of out_KP_d
---        bit 31~0 - out_KP_d[31:0] (Read)
--- 0x5c : Control signal of out_KP_d
---        bit 0  - out_KP_d_ap_vld (Read/COR)
---        others - reserved
--- 0x68 : Data signal of out_idref
---        bit 31~0 - out_idref[31:0] (Read)
--- 0x6c : Control signal of out_idref
---        bit 0  - out_idref_ap_vld (Read/COR)
---        others - reserved
--- 0x78 : Data signal of out_status
---        bit 0  - out_status[0] (Read)
---        others - reserved
--- 0x7c : Control signal of out_status
---        bit 0  - out_status_ap_vld (Read/COR)
---        others - reserved
 -- (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 architecture behave of uz_FOC_control_s_axi is
@@ -106,30 +84,24 @@ architecture behave of uz_FOC_control_s_axi is
     signal wstate  : states := wrreset;
     signal rstate  : states := rdreset;
     signal wnext, rnext: states;
-    constant ADDR_SAMPLETIME_DATA_0 : INTEGER := 16#10#;
-    constant ADDR_SAMPLETIME_CTRL   : INTEGER := 16#14#;
-    constant ADDR_SET_I_D_DATA_0    : INTEGER := 16#18#;
-    constant ADDR_SET_I_D_CTRL      : INTEGER := 16#1c#;
-    constant ADDR_SET_I_Q_DATA_0    : INTEGER := 16#20#;
-    constant ADDR_SET_I_Q_CTRL      : INTEGER := 16#24#;
-    constant ADDR_KP_D_DATA_0       : INTEGER := 16#28#;
-    constant ADDR_KP_D_CTRL         : INTEGER := 16#2c#;
-    constant ADDR_KI_D_DATA_0       : INTEGER := 16#30#;
-    constant ADDR_KI_D_CTRL         : INTEGER := 16#34#;
-    constant ADDR_KP_Q_DATA_0       : INTEGER := 16#38#;
-    constant ADDR_KP_Q_CTRL         : INTEGER := 16#3c#;
-    constant ADDR_KI_Q_DATA_0       : INTEGER := 16#40#;
-    constant ADDR_KI_Q_CTRL         : INTEGER := 16#44#;
-    constant ADDR_RESET_PS_DATA_0   : INTEGER := 16#48#;
-    constant ADDR_RESET_PS_CTRL     : INTEGER := 16#4c#;
-    constant ADDR_LIMIT_DATA_0      : INTEGER := 16#50#;
-    constant ADDR_LIMIT_CTRL        : INTEGER := 16#54#;
-    constant ADDR_OUT_KP_D_DATA_0   : INTEGER := 16#58#;
-    constant ADDR_OUT_KP_D_CTRL     : INTEGER := 16#5c#;
-    constant ADDR_OUT_IDREF_DATA_0  : INTEGER := 16#68#;
-    constant ADDR_OUT_IDREF_CTRL    : INTEGER := 16#6c#;
-    constant ADDR_OUT_STATUS_DATA_0 : INTEGER := 16#78#;
-    constant ADDR_OUT_STATUS_CTRL   : INTEGER := 16#7c#;
+    constant ADDR_AXI_ID_REFERENCE_DATA_0 : INTEGER := 16#10#;
+    constant ADDR_AXI_ID_REFERENCE_CTRL   : INTEGER := 16#14#;
+    constant ADDR_AXI_IQ_REFERENCE_DATA_0 : INTEGER := 16#18#;
+    constant ADDR_AXI_IQ_REFERENCE_CTRL   : INTEGER := 16#1c#;
+    constant ADDR_AXI_SAMPLETIME_DATA_0   : INTEGER := 16#20#;
+    constant ADDR_AXI_SAMPLETIME_CTRL     : INTEGER := 16#24#;
+    constant ADDR_AXI_ID_KI_DATA_0        : INTEGER := 16#28#;
+    constant ADDR_AXI_ID_KI_CTRL          : INTEGER := 16#2c#;
+    constant ADDR_AXI_ID_KP_DATA_0        : INTEGER := 16#30#;
+    constant ADDR_AXI_ID_KP_CTRL          : INTEGER := 16#34#;
+    constant ADDR_AXI_IQ_KI_DATA_0        : INTEGER := 16#38#;
+    constant ADDR_AXI_IQ_KI_CTRL          : INTEGER := 16#3c#;
+    constant ADDR_AXI_IQ_KP_DATA_0        : INTEGER := 16#40#;
+    constant ADDR_AXI_IQ_KP_CTRL          : INTEGER := 16#44#;
+    constant ADDR_AXI_LIMIT_DATA_0        : INTEGER := 16#48#;
+    constant ADDR_AXI_LIMIT_CTRL          : INTEGER := 16#4c#;
+    constant ADDR_AXI_RESET_DATA_0        : INTEGER := 16#50#;
+    constant ADDR_AXI_RESET_CTRL          : INTEGER := 16#54#;
     constant ADDR_BITS         : INTEGER := 7;
 
     signal waddr               : UNSIGNED(ADDR_BITS-1 downto 0);
@@ -144,21 +116,15 @@ architecture behave of uz_FOC_control_s_axi is
     signal ARREADY_t           : STD_LOGIC;
     signal RVALID_t            : STD_LOGIC;
     -- internal registers
-    signal int_sampletime      : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_set_i_d         : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_set_i_q         : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_KP_d            : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_KI_d            : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_KP_q            : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_KI_q            : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_reset_PS        : UNSIGNED(0 downto 0) := (others => '0');
-    signal int_limit           : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_out_KP_d_ap_vld : STD_LOGIC;
-    signal int_out_KP_d        : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_out_idref_ap_vld : STD_LOGIC;
-    signal int_out_idref       : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_out_status_ap_vld : STD_LOGIC;
-    signal int_out_status      : UNSIGNED(0 downto 0) := (others => '0');
+    signal int_axi_id_reference : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_iq_reference : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_sampletime  : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_id_KI       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_id_KP       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_iq_KI       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_iq_KP       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_limit       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_axi_reset       : UNSIGNED(0 downto 0) := (others => '0');
 
 
 begin
@@ -274,36 +240,24 @@ begin
                 if (ar_hs = '1') then
                     rdata_data <= (others => '0');
                     case (TO_INTEGER(raddr)) is
-                    when ADDR_SAMPLETIME_DATA_0 =>
-                        rdata_data <= RESIZE(int_sampletime(31 downto 0), 32);
-                    when ADDR_SET_I_D_DATA_0 =>
-                        rdata_data <= RESIZE(int_set_i_d(31 downto 0), 32);
-                    when ADDR_SET_I_Q_DATA_0 =>
-                        rdata_data <= RESIZE(int_set_i_q(31 downto 0), 32);
-                    when ADDR_KP_D_DATA_0 =>
-                        rdata_data <= RESIZE(int_KP_d(31 downto 0), 32);
-                    when ADDR_KI_D_DATA_0 =>
-                        rdata_data <= RESIZE(int_KI_d(31 downto 0), 32);
-                    when ADDR_KP_Q_DATA_0 =>
-                        rdata_data <= RESIZE(int_KP_q(31 downto 0), 32);
-                    when ADDR_KI_Q_DATA_0 =>
-                        rdata_data <= RESIZE(int_KI_q(31 downto 0), 32);
-                    when ADDR_RESET_PS_DATA_0 =>
-                        rdata_data <= RESIZE(int_reset_PS(0 downto 0), 32);
-                    when ADDR_LIMIT_DATA_0 =>
-                        rdata_data <= RESIZE(int_limit(31 downto 0), 32);
-                    when ADDR_OUT_KP_D_DATA_0 =>
-                        rdata_data <= RESIZE(int_out_KP_d(31 downto 0), 32);
-                    when ADDR_OUT_KP_D_CTRL =>
-                        rdata_data(0) <= int_out_KP_d_ap_vld;
-                    when ADDR_OUT_IDREF_DATA_0 =>
-                        rdata_data <= RESIZE(int_out_idref(31 downto 0), 32);
-                    when ADDR_OUT_IDREF_CTRL =>
-                        rdata_data(0) <= int_out_idref_ap_vld;
-                    when ADDR_OUT_STATUS_DATA_0 =>
-                        rdata_data <= RESIZE(int_out_status(0 downto 0), 32);
-                    when ADDR_OUT_STATUS_CTRL =>
-                        rdata_data(0) <= int_out_status_ap_vld;
+                    when ADDR_AXI_ID_REFERENCE_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_id_reference(31 downto 0), 32);
+                    when ADDR_AXI_IQ_REFERENCE_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_iq_reference(31 downto 0), 32);
+                    when ADDR_AXI_SAMPLETIME_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_sampletime(31 downto 0), 32);
+                    when ADDR_AXI_ID_KI_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_id_KI(31 downto 0), 32);
+                    when ADDR_AXI_ID_KP_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_id_KP(31 downto 0), 32);
+                    when ADDR_AXI_IQ_KI_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_iq_KI(31 downto 0), 32);
+                    when ADDR_AXI_IQ_KP_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_iq_KP(31 downto 0), 32);
+                    when ADDR_AXI_LIMIT_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_limit(31 downto 0), 32);
+                    when ADDR_AXI_RESET_DATA_0 =>
+                        rdata_data <= RESIZE(int_axi_reset(0 downto 0), 32);
                     when others =>
                         NULL;
                     end case;
@@ -313,33 +267,22 @@ begin
     end process;
 
 -- ----------------------- Register logic ----------------
-    sampletime           <= STD_LOGIC_VECTOR(int_sampletime);
-    set_i_d              <= STD_LOGIC_VECTOR(int_set_i_d);
-    set_i_q              <= STD_LOGIC_VECTOR(int_set_i_q);
-    KP_d                 <= STD_LOGIC_VECTOR(int_KP_d);
-    KI_d                 <= STD_LOGIC_VECTOR(int_KI_d);
-    KP_q                 <= STD_LOGIC_VECTOR(int_KP_q);
-    KI_q                 <= STD_LOGIC_VECTOR(int_KI_q);
-    reset_PS             <= STD_LOGIC_VECTOR(int_reset_PS);
-    limit                <= STD_LOGIC_VECTOR(int_limit);
+    axi_id_reference     <= STD_LOGIC_VECTOR(int_axi_id_reference);
+    axi_iq_reference     <= STD_LOGIC_VECTOR(int_axi_iq_reference);
+    axi_sampletime       <= STD_LOGIC_VECTOR(int_axi_sampletime);
+    axi_id_KI            <= STD_LOGIC_VECTOR(int_axi_id_KI);
+    axi_id_KP            <= STD_LOGIC_VECTOR(int_axi_id_KP);
+    axi_iq_KI            <= STD_LOGIC_VECTOR(int_axi_iq_KI);
+    axi_iq_KP            <= STD_LOGIC_VECTOR(int_axi_iq_KP);
+    axi_limit            <= STD_LOGIC_VECTOR(int_axi_limit);
+    axi_reset            <= STD_LOGIC_VECTOR(int_axi_reset);
 
     process (ACLK)
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SAMPLETIME_DATA_0) then
-                    int_sampletime(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_sampletime(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SET_I_D_DATA_0) then
-                    int_set_i_d(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_set_i_d(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_ID_REFERENCE_DATA_0) then
+                    int_axi_id_reference(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_id_reference(31 downto 0));
                 end if;
             end if;
         end if;
@@ -349,8 +292,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_SET_I_Q_DATA_0) then
-                    int_set_i_q(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_set_i_q(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_IQ_REFERENCE_DATA_0) then
+                    int_axi_iq_reference(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_iq_reference(31 downto 0));
                 end if;
             end if;
         end if;
@@ -360,8 +303,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_KP_D_DATA_0) then
-                    int_KP_d(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_KP_d(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_SAMPLETIME_DATA_0) then
+                    int_axi_sampletime(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_sampletime(31 downto 0));
                 end if;
             end if;
         end if;
@@ -371,8 +314,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_KI_D_DATA_0) then
-                    int_KI_d(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_KI_d(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_ID_KI_DATA_0) then
+                    int_axi_id_KI(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_id_KI(31 downto 0));
                 end if;
             end if;
         end if;
@@ -382,8 +325,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_KP_Q_DATA_0) then
-                    int_KP_q(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_KP_q(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_ID_KP_DATA_0) then
+                    int_axi_id_KP(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_id_KP(31 downto 0));
                 end if;
             end if;
         end if;
@@ -393,8 +336,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_KI_Q_DATA_0) then
-                    int_KI_q(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_KI_q(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_IQ_KI_DATA_0) then
+                    int_axi_iq_KI(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_iq_KI(31 downto 0));
                 end if;
             end if;
         end if;
@@ -404,8 +347,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_RESET_PS_DATA_0) then
-                    int_reset_PS(0 downto 0) <= (UNSIGNED(WDATA(0 downto 0)) and wmask(0 downto 0)) or ((not wmask(0 downto 0)) and int_reset_PS(0 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_IQ_KP_DATA_0) then
+                    int_axi_iq_KP(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_iq_KP(31 downto 0));
                 end if;
             end if;
         end if;
@@ -415,8 +358,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_LIMIT_DATA_0) then
-                    int_limit(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_limit(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_AXI_LIMIT_DATA_0) then
+                    int_axi_limit(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_axi_limit(31 downto 0));
                 end if;
             end if;
         end if;
@@ -425,82 +368,9 @@ begin
     process (ACLK)
     begin
         if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_KP_d <= (others => '0');
-            elsif (ACLK_EN = '1') then
-                if (out_KP_d_ap_vld = '1') then
-                    int_out_KP_d <= UNSIGNED(out_KP_d);
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_KP_d_ap_vld <= '0';
-            elsif (ACLK_EN = '1') then
-                if (out_KP_d_ap_vld = '1') then
-                    int_out_KP_d_ap_vld <= '1';
-                elsif (ar_hs = '1' and raddr = ADDR_OUT_KP_D_CTRL) then
-                    int_out_KP_d_ap_vld <= '0'; -- clear on read
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_idref <= (others => '0');
-            elsif (ACLK_EN = '1') then
-                if (out_idref_ap_vld = '1') then
-                    int_out_idref <= UNSIGNED(out_idref);
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_idref_ap_vld <= '0';
-            elsif (ACLK_EN = '1') then
-                if (out_idref_ap_vld = '1') then
-                    int_out_idref_ap_vld <= '1';
-                elsif (ar_hs = '1' and raddr = ADDR_OUT_IDREF_CTRL) then
-                    int_out_idref_ap_vld <= '0'; -- clear on read
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_status <= (others => '0');
-            elsif (ACLK_EN = '1') then
-                if (out_status_ap_vld = '1') then
-                    int_out_status <= UNSIGNED(out_status);
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                int_out_status_ap_vld <= '0';
-            elsif (ACLK_EN = '1') then
-                if (out_status_ap_vld = '1') then
-                    int_out_status_ap_vld <= '1';
-                elsif (ar_hs = '1' and raddr = ADDR_OUT_STATUS_CTRL) then
-                    int_out_status_ap_vld <= '0'; -- clear on read
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_AXI_RESET_DATA_0) then
+                    int_axi_reset(0 downto 0) <= (UNSIGNED(WDATA(0 downto 0)) and wmask(0 downto 0)) or ((not wmask(0 downto 0)) and int_axi_reset(0 downto 0));
                 end if;
             end if;
         end if;

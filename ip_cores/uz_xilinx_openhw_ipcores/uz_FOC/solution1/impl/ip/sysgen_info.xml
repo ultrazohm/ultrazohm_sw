@@ -2,22 +2,12 @@
 <AdditionalInfo>
   <CTypeInfo>
       <RtlPort>
-        <name>actual_id</name>
+        <name>id_actual</name>
         <type>Floating-point</type>
         <fractionWidth>24</fractionWidth>
       </RtlPort>
       <RtlPort>
-        <name>actual_iq</name>
-        <type>Floating-point</type>
-        <fractionWidth>24</fractionWidth>
-      </RtlPort>
-      <RtlPort>
-        <name>ref_ud</name>
-        <type>Floating-point</type>
-        <fractionWidth>24</fractionWidth>
-      </RtlPort>
-      <RtlPort>
-        <name>ref_uq</name>
+        <name>iq_actual</name>
         <type>Floating-point</type>
         <fractionWidth>24</fractionWidth>
       </RtlPort>
@@ -27,7 +17,12 @@
         <fractionWidth>0</fractionWidth>
       </RtlPort>
       <RtlPort>
-        <name>test_out_pl</name>
+        <name>ud_ref</name>
+        <type>Floating-point</type>
+        <fractionWidth>24</fractionWidth>
+      </RtlPort>
+      <RtlPort>
+        <name>uq_ref</name>
         <type>Floating-point</type>
         <fractionWidth>24</fractionWidth>
       </RtlPort>
@@ -38,7 +33,7 @@
   <Machine>64</Machine>
   <modelParameters>
     <combinational>0</combinational>
-    <latency>1</latency>
-    <II>2 ~ 47</II>
+    <latency>21</latency>
+    <II>22</II>
   </modelParameters>
 </AdditionalInfo>

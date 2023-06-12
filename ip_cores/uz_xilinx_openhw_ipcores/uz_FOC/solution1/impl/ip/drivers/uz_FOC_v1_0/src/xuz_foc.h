@@ -82,30 +82,24 @@ int XUz_foc_Release(XUz_foc *InstancePtr);
 #endif
 
 
-void XUz_foc_Set_sampletime(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_sampletime(XUz_foc *InstancePtr);
-void XUz_foc_Set_set_i_d(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_set_i_d(XUz_foc *InstancePtr);
-void XUz_foc_Set_set_i_q(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_set_i_q(XUz_foc *InstancePtr);
-void XUz_foc_Set_KP_d(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_KP_d(XUz_foc *InstancePtr);
-void XUz_foc_Set_KI_d(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_KI_d(XUz_foc *InstancePtr);
-void XUz_foc_Set_KP_q(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_KP_q(XUz_foc *InstancePtr);
-void XUz_foc_Set_KI_q(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_KI_q(XUz_foc *InstancePtr);
-void XUz_foc_Set_reset_PS(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_reset_PS(XUz_foc *InstancePtr);
-void XUz_foc_Set_limit(XUz_foc *InstancePtr, u32 Data);
-u32 XUz_foc_Get_limit(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_KP_d(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_KP_d_vld(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_idref(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_idref_vld(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_status(XUz_foc *InstancePtr);
-u32 XUz_foc_Get_out_status_vld(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_id_reference(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_reference(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_reference(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_reference(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_sampletime(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_sampletime(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_id_KI(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_KI(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_id_KP(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_KP(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_KI(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_KI(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_KP(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_KP(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_limit(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_limit(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_reset(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_reset(XUz_foc *InstancePtr);
 
 #ifdef __cplusplus
 }

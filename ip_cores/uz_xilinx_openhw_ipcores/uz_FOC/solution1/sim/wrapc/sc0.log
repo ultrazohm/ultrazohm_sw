@@ -1,0 +1,6 @@
+   Build using "C:/Xilinx/Vitis_HLS/2022.2/tps/win64/msys64/mingw64/bin/g++"
+   Compiling uz_FOC.cpp_pre.cpp.tb.cpp
+   Compiling testbench.cpp_pre.cpp.tb.cpp
+   Compiling apatb_uz_FOC.cpp
+   Compiling apatb_uz_FOC_ir.ll
+   Generating cosim.tv.exe

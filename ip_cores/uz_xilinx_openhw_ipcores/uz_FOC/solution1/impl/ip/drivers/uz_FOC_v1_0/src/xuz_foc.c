@@ -19,216 +19,156 @@ int XUz_foc_CfgInitialize(XUz_foc *InstancePtr, XUz_foc_Config *ConfigPtr) {
 }
 #endif
 
-void XUz_foc_Set_sampletime(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_id_reference(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SAMPLETIME_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_REFERENCE_DATA, Data);
 }
 
-u32 XUz_foc_Get_sampletime(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_id_reference(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SAMPLETIME_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_REFERENCE_DATA);
     return Data;
 }
 
-void XUz_foc_Set_set_i_d(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_iq_reference(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SET_I_D_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_REFERENCE_DATA, Data);
 }
 
-u32 XUz_foc_Get_set_i_d(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_iq_reference(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SET_I_D_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_REFERENCE_DATA);
     return Data;
 }
 
-void XUz_foc_Set_set_i_q(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_sampletime(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SET_I_Q_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_SAMPLETIME_DATA, Data);
 }
 
-u32 XUz_foc_Get_set_i_q(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_sampletime(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_SET_I_Q_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_SAMPLETIME_DATA);
     return Data;
 }
 
-void XUz_foc_Set_KP_d(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_id_KI(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KP_D_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_KI_DATA, Data);
 }
 
-u32 XUz_foc_Get_KP_d(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_id_KI(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KP_D_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_KI_DATA);
     return Data;
 }
 
-void XUz_foc_Set_KI_d(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_id_KP(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KI_D_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_KP_DATA, Data);
 }
 
-u32 XUz_foc_Get_KI_d(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_id_KP(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KI_D_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_ID_KP_DATA);
     return Data;
 }
 
-void XUz_foc_Set_KP_q(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_iq_KI(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KP_Q_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_KI_DATA, Data);
 }
 
-u32 XUz_foc_Get_KP_q(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_iq_KI(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KP_Q_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_KI_DATA);
     return Data;
 }
 
-void XUz_foc_Set_KI_q(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_iq_KP(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KI_Q_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_KP_DATA, Data);
 }
 
-u32 XUz_foc_Get_KI_q(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_iq_KP(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_KI_Q_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_IQ_KP_DATA);
     return Data;
 }
 
-void XUz_foc_Set_reset_PS(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_limit(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_RESET_PS_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_LIMIT_DATA, Data);
 }
 
-u32 XUz_foc_Get_reset_PS(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_limit(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_RESET_PS_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_LIMIT_DATA);
     return Data;
 }
 
-void XUz_foc_Set_limit(XUz_foc *InstancePtr, u32 Data) {
+void XUz_foc_Set_axi_reset(XUz_foc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_LIMIT_DATA, Data);
+    XUz_foc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_RESET_DATA, Data);
 }
 
-u32 XUz_foc_Get_limit(XUz_foc *InstancePtr) {
+u32 XUz_foc_Get_axi_reset(XUz_foc *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_LIMIT_DATA);
+    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_AXI_RESET_DATA);
     return Data;
-}
-
-u32 XUz_foc_Get_out_KP_d(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_KP_D_DATA);
-    return Data;
-}
-
-u32 XUz_foc_Get_out_KP_d_vld(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_KP_D_CTRL);
-    return Data & 0x1;
-}
-
-u32 XUz_foc_Get_out_idref(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_IDREF_DATA);
-    return Data;
-}
-
-u32 XUz_foc_Get_out_idref_vld(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_IDREF_CTRL);
-    return Data & 0x1;
-}
-
-u32 XUz_foc_Get_out_status(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_STATUS_DATA);
-    return Data;
-}
-
-u32 XUz_foc_Get_out_status_vld(XUz_foc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_foc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_FOC_CONTROL_ADDR_OUT_STATUS_CTRL);
-    return Data & 0x1;
 }
 

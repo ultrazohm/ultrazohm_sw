@@ -1,54 +1,58 @@
 #include "uz_FOC.h"
-void uz_FOC(float actual_id, float actual_iq, float sampletime, bool reset_PL, float *ref_ud, float *ref_uq, float set_i_d, float set_i_q, float KP_d, float KI_d, float KP_q, float KI_q, bool reset_PS, float limit, float *out_KP_d, float *out_idref, bool *out_status, float *test_out_pl){
-#pragma HLS INTERFACE mode=ap_none port=actual_id
-#pragma HLS INTERFACE mode=ap_none port=actual_id
-#pragma HLS INTERFACE mode=s_axilite port=sampletime
+void uz_FOC(
+		// axi inputs
+		float axi_id_reference, float axi_iq_reference, float axi_sampletime, float axi_id_KI, float axi_id_KP, float axi_iq_KI, float axi_iq_KP, float axi_limit, bool axi_reset,
+		// hw input
+		float id_actual, float iq_actual, bool reset_PL,
+		// hw output
+		float *ud_ref, float *uq_ref){
+#pragma HLS INTERFACE mode=s_axilite port=axi_id_reference
+#pragma HLS INTERFACE mode=s_axilite port=axi_iq_reference
+#pragma HLS INTERFACE mode=s_axilite port=axi_sampletime
+#pragma HLS INTERFACE mode=s_axilite port=axi_id_KI
+#pragma HLS INTERFACE mode=s_axilite port=axi_id_KP
+#pragma HLS INTERFACE mode=s_axilite port=axi_iq_KI
+#pragma HLS INTERFACE mode=s_axilite port=axi_iq_KP
+#pragma HLS INTERFACE mode=s_axilite port=axi_limit
+#pragma HLS INTERFACE mode=s_axilite port=axi_reset
+#pragma HLS INTERFACE mode=ap_none port=id_actual
+#pragma HLS INTERFACE mode=ap_none port=iq_actual
 #pragma HLS INTERFACE mode=ap_none port=reset_PL
-#pragma HLS INTERFACE mode=ap_none port=ref_ud
-#pragma HLS INTERFACE mode=ap_none port=ref_uq
-#pragma HLS INTERFACE mode=s_axilite port=set_i_d
-#pragma HLS INTERFACE mode=s_axilite port=set_i_q
-#pragma HLS INTERFACE mode=s_axilite port=KP_d
-#pragma HLS INTERFACE mode=s_axilite port=KI_d
-#pragma HLS INTERFACE mode=s_axilite port=KP_q
-#pragma HLS INTERFACE mode=s_axilite port=KI_q
-#pragma HLS INTERFACE mode=s_axilite port=reset_PS
-#pragma HLS INTERFACE mode=s_axilite port=limit
-#pragma HLS INTERFACE mode=s_axilite port=out_KP_d
-#pragma HLS INTERFACE mode=s_axilite port=out_idref
-#pragma HLS INTERFACE mode=s_axilite port=out_status
-#pragma HLS INTERFACE mode=ap_none port=test_out_pl
+#pragma HLS INTERFACE mode=ap_none port=ud_ref
+#pragma HLS INTERFACE mode=ap_none port=uq_ref
 
-//#pragma HLS DATAFLOW
+
+
 	static float I_sum_d = 0.0f;
 	static float I_sum_q = 0.0f;
-	bool reset = reset_PL||reset_PS;
-	bool status_d = uz_PI_Controller_sample_parallel(set_i_d, actual_id, sampletime, KP_d, KI_d, limit, reset, &I_sum_d, ref_ud);
-	bool status_q = uz_PI_Controller_sample_parallel(set_i_q, actual_iq, sampletime, KP_q, KI_q, limit, reset, &I_sum_q, ref_uq);
-	*out_KP_d = KP_d;
-	*out_idref = set_i_d;
-	*out_status = status_d||status_q;
-	*test_out_pl = 1.0f + I_sum_q;
+	bool reset = reset_PL||axi_reset;
+	*ud_ref = uz_PI_Controller_sample_parallel(axi_id_reference, id_actual, axi_sampletime, axi_id_KI, axi_id_KP, axi_limit, reset, &I_sum_d);
+	*uq_ref = uz_PI_Controller_sample_parallel(axi_iq_reference, iq_actual, axi_sampletime, axi_iq_KI, axi_iq_KP, axi_limit, reset, &I_sum_q);
 }
 
 
-
-bool uz_PI_Controller_sample_parallel(float referenceValue, float actualValue, float sampletime, const float KI, const float KP, float limit, bool reset, float *I_sum, float *out){
+float uz_PI_Controller_sample_parallel(float referenceValue, float actualValue, float sampletime, const float KI, const float KP, float limit, bool reset, float *I_sum){
+#pragma HLS PIPELINE II=1
+	float error, P_sum, preIntegrator, preLimit, out;
 	if(reset){
 		*I_sum = 0.0f;
-		*out = 0.0f;
-		return true;
+		out = 0.0f;
 	}else{
-		float error = referenceValue - actualValue;
-		float P_sum = error * KP;
-		float preIntegrator = error * KI;
-		*out = *I_sum + P_sum;
-		if(*out > limit)
-			*out = limit;
-		else if(*out < -1*limit){
-			*out = -1*limit;
-		}
+		error = referenceValue - actualValue;
+		P_sum = error * KP;
+		preIntegrator = error * KI;
 		*I_sum += preIntegrator * sampletime;
-		return false;
+		preLimit = *I_sum + P_sum;
+		out = limit_value(preLimit, limit);
 	}
+	return out;
+}
+
+float limit_value(float value, float limit){
+	if(value > limit)
+		value = limit;
+	else if(value < -1*limit){
+		value = -1*limit;
+	}
+	return value;
 }

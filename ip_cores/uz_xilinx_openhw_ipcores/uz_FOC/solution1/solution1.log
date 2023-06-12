@@ -220,3 +220,438 @@ INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
 INFO: [HLS 200-802] Generated output file uz_FOC/solution1/impl/export.zip
 INFO: [HLS 200-111] Finished Command export_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 366.466 seconds; current allocated memory: 8.676 MB.
 INFO: [HLS 200-112] Total CPU user time: 5 seconds. Total CPU system time: 2 seconds. Total elapsed time: 381.133 seconds; peak allocated memory: 685.871 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.123 seconds; current allocated memory: 0.250 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.915 seconds; peak allocated memory: 677.340 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.572 seconds; current allocated memory: 0.227 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.322 seconds; peak allocated memory: 677.664 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 6.049 seconds; current allocated memory: 0.336 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 20.913 seconds; peak allocated memory: 677.062 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+ERROR: [SIM 211-100] 'csim_design' failed: compilation error(s).
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.537 seconds; current allocated memory: 0.230 MB.
+INFO: [HLS 200-112] Total CPU user time: 3 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.181 seconds; peak allocated memory: 682.664 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csim_design -clean -quiet 
+INFO: [SIM 211-2] *************** CSIM start ***************
+INFO: [SIM 211-4] CSIM will launch GCC as the compiler.
+INFO: [SIM 211-1] CSim done with 0 errors.
+INFO: [SIM 211-3] *************** CSIM finish ***************
+INFO: [HLS 200-111] Finished Command csim_design CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.984 seconds; current allocated memory: 0.336 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 1 seconds. Total elapsed time: 15.696 seconds; peak allocated memory: 677.035 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csynth_design 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.069 seconds; current allocated memory: 677.523 MB.
+INFO: [HLS 200-10] Analyzing design file 'uz_FOC/uz_FOC.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.939 seconds; current allocated memory: 678.031 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 214-178] Inlining function 'limit_value(float, float)' into 'uz_PI_Controller_sample_parallel(float, float, float, float, float, float, bool, float*)' (uz_FOC/uz_FOC.cpp:34:0)
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 4.248 seconds; current allocated memory: 679.125 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.003 seconds; current allocated memory: 679.125 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.081 seconds; current allocated memory: 683.941 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.036 seconds; current allocated memory: 685.188 MB.
+INFO: [XFORM 203-401] Performing if-conversion on hyperblock from (uz_FOC/uz_FOC.cpp:35:9) to (uz_FOC/uz_FOC.cpp:48:2) in function 'uz_PI_Controller_sample_parallel'... converting 4 basic blocks.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.079 seconds; current allocated memory: 706.051 MB.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.06 seconds; current allocated memory: 708.203 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'uz_FOC' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_PI_Controller_sample_parallel' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining function 'uz_PI_Controller_sample_parallel'.
+INFO: [HLS 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 20, function 'uz_PI_Controller_sample_parallel'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.281 seconds; current allocated memory: 712.566 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.183 seconds; current allocated memory: 713.980 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_FOC' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.203 seconds; current allocated memory: 715.047 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.181 seconds; current allocated memory: 715.379 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_PI_Controller_sample_parallel' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [RTGEN 206-100] Generating core module 'fadd_32ns_32ns_32_4_full_dsp_1': 2 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fcmp_32ns_32ns_1_2_no_dsp_1': 2 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fmul_32ns_32ns_32_3_max_dsp_1': 3 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fsub_32ns_32ns_32_4_full_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_PI_Controller_sample_parallel'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.329 seconds; current allocated memory: 717.574 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_FOC' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_reference' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_reference' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_sampletime' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_KI' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_KP' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_KI' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_KP' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_limit' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_reset' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/id_actual' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/iq_actual' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/reset_PL' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/ud_ref' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'ud_ref' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/uq_ref' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'uq_ref' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on function 'uz_FOC' to 'ap_ctrl_hs'.
+WARNING: [RTGEN 206-101] Register 'I_sum_d' is power-on initialization.
+WARNING: [RTGEN 206-101] Register 'I_sum_q' is power-on initialization.
+INFO: [RTGEN 206-100] Bundling port 'axi_id_reference', 'axi_iq_reference', 'axi_sampletime', 'axi_id_KI', 'axi_id_KP', 'axi_iq_KI', 'axi_iq_KP', 'axi_limit' and 'axi_reset' to AXI-Lite port control.
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_FOC'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.655 seconds; current allocated memory: 720.309 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.771 seconds; current allocated memory: 725.078 MB.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.795 seconds; current allocated memory: 729.848 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for uz_FOC.
+INFO: [VLOG 209-307] Generating Verilog RTL for uz_FOC.
+INFO: [HLS 200-789] **** Estimated Fmax: 142.53 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 9.932 seconds; current allocated memory: 52.609 MB.
+INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 24.787 seconds; peak allocated memory: 730.191 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: cosim_design 
+INFO: [COSIM 212-47] Using XSIM for RTL simulation.
+INFO: [COSIM 212-14] Instrumenting C test bench ...
+INFO: [COSIM 212-302] Starting C TB testing ... 
+INFO: [COSIM 212-333] Generating C post check test bench ...
+INFO: [COSIM 212-12] Generating RTL test bench ...
+INFO: [COSIM 212-1] *** C/RTL co-simulation file generation completed. ***
+INFO: [COSIM 212-323] Starting verilog simulation. 
+INFO: [COSIM 212-15] Starting XSIM ...
+INFO: [COSIM 212-316] Starting C post checking ...
+INFO: [COSIM 212-1000] *** C/RTL co-simulation finished: PASS ***
+INFO: [HLS 200-111] Finished Command cosim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 53.257 seconds; current allocated memory: 7.449 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 68.07 seconds; peak allocated memory: 684.488 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: csynth_design 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.064 seconds; current allocated memory: 677.148 MB.
+INFO: [HLS 200-10] Analyzing design file 'uz_FOC/uz_FOC.cpp' ... 
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 1.19 seconds; current allocated memory: 677.734 MB.
+INFO: [HLS 200-777] Using interface defaults for 'Vivado' flow target.
+INFO: [HLS 214-178] Inlining function 'limit_value(float, float)' into 'uz_PI_Controller_sample_parallel(float, float, float, float, float, float, bool, float*)' (uz_FOC/uz_FOC.cpp:34:0)
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 0 seconds. CPU system time: 1 seconds. Elapsed time: 3.736 seconds; current allocated memory: 678.898 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.003 seconds; current allocated memory: 678.898 MB.
+INFO: [HLS 200-10] Starting code transformations ...
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.026 seconds; current allocated memory: 683.902 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.023 seconds; current allocated memory: 685.441 MB.
+INFO: [XFORM 203-401] Performing if-conversion on hyperblock from (uz_FOC/uz_FOC.cpp:35:9) to (uz_FOC/uz_FOC.cpp:48:2) in function 'uz_PI_Controller_sample_parallel'... converting 4 basic blocks.
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.055 seconds; current allocated memory: 706.137 MB.
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.04 seconds; current allocated memory: 708.363 MB.
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO: [HLS 200-10] Synthesizing 'uz_FOC' ...
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_PI_Controller_sample_parallel' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining function 'uz_PI_Controller_sample_parallel'.
+INFO: [HLS 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 20, function 'uz_PI_Controller_sample_parallel'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.188 seconds; current allocated memory: 712.562 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.17 seconds; current allocated memory: 713.852 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'uz_FOC' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.201 seconds; current allocated memory: 714.730 MB.
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.176 seconds; current allocated memory: 715.051 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_PI_Controller_sample_parallel' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [RTGEN 206-100] Generating core module 'fadd_32ns_32ns_32_4_full_dsp_1': 2 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fcmp_32ns_32ns_1_2_no_dsp_1': 2 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fmul_32ns_32ns_32_3_max_dsp_1': 3 instance(s).
+INFO: [RTGEN 206-100] Generating core module 'fsub_32ns_32ns_32_4_full_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_PI_Controller_sample_parallel'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.26 seconds; current allocated memory: 717.344 MB.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'uz_FOC' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_reference' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_reference' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_sampletime' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_KI' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_id_KP' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_KI' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_iq_KP' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_limit' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/axi_reset' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/id_actual' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/iq_actual' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/reset_PL' to 'ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/ud_ref' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'ud_ref' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on port 'uz_FOC/uq_ref' to 'ap_none'.
+WARNING: [RTGEN 206-101] Port 'uq_ref' with mode 'ap_none' may require an associated data valid signal to correctly communicate with other blocks or a test bench; automatic C/RTL co-simulation may not be able to verify such a port.
+INFO: [RTGEN 206-500] Setting interface mode on function 'uz_FOC' to 'ap_ctrl_hs'.
+WARNING: [RTGEN 206-101] Register 'I_sum_d' is power-on initialization.
+WARNING: [RTGEN 206-101] Register 'I_sum_q' is power-on initialization.
+INFO: [RTGEN 206-100] Bundling port 'axi_id_reference', 'axi_iq_reference', 'axi_sampletime', 'axi_id_KI', 'axi_id_KP', 'axi_iq_KI', 'axi_iq_KP', 'axi_limit' and 'axi_reset' to AXI-Lite port control.
+INFO: [RTGEN 206-100] Finished creating RTL model for 'uz_FOC'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.63 seconds; current allocated memory: 720.043 MB.
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.727 seconds; current allocated memory: 725.418 MB.
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 1 seconds. CPU system time: 0 seconds. Elapsed time: 0.797 seconds; current allocated memory: 729.680 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for uz_FOC.
+INFO: [VLOG 209-307] Generating Verilog RTL for uz_FOC.
+INFO: [HLS 200-789] **** Estimated Fmax: 142.53 MHz
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 3 seconds. CPU system time: 1 seconds. Elapsed time: 8.307 seconds; current allocated memory: 53.008 MB.
+INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 22.956 seconds; peak allocated memory: 730.223 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: cosim_design 
+INFO: [COSIM 212-47] Using XSIM for RTL simulation.
+INFO: [COSIM 212-14] Instrumenting C test bench ...
+INFO: [COSIM 212-302] Starting C TB testing ... 
+INFO: [COSIM 212-333] Generating C post check test bench ...
+INFO: [COSIM 212-12] Generating RTL test bench ...
+INFO: [COSIM 212-1] *** C/RTL co-simulation file generation completed. ***
+INFO: [COSIM 212-323] Starting verilog simulation. 
+INFO: [COSIM 212-15] Starting XSIM ...
+INFO: [COSIM 212-316] Starting C post checking ...
+INFO: [COSIM 212-1000] *** C/RTL co-simulation finished: PASS ***
+INFO: [HLS 200-111] Finished Command cosim_design CPU user time: 1 seconds. CPU system time: 1 seconds. Elapsed time: 44.84 seconds; current allocated memory: 7.434 MB.
+INFO: [HLS 200-112] Total CPU user time: 4 seconds. Total CPU system time: 2 seconds. Total elapsed time: 59.577 seconds; peak allocated memory: 684.477 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: export_design -rtl vhdl -format ip_catalog 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
+INFO: [HLS 200-802] Generated output file uz_FOC/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 323.6 seconds; current allocated memory: 8.145 MB.
+INFO: [HLS 200-112] Total CPU user time: 5 seconds. Total CPU system time: 2 seconds. Total elapsed time: 338.26 seconds; peak allocated memory: 685.832 MB.
+==============================================================
+Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
+Tool Version Limit: 2019.12
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+==============================================================
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+INFO: [HLS 200-1611] Setting target device to 'xck26-sfvc784-2LV-c'
+INFO: [HLS 200-1505] Using flow_target 'vivado'
+INFO: [HLS 200-1464] Running solution command: config_export -flow=syn
+INFO: [HLS 200-1464] Running solution command: config_export -format=ip_catalog
+INFO: [HLS 200-1464] Running solution command: config_export -rtl=vhdl
+INFO: [HLS 200-1464] Running solution command: config_export -vivado_clock=100MHz
+INFO: [HLS 200-1510] Running: set_part xck26-sfvc784-2LV-c 
+INFO: [HLS 200-1510] Running: create_clock -period 100MHz -name default 
+INFO: [HLS 200-1510] Running: config_export -flow syn -format ip_catalog -rtl vhdl -vivado_clock 100MHz 
+INFO: [HLS 200-1510] Running: source ./uz_FOC/solution1/directives.tcl
+INFO: [HLS 200-1510] Running: set_directive_top -name uz_FOC uz_FOC 
+INFO: [HLS 200-1510] Running: export_design -flow syn -rtl vhdl -format ip_catalog 
+INFO: [IMPL 213-8] Exporting RTL as a Vivado IP.
+INFO: [IMPL 213-8] Starting RTL evaluation using Vivado ...
+INFO: [HLS 200-802] Generated output file uz_FOC/solution1/impl/export.zip
+INFO: [HLS 200-111] Finished Command export_design CPU user time: 2 seconds. CPU system time: 1 seconds. Elapsed time: 332.524 seconds; current allocated memory: 9.031 MB.
+INFO: [HLS 200-112] Total CPU user time: 6 seconds. Total CPU system time: 2 seconds. Total elapsed time: 347.536 seconds; peak allocated memory: 686.000 MB.

@@ -9,39 +9,39 @@
   "ResetStyle": "control",
   "Target": {
     "Family": "zynquplus",
-    "Device": "xczu9eg",
-    "Package": "-ffvc900",
-    "Speed": "-1-e",
+    "Device": "xck26",
+    "Package": "-sfvc784",
+    "Speed": "-2LV-c",
     "Triple": "fpga64-xilinx-none"
   },
   "Args": {
-    "actual_id": {
+    "axi_id_reference": {
       "index": "0",
       "direction": "in",
       "srcType": "float",
       "srcSize": "32",
       "hwRefs": [{
-          "type": "port",
-          "interface": "actual_id",
-          "name": "actual_id",
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_id_reference",
           "usage": "data",
           "direction": "in"
         }]
     },
-    "actual_iq": {
+    "axi_iq_reference": {
       "index": "1",
       "direction": "in",
       "srcType": "float",
       "srcSize": "32",
       "hwRefs": [{
-          "type": "port",
-          "interface": "actual_iq",
-          "name": "actual_iq",
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_iq_reference",
           "usage": "data",
           "direction": "in"
         }]
     },
-    "sampletime": {
+    "axi_sampletime": {
       "index": "2",
       "direction": "in",
       "srcType": "float",
@@ -49,13 +49,117 @@
       "hwRefs": [{
           "type": "register",
           "interface": "s_axi_control",
-          "name": "sampletime",
+          "name": "axi_sampletime",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_id_KI": {
+      "index": "3",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_id_KI",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_id_KP": {
+      "index": "4",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_id_KP",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_iq_KI": {
+      "index": "5",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_iq_KI",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_iq_KP": {
+      "index": "6",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_iq_KP",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_limit": {
+      "index": "7",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_limit",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "axi_reset": {
+      "index": "8",
+      "direction": "in",
+      "srcType": "bool",
+      "srcSize": "1",
+      "hwRefs": [{
+          "type": "register",
+          "interface": "s_axi_control",
+          "name": "axi_reset",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "id_actual": {
+      "index": "9",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "port",
+          "interface": "id_actual",
+          "name": "id_actual",
+          "usage": "data",
+          "direction": "in"
+        }]
+    },
+    "iq_actual": {
+      "index": "10",
+      "direction": "in",
+      "srcType": "float",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "port",
+          "interface": "iq_actual",
+          "name": "iq_actual",
           "usage": "data",
           "direction": "in"
         }]
     },
     "reset_PL": {
-      "index": "3",
+      "index": "11",
       "direction": "in",
       "srcType": "bool",
       "srcSize": "1",
@@ -67,211 +171,28 @@
           "direction": "in"
         }]
     },
-    "ref_ud": {
-      "index": "4",
-      "direction": "out",
-      "srcType": "float*",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "port",
-          "interface": "ref_ud",
-          "name": "ref_ud",
-          "usage": "data",
-          "direction": "out"
-        }]
-    },
-    "ref_uq": {
-      "index": "5",
-      "direction": "out",
-      "srcType": "float*",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "port",
-          "interface": "ref_uq",
-          "name": "ref_uq",
-          "usage": "data",
-          "direction": "out"
-        }]
-    },
-    "set_i_d": {
-      "index": "6",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "set_i_d",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "set_i_q": {
-      "index": "7",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "set_i_q",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "KP_d": {
-      "index": "8",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "KP_d",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "KI_d": {
-      "index": "9",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "KI_d",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "KP_q": {
-      "index": "10",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "KP_q",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "KI_q": {
-      "index": "11",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "KI_q",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "reset_PS": {
+    "ud_ref": {
       "index": "12",
-      "direction": "in",
-      "srcType": "bool",
-      "srcSize": "1",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "reset_PS",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "limit": {
-      "index": "13",
-      "direction": "in",
-      "srcType": "float",
-      "srcSize": "32",
-      "hwRefs": [{
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "limit",
-          "usage": "data",
-          "direction": "in"
-        }]
-    },
-    "out_KP_d": {
-      "index": "14",
-      "direction": "out",
-      "srcType": "float*",
-      "srcSize": "32",
-      "hwRefs": [
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_KP_d",
-          "usage": "data",
-          "direction": "out"
-        },
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_KP_d_ctrl",
-          "usage": "control",
-          "direction": "out"
-        }
-      ]
-    },
-    "out_idref": {
-      "index": "15",
-      "direction": "out",
-      "srcType": "float*",
-      "srcSize": "32",
-      "hwRefs": [
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_idref",
-          "usage": "data",
-          "direction": "out"
-        },
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_idref_ctrl",
-          "usage": "control",
-          "direction": "out"
-        }
-      ]
-    },
-    "out_status": {
-      "index": "16",
-      "direction": "out",
-      "srcType": "bool*",
-      "srcSize": "1",
-      "hwRefs": [
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_status",
-          "usage": "data",
-          "direction": "out"
-        },
-        {
-          "type": "register",
-          "interface": "s_axi_control",
-          "name": "out_status_ctrl",
-          "usage": "control",
-          "direction": "out"
-        }
-      ]
-    },
-    "test_out_pl": {
-      "index": "17",
       "direction": "out",
       "srcType": "float*",
       "srcSize": "32",
       "hwRefs": [{
           "type": "port",
-          "interface": "test_out_pl",
-          "name": "test_out_pl",
+          "interface": "ud_ref",
+          "name": "ud_ref",
+          "usage": "data",
+          "direction": "out"
+        }]
+    },
+    "uq_ref": {
+      "index": "13",
+      "direction": "out",
+      "srcType": "float*",
+      "srcSize": "32",
+      "hwRefs": [{
+          "type": "port",
+          "interface": "uq_ref",
+          "name": "uq_ref",
           "usage": "data",
           "direction": "out"
         }]
@@ -280,11 +201,12 @@
   "HlsSolution": {
     "FlowTarget": "vivado",
     "ConfigTcl": [
+      "config_export -flow=syn",
       "config_export -format=ip_catalog",
       "config_export -rtl=vhdl",
-      "config_export -vivado_clock=100MHz",
-      "config_export -flow=syn"
+      "config_export -vivado_clock=100MHz"
     ],
+    "DirectiveTcl": ["set_directive_top uz_FOC -name uz_FOC"],
     "ProfileOption": "0",
     "ProfileType": "none",
     "KernelName": "uz_FOC"
@@ -294,8 +216,8 @@
     "ClockPeriod": "10",
     "Uncertainty": "2.7",
     "IsCombinational": "0",
-    "II": "2 ~ 47",
-    "Latency": "1"
+    "II": "22",
+    "Latency": "21"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
   "Ipx": {
@@ -304,7 +226,7 @@
     "Name": "uz_FOC",
     "Version": "1.0",
     "DisplayName": "Uz_foc",
-    "Revision": "2113061635",
+    "Revision": "2113071851",
     "Description": "An IP generated by Vitis HLS",
     "Taxonomy": "\/VITIS_HLS_IP",
     "AutoFamilySupport": "",
@@ -313,17 +235,22 @@
   "Files": {
     "CSource": ["..\/uz_FOC.cpp"],
     "Vhdl": [
+      "impl\/vhdl\/implsyn.bat",
       "impl\/vhdl\/uz_FOC_control_s_axi.vhd",
-      "impl\/vhdl\/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.vhd",
+      "impl\/vhdl\/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.vhd",
       "impl\/vhdl\/uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1.vhd",
-      "impl\/vhdl\/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.vhd",
+      "impl\/vhdl\/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.vhd",
+      "impl\/vhdl\/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.vhd",
+      "impl\/vhdl\/uz_FOC_uz_PI_Controller_sample_parallel.vhd",
       "impl\/vhdl\/uz_FOC.vhd"
     ],
     "Verilog": [
       "impl\/verilog\/uz_FOC_control_s_axi.v",
-      "impl\/verilog\/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.v",
+      "impl\/verilog\/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.v",
       "impl\/verilog\/uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1.v",
-      "impl\/verilog\/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.v",
+      "impl\/verilog\/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.v",
+      "impl\/verilog\/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.v",
+      "impl\/verilog\/uz_FOC_uz_PI_Controller_sample_parallel.v",
       "impl\/verilog\/uz_FOC.v"
     ],
     "SwDriver": [
@@ -338,9 +265,10 @@
     ],
     "IpMisc": ["impl\/misc\/logo.png"],
     "Subcore": [
-      "impl\/misc\/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip.tcl",
+      "impl\/misc\/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip.tcl",
       "impl\/misc\/uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip.tcl",
-      "impl\/misc\/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip.tcl"
+      "impl\/misc\/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip.tcl",
+      "impl\/misc\/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip.tcl"
     ],
     "CsynthXml": "syn\/report\/csynth.xml",
     "DebugDir": ".debug",
@@ -354,9 +282,9 @@
     "HasClockedDsp": false,
     "Ip": [
       {
-        "Name": "uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip",
+        "Name": "uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip",
         "Vlnv": "xilinx.com:ip:floating_point:7.1",
-        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Both CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 3 CONFIG.c_mult_usage Full_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Add_Subtract CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
+        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Add CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 2 CONFIG.c_mult_usage Full_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Add_Subtract CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
       },
       {
         "Name": "uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip",
@@ -364,9 +292,14 @@
         "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Both CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 0 CONFIG.c_mult_usage No_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 1 CONFIG.c_result_fraction_width 0 CONFIG.component_name uz_FOC_fcmp_32ns_32ns_1_2_no_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken false CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Compare CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
       },
       {
-        "Name": "uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip",
+        "Name": "uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip",
         "Vlnv": "xilinx.com:ip:floating_point:7.1",
-        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Both CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 2 CONFIG.c_mult_usage Max_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Multiply CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
+        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Both CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 1 CONFIG.c_mult_usage Max_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Multiply CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
+      },
+      {
+        "Name": "uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip",
+        "Vlnv": "xilinx.com:ip:floating_point:7.1",
+        "Params": "CONFIG.a_precision_type Single CONFIG.a_tuser_width 1 CONFIG.add_sub_value Subtract CONFIG.b_tuser_width 1 CONFIG.c_a_exponent_width 8 CONFIG.c_a_fraction_width 24 CONFIG.c_compare_operation Programmable CONFIG.c_has_divide_by_zero false CONFIG.c_has_invalid_op false CONFIG.c_has_overflow false CONFIG.c_has_underflow false CONFIG.c_latency 2 CONFIG.c_mult_usage Full_Usage CONFIG.c_optimization Speed_Optimized CONFIG.c_rate 1 CONFIG.c_result_exponent_width 8 CONFIG.c_result_fraction_width 24 CONFIG.component_name uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip CONFIG.flow_control NonBlocking CONFIG.has_a_tlast false CONFIG.has_a_tuser false CONFIG.has_aclken true CONFIG.has_aresetn false CONFIG.has_b_tlast false CONFIG.has_b_tuser false CONFIG.has_operation_tlast false CONFIG.has_operation_tuser false CONFIG.has_result_tready false CONFIG.maximum_latency false CONFIG.operation_tuser_width 1 CONFIG.operation_type Add_Subtract CONFIG.result_precision_type Single CONFIG.result_tlast_behv Null"
       }
     ]
   },
@@ -401,249 +334,129 @@
       "registers": [
         {
           "offset": "0x10",
-          "name": "sampletime",
+          "name": "axi_id_reference",
           "access": "W",
-          "description": "Data signal of sampletime",
+          "description": "Data signal of axi_id_reference",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "sampletime",
+              "name": "axi_id_reference",
               "access": "W",
-              "description": "Bit 31 to 0 of sampletime"
+              "description": "Bit 31 to 0 of axi_id_reference"
             }]
         },
         {
           "offset": "0x18",
-          "name": "set_i_d",
+          "name": "axi_iq_reference",
           "access": "W",
-          "description": "Data signal of set_i_d",
+          "description": "Data signal of axi_iq_reference",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "set_i_d",
+              "name": "axi_iq_reference",
               "access": "W",
-              "description": "Bit 31 to 0 of set_i_d"
+              "description": "Bit 31 to 0 of axi_iq_reference"
             }]
         },
         {
           "offset": "0x20",
-          "name": "set_i_q",
+          "name": "axi_sampletime",
           "access": "W",
-          "description": "Data signal of set_i_q",
+          "description": "Data signal of axi_sampletime",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "set_i_q",
+              "name": "axi_sampletime",
               "access": "W",
-              "description": "Bit 31 to 0 of set_i_q"
+              "description": "Bit 31 to 0 of axi_sampletime"
             }]
         },
         {
           "offset": "0x28",
-          "name": "KP_d",
+          "name": "axi_id_KI",
           "access": "W",
-          "description": "Data signal of KP_d",
+          "description": "Data signal of axi_id_KI",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "KP_d",
+              "name": "axi_id_KI",
               "access": "W",
-              "description": "Bit 31 to 0 of KP_d"
+              "description": "Bit 31 to 0 of axi_id_KI"
             }]
         },
         {
           "offset": "0x30",
-          "name": "KI_d",
+          "name": "axi_id_KP",
           "access": "W",
-          "description": "Data signal of KI_d",
+          "description": "Data signal of axi_id_KP",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "KI_d",
+              "name": "axi_id_KP",
               "access": "W",
-              "description": "Bit 31 to 0 of KI_d"
+              "description": "Bit 31 to 0 of axi_id_KP"
             }]
         },
         {
           "offset": "0x38",
-          "name": "KP_q",
+          "name": "axi_iq_KI",
           "access": "W",
-          "description": "Data signal of KP_q",
+          "description": "Data signal of axi_iq_KI",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "KP_q",
+              "name": "axi_iq_KI",
               "access": "W",
-              "description": "Bit 31 to 0 of KP_q"
+              "description": "Bit 31 to 0 of axi_iq_KI"
             }]
         },
         {
           "offset": "0x40",
-          "name": "KI_q",
+          "name": "axi_iq_KP",
           "access": "W",
-          "description": "Data signal of KI_q",
+          "description": "Data signal of axi_iq_KP",
           "range": "32",
           "fields": [{
               "offset": "0",
               "width": "32",
-              "name": "KI_q",
+              "name": "axi_iq_KP",
               "access": "W",
-              "description": "Bit 31 to 0 of KI_q"
+              "description": "Bit 31 to 0 of axi_iq_KP"
             }]
         },
         {
           "offset": "0x48",
-          "name": "reset_PS",
+          "name": "axi_limit",
           "access": "W",
-          "description": "Data signal of reset_PS",
+          "description": "Data signal of axi_limit",
           "range": "32",
-          "fields": [
-            {
+          "fields": [{
               "offset": "0",
-              "width": "1",
-              "name": "reset_PS",
+              "width": "32",
+              "name": "axi_limit",
               "access": "W",
-              "description": "Bit 0 to 0 of reset_PS"
-            },
-            {
-              "offset": "1",
-              "width": "31",
-              "name": "RESERVED",
-              "access": "R",
-              "description": "Reserved.  0s on read."
-            }
-          ]
+              "description": "Bit 31 to 0 of axi_limit"
+            }]
         },
         {
           "offset": "0x50",
-          "name": "limit",
+          "name": "axi_reset",
           "access": "W",
-          "description": "Data signal of limit",
+          "description": "Data signal of axi_reset",
           "range": "32",
-          "fields": [{
+          "fields": [
+            {
               "offset": "0",
-              "width": "32",
-              "name": "limit",
+              "width": "1",
+              "name": "axi_reset",
               "access": "W",
-              "description": "Bit 31 to 0 of limit"
-            }]
-        },
-        {
-          "offset": "0x58",
-          "name": "out_KP_d",
-          "access": "R",
-          "description": "Data signal of out_KP_d",
-          "range": "32",
-          "fields": [{
-              "offset": "0",
-              "width": "32",
-              "name": "out_KP_d",
-              "access": "R",
-              "description": "Bit 31 to 0 of out_KP_d"
-            }]
-        },
-        {
-          "offset": "0x5c",
-          "name": "out_KP_d_ctrl",
-          "access": "R",
-          "description": "Control signal of out_KP_d",
-          "range": "32",
-          "fields": [
-            {
-              "offset": "0",
-              "width": "1",
-              "name": "out_KP_d_ap_vld",
-              "access": "R",
-              "description": "Control signal out_KP_d_ap_vld"
-            },
-            {
-              "offset": "1",
-              "width": "31",
-              "name": "RESERVED",
-              "access": "R",
-              "description": "Reserved.  0s on read."
-            }
-          ]
-        },
-        {
-          "offset": "0x68",
-          "name": "out_idref",
-          "access": "R",
-          "description": "Data signal of out_idref",
-          "range": "32",
-          "fields": [{
-              "offset": "0",
-              "width": "32",
-              "name": "out_idref",
-              "access": "R",
-              "description": "Bit 31 to 0 of out_idref"
-            }]
-        },
-        {
-          "offset": "0x6c",
-          "name": "out_idref_ctrl",
-          "access": "R",
-          "description": "Control signal of out_idref",
-          "range": "32",
-          "fields": [
-            {
-              "offset": "0",
-              "width": "1",
-              "name": "out_idref_ap_vld",
-              "access": "R",
-              "description": "Control signal out_idref_ap_vld"
-            },
-            {
-              "offset": "1",
-              "width": "31",
-              "name": "RESERVED",
-              "access": "R",
-              "description": "Reserved.  0s on read."
-            }
-          ]
-        },
-        {
-          "offset": "0x78",
-          "name": "out_status",
-          "access": "R",
-          "description": "Data signal of out_status",
-          "range": "32",
-          "fields": [
-            {
-              "offset": "0",
-              "width": "1",
-              "name": "out_status",
-              "access": "R",
-              "description": "Bit 0 to 0 of out_status"
-            },
-            {
-              "offset": "1",
-              "width": "31",
-              "name": "RESERVED",
-              "access": "R",
-              "description": "Reserved.  0s on read."
-            }
-          ]
-        },
-        {
-          "offset": "0x7c",
-          "name": "out_status_ctrl",
-          "access": "R",
-          "description": "Control signal of out_status",
-          "range": "32",
-          "fields": [
-            {
-              "offset": "0",
-              "width": "1",
-              "name": "out_status_ap_vld",
-              "access": "R",
-              "description": "Control signal out_status_ap_vld"
+              "description": "Bit 0 to 0 of axi_reset"
             },
             {
               "offset": "1",
@@ -661,84 +474,63 @@
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "16",
-          "argName": "sampletime"
+          "argName": "axi_id_reference"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "24",
-          "argName": "set_i_d"
+          "argName": "axi_iq_reference"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "32",
-          "argName": "set_i_q"
+          "argName": "axi_sampletime"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "40",
-          "argName": "KP_d"
+          "argName": "axi_id_KI"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "48",
-          "argName": "KI_d"
+          "argName": "axi_id_KP"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "56",
-          "argName": "KP_q"
+          "argName": "axi_iq_KI"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "64",
-          "argName": "KI_q"
+          "argName": "axi_iq_KP"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "72",
-          "argName": "reset_PS"
+          "argName": "axi_limit"
         },
         {
           "constraint_type": "pragma interface",
           "mode": "s_axilite",
           "register_option": "0",
           "offset": "80",
-          "argName": "limit"
-        },
-        {
-          "constraint_type": "pragma interface",
-          "mode": "s_axilite",
-          "register_option": "0",
-          "offset": "88",
-          "argName": "out_KP_d"
-        },
-        {
-          "constraint_type": "pragma interface",
-          "mode": "s_axilite",
-          "register_option": "0",
-          "offset": "104",
-          "argName": "out_idref"
-        },
-        {
-          "constraint_type": "pragma interface",
-          "mode": "s_axilite",
-          "register_option": "0",
-          "offset": "120",
-          "argName": "out_status"
+          "argName": "axi_reset"
         }
       ]
     },
@@ -778,34 +570,34 @@
         "ap_start"
       ]
     },
-    "actual_id": {
+    "id_actual": {
       "type": "data",
       "busTypeName": "data",
       "protocol": "ap_none",
       "mode": "slave",
       "dataWidth": "32",
-      "portMap": {"actual_id": "DATA"},
-      "ports": ["actual_id"],
+      "portMap": {"id_actual": "DATA"},
+      "ports": ["id_actual"],
       "constraints": [{
           "constraint_type": "pragma interface",
           "mode": "ap_none",
           "register_option": "0",
-          "argName": "actual_id"
+          "argName": "id_actual"
         }]
     },
-    "actual_iq": {
+    "iq_actual": {
       "type": "data",
       "busTypeName": "data",
       "protocol": "ap_none",
       "mode": "slave",
       "dataWidth": "32",
-      "portMap": {"actual_iq": "DATA"},
-      "ports": ["actual_iq"],
+      "portMap": {"iq_actual": "DATA"},
+      "ports": ["iq_actual"],
       "constraints": [{
           "constraint_type": "pragma interface",
           "mode": "ap_none",
           "register_option": "0",
-          "argName": "actual_iq"
+          "argName": "iq_actual"
         }]
     },
     "reset_PL": {
@@ -823,49 +615,34 @@
           "argName": "reset_PL"
         }]
     },
-    "ref_ud": {
+    "ud_ref": {
       "type": "data",
       "busTypeName": "data",
       "protocol": "ap_none",
       "mode": "master",
       "dataWidth": "32",
-      "portMap": {"ref_ud": "DATA"},
-      "ports": ["ref_ud"],
+      "portMap": {"ud_ref": "DATA"},
+      "ports": ["ud_ref"],
       "constraints": [{
           "constraint_type": "pragma interface",
           "mode": "ap_none",
           "register_option": "0",
-          "argName": "ref_ud"
+          "argName": "ud_ref"
         }]
     },
-    "ref_uq": {
+    "uq_ref": {
       "type": "data",
       "busTypeName": "data",
       "protocol": "ap_none",
       "mode": "master",
       "dataWidth": "32",
-      "portMap": {"ref_uq": "DATA"},
-      "ports": ["ref_uq"],
+      "portMap": {"uq_ref": "DATA"},
+      "ports": ["uq_ref"],
       "constraints": [{
           "constraint_type": "pragma interface",
           "mode": "ap_none",
           "register_option": "0",
-          "argName": "ref_uq"
-        }]
-    },
-    "test_out_pl": {
-      "type": "data",
-      "busTypeName": "data",
-      "protocol": "ap_none",
-      "mode": "master",
-      "dataWidth": "32",
-      "portMap": {"test_out_pl": "DATA"},
-      "ports": ["test_out_pl"],
-      "constraints": [{
-          "constraint_type": "pragma interface",
-          "mode": "ap_none",
-          "register_option": "0",
-          "argName": "test_out_pl"
+          "argName": "uq_ref"
         }]
     }
   },
@@ -962,11 +739,11 @@
       "dir": "out",
       "width": "1"
     },
-    "actual_id": {
+    "id_actual": {
       "dir": "in",
       "width": "32"
     },
-    "actual_iq": {
+    "iq_actual": {
       "dir": "in",
       "width": "32"
     },
@@ -974,67 +751,116 @@
       "dir": "in",
       "width": "1"
     },
-    "ref_ud": {
+    "ud_ref": {
       "dir": "out",
       "width": "32"
     },
-    "ref_uq": {
-      "dir": "out",
-      "width": "32"
-    },
-    "test_out_pl": {
+    "uq_ref": {
       "dir": "out",
       "width": "32"
     }
   },
   "ModuleInfo": {
-    "Hierarchy": {"ModuleName": "uz_FOC"},
-    "Info": {"uz_FOC": {
+    "Hierarchy": {
+      "ModuleName": "uz_FOC",
+      "Instances": [
+        {
+          "ModuleName": "uz_PI_Controller_sample_parallel",
+          "InstanceName": "grp_uz_PI_Controller_sample_parallel_fu_170"
+        },
+        {
+          "ModuleName": "uz_PI_Controller_sample_parallel",
+          "InstanceName": "grp_uz_PI_Controller_sample_parallel_fu_183"
+        }
+      ]
+    },
+    "Info": {
+      "uz_PI_Controller_sample_parallel": {
+        "FunctionProtocol": "ap_ctrl_hs",
+        "isTaskLevelControl": "0",
+        "isPipelined": "1",
+        "isCombinational": "0",
+        "isOneStateSeq": "0"
+      },
+      "uz_FOC": {
         "FunctionProtocol": "ap_ctrl_hs",
         "isTaskLevelControl": "0",
         "isPipelined": "0",
         "isCombinational": "0",
         "isOneStateSeq": "0"
-      }},
-    "Metrics": {"uz_FOC": {
+      }
+    },
+    "Metrics": {
+      "uz_PI_Controller_sample_parallel": {
         "Latency": {
-          "LatencyBest": "1",
-          "LatencyAvg": "24",
-          "LatencyWorst": "46",
-          "PipelineIIMin": "2",
-          "PipelineIIMax": "47",
-          "PipelineII": "2 ~ 47",
+          "LatencyBest": "19",
+          "LatencyAvg": "19",
+          "LatencyWorst": "19",
+          "PipelineII": "1",
+          "PipelineDepth": "20",
+          "PipelineType": "yes"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "2.70",
+          "Estimate": "7.016"
+        },
+        "Area": {
+          "DSP": "15",
+          "AVAIL_DSP": "1248",
+          "UTIL_DSP": "1",
+          "FF": "2222",
+          "AVAIL_FF": "234240",
+          "UTIL_FF": "~0",
+          "LUT": "1547",
+          "AVAIL_LUT": "117120",
+          "UTIL_LUT": "1",
+          "BRAM_18K": "0",
+          "AVAIL_BRAM": "288",
+          "UTIL_BRAM": "0",
+          "URAM": "0",
+          "AVAIL_URAM": "64",
+          "UTIL_URAM": "0"
+        }
+      },
+      "uz_FOC": {
+        "Latency": {
+          "LatencyBest": "21",
+          "LatencyAvg": "21",
+          "LatencyWorst": "21",
+          "PipelineII": "22",
           "PipelineDepth": "",
           "PipelineType": "no"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "2.70",
-          "Estimate": "7.485"
+          "Estimate": "7.016"
         },
         "Area": {
           "BRAM_18K": "0",
-          "AVAIL_BRAM": "1824",
+          "AVAIL_BRAM": "288",
           "UTIL_BRAM": "0",
-          "DSP": "8",
-          "AVAIL_DSP": "2520",
-          "UTIL_DSP": "~0",
-          "FF": "1579",
-          "AVAIL_FF": "548160",
-          "UTIL_FF": "~0",
-          "LUT": "1842",
-          "AVAIL_LUT": "274080",
-          "UTIL_LUT": "~0",
+          "DSP": "30",
+          "AVAIL_DSP": "1248",
+          "UTIL_DSP": "2",
+          "FF": "5128",
+          "AVAIL_FF": "234240",
+          "UTIL_FF": "2",
+          "LUT": "3766",
+          "AVAIL_LUT": "117120",
+          "UTIL_LUT": "3",
           "URAM": "0",
-          "AVAIL_URAM": "0",
+          "AVAIL_URAM": "64",
           "UTIL_URAM": "0"
         }
-      }}
+      }
+    }
   },
   "GenerateBdFiles": "0",
   "GenData": {
     "DataVersion": "0.2",
-    "Time": "2023-06-05 08:55:38 +0200",
+    "Time": "2023-06-12 11:11:14 +0200",
     "ToolName": "vitis_hls",
     "ToolVersion": "2022.2"
   }

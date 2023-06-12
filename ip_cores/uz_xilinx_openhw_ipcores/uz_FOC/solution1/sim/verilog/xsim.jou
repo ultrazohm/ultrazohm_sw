@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Mon Jun 12 11:04:12 2023
+# Process ID: 22480
+# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog
+# Command line: xsim.exe -mode tcl -source {xsim.dir/uz_FOC/xsim_script.tcl}
+# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog/xsim.log
+# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog\xsim.jou
+# Running On: LAPTOP-ME665JGB, OS: Windows, CPU Frequency: 2208 MHz, CPU Physical cores: 6, Host memory: 34081 MB
+#-----------------------------------------------------------
+source xsim.dir/uz_FOC/xsim_script.tcl
+source uz_FOC.tcl

@@ -258,7 +258,7 @@
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>actual_id</spirit:name>
+      <spirit:name>id_actual</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -268,13 +268,13 @@
             <spirit:name>DATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>actual_id</spirit:name>
+            <spirit:name>id_actual</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>actual_iq</spirit:name>
+      <spirit:name>iq_actual</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data_rtl" spirit:version="1.0"/>
       <spirit:slave/>
@@ -284,7 +284,7 @@
             <spirit:name>DATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>actual_iq</spirit:name>
+            <spirit:name>iq_actual</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -306,7 +306,7 @@
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>ref_ud</spirit:name>
+      <spirit:name>ud_ref</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data_rtl" spirit:version="1.0"/>
       <spirit:master/>
@@ -316,13 +316,13 @@
             <spirit:name>DATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>ref_ud</spirit:name>
+            <spirit:name>ud_ref</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>ref_uq</spirit:name>
+      <spirit:name>uq_ref</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data_rtl" spirit:version="1.0"/>
       <spirit:master/>
@@ -332,23 +332,7 @@
             <spirit:name>DATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>ref_uq</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-      </spirit:portMaps>
-    </spirit:busInterface>
-    <spirit:busInterface>
-      <spirit:name>test_out_pl</spirit:name>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="data_rtl" spirit:version="1.0"/>
-      <spirit:master/>
-      <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>DATA</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>test_out_pl</spirit:name>
+            <spirit:name>uq_ref</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -375,9 +359,9 @@
           </spirit:parameter>
         </spirit:parameters>
         <spirit:register>
-          <spirit:name>sampletime</spirit:name>
-          <spirit:displayName>sampletime</spirit:displayName>
-          <spirit:description>Data signal of sampletime</spirit:description>
+          <spirit:name>axi_id_reference</spirit:name>
+          <spirit:displayName>axi_id_reference</spirit:displayName>
+          <spirit:description>Data signal of axi_id_reference</spirit:description>
           <spirit:addressOffset>16</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -385,8 +369,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>sampletime</spirit:name>
-            <spirit:description>Bit 31 to 0 of sampletime</spirit:description>
+            <spirit:name>axi_id_reference</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_id_reference</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -398,9 +382,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>set_i_d</spirit:name>
-          <spirit:displayName>set_i_d</spirit:displayName>
-          <spirit:description>Data signal of set_i_d</spirit:description>
+          <spirit:name>axi_iq_reference</spirit:name>
+          <spirit:displayName>axi_iq_reference</spirit:displayName>
+          <spirit:description>Data signal of axi_iq_reference</spirit:description>
           <spirit:addressOffset>24</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -408,8 +392,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>set_i_d</spirit:name>
-            <spirit:description>Bit 31 to 0 of set_i_d</spirit:description>
+            <spirit:name>axi_iq_reference</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_iq_reference</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -421,9 +405,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>set_i_q</spirit:name>
-          <spirit:displayName>set_i_q</spirit:displayName>
-          <spirit:description>Data signal of set_i_q</spirit:description>
+          <spirit:name>axi_sampletime</spirit:name>
+          <spirit:displayName>axi_sampletime</spirit:displayName>
+          <spirit:description>Data signal of axi_sampletime</spirit:description>
           <spirit:addressOffset>32</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -431,8 +415,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>set_i_q</spirit:name>
-            <spirit:description>Bit 31 to 0 of set_i_q</spirit:description>
+            <spirit:name>axi_sampletime</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_sampletime</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -444,9 +428,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>KP_d</spirit:name>
-          <spirit:displayName>KP_d</spirit:displayName>
-          <spirit:description>Data signal of KP_d</spirit:description>
+          <spirit:name>axi_id_KI</spirit:name>
+          <spirit:displayName>axi_id_KI</spirit:displayName>
+          <spirit:description>Data signal of axi_id_KI</spirit:description>
           <spirit:addressOffset>40</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -454,8 +438,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>KP_d</spirit:name>
-            <spirit:description>Bit 31 to 0 of KP_d</spirit:description>
+            <spirit:name>axi_id_KI</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_id_KI</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -467,9 +451,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>KI_d</spirit:name>
-          <spirit:displayName>KI_d</spirit:displayName>
-          <spirit:description>Data signal of KI_d</spirit:description>
+          <spirit:name>axi_id_KP</spirit:name>
+          <spirit:displayName>axi_id_KP</spirit:displayName>
+          <spirit:description>Data signal of axi_id_KP</spirit:description>
           <spirit:addressOffset>48</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -477,8 +461,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>KI_d</spirit:name>
-            <spirit:description>Bit 31 to 0 of KI_d</spirit:description>
+            <spirit:name>axi_id_KP</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_id_KP</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -490,9 +474,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>KP_q</spirit:name>
-          <spirit:displayName>KP_q</spirit:displayName>
-          <spirit:description>Data signal of KP_q</spirit:description>
+          <spirit:name>axi_iq_KI</spirit:name>
+          <spirit:displayName>axi_iq_KI</spirit:displayName>
+          <spirit:description>Data signal of axi_iq_KI</spirit:description>
           <spirit:addressOffset>56</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -500,8 +484,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>KP_q</spirit:name>
-            <spirit:description>Bit 31 to 0 of KP_q</spirit:description>
+            <spirit:name>axi_iq_KI</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_iq_KI</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -513,9 +497,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>KI_q</spirit:name>
-          <spirit:displayName>KI_q</spirit:displayName>
-          <spirit:description>Data signal of KI_q</spirit:description>
+          <spirit:name>axi_iq_KP</spirit:name>
+          <spirit:displayName>axi_iq_KP</spirit:displayName>
+          <spirit:description>Data signal of axi_iq_KP</spirit:description>
           <spirit:addressOffset>64</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -523,8 +507,8 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>KI_q</spirit:name>
-            <spirit:description>Bit 31 to 0 of KI_q</spirit:description>
+            <spirit:name>axi_iq_KP</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_iq_KP</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -536,9 +520,9 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>reset_PS</spirit:name>
-          <spirit:displayName>reset_PS</spirit:displayName>
-          <spirit:description>Data signal of reset_PS</spirit:description>
+          <spirit:name>axi_limit</spirit:name>
+          <spirit:displayName>axi_limit</spirit:displayName>
+          <spirit:description>Data signal of axi_limit</spirit:description>
           <spirit:addressOffset>72</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -546,10 +530,10 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>reset_PS</spirit:name>
-            <spirit:description>Bit 0 to 0 of reset_PS</spirit:description>
+            <spirit:name>axi_limit</spirit:name>
+            <spirit:description>Bit 31 to 0 of axi_limit</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
             <spirit:writeValueConstraint>
               <spirit:minimum>0</spirit:minimum>
@@ -557,24 +541,11 @@
             </spirit:writeValueConstraint>
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
-          <spirit:field>
-            <spirit:name>RESERVED</spirit:name>
-            <spirit:description>Reserved.  0s on read.</spirit:description>
-            <spirit:bitOffset>1</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>limit</spirit:name>
-          <spirit:displayName>limit</spirit:displayName>
-          <spirit:description>Data signal of limit</spirit:description>
+          <spirit:name>axi_reset</spirit:name>
+          <spirit:displayName>axi_reset</spirit:displayName>
+          <spirit:description>Data signal of axi_reset</spirit:description>
           <spirit:addressOffset>80</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -582,198 +553,15 @@
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>limit</spirit:name>
-            <spirit:description>Bit 31 to 0 of limit</spirit:description>
+            <spirit:name>axi_reset</spirit:name>
+            <spirit:description>Bit 0 to 0 of axi_reset</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
             <spirit:writeValueConstraint>
               <spirit:minimum>0</spirit:minimum>
               <spirit:maximum>0</spirit:maximum>
             </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_KP_d</spirit:name>
-          <spirit:displayName>out_KP_d</spirit:displayName>
-          <spirit:description>Data signal of out_KP_d</spirit:description>
-          <spirit:addressOffset>88</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_KP_d</spirit:name>
-            <spirit:description>Bit 31 to 0 of out_KP_d</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_KP_d_ctrl</spirit:name>
-          <spirit:displayName>out_KP_d_ctrl</spirit:displayName>
-          <spirit:description>Control signal of out_KP_d</spirit:description>
-          <spirit:addressOffset>92</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_KP_d_ap_vld</spirit:name>
-            <spirit:description>Control signal out_KP_d_ap_vld</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-          <spirit:field>
-            <spirit:name>RESERVED</spirit:name>
-            <spirit:description>Reserved.  0s on read.</spirit:description>
-            <spirit:bitOffset>1</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_idref</spirit:name>
-          <spirit:displayName>out_idref</spirit:displayName>
-          <spirit:description>Data signal of out_idref</spirit:description>
-          <spirit:addressOffset>104</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_idref</spirit:name>
-            <spirit:description>Bit 31 to 0 of out_idref</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_idref_ctrl</spirit:name>
-          <spirit:displayName>out_idref_ctrl</spirit:displayName>
-          <spirit:description>Control signal of out_idref</spirit:description>
-          <spirit:addressOffset>108</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_idref_ap_vld</spirit:name>
-            <spirit:description>Control signal out_idref_ap_vld</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-          <spirit:field>
-            <spirit:name>RESERVED</spirit:name>
-            <spirit:description>Reserved.  0s on read.</spirit:description>
-            <spirit:bitOffset>1</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_status</spirit:name>
-          <spirit:displayName>out_status</spirit:displayName>
-          <spirit:description>Data signal of out_status</spirit:description>
-          <spirit:addressOffset>120</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_status</spirit:name>
-            <spirit:description>Bit 0 to 0 of out_status</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-          <spirit:field>
-            <spirit:name>RESERVED</spirit:name>
-            <spirit:description>Reserved.  0s on read.</spirit:description>
-            <spirit:bitOffset>1</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>out_status_ctrl</spirit:name>
-          <spirit:displayName>out_status_ctrl</spirit:displayName>
-          <spirit:description>Control signal of out_status</spirit:description>
-          <spirit:addressOffset>124</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>read-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>out_status_ap_vld</spirit:name>
-            <spirit:description>Control signal out_status_ap_vld</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
           <spirit:field>
@@ -810,7 +598,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ff84c636</spirit:value>
+            <spirit:value>3285c4b2</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -829,7 +617,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6782036a</spirit:value>
+            <spirit:value>474055fb</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -848,7 +636,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c1f94df7</spirit:value>
+            <spirit:value>733687e4</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -867,7 +655,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>42aaefdf</spirit:value>
+            <spirit:value>3fc8945a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -881,7 +669,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>40042cf5</spirit:value>
+            <spirit:value>ccee0935</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1265,7 +1053,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>actual_id</spirit:name>
+        <spirit:name>id_actual</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -1282,7 +1070,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>actual_iq</spirit:name>
+        <spirit:name>iq_actual</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -1312,7 +1100,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ref_ud</spirit:name>
+        <spirit:name>ud_ref</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -1329,24 +1117,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>ref_uq</spirit:name>
-        <spirit:wire>
-          <spirit:direction>out</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
-          <spirit:wireTypeDefs>
-            <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
-              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
-              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
-            </spirit:wireTypeDef>
-          </spirit:wireTypeDefs>
-        </spirit:wire>
-      </spirit:port>
-      <spirit:port>
-        <spirit:name>test_out_pl</spirit:name>
+        <spirit:name>uq_ref</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -1378,7 +1149,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_verilogsynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1386,7 +1157,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ip/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1399,7 +1174,7 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1407,7 +1182,15 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_FOC_uz_PI_Controller_sample_parallel.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1433,7 +1216,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1443,7 +1226,17 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_FOC_uz_PI_Controller_sample_parallel.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1453,7 +1246,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1463,7 +1256,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ip/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1481,7 +1279,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlsynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1489,7 +1287,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ip/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1502,7 +1304,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1510,13 +1312,21 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_FOC_uz_PI_Controller_sample_parallel.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_FOC.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_07d44937</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_02709fb5</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1537,7 +1347,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1547,7 +1357,17 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/uz_FOC_uz_PI_Controller_sample_parallel.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1557,7 +1377,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_faddfsub_32ns_32ns_32_5_full_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fadd_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1567,7 +1387,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_4_max_dsp_1_ip.v</spirit:name>
+        <spirit:name>hdl/ip/uz_FOC_fmul_32ns_32ns_32_3_max_dsp_1_ip.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/ip/uz_FOC_fsub_32ns_32ns_32_4_full_dsp_1_ip.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1669,7 +1494,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">1</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">21</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -1686,8 +1511,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Uz_foc</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2113061635</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-06-05T06:55:58Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113071851</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-06-12T09:11:38Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -1695,12 +1520,12 @@
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="18f64f99"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="b6cc7c42"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="88cb7b82"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="a4debbc2"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="002e1f4a"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="5929c700"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2f78cc0b"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="8506fcc4"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="d824ec03"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="2c705d1e"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="0f54736d"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

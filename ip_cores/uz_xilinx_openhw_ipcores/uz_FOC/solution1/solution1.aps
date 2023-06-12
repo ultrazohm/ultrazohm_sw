@@ -3,14 +3,14 @@
         <value string="false"/>
     </checksum>
     <downStreamTool>
-        <DownStreamTool name="vivado"/>
+        <DownStreamTool name=""/>
     </downStreamTool>
     <synthesis askAgain="true"/>
     <config>
-        <config_export format="ip_catalog" rtl="vhdl" vivado_clock="100MHz" flow="syn"/>
+        <config_export flow="syn" format="ip_catalog" rtl="vhdl" vivado_clock="100MHz"/>
     </config>
     <UIConfigurations>
-        <UIAutosynConf hideTrivialOp="true" isBasedOnBoard="false" isSolutionDirty="false" isStopAskAgain="false" showDetailDesignViewer="false">
+        <UIAutosynConf boardInfo="Kria KR260 Robotics Starter Kit SOM (xck26-sfvc784-2LV-c) " hideTrivialOp="true" isBasedOnBoard="true" isSolutionDirty="false" isStopAskAgain="false" showDetailDesignViewer="false">
             <Platform>xilinx/zynquplus/zynquplus</Platform>
             <Platform>xilinx/zynquplus/zynquplus_fpv7</Platform>
             <customLibs/>
@@ -64,13 +64,13 @@
     </project>
     <flowTarget value="vivado"/>
     <targetInfo>
-        <TargetInfo value="xczu9eg:-ffvc900:-1-e"/>
+        <TargetInfo value="xck26:-sfvc784:-2LV-c"/>
     </targetInfo>
     <libraryList>
         <library value="xilinx/zynquplus/zynquplus" name="DefaultPlatform"/>
     </libraryList>
     <clockList>
-        <clock default="false" name="default" period="100MHz"/>
+        <clock name="default" default="false" period="100MHz"/>
     </clockList>
 </solution>
 

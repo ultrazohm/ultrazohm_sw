@@ -1,0 +1,33 @@
+#-----------------------------------------------------------
+# xsim v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Mon Jun 12 11:04:12 2023
+# Process ID: 22480
+# Current directory: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog
+# Command line: xsim.exe -mode tcl -source {xsim.dir/uz_FOC/xsim_script.tcl}
+# Log file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog/xsim.log
+# Journal file: C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog\xsim.jou
+# Running On: LAPTOP-ME665JGB, OS: Windows, CPU Frequency: 2208 MHz, CPU Physical cores: 6, Host memory: 34081 MB
+#-----------------------------------------------------------
+source xsim.dir/uz_FOC/xsim_script.tcl
+# xsim {uz_FOC} -autoloadwcfg -tclbatch {uz_FOC.tcl}
+Time resolution is 1 ps
+source uz_FOC.tcl
+## run all
+////////////////////////////////////////////////////////////////////////////////////
+// Inter-Transaction Progress: Completed Transaction / Total Transaction
+// Intra-Transaction Progress: Measured Latency / Latency Estimation * 100%
+//
+// RTL Simulation : "Inter-Transaction Progress" ["Intra-Transaction Progress"] @ "Simulation Time"
+////////////////////////////////////////////////////////////////////////////////////
+// RTL Simulation : 0 / 5 [0.00%] @ "125000"
+// RTL Simulation : 1 / 5 [100.00%] @ "905000"
+// RTL Simulation : 2 / 5 [100.00%] @ "1325000"
+// RTL Simulation : 3 / 5 [100.00%] @ "1745000"
+// RTL Simulation : 4 / 5 [100.00%] @ "2165000"
+// RTL Simulation : 5 / 5 [100.00%] @ "2585000"
+////////////////////////////////////////////////////////////////////////////////////
+$finish called at time : 2645 ns : File "C:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores/uz_xilinx_openhw_ipcores/uz_FOC/solution1/sim/verilog/uz_FOC.autotb.v" Line 654
+## quit
+INFO: [Common 17-206] Exiting xsim at Mon Jun 12 11:04:14 2023...

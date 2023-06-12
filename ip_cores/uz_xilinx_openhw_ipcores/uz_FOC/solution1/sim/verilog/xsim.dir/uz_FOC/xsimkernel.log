@@ -1,0 +1,7 @@
+Running: xsim.dir/uz_FOC/xsimk.exe -simmode gui -wdb uz_FOC.wdb -simrunnum 0 -socket 52790
+Design successfully loaded
+Design Loading Memory Usage: 16448 KB (Peak: 16448 KB)
+Design Loading CPU Usage: 31 ms
+Simulation completed
+Simulation Memory Usage: 20388 KB (Peak: 20388 KB)
+Simulation CPU Usage: 93 ms

@@ -31,8 +31,6 @@ I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{I_{d,ref}^2 + I_{q,ref}
 If a manual :math:`I_{d,manual}` input current is set in the MPTA state, this current will be added on top of the :math:`I_{d,MTPA}` current.
 In FW operation, the :math:`I_{d,manual}` input will be ignored.
 The cut-off rotational speed for the field-weakening is calculated based on the max possible field excitation :math:`V_{FE,max}` and the measured total current :math:`I_1` [[#Wilfling]_].:
-To ensure, that the resulting set-currents after solving the polynomials for the MTPA and FW approximate with a sufficient degree of accuracy the reference torque, a comparison between the reference torque and the actual torque via the resulting set-currents is made.
-If the difference between these two variables exceeds a user-configurable threshold, an assertion is triggered.
 
 .. math::
 

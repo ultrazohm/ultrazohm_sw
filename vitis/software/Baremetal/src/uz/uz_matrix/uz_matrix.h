@@ -216,9 +216,9 @@ void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
  * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the elementwise product is written to C_out
  */
-void uz_matrix_matlab_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+void uz_matrix_columnvec_matrix_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 /**
- * @brief Set a columnvector of length V to the diagonal elements of an matrix A with dimension V x V.
+ * @brief Set a columnvector of length V to the elements of an matrix A with dimension V x V.
  * 
  * @param A Pointer to a uz_matrix_t instance 
  * @param vector Pointer to a uz_matrix_t instance, which is a columnvector 

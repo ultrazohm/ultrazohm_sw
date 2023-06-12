@@ -50,6 +50,8 @@ Folder structure of the sources in ``ip_cores/uz_d_inverter_adapter/``:
 Example Usage
 =============
 
+.. _inverter_adapter_usage:
+
 The following step-by-step description shall guide the user in order to properly implement the ip-core and the respective interface and software drivers
 
 Vivado Block Design

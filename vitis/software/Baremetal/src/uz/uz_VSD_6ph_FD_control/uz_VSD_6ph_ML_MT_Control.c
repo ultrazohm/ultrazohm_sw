@@ -49,12 +49,6 @@ typedef struct uz_6phFD_opf{
 }uz_6phFD_opf;
 
 
-/**
- * @brief helper function: analyses the uz_6phFD_indices struct with fault indices and returns the number of faulted phases and the phasenumer of these faulted phases in ascending order
- *  * 
- * @param input uz_6phFD_indices struct with fault indices
- * @return uz_6phFD_opf struct with number of open phases and ordered phasenumer of faulted phases
- */
 uz_6phFD_opf uz_get_numbers_and_order_of_faulted_phases(uz_6phFD_indices input);
 
 
@@ -185,14 +179,6 @@ const uz_6ph_MLMT_kparameter k_3OPF_1N[20] = {
 };
 
 
-/**
- * @brief Returns the k-parameters according to the fault scenario, the selected neutral point configuration and ML-MT optimization
- * 
- * @param input_faultindices
- * @param neutral_point_configuration 
- * @param ML_MT_optimization 
- * @return uz_6ph_MLMT_kparameter 
- */
 uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices input_faultindices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
 
 uz_6phFD_opf helpstruct = uz_get_numbers_and_order_of_faulted_phases(input_faultindices);

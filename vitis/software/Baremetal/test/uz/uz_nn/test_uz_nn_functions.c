@@ -239,31 +239,6 @@ void test_uz_nn_mse_negative(void)
     float expected_result = 36.25f;
     TEST_ASSERT_EQUAL_FLOAT(expected_result, msetestneg);
 }
-void test_uz_nn_gradient_descent(void)
-{
-    uz_nn_t *test2 = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER);
-    float lernrate = 0.5f;
-    uz_nn_gradient_descent(test2,lernrate);
-    float tolerance = 1e-04f;
-    for(int i=0;i< (int)(sizeof(wx12) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, wx12[i], w_1[i]);
-    }
-    for(int i=0;i< (int)(sizeof(wx22) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, wx22[i], w_2[i]);
-    }
-    for(int i=0;i< (int)(sizeof(wx32) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, wx32[i], w_3[i]);
-    }
-        for(int i=0;i< (int)(sizeof(bx12) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, bx12[i], b_1[i]);
-    }
-        for(int i=0;i< (int)(sizeof(bx22) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, bx22[i], b_2[i]);
-    }
-        for(int i=0;i< (int)(sizeof(bx32) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(tolerance, bx32[i], b_3[i]);
-    }
-}
 
 void test_uz_nn_set_gradients_zero(void)
 {

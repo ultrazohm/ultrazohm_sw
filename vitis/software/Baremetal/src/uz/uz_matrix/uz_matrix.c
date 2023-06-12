@@ -193,6 +193,37 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     }
 }
 
+void uz_matrix_multiply_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    uz_assert(A->columns == B->rows);
+    // the product of an m x n matrix and n x k matrix is an m x k
+    // i.e. A->row x B->column
+    uz_assert(A->rows == C_out->rows);
+    uz_assert(B->columns == C_out->columns);
+    // The following implementation is "slow" as in it does not use special mechanism to speed it up. See the following resources for possible improvements.
+    // https://github.com/deuxbot/fast-matrix-multiplication/blob/master/mxm.c
+    // https://en.wikipedia.org/wiki/Matrix_multiplication
+    uint32_t m = A->rows;
+    uint32_t n = A->columns;
+    uint32_t p = B->columns;
+    for (uint32_t i = 0; i < m; i++)
+    {
+        for (uint32_t j = 0; j < p; j++)
+        {
+            for (uint32_t k = 0; k < n; k++)
+            {
+                C_out->data[(p * i) + j] += A->data[(n * i) + k] * B->data[(p * k) + j];
+            }
+        }
+    }
+}
+
 void uz_matrix_set_zero(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);

@@ -31,7 +31,7 @@
 #define BUF_SIZE_XCP_TX			(kXcpMaxCTO + XCP_HEADER_LEN)
 
 #define PRIO_XCP_RX				5
-#define PRIO_XCP_TX				6
+#define PRIO_XCP_TX				5
 
 /*-------------------------------------------------------------------
  * Type definitions
@@ -73,18 +73,57 @@ static uint32_t xcp_timestamp = 0;
 
 extern uint64_t timestamp;
 uint64_t timestamp = 0;
-extern uint64_t time_irq_ns;
-uint64_t time_irq_ns = 0;
-extern uint64_t time_irq_max_ns;
-uint64_t time_irq_max_ns = 0;
+extern uint64_t time_irq_ns, time_irq_max_ns;
+uint64_t time_irq_ns = 0, time_irq_max_ns = 0;
 extern uint64_t time_irq_rate_ns, time_irq_rate_max_ns;
 uint64_t time_irq_rate_ns = 0, time_irq_rate_max_ns = 0;
 
 /*-------------------------------------------------------------------
  * Local functions
  *-----------------------------------------------------------------*/
+// Todo remove
+static void init_dummy_variables(void)
+{
+	for (int i = 0; i < 50; i++) {
+		xcp_data.meas.array_50_byte[i] = i;
+	}
+	for (int i = 0; i < 90; i++) {
+		xcp_data.meas.array_90_byte[i] = i;
+	}
+	for (int i = 0; i < 100; i++) {
+		xcp_data.meas.array_100_byte[i] = i;
+	}
+}
 
+// Todo remove
+static void set_dummy_variables(void)
+{
 
+	for (int i = 0; i < 50; i++) {
+		xcp_data.meas.array_50_byte[i]++;
+	}
+	for (int i = 0; i < 90; i++) {
+		xcp_data.meas.array_90_byte[i]++;
+	}
+	for (int i = 0; i < 100; i++) {
+		xcp_data.meas.array_100_byte[i]++;
+	}
+
+	// Get sine wave with about 1 Hz
+	static int div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= 800) {
+		div_cnt = 0;
+
+		static uint8_t cnt_sin = 0;
+		cnt_sin++;
+		xcp_data.meas.saw_u8 = cnt_sin;
+		float angle = (M_PI * 2 * cnt_sin / UINT8_MAX);
+		xcp_data.meas.sin_f = sinf(angle);
+		xcp_data.meas.sin_u8 = sinf(angle) * INT8_MAX;
+		xcp_data.meas.cos_u8 = cosf(angle) * INT8_MAX;
+	}
+}
 
 static void print_frame(char *str, uint8_t *data, int len)
 {
@@ -114,6 +153,7 @@ static void xcp_interface_init(void)
     bsp_timer_start();
 //	bsp_ringBuffer_init();
 
+    init_dummy_variables();
 }
 
 static void xcp_eth_tx(void *arg_p)
@@ -132,15 +172,6 @@ static void xcp_eth_tx(void *arg_p)
 			uint16_t len_tcp_tx =
 					((data_p[0] << 0) | (data_p[1] << 8)) + XCP_HEADER_LEN;
 			memcpy(buf_xcp_tx, data_p, len_tcp_tx);
-
-//		{
-//			if(xQueueReceive(queue_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
-//				xil_printf("%s(): xQueueReceive() failed\n", __func__);
-//	            xil_printf("%s(): critical error, can not recover\n", __func__);
-//	            vTaskDelay(5);
-//	            return;
-//			}
-//			uint16_t len_tcp_tx = ((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8)) + XCP_HEADER_LEN;
 
 			static uint16_t xcp_package_counter = 0;
 			xcp_package_counter++;
@@ -196,68 +227,49 @@ static void xcp_eth_rx(void *arg_p)
 	vTaskDelete(NULL);
 }
 
-// Todo remove
-static void set_dummy_variables(void)
-{
-	static uint8_t cnt= 0;
-	cnt++;
-	static uint8_t cnt_array_50 = 0;
-	if (++cnt_array_50 >= 50) {
-		cnt_array_50 = 0;
-	}
-	xcp_data.meas.array_50_byte[cnt_array_50] = cnt;
-
-	static uint8_t cnt_array_90 = 0;
-	if (++cnt_array_90 >= 90) {
-		cnt_array_90 = 0;
-	}
-	xcp_data.meas.array_90_byte[cnt_array_90] = cnt;
-
-	// Get sine wave with about 1 Hz
-	static int div_cnt = 0;
-	div_cnt++;
-	if (div_cnt >= 80) {
-		div_cnt = 0;
-
-		static uint8_t cnt_sin = 0;
-		cnt_sin++;
-		xcp_data.meas.saw_u8 = cnt_sin;
-		float angle = (M_PI * 2 * cnt_sin / UINT8_MAX);
-		xcp_data.meas.sin_f = sinf(angle);
-		xcp_data.meas.sin_u8 = sinf(angle) * INT8_MAX;
-		xcp_data.meas.cos_u8 = cosf(angle) * INT8_MAX;
-	}
-}
-
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
 void timer_irq_callback_10kHz(void)
 {
+	static uint64_t ts_start = 0;
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	time_irq_rate_ns = bsp_timer_timestamp_u64_get_time_delta_ns(ts_start, ts_now);
+	if (time_irq_rate_ns > time_irq_rate_max_ns)
+		time_irq_rate_max_ns = time_irq_rate_ns;
+	ts_start = ts_now;
+
+
 	timestamp = bsp_timer_timestamp_u64_get();
 
 	xcp_timestamp = bsp_timer_timestamp_get();
 
-
 	XcpEvent(XCP_EVENT_FAST);
+
+	static uint32_t cnt_div_100us = 1;
+	cnt_div_100us++;
+	if (cnt_div_100us >= 10) {
+		cnt_div_100us = 0;
+		XcpEvent(XCP_EVENT_100US);
+	}
 
 	static uint32_t cnt_div_10 = 1;
 	cnt_div_10++;
-	if (cnt_div_10 >= 10) {
+	if (cnt_div_10 >= 100) {
 		cnt_div_10 = 0;
 		XcpEvent(XCP_EVENT_1MS);
 	}
 
 	static uint32_t cnt_div_100 = 2;
 	cnt_div_100++;
-	if (cnt_div_100 >= 100) {
+	if (cnt_div_100 >= 1000) {
 		cnt_div_100 = 0;
 		XcpEvent(XCP_EVENT_10MS);
 	}
 
 	static uint32_t cnt_div_1000 = 3;
 	cnt_div_1000++;
-	if (cnt_div_1000 >= 1000) {
+	if (cnt_div_1000 >= 10000) {
 		cnt_div_1000 = 0;
 		XcpEvent(XCP_EVENT_100MS);
 
@@ -267,7 +279,7 @@ void timer_irq_callback_10kHz(void)
 
 	static uint32_t cnt_div_10000 = 4;
 	cnt_div_10000++;
-	if (cnt_div_10000 >= 10000) {
+	if (cnt_div_10000 >= 100000) {
 		cnt_div_10000 = 0;
 		XcpEvent(XCP_EVENT_1S);
 	}
@@ -302,6 +314,7 @@ void timer_irq_callback__(void)
 	if (cnt_div_s >= 30000) {
 		cnt_div_s = 0;
 		time_irq_max_ns = 0;
+		time_irq_rate_max_ns = 0;
 	}
 }
 
@@ -364,16 +377,6 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
 	len += XCP_HEADER_LEN;
 
 	bsp_ringBuffer_write(rbt_tx, msg_with_header_p, len);
-
-//	BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
-//	if(xQueueSendFromISR(queue_tx,
-//			  	  	     msg_with_header_p,
-//						 pxHigherPriorityTaskWoken_) != pdPASS) {
-//		xil_printf("%s(): xQueueSend() failed\n", __func__);
-//        xil_printf("%s(): critical error!\n", __func__);
-//        vTaskDelay(5);
-//        return;
-//	}
 }
 
 MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )

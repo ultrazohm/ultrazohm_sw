@@ -44,7 +44,7 @@
 // Configuration
 //====================================================================
 #define RING_BUFFER_ELEMENT_SIZE 	128
-#define RING_BUFFER_NUM_ELEMENTS 	1000
+#define RING_BUFFER_NUM_ELEMENTS 	20000
 #define RING_BUFFER_MAX_INDEX		(RING_BUFFER_NUM_ELEMENTS - 1)
 
 //====================================================================
@@ -104,11 +104,11 @@ uint32_t bsp_ringBuffer_write(rbt_t rbt, uint8_t * data, uint32_t num_bytes)
 	memcpy(dst, data, num_bytes);
 
 	// Increase fill level after the data is actually stored in the buffer
-	Xil_ExceptionDisable();
+	//Xil_ExceptionDisable();
 	rb_p->fill_level++;
 	if (rb_p->fill_level > rb_p->max_fill_level)
 		rb_p->max_fill_level = rb_p->fill_level;
-	Xil_ExceptionEnable();
+	//Xil_ExceptionEnable();
 
 	return 1;
 }
@@ -127,9 +127,9 @@ uint32_t bsp_ringBuffer_get(rbt_t rbt, uint8_t ** data_p)
 		return 0;
 	}
 
-	Xil_ExceptionDisable();
+	//Xil_ExceptionDisable();
 	rb_p->fill_level--;
-	Xil_ExceptionEnable();
+	//Xil_ExceptionEnable();
 
 	rb_p->idx_r++;
 	if (rb_p->idx_r >= RING_BUFFER_MAX_INDEX) {

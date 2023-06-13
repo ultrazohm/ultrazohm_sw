@@ -45,7 +45,7 @@ static XTtcPs TtcPsInst[NUM_TTC_PS_DEVICES];    /* Number of available timer cou
 
 static TmrCntrSetup SettingsTable[NUM_TTC_PS_DEVICES] = {
     [TTC_TICK_DEVICE_ID]{
-        .OutputHz = 10000,
+        .OutputHz = 100000,
         .Interval = 0,
         .Prescaler = 0,
         .Options = (XTTCPS_OPTION_INTERVAL_MODE | XTTCPS_OPTION_WAVE_DISABLE)
@@ -168,9 +168,10 @@ void bsp_timer_init(void)
         xil_printf("ERROR: %s() failed, %d\n", "bsp_timer_init_irq",
         		TTC_TICK_DEVICE_ID);
 
-    if (bsp_timer_init_ip(TTC_TIMESTAMP_DEVICE_ID) != XST_SUCCESS)
+    if (bsp_timer_init_ip(TTC_TIMESTAMP_DEVICE_ID) != XST_SUCCESS) {
         xil_printf("ERROR: %s() failed, %d\n", "bsp_timer_init_ip",
         		TTC_TIMESTAMP_DEVICE_ID);
+    }
 
 	XTime_StartTimer();
 }

@@ -14,10 +14,11 @@
  * Configuration for CANape
  */
 #define XCP_EVENT_FAST          0
-#define XCP_EVENT_1MS           1
-#define XCP_EVENT_10MS          2
-#define XCP_EVENT_100MS         3
-#define XCP_EVENT_1S            4
+#define XCP_EVENT_100US         1
+#define XCP_EVENT_1MS           2
+#define XCP_EVENT_10MS          3
+#define XCP_EVENT_100MS         4
+#define XCP_EVENT_1S            5
 
 /*-----------------------------------------------
  * Configuration for XCP over CAN

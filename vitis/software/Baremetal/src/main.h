@@ -61,6 +61,9 @@
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

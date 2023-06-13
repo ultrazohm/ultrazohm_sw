@@ -63,20 +63,20 @@ float omega_el_rad_per_sec = 0.0f;
 float theta_el_rad = 0.0f;
 float theta_el_offset = 1.4f;
 struct uz_DutyCycle_t output = {0};
-float Kp_speed = 0.01f;
-float Ki_speed = 0.1f;
-float Kp_id = 0.3f;
-float Ki_id = 230.0f;
-float Kp_iq = 0.5f;
-float Ki_iq = 230.0f;
+//float Kp_speed = 0.01f;
+//float Ki_speed = 0.1f;
+//float Kp_id = 0.3f;
+//float Ki_id = 230.0f;
+//float Kp_iq = 0.5f;
+//float Ki_iq = 230.0f;
 
 // External Declares Wavegen
 extern uz_wavegen_chirp* chirp_instance;
 
 // Declare Variables Wavegen
-bool enable_noise=false;
-float noise_amplitude=0.0f;
-float
+bool enable_excitation=false;
+float excitation_amplitude=0.0f;
+float sampling_time = 1.0f/30.0e3f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -127,14 +127,17 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	// Noise and Chirp Generation
-    	if(enable_noise){
+    	if(enable_excitation){
     		i_dq_ref_Amps.q=0.0f;
-    		//i_dq_ref_Amps.d=uz_wavegen_white_noise(noise_amplitude);
-    		//i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, noise_amplitude);
-    		i_dq_ref_Amps.q=uz_wavegen_chirp_sample(chirp_instance, sampling_time);
+    		//i_dq_ref_Amps.d=uz_wavegen_white_noise(excitation_amplitude);
+    		//i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, excitation_amplitude);
+    		//i_dq_ref_Amps.d= excitation_amplitude * uz_wavegen_chirp_sample(chirp_instance, sampling_time);
     	}else{
 
     	}
+
+    	i_dq_ref_Amps.q=0.0f;
+    	i_dq_ref_Amps.d= excitation_amplitude;
 
     	// Field Oriented Control
     	//M_ref_Nm = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);										// Calculate Reference Torque
@@ -164,13 +167,12 @@ void ISR_Control(void *data)
     //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 
     // Change Variables during Runtime
-    uz_SpeedControl_set_Kp(SC_instance, Kp_speed);
-    uz_SpeedControl_set_Ki(SC_instance, Ki_speed);
-    uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);
-    uz_CurrentControl_set_Kp_iq(CC_instance, Kp_iq);
-    uz_CurrentControl_set_Ki_id(CC_instance, Ki_id);
-    uz_CurrentControl_set_Ki_iq(CC_instance, Ki_iq);
-
+    //uz_SpeedControl_set_Kp(SC_instance, Kp_speed);
+    //uz_SpeedControl_set_Ki(SC_instance, Ki_speed);
+    //uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);
+    //uz_CurrentControl_set_Kp_iq(CC_instance, Kp_iq);
+    //uz_CurrentControl_set_Ki_id(CC_instance, Ki_id);
+    //uz_CurrentControl_set_Ki_iq(CC_instance, Ki_iq);
 
     // Update JavaScope
     JavaScope_update(&Global_Data);

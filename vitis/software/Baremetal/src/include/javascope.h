@@ -159,7 +159,7 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	Set_ n_ref,
 	Set_i_q,
-	noise_amplitude,
+	excitation_amplitude,
 	send_field_4,
 	send_field_5,
 	send_field_6,

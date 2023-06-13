@@ -65,7 +65,7 @@
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 // Includes for Wavegen
-#include "../uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -31,8 +31,8 @@ extern struct uz_3ph_dq_t i_dq_ref_Amps;
 extern float M_ref_Nm;
 
 // External Declares Wavegen
-extern bool enable_noise;
-extern float noise_amplitude;
+extern bool enable_excitation;
+extern float excitation_amplitude;
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -210,7 +210,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-				noise_amplitude=value;
+				excitation_amplitude=value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -254,7 +254,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-				enable_noise=!enable_noise;
+				enable_excitation=!enable_excitation;
 			break;
 
 		case (Error_Reset):

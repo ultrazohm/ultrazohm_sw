@@ -96,14 +96,14 @@ int main(void)
 
     // Configuration of Current Control
     struct uz_PI_Controller_config config_id = {
-       .Kp = 0.3f,
-       .Ki = 230.0f,
-       .samplingTime_sec = 0.0001f,
+       .Kp = 1.2f, //0.225, //1.2f, //0.3f
+       .Ki = 460.0f, //124.8f, //230.0f
+       .samplingTime_sec = 0.000033f,
     };
     struct uz_PI_Controller_config config_iq = {
        .Kp = 0.5f,
        .Ki = 230.0f,
-       .samplingTime_sec = 0.0001f,
+       .samplingTime_sec = 0.000033f,
     };
     struct uz_CurrentControl_config CC_config = {
        .decoupling_select = linear_decoupling,
@@ -115,12 +115,12 @@ int main(void)
 
     // Configuration Wavegen Chirp
     struct uz_wavegen_chirp_config config_chirp = {
-            .amplitude = 2.0f,
+            .amplitude = 1.0f,
             .start_frequency_Hz = 1.0f,
-            .end_frequency_Hz = 10.0f,
-            .duration_sec = 10.0f,
-            .initial_delay_sec = 0.0f,
-            .offset = 1.0f
+            .end_frequency_Hz = 8000.0f,
+            .duration_sec = 4.0f,
+            .initial_delay_sec = 2.0f,
+            .offset = 0.0f
     };
 
     // Initialization Chain

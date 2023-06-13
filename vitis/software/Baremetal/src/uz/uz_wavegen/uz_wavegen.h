@@ -124,7 +124,7 @@ uz_wavegen_chirp* uz_wavegen_chirp_init(struct uz_wavegen_chirp_config config);
  * @param self wavegen_chirp instance
  * @return One sample of the chirp output for current system time
  */
-float uz_wavegen_chirp_sample(uz_wavegen_chirp* self);
+float uz_wavegen_chirp_sample(uz_wavegen_chirp* self, float sampling_time);
 
 /**
  * @brief Resets the wavegen_chirp instance

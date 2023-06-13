@@ -76,7 +76,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
 	self->newton_MTPA.coefficients.data = &self->coefficients_MTPA[0];
     self->newton_MTPA.coefficients.data[4] = 1.0f; //1*x4
 	self->newton_MTPA.initial_value = 0.0f;
-	self->newton_MTPA.root_absolute_tolerance = 0.25f;
+    self->newton_MTPA.check_for_absolute_tolerance = false;
 	self->newton_MTPA.iterations = 12U;
 	self->newton_FW.derivate_poly_coefficients.length = UZ_ARRAY_SIZE(self->derivate_poly_coefficients_FW);
 	self->newton_FW.derivate_poly_coefficients.data = &self->derivate_poly_coefficients_FW[0];
@@ -88,7 +88,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
     self->newton_FW.coefficients.data[4] = 1.0f; //1*x4
 	self->newton_FW.initial_value = 0.0f;
 	self->newton_FW.iterations = 12U;
-	self->newton_FW.root_absolute_tolerance = 0.25f;
+	self->newton_FW.check_for_absolute_tolerance = false;
     self->config = config;
     return(self);
 }

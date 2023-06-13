@@ -115,6 +115,7 @@ The function has two real roots at :math:`\approx 0.953476` and :math:`\approx 3
             .coefficients.data = &coefficients[0],
             .initial_value = 5.0f,
             .iterations = 5U,
+            .check_for_absolute_tolerance = true,
             .root_absolute_tolerance=0.05f
         };
         float output = uz_newton_raphson(config);

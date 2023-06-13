@@ -105,6 +105,12 @@ typedef struct _actualValues_ {
 	float theta_mech_rad_ip;
 	float mechanicalRotorSpeedRPM_ip;
 	float mechanicalRotorSpeedRADpS_ip;
+	float i_a1_pu;
+	float i_b1_pu;
+	float i_c1_pu;
+	float i_a2_pu;
+	float i_b2_pu;
+	float i_c2_pu;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

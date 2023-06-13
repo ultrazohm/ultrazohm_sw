@@ -284,7 +284,6 @@ void timer_irq_callback_10kHz(void)
 		XcpEvent(XCP_EVENT_1S);
 	}
 
-	XcpSendCallBack();
 
 	uint8_t *data_p = 0;
 	if (bsp_ringBuffer_get(rbt_rx, &data_p) > 0) {
@@ -377,6 +376,8 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
 	len += XCP_HEADER_LEN;
 
 	bsp_ringBuffer_write(rbt_tx, msg_with_header_p, len);
+
+	XcpSendCallBack();
 }
 
 MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )

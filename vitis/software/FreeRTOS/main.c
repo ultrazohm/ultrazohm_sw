@@ -30,6 +30,7 @@
 #include "defines.h"
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
+#include "sw/xcp/xcp_interface.h"
 
 
 size_t lifecheck_mainThread = 0;
@@ -98,7 +99,7 @@ int main()
 void network_thread(void *p)
 {
 	// Initialize the Interrupts
-	Initialize_ISR();
+	//Initialize_ISR();
 
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */
@@ -269,6 +270,9 @@ int main_thread()
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
+			sys_thread_new("xcp-if", xcp_interface, 0,
+					THREAD_STACKSIZE,
+					DEFAULT_THREAD_PRIO);
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
@@ -287,6 +291,9 @@ int main_thread()
 			print_echo_app_header();
 			uz_printf("\r\n");
 			sys_thread_new("echod", application_thread, 0,
+					THREAD_STACKSIZE,
+					DEFAULT_THREAD_PRIO);
+			sys_thread_new("xcp-if", xcp_interface, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;

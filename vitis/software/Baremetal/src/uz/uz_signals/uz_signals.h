@@ -1,5 +1,6 @@
 #ifndef UZ_SIGNALS_H
 #define UZ_SIGNALS_H
+#include "../uz_math_constants.h"
 
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {
@@ -72,4 +73,14 @@ float uz_signals_IIR_Filter_sample(uz_IIR_Filter_t* self, float input);
  * @return float unfiltered signal
  */
 float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
+
+/**
+ * @brief wraps a number to the range of [0, limit] 
+ * 
+ * @param number number to wrap
+ * @param limit defines the wrapping limit of [0, limit]
+ * @return wrapped number
+ */
+float uz_signals_wrap(float number, float limit);
+
 #endif // UZ_SIGNALS_H

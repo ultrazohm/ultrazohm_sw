@@ -22,7 +22,6 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
-extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
 extern bool reset_ip_cnt;

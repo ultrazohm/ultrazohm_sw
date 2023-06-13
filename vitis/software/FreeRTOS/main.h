@@ -85,32 +85,6 @@ typedef struct		// status + time + 20 elements (32bit) + 32 bit
 } NetworkSendStruct;
 
 
-typedef struct _errorWord_ { // 16 bits
-	uint16_t  errorCodeXilinx:8;
-	_Bool wrongInterruptByIPI:1; //Wrong interrupt arrived
-	_Bool missingInterruptByIPI:1; //No Interrupt arrived
-	_Bool InitFailedInterruptByIPI:1; //Error during initialization
-	_Bool communicationTimeoutOccured:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
-	_Bool rsvd3:1;
-	_Bool rsvd4:1;
-} errorWord;
-
-typedef struct _errorReset_ { // 5 bits
-	_Bool communicationTimeoutOccured:1;
-	_Bool rsvd1:1;
-	_Bool rsvd2:1;
-	_Bool rsvd3:1;
-	_Bool rsvd4:1;
-	//boolean rsvd5:1;
-} errorReset;
-
-typedef struct _A53_Data_ {
-	errorWord ew;
-	errorReset er;
-} A53_Data;
-
 // ========== Functions and Threads ======================================================================
 void Transfer_ipc(void);
 int main_thread();

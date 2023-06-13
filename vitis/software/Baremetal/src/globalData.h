@@ -111,6 +111,14 @@ typedef struct _actualValues_ {
 	float i_a2_pu;
 	float i_b2_pu;
 	float i_c2_pu;
+	float i_alpha_ip;
+	float i_beta_ip;
+	float i_X_ip;
+	float i_Y_ip;
+	float i_0p_ip;
+	float i_0n_ip;
+	float i_d_ip;
+	float i_q_ip;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

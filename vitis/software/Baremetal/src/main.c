@@ -17,6 +17,7 @@
 #include "main.h"
 #include "uz/uz_FOC/uz_FOC.h"
 #include "IP_Cores/uz_pu_conversion/uz_pu_conversion_hwAddresses.h"
+#include "IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
 
 const struct uz_PMSM_t config_PMSM = {
 		.Ld_Henry = 0.002,
@@ -137,7 +138,7 @@ int main(void)
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
 
             // init pu-conversion
-            float pu_current_conversion = 0.1f;
+            float pu_current_conversion = 0.1f; // 10A = 1 p.u.
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in0_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_c1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in1_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_b1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in2_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_a1
@@ -146,7 +147,11 @@ int main(void)
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in10_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18));//i_a2
 
             // init VSD IP
+            //nothing to init here
 
+            // init park transform IP
+            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + factor_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(1.0f, 14));
+            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + offset_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(0.0f, 14));
 
             initialization_chain = print_msg;
             break;

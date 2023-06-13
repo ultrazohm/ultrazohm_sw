@@ -33,6 +33,8 @@
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 #include "../IP_Cores/uz_pu_conversion/uz_pu_conversion_hwAddresses.h"
+#include "../IP_Cores/uz_vsd_6ph_30deg/uz_vsd_6ph_30deg_hwAddresses.h"
+#include "../IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -92,6 +94,20 @@ struct uz_fixedpoint_definition_t fixedpoint_definition = {
 		.fractional_bits = 15
 };
 
+// vsd output fixed point definition
+struct uz_fixedpoint_definition_t vsd_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 11
+};
+
+// park transform output fixed point definition
+struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 11,
+		.fractional_bits = 16
+};
+
 bool first_ISR = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -127,6 +143,18 @@ void ISR_Control(void *data)
     Global_Data.av.i_c2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out8_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     Global_Data.av.i_b2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out9_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     Global_Data.av.i_a2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out10_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+
+    // read VSD IP
+    Global_Data.av.i_alpha_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + alpha_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+    Global_Data.av.i_beta_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + beta_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+    Global_Data.av.i_X_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + x_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+    Global_Data.av.i_Y_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + y_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+    Global_Data.av.i_0p_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + z1_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+    Global_Data.av.i_0n_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + z2_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+
+    // read park transform ip
+    Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
+    Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
 //
 //    // save raw angles to variables
 //    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
@@ -191,6 +219,8 @@ void ISR_Control(void *data)
     three_ph_alphabeta.beta = six_ph_alphabeta.beta;
     Global_Data.av.i_alpha = three_ph_alphabeta.alpha;
     Global_Data.av.i_beta = three_ph_alphabeta.beta;
+    Global_Data.av.i_x = six_ph_alphabeta.x;
+    Global_Data.av.i_y = six_ph_alphabeta.y;
     rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec_rad_ip);
     Global_Data.av.i_d = rotating_dq.d;
     Global_Data.av.i_q = rotating_dq.q;

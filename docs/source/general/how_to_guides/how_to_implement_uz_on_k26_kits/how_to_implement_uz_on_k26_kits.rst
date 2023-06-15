@@ -184,7 +184,9 @@ This includes mainly the removed IP-Cores and the Frontpanel, as well as the ISR
 Additionally, a small hack to the Board-Support-Package BSP must be applied to bring up the network interface for the KR260 Robotics.
 This hack prevents a double-initiation for the PS-Files, since GEM0 uses a SGMII Interface which isn't compatible with the used LwIP-Stack and both PHY's for the PS-GEM's shared the same MDIO's.
 
-
+#.  Reminder,
+    You should have known from UltraZohm beginner flow the step of copy and change the name of ``\vitis\software\Baremetal\src\uz\ default_uz_global_configuration.h -> uz_global_configuration.h`` Do not change the original file.
+     
 #.  Open Vitis 2022.2 and create the Workspace according to Ultrazohm Setup.
 
     * Open the XSCT Console in Vitis. Type the following commands:

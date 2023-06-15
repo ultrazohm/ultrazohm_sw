@@ -35,20 +35,23 @@ build_kria
 Generates the UltraZohm Vivado project (``ultrazohm.xpr``).
 Usage: 
 
-#. Open ``ultrazohm_sw/vivado`` repository on your local file system
-#. Edit build_kria.tcl (line: 41 - 48 and 125 - 133) according to your K26 kit and save 
-#. Open Vivado
+#. Open Vivado 2022.2
 #. Click on ``Window`` -> ``Tcl Console``
 #. A window on the bottom of Vivado appears (*Tcl Console*)
 #. Navigate to the location of the ``ultrazohm_sw`` repository on your local file system using ``cd`` in the tcl console
 #. Navigate to ``ultrazohm_sw/vivado`` in the tcl console
-#. Call build_kria.tcl with:
+#. Call builder kria tcl script with according to your board:
 
 .. code-block::
 
-    source build_kria.tcl
-    
-Generate bitstream and export to vitis/vivado_exported_xsa folder. Make sure there is only one xsa file.
+    For KR260 Robotics: 
+    source build_kria_R.tcl
+
+    For KV260 Vision:
+    source build_kria_V.tcl
+
+#. Check out the PS block settings, you can set this again using ``kria_vivado_K26_ZynqMP_Presets.tcl``  from tcl_scripts folder.
+#. Generate bitstream and export to vitis/vivado_exported_xsa folder. Make sure there is only one xsa file.
 
 Vitis
 =====

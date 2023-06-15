@@ -51,6 +51,7 @@
 #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
+#define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
 #define UZ_AXI_GPIO_MAX_INSTANCES 0U
 #endif
 
@@ -89,5 +90,6 @@
     #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
     #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
+    #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
 #define UZ_AXI_GPIO_MAX_INSTANCES 10U
 #endif

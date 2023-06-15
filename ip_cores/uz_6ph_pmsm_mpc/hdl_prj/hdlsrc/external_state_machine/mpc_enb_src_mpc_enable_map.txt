@@ -1,0 +1,2 @@
+external_state_machine/mpc_enable/Detect Rise Positive --> mpc_enb_src_Detect_Rise_Positive
+external_state_machine/mpc_enable --> mpc_enb_src_mpc_enable

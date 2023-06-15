@@ -158,7 +158,8 @@
         "ctrl_stat_ip_0": "",
         "axi_mpc": "",
         "mpc_enb_0": "",
-        "mpc_ila_0": ""
+        "mpc_ila_0": "",
+        "two_level_sixphase_f_0": ""
       }
     },
     "ports": {
@@ -9965,7 +9966,7 @@
             "xci_name": "zusys_smartconnect_0_1",
             "parameters": {
               "NUM_MI": {
-                "value": "7"
+                "value": "8"
               },
               "NUM_SI": {
                 "value": "1"
@@ -9982,7 +9983,8 @@
                   "M03_AXI",
                   "M04_AXI",
                   "M05_AXI",
-                  "M06_AXI"
+                  "M06_AXI",
+                  "M07_AXI"
                 ],
                 "parameters": {
                   "NUM_READ_OUTSTANDING": {
@@ -10160,6 +10162,30 @@
                     "value": "0"
                   }
                 }
+              },
+              "M07_AXI": {
+                "mode": "Master",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             },
             "addressing": {
@@ -10173,7 +10199,8 @@
                     "M03_AXI",
                     "M04_AXI",
                     "M05_AXI",
-                    "M06_AXI"
+                    "M06_AXI",
+                    "M07_AXI"
                   ]
                 }
               }
@@ -10197,6 +10224,10 @@
                 "value": "6"
               }
             }
+          },
+          "two_level_sixphase_f_0": {
+            "vlnv": "xilinx.com:ip:two_level_sixphase_f_sw_cnt_ip:1.0",
+            "xci_name": "zusys_two_level_sixphase_f_0_0"
           }
         },
         "interface_nets": {
@@ -10247,6 +10278,12 @@
               "axi_mpc/M01_AXI",
               "ctrl_stat_ip_0/AXI4_Lite"
             ]
+          },
+          "axi_mpc_M07_AXI": {
+            "interface_ports": [
+              "axi_mpc/M07_AXI",
+              "two_level_sixphase_f_0/AXI4_Lite"
+            ]
           }
         },
         "nets": {
@@ -10275,7 +10312,9 @@
               "axi_mpc/aclk",
               "mpc_enb_0/IPCORE_CLK",
               "mpc_enb_0/AXI4_Lite_ACLK",
-              "mpc_ila_0/clk"
+              "mpc_ila_0/clk",
+              "two_level_sixphase_f_0/IPCORE_CLK",
+              "two_level_sixphase_f_0/AXI4_Lite_ACLK"
             ]
           },
           "rst_1": {
@@ -10295,7 +10334,9 @@
               "cost_opt_0/AXI4_Lite_ARESETN",
               "axi_mpc/aresetn",
               "mpc_enb_0/IPCORE_RESETN",
-              "mpc_enb_0/AXI4_Lite_ARESETN"
+              "mpc_enb_0/AXI4_Lite_ARESETN",
+              "two_level_sixphase_f_0/IPCORE_RESETN",
+              "two_level_sixphase_f_0/AXI4_Lite_ARESETN"
             ]
           },
           "pu_voltages_vsd_0_pu_vd": {
@@ -10513,73 +10554,85 @@
           "cost_opt_0_G0": {
             "ports": [
               "cost_opt_0/G0",
-              "mpc_enb_0/G0"
+              "mpc_enb_0/G0",
+              "two_level_sixphase_f_0/ss_in_0"
             ]
           },
           "cost_opt_0_G1": {
             "ports": [
               "cost_opt_0/G1",
-              "mpc_enb_0/G1"
+              "mpc_enb_0/G1",
+              "two_level_sixphase_f_0/ss_in_1"
             ]
           },
           "cost_opt_0_G2": {
             "ports": [
               "cost_opt_0/G2",
-              "mpc_enb_0/G2"
+              "mpc_enb_0/G2",
+              "two_level_sixphase_f_0/ss_in_2"
             ]
           },
           "cost_opt_0_G3": {
             "ports": [
               "cost_opt_0/G3",
-              "mpc_enb_0/G3"
+              "mpc_enb_0/G3",
+              "two_level_sixphase_f_0/ss_in_3"
             ]
           },
           "cost_opt_0_G4": {
             "ports": [
               "cost_opt_0/G4",
-              "mpc_enb_0/G4"
+              "mpc_enb_0/G4",
+              "two_level_sixphase_f_0/ss_in_4"
             ]
           },
           "cost_opt_0_G5": {
             "ports": [
               "cost_opt_0/G5",
-              "mpc_enb_0/G5"
+              "mpc_enb_0/G5",
+              "two_level_sixphase_f_0/ss_in_5"
             ]
           },
           "cost_opt_0_G6": {
             "ports": [
               "cost_opt_0/G6",
-              "mpc_enb_0/G6"
+              "mpc_enb_0/G6",
+              "two_level_sixphase_f_0/ss_in_6"
             ]
           },
           "cost_opt_0_G7": {
             "ports": [
               "cost_opt_0/G7",
-              "mpc_enb_0/G7"
+              "mpc_enb_0/G7",
+              "two_level_sixphase_f_0/ss_in_7"
             ]
           },
           "cost_opt_0_G8": {
             "ports": [
               "cost_opt_0/G8",
-              "mpc_enb_0/G8"
+              "mpc_enb_0/G8",
+              "two_level_sixphase_f_0/ss_in_8"
             ]
           },
           "cost_opt_0_G9": {
             "ports": [
               "cost_opt_0/G9",
-              "mpc_enb_0/G9"
+              "mpc_enb_0/G9",
+              "two_level_sixphase_f_0/ss_in_9"
             ]
           },
           "cost_opt_0_G10": {
             "ports": [
               "cost_opt_0/G10",
-              "mpc_enb_0/G10"
+              "mpc_enb_0/G10",
+              "two_level_sixphase_f_0/ss_in_10"
             ]
           },
           "cost_opt_0_G11": {
             "ports": [
               "cost_opt_0/G11",
-              "mpc_enb_0/G11"
+              "mpc_enb_0/G11",
+              "two_level_sixphase_f_0/ss_in_11"
             ]
           },
           "mpc_enb_0_out_G0": {
@@ -11501,6 +11554,11 @@
               "SEG_timer_uptime_64bit_Reg": {
                 "address_block": "/uz_system/timer_uptime_64bit/S_AXI/Reg",
                 "offset": "0x00800B0000",
+                "range": "64K"
+              },
+              "SEG_two_level_sixphase_f_0_reg0": {
+                "address_block": "/mpc/two_level_sixphase_f_0/AXI4_Lite/reg0",
+                "offset": "0x0080220000",
                 "range": "64K"
               },
               "SEG_uz_axi_testIP_0_reg0": {

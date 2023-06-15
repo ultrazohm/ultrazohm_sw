@@ -29,7 +29,7 @@
 #define Interrupt_3L_start_center	XPS_FPGA3_INT_ID
 #define Interrupt_3L_start			XPS_FPGA4_INT_ID
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
-#define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
+#define Interrupt_axi2tcm_write_done	XPS_FPGA6_INT_ID
 
 #if INTERRUPT_ISR_SOURCE_USER_CHOICE == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min
@@ -50,7 +50,7 @@
 	#define Interrupt_ISR_ID			Interrupt_3L_center
 	#define Interrupt_ISR_freq_factor	1
 #elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 6
-	#define Interrupt_ISR_ID			Interrupt_timer_fcc
+	#define Interrupt_ISR_ID			Interrupt_axi2tcm_write_done
 	#define Interrupt_ISR_freq_factor	1
 #else
 	#warning no ISR interrupt ID defined
@@ -58,14 +58,12 @@
 
 #define Control_ISR_clear_pending_interrupt_reg		(XPAR_PSU_RCPU_GIC_DIST_BASEADDR + (XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_PENDING_CLR_OFFSET, Interrupt_ISR_ID)) )
 
-void ISR_Control(void *baseaddr_p);								// ISR von Timer-Control
-void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
+void ISR_Control(void *baseaddr_p);
 
-int Initialize_Timer(void);													// Init Timer for ISRs
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm
 int Initialize_ISR(void);
-int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Tmr_Control_InstancePtr);	//Init Hardware for ISR
+int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
 

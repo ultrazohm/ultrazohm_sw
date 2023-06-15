@@ -35,9 +35,6 @@
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-// Initialize the Timer structure
-XTmrCtr Timer_Interrupt;
-
 // Global variable structure
 extern DS_Data Global_Data;
 
@@ -95,7 +92,7 @@ int Initialize_ISR()
     }
 
     // Initialize interrupt controller for the GIC
-    Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG, &Timer_Interrupt);
+    Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG);
     if (Status != XST_SUCCESS)
     {
         xil_printf("RPU: Error: GIC initialization failed\r\n");
@@ -111,33 +108,6 @@ int Initialize_ISR()
     return Status;
 }
 
-//==============================================================================================================================================================
-//----------------------------------------------------
-// INITIALIZE AXI-TIMER FOR ISRs
-// - "TIMER_LOAD_VALUE" sets the counter-end-value in order to set the ISR-frequency f_c
-// - "Con_TIMER_DEVICE_ID" uses the Device-ID of the used timer in Vivado
-// - "Timer_Interrupt" is the used timer structure instance
-// - "XTC_INT_MODE_OPTION" activates the Interrupt function
-// - "XTC_AUTO_RELOAD_OPTION" activates an automatic reload of the timer
-// - By default, the counter counts up
-//----------------------------------------------------
-int Initialize_Timer()
-{
-
-    int Status;
-
-    // SETUP THE TIMER 1 for Interrupts
-    Status = XTmrCtr_Initialize(&Timer_Interrupt, XPAR_UZ_SYSTEM_INTERRUPT_TRIGGER_F_CC_DEVICE_ID);
-    if (Status != XST_SUCCESS)
-        return XST_FAILURE;
-    // XTmrCtr_SetHandler(&Timer_Interrupt, ISR_Control, &Timer_Interrupt);
-    XTmrCtr_SetOptions(&Timer_Interrupt, 0, XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
-    XTmrCtr_SetResetValue(&Timer_Interrupt, 0, TIMER_LOAD_VALUE);
-    XTmrCtr_Reset(&Timer_Interrupt, 0);
-    XTmrCtr_Start(&Timer_Interrupt, 0);
-
-    return Status;
-}
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -148,7 +118,7 @@ int Initialize_Timer()
 // @Handler			Associated handler for the Interrupt ID
 // @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
 //----------------------------------------------------
-int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_InstancePtr)
+int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId)
 {
     XScuGic_Config *IntcConfig;
     int status;

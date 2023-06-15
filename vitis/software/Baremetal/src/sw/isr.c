@@ -143,7 +143,9 @@ void ISR_Control(void *data)
     Global_Data.av.i_c2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out8_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     Global_Data.av.i_b2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out9_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     Global_Data.av.i_a2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out10_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-
+    //read pu IP voltages
+    Global_Data.av.v_dc1_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out3_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+    Global_Data.av.v_dc2_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out11_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     // read VSD IP
     Global_Data.av.i_alpha_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + alpha_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
     Global_Data.av.i_beta_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + beta_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
@@ -278,50 +280,50 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
 
-    // Determine mechanical angle of resolver
-    if(theta_mech_old-Global_Data.av.theta_mech_rad > 4.0f) {
-    	cnt++;
-    	cnt_float=(float)cnt;
-    } else if (theta_mech_old-Global_Data.av.theta_mech_rad < -4.0f) {
-    	cnt--;
-    	cnt_float=(float)cnt;
-    }
-
-    if(cnt > 1 || cnt < -1) {
-    	cnt = 0;
-    	cnt_float = 0.0f;
-    }
-
-    if(cnt_reset == 1) {
-    	cnt = 0;
-    	cnt_float = 0;
-    	cnt_reset = 0;
-    	cnt_reset_float=0;
-    }
-
-
-    if(cnt >= 0){
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_d5_1) + cnt*2*UZ_PIf/2.0f;
-    } else {
-    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/2.0f + (2+cnt)*2*UZ_PIf/2.0f;
-    }
-
-    theta_mech_old = Global_Data.av.theta_mech_rad;
-
-    // reset SW and FPGA resolver calculation counter for having defined init state
-	if (first_ISR == true) {
-		cnt = 0;
-		cnt_float = 0.0f;
-		first_ISR = false;
-	}
-
-    if (Global_Data.av.theta_mech_rad <= theta_m_min) {
-    	theta_m_min = Global_Data.av.theta_mech_rad;
-    }
-
-    if (Global_Data.av.theta_mech_rad >= theta_m_max) {
-    	theta_m_max = Global_Data.av.theta_mech_rad;
-    }
+//    // Determine mechanical angle of resolver
+//    if(theta_mech_old-Global_Data.av.theta_mech_rad > 4.0f) {
+//    	cnt++;
+//    	cnt_float=(float)cnt;
+//    } else if (theta_mech_old-Global_Data.av.theta_mech_rad < -4.0f) {
+//    	cnt--;
+//    	cnt_float=(float)cnt;
+//    }
+//
+//    if(cnt > 1 || cnt < -1) {
+//    	cnt = 0;
+//    	cnt_float = 0.0f;
+//    }
+//
+//    if(cnt_reset == 1) {
+//    	cnt = 0;
+//    	cnt_float = 0;
+//    	cnt_reset = 0;
+//    	cnt_reset_float=0;
+//    }
+//
+//
+//    if(cnt >= 0){
+//    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/uz_resolverIP_getResolverPolePairs(Global_Data.objects.resolver_d5_1) + cnt*2*UZ_PIf/2.0f;
+//    } else {
+//    	theta_mech_calc_from_resolver = Global_Data.av.theta_mech_rad/2.0f + (2+cnt)*2*UZ_PIf/2.0f;
+//    }
+//
+//    theta_mech_old = Global_Data.av.theta_mech_rad;
+//
+//    // reset SW and FPGA resolver calculation counter for having defined init state
+//	if (first_ISR == true) {
+//		cnt = 0;
+//		cnt_float = 0.0f;
+//		first_ISR = false;
+//	}
+//
+//    if (Global_Data.av.theta_mech_rad <= theta_m_min) {
+//    	theta_m_min = Global_Data.av.theta_mech_rad;
+//    }
+//
+//    if (Global_Data.av.theta_mech_rad >= theta_m_max) {
+//    	theta_m_max = Global_Data.av.theta_mech_rad;
+//    }
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

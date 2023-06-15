@@ -108,6 +108,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_invTemp2]				= &(data->av.temperature_inv_2);
 	js_slowDataArray[JSSD_FLOAT_v_dc1]					= &(data->av.v_dc1);
 	js_slowDataArray[JSSD_FLOAT_v_dc2]					= &(data->av.v_dc2);
+	js_slowDataArray[JSSD_FLOAT_v_dc1_ip]				= &(data->av.v_dc1_ip);
+	js_slowDataArray[JSSD_FLOAT_v_dc2_ip]				= &(data->av.v_dc2_ip);
 	js_slowDataArray[JSSD_FLOAT_v_dc1_ADC]				= &(data->aa.A1.me.ADC_A4);
 	js_slowDataArray[JSSD_FLOAT_v_dc2_ADC]				= &(data->aa.A2.me.ADC_A4);
 	js_slowDataArray[JSSD_FLOAT_i_a1_ADC]				= &(data->aa.A1.me.ADC_A3);

@@ -81,6 +81,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_invTemp2,
 	JSSD_FLOAT_v_dc1,
 	JSSD_FLOAT_v_dc2,
+	JSSD_FLOAT_v_dc1_ip,
+	JSSD_FLOAT_v_dc2_ip,
 	JSSD_FLOAT_v_dc1_ADC,
 	JSSD_FLOAT_v_dc2_ADC,
 	JSSD_FLOAT_i_a1_ADC,

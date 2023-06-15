@@ -10,6 +10,7 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "uz/uz_FOC/uz_FOC.h"
+#include "IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -119,6 +120,8 @@ typedef struct _actualValues_ {
 	float i_0n_ip;
 	float i_d_ip;
 	float i_q_ip;
+	float v_dc1_ip;
+	float v_dc2_ip;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -150,6 +153,8 @@ typedef struct{
 	uz_resolver_pl_interface_t* pl_interface;
 	uz_PWM_duty_freq_detection_t* tempMeasurement1;
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
+	uz_adcLtc2311_t* ADC_A1;
+	uz_adcLtc2311_t* ADC_A2;
 	uz_FOC* foc_current;
 }object_pointers_t;
 

@@ -20,16 +20,16 @@
 #include "IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
 
 const struct uz_PMSM_t config_PMSM = {
-		.Ld_Henry = 0.002,
-		.Lq_Henry = 0.006,
+		.Ld_Henry = 0.0017,
+		.Lq_Henry = 0.0038,
 		.Psi_PM_Vs = 0.19,
 		.polePairs = 5.0f,
 		.I_max_Ampere = 18.0f
 };
 
 const struct uz_PI_Controller_config config_id = {
-		.Kp = 10.0f,
-		.Ki = 1500.0f,
+		.Kp = 10.0f, //4.24f
+		.Ki = 1500.0f, //159.0f
 		.samplingTime_sec = 0.0001f,
 		.type = ideal,
 		.upper_limit = 326.0f,
@@ -37,8 +37,8 @@ const struct uz_PI_Controller_config config_id = {
 };
 
 const struct uz_PI_Controller_config config_iq = {
-		.Kp = 10.0f,
-		.Ki = 1500.0f,
+		.Kp = 10.0f, //9.5f
+		.Ki = 1500.0f, //71.0f
 		.samplingTime_sec = 0.0001f,
 		.type = ideal,
 		.upper_limit = 326.0f,
@@ -118,6 +118,7 @@ int main(void)
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -136,6 +137,7 @@ int main(void)
             Global_Data.objects.pl_interface = initialize_resolver_pl_interface();
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
+            reconfig_ADC();
 
             // init pu-conversion
             float pu_current_conversion = 0.1f; // 10A = 1 p.u.
@@ -145,7 +147,9 @@ int main(void)
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in8_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_c2
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in9_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_b2
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in10_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18));//i_a2
-
+            float pu_voltage_conversion = 0.00666667f;
+            uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in3_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion, 18)); //v_dc1
+            uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in11_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion, 18)); //v_dc2
             // init VSD IP
             //nothing to init here
 

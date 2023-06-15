@@ -142,3 +142,15 @@ if not os.listdir(destination_folder):
         print('Moved:', file)
 else:
     print("The .launches folder is not empty")
+
+########## configuration file ##########
+
+source_folder = vpath / 'software/Baremetal/src/uz/'
+source_file = source_folder / "default_uz_global_configuration.h"
+destination_file = source_folder / "uz_global_configuration.h"
+
+if not os.path.exists(destination_file):
+    shutil.copy(source_file, destination_file)
+    print('Config File copied')
+else:
+    print('Config file already avaliable')

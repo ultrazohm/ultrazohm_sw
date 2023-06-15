@@ -1,0 +1,6 @@
+vlib work
+vcom  pu_voltages_vsd_src_pu_voltages_vsd_pkg.vhd
+vcom  pu_voltages_vsd_src_Detect_Rise_Positive.vhd
+vcom  pu_voltages_vsd_src_Detect_Rise_Positive1.vhd
+vcom  pu_voltages_vsd_src_finite_control_set.vhd
+vcom  pu_voltages_vsd_src_pu_voltages_vsd.vhd

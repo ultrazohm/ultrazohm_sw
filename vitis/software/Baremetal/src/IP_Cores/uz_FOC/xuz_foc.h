@@ -3,8 +3,8 @@
 // Tool Version Limit: 2019.12
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
-#ifndef XUZ_PI_CONTROLLER_H
-#define XUZ_PI_CONTROLLER_H
+#ifndef XUZ_FOC_H
+#define XUZ_FOC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,7 +28,7 @@ extern "C" {
 #include <unistd.h>
 #include <stddef.h>
 #endif
-#include "xuz_pi_controller_hw.h"
+#include "xuz_foc_hw.h"
 
 /**************************** Type Definitions ******************************/
 #ifdef __linux__
@@ -40,26 +40,26 @@ typedef uint64_t u64;
 typedef struct {
     u16 DeviceId;
     u64 Control_BaseAddress;
-} XUz_pi_controller_Config;
+} XUz_foc_Config;
 #endif
 
 typedef struct {
     u64 Control_BaseAddress;
     u32 IsReady;
-} XUz_pi_controller;
+} XUz_foc;
 
 typedef u32 word_type;
 
 /***************** Macros (Inline Functions) Definitions *********************/
 #ifndef __linux__
-#define XUz_pi_controller_WriteReg(BaseAddress, RegOffset, Data) \
+#define XUz_foc_WriteReg(BaseAddress, RegOffset, Data) \
     Xil_Out32((BaseAddress) + (RegOffset), (u32)(Data))
-#define XUz_pi_controller_ReadReg(BaseAddress, RegOffset) \
+#define XUz_foc_ReadReg(BaseAddress, RegOffset) \
     Xil_In32((BaseAddress) + (RegOffset))
 #else
-#define XUz_pi_controller_WriteReg(BaseAddress, RegOffset, Data) \
+#define XUz_foc_WriteReg(BaseAddress, RegOffset, Data) \
     *(volatile u32*)((BaseAddress) + (RegOffset)) = (u32)(Data)
-#define XUz_pi_controller_ReadReg(BaseAddress, RegOffset) \
+#define XUz_foc_ReadReg(BaseAddress, RegOffset) \
     *(volatile u32*)((BaseAddress) + (RegOffset))
 
 #define Xil_AssertVoid(expr)    assert(expr)
@@ -73,27 +73,33 @@ typedef u32 word_type;
 
 /************************** Function Prototypes *****************************/
 #ifndef __linux__
-int XUz_pi_controller_Initialize(XUz_pi_controller *InstancePtr, u16 DeviceId);
-XUz_pi_controller_Config* XUz_pi_controller_LookupConfig(u16 DeviceId);
-int XUz_pi_controller_CfgInitialize(XUz_pi_controller *InstancePtr, XUz_pi_controller_Config *ConfigPtr);
+int XUz_foc_Initialize(XUz_foc *InstancePtr, u16 DeviceId);
+XUz_foc_Config* XUz_foc_LookupConfig(u16 DeviceId);
+int XUz_foc_CfgInitialize(XUz_foc *InstancePtr, XUz_foc_Config *ConfigPtr);
 #else
-int XUz_pi_controller_Initialize(XUz_pi_controller *InstancePtr, const char* InstanceName);
-int XUz_pi_controller_Release(XUz_pi_controller *InstancePtr);
+int XUz_foc_Initialize(XUz_foc *InstancePtr, const char* InstanceName);
+int XUz_foc_Release(XUz_foc *InstancePtr);
 #endif
 
 
-void XUz_pi_controller_Set_axi_referenceValue(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_referenceValue(XUz_pi_controller *InstancePtr);
-void XUz_pi_controller_Set_axi_sampletime(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_sampletime(XUz_pi_controller *InstancePtr);
-void XUz_pi_controller_Set_axi_KI(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_KI(XUz_pi_controller *InstancePtr);
-void XUz_pi_controller_Set_axi_KP(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_KP(XUz_pi_controller *InstancePtr);
-void XUz_pi_controller_Set_axi_limit(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_limit(XUz_pi_controller *InstancePtr);
-void XUz_pi_controller_Set_axi_reset(XUz_pi_controller *InstancePtr, u32 Data);
-u32 XUz_pi_controller_Get_axi_reset(XUz_pi_controller *InstancePtr);
+void XUz_foc_Set_axi_id_reference(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_reference(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_reference(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_reference(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_sampletime(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_sampletime(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_id_KI(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_KI(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_id_KP(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_id_KP(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_KI(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_KI(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_iq_KP(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_iq_KP(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_limit(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_limit(XUz_foc *InstancePtr);
+void XUz_foc_Set_axi_reset(XUz_foc *InstancePtr, u32 Data);
+u32 XUz_foc_Get_axi_reset(XUz_foc *InstancePtr);
 
 #ifdef __cplusplus
 }

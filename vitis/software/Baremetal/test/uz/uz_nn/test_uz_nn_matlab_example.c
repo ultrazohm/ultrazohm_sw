@@ -17,6 +17,7 @@
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
 #define NUMBER_OF_EPOCHS 100
+#define MINI_BATCH_SIZE 252
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -46,18 +47,25 @@ float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYE
 float x[NUMBER_OF_INPUTS] = {
 #include "matlab_weights/X_inputvec.csv"
 };
-// 3276 Trainingsinput (13x252)
-// float x_mat[NUMBER_OF_INPUTS * NUMBEROFTRAININGSDATA] = {
+
+// float x_matrix[NUMBER_OF_INPUTS * MINI_BATCH_SIZE] = {
 // #include "matlab_weights/X_input.csv"
 // };
+// 3276 Trainingsinput (13x252)
+float x_mat[NUMBER_OF_INPUTS * MINI_BATCH_SIZE] = {
+#include "matlab_weights/X_input.csv"
+};
 // Sollausgabe (1 Ausgabewert) aus Matlab
 float reference_output[NUMBER_OF_OUTPUTS]= {
 #include "matlab_weights/T_outputvec.csv"
 };
-// Sollausgabe (252 Ausgabewerte) aus Matlab
-// float reference_mat[NUMBER_OF_OUTPUTS * NUMBEROFTRAININGSDATA]= {
+// float reference_outputmatrix[NUMBER_OF_OUTPUTS * MINI_BATCH_SIZE]= {
 // #include "matlab_weights/T_output.csv"
 // };
+// Sollausgabe (252 Ausgabewerte) aus Matlab
+float reference_mat[NUMBER_OF_OUTPUTS * MINI_BATCH_SIZE]= {
+#include "matlab_weights/T_output.csv"
+};
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
 #include "matlab_weights/layer1_weights.csv"
@@ -192,6 +200,35 @@ void tearDown(void)
 }
 
 void test_uz_nn_matlab(void)
+  {
+      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+      struct uz_matrix_t refmatrix={0};
+      uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+      struct uz_matrix_t x_matrix={0};
+      uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
+      clock_t start = clock();
+       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+       {
+       uz_nn_ff(test,input);
+       uz_matrix_t* output=uz_nn_get_output_data(test);
+       // MSE Berechnen für Trainingsdatenpaar
+       msetest[i] = uz_nn_mse(output,refout);
+       msederv[i] = uz_nn_mse_derv(output,refout);
+       float *msed = &msederv[i];
+       float result=uz_matrix_get_element_zero_based(output,0,0);
+       printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+       printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+       uz_nn_backward_pass(test,msed,input);
+       float lernrate = 0.001f;
+       uz_nn_gradient_descent(test,lernrate);
+       }
+       uz_nn_mat_export(test);
+       clock_t end = clock();
+       float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+       printf("Zeit des Tests = %.6f \n", (double)seconds);
+ }
+
+ void test_uz_nn_matlab_mini_batch(void)
   {
       uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
       struct uz_matrix_t refmatrix={0};

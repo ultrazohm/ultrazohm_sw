@@ -76,6 +76,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_v_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_f_sw_Hz,
 	JSSD_FLOAT_speed_RPM,
 	JSSD_FLOAT_invTemp1,
 	JSSD_FLOAT_invTemp2,

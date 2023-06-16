@@ -20,9 +20,10 @@
 #include "IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
 
 const struct uz_PMSM_t config_PMSM = {
-		.Ld_Henry = 0.0017,
-		.Lq_Henry = 0.0038,
-		.Psi_PM_Vs = 0.19,
+		.R_ph_Ohm = 0.27f,
+		.Ld_Henry = 0.0017f,
+		.Lq_Henry = 0.0038f,
+		.Psi_PM_Vs = 0.19f,
 		.polePairs = 5.0f,
 		.I_max_Ampere = 18.0f
 };
@@ -51,6 +52,10 @@ struct uz_FOC_config config = {
 		.config_iq = config_iq,
 		.decoupling_select = no_decoupling
 };
+
+extern pre_calc_val_t pre_calc_val;
+extern const base_val_t base_val;
+extern uz_PMSM_6ph_t dengine;
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -114,6 +119,13 @@ int main(void)
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config);
 
+            //init lambda factors sw values for mpc
+            Global_Data.av.lambda_d = 1.0f;
+            Global_Data.av.lambda_q = 1.0f;
+            Global_Data.av.lambda_x = 1.0f;
+            Global_Data.av.lambda_y = 1.0f;
+            Global_Data.av.lambda_u = 0.000f;
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -140,22 +152,68 @@ int main(void)
             reconfig_ADC();
 
             // init pu-conversion
-            float pu_current_conversion = 0.1f; // 10A = 1 p.u.
+//          float pu_current_conversion = 0.1f; // 10A = 1 p.u.
+            float pu_current_conversion = 1.0f/base_val.IB;
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in0_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_c1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in1_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_b1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in2_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_a1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in8_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_c2
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in9_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18)); //i_b2
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in10_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion, 18));//i_a2
-            float pu_voltage_conversion = 0.00666667f;
+//            float pu_voltage_conversion = 0.00666667f;
+            float pu_voltage_conversion = 1.0f/base_val.VB;
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in3_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion, 18)); //v_dc1
             uz_axi_write_uint32(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in11_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion, 18)); //v_dc2
             // init VSD IP
             //nothing to init here
 
             // init park transform IP
-            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + factor_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(1.0f, 14));
-            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + offset_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(0.0f, 14));
+            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + factor_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(1.0f, 14)); //factor multiplied with el. position
+            uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + offset_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(0.0f, 14)); //offset angle is already respected in uz_resolver_pl_interface
+
+            // ctrl_state_machine IP init
+            uz_axi_write_uint32(XPAR_MPC_CTRL_STAT_IP_0_BASEADDR + 0x100, 64U); //state machine shall perform 64 iterations for the 64 switch positions
+
+            // mpc_voltages IP init
+            uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x100, 1U); //0=index via AXI 1=index via PL
+
+            // pu_omega_m IP init
+            float pu_omega_m_conversion = 1.0f/base_val.omegaB;
+            uz_axi_write_uint32(XPAR_MPC_PU_OMEGA_M_0_BASEADDR + 0x17C, uz_convert_float_to_unsigned_fixed(pu_omega_m_conversion, 18)); //omega_m_rad_per_s
+
+            // delay_comp IP init
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
+            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
+            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x13C, dengine.polePairs);
+
+            // prediction IP init
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
+            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
+            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x13C, dengine.polePairs);
+
+            // cost_optim IP init
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, uz_convert_float_to_sfixed(0.36f, 15)); //current limit in p.u.
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x114, uz_convert_float_to_sfixed(Global_Data.av.lambda_d, 17));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.lambda_q, 17));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(Global_Data.av.lambda_x, 17));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(Global_Data.av.lambda_y, 17));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(Global_Data.av.lambda_u, 17));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
 
             initialization_chain = print_msg;
             break;

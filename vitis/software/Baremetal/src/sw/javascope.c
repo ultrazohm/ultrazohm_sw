@@ -103,6 +103,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_v_q] 			        = &(data->av.v_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
+	js_slowDataArray[JSSD_FLOAT_f_sw_Hz]				= &(data->av.f_sw_avg_Hz);
 	js_slowDataArray[JSSD_FLOAT_speed_RPM] 		       	= &(data->av.mechanicalRotorSpeedRPM_ip);
 	js_slowDataArray[JSSD_FLOAT_invTemp1]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_invTemp2]				= &(data->av.temperature_inv_2);

@@ -122,6 +122,14 @@ typedef struct _actualValues_ {
 	float i_q_ip;
 	float v_dc1_ip;
 	float v_dc2_ip;
+	float f_sw_avg_Hz;
+	float i_x_ref;
+	float i_y_ref;
+	float lambda_d;
+	float lambda_q;
+	float lambda_x;
+	float lambda_y;
+	float lambda_u;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

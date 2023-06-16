@@ -109,6 +109,61 @@ struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
 };
 
 bool first_ISR = false;
+
+
+//=============================================================================
+// MPC IP core pre calculations
+
+// 2x3ph PMSM parameters
+const uz_PMSM_6ph_t dengine={
+		.R_ph_Ohm=0.27f,
+		.Ld_Henry=0.0017f,
+		.Lq_Henry=0.0038f,
+		.Lx_Henry=0.0024f,
+		.Ly_Henry=0.0025f,
+		.polePairs=5.0f,
+		.Psi_PM_Vs=0.19f,
+		.I_max_Ampere=18.0f
+};
+
+// 2x3ph PMSM rated values
+const rated_val_t rated_val={
+		.VR=400.0f,
+//		.IR=7.071f,
+		.IR=14.142f,
+		.nR=3000.0f
+};
+
+// p.u. base values
+const base_val_t base_val={
+		.VB=sqrt(2.0f/3.0f)*rated_val.VR,
+		.IB=sqrt(2.0f)*rated_val.IR,
+		.omegaB=rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs,
+		.ZB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR),
+		.LB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs),
+		.psiB=(sqrt(2.0f/3.0f)*rated_val.VR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs)
+};
+
+const float Ts = 1.0f/UZ_PWM_FREQUENCY;
+
+//pre-calculated factors for delay compensation and prediction model
+const pre_calc_val_t pre_calc_val={
+		.Rs_over_ZB = dengine.R_ph_Ohm/base_val.ZB,
+		.Ts_times_ZB_over_Ld = Ts*base_val.ZB/dengine.Ld_Henry,
+		.Ts_times_ZB_over_Lq = Ts*base_val.ZB/dengine.Lq_Henry,
+		.Ts_times_ZB_over_Lx = Ts*base_val.ZB/dengine.Lx_Henry,
+		.Ts_times_ZB_over_Ly = Ts*base_val.ZB/dengine.Ly_Henry,
+		.Ld_over_LB = dengine.Ld_Henry/base_val.LB,
+		.Lq_over_LB = dengine.Lq_Henry/base_val.LB,
+		.psi_pm_over_psiB = dengine.Psi_PM_Vs/base_val.psiB
+};
+
+float sw_cnt_avg_time_sec = 0.0f;
+uint32_t isr_cnt = 0;
+uint32_t switchNumb = 0;
+float passed_time_sec = 0.0f;
+float f_sw_avg_Hz = 0.0f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -132,7 +187,7 @@ void ISR_Control(void *data)
 
 
 
-//    // read resolver
+    // read resolver
     Global_Data.av.posVel_mech = uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
     Global_Data.av.posVel_el = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
 
@@ -233,15 +288,24 @@ void ISR_Control(void *data)
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
+	// write reference values to mpc ip
+    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(Global_Data.av.i_x_ref/base_val.IB, 11));
+    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(Global_Data.av.i_y_ref/base_val.IB, 11));
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==idle_state)
     {
     	uz_FOC_reset(Global_Data.objects.foc_current);
+    	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false);
     }
 
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
+
 
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
@@ -274,10 +338,30 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
+
+    // count switching actions of 2L-sixphase inverter
+    if(Global_Data.av.mechanicalRotorSpeedRADpS_ip > 1.0f) {
+    sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.mechanicalRotorSpeedRPM_ip / 60.0f * dengine.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
+
+    if(passed_time_sec >= sw_cnt_avg_time_sec) {
+        	switchNumb = uz_axi_read_uint32(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);
+        	isr_cnt = 0;
+        	Global_Data.av.f_sw_avg_Hz = switchNumb * 0.041667f / passed_time_sec; // 0.041667 = 1/(12*2); 12 switches and each transition is counted (*2)
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, false);
+        }
+
+        isr_cnt++;
+        passed_time_sec = isr_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
+
+
+    }
+
+
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
 
 //    // Determine mechanical angle of resolver

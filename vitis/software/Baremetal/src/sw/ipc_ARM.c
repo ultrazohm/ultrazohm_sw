@@ -195,7 +195,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+			data->av.lambda_u = value;
+			uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(data->av.lambda_u, 17));
 			break;
 
 		case (Set_Send_Field_4):

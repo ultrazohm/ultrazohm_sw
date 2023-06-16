@@ -1,0 +1,76 @@
+### Xilinx Vivado ###
+# short gitignore for our project specific
+
+*.Xil*
+*.hw/*
+*.hbs/*
+*.cache/*
+*.ip_user_files/*
+*.sim/*
+*.runs/*
+*.jou
+*.log
+*.str
+!.gitignore
+
+### Long gitignore based on template for Xilinx Vivado Design Suite
+## [home]
+#*.jou
+#*.log
+#*.debug
+#*.str
+#*.zip
+#*.tmp
+#*.rst
+#*.os
+#*.js
+#*.pb
+#*.dcp
+#*.hwdef
+#*.vds
+#*.veo
+#*.wdf
+#*.vdi
+#*.dmp
+#*.rpx
+#*.rpt
+#*_stub.v
+#*_stub.vhdl
+#*_funcsim.v
+#*_funcsim.vhdl
+#*.ui
+#*.bit
+#*.ltx
+#*_is_complete_*
+#*.bxml
+#*.ila
+#*.wcfg
+#*.wdb
+#*.layout
+#*.lpr
+#*ooc*
+#
+## [dir]
+#*.cache
+#.metadata
+#*.data
+#*.ipdefs
+#.Xil
+#*.sdk
+#*.hw
+#*.ip_user_files
+#
+#### IP synth
+#*_synth_*
+#.jobs
+#
+#
+##### project synth
+#/*.runs/*
+#
+#### block design
+#*/*/bd/*/ip/*
+#*/*/bd/*/ipshared/*
+#*/*/bd/*/sim/*
+#*/*/bd/mref*
+#

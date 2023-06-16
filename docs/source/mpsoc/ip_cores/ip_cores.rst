@@ -27,6 +27,7 @@ IP Cores
     uz_dac_interface/uz_dac_interface
     uz_rs_flip_flop/uz_rs_flip_flop
     uz_inverter_adapter/uz_inverter_adapter
+    uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection
     uz_cil_pmsm/uz_cil_pmsm
     uz_resolverIP/uz_resolverIP
     uz_resolver_pl_interface/uz_resolver_pl_interface

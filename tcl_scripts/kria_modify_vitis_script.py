@@ -112,8 +112,8 @@ with open(main_c_path, 'w') as file_w:
 main_h_path = vpath / 'software/FreeRTOS/main.h'
 add = "#define OS_IS_FREERTOS"
 
-with open(main_h_path, 'r') as h_open_r:
-    main_h_content = h_open_r.readlines()
+with open(main_h_path, 'r') as h_open_r1:
+    main_h_content = h_open_r1.readlines()
 
 if add not in main_h_content:
     with open(main_h_path, 'r+') as h_open:
@@ -123,7 +123,10 @@ if add not in main_h_content:
         h_open.writelines(h_data)
         h_open.truncate()
 
-lines_to_comment_h = set(range(120, 125))
+with open(main_h_path, 'r') as h_open_r:
+    main_h_content = h_open_r.readlines()
+
+lines_to_comment_h = set(range(121, 126))
 
 with open(main_h_path, 'w') as h_open_w:
     for number, line in enumerate(main_h_content):
@@ -131,8 +134,6 @@ with open(main_h_path, 'w') as h_open_w:
             h_open_w.write("//" + line)
         else:
             h_open_w.write(line)
-
-
 
 print("FreeRTOS Update successful")
 

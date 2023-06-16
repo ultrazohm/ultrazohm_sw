@@ -9934,6 +9934,42 @@
           },
           "out_G11": {
             "direction": "O"
+          },
+          "ss_in_0": {
+            "direction": "I"
+          },
+          "ss_in_1": {
+            "direction": "I"
+          },
+          "ss_in_2": {
+            "direction": "I"
+          },
+          "ss_in_3": {
+            "direction": "I"
+          },
+          "ss_in_4": {
+            "direction": "I"
+          },
+          "ss_in_5": {
+            "direction": "I"
+          },
+          "ss_in_6": {
+            "direction": "I"
+          },
+          "ss_in_7": {
+            "direction": "I"
+          },
+          "ss_in_8": {
+            "direction": "I"
+          },
+          "ss_in_9": {
+            "direction": "I"
+          },
+          "ss_in_10": {
+            "direction": "I"
+          },
+          "ss_in_11": {
+            "direction": "I"
           }
         },
         "components": {
@@ -10554,85 +10590,73 @@
           "cost_opt_0_G0": {
             "ports": [
               "cost_opt_0/G0",
-              "mpc_enb_0/G0",
-              "two_level_sixphase_f_0/ss_in_0"
+              "mpc_enb_0/G0"
             ]
           },
           "cost_opt_0_G1": {
             "ports": [
               "cost_opt_0/G1",
-              "mpc_enb_0/G1",
-              "two_level_sixphase_f_0/ss_in_1"
+              "mpc_enb_0/G1"
             ]
           },
           "cost_opt_0_G2": {
             "ports": [
               "cost_opt_0/G2",
-              "mpc_enb_0/G2",
-              "two_level_sixphase_f_0/ss_in_2"
+              "mpc_enb_0/G2"
             ]
           },
           "cost_opt_0_G3": {
             "ports": [
               "cost_opt_0/G3",
-              "mpc_enb_0/G3",
-              "two_level_sixphase_f_0/ss_in_3"
+              "mpc_enb_0/G3"
             ]
           },
           "cost_opt_0_G4": {
             "ports": [
               "cost_opt_0/G4",
-              "mpc_enb_0/G4",
-              "two_level_sixphase_f_0/ss_in_4"
+              "mpc_enb_0/G4"
             ]
           },
           "cost_opt_0_G5": {
             "ports": [
               "cost_opt_0/G5",
-              "mpc_enb_0/G5",
-              "two_level_sixphase_f_0/ss_in_5"
+              "mpc_enb_0/G5"
             ]
           },
           "cost_opt_0_G6": {
             "ports": [
               "cost_opt_0/G6",
-              "mpc_enb_0/G6",
-              "two_level_sixphase_f_0/ss_in_6"
+              "mpc_enb_0/G6"
             ]
           },
           "cost_opt_0_G7": {
             "ports": [
               "cost_opt_0/G7",
-              "mpc_enb_0/G7",
-              "two_level_sixphase_f_0/ss_in_7"
+              "mpc_enb_0/G7"
             ]
           },
           "cost_opt_0_G8": {
             "ports": [
               "cost_opt_0/G8",
-              "mpc_enb_0/G8",
-              "two_level_sixphase_f_0/ss_in_8"
+              "mpc_enb_0/G8"
             ]
           },
           "cost_opt_0_G9": {
             "ports": [
               "cost_opt_0/G9",
-              "mpc_enb_0/G9",
-              "two_level_sixphase_f_0/ss_in_9"
+              "mpc_enb_0/G9"
             ]
           },
           "cost_opt_0_G10": {
             "ports": [
               "cost_opt_0/G10",
-              "mpc_enb_0/G10",
-              "two_level_sixphase_f_0/ss_in_10"
+              "mpc_enb_0/G10"
             ]
           },
           "cost_opt_0_G11": {
             "ports": [
               "cost_opt_0/G11",
-              "mpc_enb_0/G11",
-              "two_level_sixphase_f_0/ss_in_11"
+              "mpc_enb_0/G11"
             ]
           },
           "mpc_enb_0_out_G0": {
@@ -10705,6 +10729,78 @@
             "ports": [
               "mpc_enb_0/out_G11",
               "out_G11"
+            ]
+          },
+          "ss_in_0_1": {
+            "ports": [
+              "ss_in_0",
+              "two_level_sixphase_f_0/ss_in_0"
+            ]
+          },
+          "ss_in_1_1": {
+            "ports": [
+              "ss_in_1",
+              "two_level_sixphase_f_0/ss_in_1"
+            ]
+          },
+          "ss_in_2_1": {
+            "ports": [
+              "ss_in_2",
+              "two_level_sixphase_f_0/ss_in_2"
+            ]
+          },
+          "ss_in_3_1": {
+            "ports": [
+              "ss_in_3",
+              "two_level_sixphase_f_0/ss_in_3"
+            ]
+          },
+          "ss_in_4_1": {
+            "ports": [
+              "ss_in_4",
+              "two_level_sixphase_f_0/ss_in_4"
+            ]
+          },
+          "ss_in_5_1": {
+            "ports": [
+              "ss_in_5",
+              "two_level_sixphase_f_0/ss_in_5"
+            ]
+          },
+          "ss_in_6_1": {
+            "ports": [
+              "ss_in_6",
+              "two_level_sixphase_f_0/ss_in_6"
+            ]
+          },
+          "ss_in_7_1": {
+            "ports": [
+              "ss_in_7",
+              "two_level_sixphase_f_0/ss_in_7"
+            ]
+          },
+          "ss_in_8_1": {
+            "ports": [
+              "ss_in_8",
+              "two_level_sixphase_f_0/ss_in_8"
+            ]
+          },
+          "ss_in_9_1": {
+            "ports": [
+              "ss_in_9",
+              "two_level_sixphase_f_0/ss_in_9"
+            ]
+          },
+          "ss_in_10_1": {
+            "ports": [
+              "ss_in_10",
+              "two_level_sixphase_f_0/ss_in_10"
+            ]
+          },
+          "ss_in_11_1": {
+            "ports": [
+              "ss_in_11",
+              "two_level_sixphase_f_0/ss_in_11"
             ]
           }
         }
@@ -11059,73 +11155,85 @@
       "inverter1_Dig_10_Ch1": {
         "ports": [
           "inverter_gates/Dig_10_Ch1",
-          "Dig_10_Ch1"
+          "Dig_10_Ch1",
+          "mpc/ss_in_5"
         ]
       },
       "inverter1_Dig_08_Ch1": {
         "ports": [
           "inverter_gates/Dig_08_Ch1",
-          "Dig_08_Ch1"
+          "Dig_08_Ch1",
+          "mpc/ss_in_4"
         ]
       },
       "inverter1_Dig_06_Ch1": {
         "ports": [
           "inverter_gates/Dig_06_Ch1",
-          "Dig_06_Ch1"
+          "Dig_06_Ch1",
+          "mpc/ss_in_3"
         ]
       },
       "inverter1_Dig_04_Ch1": {
         "ports": [
           "inverter_gates/Dig_04_Ch1",
-          "Dig_04_Ch1"
+          "Dig_04_Ch1",
+          "mpc/ss_in_2"
         ]
       },
       "inverter1_Dig_02_Ch1": {
         "ports": [
           "inverter_gates/Dig_02_Ch1",
-          "Dig_02_Ch1"
+          "Dig_02_Ch1",
+          "mpc/ss_in_1"
         ]
       },
       "inverter1_Dig_00_Ch1": {
         "ports": [
           "inverter_gates/Dig_00_Ch1",
-          "Dig_00_Ch1"
+          "Dig_00_Ch1",
+          "mpc/ss_in_0"
         ]
       },
       "inverter1_Dig_01_Ch1": {
         "ports": [
           "inverter_gates/Dig_01_Ch1",
-          "Dig_01_Ch1"
+          "Dig_01_Ch1",
+          "mpc/ss_in_6"
         ]
       },
       "inverter1_Dig_03_Ch1": {
         "ports": [
           "inverter_gates/Dig_03_Ch1",
-          "Dig_03_Ch1"
+          "Dig_03_Ch1",
+          "mpc/ss_in_7"
         ]
       },
       "inverter1_Dig_05_Ch1": {
         "ports": [
           "inverter_gates/Dig_05_Ch1",
-          "Dig_05_Ch1"
+          "Dig_05_Ch1",
+          "mpc/ss_in_8"
         ]
       },
       "inverter1_Dig_07_Ch1": {
         "ports": [
           "inverter_gates/Dig_07_Ch1",
-          "Dig_07_Ch1"
+          "Dig_07_Ch1",
+          "mpc/ss_in_9"
         ]
       },
       "inverter1_Dig_09_Ch1": {
         "ports": [
           "inverter_gates/Dig_09_Ch1",
-          "Dig_09_Ch1"
+          "Dig_09_Ch1",
+          "mpc/ss_in_10"
         ]
       },
       "inverter1_Dig_11_Ch1": {
         "ports": [
           "inverter_gates/Dig_11_Ch1",
-          "Dig_11_Ch1"
+          "Dig_11_Ch1",
+          "mpc/ss_in_11"
         ]
       },
       "Dig_14_Ch5_1": {

@@ -6,7 +6,7 @@
 #ifdef __linux__
 
 /***************************** Include Files *********************************/
-#include "xuz_pi_controller.h"
+#include "xuz_foc.h"
 
 /***************** Macros (Inline Functions) Definitions *********************/
 #define MAX_UIO_PATH_SIZE       256
@@ -18,18 +18,18 @@
 typedef struct {
     u64 addr;
     u32 size;
-} XUz_pi_controller_uio_map;
+} XUz_foc_uio_map;
 
 typedef struct {
     int  uio_fd;
     int  uio_num;
     char name[ MAX_UIO_NAME_SIZE ];
     char version[ MAX_UIO_NAME_SIZE ];
-    XUz_pi_controller_uio_map maps[ MAX_UIO_MAPS ];
-} XUz_pi_controller_uio_info;
+    XUz_foc_uio_map maps[ MAX_UIO_MAPS ];
+} XUz_foc_uio_info;
 
 /***************** Variable Definitions **************************************/
-static XUz_pi_controller_uio_info uio_info;
+static XUz_foc_uio_info uio_info;
 
 /************************** Function Implementation *************************/
 static int line_from_file(char* filename, char* linebuf) {
@@ -47,19 +47,19 @@ static int line_from_file(char* filename, char* linebuf) {
     return 0;
 }
 
-static int uio_info_read_name(XUz_pi_controller_uio_info* info) {
+static int uio_info_read_name(XUz_foc_uio_info* info) {
     char file[ MAX_UIO_PATH_SIZE ];
     sprintf(file, "/sys/class/uio/uio%d/name", info->uio_num);
     return line_from_file(file, info->name);
 }
 
-static int uio_info_read_version(XUz_pi_controller_uio_info* info) {
+static int uio_info_read_version(XUz_foc_uio_info* info) {
     char file[ MAX_UIO_PATH_SIZE ];
     sprintf(file, "/sys/class/uio/uio%d/version", info->uio_num);
     return line_from_file(file, info->version);
 }
 
-static int uio_info_read_map_addr(XUz_pi_controller_uio_info* info, int n) {
+static int uio_info_read_map_addr(XUz_foc_uio_info* info, int n) {
     int ret;
     char file[ MAX_UIO_PATH_SIZE ];
     info->maps[n].addr = UIO_INVALID_ADDR;
@@ -72,7 +72,7 @@ static int uio_info_read_map_addr(XUz_pi_controller_uio_info* info, int n) {
     return 0;
 }
 
-static int uio_info_read_map_size(XUz_pi_controller_uio_info* info, int n) {
+static int uio_info_read_map_size(XUz_foc_uio_info* info, int n) {
     int ret;
     char file[ MAX_UIO_PATH_SIZE ];
     sprintf(file, "/sys/class/uio/uio%d/maps/map%d/size", info->uio_num, n);
@@ -84,8 +84,8 @@ static int uio_info_read_map_size(XUz_pi_controller_uio_info* info, int n) {
     return 0;
 }
 
-int XUz_pi_controller_Initialize(XUz_pi_controller *InstancePtr, const char* InstanceName) {
-	XUz_pi_controller_uio_info *InfoPtr = &uio_info;
+int XUz_foc_Initialize(XUz_foc *InstancePtr, const char* InstanceName) {
+	XUz_foc_uio_info *InfoPtr = &uio_info;
 	struct dirent **namelist;
     int i, n;
     char* s;
@@ -132,8 +132,8 @@ int XUz_pi_controller_Initialize(XUz_pi_controller *InstancePtr, const char* Ins
     return XST_SUCCESS;
 }
 
-int XUz_pi_controller_Release(XUz_pi_controller *InstancePtr) {
-	XUz_pi_controller_uio_info *InfoPtr = &uio_info;
+int XUz_foc_Release(XUz_foc *InstancePtr) {
+	XUz_foc_uio_info *InfoPtr = &uio_info;
 
     assert(InstancePtr != NULL);
     assert(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);

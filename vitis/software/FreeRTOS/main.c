@@ -22,8 +22,8 @@
 #endif
 
 //Includes for CAN
-#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
-#include "include/can.h"
+//#define CAN_ACTIVE 0 // (1 = CAN is active)  and (0 = CAN is inactive)
+//#include "include/can.h"
 
 //Includes from own files
 #include "main.h"
@@ -41,6 +41,8 @@ err_t dhcp_start(struct netif *netif);
 #endif
 
 static struct netif server_netif;
+
+A53_Data Global_Data_A53;
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -151,13 +153,13 @@ void network_thread(void *p)
             THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
-#if CAN_ACTIVE==1
-	uz_printf(" Init CAN \n\r"); //CAN interface
-	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
-	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
-
-	can_frame_t can_frame_rx; //CAN interface
-#endif
+//#if CAN_ACTIVE==1
+//	uz_printf(" Init CAN \n\r"); //CAN interface
+//	//hal_can_init(XPAR_PSU_CAN_0_BASEADDR, XPAR_PSU_CAN_0_DEVICE_ID); //CAN 0 interface
+//	hal_can_init(XPAR_PSU_CAN_1_BASEADDR, XPAR_PSU_CAN_1_DEVICE_ID); //CAN 1 interface
+//
+//	can_frame_t can_frame_rx; //CAN interface
+//#endif
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
@@ -166,34 +168,34 @@ void network_thread(void *p)
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}
-
-		#if CAN_ACTIVE==1
-			if( ! hal_can_is_rx_empty() ){
-				hal_can_receive_frame_blocking(&can_frame_rx);
-				if(can_frame_rx.std_id == 0x22) {
-				//	XcpCommand( (uint32_t *) can_frame_rx.data );
-					can_send_2();
-				} else {
-
-					//hal_can_debug_print_frame(&can_frame_rx);
-					//uz_printf("received a not XCP related CAN frame \n\r");
-				}
-				//usleep(1000 * 500);
-			}else{
-				can_send_1();
-				//usleep(1000 * 500);
-			}
-
-			// no tx message pending
-			if( hal_can_is_tx_done()) {
-				//XcpSendCallBack();
-			}
-		#endif
+//
+//		#if CAN_ACTIVE==1
+//			if( ! hal_can_is_rx_empty() ){
+//				hal_can_receive_frame_blocking(&can_frame_rx);
+//				if(can_frame_rx.std_id == 0x22) {
+//				//	XcpCommand( (uint32_t *) can_frame_rx.data );
+//					can_send_2();
+//				} else {
+//
+//					//hal_can_debug_print_frame(&can_frame_rx);
+//					//uz_printf("received a not XCP related CAN frame \n\r");
+//				}
+//				//usleep(1000 * 500);
+//			}else{
+//				can_send_1();
+//				//usleep(1000 * 500);
+//			}
+//
+//			// no tx message pending
+//			if( hal_can_is_tx_done()) {
+//				//XcpSendCallBack();
+//			}
+//		#endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		dhcp_fine_tmr();
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
+		if (mscnt >= DHCP_COARSE_TIMER_SECS*2000) {
 			dhcp_coarse_tmr();
 			mscnt = 0;
 		}
@@ -299,70 +301,70 @@ int main_thread()
 
 
 //==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  hal_can_debug_print_frame
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void hal_can_debug_print_frame(can_frame_t *can_frame_p)
-{
-	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
-			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
-}
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  can_send_1
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void can_send_1(void)
-{
-	static uint8_t tick;
-	tick++;
-	if(tick > 250){
-		tick =0;
-	}
-
-	//uz_printf("tick: 0x%02X \n\r", tick);
-	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
-
-	can_frame_t can_frame_tx;
-	can_frame_tx.std_id = 0x123;
-	can_frame_tx.dlc = 2;
-	can_frame_tx.data[0] = 0x13;
-	can_frame_tx.data[1] = tick;
-
-	hal_can_send_frame_blocking(&can_frame_tx);
-}
-
-
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  can_send_2
- *---------------------------------------------------------------------------*
- * Description:
- *      CAN interface for testing
- *---------------------------------------------------------------------------*/
-void can_send_2(void)
-{
-	static uint8_t tick;
-	tick=tick+10;
-	if(tick > 250){
-		tick =0;
-	}
-
-	//uz_printf("tick: 0x%02X \n\r", tick);
-	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
-
-	can_frame_t can_frame_tx;
-	can_frame_tx.std_id = 0x52;
-	can_frame_tx.dlc = 2;
-	can_frame_tx.data[0] = 0x12;
-	can_frame_tx.data[1] = tick;
-
-	hal_can_send_frame_blocking(&can_frame_tx);
-}
+///*---------------------------------------------------------------------------*
+// * Routine:  hal_can_debug_print_frame
+// *---------------------------------------------------------------------------*
+// * Description:
+// *      CAN interface for testing
+// *---------------------------------------------------------------------------*/
+//void hal_can_debug_print_frame(can_frame_t *can_frame_p)
+//{
+//	uz_printf("std_id: 0x%03X, dlc: %d, data[0]: 0x%02X \n\r",
+//			can_frame_p->std_id, can_frame_p->dlc, can_frame_p->data[0]);
+//}
+//
+//
+////==============================================================================================================================================================
+///*---------------------------------------------------------------------------*
+// * Routine:  can_send_1
+// *---------------------------------------------------------------------------*
+// * Description:
+// *      CAN interface for testing
+// *---------------------------------------------------------------------------*/
+//void can_send_1(void)
+//{
+//	static uint8_t tick;
+//	tick++;
+//	if(tick > 250){
+//		tick =0;
+//	}
+//
+//	//uz_printf("tick: 0x%02X \n\r", tick);
+//	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
+//
+//	can_frame_t can_frame_tx;
+//	can_frame_tx.std_id = 0x123;
+//	can_frame_tx.dlc = 2;
+//	can_frame_tx.data[0] = 0x13;
+//	can_frame_tx.data[1] = tick;
+//
+//	hal_can_send_frame_blocking(&can_frame_tx);
+//}
+//
+//
+////==============================================================================================================================================================
+///*---------------------------------------------------------------------------*
+// * Routine:  can_send_2
+// *---------------------------------------------------------------------------*
+// * Description:
+// *      CAN interface for testing
+// *---------------------------------------------------------------------------*/
+//void can_send_2(void)
+//{
+//	static uint8_t tick;
+//	tick=tick+10;
+//	if(tick > 250){
+//		tick =0;
+//	}
+//
+//	//uz_printf("tick: 0x%02X \n\r", tick);
+//	//Xil_Out32(XPAR_AXI_GPIO_0_BASEADDR, tick);
+//
+//	can_frame_t can_frame_tx;
+//	can_frame_tx.std_id = 0x52;
+//	can_frame_tx.dlc = 2;
+//	can_frame_tx.data[0] = 0x12;
+//	can_frame_tx.data[1] = tick;
+//
+//	hal_can_send_frame_blocking(&can_frame_tx);
+//}

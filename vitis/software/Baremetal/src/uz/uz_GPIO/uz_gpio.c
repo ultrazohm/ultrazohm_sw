@@ -41,7 +41,7 @@ uint32_t uz_gpio_get_enable_output(struct uz_gpio_ *self) {
 void uz_gpio_write_pin(struct uz_gpio_ *self, uint32_t value) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_assert( uz_gpio_get_enable_output(self) );
+	//uz_assert( uz_gpio_get_enable_output(self));
 	XGpioPs_WritePin(self->hw, (uint32_t) self->pin_number, (uint32_t) value);
 }
 

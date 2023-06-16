@@ -31,13 +31,13 @@ static uz_gpio MIO_SWSystem;
 void uz_frontplane_button_and_led_init() {
 	InitializeXilinxMioGpioInstance();
 	InitializeMioPinsForLEDs();
-	enableAllMioWithLEDsAttached();
+    //enableAllMioWithLEDsAttached();
 	InitializeAllStatusLEDs();
 	TurnAllLEDOff();
 
 	InitializeMioPinsForButtons();
 	InitializeAllPushButtons();
-	enableAllMioWithButonsAttached();
+	//enableAllMioWithButonsAttached();
 }
 
 static void InitializeXilinxMioGpioInstance() {

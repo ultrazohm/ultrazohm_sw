@@ -29,16 +29,16 @@ static uz_incrementalEncoder_t* encoder_D5;
 #define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
 #define IncEncoderLPF_freq 1000.0f
 
-void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
-	struct uz_incrementalEncoder_config encoder_D5_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
-		.ip_core_frequency_Hz=100000000U,
-		.line_number_per_turn_mech=incrementalEncoderResolution,
-		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
-	};
-	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
-}
+//void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
+//	struct uz_incrementalEncoder_config encoder_D5_config={
+//		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
+//		.ip_core_frequency_Hz=100000000U,
+//		.line_number_per_turn_mech=incrementalEncoderResolution,
+//		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
+//		.drive_pole_pair=motorPolePairNumber
+//	};
+//	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
+//}
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(encoder_D5);

@@ -99,7 +99,7 @@ with open(main_c_path, 'w') as file_w:
 with open(main_c_path, 'r') as file_r:
     main_c_content = file_r.readlines()
 
-lines_to_comment = set(range(24, 26)).union(set(range(153, 160))).union(set(range(169, 191))).union(set(range(303, 371)))
+lines_to_comment = set(range(24, 26)).union(set(range(155, 162))).union(set(range(170, 193))).union(set(range(303, 371)))
 
 with open(main_c_path, 'w') as file_w:
     for number, line in enumerate(main_c_content):
@@ -112,12 +112,27 @@ with open(main_c_path, 'w') as file_w:
 main_h_path = vpath / 'software/FreeRTOS/main.h'
 add = "#define OS_IS_FREERTOS"
 
-with open(main_h_path, 'r+') as h_open:
-    h_data = h_open.readlines()
-    h_data.insert(32, add + '\n')
-    h_open.seek(0)
-    h_open.writelines(h_data)
-    h_open.truncate()
+with open(main_h_path, 'r') as h_open_r:
+    main_h_content = h_open_r.readlines()
+
+if add not in main_h_content:
+    with open(main_h_path, 'r+') as h_open:
+        h_data = h_open.readlines()
+        h_data.insert(32, add + '\n')
+        h_open.seek(0)
+        h_open.writelines(h_data)
+        h_open.truncate()
+
+lines_to_comment_h = set(range(120, 125))
+
+with open(main_h_path, 'w') as h_open_w:
+    for number, line in enumerate(main_h_content):
+        if number in lines_to_comment_h:
+            h_open_w.write("//" + line)
+        else:
+            h_open_w.write(line)
+
+
 
 print("FreeRTOS Update successful")
 
@@ -143,14 +158,3 @@ if not os.listdir(destination_folder):
 else:
     print("The .launches folder is not empty")
 
-########## configuration file ##########
-
-source_folder = vpath / 'software/Baremetal/src/uz/'
-source_file = source_folder / "default_uz_global_configuration.h"
-destination_file = source_folder / "uz_global_configuration.h"
-
-if not os.path.exists(destination_file):
-    shutil.copy(source_file, destination_file)
-    print('Config File copied')
-else:
-    print('Config file already avaliable')

@@ -111,18 +111,19 @@ void ISR_Control(void *data)
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     ///////////////////////////////////////////
-        ////////////////////CIL////////////////////
-        ///////////////////////////////////////////
-    	  uz_pmsm_model6ph_dq_set_inputs_general(pmsm,omega_mech,load_torque);                                          // set omega and load torque (only one active)
-    	  pmsm_output = uz_pmsm_model6ph_dq_get_outputs_general(pmsm);                                                  // read outputs from PMSM
-    	  transformation_currents_abc = uz_pmsm6ph_transformation_get_currents(transformation);                         // read current from transformation
-    	  theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);											// read theta from transformation
-    	  transformed_currents = uz_transformation_asym30deg_6ph_abc_to_dq(transformation_currents_abc, theta_el);      // transform currents
-
+	////////////////////CIL////////////////////
+	///////////////////////////////////////////
+	  uz_pmsm_model6ph_dq_set_inputs_general(pmsm,omega_mech,load_torque);                                          // set omega and load torque (only one active)
+	  pmsm_output = uz_pmsm_model6ph_dq_get_outputs_general(pmsm);                                                  // read outputs from PMSM
+	  transformation_currents_abc = uz_pmsm6ph_transformation_get_currents(transformation);                         // read current from transformation
+	  theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);											// read theta from transformation
+	  transformed_currents = uz_transformation_asym30deg_6ph_abc_to_dq(transformation_currents_abc, theta_el);      // transform currents
+	  Global_Data.av.I_d = transformed_currents.d;
+	  Global_Data.av.I_q = transformed_currents.q;
 
         platform_state_t current_state=ultrazohm_state_machine_get_state();
-        if (current_state==control_state)
-        {
+        //if (current_state==control_state)
+        //{
         	///////////////////////////////////////////
     		////////////////////FOC////////////////////
     		///////////////////////////////////////////
@@ -149,7 +150,7 @@ void ISR_Control(void *data)
             	break;
             default: assert(0); break;
             }
-        }
+        //}
 
         // Reset both controller
     	if(reset){

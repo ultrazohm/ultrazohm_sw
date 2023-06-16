@@ -129,6 +129,10 @@ uint32_t* int_KP = (uint32_t*)&PI_config.Kp;
 uint32_t* int_limit = (uint32_t*)&PI_config.upper_limit;
 uint32_t* int_ts = (uint32_t*)&PI_config.samplingTime_sec;
 
+#include "IP_Cores/uz_SPWM/xuz_spwm_3ph.h"
+XUz_spwm_3ph ip_SPWM_0;
+XUz_spwm_3ph ip_SPWM_1;
+uint32_t* int_udc = (uint32_t*)&openhw_udc;
 
 enum init_chain
 {
@@ -198,7 +202,7 @@ int main(void)
 				.max_modulation_index = 1.0f
 			};
 			cc_instance = uz_CurrentControl_init(cc_config);
-			//PI controller FPGA
+			//FOC controller FPGA
 			XUz_foc_Initialize(&FOC_ip_instance, XPAR_UZ_USER_TRANSFORMATION_AND_CONTROL_UZ_FOC_0_DEVICE_ID);
 			XUz_foc_Set_axi_id_KI(&FOC_ip_instance, *int_KI);
 			XUz_foc_Set_axi_id_KP(&FOC_ip_instance, *int_KP);
@@ -206,7 +210,12 @@ int main(void)
 			XUz_foc_Set_axi_sampletime(&FOC_ip_instance, *int_ts);
 			XUz_foc_Set_axi_iq_KI(&FOC_ip_instance, *int_KI);
 			XUz_foc_Set_axi_iq_KP(&FOC_ip_instance, *int_KP);
-
+			//SPWM FPGA
+			XUz_spwm_3ph_Initialize(&ip_SPWM_0, XPAR_UZ_USER_TRANSFORMATION_AND_CONTROL_UZ_SPWM_3PH_0_DEVICE_ID);
+			XUz_spwm_3ph_Initialize(&ip_SPWM_1, XPAR_UZ_USER_TRANSFORMATION_AND_CONTROL_UZ_SPWM_3PH_1_DEVICE_ID);
+			XUz_spwm_3ph_Set_u_dc(&ip_SPWM_0, *int_udc);
+			XUz_spwm_3ph_Set_u_dc(&ip_SPWM_1, *int_udc);
+			//end
 
             initialization_chain = print_msg;
             break;

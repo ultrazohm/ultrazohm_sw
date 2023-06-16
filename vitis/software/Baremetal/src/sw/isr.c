@@ -31,6 +31,64 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+// Data for PMSM
+#include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+extern uz_pmsm_model6ph_dq_t *pmsm;
+float omega_mech = 100.0f;
+float load_torque = 0.0f;
+struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_output = {0};
+
+// Data for Transformation
+#include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
+extern uz_pmsm6ph_transformation_t *transformation;
+uz_6ph_abc_t transformation_currents_abc = {0};
+float theta_el = 0.0f;
+
+// Data for PI
+#include "../uz/uz_piController/uz_piController.h"
+extern uz_PI_Controller *PI_d_current;
+extern uz_PI_Controller *PI_q_current;
+uz_6ph_dq_t transformed_currents = {0};
+uz_3ph_dq_t setp_currents = {0};
+uz_6ph_dq_t output_voltage_dq = {0};
+uz_6ph_abc_t out_voltage_abc = {0};
+uz_3ph_abc_t out_voltage_abc1 = {0};
+uz_3ph_abc_t out_voltage_abc2 = {0};
+
+// Data for PWM
+float V_dc_volts = 100.0f;
+
+// Data for FOC PS
+#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "../uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
+uz_3ph_dq_t i_actual_3ph = {0};
+uz_3ph_dq_t u_ref_3ph = {0};
+uz_6ph_dq_t u_ref_6ph = {0};
+uz_3ph_dq_t i_ref = {0};
+extern uz_CurrentControl_t* cc_instance;
+struct uz_DutyCycle_2x3ph_t duty_cycle = {0};
+
+// Data for FOC PL
+#include "../IP_Cores/uz_FOC/xuz_foc.h"
+extern XUz_foc FOC_ip_instance;
+bool reset = false;
+uint32_t* int_idref = (uint32_t*)&i_ref.d;
+uint32_t* int_iqref = (uint32_t*)&i_ref.q;
+
+
+uz_PI_Controller *PI_d_current=NULL;
+uz_PI_Controller *PI_q_current=NULL;
+extern uint32_t* int_KI;
+extern uint32_t* int_KP;
+extern uint32_t* int_limit;
+extern uint32_t* int_ts;
+
+// settings
+extern bool openhw_pspl;
+extern float openhw_udc;
+
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -50,17 +108,56 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    ///////////////////////////////////////////
+        ////////////////////CIL////////////////////
+        ///////////////////////////////////////////
+    	  uz_pmsm_model6ph_dq_set_inputs_general(pmsm,omega_mech,load_torque);                                          // set omega and load torque (only one active)
+    	  pmsm_output = uz_pmsm_model6ph_dq_get_outputs_general(pmsm);                                                  // read outputs from PMSM
+    	  transformation_currents_abc = uz_pmsm6ph_transformation_get_currents(transformation);                         // read current from transformation
+    	  theta_el = uz_pmsm6ph_transformation_get_theta_el(transformation);											// read theta from transformation
+    	  transformed_currents = uz_transformation_asym30deg_6ph_abc_to_dq(transformation_currents_abc, theta_el);      // transform currents
+
+
+        platform_state_t current_state=ultrazohm_state_machine_get_state();
+        if (current_state==control_state)
+        {
+        	///////////////////////////////////////////
+    		////////////////////FOC////////////////////
+    		///////////////////////////////////////////
+            switch(openhw_pspl){
+            case false:
+            	XUz_foc_Set_axi_id_reference(&FOC_ip_instance, *int_idref);
+            	XUz_foc_Set_axi_iq_reference(&FOC_ip_instance, *int_iqref);
+            	XUz_foc_Set_axi_id_KI(&FOC_ip_instance, *int_KI);
+				XUz_foc_Set_axi_id_KP(&FOC_ip_instance, *int_KP);
+				XUz_foc_Set_axi_limit(&FOC_ip_instance, *int_limit);
+				XUz_foc_Set_axi_sampletime(&FOC_ip_instance, *int_ts);
+				XUz_foc_Set_axi_iq_KI(&FOC_ip_instance, *int_KI);
+				XUz_foc_Set_axi_iq_KP(&FOC_ip_instance, *int_KP);
+            	break;
+            case true:
+            	i_actual_3ph.d = transformed_currents.d;
+            	i_actual_3ph.q = transformed_currents.q;
+            	u_ref_3ph = uz_CurrentControl_sample(cc_instance, i_ref, i_actual_3ph, openhw_udc, pmsm_output.omega_mech);
+            	u_ref_6ph.d = u_ref_3ph.d;
+            	u_ref_6ph.q = u_ref_3ph.q;
+            	duty_cycle = uz_FOC_generate_DutyCycles_6ph(uz_transformation_asym30deg_6ph_dq_to_abc(u_ref_6ph, theta_el), openhw_udc);
+            	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, duty_cycle.system1.DutyCycle_A, duty_cycle.system1.DutyCycle_B, duty_cycle.system1.DutyCycle_C);
+            	uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, duty_cycle.system2.DutyCycle_A, duty_cycle.system2.DutyCycle_B, duty_cycle.system2.DutyCycle_C);
+            	break;
+            default: assert(0); break;
+            }
+        }
+
+        // Reset both controller
+    	if(reset){
+    		XUz_foc_Set_axi_reset(&FOC_ip_instance, true);
+    		uz_CurrentControl_reset(cc_instance);
+    	}else{
+    		XUz_foc_Set_axi_reset(&FOC_ip_instance, false);
+    	}
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

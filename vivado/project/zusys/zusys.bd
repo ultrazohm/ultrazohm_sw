@@ -114,7 +114,12 @@
         "axi_gpio_0": "",
         "xlslice_0": "",
         "xlslice_1": "",
-        "xlslice_2": ""
+        "xlslice_2": "",
+        "uz_pwmdutyfreqdetect_0": "",
+        "uz_pwmdutyfreqdetect_1": "",
+        "uz_pwmdutyfreqdetect_2": "",
+        "axi_gpio_1": "",
+        "xlconcat_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "temp_card_interface": {
@@ -450,6 +455,24 @@
       },
       "Dig_12_Ch2": {
         "direction": "O"
+      },
+      "Dig_14_Ch1": {
+        "direction": "I"
+      },
+      "Dig_15_Ch1": {
+        "direction": "I"
+      },
+      "Dig_16_Ch1": {
+        "direction": "I"
+      },
+      "Dig_17_Ch1": {
+        "direction": "I"
+      },
+      "Dig_14_Ch2": {
+        "direction": "I"
+      },
+      "Dig_16_Ch2": {
+        "direction": "I"
       }
     },
     "components": {
@@ -5663,6 +5686,24 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "PWM_inv1": {
+            "direction": "I"
+          },
+          "PWM_inv2": {
+            "direction": "I"
+          },
+          "PWM_inv3": {
+            "direction": "I"
+          },
+          "fault_inv1": {
+            "direction": "I"
+          },
+          "fault_inv2": {
+            "direction": "I"
+          },
+          "fault_inv3": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5673,7 +5714,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "2"
+                "value": "6"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5686,7 +5727,11 @@
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
                 "bridges": [
                   "M00_AXI",
-                  "M01_AXI"
+                  "M01_AXI",
+                  "M02_AXI",
+                  "M03_AXI",
+                  "M04_AXI",
+                  "M05_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5695,6 +5740,26 @@
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
               },
               "M01_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
+              "M02_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
+              "M03_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
+              "M04_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              },
+              "M05_AXI": {
                 "mode": "Master",
                 "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
@@ -5759,6 +5824,49 @@
                 "value": "3"
               }
             }
+          },
+          "uz_pwmdutyfreqdetect_0": {
+            "vlnv": "xilinx.com:ip:uz_pwmdutyfreqdetection:1.0",
+            "xci_name": "zusys_uz_pwmdutyfreqdetect_0_0",
+            "xci_path": "ip\\zusys_uz_pwmdutyfreqdetect_0_0\\zusys_uz_pwmdutyfreqdetect_0_0.xci",
+            "inst_hier_path": "uz_user/uz_pwmdutyfreqdetect_0"
+          },
+          "uz_pwmdutyfreqdetect_1": {
+            "vlnv": "xilinx.com:ip:uz_pwmdutyfreqdetection:1.0",
+            "xci_name": "zusys_uz_pwmdutyfreqdetect_0_1",
+            "xci_path": "ip\\zusys_uz_pwmdutyfreqdetect_0_1\\zusys_uz_pwmdutyfreqdetect_0_1.xci",
+            "inst_hier_path": "uz_user/uz_pwmdutyfreqdetect_1"
+          },
+          "uz_pwmdutyfreqdetect_2": {
+            "vlnv": "xilinx.com:ip:uz_pwmdutyfreqdetection:1.0",
+            "xci_name": "zusys_uz_pwmdutyfreqdetect_1_0",
+            "xci_path": "ip\\zusys_uz_pwmdutyfreqdetect_1_0\\zusys_uz_pwmdutyfreqdetect_1_0.xci",
+            "inst_hier_path": "uz_user/uz_pwmdutyfreqdetect_2"
+          },
+          "axi_gpio_1": {
+            "vlnv": "xilinx.com:ip:axi_gpio:2.0",
+            "xci_name": "zusys_axi_gpio_0_1",
+            "xci_path": "ip\\zusys_axi_gpio_0_1\\zusys_axi_gpio_0_1.xci",
+            "inst_hier_path": "uz_user/axi_gpio_1",
+            "parameters": {
+              "C_ALL_INPUTS": {
+                "value": "1"
+              },
+              "C_GPIO_WIDTH": {
+                "value": "3"
+              }
+            }
+          },
+          "xlconcat_0": {
+            "vlnv": "xilinx.com:ip:xlconcat:2.1",
+            "xci_name": "zusys_xlconcat_0_3",
+            "xci_path": "ip\\zusys_xlconcat_0_3\\zusys_xlconcat_0_3.xci",
+            "inst_hier_path": "uz_user/xlconcat_0",
+            "parameters": {
+              "NUM_PORTS": {
+                "value": "3"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -5779,9 +5887,51 @@
               "axi_gpio_0/S_AXI",
               "smartconnect_1/M01_AXI"
             ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "uz_pwmdutyfreqdetect_0/AXI4_Lite",
+              "smartconnect_1/M02_AXI"
+            ]
+          },
+          "smartconnect_1_M03_AXI": {
+            "interface_ports": [
+              "uz_pwmdutyfreqdetect_1/AXI4_Lite",
+              "smartconnect_1/M03_AXI"
+            ]
+          },
+          "smartconnect_1_M04_AXI": {
+            "interface_ports": [
+              "uz_pwmdutyfreqdetect_2/AXI4_Lite",
+              "smartconnect_1/M04_AXI"
+            ]
+          },
+          "smartconnect_1_M05_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M05_AXI",
+              "axi_gpio_1/S_AXI"
+            ]
           }
         },
         "nets": {
+          "PWM_inv1_1": {
+            "ports": [
+              "PWM_inv1",
+              "uz_pwmdutyfreqdetect_0/pwm_in"
+            ]
+          },
+          "PWM_inv2_1": {
+            "ports": [
+              "PWM_inv2",
+              "uz_pwmdutyfreqdetect_1/pwm_in"
+            ]
+          },
+          "PWM_inv3_1": {
+            "ports": [
+              "PWM_inv3",
+              "uz_pwmdutyfreqdetect_2/pwm_in"
+            ]
+          },
           "axi_gpio_0_gpio_io_o": {
             "ports": [
               "axi_gpio_0/gpio_io_o",
@@ -5790,11 +5940,42 @@
               "xlslice_2/Din"
             ]
           },
+          "fault_inv1_1": {
+            "ports": [
+              "fault_inv1",
+              "xlconcat_0/In0"
+            ]
+          },
+          "fault_inv2_1": {
+            "ports": [
+              "fault_inv2",
+              "xlconcat_0/In1"
+            ]
+          },
+          "fault_inv3_1": {
+            "ports": [
+              "fault_inv3",
+              "xlconcat_0/In2"
+            ]
+          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "aresetn",
               "smartconnect_1/aresetn",
-              "axi_gpio_0/s_axi_aresetn"
+              "axi_gpio_0/s_axi_aresetn",
+              "uz_pwmdutyfreqdetect_0/IPCORE_RESETN",
+              "uz_pwmdutyfreqdetect_0/AXI4_Lite_ARESETN",
+              "uz_pwmdutyfreqdetect_1/IPCORE_RESETN",
+              "uz_pwmdutyfreqdetect_1/AXI4_Lite_ARESETN",
+              "uz_pwmdutyfreqdetect_2/IPCORE_RESETN",
+              "uz_pwmdutyfreqdetect_2/AXI4_Lite_ARESETN",
+              "axi_gpio_1/s_axi_aresetn"
+            ]
+          },
+          "xlconcat_0_dout": {
+            "ports": [
+              "xlconcat_0/dout",
+              "axi_gpio_1/gpio_io_i"
             ]
           },
           "xlslice_0_Dout": {
@@ -5819,7 +6000,14 @@
             "ports": [
               "aclk",
               "smartconnect_1/aclk",
-              "axi_gpio_0/s_axi_aclk"
+              "axi_gpio_0/s_axi_aclk",
+              "uz_pwmdutyfreqdetect_0/IPCORE_CLK",
+              "uz_pwmdutyfreqdetect_0/AXI4_Lite_ACLK",
+              "uz_pwmdutyfreqdetect_1/IPCORE_CLK",
+              "uz_pwmdutyfreqdetect_1/AXI4_Lite_ACLK",
+              "uz_pwmdutyfreqdetect_2/IPCORE_CLK",
+              "uz_pwmdutyfreqdetect_2/AXI4_Lite_ACLK",
+              "axi_gpio_1/s_axi_aclk"
             ]
           }
         }
@@ -9790,10 +9978,46 @@
           "temp_card_interface/LTC_Interrupt_3_Dig11"
         ]
       },
+      "Dig_14_Ch1_1": {
+        "ports": [
+          "Dig_14_Ch1",
+          "uz_user/fault_inv1"
+        ]
+      },
+      "Dig_14_Ch2_1": {
+        "ports": [
+          "Dig_14_Ch2",
+          "uz_user/fault_inv3"
+        ]
+      },
+      "Dig_15_Ch1_1": {
+        "ports": [
+          "Dig_15_Ch1",
+          "uz_user/fault_inv2"
+        ]
+      },
       "Dig_15_Ch4_1": {
         "ports": [
           "Dig_15_Ch4",
           "temp_card_interface/SPI_MISO_2_Dig15"
+        ]
+      },
+      "Dig_16_Ch1_1": {
+        "ports": [
+          "Dig_16_Ch1",
+          "uz_user/PWM_inv1"
+        ]
+      },
+      "Dig_16_Ch2_1": {
+        "ports": [
+          "Dig_16_Ch2",
+          "uz_user/PWM_inv3"
+        ]
+      },
+      "Dig_17_Ch1_1": {
+        "ports": [
+          "Dig_17_Ch1",
+          "uz_user/PWM_inv2"
         ]
       },
       "Dig_17_Ch4_1": {

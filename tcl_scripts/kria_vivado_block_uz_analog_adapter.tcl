@@ -53,7 +53,7 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 UltraZohm:user:ADC_LTC2311:3.0\
 xilinx.com:ip:xlconstant:1.1\
-xilinx.com:ip:ila:6.2\
+xilinx.com:ip:system_ila:1.1\
 xilinx.com:ip:xlslice:1.0\
 "
 
@@ -156,111 +156,109 @@ proc create_hier_cell_adc_debug { parentCell nameHier } {
   create_bd_pin -dir I -from 31 -to 0 probe6
   create_bd_pin -dir I -from 0 -to 0 probe7
 
-  # Create instance: ila_0, and set properties
-  set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
-  set_property -dict [ list \
-   CONFIG.C_DATA_DEPTH {8192} \
-   CONFIG.C_ENABLE_ILA_AXI_MON {false} \
-   CONFIG.C_INPUT_PIPE_STAGES {2} \
-   CONFIG.C_MONITOR_TYPE {Native} \
-   CONFIG.C_NUM_OF_PROBES {12} \
-   CONFIG.C_PROBE0_WIDTH {16} \
-   CONFIG.C_PROBE10_WIDTH {35} \
-   CONFIG.C_PROBE11_WIDTH {35} \
-   CONFIG.C_PROBE1_WIDTH {16} \
-   CONFIG.C_PROBE2_WIDTH {16} \
-   CONFIG.C_PROBE3_WIDTH {16} \
-   CONFIG.C_PROBE6_WIDTH {32} \
-   CONFIG.C_PROBE8_WIDTH {35} \
-   CONFIG.C_PROBE9_WIDTH {35} \
- ] $ila_0
+  # Create instance: system_ila_0, and set properties
+  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
+  set_property -dict [list \
+    CONFIG.C_DATA_DEPTH {1024} \
+    CONFIG.C_MON_TYPE {NATIVE} \
+    CONFIG.C_NUM_OF_PROBES {12} \
+  ] $system_ila_0
+
 
   # Create instance: xlslice_2, and set properties
   set xlslice_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_2 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {15} \
-   CONFIG.DIN_WIDTH {128} \
-   CONFIG.DOUT_WIDTH {16} \
- ] $xlslice_2
+  set_property -dict [list \
+    CONFIG.DIN_FROM {15} \
+    CONFIG.DIN_WIDTH {128} \
+    CONFIG.DOUT_WIDTH {16} \
+  ] $xlslice_2
+
 
   # Create instance: xlslice_3, and set properties
   set xlslice_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_3 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {31} \
-   CONFIG.DIN_TO {16} \
-   CONFIG.DIN_WIDTH {128} \
-   CONFIG.DOUT_WIDTH {16} \
- ] $xlslice_3
+  set_property -dict [list \
+    CONFIG.DIN_FROM {31} \
+    CONFIG.DIN_TO {16} \
+    CONFIG.DIN_WIDTH {128} \
+    CONFIG.DOUT_WIDTH {16} \
+  ] $xlslice_3
+
 
   # Create instance: xlslice_4, and set properties
   set xlslice_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_4 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {47} \
-   CONFIG.DIN_TO {32} \
-   CONFIG.DIN_WIDTH {128} \
-   CONFIG.DOUT_WIDTH {16} \
- ] $xlslice_4
+  set_property -dict [list \
+    CONFIG.DIN_FROM {47} \
+    CONFIG.DIN_TO {32} \
+    CONFIG.DIN_WIDTH {128} \
+    CONFIG.DOUT_WIDTH {16} \
+  ] $xlslice_4
+
 
   # Create instance: xlslice_5, and set properties
   set xlslice_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_5 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {63} \
-   CONFIG.DIN_TO {48} \
-   CONFIG.DIN_WIDTH {128} \
-   CONFIG.DOUT_WIDTH {16} \
- ] $xlslice_5
+  set_property -dict [list \
+    CONFIG.DIN_FROM {63} \
+    CONFIG.DIN_TO {48} \
+    CONFIG.DIN_WIDTH {128} \
+    CONFIG.DOUT_WIDTH {16} \
+  ] $xlslice_5
+
 
   # Create instance: xlslice_6, and set properties
   set xlslice_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_6 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {69} \
-   CONFIG.DIN_TO {35} \
-   CONFIG.DIN_WIDTH {280} \
-   CONFIG.DOUT_WIDTH {35} \
- ] $xlslice_6
+  set_property -dict [list \
+    CONFIG.DIN_FROM {69} \
+    CONFIG.DIN_TO {35} \
+    CONFIG.DIN_WIDTH {280} \
+    CONFIG.DOUT_WIDTH {35} \
+  ] $xlslice_6
+
 
   # Create instance: xlslice_7, and set properties
   set xlslice_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_7 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {34} \
-   CONFIG.DIN_WIDTH {280} \
-   CONFIG.DOUT_WIDTH {35} \
- ] $xlslice_7
+  set_property -dict [list \
+    CONFIG.DIN_FROM {34} \
+    CONFIG.DIN_WIDTH {280} \
+    CONFIG.DOUT_WIDTH {35} \
+  ] $xlslice_7
+
 
   # Create instance: xlslice_8, and set properties
   set xlslice_8 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_8 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {69} \
-   CONFIG.DIN_TO {35} \
-   CONFIG.DIN_WIDTH {280} \
-   CONFIG.DOUT_WIDTH {35} \
- ] $xlslice_8
+  set_property -dict [list \
+    CONFIG.DIN_FROM {69} \
+    CONFIG.DIN_TO {35} \
+    CONFIG.DIN_WIDTH {280} \
+    CONFIG.DOUT_WIDTH {35} \
+  ] $xlslice_8
+
 
   # Create instance: xlslice_9, and set properties
   set xlslice_9 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_9 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {104} \
-   CONFIG.DIN_TO {70} \
-   CONFIG.DIN_WIDTH {280} \
-   CONFIG.DOUT_WIDTH {35} \
- ] $xlslice_9
+  set_property -dict [list \
+    CONFIG.DIN_FROM {104} \
+    CONFIG.DIN_TO {70} \
+    CONFIG.DIN_WIDTH {280} \
+    CONFIG.DOUT_WIDTH {35} \
+  ] $xlslice_9
+
 
   # Create port connections
-  connect_bd_net -net A1_ADC_LTC2311_SAMPLE_COUNTER [get_bd_pins probe6] [get_bd_pins ila_0/probe6]
-  connect_bd_net -net A1_ADC_LTC2311_SI_VALID [get_bd_pins probe7] [get_bd_pins ila_0/probe7]
+  connect_bd_net -net A1_ADC_LTC2311_SAMPLE_COUNTER [get_bd_pins probe6] [get_bd_pins system_ila_0/probe6]
+  connect_bd_net -net A1_ADC_LTC2311_SI_VALID [get_bd_pins probe7] [get_bd_pins system_ila_0/probe7]
   connect_bd_net -net A1_ADC_LTC2311_SI_VALUE [get_bd_pins Din1] [get_bd_pins xlslice_6/Din] [get_bd_pins xlslice_7/Din] [get_bd_pins xlslice_8/Din] [get_bd_pins xlslice_9/Din]
   connect_bd_net -net ADC_LTC2311_1_RAW_VALUE [get_bd_pins Din] [get_bd_pins xlslice_2/Din] [get_bd_pins xlslice_3/Din] [get_bd_pins xlslice_4/Din] [get_bd_pins xlslice_5/Din]
-  connect_bd_net -net Current_Valid_0_Dout [get_bd_pins probe4] [get_bd_pins ila_0/probe4]
-  connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins ila_0/probe5]
-  connect_bd_net -net xlslice_2_Dout [get_bd_pins ila_0/probe0] [get_bd_pins xlslice_2/Dout]
-  connect_bd_net -net xlslice_3_Dout [get_bd_pins ila_0/probe1] [get_bd_pins xlslice_3/Dout]
-  connect_bd_net -net xlslice_4_Dout [get_bd_pins ila_0/probe2] [get_bd_pins xlslice_4/Dout]
-  connect_bd_net -net xlslice_5_Dout [get_bd_pins ila_0/probe3] [get_bd_pins xlslice_5/Dout]
-  connect_bd_net -net xlslice_6_Dout [get_bd_pins ila_0/probe9] [get_bd_pins xlslice_6/Dout]
-  connect_bd_net -net xlslice_7_Dout [get_bd_pins ila_0/probe8] [get_bd_pins xlslice_7/Dout]
-  connect_bd_net -net xlslice_8_Dout [get_bd_pins ila_0/probe10] [get_bd_pins xlslice_8/Dout]
-  connect_bd_net -net xlslice_9_Dout [get_bd_pins ila_0/probe11] [get_bd_pins xlslice_9/Dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins ila_0/clk]
+  connect_bd_net -net Current_Valid_0_Dout [get_bd_pins probe4] [get_bd_pins system_ila_0/probe4]
+  connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins system_ila_0/probe5]
+  connect_bd_net -net xlslice_2_Dout [get_bd_pins system_ila_0/probe0] [get_bd_pins xlslice_2/Dout]
+  connect_bd_net -net xlslice_3_Dout [get_bd_pins system_ila_0/probe1] [get_bd_pins xlslice_3/Dout]
+  connect_bd_net -net xlslice_4_Dout [get_bd_pins system_ila_0/probe2] [get_bd_pins xlslice_4/Dout]
+  connect_bd_net -net xlslice_5_Dout [get_bd_pins system_ila_0/probe3] [get_bd_pins xlslice_5/Dout]
+  connect_bd_net -net xlslice_6_Dout [get_bd_pins system_ila_0/probe9] [get_bd_pins xlslice_6/Dout]
+  connect_bd_net -net xlslice_7_Dout [get_bd_pins system_ila_0/probe8] [get_bd_pins xlslice_7/Dout]
+  connect_bd_net -net xlslice_8_Dout [get_bd_pins system_ila_0/probe10] [get_bd_pins xlslice_8/Dout]
+  connect_bd_net -net xlslice_9_Dout [get_bd_pins system_ila_0/probe11] [get_bd_pins xlslice_9/Dout]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins system_ila_0/clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -315,18 +313,20 @@ proc create_hier_cell_A3_adapter { parentCell nameHier } {
 
   # Create instance: A3_ADC_LTC2311, and set properties
   set A3_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A3_ADC_LTC2311 ]
-  set_property -dict [ list \
-   CONFIG.DIFFERENTIAL {false} \
-   CONFIG.RES_LSB {0} \
-   CONFIG.RES_MSB {34} \
- ] $A3_ADC_LTC2311
+  set_property -dict [list \
+    CONFIG.DIFFERENTIAL {false} \
+    CONFIG.RES_LSB {0} \
+    CONFIG.RES_MSB {34} \
+  ] $A3_ADC_LTC2311
+
 
   # Create instance: A3_inv_input, and set properties
   set A3_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A3_inv_input ]
-  set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
-   CONFIG.CONST_WIDTH {8} \
- ] $A3_inv_input
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0x00} \
+    CONFIG.CONST_WIDTH {8} \
+  ] $A3_inv_input
+
 
   # Create instance: iobufds_inst_2, and set properties
   set block_name iobufds_inst
@@ -407,18 +407,20 @@ proc create_hier_cell_A2_adapter { parentCell nameHier } {
 
   # Create instance: A2_ADC_LTC2311, and set properties
   set A2_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A2_ADC_LTC2311 ]
-  set_property -dict [ list \
-   CONFIG.DIFFERENTIAL {false} \
-   CONFIG.RES_LSB {0} \
-   CONFIG.RES_MSB {34} \
- ] $A2_ADC_LTC2311
+  set_property -dict [list \
+    CONFIG.DIFFERENTIAL {false} \
+    CONFIG.RES_LSB {0} \
+    CONFIG.RES_MSB {34} \
+  ] $A2_ADC_LTC2311
+
 
   # Create instance: A2_inv_input, and set properties
   set A2_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A2_inv_input ]
-  set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
-   CONFIG.CONST_WIDTH {8} \
- ] $A2_inv_input
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0x00} \
+    CONFIG.CONST_WIDTH {8} \
+  ] $A2_inv_input
+
 
   # Create instance: A2_iobufds_inst, and set properties
   set block_name iobufds_inst
@@ -500,19 +502,21 @@ proc create_hier_cell_A1_adapter { parentCell nameHier } {
 
   # Create instance: A1_ADC_LTC2311, and set properties
   set A1_ADC_LTC2311 [ create_bd_cell -type ip -vlnv UltraZohm:user:ADC_LTC2311:3.0 A1_ADC_LTC2311 ]
-  set_property -dict [ list \
-   CONFIG.DIFFERENTIAL {false} \
-   CONFIG.RES_LSB {0} \
-   CONFIG.RES_MSB {34} \
-   CONFIG.SPI_MASTER {1} \
- ] $A1_ADC_LTC2311
+  set_property -dict [list \
+    CONFIG.DIFFERENTIAL {false} \
+    CONFIG.RES_LSB {0} \
+    CONFIG.RES_MSB {34} \
+    CONFIG.SPI_MASTER {1} \
+  ] $A1_ADC_LTC2311
+
 
   # Create instance: A1_inv_input, and set properties
   set A1_inv_input [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 A1_inv_input ]
-  set_property -dict [ list \
-   CONFIG.CONST_VAL {0x00} \
-   CONFIG.CONST_WIDTH {8} \
- ] $A1_inv_input
+  set_property -dict [list \
+    CONFIG.CONST_VAL {0x00} \
+    CONFIG.CONST_WIDTH {8} \
+  ] $A1_inv_input
+
 
   # Create instance: A1_iobufds_inst, and set properties
   set block_name iobufds_inst

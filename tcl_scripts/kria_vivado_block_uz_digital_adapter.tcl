@@ -53,7 +53,7 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:vio:3.0\
 xilinx.com:ip:IncreEncoder_V24_ip:24.0\
-xilinx.com:ip:ila:6.2\
+xilinx.com:ip:system_ila:1.1\
 xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1\
 xilinx.com:ip:util_vector_logic:2.0\
 user.org:ip:uz_interlockDeadtime2L:1.0\
@@ -163,36 +163,37 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
 
   # Create instance: Gates_Vector, and set properties
   set Gates_Vector [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 Gates_Vector ]
-  set_property -dict [ list \
-   CONFIG.NUM_PORTS {6} \
- ] $Gates_Vector
+  set_property CONFIG.NUM_PORTS {6} $Gates_Vector
+
 
   # Create instance: Interrupt_Start_Center, and set properties
   set Interrupt_Start_Center [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 Interrupt_Start_Center ]
-  set_property -dict [ list \
-   CONFIG.C_OPERATION {or} \
-   CONFIG.C_SIZE {1} \
- ] $Interrupt_Start_Center
+  set_property -dict [list \
+    CONFIG.C_OPERATION {or} \
+    CONFIG.C_SIZE {1} \
+  ] $Interrupt_Start_Center
+
 
   # Create instance: PWM_SS_3L_ip_0, and set properties
   set PWM_SS_3L_ip_0 [ create_bd_cell -type ip -vlnv mwn.de:ip:PWM_SS_3L_ip:1.4 PWM_SS_3L_ip_0 ]
 
   # Create instance: Set_Deadtime_3L, and set properties
   set Set_Deadtime_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 Set_Deadtime_3L ]
-  set_property -dict [ list \
-   CONFIG.C_NUM_PROBE_IN {0} \
-   CONFIG.C_PROBE_OUT0_INIT_VAL {0x0C8} \
-   CONFIG.C_PROBE_OUT0_WIDTH {10} \
- ] $Set_Deadtime_3L
+  set_property -dict [list \
+    CONFIG.C_NUM_PROBE_IN {0} \
+    CONFIG.C_PROBE_OUT0_INIT_VAL {0x0C8} \
+    CONFIG.C_PROBE_OUT0_WIDTH {10} \
+  ] $Set_Deadtime_3L
 
-  # Create instance: ila_0, and set properties
-  set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
-  set_property -dict [ list \
-   CONFIG.C_DATA_DEPTH {8192} \
-   CONFIG.C_ENABLE_ILA_AXI_MON {false} \
-   CONFIG.C_MONITOR_TYPE {Native} \
-   CONFIG.C_NUM_OF_PROBES {23} \
- ] $ila_0
+
+  # Create instance: system_ila_0, and set properties
+  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
+  set_property -dict [list \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_MON_TYPE {NATIVE} \
+    CONFIG.C_NUM_OF_PROBES {23} \
+  ] $system_ila_0
+
 
   # Create instance: top_npc_state_machine_0, and set properties
   set block_name top_npc_state_machine
@@ -207,52 +208,52 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   
   # Create instance: vio_Gates_3L, and set properties
   set vio_Gates_3L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_3L ]
-  set_property -dict [ list \
-   CONFIG.C_NUM_PROBE_IN {0} \
-   CONFIG.C_NUM_PROBE_OUT {9} \
-   CONFIG.C_PROBE_OUT0_WIDTH {14} \
-   CONFIG.C_PROBE_OUT1_WIDTH {14} \
-   CONFIG.C_PROBE_OUT2_WIDTH {14} \
-   CONFIG.C_PROBE_OUT6_WIDTH {1} \
-   CONFIG.C_PROBE_OUT7_WIDTH {1} \
-   CONFIG.C_PROBE_OUT8_WIDTH {1} \
- ] $vio_Gates_3L
+  set_property -dict [list \
+    CONFIG.C_NUM_PROBE_IN {0} \
+    CONFIG.C_NUM_PROBE_OUT {9} \
+    CONFIG.C_PROBE_OUT0_WIDTH {14} \
+    CONFIG.C_PROBE_OUT1_WIDTH {14} \
+    CONFIG.C_PROBE_OUT2_WIDTH {14} \
+    CONFIG.C_PROBE_OUT6_WIDTH {1} \
+    CONFIG.C_PROBE_OUT7_WIDTH {1} \
+    CONFIG.C_PROBE_OUT8_WIDTH {1} \
+  ] $vio_Gates_3L
+
 
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
-  set_property -dict [ list \
-   CONFIG.NUM_PORTS {12} \
- ] $xlconcat_0
+  set_property CONFIG.NUM_PORTS {12} $xlconcat_0
+
 
   # Create interface connections
   connect_bd_intf_net -intf_net smartconnect_0_M12_AXI [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins PWM_SS_3L_ip_0/AXI4_Lite]
 
   # Create port connections
   connect_bd_net -net Enable_Gates_1 [get_bd_pins Enable_Gates] [get_bd_pins top_npc_state_machine_0/enable]
-  connect_bd_net -net Gates_Vector_dout [get_bd_pins Gates_Vector/dout] [get_bd_pins ila_0/probe13] [get_bd_pins top_npc_state_machine_0/switching_signals]
-  connect_bd_net -net Interrupt_Start_Center_Res [get_bd_pins Interrupt_Start_Center] [get_bd_pins Interrupt_Start_Center/Res] [get_bd_pins ila_0/probe12]
-  connect_bd_net -net PWM_SS_3L_ip_0_Period_Center [get_bd_pins Interrupt_Center] [get_bd_pins Interrupt_Start_Center/Op1] [get_bd_pins PWM_SS_3L_ip_0/Period_Center] [get_bd_pins ila_0/probe20]
-  connect_bd_net -net PWM_SS_3L_ip_0_Period_Start [get_bd_pins Interrupt_Start] [get_bd_pins Interrupt_Start_Center/Op2] [get_bd_pins PWM_SS_3L_ip_0/Period_Start] [get_bd_pins ila_0/probe21]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSa1_OUT [get_bd_pins Gates_Vector/In0] [get_bd_pins PWM_SS_3L_ip_0/SSa1_OUT] [get_bd_pins ila_0/probe14]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSa2_OUT [get_bd_pins Gates_Vector/In1] [get_bd_pins PWM_SS_3L_ip_0/SSa2_OUT] [get_bd_pins ila_0/probe15]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSb1_OUT [get_bd_pins Gates_Vector/In2] [get_bd_pins PWM_SS_3L_ip_0/SSb1_OUT] [get_bd_pins ila_0/probe16]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSb2_OUT [get_bd_pins Gates_Vector/In3] [get_bd_pins PWM_SS_3L_ip_0/SSb2_OUT] [get_bd_pins ila_0/probe17]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSc1_OUT [get_bd_pins Gates_Vector/In4] [get_bd_pins PWM_SS_3L_ip_0/SSc1_OUT] [get_bd_pins ila_0/probe18]
-  connect_bd_net -net PWM_SS_3L_ip_0_SSc2_OUT [get_bd_pins Gates_Vector/In5] [get_bd_pins PWM_SS_3L_ip_0/SSc2_OUT] [get_bd_pins ila_0/probe19]
-  connect_bd_net -net Set_Deadtime_3L_probe_out0 [get_bd_pins Set_Deadtime_3L/probe_out0] [get_bd_pins ila_0/probe22] [get_bd_pins top_npc_state_machine_0/deadtime]
+  connect_bd_net -net Gates_Vector_dout [get_bd_pins Gates_Vector/dout] [get_bd_pins system_ila_0/probe13] [get_bd_pins top_npc_state_machine_0/switching_signals]
+  connect_bd_net -net Interrupt_Start_Center_Res [get_bd_pins Interrupt_Start_Center] [get_bd_pins Interrupt_Start_Center/Res] [get_bd_pins system_ila_0/probe12]
+  connect_bd_net -net PWM_SS_3L_ip_0_Period_Center [get_bd_pins Interrupt_Center] [get_bd_pins Interrupt_Start_Center/Op1] [get_bd_pins PWM_SS_3L_ip_0/Period_Center] [get_bd_pins system_ila_0/probe20]
+  connect_bd_net -net PWM_SS_3L_ip_0_Period_Start [get_bd_pins Interrupt_Start] [get_bd_pins Interrupt_Start_Center/Op2] [get_bd_pins PWM_SS_3L_ip_0/Period_Start] [get_bd_pins system_ila_0/probe21]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSa1_OUT [get_bd_pins Gates_Vector/In0] [get_bd_pins PWM_SS_3L_ip_0/SSa1_OUT] [get_bd_pins system_ila_0/probe14]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSa2_OUT [get_bd_pins Gates_Vector/In1] [get_bd_pins PWM_SS_3L_ip_0/SSa2_OUT] [get_bd_pins system_ila_0/probe15]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSb1_OUT [get_bd_pins Gates_Vector/In2] [get_bd_pins PWM_SS_3L_ip_0/SSb1_OUT] [get_bd_pins system_ila_0/probe16]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSb2_OUT [get_bd_pins Gates_Vector/In3] [get_bd_pins PWM_SS_3L_ip_0/SSb2_OUT] [get_bd_pins system_ila_0/probe17]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSc1_OUT [get_bd_pins Gates_Vector/In4] [get_bd_pins PWM_SS_3L_ip_0/SSc1_OUT] [get_bd_pins system_ila_0/probe18]
+  connect_bd_net -net PWM_SS_3L_ip_0_SSc2_OUT [get_bd_pins Gates_Vector/In5] [get_bd_pins PWM_SS_3L_ip_0/SSc2_OUT] [get_bd_pins system_ila_0/probe19]
+  connect_bd_net -net Set_Deadtime_3L_probe_out0 [get_bd_pins Set_Deadtime_3L/probe_out0] [get_bd_pins system_ila_0/probe22] [get_bd_pins top_npc_state_machine_0/deadtime]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins AXI4_Lite_ARESETN] [get_bd_pins PWM_SS_3L_ip_0/AXI4_Lite_ARESETN] [get_bd_pins PWM_SS_3L_ip_0/IPCORE_RESETN]
-  connect_bd_net -net top_npc_state_machine_0_A_S1 [get_bd_pins ila_0/probe0] [get_bd_pins top_npc_state_machine_0/A_S1] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net top_npc_state_machine_0_A_S2 [get_bd_pins ila_0/probe1] [get_bd_pins top_npc_state_machine_0/A_S2] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net top_npc_state_machine_0_A_S3 [get_bd_pins ila_0/probe2] [get_bd_pins top_npc_state_machine_0/A_S3] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net top_npc_state_machine_0_A_S4 [get_bd_pins ila_0/probe3] [get_bd_pins top_npc_state_machine_0/A_S4] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net top_npc_state_machine_0_B_S1 [get_bd_pins ila_0/probe4] [get_bd_pins top_npc_state_machine_0/B_S1] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net top_npc_state_machine_0_B_S2 [get_bd_pins ila_0/probe5] [get_bd_pins top_npc_state_machine_0/B_S2] [get_bd_pins xlconcat_0/In5]
-  connect_bd_net -net top_npc_state_machine_0_B_S3 [get_bd_pins ila_0/probe6] [get_bd_pins top_npc_state_machine_0/B_S3] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net top_npc_state_machine_0_B_S4 [get_bd_pins ila_0/probe7] [get_bd_pins top_npc_state_machine_0/B_S4] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net top_npc_state_machine_0_C_S1 [get_bd_pins ila_0/probe8] [get_bd_pins top_npc_state_machine_0/C_S1] [get_bd_pins xlconcat_0/In8]
-  connect_bd_net -net top_npc_state_machine_0_C_S2 [get_bd_pins ila_0/probe9] [get_bd_pins top_npc_state_machine_0/C_S2] [get_bd_pins xlconcat_0/In9]
-  connect_bd_net -net top_npc_state_machine_0_C_S3 [get_bd_pins ila_0/probe10] [get_bd_pins top_npc_state_machine_0/C_S3] [get_bd_pins xlconcat_0/In10]
-  connect_bd_net -net top_npc_state_machine_0_C_S4 [get_bd_pins ila_0/probe11] [get_bd_pins top_npc_state_machine_0/C_S4] [get_bd_pins xlconcat_0/In11]
+  connect_bd_net -net top_npc_state_machine_0_A_S1 [get_bd_pins system_ila_0/probe0] [get_bd_pins top_npc_state_machine_0/A_S1] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net top_npc_state_machine_0_A_S2 [get_bd_pins system_ila_0/probe1] [get_bd_pins top_npc_state_machine_0/A_S2] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net top_npc_state_machine_0_A_S3 [get_bd_pins system_ila_0/probe2] [get_bd_pins top_npc_state_machine_0/A_S3] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net top_npc_state_machine_0_A_S4 [get_bd_pins system_ila_0/probe3] [get_bd_pins top_npc_state_machine_0/A_S4] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net top_npc_state_machine_0_B_S1 [get_bd_pins system_ila_0/probe4] [get_bd_pins top_npc_state_machine_0/B_S1] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net top_npc_state_machine_0_B_S2 [get_bd_pins system_ila_0/probe5] [get_bd_pins top_npc_state_machine_0/B_S2] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net top_npc_state_machine_0_B_S3 [get_bd_pins system_ila_0/probe6] [get_bd_pins top_npc_state_machine_0/B_S3] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net top_npc_state_machine_0_B_S4 [get_bd_pins system_ila_0/probe7] [get_bd_pins top_npc_state_machine_0/B_S4] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net top_npc_state_machine_0_C_S1 [get_bd_pins system_ila_0/probe8] [get_bd_pins top_npc_state_machine_0/C_S1] [get_bd_pins xlconcat_0/In8]
+  connect_bd_net -net top_npc_state_machine_0_C_S2 [get_bd_pins system_ila_0/probe9] [get_bd_pins top_npc_state_machine_0/C_S2] [get_bd_pins xlconcat_0/In9]
+  connect_bd_net -net top_npc_state_machine_0_C_S3 [get_bd_pins system_ila_0/probe10] [get_bd_pins top_npc_state_machine_0/C_S3] [get_bd_pins xlconcat_0/In10]
+  connect_bd_net -net top_npc_state_machine_0_C_S4 [get_bd_pins system_ila_0/probe11] [get_bd_pins top_npc_state_machine_0/C_S4] [get_bd_pins xlconcat_0/In11]
   connect_bd_net -net vio_Gates_3L_probe_out0 [get_bd_pins PWM_SS_3L_ip_0/m_u1_norm] [get_bd_pins vio_Gates_3L/probe_out0]
   connect_bd_net -net vio_Gates_3L_probe_out1 [get_bd_pins PWM_SS_3L_ip_0/m_u2_norm] [get_bd_pins vio_Gates_3L/probe_out1]
   connect_bd_net -net vio_Gates_3L_probe_out2 [get_bd_pins PWM_SS_3L_ip_0/m_u3_norm] [get_bd_pins vio_Gates_3L/probe_out2]
@@ -263,7 +264,7 @@ proc create_hier_cell_Gates_3L { parentCell nameHier } {
   connect_bd_net -net vio_Gates_3L_probe_out7 [get_bd_pins PWM_SS_3L_ip_0/SSc1_IN_External] [get_bd_pins vio_Gates_3L/probe_out7]
   connect_bd_net -net vio_Gates_3L_probe_out8 [get_bd_pins PWM_SS_3L_ip_0/SSc2_IN_External] [get_bd_pins vio_Gates_3L/probe_out8]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins Gate_Signals_3L] [get_bd_pins xlconcat_0/dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins PWM_SS_3L_ip_0/AXI4_Lite_ACLK] [get_bd_pins PWM_SS_3L_ip_0/IPCORE_CLK] [get_bd_pins Set_Deadtime_3L/clk] [get_bd_pins ila_0/clk] [get_bd_pins top_npc_state_machine_0/clock] [get_bd_pins vio_Gates_3L/clk]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins PWM_SS_3L_ip_0/AXI4_Lite_ACLK] [get_bd_pins PWM_SS_3L_ip_0/IPCORE_CLK] [get_bd_pins Set_Deadtime_3L/clk] [get_bd_pins system_ila_0/clk] [get_bd_pins top_npc_state_machine_0/clock] [get_bd_pins vio_Gates_3L/clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -343,10 +344,11 @@ proc create_hier_cell_Gates { parentCell nameHier } {
 
   # Create instance: util_vector_logic_0, and set properties
   set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
-  set_property -dict [ list \
-   CONFIG.C_OPERATION {or} \
-   CONFIG.C_SIZE {1} \
- ] $util_vector_logic_0
+  set_property -dict [list \
+    CONFIG.C_OPERATION {or} \
+    CONFIG.C_SIZE {1} \
+  ] $util_vector_logic_0
+
 
   # Create instance: uz_interlockDeadtime_0, and set properties
   set uz_interlockDeadtime_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_interlockDeadtime2L:1.0 uz_interlockDeadtime_0 ]
@@ -362,23 +364,24 @@ proc create_hier_cell_Gates { parentCell nameHier } {
 
   # Create instance: vio_Gates_2L, and set properties
   set vio_Gates_2L [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_Gates_2L ]
-  set_property -dict [ list \
-   CONFIG.C_NUM_PROBE_IN {0} \
-   CONFIG.C_NUM_PROBE_OUT {6} \
- ] $vio_Gates_2L
+  set_property -dict [list \
+    CONFIG.C_NUM_PROBE_IN {0} \
+    CONFIG.C_NUM_PROBE_OUT {6} \
+  ] $vio_Gates_2L
+
 
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
-  set_property -dict [ list \
-   CONFIG.NUM_PORTS {24} \
- ] $xlconcat_0
+  set_property CONFIG.NUM_PORTS {24} $xlconcat_0
+
 
   # Create instance: xlconstant_0, and set properties
   set xlconstant_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_0 ]
-  set_property -dict [ list \
-   CONFIG.CONST_VAL {2048} \
-   CONFIG.CONST_WIDTH {14} \
- ] $xlconstant_0
+  set_property -dict [list \
+    CONFIG.CONST_VAL {2048} \
+    CONFIG.CONST_WIDTH {14} \
+  ] $xlconstant_0
+
 
   # Create interface connections
   connect_bd_intf_net -intf_net AXI4_Lite_PWM_0_1 [get_bd_intf_pins AXI4_Lite_PWM_0] [get_bd_intf_pins PWM_and_SS_control_V_0/AXI4_Lite]
@@ -497,43 +500,40 @@ proc create_hier_cell_D5_adapter { parentCell nameHier } {
 
 
   # Create pins
-  create_bd_pin -dir I -type clk AXI4_Lite_ACLK
+  create_bd_pin -dir I -type clk AXI4_LITE_ACLK
   create_bd_pin -dir I -type rst AXI4_Lite_ARESETN
   create_bd_pin -dir I -from 0 -to 0 Dig_11_Ch5
   create_bd_pin -dir I -from 0 -to 0 Dig_12_Ch5
   create_bd_pin -dir I -from 0 -to 0 Dig_13_Ch5
-  create_bd_pin -dir I -type clk clk
   create_bd_pin -dir I -from 0 -to 0 probe5
 
   # Create instance: IncreEncoder_V24_ip_0, and set properties
   set IncreEncoder_V24_ip_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:IncreEncoder_V24_ip:24.0 IncreEncoder_V24_ip_0 ]
 
-  # Create instance: ila_Encoder, and set properties
-  set ila_Encoder [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_Encoder ]
-  set_property -dict [ list \
-   CONFIG.C_DATA_DEPTH {2048} \
-   CONFIG.C_ENABLE_ILA_AXI_MON {false} \
-   CONFIG.C_MONITOR_TYPE {Native} \
-   CONFIG.C_NUM_OF_PROBES {8} \
-   CONFIG.C_PROBE3_WIDTH {24} \
-   CONFIG.C_PROBE4_WIDTH {24} \
- ] $ila_Encoder
+  # Create instance: system_ila_0, and set properties
+  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
+  set_property -dict [list \
+    CONFIG.C_DATA_DEPTH {1024} \
+    CONFIG.C_MON_TYPE {NATIVE} \
+    CONFIG.C_NUM_MONITOR_SLOTS {8} \
+    CONFIG.C_NUM_OF_PROBES {8} \
+  ] $system_ila_0
+
 
   # Create interface connections
-  connect_bd_intf_net -intf_net smartconnect_0_M09_AXI [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins IncreEncoder_V24_ip_0/AXI4_Lite]
+  connect_bd_intf_net -intf_net AXI4_Lite_1 [get_bd_intf_pins AXI4_Lite] [get_bd_intf_pins IncreEncoder_V24_ip_0/AXI4_Lite]
 
   # Create port connections
-  connect_bd_net -net A_1 [get_bd_pins Dig_12_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/A] [get_bd_pins ila_Encoder/probe0]
-  connect_bd_net -net B_1 [get_bd_pins Dig_13_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/B] [get_bd_pins ila_Encoder/probe1]
-  connect_bd_net -net I_1 [get_bd_pins Dig_11_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/I] [get_bd_pins ila_Encoder/probe2]
-  connect_bd_net -net IncreEncoder_V24_ip_0_OverSamplFactor [get_bd_pins IncreEncoder_V24_ip_0/OverSamplFactor] [get_bd_pins ila_Encoder/probe7]
-  connect_bd_net -net IncreEncoder_V24_ip_0_omega [get_bd_pins IncreEncoder_V24_ip_0/omega] [get_bd_pins ila_Encoder/probe3]
-  connect_bd_net -net IncreEncoder_V24_ip_0_position [get_bd_pins IncreEncoder_V24_ip_0/position] [get_bd_pins ila_Encoder/probe6]
-  connect_bd_net -net IncreEncoder_ip_0_theta_el [get_bd_pins IncreEncoder_V24_ip_0/theta_el] [get_bd_pins ila_Encoder/probe4]
-  connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins IncreEncoder_V24_ip_0/PeriodEnd] [get_bd_pins ila_Encoder/probe5]
-  connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins ila_Encoder/clk]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_CLK]
+  connect_bd_net -net AXI4_Lite_ARESETN_1 [get_bd_pins AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_RESETN]
+  connect_bd_net -net A_1 [get_bd_pins Dig_12_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/A] [get_bd_pins system_ila_0/probe0]
+  connect_bd_net -net B_1 [get_bd_pins Dig_13_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/B] [get_bd_pins system_ila_0/probe1]
+  connect_bd_net -net I_1 [get_bd_pins Dig_11_Ch5] [get_bd_pins IncreEncoder_V24_ip_0/I] [get_bd_pins system_ila_0/probe2]
+  connect_bd_net -net IncreEncoder_V24_ip_0_OverSamplFactor [get_bd_pins IncreEncoder_V24_ip_0/OverSamplFactor] [get_bd_pins system_ila_0/probe7]
+  connect_bd_net -net IncreEncoder_V24_ip_0_omega [get_bd_pins IncreEncoder_V24_ip_0/omega] [get_bd_pins system_ila_0/probe3]
+  connect_bd_net -net IncreEncoder_V24_ip_0_position [get_bd_pins IncreEncoder_V24_ip_0/position] [get_bd_pins system_ila_0/probe6]
+  connect_bd_net -net IncreEncoder_V24_ip_0_theta_el [get_bd_pins IncreEncoder_V24_ip_0/theta_el] [get_bd_pins system_ila_0/probe4]
+  connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins IncreEncoder_V24_ip_0/PeriodEnd] [get_bd_pins system_ila_0/probe5]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins AXI4_LITE_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/AXI4_Lite_ACLK] [get_bd_pins IncreEncoder_V24_ip_0/IPCORE_CLK] [get_bd_pins system_ila_0/clk]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -581,11 +581,12 @@ proc create_hier_cell_D3_adapter { parentCell nameHier } {
 
   # Create instance: vio_D3_test, and set properties
   set vio_D3_test [ create_bd_cell -type ip -vlnv xilinx.com:ip:vio:3.0 vio_D3_test ]
-  set_property -dict [ list \
-   CONFIG.C_NUM_PROBE_IN {0} \
-   CONFIG.C_NUM_PROBE_OUT {1} \
-   CONFIG.C_PROBE_OUT0_WIDTH {26} \
- ] $vio_D3_test
+  set_property -dict [list \
+    CONFIG.C_NUM_PROBE_IN {0} \
+    CONFIG.C_NUM_PROBE_OUT {1} \
+    CONFIG.C_PROBE_OUT0_WIDTH {26} \
+  ] $vio_D3_test
+
 
   # Create port connections
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins D3_OUT] [get_bd_pins vio_D3_test/probe_out0]
@@ -803,8 +804,6 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
 
 
   # Create pins
-  create_bd_pin -dir I -type clk AXI4_Lite_ACLK
-  create_bd_pin -dir I -type rst AXI4_Lite_ARESETN1
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_max_min
   create_bd_pin -dir O -from 0 -to 0 Carrier_triangular_min
@@ -859,12 +858,10 @@ proc create_hier_cell_uz_digital_adapter { parentCell nameHier } {
   connect_bd_net -net Gates_dout_0 [get_bd_pins D1_OUT] [get_bd_pins D1_adapter/D1_OUT]
   connect_bd_net -net I_1 [get_bd_pins Dig_11_Ch5] [get_bd_pins D5_adapter/Dig_11_Ch5]
   connect_bd_net -net Interrupt_muxed [get_bd_pins probe5] [get_bd_pins D5_adapter/probe5]
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN]
-  connect_bd_net -net proc_sys_reset_50MHz_peripheral_aresetn [get_bd_pins AXI4_Lite_ARESETN1] [get_bd_pins D5_adapter/AXI4_Lite_ARESETN]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins RESETN] [get_bd_pins D1_adapter/RESETN] [get_bd_pins D2_adapter/AXI4_Lite_ARESETN] [get_bd_pins D5_adapter/AXI4_Lite_ARESETN]
   connect_bd_net -net vio_D2_test_probe_out0 [get_bd_pins D3_OUT] [get_bd_pins D3_adapter/D3_OUT]
   connect_bd_net -net xlslice_Enable_Inverter_Dout [get_bd_pins Enable_Gate] [get_bd_pins D2_adapter/Enable_Gates]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins D1_adapter/CLK] [get_bd_pins D2_adapter/AXI4_Lite_ACLK] [get_bd_pins D3_adapter/clk] [get_bd_pins D5_adapter/clk]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk3 [get_bd_pins AXI4_Lite_ACLK] [get_bd_pins D5_adapter/AXI4_Lite_ACLK]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins clk] [get_bd_pins D1_adapter/CLK] [get_bd_pins D2_adapter/AXI4_Lite_ACLK] [get_bd_pins D3_adapter/clk] [get_bd_pins D5_adapter/AXI4_LITE_ACLK]
 
   # Restore current instance
   current_bd_instance $oldCurInst

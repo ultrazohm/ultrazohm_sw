@@ -1,5 +1,5 @@
 proc getPresetInfo {} {
-  return [dict create name {UZ_K26_ZynqMP_PResets} description {UZ_K26_ZynqMP_PResets}  vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 display_name {UZ_K26_ZynqMP_PResets} ]
+  return [dict create name {kria_vivado_K26_ZynqMP_Presets} description {kria_vivado_K26_ZynqMP_Presets}  vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 display_name {kria_vivado_K26_ZynqMP_Presets} ]
 }
 
 proc validate_preset {IPINST} { return true }
@@ -38,6 +38,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU__GPIO1_MIO__PERIPHERAL__ENABLE {1}  \
     CONFIG.PSU__GPIO1_MIO__IO {MIO 26 .. 51}  \
     CONFIG.PSU__GPIO2_MIO__PERIPHERAL__ENABLE {0}  \
+    CONFIG.PSU__GPIO2_MIO__IO {<Select>}  \
     CONFIG.PSU__I2C1__PERIPHERAL__ENABLE {1}  \
     CONFIG.PSU__I2C1__PERIPHERAL__IO {MIO 24 .. 25}  \
     CONFIG.PSU__PCIE__PERIPHERAL__ENABLE {0}  \
@@ -242,8 +243,8 @@ proc apply_preset {IPINST} {
     CONFIG.PSU__USB0__PERIPHERAL__IO {<Select>}  \
     CONFIG.PSU__USB0__RESET__ENABLE {1}  \
     CONFIG.PSU__USB0__RESET__IO {MIO 76}  \
-    CONFIG.PSU__USB__RESET__MODE {Separate MIO Pin}  \
-    CONFIG.PSU__USB__RESET__POLARITY {Active Low}  \
+    CONFIG.PSU__USB__RESET__MODE {<Select>}  \
+    CONFIG.PSU__USB__RESET__POLARITY {<Select>}  \
     CONFIG.PSU__USB1__PERIPHERAL__ENABLE {0}  \
     CONFIG.PSU__USB1__PERIPHERAL__IO {<Select>}  \
     CONFIG.PSU__USB1__RESET__ENABLE {1}  \
@@ -301,6 +302,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU_MIO_6_DIRECTION {inout}  \
     CONFIG.PSU_MIO_7_DRIVE_STRENGTH {4}  \
     CONFIG.PSU_MIO_7_POLARITY {Default}  \
+    CONFIG.PSU_MIO_7_INPUT_TYPE {cmos}  \
     CONFIG.PSU_MIO_7_SLEW {slow}  \
     CONFIG.PSU_MIO_7_DIRECTION {inout}  \
     CONFIG.PSU_MIO_8_DRIVE_STRENGTH {4}  \
@@ -361,6 +363,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU_MIO_21_DIRECTION {inout}  \
     CONFIG.PSU_MIO_22_DRIVE_STRENGTH {4}  \
     CONFIG.PSU_MIO_22_POLARITY {Default}  \
+    CONFIG.PSU_MIO_22_INPUT_TYPE {cmos}  \
     CONFIG.PSU_MIO_22_SLEW {slow}  \
     CONFIG.PSU_MIO_22_DIRECTION {inout}  \
     CONFIG.PSU_MIO_23_DRIVE_STRENGTH {4}  \
@@ -492,6 +495,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU_MIO_50_DIRECTION {out}  \
     CONFIG.PSU_MIO_51_DRIVE_STRENGTH {4}  \
     CONFIG.PSU_MIO_51_POLARITY {Default}  \
+    CONFIG.PSU_MIO_51_INPUT_TYPE {cmos}  \
     CONFIG.PSU_MIO_51_SLEW {slow}  \
     CONFIG.PSU_MIO_51_DIRECTION {inout}  \
     CONFIG.PSU_MIO_52_DRIVE_STRENGTH {12}  \
@@ -664,7 +668,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU__CRL_APB__AFI6_REF_CTRL__DIVISOR0 {3}  \
     CONFIG.PSU__CRL_APB__USB3_DUAL_REF_CTRL__DIVISOR0 {5}  \
     CONFIG.PSU__CRL_APB__USB3_DUAL_REF_CTRL__DIVISOR1 {15}  \
-    CONFIG.PSU_USB3__DUAL_CLOCK_ENABLE {1}  \
+    CONFIG.PSU_USB3__DUAL_CLOCK_ENABLE {0}  \
     CONFIG.PSU__CRL_APB__USB3__ENABLE {0}  \
     CONFIG.PSU__CRF_APB__GDMA_REF_CTRL__DIVISOR0 {2}  \
     CONFIG.PSU__CRF_APB__DPDMA_REF_CTRL__DIVISOR0 {3}  \
@@ -675,7 +679,7 @@ proc apply_preset {IPINST} {
     CONFIG.PSU__CRL_APB__RPLL_CTRL__FBDIV {64}  \
     CONFIG.PSU__CRL_APB__IOPLL_TO_FPD_CTRL__DIVISOR0 {2}  \
     CONFIG.PSU__CRL_APB__RPLL_TO_FPD_CTRL__DIVISOR0 {2}  \
-    CONFIG.PSU__CRL_APB__GEM0_REF_CTRL__DIVISOR0 {8}  \
+    CONFIG.PSU__CRL_APB__GEM0_REF_CTRL__DIVISOR0 {12}  \
     CONFIG.PSU__CRL_APB__GEM1_REF_CTRL__DIVISOR0 {8}  \
     CONFIG.PSU__CRL_APB__GEM2_REF_CTRL__DIVISOR0 {12}  \
     CONFIG.PSU__CRL_APB__GEM3_REF_CTRL__DIVISOR0 {12}  \

@@ -9,6 +9,6 @@
 #define XCP_INTERFACE_H_
 
 void xcp_interface(void *p);
-extern void timer_irq_callback_10kHz(void);
+extern void xcp_event_irq(void);
 
 #endif /* XCP_INTERFACE_H_ */

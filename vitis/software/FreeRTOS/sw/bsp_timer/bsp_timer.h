@@ -23,4 +23,6 @@ uint64_t bsp_timer_timestamp_u64_get(void);
 uint64_t bsp_timer_timestamp_u64_get_time_delta_ns(uint64_t time_start,
 												uint64_t time_end);
 
+float bsp_timer_tsU64_delta_us(uint64_t time_start, uint64_t time_end);
+
 #endif /* BSP_TIMER_H_ */

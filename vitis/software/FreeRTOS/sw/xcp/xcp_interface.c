@@ -49,6 +49,7 @@ typedef struct {
 
 typedef struct {
 	uint8_t stop_calc;
+	uint8_t ctrl_enable;
 } stim_t;
 
 typedef struct {
@@ -56,13 +57,22 @@ typedef struct {
 	stim_t stim;
 } xcp_data_t;
 
+typedef struct timing_value_t_ {
+	float irq_rate;
+	float control;
+	float xcp_event;
+} timing_value_t;
+
+typedef struct timing_t_ {
+	timing_value_t now;
+	timing_value_t max;
+} timing_t;
+
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
 extern xcp_data_t xcp_data;
 xcp_data_t xcp_data = {0};
-
-//static QueueHandle_t queue_tx;
 
 static uint32_t xcp_msg_tx_cnt = 0;
 static uint32_t xcp_msg_rx_cnt = 0;
@@ -71,18 +81,18 @@ volatile uint8_t flag_connection_active = 0;
 
 static uint32_t xcp_timestamp = 0;
 
-extern uint64_t timestamp;
-uint64_t timestamp = 0;
-extern uint64_t time_irq_ns, time_irq_max_ns;
-uint64_t time_irq_ns = 0, time_irq_max_ns = 0;
-extern uint64_t time_irq_rate_ns, time_irq_rate_max_ns;
-uint64_t time_irq_rate_ns = 0, time_irq_rate_max_ns = 0;
+static timing_t timing;
+
+#define TS__(name_, ts_start_, ts_end_) \
+	timing.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
+	if (timing.now.name_ > timing.max.name_) \
+	timing.max.name_ = timing.now.name_;
 
 /*-------------------------------------------------------------------
  * Local functions
  *-----------------------------------------------------------------*/
 // Todo remove
-static void init_dummy_variables(void)
+static void control_dummy_init(void)
 {
 	for (int i = 0; i < 50; i++) {
 		xcp_data.meas.array_50_byte[i] = i;
@@ -96,9 +106,8 @@ static void init_dummy_variables(void)
 }
 
 // Todo remove
-static void set_dummy_variables(void)
+static void control_dummy(void)
 {
-
 	for (int i = 0; i < 50; i++) {
 		xcp_data.meas.array_50_byte[i]++;
 	}
@@ -153,7 +162,7 @@ static void xcp_interface_init(void)
     bsp_timer_start();
 //	bsp_ringBuffer_init();
 
-    init_dummy_variables();
+    control_dummy_init();
 }
 
 static void xcp_eth_tx(void *arg_p)
@@ -227,24 +236,14 @@ static void xcp_eth_rx(void *arg_p)
 	vTaskDelete(NULL);
 }
 
-/*-------------------------------------------------------------------
- * Global functions
- *-----------------------------------------------------------------*/
-void timer_irq_callback_10kHz(void)
+static void xcp_event_irq(void)
 {
-	static uint64_t ts_start = 0;
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	time_irq_rate_ns = bsp_timer_timestamp_u64_get_time_delta_ns(ts_start, ts_now);
-	if (time_irq_rate_ns > time_irq_rate_max_ns)
-		time_irq_rate_max_ns = time_irq_rate_ns;
-	ts_start = ts_now;
-
-
-	timestamp = bsp_timer_timestamp_u64_get();
-
-	xcp_timestamp = bsp_timer_timestamp_get();
-
-	XcpEvent(XCP_EVENT_FAST);
+	static uint32_t cnt_div_fast = 0;
+	cnt_div_fast++;
+	if (cnt_div_fast >= 5) {
+		cnt_div_fast = 0;
+		XcpEvent(XCP_EVENT_FAST);
+	}
 
 	static uint32_t cnt_div_100us = 1;
 	cnt_div_100us++;
@@ -284,37 +283,66 @@ void timer_irq_callback_10kHz(void)
 		XcpEvent(XCP_EVENT_1S);
 	}
 
-
+	// Also read one incoming XCP message per cycle
 	uint8_t *data_p = 0;
 	if (bsp_ringBuffer_get(rbt_rx, &data_p) > 0) {
 		XcpCommand((uint32_t *) (data_p + XCP_HEADER_LEN));
 	}
-
 }
 
-void timer_irq_callback__(void)
+static void control_functions(void)
 {
 //    void foc_speed_test(void);
 //    foc_speed_test();
+	control_dummy();
 
-	set_dummy_variables();
+	/*
+	 * TODO: Implementierung/Synchronisierung langsamer Regler?
+	 * - Synchronisierung notwendig: vorher/nachher Datenset auf globale
+	 *   Variablen kopieren
+	 * - Aufruf:
+	 *   * Wenn schnell genug, dann mit im Reglertakt, ansonsten unterbrechbar
+	 *   > In FreeRTOS Task: kann im Hintergrund rechnen
+	 *   > In while(1) main loop als 'task' mit Aktivierungsflag
+	 */
+}
 
+static void timing_max_reset(void)
+{
+	static uint64_t ts_last_activation = 0;
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	if (bsp_timer_tsU64_delta_us(ts_last_activation, ts_now) >= (float)3e6) {
+		ts_last_activation = ts_now;
+		memset(&timing.max, 0, sizeof(timing.max));
+	}
+}
+
+/*-------------------------------------------------------------------
+ * Global functions
+ *-----------------------------------------------------------------*/
+void timer_irq_callback__(void)
+{
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+	static uint64_t ts_last_start = 0;
+	TS__(irq_rate, ts_last_start, ts_start);
+	ts_last_start = ts_start;
 
-	timer_irq_callback_10kHz();
+	xcp_timestamp = bsp_timer_timestamp_get();
+	//xcp_timestamp = (uint32_t)bsp_timer_timestamp_u64_get();
+
+	if (xcp_data.stim.ctrl_enable) {
+		control_functions();
+	}
+
+	uint64_t ts_after_ctrl = bsp_timer_timestamp_u64_get();
+	TS__(control, ts_start, ts_after_ctrl);
+
+	xcp_event_irq();
 
 	uint64_t ts_end = bsp_timer_timestamp_u64_get();
-	time_irq_ns = bsp_timer_timestamp_u64_get_time_delta_ns(ts_start, ts_end);
-	if (time_irq_ns > time_irq_max_ns)
-		time_irq_max_ns = time_irq_ns;
+	TS__(xcp_event, ts_after_ctrl, ts_end);
 
-	static uint32_t cnt_div_s = 0;
-	cnt_div_s++;
-	if (cnt_div_s >= 30000) {
-		cnt_div_s = 0;
-		time_irq_max_ns = 0;
-		time_irq_rate_max_ns = 0;
-	}
+	timing_max_reset();
 }
 
 void xcp_interface(void *p)

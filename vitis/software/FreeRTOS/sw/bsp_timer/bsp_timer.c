@@ -220,3 +220,10 @@ uint64_t bsp_timer_timestamp_u64_get_time_delta_ns(uint64_t time_start,
 	uint64_t time_ns = (time_delta * (uint64_t)1e9) / COUNTS_PER_SECOND;
 	return time_ns;
 }
+
+float bsp_timer_tsU64_delta_us(uint64_t time_start, uint64_t time_end)
+{
+	uint64_t time_delta = (time_end - time_start);
+	float delta_us = (float)time_delta / (float)COUNTS_PER_SECOND * (float) 1e6;
+	return delta_us;
+}

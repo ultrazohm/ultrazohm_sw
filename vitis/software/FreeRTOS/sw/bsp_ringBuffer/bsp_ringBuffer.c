@@ -54,7 +54,7 @@ typedef struct ringBuffer_t_ {
 	uint32_t idx_w;
 	uint32_t idx_r;
 	int fill_level;
-	uint32_t max_fill_level;
+	volatile uint32_t max_fill_level;
 	uint8_t buf[RING_BUFFER_NUM_ELEMENTS][RING_BUFFER_ELEMENT_SIZE];
 } ringBuffer_t;
 

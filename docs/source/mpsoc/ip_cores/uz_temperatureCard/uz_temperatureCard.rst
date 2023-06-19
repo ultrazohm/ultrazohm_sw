@@ -34,6 +34,17 @@ To get the temperature card working, its neccessary to connect the IP-core via s
 
 It's crucial to use the Pins as shown in the picture below, otherwise the mapping won't fit with the created CPLD-File!
 
+.. note:: 
+
+   To simplify the usage of the IP-Core and to reduce possible errors, a tcl script was created, that places all necessary connections automatically.
+   Only the hardware ports have to be assigned manually, according to the used digital adapter card slot.
+   To use this, open the Vivado block design and run the following commands seperately in the TCL-console.
+   "cd [ get_property DIRECTORY [current_project] ]" 
+   "cd $work_directory"
+   "source ../../ip_cores/Temperature_Card_Interfrace_V1/temp_card_interface.tcl"
+   "create_hier_cell_temp_card_interface / temp_card_interface"
+
+
 .. image:: IP_Core_TempCard.png
    :height: 400
 

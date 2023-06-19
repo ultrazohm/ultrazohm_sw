@@ -35,3 +35,4 @@ Software Framework
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
     uz_integrator/uz_integrator
+    controller_setpoint_filter/controller_setpoint_filter

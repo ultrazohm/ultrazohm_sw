@@ -1,0 +1,22 @@
+﻿Port Name,Port Type,Data Type,Target Platform Interfaces,Range,Unit,Function
+PL ports,,,,,,
+position_raw,Input,uint16_t,External Signal,0..65535,1,raw value of angle
+velocity_raw,Input,int16_t,External Signal,-32768..32767,1,raw value of speed
+trigger,Input,bool,External Signal, false..true,1,trigger calculations
+position_mech_raw,Output,uint16_t,External Signal,0..65535,1,raw mechanical position (theta_m_offset_rad not respected)
+position_mech_2pi,Output,sfix27_En20,External Signal,0..2pi,rad,mechanical position in rad
+position_el_2pi,Output,sfix27_En20,Exernal Signal,0..2pi,rad,electrical position in rad
+omega_mech_rad_s,Output,sfix24_En11,External Signal,-4096..4095.9995,rad/s,mechanical speed in rad/s
+n_mech_rpm,Output,sfix24_En11,External Signal,-4096..4095.9995,rounds per minute,mechanical speed in rpm
+done,Output,bool,External Signal,false..true,1,true if ip core calculations are finished
+AXI4-Lite ports,,,,,,
+resolver_polepairs,Input,int32_t,AXI4-Lite,1..int32max,1,polepairs of the resolver_polepairs
+cnt_reset,Input,bool,AXI4-Lite,false..true,1,reset the internal revolution counter (is triggered once at init)
+position_intmax,Input,int32_t,AXI4-Lite,0..int32max,1,represents the max possible raw value according to the resolution setting of the resolver (e.g. 65535 for 16bit)
+machine_polepairs,Input,int32_t,AXI4-Lite,1..int32max,1, polepairs of the machine
+bitToRPS_Factor,Input,float,AXI4-Lite,>0..floatmax,rounds per second/velocity_raw, calculates speed in rounds per second from raw value
+theta_m_offset_rad,Input,float,AXI4-Lite,-2pi..0,rad,mechanical offset between resolver zero and machine zero
+position_mech_2pi,Output,float,AXI4-Lite,0..2pi,rad,mechanical position in rad
+position_el_2pi,Output,float,AXI4-Lite,0..2pi,rad,electrical position in rad
+omega_mech_rad_s,Output,float,AXI4-Lite,+/- floatmax,rad/s,mechanical speed in rad/s
+n_mech_rpm,Output,float,AXI4-Lite,+/- floatmax,rounds per minute,mechanical speed in rpm

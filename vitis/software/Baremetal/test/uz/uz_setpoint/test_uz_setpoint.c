@@ -25,6 +25,8 @@ void setUp(void)
     config.is_field_weakening_enabled = false;
     currents.d = 0.0f;
     currents.q = 0.0f;
+    omega_m_rad_per_sec = 0.0f;
+    V_DC_Volts = 24.0f;
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){

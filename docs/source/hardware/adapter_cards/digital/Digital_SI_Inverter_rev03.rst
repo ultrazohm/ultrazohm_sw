@@ -208,10 +208,10 @@ In the ``isr.c`` add the following conversion factors to the measured signals.
  v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
  v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
  v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
- i_abc_Volts.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
- i_abc_Volts.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
- i_abc_Volts.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
- i_DC_Volts = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
+ i_abc_Amps.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+ i_abc_Amps.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+ i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+ i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
 
 In order to use the over current and over temperature protection, the following code has to be added to the isr.c as well. 
 These are optional features and can be left out if they aren't required.

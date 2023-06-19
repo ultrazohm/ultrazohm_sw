@@ -199,6 +199,12 @@ void network_thread(void *p)
 		}
 	}
 #else
+
+    // Catch ... interesting inclusion of CAN I/O handling in the above DHCP loop
+    #if CAN_ACTIVE==1
+		#error CAN currently only support with DHCP enabled as well
+    #endif
+
     uz_printf("\r\n");
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
     uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");

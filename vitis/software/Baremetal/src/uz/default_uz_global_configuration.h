@@ -53,6 +53,7 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       0U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
+#define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -92,4 +93,5 @@
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
     #define UZ_AXI_GPIO_MAX_INSTANCES                       10U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
+    #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           10U
 #endif

@@ -95,6 +95,10 @@ int main(void)
 
             // init tempcard
             Global_Data.objects.uz_Tempcard = init_tempcard();
+            // init PWM freq temp measurement
+            Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
+		    Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
+		    Global_Data.objects.tempMeasurement3 = init_tempMeasurement3();
 
             initialization_chain = print_msg;
             break;

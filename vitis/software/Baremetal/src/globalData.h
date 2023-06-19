@@ -8,6 +8,8 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "uz/uz_Transformation/uz_Transformation.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
+
 
 
 // union allows to access the values as array and individual variables
@@ -88,6 +90,9 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	uz_9ph_abc_t winding_temperature;
 	float avg_winding_temperature;
+	float temperature_inv_1;
+	float temperature_inv_2;
+	float temperature_inv_3;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -116,6 +121,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
 	uz_temperaturecard_t* uz_Tempcard;
+	uz_PWM_duty_freq_detection_t* tempMeasurement1;
+	uz_PWM_duty_freq_detection_t* tempMeasurement2;
+	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

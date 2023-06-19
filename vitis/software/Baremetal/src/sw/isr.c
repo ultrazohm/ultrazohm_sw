@@ -45,6 +45,11 @@ extern DS_Data Global_Data;
 uz_temperaturecard_OneGroup channel_A_data;
 // end uz tempcard
 
+// start PWM freq temp measurement
+#include "../IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
+struct uz_PWM_duty_freq_detection_outputs_t temp_output;
+// end PWM freq temp measurement
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -59,6 +64,14 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // start PWM freq temp measurement
+    temp_output = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
+    Global_Data.av.temperature_inv_1 = temp_output.TempDegreesCelsius;
+    temp_output = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
+	Global_Data.av.temperature_inv_2 = temp_output.TempDegreesCelsius;
+	temp_output = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement3);
+	Global_Data.av.temperature_inv_3 = temp_output.TempDegreesCelsius;
+	// end PWM freq temp measurement
 
     // start uz tempcard
 	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.uz_Tempcard);

@@ -187,28 +187,28 @@ void network_thread(void *p)
       		lifeCheck_networkThread =0;
       	}
 
-		#if CAN_ACTIVE==1
-			if( ! hal_can_is_rx_empty() ){
-				hal_can_receive_frame_blocking(&can_frame_rx);
-				if(can_frame_rx.std_id == 0x22) {
-				//	XcpCommand( (uint32_t *) can_frame_rx.data );
-					can_send_2();
-				} else {
+#if CAN_ACTIVE==1
+		if( ! hal_can_is_rx_empty() ){
+			hal_can_receive_frame_blocking(&can_frame_rx);
+			if(can_frame_rx.std_id == 0x22) {
+			//	XcpCommand( (uint32_t *) can_frame_rx.data );
+				can_send_2();
+			} else {
 
-					//hal_can_debug_print_frame(&can_frame_rx);
-					//uz_printf("received a not XCP related CAN frame \n\r");
-				}
-				//usleep(1000 * 500);
-			}else{
-				can_send_1();
-				//usleep(1000 * 500);
+				//hal_can_debug_print_frame(&can_frame_rx);
+				//uz_printf("received a not XCP related CAN frame \n\r");
 			}
+			//usleep(1000 * 500);
+		}else{
+			can_send_1();
+			//usleep(1000 * 500);
+		}
 
-			// no tx message pending
-			if( hal_can_is_tx_done()) {
-				//XcpSendCallBack();
-			}
-		#endif
+		// no tx message pending
+		if( hal_can_is_tx_done()) {
+			//XcpSendCallBack();
+		}
+#endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		dhcp_fine_tmr();
@@ -262,12 +262,13 @@ int main_thread()
 #if LWIP_DHCP==1
     while (1) {
 
-	lifecheck_mainThread++;
-	if(lifecheck_mainThread > 2500){
-		lifecheck_mainThread =0;
-	}
+		lifecheck_mainThread++;
+		if(lifecheck_mainThread > 2500){
+			lifecheck_mainThread =0;
+		}
 
-	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+
 		if (server_netif.ip_addr.addr) {
 			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));

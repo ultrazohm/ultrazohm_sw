@@ -42,9 +42,7 @@ extern DS_Data Global_Data;
 
 // start uz tempcard
 #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
-extern uz_temperaturecard_t* uz_Tempcard;
 uz_temperaturecard_OneGroup channel_A_data;
-
 // end uz tempcard
 
 //==============================================================================================================================================================
@@ -63,8 +61,8 @@ void ISR_Control(void *data)
 
 
     // start uz tempcard
-	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
+	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.uz_Tempcard);
+	channel_A_data = uz_TempCard_IF_get_channel(Global_Data.objects.uz_Tempcard, 'a');
 	Global_Data.av.winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
 	Global_Data.av.winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
 	Global_Data.av.winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);

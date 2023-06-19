@@ -54,6 +54,8 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
 #define UZ_AXI_GPIO_MAX_INSTANCES 0U
+#define UZ_TEMPERATURE_CARD_MAX_INSTANCES				1U
+
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

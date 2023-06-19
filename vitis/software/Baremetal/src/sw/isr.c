@@ -38,6 +38,15 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+#include "../uz/uz_Transformation/uz_Transformation.h"
+
+// start uz tempcard
+#include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+extern uz_temperaturecard_t* uz_Tempcard;
+uz_temperaturecard_OneGroup channel_A_data;
+
+// end uz tempcard
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,6 +60,28 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    // start uz tempcard
+	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
+	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
+	Global_Data.av.winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
+	Global_Data.av.winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
+	Global_Data.av.winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);
+	Global_Data.av.winding_temperature.a2 = channel_A_data.temperature[9]*(channel_A_data.Channels_Valid[9]==1);
+	Global_Data.av.winding_temperature.b2 = channel_A_data.temperature[11]*(channel_A_data.Channels_Valid[11]==1);
+	Global_Data.av.winding_temperature.c2 = channel_A_data.temperature[13]*(channel_A_data.Channels_Valid[13]==1);
+	Global_Data.av.winding_temperature.a3 = channel_A_data.temperature[15]*(channel_A_data.Channels_Valid[15]==1);
+	Global_Data.av.winding_temperature.b3 = channel_A_data.temperature[17]*(channel_A_data.Channels_Valid[17]==1);
+	Global_Data.av.winding_temperature.c3 = channel_A_data.temperature[19]*(channel_A_data.Channels_Valid[19]==1);
+	Global_Data.av.avg_winding_temperature =
+			(Global_Data.av.winding_temperature.a1 + Global_Data.av.winding_temperature.b1 + Global_Data.av.winding_temperature.c1 +
+			Global_Data.av.winding_temperature.a2 + Global_Data.av.winding_temperature.b2 + Global_Data.av.winding_temperature.c2 +
+			Global_Data.av.winding_temperature.a3 + Global_Data.av.winding_temperature.b3 + Global_Data.av.winding_temperature.c3)/
+			((channel_A_data.Channels_Valid[3]==1) + (channel_A_data.Channels_Valid[5]==1) + (channel_A_data.Channels_Valid[7]==1) +
+			(channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1) +
+			(channel_A_data.Channels_Valid[15]==1) + (channel_A_data.Channels_Valid[17]==1) + (channel_A_data.Channels_Valid[19]==1));
+	// end uz tempcard
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

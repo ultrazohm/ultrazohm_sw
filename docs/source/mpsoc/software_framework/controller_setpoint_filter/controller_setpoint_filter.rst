@@ -1,6 +1,9 @@
-.. _uz_IIR_filter_setpoint:
+.. _controller_setpoint_filter:
 
-====================
+==========================
+Controller SetPoint Filter
+==========================
+
 IIR filter set-point
 ====================
 
@@ -8,7 +11,7 @@ IIR filter set-point
 
 
 Description
-===========
+-----------
 
 The set-point filter function uses two :ref:`uz_IIR_filter` objects to filter the d- and q-current set-points of a controller.
 The intended use is for cascaded control structures as well as direct user input (e.g., via the GUI).
@@ -16,13 +19,13 @@ As large changes in set-points may result in big current jumps, this function sm
 The suggested filter configuration in the `Example configuration`_  can be used as a baseline and has to be tuned to the specific application.
 
 Example configuration
-=====================
+---------------------
 
 .. code-block:: c
   :linenos:
   :caption: Example to init the filter
 
-  #include "uz/uz_signals/uz_signals.h"
+  #include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
   uz_IIR_Filter_t* filter_1 = NULL;
   uz_IIR_Filter_t* filter_2 = NULL;
   #define ISR_SAMPLE_FREQ_HZ 10000.0f
@@ -41,7 +44,7 @@ Example configuration
   :linenos:
   :caption: Example to use the filter (initialization if uz_current_control not included, code will not compile!)
 
-  #include "../uz_signals/uz_signals.h"
+  #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
   extern uz_IIR_Filter_t* filter_1;
   extern uz_IIR_Filter_t* filter_2;
   void ISR_Control(void *data) {

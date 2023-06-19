@@ -34,6 +34,9 @@ extern "C" {
 #define THREAD_STACKSIZE 1024
 
 // ========== JavaScope-Ethernet =========================================================================
+// Period (in ms) of the endless loop in network_thread()
+#define NETWORK_LOOPPERIOD_MS	(500U)
+
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
 #define NETWORK_SEND_FIELD_SIZE 15

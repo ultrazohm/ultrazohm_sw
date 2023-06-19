@@ -18,7 +18,7 @@
 
 //Includes for Ethernet
 #if LWIP_DHCP==1
-#include "lwip/dhcp.h"
+ #include "lwip/dhcp.h"
 #endif
 
 //Includes for CAN
@@ -36,8 +36,13 @@ size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
 
 #if LWIP_DHCP==1
-extern volatile int dhcp_timoutcntr;
-err_t dhcp_start(struct netif *netif);
+ extern volatile int dhcp_timoutcntr;
+ err_t dhcp_start(struct netif *netif);
+ #if ( DHCP_FINE_TIMER_MSECS != NETWORK_LOOPPERIOD_MS )
+  #warning Unexpected value in DHCP_FINE_TIMER_MSECS, you might want to check this and adapt NETWORK_LOOPPERIOD_MS afterwards
+ #endif
+#else
+ #define DHCP_FINE_TIMER_MSECS NETWORK_LOOPPERIOD_MS
 #endif
 
 static struct netif server_netif;
@@ -161,13 +166,8 @@ void network_thread(void *p)
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
+    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
 #else
-
-    // Catch ... interesting inclusion of CAN I/O handling in the above DHCP loop
-    #if CAN_ACTIVE==1
-               #error CAN currently only support with DHCP enabled as well
-    #endif
-
     uz_printf("\r\n");
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
     uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
@@ -177,15 +177,24 @@ void network_thread(void *p)
     sys_thread_new("echod", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
-    vTaskDelete(NULL);
 #endif
 
-#if LWIP_DHCP==1
+    // Periodic (cf. DHCP_FINE_TIMER_MSECS) loop for "all things networking" (i.e., Ethernet DHCP and CAN demo)
     while (1) {
+
+#if LWIP_DHCP==1
     	lifeCheck_networkThread++;
       	if(lifeCheck_networkThread > 2500){
       		lifeCheck_networkThread =0;
       	}
+
+		dhcp_fine_tmr();
+		mscnt += DHCP_FINE_TIMER_MSECS;
+		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
+			dhcp_coarse_tmr();
+			mscnt = 0;
+		}
+#endif
 
 #if CAN_ACTIVE==1
 		if( ! hal_can_is_rx_empty() ){
@@ -211,14 +220,8 @@ void network_thread(void *p)
 #endif
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
-		dhcp_fine_tmr();
-		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
-			dhcp_coarse_tmr();
-			mscnt = 0;
-		}
-	}
-#endif
+
+	}	// endless while(1)
 
     return;
 }

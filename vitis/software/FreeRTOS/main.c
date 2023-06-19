@@ -275,11 +275,7 @@ int main_thread()
 		if (server_netif.ip_addr.addr) {
 			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
+
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
@@ -295,14 +291,16 @@ int main_thread()
 			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
 			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
 			break;
 		}
-	}
+	}	// while(1)
+
+	print_echo_app_header();
+	uz_printf("\r\n");
+
+	sys_thread_new("echod", application_thread, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 #endif
 
     vTaskDelete(NULL);

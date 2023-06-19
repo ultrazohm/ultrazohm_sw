@@ -129,4 +129,112 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+/**
+ * @brief Returns the value of Kp_id calculated using the magnitude optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
+ * @return Kp_id according to magnitude optimum 
+ */
+float uz_CurrentControl_set_Kp_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Ki_id calculated using the magnitude optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Ki_id according to magnitude optimum 
+ */
+float uz_CurrentControl_set_Ki_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Kp_iq calculated using the magnitude optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Kp_iq according to magnitude optimum 
+ */
+float uz_CurrentControl_set_Kp_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Ki_iq calculated using the magnitude optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Ki_iq according to magnitude optimum 
+ */
+float uz_CurrentControl_set_Ki_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Kp_id calculated using the symmetric optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Kp_id according to symmetric optimum 
+ */
+float uz_CurrentControl_set_Kp_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Ki_id calculated using the symmetric optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Ki_id according to symmetric optimum
+ */
+float uz_CurrentControl_set_Ki_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Kp_iq calculated using the symmetric optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Ki_iq according to symmetric optimum 
+ */
+float uz_CurrentControl_set_Kp_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Ki_iq calculated using the symmetric optimum
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
+ * @return Ki_iq according to symmetric optimum 
+ */
+float uz_CurrentControl_set_Ki_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec);
+
+/**
+ * @brief Returns the value of Kp_id calculated from a desired bandwidth of the controller
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ * @return Kp_id according to desired bandwidth
+ */
+float uz_CurrentControl_set_Kp_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec);
+
+/**
+ * @brief Returns the value of Ki_id calculated from a desired bandwidth of the controller
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ * @return Ki_id according to desired bandwidth
+ */
+float uz_CurrentControl_set_Ki_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec);
+
+/**
+ * @brief Returns the value of Kp_iq calculated from a desired bandwidth of the controller
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ * @return Kp_iq according to desired bandwidth
+ */
+float uz_CurrentControl_set_Kp_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec);
+
+/**
+ * @brief Returns the value of Ki_iq calculated from a desired bandwidth of the controller
+ * 
+ * @param config_PMSM Configuration struct for PMSM parameters
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ * @return Kp_iq according to desired bandwidth
+ */
+float uz_CurrentControl_set_Ki_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec);
+
 #endif // UZ_CURRENTCONTROL_H

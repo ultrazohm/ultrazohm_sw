@@ -161,6 +161,26 @@ void network_thread(void *p)
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
+#else
+
+    // Catch ... interesting inclusion of CAN I/O handling in the above DHCP loop
+    #if CAN_ACTIVE==1
+               #error CAN currently only support with DHCP enabled as well
+    #endif
+
+    uz_printf("\r\n");
+    uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
+    uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
+
+    print_echo_app_header();
+    uz_printf("\r\n");
+    sys_thread_new("echod", application_thread, 0,
+		THREAD_STACKSIZE,
+		DEFAULT_THREAD_PRIO);
+    vTaskDelete(NULL);
+#endif
+
+#if LWIP_DHCP==1
     while (1) {
     	lifeCheck_networkThread++;
       	if(lifeCheck_networkThread > 2500){
@@ -198,23 +218,6 @@ void network_thread(void *p)
 			mscnt = 0;
 		}
 	}
-#else
-
-    // Catch ... interesting inclusion of CAN I/O handling in the above DHCP loop
-    #if CAN_ACTIVE==1
-		#error CAN currently only support with DHCP enabled as well
-    #endif
-
-    uz_printf("\r\n");
-    uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-    uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
-
-    print_echo_app_header();
-    uz_printf("\r\n");
-    sys_thread_new("echod", application_thread, 0,
-		THREAD_STACKSIZE,
-		DEFAULT_THREAD_PRIO);
-    vTaskDelete(NULL);
 #endif
 
     return;

@@ -247,7 +247,7 @@ void test_uz_nn_matlab(void)
         printf("mse von output minibatch member %d ist = %.8f \n",(int)j, (double)msetest[j]);
         }
         float lernrate = 0.001f;
-        uz_nn_gradient_descent(test,lernrate);
+        uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
         }
 }
       //  uz_nn_mat_export(test);

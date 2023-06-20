@@ -115,6 +115,8 @@ void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, fl
  * @param lernrate float, that determines the step size of the update
  */
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
+void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize);
+
 /**
  * @brief Save weights from c to .csv data for comparison reasons
  * 

@@ -176,8 +176,8 @@ void uz_nn_layer_calc_gradients_matrix(uz_nn_layer_t *const self, uz_matrix_t *c
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_matrix_multiply_acc(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
+    uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    uz_matrix_reshape_and_concatenate_acc(self->cachegradients,self->delta,self->gradients);  
 }
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
@@ -206,6 +206,21 @@ uz_matrix_transpose(self->delta);
 // }
 }
 
+void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize)
+{
+uint32_t bias_index = self->bias->length_of_data;
+uint32_t weight_index = self->weights->length_of_data;
+//erst weights
+for(size_t i=0;i< weight_index;i++)
+{
+self->weights->data[i] = self->weights->data[i] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+}
+//dann bias
+for(size_t i=weight_index;i<(weight_index+bias_index);i++)
+{
+self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+}
+}
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)
 {
     FILE *f = fopen(fname, "w");

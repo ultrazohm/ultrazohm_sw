@@ -83,6 +83,15 @@ void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate)
     }
 }
 
+void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uint32_t minibatchsize)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param_mini_batch(self->layer[i], learnrate, minibatchsize);
+    }
+}
 float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput)
 {
     uz_assert(expectedoutput->length_of_data == output->length_of_data);

@@ -46,6 +46,7 @@ struct uz_nn_layer_t
     bool is_ready;
 };
 
+
 static uint32_t instance_counter = 0U;
 static uz_nn_layer_t instances[UZ_NN_LAYER_MAX_INSTANCES] = {0};
 
@@ -133,6 +134,18 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
+void uz_nn_layer_ff_matrix(uz_nn_layer_t *const self, uz_matrix_t const *const input)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(input);
+    uz_assert(self->is_ready);
+    uz_assert(uz_matrix_get_number_of_rows(input) == 1U);
+    uz_matrix_multiply_acc(input, self->weights, self->output);
+    uz_matrix_add(self->bias, self->output);
+    uz_matrix_copy(self->output,self->sumout);
+    uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
+}
+
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
 {
     uz_assert_not_NULL(self);
@@ -156,6 +169,14 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
+    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
+}
+
+void uz_nn_layer_calc_gradients_matrix(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_matrix_multiply_acc(self->delta,outputprev,self->cachegradients);
     uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
 }
 

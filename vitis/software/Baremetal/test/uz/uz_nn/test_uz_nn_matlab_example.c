@@ -16,29 +16,25 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 100
+#define NUMBER_OF_EPOCHS 5
 #define MINI_BATCH_SIZE 252
-// stuff for training and update
+
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float s_3[NUMBER_OF_OUTPUTS] = {0};
 
-//derivate matrix activation, Dimension = Sumout x Sumout 50x50=2500 z.B.
-// float d_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-// float d_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
-// float d_3[NUMBER_OF_OUTPUTS * NUMBER_OF_OUTPUTS] = {0};
 //deltas
 float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float delta_3[NUMBER_OF_OUTPUTS] = {0};
 
-//cache gradients, Gräße entspricht delta des aktuellen layers * größe des Outputs des vorherigen layers
+//cache gradients, Größe entspricht delta des aktuellen layers * größe des Outputs des vorherigen layers
 float cacheg_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
 float cacheg_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float cacheg_3[NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
-//Gradienten
+//Gradienten, nur zu Debug Zwecken
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
 float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
@@ -103,8 +99,8 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] =
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
-float msetest [NUMBER_OF_EPOCHS] = {0.0f};
-float msederv [NUMBER_OF_EPOCHS] = {0.0f};
+float msetest [MINI_BATCH_SIZE] = {0.0f};
+float msederv [MINI_BATCH_SIZE] = {0.0f};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -118,7 +114,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
         .length_of_sumout = UZ_MATRIX_SIZE(s_1),
-        // .length_of_derivate_gradients= UZ_MATRIX_SIZE(d_1),
         .length_of_delta = UZ_MATRIX_SIZE(delta_1),
         .length_of_error = UZ_MATRIX_SIZE(e_1),
         .length_of_gradients = UZ_MATRIX_SIZE(g_1),
@@ -128,7 +123,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .bias = b_1,
         .output = y_1,
         .sumout = s_1,
-        // .derivate_gradients = d_1,
         .delta = delta_1,
         .temporarybackprop = T1,
         .gradients = g_1,
@@ -146,7 +140,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .length_of_bias = UZ_MATRIX_SIZE(b_2),
       .length_of_output = UZ_MATRIX_SIZE(y_2),
       .length_of_sumout = UZ_MATRIX_SIZE(s_2),
-      // .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_2),
       .length_of_delta = UZ_MATRIX_SIZE(delta_2),
       .length_of_gradients = UZ_MATRIX_SIZE(g_2),
       .length_of_error = UZ_MATRIX_SIZE(e_2),
@@ -156,7 +149,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .bias = b_2,
       .output = y_2,
       .sumout = s_2,
-      // .derivate_gradients = d_2,
       .delta = delta_2,
       .temporarybackprop = T2,
       .gradients = g_2,
@@ -173,7 +165,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .length_of_bias = UZ_MATRIX_SIZE(b_3),
    .length_of_output = UZ_MATRIX_SIZE(y_3),
    .length_of_sumout = UZ_MATRIX_SIZE(s_3),
-  //  .length_of_derivate_gradients = UZ_MATRIX_SIZE(d_3),
    .length_of_delta = UZ_MATRIX_SIZE(delta_3),
    .length_of_gradients = UZ_MATRIX_SIZE(g_3),
    .length_of_error = UZ_MATRIX_SIZE(e_3),
@@ -183,7 +174,6 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .bias = b_3,
    .output = y_3,
    .sumout = s_3,
-  //  .derivate_gradients = d_3,
    .delta = delta_3, 
    .temporarybackprop = T3,
    .gradients = g_3,
@@ -222,7 +212,7 @@ void test_uz_nn_matlab(void)
        float lernrate = 0.001f;
        uz_nn_gradient_descent(test,lernrate);
        }
-       uz_nn_mat_export(test);
+      //  uz_nn_mat_export(test);
        clock_t end = clock();
        float seconds = (float)(end - start) / CLOCKS_PER_SEC;
        printf("Zeit des Tests = %.6f \n", (double)seconds);
@@ -232,28 +222,37 @@ void test_uz_nn_matlab(void)
   {
       uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
       struct uz_matrix_t refmatrix={0};
-      uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
-      struct uz_matrix_t x_matrix={0};
-      uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-      clock_t start = clock();
-       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
-       {
-       uz_nn_ff(test,input);
-       uz_matrix_t* output=uz_nn_get_output_data(test);
-       // MSE Berechnen für Trainingsdatenpaar
-       msetest[i] = uz_nn_mse(output,refout);
-       msederv[i] = uz_nn_mse_derv(output,refout);
-       float *msed = &msederv[i];
-       float result=uz_matrix_get_element_zero_based(output,0,0);
-       printf("output von step %d ist = %.8f \n",(int)i, (double)result);
-       printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
-       uz_nn_backward_pass(test,msed,input);
-       float lernrate = 0.001f;
-       uz_nn_gradient_descent(test,lernrate);
+      uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
+      struct uz_matrix_t input_matrix={0};
+      uz_matrix_t* input=uz_matrix_init(&input_matrix, x_mat,UZ_MATRIX_SIZE(x_mat),MINI_BATCH_SIZE,NUMBER_OF_INPUTS);
+      float X_data[NUMBER_OF_INPUTS] = {0.0f};
+      struct uz_matrix_t input_vec= {0};
+      uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
+      struct uz_matrix_t refvec={0};
+      uz_matrix_t* ref=uz_matrix_init(&refvec,reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+      // clock_t start = clock();
+      for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+      {
+      uint32_t mb_size = uz_matrix_get_number_of_rows(input);
+      for(size_t j=0; j<mb_size;j++){
+        uz_matrix_get_row_vector_zero_based(input,X,j);
+        uz_nn_ff(test,X);
+        uz_matrix_t* output=uz_nn_get_output_data(test);
+        uz_matrix_get_row_vector_zero_based(refout,ref,j);
+        msetest[j] = uz_nn_mse(output,ref);
+        float *msed = &msederv[j];
+        uz_nn_backward_pass_matrix(test,msed,X);
+      }
+      float lernrate = 0.001f;
+      uz_nn_gradient_descent(test,lernrate);
+      }
+
+      //  float result=uz_matrix_get_element_zero_based(output,0,0);
+      //  printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+      //  printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+      //  uz_nn_backward_pass(test,msed,input);
+      //  float lernrate = 0.001f;
+      //  uz_nn_gradient_descent(test,lernrate);
        }
-       uz_nn_mat_export(test);
-       clock_t end = clock();
-       float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-       printf("Zeit des Tests = %.6f \n", (double)seconds);
- }
+      //  uz_nn_mat_export(test);
 #endif // TEST

@@ -41,6 +41,7 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  */
 
 void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *const input);
+void uz_nn_backward_pass_matrix(uz_nn_t *self,const float *const error, uz_matrix_t *const input);
 /**
  * @brief Update whole neural network with gradient descent
  * 

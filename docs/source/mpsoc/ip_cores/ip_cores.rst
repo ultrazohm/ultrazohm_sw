@@ -31,3 +31,4 @@ IP Cores
     uz_resolverIP/uz_resolverIP
     uz_resolver_pl_interface/uz_resolver_pl_interface
     uz_axi_gpio/uz_axi_gpio
+    uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection

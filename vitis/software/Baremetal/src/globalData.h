@@ -70,8 +70,12 @@ typedef struct _actualValues_ {
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
+	float U_ZK1; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
+	float U_ZK3; 	// DC-Link voltage 2 in V
+	float i_ZK1; 		// DC-Link voltage in V
+	float i_ZK2; 	// DC-Link voltage 2 in V
+	float i_ZK3; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
@@ -96,6 +100,8 @@ typedef struct _actualValues_ {
 	float temperature_inv_2;
 	float temperature_inv_3;
 	struct uz_resolverIP_position_velocity_t electrical_position;
+	uz_9ph_abc_t currents_abc;
+	uz_9ph_abc_t voltages_abc;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

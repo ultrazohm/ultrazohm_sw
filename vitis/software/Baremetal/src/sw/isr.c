@@ -50,6 +50,13 @@ uz_temperaturecard_OneGroup channel_A_data;
 struct uz_PWM_duty_freq_detection_outputs_t temp_output;
 // end PWM freq temp measurement
 
+// conversion defines for ADC readings
+#define PHASE_CURRENT_CONV	16.75f
+#define DC_VOLT_CONV_1		140.27f
+#define DC_VOLT_OFF_1		450.25f
+#define DC_VOLT_CONV_2		141.28f
+#define DC_VOLT_OFF_2		452.17f
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -94,6 +101,26 @@ void ISR_Control(void *data)
 			(channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1) +
 			(channel_A_data.Channels_Valid[15]==1) + (channel_A_data.Channels_Valid[17]==1) + (channel_A_data.Channels_Valid[19]==1));
 	// end uz tempcard
+
+	// convert ADC readings to currents in Amps
+	Global_Data.av.currents_abc.a1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.b1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.c1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_CURRENT_CONV;
+	Global_Data.av.i_ZK1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.a2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.b2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.c2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_CURRENT_CONV;
+	Global_Data.av.i_ZK2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+	// convert ADC readings to voltages
+	Global_Data.av.U_ZK1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+	Global_Data.av.voltages_abc.a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+	Global_Data.av.voltages_abc.b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+	Global_Data.av.voltages_abc.c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
+	Global_Data.av.U_ZK2 = Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

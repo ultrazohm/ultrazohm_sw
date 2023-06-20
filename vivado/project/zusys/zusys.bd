@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x725DFBDC725DFBDC",
+      "boundary_crc": "0x9BA01FFC6D31A734",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -296,9 +296,6 @@
         "left": "0",
         "right": "0"
       },
-      "Dig_10_Ch5": {
-        "direction": "I"
-      },
       "Dig_14_Ch5": {
         "direction": "I"
       },
@@ -520,6 +517,15 @@
       },
       "Dig_13_Ch5": {
         "direction": "O"
+      },
+      "Dig_10_Ch5": {
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       }
     },
     "components": {
@@ -10106,6 +10112,9 @@
           },
           "sample_trigger": {
             "direction": "I"
+          },
+          "Nreset_Dig10": {
+            "direction": "O"
           }
         },
         "components": {
@@ -10141,6 +10150,12 @@
             "ports": [
               "Resolver_Interface_v_0/AD2S1210_n_fsync",
               "fSynch_Dig08"
+            ]
+          },
+          "Resolver_Interface_v_0_AD2S1210_n_reset": {
+            "ports": [
+              "Resolver_Interface_v_0/AD2S1210_n_reset",
+              "Nreset_Dig10"
             ]
           },
           "Resolver_Interface_v_0_AD2S1210_n_sample": {
@@ -10544,6 +10559,12 @@
         "ports": [
           "resolver_card_interface/NSample_Dig06",
           "Dig_06_Ch5"
+        ]
+      },
+      "resolver_card_interface_Nreset_Dig10": {
+        "ports": [
+          "resolver_card_interface/Nreset_Dig10",
+          "Dig_10_Ch5"
         ]
       },
       "resolver_card_interface_SPI_MOSI_Dig07": {

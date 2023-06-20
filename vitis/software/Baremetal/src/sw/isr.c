@@ -111,6 +111,10 @@ void ISR_Control(void *data)
 	Global_Data.av.currents_abc.b2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
 	Global_Data.av.currents_abc.c2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_CURRENT_CONV;
 	Global_Data.av.i_ZK2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.a3 = Global_Data.aa.A3.me.ADC_A3 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.b3 = Global_Data.aa.A3.me.ADC_A2 * PHASE_CURRENT_CONV;
+	Global_Data.av.currents_abc.c3 = Global_Data.aa.A3.me.ADC_A1 * PHASE_CURRENT_CONV;
+	Global_Data.av.i_ZK3 = Global_Data.aa.A3.me.ADC_B5 * PHASE_CURRENT_CONV;
 	// convert ADC readings to voltages
 	Global_Data.av.U_ZK1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
 	Global_Data.av.voltages_abc.a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
@@ -120,6 +124,10 @@ void ISR_Control(void *data)
 	Global_Data.av.voltages_abc.a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
 	Global_Data.av.voltages_abc.b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
 	Global_Data.av.voltages_abc.c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.U_ZK3 = Global_Data.aa.A3.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.a3 = Global_Data.aa.A3.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.b3 = Global_Data.aa.A3.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.voltages_abc.c3 = Global_Data.aa.A3.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

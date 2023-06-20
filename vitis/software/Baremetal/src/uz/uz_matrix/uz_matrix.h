@@ -250,4 +250,5 @@ void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const
  * @param C_out Result of the operation is written to C_out
  */
 void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 #endif // UZ_MATRIX_H

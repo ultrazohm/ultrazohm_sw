@@ -102,4 +102,27 @@ void test_uz_matrix_reshape_1d(void){
     TEST_ASSERT_EQUAL_FLOAT(10,uz_matrix_get_element_zero_based(C,9,0));
 }
 
+void test_uz_matrix_reshape_1d_accumulate(void){
+    float A_data[6]={1,2,3,4,5,6};
+    float B_data[4]={7,8,9,10};
+    float C_data[10]={0};
+    uz_matrix_t* A=init_array_test_helper(A_data,UZ_MATRIX_SIZE(A_data),3,2);
+    uz_matrix_t* B=init_array_test_helper(B_data,UZ_MATRIX_SIZE(B_data),4,1);
+    uz_matrix_t* C=init_array_test_helper(C_data,UZ_MATRIX_SIZE(C_data),10,1);
+    // set 0
+    uz_matrix_set_zero(C);
+    // reshape two times and accumulate values
+    uz_matrix_reshape_and_concatenate_acc(A,B,C);
+    uz_matrix_reshape_and_concatenate_acc(A,B,C);
+    TEST_ASSERT_EQUAL_FLOAT(2,uz_matrix_get_element_zero_based(C,0,0));
+    TEST_ASSERT_EQUAL_FLOAT(6,uz_matrix_get_element_zero_based(C,1,0));
+    TEST_ASSERT_EQUAL_FLOAT(10,uz_matrix_get_element_zero_based(C,2,0));
+    TEST_ASSERT_EQUAL_FLOAT(4,uz_matrix_get_element_zero_based(C,3,0));
+    TEST_ASSERT_EQUAL_FLOAT(8,uz_matrix_get_element_zero_based(C,4,0));
+    TEST_ASSERT_EQUAL_FLOAT(12,uz_matrix_get_element_zero_based(C,5,0));
+    TEST_ASSERT_EQUAL_FLOAT(14,uz_matrix_get_element_zero_based(C,6,0));
+    TEST_ASSERT_EQUAL_FLOAT(16,uz_matrix_get_element_zero_based(C,7,0));
+    TEST_ASSERT_EQUAL_FLOAT(18,uz_matrix_get_element_zero_based(C,8,0));
+    TEST_ASSERT_EQUAL_FLOAT(20,uz_matrix_get_element_zero_based(C,9,0));
+}
 #endif // TEST

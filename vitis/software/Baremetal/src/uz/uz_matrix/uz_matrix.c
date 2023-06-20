@@ -479,3 +479,30 @@ for (uint32_t column2 = 0; column2 < B->columns; column2++)
 }
 }
 }
+
+void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
+// for minibatch calculation all data are accumulated
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+for (uint32_t column = 0; column < A->columns; column++)
+{
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+    C_out->data[(column * A->rows) + row] += A->data[(row * A->columns) + column];
+    }
+}
+
+for (uint32_t row2 = 0; row2 < B->rows; row2++)
+{
+for (uint32_t column2 = 0; column2 < B->columns; column2++)
+{
+    C_out->data[(A->rows*A->columns)+(row2 * B->columns) + column2] +=  B->data[(row2 * B->columns) + column2];
+}
+}
+}

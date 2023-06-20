@@ -32,7 +32,6 @@ struct uz_resolverIP_config_t{
     float zero_position_mechanical; /**< Mechanical zero position*/
     float pole_pairs_machine; /**< Number of machine pole pairs (for conversion from mechanical to electrical position/velocity)*/
     float pole_pairs_resolver; /**< Number of resolver pole pairs (for conversion of measured to  mechanical velocity)*/
-    uint32_t mode_after_init; /**< IP-Core operating mode after init. See enum uz_resolverIP_mode for possible options*/
 };
 
 /**
@@ -53,10 +52,10 @@ struct uz_resolverIP_position_velocity_t{
  */
 typedef enum
 {
-  POSITION_MODE,/**< Position Mode of AD2S1210 */
+    POSITION_MODE,/**< Position Mode of AD2S1210 */
 	VELOCITY_MODE,/**< Velocity Mode of AD2S1210 */
 	CONFIG_MODE,/**< Config Mode of AD2S1210 */
-	POSITION_VELOCITY_MODE/**< Custom Mode for readout of both position and velocity with one trigger*/
+	POSITION_VELOCITY_MODE/**< Costum Mode for readout of both position and velocity with one trigger*/
 } uz_resolverIP_mode;
 
 

@@ -239,6 +239,26 @@ void test_uz_matrix_copy_matrix_fail_assertion_length(void)
     TEST_ASSERT_FAIL_ASSERT(uz_matrix_copy(A, B));
 
 }
+void test_uz_matrix_get_row_vector_zero_based(void)
+{
+    uint32_t rows = 3;
+    uint32_t columns = 4;
+    float A_data[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    float X_data[4] = {17, 18, 19, 20};
+    struct uz_matrix_t input_matrix = {0};
+    struct uz_matrix_t input_vec= {0};
+    uz_matrix_t *A = uz_matrix_init(&input_matrix, A_data, UZ_MATRIX_SIZE(A_data), rows, columns);
+    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, columns);
 
+    uz_matrix_get_row_vector_zero_based(A,X,0);
+    float check_data0[4] = {1,2,3,4};
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data0,X_data , UZ_MATRIX_SIZE(X_data));
+    float check_data1[4] = {5,6,7,8};
+    uz_matrix_get_row_vector_zero_based(A,X,1);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data1,X_data,UZ_MATRIX_SIZE(X_data));
+    float check_data2[4] = {9,10,11,12};
+    uz_matrix_get_row_vector_zero_based(A,X,2);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data2,X_data,UZ_MATRIX_SIZE(X_data));
+}
 
 #endif // TEST

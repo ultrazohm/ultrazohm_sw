@@ -88,6 +88,8 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,uint32_t row, u
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row, uint32_t column);
 
 
+void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row);
+
 /**
  * @brief Calculates the "real" matrix multiplication C_out=A * B
  * 

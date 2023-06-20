@@ -108,6 +108,17 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, uint32_t row,
     return (A->data[(row * A->columns) + column]);
 }
 
+void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row)
+{
+    uz_assert_not_NULL(matrix);
+    uz_assert(matrix->length_of_data);
+    uz_assert((matrix->rows * matrix->columns) > 0U); // Guard for VLA
+    for (uint32_t column = 0; column < matrix->columns; column++)
+    {
+        rowvector->data[column] = matrix->data[(row * matrix->columns) + column];
+    }
+}
+
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A, float x, uint32_t row, uint32_t column)
 {
     uz_assert_not_NULL(A);

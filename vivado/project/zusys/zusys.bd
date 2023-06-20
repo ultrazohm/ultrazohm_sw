@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xB2EC554A538EA6ED",
+      "boundary_crc": "0x4F65483DBC3457FC",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -117,7 +117,8 @@
         "xlslice_0": "",
         "xlslice_1": "",
         "xlconcat_0": "",
-        "axi_gpio_fault": ""
+        "axi_gpio_fault": "",
+        "uz_resolver_pl_inter_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "inverter_gates": {
@@ -5432,7 +5433,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "6"
+                "value": "7"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5457,7 +5458,8 @@
                   "M02_AXI",
                   "M03_AXI",
                   "M04_AXI",
-                  "M05_AXI"
+                  "M05_AXI",
+                  "M06_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5645,6 +5647,37 @@
                     "value": "0"
                   }
                 }
+              },
+              "M06_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
               }
             }
           },
@@ -5799,6 +5832,12 @@
                 "value": "2"
               }
             }
+          },
+          "uz_resolver_pl_inter_0": {
+            "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
+            "xci_name": "zusys_uz_resolver_pl_inter_0_0",
+            "xci_path": "ip/zusys_uz_resolver_pl_inter_0_0/zusys_uz_resolver_pl_inter_0_0.xci",
+            "inst_hier_path": "uz_user/uz_resolver_pl_inter_0"
           }
         },
         "interface_nets": {
@@ -5842,6 +5881,12 @@
             "interface_ports": [
               "axi_gpio_fault/S_AXI",
               "smartconnect_1/M05_AXI"
+            ]
+          },
+          "smartconnect_1_M06_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M06_AXI",
+              "uz_resolver_pl_inter_0/AXI4_Lite"
             ]
           }
         },
@@ -5894,6 +5939,24 @@
               "CS_1"
             ]
           },
+          "Resolver_Interface_v_0_position_out_m": {
+            "ports": [
+              "Resolver_Interface_v_0/position_out_m",
+              "uz_resolver_pl_inter_0/position_raw"
+            ]
+          },
+          "Resolver_Interface_v_0_valid_m": {
+            "ports": [
+              "Resolver_Interface_v_0/valid_m",
+              "uz_resolver_pl_inter_0/trigger"
+            ]
+          },
+          "Resolver_Interface_v_0_velocity_out_m": {
+            "ports": [
+              "Resolver_Interface_v_0/velocity_out_m",
+              "uz_resolver_pl_inter_0/velocity_raw"
+            ]
+          },
           "SDI_1_1": {
             "ports": [
               "SDI_1",
@@ -5928,7 +5991,9 @@
               "PMSM_CIL/aresetn",
               "Resolver_Interface_v_0/s00_axi_aresetn",
               "axi_gpio_invEn/s_axi_aresetn",
-              "axi_gpio_fault/s_axi_aresetn"
+              "axi_gpio_fault/s_axi_aresetn",
+              "uz_resolver_pl_inter_0/IPCORE_RESETN",
+              "uz_resolver_pl_inter_0/AXI4_Lite_ARESETN"
             ]
           },
           "sample_trigger_1": {
@@ -5964,7 +6029,9 @@
               "PMSM_CIL/aclk",
               "Resolver_Interface_v_0/s00_axi_aclk",
               "axi_gpio_invEn/s_axi_aclk",
-              "axi_gpio_fault/s_axi_aclk"
+              "axi_gpio_fault/s_axi_aclk",
+              "uz_resolver_pl_inter_0/IPCORE_CLK",
+              "uz_resolver_pl_inter_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9357,7 +9424,8 @@
               "xlslice_10/Din",
               "xlslice_11/Din",
               "xlslice_12/Din",
-              "xlslice_13/Din"
+              "xlslice_13/Din",
+              "xlslice_2/Din"
             ]
           },
           "xlslice_0_Dout": {
@@ -10045,6 +10113,11 @@
               "SEG_uz_pmsm_model_6ph_dq_0_reg0": {
                 "address_block": "/uz_user/PMSM_CIL/uz_pmsm_model_6ph_dq_0/AXI4/reg0",
                 "offset": "0x0080080000",
+                "range": "64K"
+              },
+              "SEG_uz_resolver_pl_inter_0_reg0": {
+                "address_block": "/uz_user/uz_resolver_pl_inter_0/AXI4_Lite/reg0",
+                "offset": "0x0080160000",
                 "range": "64K"
               }
             }

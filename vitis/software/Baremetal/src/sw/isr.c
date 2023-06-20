@@ -62,7 +62,8 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    // read speed and angle
+    Global_Data.av.electrical_position = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
 
     // start PWM freq temp measurement
     temp_output = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);

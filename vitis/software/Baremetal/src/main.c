@@ -99,6 +99,8 @@ int main(void)
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
 		    Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
 		    Global_Data.objects.tempMeasurement3 = init_tempMeasurement3();
+		    //init resolver
+		    Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
 
             initialization_chain = print_msg;
             break;

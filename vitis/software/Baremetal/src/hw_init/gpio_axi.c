@@ -17,7 +17,7 @@
 #include "xgpio.h"
 
 #define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID /* GPIO device that GPIO is connected to output*/
-#define INV_EN_ED XPAR_GPIO_1_BASEADDR
+#define INV_EN_ED XPAR_GPIO_1_DEVICE_ID
 
 
 #define AXI_GPIO_CHANNEL 1
@@ -64,6 +64,8 @@ void uz_axigpio_disable_pwm_and_power_electronics(void)
 void uz_axigpio_enable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+    // inverter disable sic1 and sic2
+	XGpio_DiscreteWrite(&invEn_gpio, AXI_GPIO_CHANNEL, (AXI_BIT_0 | AXI_BIT_1 | AXI_BIT_2));
 }
 void uz_axigpio_disable_datamover(void)
 {

@@ -9,6 +9,8 @@
 #include "uz/uz_Transformation/uz_Transformation.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+
 
 
 
@@ -93,6 +95,7 @@ typedef struct _actualValues_ {
 	float temperature_inv_1;
 	float temperature_inv_2;
 	float temperature_inv_3;
+	struct uz_resolverIP_position_velocity_t electrical_position;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -124,6 +127,7 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement1;
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
+	uz_resolverIP_t* resolver_d5_1;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -121,7 +121,9 @@ void test_uz_signals_threshold_Evaluation(void){
     TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold)); 
     input = 1.7f;
     threshold = input;
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold));    
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_threshold_Evaluation(input, threshold));   
+    }
+
 void uz_test_wrap_to_2pi_positive(void)
 {
     float angle1 = 40.0f;

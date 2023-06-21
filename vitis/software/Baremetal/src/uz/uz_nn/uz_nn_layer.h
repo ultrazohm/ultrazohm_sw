@@ -74,14 +74,6 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 
 /**
- * @brief Calculates one forward pass of a network layer with the given input value (column matrix)
- * 
- * @param self 
- * @param input Column matrix of inputs (rows>1 !)
- */
-
-void uz_nn_layer_ff_matrix(uz_nn_layer_t *const self, uz_matrix_t const *const input);
-/**
  * @brief Calculates one backward pass of a the output layer with the given error value
  * 
  * @param self 
@@ -106,7 +98,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 
-void uz_nn_layer_calc_gradients_matrix(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
+void uz_nn_layer_calc_gradients_mini_batch(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate);
 /**
  * @brief Update the layer parameter with gradient descent

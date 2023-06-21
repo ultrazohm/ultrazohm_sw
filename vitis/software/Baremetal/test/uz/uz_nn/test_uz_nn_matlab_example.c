@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 1000
+#define NUMBER_OF_EPOCHS 5
 #define MINI_BATCH_SIZE 252
 
 // sumout
@@ -237,7 +237,7 @@ void test_uz_nn_matlab(void)
         msetest[j] = uz_nn_mse(output,ref);
         msederv[j] = uz_nn_mse_derv(output,ref);
         float *msed = &msederv[j];
-        uz_nn_backward_pass_matrix(test,msed,X);        
+        uz_nn_backward_pass_mini_batch(test,msed,X);        
         // float result=uz_matrix_get_element_zero_based(output,0,0);
         // printf("output von minibatch member  %d ist = %.8f \n",(int)j, (double)result);
         // printf("mse von output minibatch member %d ist = %.8f \n",(int)j, (double)msetest[j]);

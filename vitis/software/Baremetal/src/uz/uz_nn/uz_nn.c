@@ -133,7 +133,7 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
     uz_nn_layer_calc_gradients(self->layer[0],input);
 }
 
-void uz_nn_backward_pass_matrix(uz_nn_t *self,const float *const error, uz_matrix_t *const input)
+void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_matrix_t *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -144,9 +144,9 @@ void uz_nn_backward_pass_matrix(uz_nn_t *self,const float *const error, uz_matri
     }
     for (uint32_t i = self->number_of_layer - 1U; i> 0; --i)
     {
-            uz_nn_layer_calc_gradients_matrix(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
+            uz_nn_layer_calc_gradients_mini_batch(self->layer[i],uz_nn_get_output_from_each_layer(self,i));
     }
-    uz_nn_layer_calc_gradients_matrix(self->layer[0],input);
+    uz_nn_layer_calc_gradients_mini_batch(self->layer[0],input);
 }
 
 void uz_nn_mat_export(uz_nn_t *self)

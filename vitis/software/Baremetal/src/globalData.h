@@ -11,6 +11,7 @@
 #include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -94,6 +95,8 @@ typedef struct _actualValues_ {
 	float omega_mech;
 	float omega_elec;
 	struct uz_resolver_pl_interface_outputs_t resolver_outputs;
+	float temp_VSI_1;
+	float temp_VSI_2
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -127,6 +130,8 @@ typedef struct{
 	uz_matrix_t* matrix_input_15n;
 	uz_nn_t* nn_layer_15n;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
+	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_1;
+	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

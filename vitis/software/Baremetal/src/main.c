@@ -173,6 +173,8 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
+            Global_Data.objects.pwm_duty_freq_detection_VSI_1 = initialize_PWM_duty_freq_detection_VSI_1();
+            Global_Data.objects.pwm_duty_freq_detection_VSI_2 = initialize_PWM_duty_freq_detection_VSI_2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialization_chain = print_msg;
             break;

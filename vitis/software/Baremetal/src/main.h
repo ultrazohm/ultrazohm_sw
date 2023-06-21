@@ -62,6 +62,7 @@
 #include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 #include "include/uz_resolver_pl_interface_init.h"
 #include "uz/uz_math_constants.h"
+#include "include/uz_PWM_duty_freq_detection_init.h"
 // Network definition
 #define NN_15_INPUT_1_64  0
 #define NN_15_INPUT_3_64  0

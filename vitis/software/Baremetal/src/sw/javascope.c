@@ -34,6 +34,7 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -85,6 +86,8 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
+	js_slowDataArray[JSSD_FLOAT_TEMP_VSI1] 			    = &(data->av.temp_VSI_1);
+	js_slowDataArray[JSSD_FLOAT_TEMP_VSI2] 			    = &(data->av.temp_VSI_2);
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);

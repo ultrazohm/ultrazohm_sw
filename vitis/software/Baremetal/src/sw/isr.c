@@ -91,6 +91,18 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    //Take measurements independent of control_state
+    if(select_Real) {
+            	Global_Data.av.resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
+            	Global_Data.av.theta_elec = Global_Data.av.resolver_outputs.position_el_2pi;
+            	Global_Data.av.theta_mech = Global_Data.av.resolver_outputs.position_mech_2pi;
+            	Global_Data.av.omega_mech = Global_Data.av.resolver_outputs.omega_mech_rad_s;
+            	Global_Data.av.omega_elec = Global_Data.av.omega_mech * polepairs;
+
+            	Global_Data.av.temp_VSI_1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.pwm_duty_freq_detection_VSI_1).TempDegreesCelsius;
+            	Global_Data.av.temp_VSI_2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.pwm_duty_freq_detection_VSI_2).TempDegreesCelsius;
+
+    }
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -144,12 +156,6 @@ void ISR_Control(void *data)
         }
 
         if(select_Real) {
-        	Global_Data.av.resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
-        	Global_Data.av.theta_elec = Global_Data.av.resolver_outputs.position_el_2pi;
-        	Global_Data.av.theta_mech = Global_Data.av.resolver_outputs.position_mech_2pi;
-        	Global_Data.av.omega_mech = Global_Data.av.resolver_outputs.omega_mech_rad_s;
-        	Global_Data.av.omega_elec = Global_Data.av.omega_mech * polepairs;
-
         	if(select_CurrentControl) {
 
         	} else if(select_DDPG_1_64) {

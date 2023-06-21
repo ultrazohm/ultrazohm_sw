@@ -4,7 +4,7 @@
 Inverter Adapter
 ================
 
-This IP core provides a well defined and highly sophisticated interface for inverter adapter boards for the UltraZohm (e.g. uz_d_gan_inverter). 
+This IP core provides a well defined and highly sophisticated interface for inverter adapter boards for the UltraZohm (e.g. :ref:`dig_si_inverter`). 
 It provides many useful features:
 
    - 6 gate signal outputs
@@ -12,7 +12,8 @@ It provides many useful features:
    - 6 over current (OC) input signals
    - 6 fault (FAULT) input signals
    - 6  pwm input signals for measuring e.g. chip temperatures.
-     Duty cycle is calculated to degrees celsius in software driver
+     Duty cycle is calculated to degrees celsius in software driver.
+     To save execution time, only one temperature signal is read out per cycle. 
    - 4 diagnostic input signals (e.g. power good or signal valid of current amplifiers)
 
 Hardware Interface Definition
@@ -49,6 +50,8 @@ Folder structure of the sources in ``ip_cores/uz_d_inverter_adapter/``:
 
 Example Usage
 =============
+
+.. _inverter_adapter_usage:
 
 The following step-by-step description shall guide the user in order to properly implement the ip-core and the respective interface and software drivers
 

@@ -28,3 +28,6 @@ IP Cores
     uz_rs_flip_flop/uz_rs_flip_flop
     uz_inverter_adapter/uz_inverter_adapter
     uz_cil_pmsm/uz_cil_pmsm
+    uz_resolverIP/uz_resolverIP
+    uz_resolver_pl_interface/uz_resolver_pl_interface
+    uz_axi_gpio/uz_axi_gpio

@@ -2,7 +2,8 @@
 % From this example: https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html
 clc
 clear
-rand(0); % Fix random number generator to ensure reproducable results
+rng(0); % Fix random number generator to ensure reproducable results
+test=rand(1) % test must always output the same value on the same machine
 
 % From this example: https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html
 [x,t] = bodyfat_dataset;

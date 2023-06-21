@@ -173,6 +173,26 @@ The gain of the anti-windup feedback is given by the input value ``antiwindup_ga
 To disable the anti-windup strategy the feedback can be set to 0.
 
 
+Set gain function
+-----------------
+
+.. doxygenfunction:: uz_resonantController_set_gain
+
+Description
+^^^^^^^^^^^
+
+Function to set the gain of the controller without setting the complete config.
+
+
+Set harmonic order function
+---------------------------
+
+.. doxygenfunction:: uz_resonantController_set_harmonic_order
+
+Description
+^^^^^^^^^^^
+
+Function to set the harmonic order of the controller without setting the complete config.
 
 
 

@@ -14,3 +14,4 @@ Digital Adapter Boards
     Digital_BreakoutBoard_v1
     encoder_v1
     Digital_Resolver_rev01 
+    Digital_SI_Inverter_rev03

@@ -39,7 +39,7 @@ update_tcl_scripts_for_vc.tcl
 
 This script has to be called to incorporate changes to the default Vivado project into the ``build.tcl`` script.
 
-.. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the project use changed was build using ``build.tcl``.
+.. warning:: Only call ``update_tcl_scripts_for_vc.tcl`` if the changed project was build using ``build.tcl``.
              Do not use it if you used another project or a project that was generated using ``build_selected_target.tcl``!
 
 Workflow:
@@ -89,7 +89,6 @@ build_selected_target.tcl
 
 Generates the UltraZohm Vivado project (``ultrazohm.xpr``) for a specified System-on-a-Module.
 Tested are TE0803 with 2EG (``"trenz.biz:te0803_2eg_1e:part0:1.0"``) and 3EG (``"trenz.biz:te0803_3eg_1e:part0:1.0"``).
-build_selected_target.tcl
 Before calling ``build_selected_target.tcl``, the ``board_part`` has to be changed to the desired SoM:
 
 .. code-block::

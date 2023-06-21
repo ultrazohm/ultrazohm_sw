@@ -84,6 +84,7 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	struct uz_inverter_adapter_outputs_t uz_inverter_outputs_d1;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -1,12 +1,13 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xBBB4922503A87696",
+      "boundary_crc": "0xDF7878ABBF294108",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -164,7 +165,9 @@
           },
           "PWM_H1": {
             "physical_name": "D1_pwm_h1",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "PWM_EN": {
             "physical_name": "D1_pwm_en",
@@ -172,15 +175,21 @@
           },
           "PWM_H2": {
             "physical_name": "D1_pwm_h2",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "PWM_L3": {
             "physical_name": "D1_pwm_l3",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "PWM_H3": {
             "physical_name": "D1_pwm_h3",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "L1_OC": {
             "physical_name": "D1_l1_oc",
@@ -216,7 +225,9 @@
           },
           "PWM_L1": {
             "physical_name": "D1_pwm_l1",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "L2_FAULT": {
             "physical_name": "D1_l2_fault",
@@ -228,7 +239,9 @@
           },
           "PWM_L2": {
             "physical_name": "D1_pwm_l2",
-            "direction": "O"
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           },
           "I2_DIAG": {
             "physical_name": "D1_i2_diag",
@@ -310,35 +323,16 @@
         "left": "0",
         "right": "0"
       },
-      "D1_OUT": {
-        "direction": "O",
-        "left": "23",
-        "right": "0"
-      },
-      "D1_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_29": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -388,7 +382,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -5731,7 +5731,7 @@
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
                 "parameters": {
                   "MAX_BURST_LENGTH": {
-                    "value": "256"
+                    "value": "1"
                   },
                   "NUM_READ_OUTSTANDING": {
                     "value": "8"
@@ -9201,7 +9201,6 @@
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
           "uz_system/D1_OUT_28",
-          "D1_OUT_28",
           "D2_OUT_28",
           "D3_OUT_28",
           "D4_OUT_28"
@@ -9210,8 +9209,6 @@
       "Enable_Gates_CPLD_Low_dout": {
         "ports": [
           "uz_system/D1_OUT_26",
-          "D1_OUT_26",
-          "D1_OUT_27",
           "D2_OUT_26",
           "D2_OUT_27",
           "D3_OUT_26",
@@ -9265,7 +9262,6 @@
       "Gates_dout_0": {
         "ports": [
           "uz_digital_adapter/D1_OUT",
-          "D1_OUT",
           "uz_user/Din"
         ]
       },
@@ -9330,7 +9326,6 @@
       "xlslice_Enable_Gate_Dout": {
         "ports": [
           "uz_system/D1_OUT_29",
-          "D1_OUT_29",
           "D2_OUT_29",
           "D3_OUT_29",
           "D4_OUT_29"

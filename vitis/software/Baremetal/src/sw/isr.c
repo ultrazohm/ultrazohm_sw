@@ -31,6 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -55,79 +56,94 @@ extern uz_pmsmModel_t *pmsm;
 
  extern uz_CurrentControl_t* CurrentControl_instance;
 
+ //uz_3ph_abc_t measured_currents_Amp_abc = {0};
+
  uz_3ph_dq_t reference_currents_Amp = {0};
 
  uz_3ph_dq_t measured_currents_Amp = {0};
 
  uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
- float omega_el_rad_per_sec = 0.0f;
 
- struct uz_pmsmModel_inputs_t pmsm_inputs={
 
-   .omega_mech_1_s=0.0f,
+ struct uz_3ph_abc_t v_abc_Volts = {0};
+ struct uz_3ph_abc_t i_abc_Amps = {0};
+ float v_DC_Volts = 0.0f;
+ float i_DC_Amps = 0.0f;
 
-   .v_d_V=0.0f,
+ float pwm_period = 1/UZ_PWM_FREQUENCY;
 
-   .v_q_V=0.0f,
 
-   .load_torque=0.0f
 
- };
 
- struct uz_pmsmModel_outputs_t pmsm_outputs={
 
-   .i_d_A=0.0f,
-
-   .i_q_A=0.0f,
-
-   .torque_Nm=0.0f,
-
-   .omega_mech_1_s=0.0f
-
- };
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    Global_Data.av.uz_inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
+
+    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    i_abc_Amps.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    if (current_state == running_state || current_state==control_state)
+    {
+
+    	Global_Data.av.theta_elec = Global_Data.av.theta_mech*3.0f;
+    	measured_currents_Amp = uz_transformation_3ph_abc_to_dq(i_abc_Amps, Global_Data.av.theta_elec);
+
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    }
+
+    else {
+    	  // disable inverter adapter hardware
+    	  uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        }
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    	uz_pmsmModel_trigger_input_strobe(pmsm);
 
-    	uz_pmsmModel_trigger_output_strobe(pmsm);
+    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, v_DC_Volts, Global_Data.av.theta_elec);
+    	struct uz_DutyCycle_t output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, v_DC_Volts, Global_Data.av.theta_elec);
 
-    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;
 
-    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
-
-    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
-
-    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-
-    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-
-    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-
-    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-
-//    	pmsm_inputs.v_q_V= 3.0f;
-//
-//    	pmsm_inputs.v_d_V= 0.0f;
-
-    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     }
+
+    else //hier könnten noch die PI-Regler resettet werden.
+    {
+
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		uz_CurrentControl_reset(CurrentControl_instance);
+
+    }
+    Global_Data.av.I_q = measured_currents_Amp.q;
+    Global_Data.av.I_d = measured_currents_Amp.d;
+    Global_Data.av.U_q = CurrentControl_output_Volts.q;
+    Global_Data.av.U_d = CurrentControl_output_Volts.d;
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true); //Inverter Adapter
+    //uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true); //Inverter Adapter
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

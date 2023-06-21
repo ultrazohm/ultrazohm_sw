@@ -83,19 +83,21 @@ int main(void)
 
                       struct uz_PMSM_t config_PMSM = {
 
-                          .Ld_Henry = 3.00e-04f,
-
-                          .Lq_Henry = 3.00e-04f,
-
-                          .Psi_PM_Vs = 0.0075f};
+                    		  .R_ph_Ohm = 0.543f,
+                    		  .Ld_Henry = 1.13e-03f,
+							  .Lq_Henry = 1.42e-03f,
+							  .Psi_PM_Vs = 0.0169f,
+							  .polePairs = 3.0f,
+							  .J_kg_m_squared = 1.48e-05f,
+							  .I_max_Ampere = 5.0f,};
 
                       struct uz_PI_Controller_config config_id = {
 
-                          .Kp = 0.25f,
+                          .Kp = 2.825f,//0.25f,
 
-                          .Ki = 158.8f,
+                          .Ki = 1357.5f, //158.8f,
 
-                          .samplingTime_sec = 0.00005f,
+                          .samplingTime_sec = 0.0001f,
 
                           .upper_limit = 10.0f,
 
@@ -103,11 +105,11 @@ int main(void)
 
                       struct uz_PI_Controller_config config_iq = {
 
-                          .Kp = 0.25f,
+                          .Kp = 3.55f,
 
-                          .Ki = 158.8f,
+                          .Ki = 1357.5f,
 
-                          .samplingTime_sec = 0.00005f,
+                          .samplingTime_sec = 0.0001f,
 
                           .upper_limit = 10.0f,
 
@@ -126,37 +128,8 @@ int main(void)
 						  .max_modulation_index = 1.0f / sqrt(3.0f)};
 
                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
-
-                      struct uz_pmsmModel_config_t pmsm_config={
-
-                          .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-
-                          .ip_core_frequency_Hz=100000000,
-
-                          .simulate_mechanical_system = true,
-
-                          .r_1 = 0.085f,
-
-                          .L_d = 3.00e-04f,
-
-                          .L_q = 3.00e-04f,
-
-                          .psi_pm = 0.0075f,
-
-                          .polepairs = 4.0f,
-
-                          .inertia = 3.24e-05f,
-
-                          .coulomb_friction_constant = 0.01f,
-
-                          .friction_coefficient = 0.001f};
-
-                      pmsm=uz_pmsmModel_init(pmsm_config);
-
                       initialization_chain = init_ip_cores;
                       break;
-
-
 
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

@@ -68,12 +68,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-//	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-//	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-//	js_ch_observable[JSO_ud]			= &data->av.U_d;
-//	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_ud]			= &data->av.U_d;
+	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -81,24 +81,13 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ub]            = &three_phase_output.b;
 	js_ch_observable[JSO_uc]            = &three_phase_output.c;
 
-	js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
 
-	js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
-
-	js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
-
-	js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
-
-	js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+
 	//js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
@@ -107,14 +96,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
 
-	js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
-
-	js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-
-	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
-
-	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-	js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
+	js_slowDataArray[JSSD_FLOAT_u_d]                                = &data->av.U_d;
+	js_slowDataArray[JSSD_FLOAT_u_q]                                = &data->av.U_q;
+	js_slowDataArray[JSSD_FLOAT_i_d]                                = &data->av.I_d;
+	js_slowDataArray[JSSD_FLOAT_i_q]                                = &data->av.I_q;
+	js_slowDataArray[JSSD_FLOAT_speed]                              = &data->av.theta_mech;
 
 	return Status;
 }

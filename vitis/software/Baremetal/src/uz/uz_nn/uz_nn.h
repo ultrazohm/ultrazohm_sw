@@ -49,6 +49,14 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_m
  * @param lernrate float, that determines the step size of the update
  */
 void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate);
+
+/**
+ * @brief Update whole neural network with gradient descent
+ * 
+ * @param self 
+ * @param lernrate float, that determines the step size of the update
+ * @param minibatchsize size of the minibatch for the training
+ */
 void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uint32_t minibatchsize);
 /**
  * @brief Set gradient in specific layer to a uz_matrix_t instance with the same dimension

@@ -98,6 +98,12 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 
+/**
+ * @brief Calculates the gradients for one layer, for mini batch training, gradients are accumulated
+ * 
+ * @param self 
+ * @param outputprev uz_matrix_t instance, output from i+1 layer
+ */
 void uz_nn_layer_calc_gradients_mini_batch(uz_nn_layer_t *const self, uz_matrix_t *const outputprev);
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate);
 /**

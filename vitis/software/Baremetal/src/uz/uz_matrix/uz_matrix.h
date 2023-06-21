@@ -86,7 +86,13 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,uint32_t row, u
  * @param column Column of element to set
  */
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row, uint32_t column);
-
+/**
+ * @brief Extract a row vector from a uz_matrix_t instance, and write it to rowvector 
+ * 
+ * @param matrix Pointer to a uz_matrix_t instance, matrix
+ * @param rowvector Pointer to a uz_matrix_t instance, rowvector 
+ * @param row Row of element to extract, zerobased
+ */
 
 void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row);
 
@@ -250,5 +256,14 @@ void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const
  * @param C_out Result of the operation is written to C_out
  */
 void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+/**
+ * @brief Reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab,
+ * !!! Attention. Does not reset the Result of the operation C_out, this have to be done manually before!
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the operation is written to C_out
+ */
+
 void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 #endif // UZ_MATRIX_H

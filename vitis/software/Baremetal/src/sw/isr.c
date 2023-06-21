@@ -38,6 +38,46 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+
+//Changes
+struct uz_pmsm_model6ph_dq_outputs_general_t CIL_out_general = {0};
+uz_6ph_dq_t v_dqxy_limited_volts = {0};
+uz_6ph_dq_t v_dqxy_limited_volts_k_old = {0};
+uz_6ph_dq_t v_dqxy_non_limited_volts = {0};
+uz_6ph_dq_t CIL_i_meas = {0};
+uz_6ph_dq_t i_dqxy_integrated_error = {0};
+uz_6ph_dq_t i_dqxy_error = {0};
+uz_3ph_dq_t CIL_v_dq_reference = {0};
+uz_3ph_dq_t CIL_v_xy_reference = {0};
+uz_3ph_dq_t CIL_v_z1z2_reference = {0};
+uz_3ph_dq_t CIL_i_dq_reference = {0};
+uz_3ph_dq_t CIL_i_xy_reference = {0};
+uz_3ph_dq_t CIL_i_z1z2_reference = {0};
+uz_3ph_dq_t CIL_i_dq_meas= {0};
+uz_3ph_dq_t CIL_i_xy_meas = {0};
+uz_3ph_dq_t CIL_i_z1z2_meas = {0};
+float CIL_omega_mech = 100.0f; //fixed speed for the CIL model
+float rated_current = 10.0f;
+float rated_Speed_rpm = 3000.0f;
+float speed_weight = 1.0f / 3000.0f;
+float V_DC_Volts = 565.0f;
+float U_max = 565.0f / 1.732050808f; // sqrt(3) Because of SpaceVetorLimitation
+float Voltage_Scaling = 1.0f / (565.0f / 1.732050808f);
+float ts = 1.0f / UZ_PWM_FREQUENCY;
+float omega_el_rad_per_sec = 0.0f;
+float polepairs = 5.0f;
+extern bool select_CurrentControl;
+extern bool select_DDPG_1_64;
+extern bool select_DDPG_3_64;
+extern bool select_Real;
+extern bool select_CIL;
+extern bool select_automatic_idiq;
+extern float n_ref_rpm;
+extern float i_d_ref;
+extern float i_q_ref;
+extern float i_X_ref;
+extern float i_Y_ref;
+int reset = 0U;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,10 +91,75 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        if(select_CIL) {
+        	CIL_i_dq_reference.d = i_d_ref;
+        	CIL_i_dq_reference.q = i_q_ref;
+        	CIL_i_xy_reference.d = i_X_ref;
+        	CIL_i_xy_reference.q = i_Y_ref;
+        	CIL_omega_mech = (n_ref_rpm / 60.0f) * 2.0f * UZ_PIf;
+        	if(reset) {
+        		uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions
+        	}
+        	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+        	uz_pmsm_model6ph_dq_set_voltage(Global_Data.objects.CIL_pmsm,v_dqxy_limited_volts);              // set input voltage
+        	CIL_out_general = uz_pmsm_model6ph_dq_get_outputs_general(Global_Data.objects.CIL_pmsm);    // read out resulting general outputs
+        	CIL_i_meas = uz_pmsm_model6ph_dq_get_output_currents(Global_Data.objects.CIL_pmsm);   // read out actual currents
+        	Global_Data.av.mechanicalRotorSpeed = (CIL_out_general.omega_mech * 60.0f) / (2.0f * UZ_PIf);
+        	omega_el_rad_per_sec = CIL_out_general.omega_mech * polepairs;
+        	CIL_i_dq_meas.d = CIL_i_meas.d;
+        	Global_Data.av.I_d = CIL_i_meas.d;
+        	CIL_i_dq_meas.q = CIL_i_meas.q;
+        	Global_Data.av.I_q = CIL_i_meas.q;
+        	CIL_i_xy_meas.d = CIL_i_meas.x;
+        	Global_Data.av.I_X = CIL_i_meas.x;
+        	CIL_i_xy_meas.q = CIL_i_meas.y;
+        	Global_Data.av.I_Y = CIL_i_meas.y;
+        	CIL_i_z1z2_meas.d = CIL_i_meas.z1;
+        	CIL_i_z1z2_meas.q = CIL_i_meas.z2;
+        	if(select_CurrentControl) {
+        		CIL_v_dq_reference = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, CIL_i_dq_reference, CIL_i_dq_meas, V_DC_Volts, omega_el_rad_per_sec);
+        		CIL_v_xy_reference = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, CIL_i_xy_reference, CIL_i_xy_meas, V_DC_Volts, omega_el_rad_per_sec);
+        	} else if(select_DDPG_1_64) {
+
+        	} else if(select_DDPG_3_64) {
+
+        	}
+        	v_dqxy_limited_volts.d = CIL_v_dq_reference.d;
+        	Global_Data.av.U_d = CIL_v_dq_reference.d;
+        	v_dqxy_limited_volts.q = CIL_v_dq_reference.q;
+        	Global_Data.av.U_q = CIL_v_dq_reference.q;
+        	v_dqxy_limited_volts.x = CIL_v_xy_reference.d;
+        	Global_Data.av.U_X = CIL_v_xy_reference.d;
+        	v_dqxy_limited_volts.y = CIL_v_xy_reference.q;
+        	Global_Data.av.U_Y = CIL_v_xy_reference.q;
+        	v_dqxy_limited_volts.z1 = 0.0f;
+        	v_dqxy_limited_volts.z2 = 0.0f;
+
+        } else {
+        	uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions
+        }
+
+        if(select_Real) {
+        	Global_Data.av.resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
+        	Global_Data.av.theta_elec = Global_Data.av.resolver_outputs.position_el_2pi;
+        	Global_Data.av.theta_mech = Global_Data.av.resolver_outputs.position_mech_2pi;
+        	Global_Data.av.omega_mech = Global_Data.av.resolver_outputs.omega_mech_rad_s;
+        	Global_Data.av.omega_elec = Global_Data.av.omega_mech * polepairs;
+
+        	if(select_CurrentControl) {
+
+        	} else if(select_DDPG_1_64) {
+
+        	} else if(select_DDPG_3_64) {
+
+        	}
+        } else {
+
+        }
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

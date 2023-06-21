@@ -19,7 +19,7 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
+#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            5.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
 
@@ -27,7 +27,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
@@ -43,7 +43,7 @@
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
-#define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               0U
+#define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               1U
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U

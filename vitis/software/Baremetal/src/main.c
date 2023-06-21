@@ -15,7 +15,10 @@
 
 // Includes from own files
 #include "main.h"
-
+#include "xparameters.h"
+#include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+//#include "sw/nn_15_input_1_64/nn_15_input_1_64.h"
+//#include "sw/nn_15_input_3_64/nn_15_input_3_64.h"
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -45,11 +48,32 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_FOC,
+	init_nn,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
+		.base_address = XPAR_UZ_USER_PMSM_CIL_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
+		.ip_core_frequency_Hz = 100000000U,
+		.polepairs = 5.0f,
+		.r_1 = 0.27f,
+		.inductance.d = 0.00174f,
+		.inductance.q = 0.0038f,
+		.inductance.x = 0.0028f,
+		.inductance.y = 0.00265f,
+		.inductance.z1 = 0.00153f,
+		.inductance.z2 = 0.00120f,
+		.psi_pm = 0.194f,
+		.friction_coefficient = 0.001f,
+		.coulomb_friction_constant = 0.001f,
+		.inertia = 0.001f,
+		.simulate_mechanical_system = false,
+		.switch_pspl = true
+};
+
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -71,10 +95,70 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_FOC;
             break;
+
+        case init_FOC:
+        	struct uz_PI_Controller_config config_id = {
+        		.Kp = 5.0f,
+        		.Ki = 1000.0f,
+        		.samplingTime_sec = 0.00005f,
+        	};
+        	struct uz_PI_Controller_config config_iq = {
+        		.Kp = 5.0f,
+        	    .Ki = 1000.0f,
+        	    .samplingTime_sec = 0.00005f,
+        	};
+        	struct uz_PI_Controller_config config_ix = {
+        		.Kp = 15.0f,
+        		.Ki = 500.0f,
+        		.samplingTime_sec = 0.00005f,
+        	};
+        	struct uz_PI_Controller_config config_iy = {
+        		.Kp = 15.0f,
+        	    .Ki = 500.0f,
+        	    .samplingTime_sec = 0.00005f,
+        	};
+        	struct uz_PMSM_t pmsm_config_dq = {
+        		.Ld_Henry = 0.00174f,
+        	    .Lq_Henry = 0.0038f,
+        	    .Psi_PM_Vs = 0.194f,
+        	    .R_ph_Ohm = 0.27f,
+        	    .polePairs = 5.0f
+        	};
+        	struct uz_CurrentControl_config CC_dq_config = {
+        	    .decoupling_select = linear_decoupling,
+        	    .config_id = config_id,
+        	    .config_iq = config_iq,
+        	    .max_modulation_index = 1.0f / sqrtf(3.0f),
+				.config_PMSM = pmsm_config_dq
+        	};
+
+        	struct uz_CurrentControl_config CC_xy_config = {
+        	    .decoupling_select = no_decoupling,
+        	    .config_id = config_ix,
+        	    .config_iq = config_iy,
+        	    .max_modulation_index = 1.0f / sqrtf(3.0f)
+        	};
+
+        	Global_Data.objects.CC_dq_instance = uz_CurrentControl_init(CC_dq_config);
+        	Global_Data.objects.CC_xy_instance = uz_CurrentControl_init(CC_xy_config);
+        	initialization_chain = init_nn;
+        	break;
+
+        case init_nn:
+#if NN_9_INPUT_1_64==1
+        	nn_15_input_1_64_init();
+#endif
+#if NN_9_INPUT_3_64==1
+        	nn_15_input_3_64_init();
+#endif
+        	initialization_chain = init_ip_cores;
+        	break;
+
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+            Global_Data.objects.CIL_pmsm = uz_pmsm_model6ph_dq_init(pmsm_CIL_config);
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
@@ -88,6 +172,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialization_chain = print_msg;
             break;

@@ -40,7 +40,7 @@ extern uz_3ph_abc_t three_phase_output;
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
-int JavaScope_initalize(DS_Data* data)
+int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero

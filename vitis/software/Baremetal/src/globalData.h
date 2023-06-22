@@ -146,6 +146,7 @@ typedef struct _referenceAndSetValues_ {
 	float U_q_ref;
 
 	float n_ref_rpm;
+	float t_delay_controller;		// Delay time for controller
 	float t_measurement;			// Measurements time in s
 
 } referenceAndSetValues;

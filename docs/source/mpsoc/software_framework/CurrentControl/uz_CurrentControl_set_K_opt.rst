@@ -22,9 +22,9 @@ Set Ki or Kp according to optimisation criteria
 
 .. doxygenfunction:: uz_CurrentControl_set_Kp_id_bandwidth
 
-.. doxygenfunction:: uz_CurrentControl_set_Ki_iq_bandwidth
+.. doxygenfunction:: uz_CurrentControl_set_Ki_id_bandwidth
 
-.. doxygenfunction:: uz_CurrentControl_set_Kp_id_bandwidth
+.. doxygenfunction:: uz_CurrentControl_set_Kp_iq_bandwidth
 
 .. doxygenfunction:: uz_CurrentControl_set_Ki_iq_bandwidth
 

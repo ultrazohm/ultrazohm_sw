@@ -150,12 +150,12 @@ int main(void)
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 4.327050f;
+            Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
             Global_Data.av.polepairs = 2.0f;
-            Global_Data.av.kp_d = 2.2f;
-			Global_Data.av.ki_d = 2.0f;
-            Global_Data.av.kp_q = 0.0f;
-			Global_Data.av.ki_q = 0.0f;
+            Global_Data.av.kp_d = 40.0f;
+			Global_Data.av.ki_d = 35.0f;
+            Global_Data.av.kp_q = 40.0f;
+			Global_Data.av.ki_q = 32.0f;
 
             Global_Data.av.flg_speed_control = false;
 
@@ -169,6 +169,7 @@ int main(void)
             Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.rasv.i_q_ref = 0.0f;
             Global_Data.rasv.n_ref_rpm = 0.0f;
+            Global_Data.rasv.t_delay_controller = 3.5f;
             Global_Data.rasv.t_measurement = 5.0f;
 
         	initialization_chain = init_ip_cores;

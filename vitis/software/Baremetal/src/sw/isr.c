@@ -123,12 +123,13 @@ void ISR_Control(void *data)
 
     }
 
-    else //hier könnten noch die PI-Regler resettet werden.
+    else
     {
 
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		//PI-Regler Resetten
 		uz_CurrentControl_reset(CurrentControl_instance);
 
     }

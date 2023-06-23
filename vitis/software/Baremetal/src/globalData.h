@@ -62,12 +62,22 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float i_a1; 		// Machine side current in A
+	float i_b1; 		// Machine side current in A
+	float i_c1; 		// Machine side current in A
+	float i_a2; 		// Machine side current in A
+	float i_b2; 		// Machine side current in A
+	float i_c2; 		// Machine side current in A
+	float i_dc1;
+	float i_dc2;
+	float v_a1; 		// Machine side voltage in V
+	float v_b1; 		// Machine side voltage in V
+	float v_c1; 		// Machine side voltage in V
+	float v_a2; 		// Machine side voltage in V
+	float v_b2; 		// Machine side voltage in V
+	float v_c2; 		// Machine side voltage in V
+	float v_dc1;
+	float v_dc2;
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -96,7 +106,7 @@ typedef struct _actualValues_ {
 	float omega_elec;
 	struct uz_resolver_pl_interface_outputs_t resolver_outputs;
 	float temp_VSI_1;
-	float temp_VSI_2
+	float temp_VSI_2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

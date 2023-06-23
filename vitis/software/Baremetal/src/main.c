@@ -71,6 +71,11 @@ struct uz_IIR_Filter_config config_filter = {.selection = LowPass_first_order, .
 
 float meas_array[10000];
 
+
+// Control System:
+
+
+
 // Temperaturemeasurement
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 uz_temperaturecard_t* uz_Tempcard = NULL;
@@ -178,6 +183,21 @@ int main(void)
 			uz_ParameterID_6ph_init_filter(&ParaID_Data, config_filter);
 			uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &Global_Data.av.theta_elec_rad, &controller_out.q);
 			// ParaID inits end
+
+			// normal 6ph-current control
+
+			Global_Data.objects.CC_instance_dq = uz_CurrentControl_init(cc_config_1);
+			Global_Data.objects.CC_instance_xy = uz_CurrentControl_init(cc_config_2);
+			Global_Data.objects.CC_instance_zero = uz_CurrentControl_init(cc_config_3);
+
+			Global_Data.objects.resonant_control_dq_2H = uz_resonantController_init(resonant_config_dq);
+			Global_Data.objects.resonant_control_xy_6H = uz_resonantController_init(resonant_config_xy);
+			Global_Data.objects.resonant_control_zero_6H = uz_resonantController_init(resonant_config_zero);
+
+			// end current control
+
+
+
 			Initialize_Timer();
 			uz_SystemTime_init();
 			JavaScope_initalize(&Global_Data);

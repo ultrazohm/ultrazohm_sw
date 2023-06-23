@@ -235,6 +235,49 @@ void ISR_Control(void *data)
 	//////////////ParaID ende
 
 
+	// actual currents
+	Global_Data.av.i_abc_6ph = m_6ph_abc_voltage;
+
+	// actual currents in VSD-Systems
+	Global_Data.av.i_vsd_6ph = uz_transformation_asym30deg_6ph_abc_to_alphabeta(Global_Data.av.i_abc_6ph);
+	Global_Data.av.i_alphabeta.alpha = Global_Data.av.i_vsd_6ph.alpha;
+	Global_Data.av.i_alphabeta.beta = Global_Data.av.i_vsd_6ph.beta;
+	Global_Data.av.i_alphabeta.gamma = 0.0f;
+
+	Global_Data.av.i_xy.alpha = Global_Data.av.i_vsd_6ph.x;
+	Global_Data.av.i_xy.beta = Global_Data.av.i_vsd_6ph.y;
+	Global_Data.av.i_xy.gamma = 0.0f;
+
+	Global_Data.av.i_zero.d = Global_Data.av.i_vsd_6ph.z1;
+	Global_Data.av.i_zero.q = Global_Data.av.i_vsd_6ph.z2;
+	Global_Data.av.i_zero.zero = 0.0f;
+
+	// actual velocity and angle
+	ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeedRADpS;
+	ParaID_Data.ActualValues.omega_el = Global_Data.av.electricalRotorSpeedRADpS;
+	Global_Data.av.theta_mech_rad = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
+	Global_Data.av.theta_elec_rad = Global_Data.av.theta_mech_rad * Global_Data.av.polepairs;
+
+
+	// reference currents in VSD-Systems
+	Global_Data.rasv.i_dq_ref.d = 0;
+	Global_Data.rasv.i_dq_ref.q = 1;
+	Global_Data.rasv.i_dq_ref.zero = 0;
+	Global_Data.rasv.i_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.rasv.i_dq_ref, Global_Data.av.theta_elec_rad);
+
+	Global_Data.rasv.i_vsd_6ph_ref.alpha = Global_Data.rasv.i_alphabeta_ref.alpha;
+	Global_Data.rasv.i_vsd_6ph_ref.beta = Global_Data.rasv.i_alphabeta_ref.beta;
+	Global_Data.rasv.i_vsd_6ph_ref.x = 0;
+	Global_Data.rasv.i_vsd_6ph_ref.y = 0;
+	Global_Data.rasv.i_vsd_6ph_ref.z1 = 0;
+	Global_Data.rasv.i_vsd_6ph_ref.z2 = 0;
+
+	Global_Data.rasv.i_xy_ref.alpha = Global_Data.rasv.i_vsd_6ph_ref.x;
+	Global_Data.rasv.i_xy_ref.beta = Global_Data.rasv.i_vsd_6ph_ref.x;
+	Global_Data.rasv.i_zero_ref.d = Global_Data.rasv.i_vsd_6ph_ref.z1;
+	Global_Data.rasv.i_zero_ref.q = Global_Data.rasv.i_vsd_6ph_ref.z2;
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
@@ -245,13 +288,72 @@ void ISR_Control(void *data)
 		// change DutyCycles=0 to 0.01
 		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
 		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
+
+
+		// dq control
+			// PI-Control
+			Global_Data.rasv.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_dq, Global_Data.rasv.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			// Resonant-Control
+
+			// Reverse-Transformation in alpha-beta system
+			Global_Data.rasv.u_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.rasv.u_dq_ref, Global_Data.av.theta_elec_rad);
+
+		// xy control
+			// Transformation in rotating system
+			Global_Data.rasv.i_xy_n_ref = uz_transformation_3ph_alphabeta_to_dq(Global_Data.rasv.i_xy_ref, -Global_Data.av.theta_elec_rad);
+			Global_Data.av.i_xy_n     = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.i_xy,     -Global_Data.av.theta_elec_rad);
+			// PI-control
+			Global_Data.rasv.u_xy_n_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_xy, Global_Data.rasv.i_xy_n_ref, Global_Data.av.i_xy_n, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			// Resonant-Control
+
+			// Reverse-Transformation back in stationary system
+			Global_Data.rasv.u_xy_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.rasv.u_xy_n_ref, -Global_Data.av.theta_elec_rad);
+
+
+		// zero control
+			// PI-control
+			Global_Data.rasv.u_zero_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_zero, Global_Data.rasv.i_zero_ref, Global_Data.av.i_zero, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			// Resonant-Control
+
+
+		// combined vsd-ref values:
+		Global_Data.rasv.u_vsd_6ph_ref.alpha = Global_Data.rasv.u_alphabeta_ref.alpha;
+		Global_Data.rasv.u_vsd_6ph_ref.beta  = Global_Data.rasv.u_alphabeta_ref.beta;
+		Global_Data.rasv.u_vsd_6ph_ref.x     = Global_Data.rasv.u_xy_ref.alpha;
+		Global_Data.rasv.u_vsd_6ph_ref.y     = Global_Data.rasv.u_xy_ref.beta;
+		Global_Data.rasv.u_vsd_6ph_ref.z1    = Global_Data.rasv.u_zero_ref.d;
+		Global_Data.rasv.u_vsd_6ph_ref.z2    = Global_Data.rasv.u_zero_ref.q;
+
+		// inverse vsd Transformation
+		Global_Data.rasv.u_abc_6ph_ref = uz_transformation_asym30deg_6ph_alphabeta_to_abc(Global_Data.rasv.u_vsd_6ph_ref);
+
+		// split into two three phase systems
+		Global_Data.rasv.u_abc_sys1_ref.a = Global_Data.rasv.u_abc_6ph_ref.a1;
+		Global_Data.rasv.u_abc_sys1_ref.b = Global_Data.rasv.u_abc_6ph_ref.b1;
+		Global_Data.rasv.u_abc_sys1_ref.c = Global_Data.rasv.u_abc_6ph_ref.c1;
+		Global_Data.rasv.u_abc_sys2_ref.a = Global_Data.rasv.u_abc_6ph_ref.a2;
+		Global_Data.rasv.u_abc_sys2_ref.b = Global_Data.rasv.u_abc_6ph_ref.b2;
+		Global_Data.rasv.u_abc_sys2_ref.c = Global_Data.rasv.u_abc_6ph_ref.c2;
+
+		// transform into dq-systems for Space Vector Modulation
+		Global_Data.rasv.u_dq_sys1_ref = uz_transformation_3ph_abc_to_dq(Global_Data.rasv.u_abc_sys1_ref, Global_Data.av.theta_elec_rad);
+		Global_Data.rasv.u_dq_sys2_ref = uz_transformation_3ph_abc_to_dq(Global_Data.rasv.u_abc_sys2_ref, Global_Data.av.theta_elec_rad);
+
+
+		Global_Data.rasv.DutyCycle_system1 = uz_Space_Vector_Modulation(Global_Data.rasv.u_dq_sys1_ref, Global_Data.av.v_dc1, Global_Data.av.theta_elec_rad);
+		Global_Data.rasv.DutyCycle_system2 = uz_Space_Vector_Modulation(Global_Data.rasv.u_dq_sys2_ref, Global_Data.av.v_dc2, Global_Data.av.theta_elec_rad);
+
+
+
+
 		// write DutyCycles
-		Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
-		Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
-		Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
-		Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
-		Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
-		Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_C;
+		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.rasv.DutyCycle_system1.DutyCycle_A; //ParaID_DutyCycle.system1.DutyCycle_A;
+		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.rasv.DutyCycle_system1.DutyCycle_B; //ParaID_DutyCycle.system1.DutyCycle_B;
+		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.rasv.DutyCycle_system1.DutyCycle_C; //ParaID_DutyCycle.system1.DutyCycle_C;
+		Global_Data.rasv.halfBridge4DutyCycle = Global_Data.rasv.DutyCycle_system2.DutyCycle_A; //ParaID_DutyCycle.system2.DutyCycle_A;
+		Global_Data.rasv.halfBridge5DutyCycle = Global_Data.rasv.DutyCycle_system2.DutyCycle_B; //ParaID_DutyCycle.system2.DutyCycle_B;
+		Global_Data.rasv.halfBridge6DutyCycle = Global_Data.rasv.DutyCycle_system2.DutyCycle_C; //ParaID_DutyCycle.system2.DutyCycle_C;
+
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
 		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
     }

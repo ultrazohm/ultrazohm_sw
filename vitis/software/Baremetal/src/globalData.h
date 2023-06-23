@@ -9,6 +9,9 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -98,6 +101,13 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	struct uz_resolverIP_position_velocity_t posVel_mech;
 	struct uz_resolverIP_position_velocity_t posVel_el;
+	uz_6ph_abc_t i_abc_6ph;
+	uz_6ph_alphabeta_t i_vsd_6ph;
+	uz_3ph_dq_t i_dq;
+	uz_3ph_alphabeta_t i_alphabeta;
+	uz_3ph_alphabeta_t i_xy;
+	uz_3ph_dq_t i_xy_n;
+	uz_3ph_dq_t i_zero;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -115,6 +125,27 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	bool print_data;
 	float kp_res;
+	uz_6ph_abc_t i_abc_6ph_ref;
+	uz_6ph_alphabeta_t i_vsd_6ph_ref;
+	uz_3ph_alphabeta_t i_alphabeta_ref;
+	uz_3ph_alphabeta_t i_xy_ref;
+	uz_3ph_dq_t i_dq_ref;
+	uz_3ph_dq_t i_xy_n_ref;
+	uz_3ph_dq_t i_zero_ref;
+	uz_3ph_alphabeta_t u_alphabeta_ref;
+	uz_3ph_alphabeta_t u_xy_ref;
+	uz_3ph_dq_t u_dq_ref;
+	uz_3ph_dq_t u_xy_n_ref;
+	uz_3ph_dq_t u_zero_ref;
+	uz_6ph_alphabeta_t u_vsd_6ph_ref;
+	uz_6ph_abc_t u_abc_6ph_ref;
+	uz_3ph_abc_t u_abc_sys1_ref;
+	uz_3ph_abc_t u_abc_sys2_ref;
+	uz_3ph_dq_t u_dq_sys1_ref;
+	uz_3ph_dq_t u_dq_sys2_ref;
+
+	struct uz_DutyCycle_t DutyCycle_system1;
+	struct uz_DutyCycle_t DutyCycle_system2;
 } referenceAndSetValues;
 
 typedef struct{
@@ -130,6 +161,15 @@ typedef struct{
 	uz_resolverIP_t* resolver_d5_1;
 	uz_PWM_duty_freq_detection_t* tempMeasurement1;
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
+
+	uz_CurrentControl_t* CC_instance_dq;	// PI-current control for dq-System
+	uz_CurrentControl_t* CC_instance_xy;	// PI-current control for xy-System
+	uz_CurrentControl_t* CC_instance_zero;	// PI-current control for zero-System
+
+	uz_resonantController_t* resonant_control_dq_2H;
+	uz_resonantController_t* resonant_control_xy_6H;
+	uz_resonantController_t* resonant_control_zero_6H;
+
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

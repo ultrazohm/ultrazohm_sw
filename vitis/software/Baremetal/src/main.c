@@ -88,8 +88,8 @@ int main(void)
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 1.0f, // 2
-                .Ki = 0.0f, // 39.22
+                .Kp = 2.0f, // 2
+                .Ki = 2.0f, // 39.22
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
@@ -103,7 +103,7 @@ int main(void)
             };
 
             struct uz_CurrentControl_config config_CurrentControl = {
-                .decoupling_select = linear_decoupling,
+                .decoupling_select = linear_decoupling,//no_decoupling, //linear_decoupling,
                 .config_PMSM = config_RSM,
                 .config_id = config_id,
                 .config_iq = config_iq,
@@ -111,7 +111,7 @@ int main(void)
 
             struct uz_IIR_Filter_config iir_config_filt1 = {
             		.selection = LowPass_first_order,
-            		.cutoff_frequency_Hz = 1.0f,
+            		.cutoff_frequency_Hz = 500.0f,
             		.sample_frequency_Hz = UZ_PWM_FREQUENCY
             };
 
@@ -152,10 +152,10 @@ int main(void)
             // Initialize Global actualValues
             Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
             Global_Data.av.polepairs = 2.0f;
-            Global_Data.av.kp_d = 40.0f;
-			Global_Data.av.ki_d = 35.0f;
-            Global_Data.av.kp_q = 40.0f;
-			Global_Data.av.ki_q = 32.0f;
+            Global_Data.av.kp_d = 0.0f; //40.0f;
+			Global_Data.av.ki_d = 0.0f; //35.0f;
+            Global_Data.av.kp_q = 0.0f; //40.0f;
+			Global_Data.av.ki_q = 0.0f; //32.0f;
 
             Global_Data.av.flg_speed_control = false;
 
@@ -169,8 +169,8 @@ int main(void)
             Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.rasv.i_q_ref = 0.0f;
             Global_Data.rasv.n_ref_rpm = 0.0f;
-            Global_Data.rasv.t_delay_controller = 3.5f;
-            Global_Data.rasv.t_measurement = 5.0f;
+            Global_Data.rasv.t_delay_controller = 2.0f;
+            Global_Data.rasv.t_measurement = 2.0f;
 
         	initialization_chain = init_ip_cores;
 			break;

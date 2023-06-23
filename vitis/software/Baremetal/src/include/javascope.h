@@ -28,6 +28,7 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_iq_ref,
 	JSO_id_ref,
+	JSO_Testsignal,
 	JSO_LMG_Switch,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
@@ -174,8 +175,8 @@ enum gui_button_mapping {
 	set_Torque,
 	set_I_d,
 	set_I_q,
-	kp_d,
-	ki_d,
+	kp_q,
+	ki_q,
 	SND_FLD_ENDMARKER
 
 

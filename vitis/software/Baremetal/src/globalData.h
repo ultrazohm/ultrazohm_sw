@@ -113,6 +113,8 @@ typedef struct _actualValues_ {
 	float duty_cycle_B;						// Duty Cycle for Phase B
 	float duty_cycle_C;						// Duty Cycle for Phase C
 
+	float testsignal;
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -58,8 +58,10 @@ float omega_m_rad_per_sec = 0.0f;
 
 float unfiltered_signal = 0.0f;
 
-bool LMG_measure = false;
-bool measure_next_point = false;
+bool state_LMG_measure = false;
+bool state_controller_delay = false;
+bool state_set_next_point = true;
+bool state_stop_current_angle = false;
 float n_delay_controller = 0.0f;
 float n_measurements = 0.0f;
 static float counter_n_delay_controller = 0.0f;
@@ -69,14 +71,16 @@ static float counter_n_measurements = 0.0f;
 // automatic measurement
 uint32_t counter_current = 0U;
 uint32_t counter_angle = 0U;
-static uint32_t n_currents_max = 10U;
-static uint32_t n_angles_max = 37U;
+static uint32_t n_currents_max = 3U; //10U;
+static uint32_t n_angles_max = 15U;//37U;
 
 static float ieff[10] = {1.0f, 5.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f};
-static float angle[37] = {0.0f, 2.5f, 5.0f, 7.5f, 10.0f, 12.5f, 15.0f, 17.5f, 20.0f, 22.5f, 25.0f, 27.5f,
-		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
-		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
+//static float angle[37] = {0.0f, 2.5f, 5.0f, 7.5f, 10.0f, 12.5f, 15.0f, 17.5f, 20.0f, 22.5f, 25.0f, 27.5f,
+//		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
+//		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
 
+static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
+		 65.0f, 67.5f, 70.0f};
 
 
 // Conversion factors for current and voltage
@@ -124,9 +128,9 @@ void ISR_Control(void *data)
     Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV_V;
     Global_Data.av.I_W = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV_W;
 
-    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U);
-    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V);
-    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W);
+    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U) + 0.2f;
+    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V) - 0.4f;
+    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W) + 0.45f;
 
 //    measurement_current.a = ADC_CURRENT_SCALING_U * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.aa.A1.me.ADC_B5)) - ADC_CURRENT_OFFSET_U;
 //    measurement_current.b = ADC_CURRENT_SCALING_V * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.aa.A1.me.ADC_B7)) - ADC_CURRENT_OFFSET_V;
@@ -183,8 +187,8 @@ void ISR_Control(void *data)
 //    uz_CurrentControl_set_Kp_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_d);
 //    uz_CurrentControl_set_Ki_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_d);
 
-//    uz_CurrentControl_set_Kp_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_q);
-//    uz_CurrentControl_set_Ki_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_q);
+    uz_CurrentControl_set_Kp_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_q);
+    uz_CurrentControl_set_Ki_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_q);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -211,6 +215,11 @@ void ISR_Control(void *data)
 				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient, 0);
 				Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
 
+				// Reset Current Angle Measurement
+				state_stop_current_angle = false;
+				state_set_next_point = true;
+				counter_angle = 0U;
+				counter_current = 0U;
 
     			break;
 			case 1U: // Manual Control
@@ -260,22 +269,33 @@ void ISR_Control(void *data)
 
 				// Set Currents
 
-				if(measure_next_point)
+				if(state_set_next_point && (state_stop_current_angle == false))
 				{
-					Global_Data.rasv.i_d_ref = ieff[counter_current] * cos(angle[counter_angle]);
-
-					counter_angle = counter_angle + 1U;
-
-					if(counter_angle > n_angles_max){
+					if(counter_angle >= n_angles_max){
 						counter_current = counter_current + 1U;
+//						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
+						counter_angle = 0U;
+						Global_Data.av.testsignal = 0.0f;
+						if(counter_current >= n_currents_max) {
+							Global_Data.rasv.i_d_ref = 0.0f;
+							Global_Data.rasv.i_q_ref = 0.0f;
+							state_stop_current_angle = true;
+							Global_Data.rasv.state_of_statemachine = 0U;
+						}
 					}
 
-					if((counter_angle > n_angles_max) && (counter_current > n_currents_max)){
-						Global_Data.rasv.i_d_ref = 0.0f;
-						Global_Data.rasv.i_q_ref = 0.0f;
-						Global_Data.rasv.state_of_statemachine = 0U;
+					if(state_stop_current_angle == false){
+						Global_Data.rasv.i_d_ref = ieff[counter_current] * cos(angle[counter_angle] * M_PI / 180.0f);
+						Global_Data.rasv.i_q_ref = ieff[counter_current] * sin(angle[counter_angle] * M_PI / 180.0f);
+						counter_angle = counter_angle + 1U;
+						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 					}
 
+					counter_n_delay_controller = 0.0f;
+					counter_n_measurements = 0.0f;
+
+					state_set_next_point = false;
+					state_controller_delay = true;
 				}
 
 				// FOC
@@ -310,28 +330,30 @@ void ISR_Control(void *data)
 
 
 		        // Enable / Disable Measurement
-				if(counter_n_delay_controller <= n_delay_controller)
+				if((counter_n_delay_controller <= n_delay_controller) && (state_controller_delay == true) && (state_stop_current_angle == false))
 				{
 					counter_n_delay_controller = counter_n_delay_controller + 1.0f;
-					measure_next_point = false;
+
 				} else {
-					counter_n_measurements = 0.0f;
-					LMG_measure = true;
+					state_controller_delay = false;
+					state_LMG_measure = true;
 				}
 
 				// Counter for continues measurement
-				if(counter_n_measurements <= n_measurements)
-				{
-					counter_n_measurements = counter_n_measurements + 1.0f;
-				} else {
-					counter_n_delay_controller = 0.0f;
-					LMG_measure = false;
-					measure_next_point = true;
+				if((state_LMG_measure == true) && (state_stop_current_angle == false)){
+					if(counter_n_measurements <= n_measurements)
+					{
+						counter_n_measurements = counter_n_measurements + 1.0f;
+//						Global_Data.av.testsignal = counter_n_measurements;
+					} else {
+						state_LMG_measure = false;
+						state_set_next_point = true;
+					}
 				}
 
 				switch (Global_Data.rasv.LMG_measurement_typ) {
 					case 1U: // Continues
-						if(LMG_measure) {
+						if((state_LMG_measure == true) && (state_stop_current_angle == false)) {
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 1);
 							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
 
@@ -339,6 +361,12 @@ void ISR_Control(void *data)
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 0);
 							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
 						}
+
+//						if (Global_Data.av.flg_enable_LMG_continues == true){
+//							Global_Data.av.testsignal = 1.0f;
+//						} else {
+//							Global_Data.av.testsignal = 0.0f;
+//						}
 						break;
 
 					case 2U: // Transient

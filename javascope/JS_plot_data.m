@@ -4,7 +4,7 @@ clear all
 format compact
 
 %% settings
-delete_empty_log_files = 0;
+delete_empty_log_files = 1;
 save_all_logged_data = 0; 
 plot_all_channels = 0;
 rename_channels_manually = 0;

@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -38,7 +39,11 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-#include "../uz/uz_Transformation/uz_Transformation.h"
+
+// software limits
+#define MAX_PHASE_CURRENT_AMP  20.0f
+#define MAX_DC_VOLT 590.0f
+#define MAX_TEMP_DEG 90.0f
 
 // start uz tempcard
 #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
@@ -52,10 +57,11 @@ struct uz_PWM_duty_freq_detection_outputs_t temp_output;
 
 // conversion defines for ADC readings
 #define PHASE_CURRENT_CONV	16.75f
-#define DC_VOLT_CONV_1		140.27f
-#define DC_VOLT_OFF_1		450.25f
-#define DC_VOLT_CONV_2		141.28f
-#define DC_VOLT_OFF_2		452.17f
+#define DC_VOLT_CONV		140.27f
+
+#include "../uz/uz_wavegen/uz_wavegen.h"
+uz_3ph_abc_t out_wavegen = {0};
+float amplitude = 0.2f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -116,24 +122,43 @@ void ISR_Control(void *data)
 	Global_Data.av.currents_abc.c3 = Global_Data.aa.A3.me.ADC_A1 * PHASE_CURRENT_CONV;
 	Global_Data.av.i_ZK3 = Global_Data.aa.A3.me.ADC_B5 * PHASE_CURRENT_CONV;
 	// convert ADC readings to voltages
-	Global_Data.av.U_ZK1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-	Global_Data.av.voltages_abc.a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-	Global_Data.av.voltages_abc.b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-	Global_Data.av.voltages_abc.c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
-	Global_Data.av.U_ZK2 = Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.U_ZK3 = Global_Data.aa.A3.me.ADC_A4 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.a3 = Global_Data.aa.A3.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.b3 = Global_Data.aa.A3.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
-	Global_Data.av.voltages_abc.c3 = Global_Data.aa.A3.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+	Global_Data.av.U_ZK1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV + 591.3f;
+	Global_Data.av.voltages_abc.a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV + 616.0f;
+	Global_Data.av.voltages_abc.b1 = Global_Data.aa.A1.me.ADC_B7 * DC_VOLT_CONV + 614.8f;
+	Global_Data.av.voltages_abc.c1 = Global_Data.aa.A1.me.ADC_B6 * DC_VOLT_CONV + 611.5f;
+	Global_Data.av.U_ZK2 = Global_Data.aa.A2.me.ADC_A4 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV;
+	Global_Data.av.U_ZK3 = Global_Data.aa.A3.me.ADC_A4 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.a3 = Global_Data.aa.A3.me.ADC_B8 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.b3 = Global_Data.aa.A3.me.ADC_B7 * DC_VOLT_CONV;
+	Global_Data.av.voltages_abc.c3 = Global_Data.aa.A3.me.ADC_B6 * DC_VOLT_CONV;
 
+	// check current limit
+	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
+			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
+			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
+		uz_assert(0);
+	}
+	// check DC Bus
+	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
+			uz_assert(0);
+	}
+	// check inverter temp
+	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
+		//uz_assert(0);
+	}
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	out_wavegen = uz_wavegen_three_phase_sample(amplitude, 50.0f, 0.5f);
+    	Global_Data.rasv.halfBridge1DutyCycle = out_wavegen.a;
+    	Global_Data.rasv.halfBridge2DutyCycle = out_wavegen.b;
+    	Global_Data.rasv.halfBridge3DutyCycle = out_wavegen.c;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

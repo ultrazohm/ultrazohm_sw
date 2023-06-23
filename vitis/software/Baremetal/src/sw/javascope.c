@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -60,12 +61,24 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_ia1] 			= &data->av.currents_abc.a1;
+	js_ch_observable[JSO_ib1] 			= &data->av.currents_abc.b1;
+	js_ch_observable[JSO_ic1] 			= &data->av.currents_abc.c1;
+	js_ch_observable[JSO_ia2] 			= &data->av.currents_abc.a2;
+	js_ch_observable[JSO_ib2] 			= &data->av.currents_abc.b2;
+	js_ch_observable[JSO_ic2] 			= &data->av.currents_abc.c2;
+	js_ch_observable[JSO_ia3] 			= &data->av.currents_abc.a3;
+	js_ch_observable[JSO_ib3] 			= &data->av.currents_abc.b3;
+	js_ch_observable[JSO_ic3] 			= &data->av.currents_abc.c3;
+	js_ch_observable[JSO_ua1] 			= &data->av.voltages_abc.a1;
+	js_ch_observable[JSO_ub1] 			= &data->av.voltages_abc.b1;
+	js_ch_observable[JSO_uc1] 			= &data->av.voltages_abc.c1;
+	js_ch_observable[JSO_ua2] 			= &data->av.voltages_abc.a2;
+	js_ch_observable[JSO_ub2] 			= &data->av.voltages_abc.b2;
+	js_ch_observable[JSO_uc2] 			= &data->av.voltages_abc.c2;
+	js_ch_observable[JSO_ua3] 			= &data->av.voltages_abc.a3;
+	js_ch_observable[JSO_ub3] 			= &data->av.voltages_abc.b3;
+	js_ch_observable[JSO_uc3] 			= &data->av.voltages_abc.c3;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

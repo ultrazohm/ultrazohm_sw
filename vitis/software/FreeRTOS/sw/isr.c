@@ -98,7 +98,6 @@ void irq_fpga(void *data)
 {
 	fpga_irq_cnt++;
 }
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INITIALIZE THE INTERRUPT HAndler (from main)
@@ -129,7 +128,7 @@ int Initialize_InterruptHandler(){
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
-int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
+static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 {
 	int Status;
 
@@ -157,7 +156,20 @@ int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 
 int Initialize_ISR(){
 
+	Apu_fpga_irq_init(&INTCipc);
+	Xil_ExceptionEnable(); //Enable interrupts in the ARM
+
+return 0;
+#if 0
 	int Status = 0;
+
+	// Connect the interrupt controller interrupt handler to the hardware
+	// interrupt handling logic in the processor.
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+								 (Xil_ExceptionHandler)Transfer_ipc_Intr_Handler,
+								 &INTCInst_IPI);
+	Xil_ExceptionEnable(); //Enable interrupts in the ARM
+
 
 	// Initialize RPU GIC and Connect IPI interrupt
 	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
@@ -180,9 +192,8 @@ int Initialize_ISR(){
 		return XST_FAILURE;
 	}
 
-	Apu_fpga_irq_init(&INTCipc);
-
 	return Status;
+#endif
 }
 
 //==============================================================================================================================================================

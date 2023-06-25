@@ -98,9 +98,6 @@ int main()
  *---------------------------------------------------------------------------*/
 void network_thread(void *p)
 {
-	// Initialize the Interrupts
-	Initialize_ISR();
-
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
@@ -245,6 +242,9 @@ int main_thread()
 
 	/* initialize lwIP before calling sys_thread_new */
     lwip_init();
+
+	// Initialize the Interrupts
+	Initialize_ISR();
 
     /* any thread using lwIP should be created using sys_thread_new */
     //Open thread for Ethernet communication

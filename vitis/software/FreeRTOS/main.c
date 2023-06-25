@@ -99,7 +99,7 @@ int main()
 void network_thread(void *p)
 {
 	// Initialize the Interrupts
-	//Initialize_ISR();
+	Initialize_ISR();
 
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */

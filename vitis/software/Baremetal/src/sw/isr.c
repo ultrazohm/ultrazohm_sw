@@ -169,20 +169,20 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId, XTmrCtr *Timer_Interrupt_Ins
     // b01	Active HIGH level sensitive
     // b11 	Rising edge sensitive
     // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-    XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+//    XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
     // XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
 
     // Make the connection between the IntId of the interrupt source and the
     // associated handler that is to run when the interrupt is recognized.
-    status = XScuGic_Connect(IntcInstPtr,
-                             Interrupt_ISR_ID,
-                             (Xil_ExceptionHandler)ISR_Control,
-                             (void *)IntcInstPtr);
+//    status = XScuGic_Connect(IntcInstPtr,
+//                             Interrupt_ISR_ID,
+//                             (Xil_ExceptionHandler)ISR_Control,
+//                             (void *)IntcInstPtr);
     if (status != XST_SUCCESS)
         return XST_FAILURE;
 
     // Enable GPIO and timer interrupts in the controller
-    XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
+//    XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
     XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
 
     xil_printf("RPU: Rpu_GicInit: Done\r\n");

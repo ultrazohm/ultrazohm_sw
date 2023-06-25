@@ -92,6 +92,13 @@ void Transfer_ipc_Intr_Handler(void *data)
 }
 
 
+extern volatile uint32_t fpga_irq_cnt;
+volatile uint32_t fpga_irq_cnt = 0;
+void irq_fpga(void *data)
+{
+	fpga_irq_cnt++;
+}
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INITIALIZE THE INTERRUPT HAndler (from main)
@@ -122,6 +129,32 @@ int Initialize_InterruptHandler(){
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
+int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
+{
+	int Status;
+
+    Xil_ExceptionEnable();
+
+#define Interrupt_ISR_ID XPS_FPGA1_INT_ID
+	// setting interrupt trigger sensitivity
+    // b01	Active HIGH level sensitive
+    // b11 	Rising edge sensitive
+    XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+
+    Status = XScuGic_Connect(IntcInstPtr,
+                             Interrupt_ISR_ID,
+                             (Xil_ExceptionHandler)irq_fpga,
+                             (void *)IntcInstPtr);
+    if (Status != XST_SUCCESS) {
+		uz_printf("APU: FPGA irq init failed\r\n");
+		return XST_FAILURE;
+	}
+
+    XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
+
+    return XST_SUCCESS;
+}
+
 int Initialize_ISR(){
 
 	int Status = 0;
@@ -147,6 +180,7 @@ int Initialize_ISR(){
 		return XST_FAILURE;
 	}
 
+	Apu_fpga_irq_init(&INTCipc);
 
 	return Status;
 }

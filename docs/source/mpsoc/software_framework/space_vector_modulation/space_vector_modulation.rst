@@ -10,6 +10,9 @@ Space vector Modulation
 .. doxygenstruct:: uz_DutyCycle_2x3ph_t
   :members:
 
+.. doxygenstruct:: uz_DutyCycle_3x3ph_t
+  :members:
+
 .. doxygenfunction:: uz_Space_Vector_Modulation
 
 Example

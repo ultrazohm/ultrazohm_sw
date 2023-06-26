@@ -6,6 +6,7 @@
 #include "uz_Transformation.h"
 #include "uz_space_vector_modulation.h"
 #include "uz_signals.h"
+#include "uz_global_configuration.h"
 
 void setUp(void)
 {

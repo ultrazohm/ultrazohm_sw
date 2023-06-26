@@ -18,6 +18,12 @@ struct uz_DutyCycle_2x3ph_t{
     struct uz_DutyCycle_t system2;
 };
 
+struct uz_DutyCycle_3x3ph_t{
+    struct uz_DutyCycle_t system1;
+    struct uz_DutyCycle_t system2;
+	struct uz_DutyCycle_t system3;
+};
+
 /**
  * @brief Generates a DutyCycle from dq-reference voltages via Space Vector Modulation for a carrier based PWM generation
  * 

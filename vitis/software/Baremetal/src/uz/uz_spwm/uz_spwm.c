@@ -54,4 +54,28 @@ struct uz_DutyCycle_2x3ph_t uz_spwm_abc_6ph(uz_6ph_abc_t input, float V_dc_volts
 	return output;
 }
 
+struct uz_DutyCycle_3x3ph_t uz_spwm_dq_9ph(uz_9ph_dq_t input, float V_dc_volts, float theta_el_rad){
+	return uz_spwm_abc_9ph(uz_transformation_9ph_dq_to_abc(input, theta_el_rad), V_dc_volts);
+}
+
+struct uz_DutyCycle_3x3ph_t uz_spwm_abc_9ph(uz_9ph_abc_t input, float V_dc_volts){
+	uz_3ph_abc_t abc_system1 = {
+		.a = input.a1,
+		.b = input.b1,
+		.c = input.c1};
+	uz_3ph_abc_t abc_system2 = {
+		.a = input.a2,
+		.b = input.b2,
+		.c = input.c2};
+	uz_3ph_abc_t abc_system3 = {
+		.a = input.a3,
+		.b = input.b3,
+		.c = input.c3};
+    struct uz_DutyCycle_3x3ph_t output = {
+        .system1 = uz_spwm_abc(abc_system1, V_dc_volts),
+        .system2 = uz_spwm_abc(abc_system2, V_dc_volts),
+		.system3 = uz_spwm_abc(abc_system3, V_dc_volts)};
+	return output;
+}
+
 #endif // UZ_SPWM_C

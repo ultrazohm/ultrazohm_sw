@@ -99,7 +99,7 @@ int main(void)
 		    Global_Data.objects.tempMeasurement3 = init_tempMeasurement3();
 		    //init resolver
 		    Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
-
+		    Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

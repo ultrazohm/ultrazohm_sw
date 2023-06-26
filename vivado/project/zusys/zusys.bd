@@ -11160,6 +11160,11 @@
                 "address_block": "/uz_user/uz_pwmdutyfreqdetect_2/AXI4_Lite/reg0",
                 "offset": "0x0080160000",
                 "range": "64K"
+              },
+              "SEG_uz_resolver_pl_inter_0_reg0": {
+                "address_block": "/resolver_card_interface/uz_resolver_pl_inter_0/AXI4_Lite/reg0",
+                "offset": "0x0080180000",
+                "range": "64K"
               }
             }
           }

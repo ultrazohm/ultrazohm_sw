@@ -101,6 +101,10 @@ float u_a2c2 = 0.0f;
 uz_6ph_abc_t zero_offset = {0};
 bool zero_finished = false;
 uz_6ph_abc_t zero_offset_function(bool* flag);
+
+//Enable inverter bitmask
+uint32_t Inverter_enable_bitmask=0x00000000U;
+uint32_t Inverter_disable_bitmask=0x00000003U;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -113,6 +117,7 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
 
     //Take measurements independent of control_state
     if(select_Real) {
@@ -195,9 +200,20 @@ void ISR_Control(void *data)
         REAL_v_abc_meas.a2 = Global_Data.av.v_a2 - u_n2;
         REAL_v_abc_meas.b2 = Global_Data.av.v_b2 - u_n2;
         REAL_v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
+        //Only allow enable of inverter, if "select_Real" is true
+        if (current_state == running_state || current_state == control_state) {
+            uz_axi_gpio_write_bitmask(Global_Data.objects.GPIO_InverterEnable, Inverter_enable_bitmask);
+        } else {
+        	uz_axi_gpio_write_bitmask(Global_Data.objects.GPIO_InverterEnable, Inverter_disable_bitmask);
+        }
     }
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+//-----------------------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------CONTROL---------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------------------------//
     if (current_state==control_state)
     {
         if(select_CIL) {

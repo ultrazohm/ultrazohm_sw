@@ -175,6 +175,8 @@ int main(void)
             Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
             Global_Data.objects.pwm_duty_freq_detection_VSI_1 = initialize_PWM_duty_freq_detection_VSI_1();
             Global_Data.objects.pwm_duty_freq_detection_VSI_2 = initialize_PWM_duty_freq_detection_VSI_2();
+            Global_Data.objects.GPIO_InverterEnable = uz_axi_gpio_InvEnable_init();
+            Global_Data.objects.GPIO_InverterFault = uz_axi_gpio_InvFault_init();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialization_chain = print_msg;
             break;

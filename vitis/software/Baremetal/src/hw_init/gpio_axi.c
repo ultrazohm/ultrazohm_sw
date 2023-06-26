@@ -39,6 +39,30 @@ static XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
 //----------------------------------------------------
 // INITIALIZE & SET DIRECTIONS OF GPIOs that are instanced on the FPGA
 //----------------------------------------------------
+
+struct uz_axi_gpio_config_t InvEn_config={
+             .base_address=XPAR_UZ_USER_AXI_GPIO_INVEN_BASEADDR,
+             .device_id=XPAR_UZ_USER_AXI_GPIO_INVEN_DEVICE_ID,
+             .number_of_pins=2,
+			 .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+};
+
+struct uz_axi_gpio_config_t InvFault_config={
+             .base_address=XPAR_UZ_USER_AXI_GPIO_FAULT_BASEADDR,
+             .device_id=XPAR_UZ_USER_AXI_GPIO_FAULT_DEVICE_ID,
+             .number_of_pins=2,
+			 .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+};
+
+uz_axi_gpio_t* uz_axi_gpio_InvEnable_init(void) {
+	return(uz_axi_gpio_init(InvEn_config));
+}
+
+uz_axi_gpio_t* uz_axi_gpio_InvFault_init(void) {
+	return(uz_axi_gpio_init(InvFault_config));
+}
+
+
 void Initialize_AXI_GPIO(void)
 {
     int status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
@@ -49,10 +73,12 @@ void Initialize_AXI_GPIO(void)
 void uz_axigpio_disable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteClear(&Gpio_OUT, AXI_GPIO_CHANNEL, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+
 }
 void uz_axigpio_enable_pwm_and_power_electronics(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, (AXI_GPIO_PWM_MODULES | AXI_GPIO_DIGITAL_ENABLE));
+
 }
 void uz_axigpio_disable_datamover(void)
 {

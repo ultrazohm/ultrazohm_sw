@@ -12,6 +12,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -142,6 +143,8 @@ typedef struct{
 	uz_resolver_pl_interface_t* resolver_pl_d2;
 	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_1;
 	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_2;
+	uz_axi_gpio_t * GPIO_InverterEnable;
+	uz_axi_gpio_t * GPIO_InverterFault;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

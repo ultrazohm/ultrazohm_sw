@@ -15,6 +15,10 @@
 
 #ifndef GPIO_AXI_H_
 #define GPIO_AXI_H_
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+
+uz_axi_gpio_t* uz_axi_gpio_InvEnable_init(void);
+uz_axi_gpio_t* uz_axi_gpio_InvFault_init(void);
 
 void Initialize_AXI_GPIO(void);
 

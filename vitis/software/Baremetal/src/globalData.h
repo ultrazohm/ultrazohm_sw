@@ -10,7 +10,7 @@
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
-
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 
 
 
@@ -58,18 +58,6 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
 	float U_ZK1; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float U_ZK3; 	// DC-Link voltage 2 in V
@@ -78,18 +66,7 @@ typedef struct _actualValues_ {
 	float i_ZK3; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
 	float theta_elec;
-	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
@@ -99,9 +76,15 @@ typedef struct _actualValues_ {
 	float temperature_inv_1;
 	float temperature_inv_2;
 	float temperature_inv_3;
-	struct uz_resolverIP_position_velocity_t electrical_position;
+	struct uz_resolver_pl_interface_outputs_t rotational_position;
 	uz_9ph_abc_t currents_abc;
 	uz_9ph_abc_t voltages_abc;
+	uz_9ph_dq_t full_currents_dq;
+	uz_9ph_dq_t full_voltages_dq;
+	uz_3ph_dq_t currents_dq;
+	uz_3ph_alphabeta_t currents_XY1;
+	uz_3ph_alphabeta_t currents_XY2;
+	uz_3ph_alphabeta_t currents_XY3;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -134,6 +117,7 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 	uz_resolverIP_t* resolver_d5_1;
+	uz_resolver_pl_interface_t* resolver_pl_d2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

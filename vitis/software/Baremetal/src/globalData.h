@@ -131,11 +131,10 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	bool print_data;
 	float kp_res;
-	uz_6ph_abc_t i_abc_6ph_ref;
+	uz_3ph_dq_t i_dq_ref;
 	uz_6ph_alphabeta_t i_vsd_6ph_ref;
 	uz_3ph_alphabeta_t i_alphabeta_ref;
 	uz_3ph_alphabeta_t i_xy_ref;
-	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t i_xy_n_ref;
 	uz_3ph_dq_t i_zero_ref;
 	uz_3ph_alphabeta_t u_alphabeta_ref;
@@ -172,9 +171,12 @@ typedef struct{
 	uz_CurrentControl_t* CC_instance_xy;	// PI-current control for xy-System
 	uz_CurrentControl_t* CC_instance_zero;	// PI-current control for zero-System
 
-	uz_resonantController_t* resonant_control_dq_2H;
-	uz_resonantController_t* resonant_control_xy_6H;
-	uz_resonantController_t* resonant_control_zero_6H;
+	uz_resonantController_t* resonant_control_dq_2H_d;
+	uz_resonantController_t* resonant_control_dq_2H_q;
+	uz_resonantController_t* resonant_control_xy_6H_x;
+	uz_resonantController_t* resonant_control_xy_6H_y;
+	uz_resonantController_t* resonant_control_zero_6H_z1;
+	uz_resonantController_t* resonant_control_zero_6H_z2;
 
 	uz_VSD_6ph_FD_t* OPF_FD;
 

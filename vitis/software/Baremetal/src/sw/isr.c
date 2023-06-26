@@ -102,6 +102,13 @@ uz_temperaturecard_OneGroup channel_A_data;
 uz_6ph_abc_t winding_temperature = {0};
 
 
+// activate controlers:
+bool dq_2H_control = true;
+bool xy_n_PI_control = true;
+bool xy_n_6H_control = true;
+bool zero_PI_control = true;
+bool zero_6H_control = true;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -274,6 +281,28 @@ void ISR_Control(void *data)
 	Global_Data.rasv.i_vsd_6ph_ref.z1 = 0;
 	Global_Data.rasv.i_vsd_6ph_ref.z2 = 0;
 
+	// fault detection:
+
+	Global_Data.av.faultindices = uz_vsd_opf_6ph_faultdetection_step(Global_Data.objects.OPF_FD, Global_Data.av.i_vsd_6ph, Global_Data.av.electricalRotorSpeedRADpS);
+
+	//
+
+	// OPF Control reference values:
+
+	Global_Data.av.k_parameter = uz_get_k_parameter(Global_Data.av.faultindices, Global_Data.av.N1N2, Global_Data.av.MLMT);
+
+	Global_Data.rasv.i_vsd_6ph_ref.x  = Global_Data.av.k_parameter.k1 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k2 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+	Global_Data.rasv.i_vsd_6ph_ref.y  = Global_Data.av.k_parameter.k3 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k4 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+	Global_Data.rasv.i_vsd_6ph_ref.z1 = Global_Data.av.k_parameter.k5 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k6 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+	Global_Data.rasv.i_vsd_6ph_ref.z2 = Global_Data.av.k_parameter.k7 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k8 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+
+
+	Global_Data.rasv.i_xy_ref.alpha = Global_Data.rasv.i_vsd_6ph_ref.x;
+	Global_Data.rasv.i_xy_ref.beta = Global_Data.rasv.i_vsd_6ph_ref.y;
+	Global_Data.rasv.i_zero_ref.d = Global_Data.rasv.i_vsd_6ph_ref.z1;
+	Global_Data.rasv.i_zero_ref.q = Global_Data.rasv.i_vsd_6ph_ref.z2;
+	//
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -287,28 +316,14 @@ void ISR_Control(void *data)
 		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
 
 
-		// fault detection:
-
-		Global_Data.av.faultindices = uz_vsd_opf_6ph_faultdetection_step(Global_Data.objects.OPF_FD, Global_Data.av.i_vsd_6ph, Global_Data.av.electricalRotorSpeedRADpS);
-
-		//
-
-		// OPF Control reference values:
-
-		Global_Data.av.k_parameter = uz_get_k_parameter(Global_Data.av.faultindices, Global_Data.av.N1N2, Global_Data.av.MLMT);
-
-		Global_Data.rasv.i_xy_ref.alpha = Global_Data.av.k_parameter.k1 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k2 * Global_Data.rasv.i_vsd_6ph_ref.beta;
-		Global_Data.rasv.i_xy_ref.beta  = Global_Data.av.k_parameter.k3 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k4 * Global_Data.rasv.i_vsd_6ph_ref.beta;
-		Global_Data.rasv.i_zero_ref.d   = Global_Data.av.k_parameter.k5 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k6 * Global_Data.rasv.i_vsd_6ph_ref.beta;
-		Global_Data.rasv.i_zero_ref.q   = Global_Data.av.k_parameter.k7 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k8 * Global_Data.rasv.i_vsd_6ph_ref.beta;
-
-		//
-
-
 		// dq control
 			// PI-Control
 			Global_Data.rasv.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_dq, Global_Data.rasv.i_dq_ref, Global_Data.av.i_dq, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
 			// Resonant-Control
+			if(dq_2H_control){
+				Global_Data.rasv.u_dq_ref.d += uz_resonantController_step(Global_Data.objects.resonant_control_dq_2H_d, Global_Data.rasv.i_dq_ref.d, Global_Data.av.i_dq.d, Global_Data.av.electricalRotorSpeedRADpS);
+				Global_Data.rasv.u_dq_ref.q += uz_resonantController_step(Global_Data.objects.resonant_control_dq_2H_q, Global_Data.rasv.i_dq_ref.q, Global_Data.av.i_dq.q, Global_Data.av.electricalRotorSpeedRADpS);
+			}
 
 			// Reverse-Transformation in alpha-beta system
 			Global_Data.rasv.u_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.rasv.u_dq_ref, Global_Data.av.theta_elec_rad);
@@ -318,8 +333,14 @@ void ISR_Control(void *data)
 			Global_Data.rasv.i_xy_n_ref = uz_transformation_3ph_alphabeta_to_dq(Global_Data.rasv.i_xy_ref, -Global_Data.av.theta_elec_rad);
 			Global_Data.av.i_xy_n     = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.i_xy,     -Global_Data.av.theta_elec_rad);
 			// PI-control
-			Global_Data.rasv.u_xy_n_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_xy, Global_Data.rasv.i_xy_n_ref, Global_Data.av.i_xy_n, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			if(xy_n_PI_control){
+				Global_Data.rasv.u_xy_n_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_xy, Global_Data.rasv.i_xy_n_ref, Global_Data.av.i_xy_n, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			}
 			// Resonant-Control
+			if(xy_n_6H_control){
+				Global_Data.rasv.u_xy_n_ref.d += uz_resonantController_step(Global_Data.objects.resonant_control_xy_6H_x, Global_Data.rasv.i_xy_n_ref.d, Global_Data.av.i_xy_n.d, Global_Data.av.electricalRotorSpeedRADpS);
+				Global_Data.rasv.u_xy_n_ref.q += uz_resonantController_step(Global_Data.objects.resonant_control_xy_6H_y, Global_Data.rasv.i_xy_n_ref.q, Global_Data.av.i_xy_n.q, Global_Data.av.electricalRotorSpeedRADpS);
+			}
 
 			// Reverse-Transformation back in stationary system
 			Global_Data.rasv.u_xy_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.rasv.u_xy_n_ref, -Global_Data.av.theta_elec_rad);
@@ -327,8 +348,15 @@ void ISR_Control(void *data)
 
 		// zero control
 			// PI-control
-			Global_Data.rasv.u_zero_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_zero, Global_Data.rasv.i_zero_ref, Global_Data.av.i_zero, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			if(zero_PI_control){
+				Global_Data.rasv.u_zero_ref = uz_CurrentControl_sample(Global_Data.objects.CC_instance_zero, Global_Data.rasv.i_zero_ref, Global_Data.av.i_zero, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+			}
 			// Resonant-Control
+			if(zero_6H_control){
+				Global_Data.rasv.u_zero_ref.d += uz_resonantController_step(Global_Data.objects.resonant_control_zero_6H_z1, Global_Data.rasv.i_zero_ref.d, Global_Data.av.i_zero.d, Global_Data.av.electricalRotorSpeedRADpS);
+				Global_Data.rasv.u_zero_ref.q += uz_resonantController_step(Global_Data.objects.resonant_control_zero_6H_z2, Global_Data.rasv.i_zero_ref.q, Global_Data.av.i_zero.q, Global_Data.av.electricalRotorSpeedRADpS);
+			}
+
 
 
 		// combined vsd-ref values:

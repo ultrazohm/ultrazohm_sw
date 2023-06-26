@@ -190,9 +190,12 @@ int main(void)
 			Global_Data.objects.CC_instance_xy = uz_CurrentControl_init(cc_config_2);
 			Global_Data.objects.CC_instance_zero = uz_CurrentControl_init(cc_config_3);
 
-			Global_Data.objects.resonant_control_dq_2H = uz_resonantController_init(resonant_config_dq);
-			Global_Data.objects.resonant_control_xy_6H = uz_resonantController_init(resonant_config_xy);
-			Global_Data.objects.resonant_control_zero_6H = uz_resonantController_init(resonant_config_zero);
+			Global_Data.objects.resonant_control_dq_2H_d = uz_resonantController_init(resonant_config_dq);
+			Global_Data.objects.resonant_control_dq_2H_q = uz_resonantController_init(resonant_config_dq);
+			Global_Data.objects.resonant_control_xy_6H_x = uz_resonantController_init(resonant_config_xy);
+			Global_Data.objects.resonant_control_xy_6H_y = uz_resonantController_init(resonant_config_xy);
+			Global_Data.objects.resonant_control_zero_6H_z1 = uz_resonantController_init(resonant_config_zero);
+			Global_Data.objects.resonant_control_zero_6H_z2 = uz_resonantController_init(resonant_config_zero);
 
 			// end current control
 

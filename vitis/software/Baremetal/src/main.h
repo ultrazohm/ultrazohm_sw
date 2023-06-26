@@ -57,6 +57,7 @@
 
 #include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
 #include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
+#include "uz/uz_ResonantController/uz_resonant_controller.h"
 
 //----------------------------------------------------
 // FUNCTIONS

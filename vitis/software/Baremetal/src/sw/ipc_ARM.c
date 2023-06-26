@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright 2021 Sebastian Wendel, Philipp LÃ¶hdefink
+ * Copyright 2021 Sebastian Wendel, Philipp Löhdefink
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
-
-extern bool reset_ip_cnt;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -217,12 +215,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);
-			reset_ip_cnt = true;
 			break;
 
 		case (My_Button_3):
 			ultrazohm_state_machine_set_userLED(false);
-			reset_ip_cnt = false;
 			break;
 
 		case (My_Button_4):

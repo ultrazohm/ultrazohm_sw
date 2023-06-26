@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel, Philipp LÃ¶hdefink
+* Copyright 2021 Eyke Liegmann, Tobias Schindler, Sebastian Wendel, Philipp Löhdefink
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -65,6 +65,6 @@ int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorith
 int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
-float uz_modf(float u0, float u1);
+
 
 #endif /* ISR_H_ */

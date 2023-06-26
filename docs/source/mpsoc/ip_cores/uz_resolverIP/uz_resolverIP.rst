@@ -29,7 +29,7 @@ er to the `AD2S1210 Datasheet <https://www.analog.com/media/en/technical-documen
 
 Setup
 =====
-To use the ResolverIP interface, set up your hardware as described in Encoder Board documentation, set up your Vivado project as described below in :ref:`Vivado Setup <vivado_setup>` and use the Vitis functions as described further below in :ref:`Vitis Setup <vitis_setup>`.
+To use the ResolverIP interface, set up your hardware as described in the respective adapter board documentation, set up your Vivado project as described below in :ref:`Vivado Setup <vivado_setup>` and use the Vitis functions as described further below in :ref:`Vitis Setup <vitis_setup>`.
 
 .. _vivado_setup:
 
@@ -64,9 +64,9 @@ The IP core shown in figure :numref:`pic_Resolver_ipCore` can be added to the pr
 
    Resolver IP Core in Vivado Block design 
 
-The pins of the IPCore have the following functionalities:
+The pins of the IP Core have the following functionalities:
 
-.. list-table:: Functionality of Resolver IPCore pins 
+.. list-table:: Functionality of Resolver IP Core pins 
    :widths: 25 400
    :header-rows: 1
    :align: center
@@ -136,9 +136,13 @@ In ``POSITION_AND_VELOCITY_MODE``, the ResolverIP interface can also read out bo
 
 .. _vitis_setup:
 
+.. warning:: 
+  If you plan to only use the PL output ports of the resolverIP, then you have to set 
+  the ``mode_after_init`` in your config struct to e.g. ``POSITION_AND_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP Core will not update speed and position values.
+
 Vitis Setup
 ***********
-To integrate AXI communication between your PS project and the PL IPCore follow the instructions below. 
+To integrate AXI communication between your PS project and the PL IP Core follow the instructions below. 
 
 
 Initialization
@@ -149,14 +153,17 @@ Important constant configuration parameters are stored in the struct ``uz_resolv
 .. doxygenstruct:: uz_resolverIP_config_t
 	:members:
 
-Note that the member ``base_address`` needs to be set to the AXI base address assgined to the IPCore by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
-
-Note that the member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
-
-Note that the member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
-
-Note that the member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the Encoder Board comes with a 8.192MHz (``8192000U``) crystal.
-
+.. note:: 
+   - The member ``base_address`` needs to be set to the AXI base address assgined to the IPCore by Vivado. This value is stored in ``XPAR_RESOLVER_INTERFACE_V_0_BASEADDR`` in the ``xparameters.h`` file. Make sure you include this file.
+   - The member ``ip_clk_frequency_Hz`` needs to be set to the clock frequency of the clock input at pin ``s00_axi_aclk``. The tested value was 100MHz (``100000000U``).
+   - The member ``resolution`` is determined by the hardware configuration RES pins of the AD2S1210. Tests were conducted for 16 bits.
+   - The member ``freq_clockin`` needs to be set to the frequency of the external crystal of the AD2S1210. By default the adapter boards come with a 8.192MHz (``8192000U``) crystal.
+   - The member ``pole_pairs_machine`` needs to be set according to the electric machine the resolver is attached to. It influences the conversion from mechanical to electrical position and velocity.
+   - The member ``pole_pairs_resolver`` needs to be set according to the resolver data. It influences the conversion from measured to mechanical velocity.
+   - The member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``.
+   - The member ``mode_after_init`` defines the operating mode of the ip core after init. This is important when the IP Core shall be used in the PL without using the software driver functions 
+     that read position and velocity values via AXI. Set the mode to the intended operating mode that you'd like to use the IP Core in the PL. Every mode except ``CONFIG_MODE`` is allowed. When using 
+     the resolverIP just in the processor, set the mode to ``CONFIG_MODE``. Switching modes during operation is handled via the read functions for position and velocity.
 
 .. code-block:: c
    :caption: A declaration of the struct ``uz_resolverIP_config_t``
@@ -169,9 +176,10 @@ Note that the member ``freq_clockin`` needs to be set to the frequency of the ex
            .ip_clk_frequency_Hz=IP_CLK_FREQ,
            .resolution = 16,
            .freq_clockin = CRYSTAL_FREQUENCY,
-           .zero_position_mech = 0,
-           .pole_pairs_mach = 1,
-           .pole_pairs_res = 2
+           .pole_pairs_machine = 4.0f,
+           .pole_pairs_resolver = 1.0f,
+           .zero_position_mechanical = 0.3964f,
+           .mode_after_init = CONFIG_MODE,
         };
 
 With a parameter of type  ``uz_resolverIP_config_t``, the function ``uz_resolverIP_init`` in ``vitis\software\Baremetal\src\IP_Cores\uz_resolverIP\uz_resolverIP.c`` is called. It returns a pointer to an instance of the struct ``uz_resolverIP_t``.
@@ -200,13 +208,7 @@ Because doxygen can't display nested structs, here is the declaration of ``uz_re
     	}; 
     };
 
-Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IPCore manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
-
-Note that the member ``zero_Position`` allows for setting an initial position that corresponds to position = 0. All mechanical and electrical positions returned by the functions ``uz_resolverIP_readElectricalPosition`` and ``uz_resolverIP_readMechanicalPosition`` are with reference to ``zero_Position``. ``zero_Position`` can be set via the function ``uz_resolverIP_setZeroPosition``. Default value is 0.
-
-Note that the member ``pole_pairs_machine`` influences the conversion from mechanical to electrical position and velocity.  ``pole_pairs_machine`` can be set via the function ``uz_resolverIP_setMachinePolePairs``. 
-
-Note that the member ``pole_pairs_resolver`` influences the conversion from measured to mechanical velocity.  ``pole_pairs_resolver`` can be set via the function ``uz_resolverIP_setResolverPolePairs``. 
+Note that the member ``mode`` coincides with the AD2S1210's modes (see `datasheet <https://www.analog.com/media/en/technical-documentation/data-sheets/AD2S1210.pdf>`_), with the exception of the ``POSITION_VELOCITY_MODE``. Here the IP Core manages the timely transition between ``POSITION_MODE`` and ``VELOCITY_MODE`` for reading both position and velocity.
 
 The member ``union`` is used for buffering the position and velocity values read in via AXI from the RESDAT register. Position values are written to bits 0 to 15, velocity values are written to bits 16 to 31.
 
@@ -218,8 +220,6 @@ A pointer to an  instance of type uz_resolverIP_t can be stored in ``GlobalData.
    uz_resolverIP_setZeroPosition(Global_Data.objects.resolver_IP,0.45F);
    uz_resolverIP_setMachinePolePairs(Global_Data.objects.resolver_IP,2.F);
    uz_resolverIP_setResolverPolePairs(Global_Data.objects.resolver_IP,1.F);
-
-A ready-to-use intialization can be found in ``vitis\software\Baremetal\src\hw_init\uz_resolverIP_init.c``. The function ``initialize_resolverIP_on_D5()`` should be called in the ``init_ip_cores`` case of the intialization state machine of ``vitis\software\Baremetal\src\main.c``.
 
 Data Aquistition
 ^^^^^^^^^^^^^^^^

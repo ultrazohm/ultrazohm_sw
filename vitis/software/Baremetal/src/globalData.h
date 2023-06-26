@@ -12,6 +12,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_ResonantController/uz_resonant_controller.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -169,6 +170,8 @@ typedef struct{
 	uz_resonantController_t* resonant_control_dq_2H;
 	uz_resonantController_t* resonant_control_xy_6H;
 	uz_resonantController_t* resonant_control_zero_6H;
+
+	uz_VSD_6ph_FD_t* OPF_FD;
 
 }object_pointers_t;
 

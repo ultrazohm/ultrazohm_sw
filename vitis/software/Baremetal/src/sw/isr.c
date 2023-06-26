@@ -258,6 +258,8 @@ void ISR_Control(void *data)
 	Global_Data.av.theta_mech_rad = theta_mech_calc_from_resolver - Global_Data.av.theta_mech_offset_rad;
 	Global_Data.av.theta_elec_rad = Global_Data.av.theta_mech_rad * Global_Data.av.polepairs;
 
+	Global_Data.av.i_dq = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.i_alphabeta, Global_Data.av.theta_elec_rad);
+
 	// reference currents in VSD-Systems
 	Global_Data.rasv.i_dq_ref.d = 0;
 	Global_Data.rasv.i_dq_ref.q = 1;

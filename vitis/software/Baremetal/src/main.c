@@ -73,7 +73,7 @@ struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
 		.simulate_mechanical_system = false,
 		.switch_pspl = true
 };
-
+float Limitation_saftey_factor = 0.8f; //To represent the saftey factor from simulation
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -130,7 +130,7 @@ int main(void)
         	    .decoupling_select = linear_decoupling,
         	    .config_id = config_id,
         	    .config_iq = config_iq,
-        	    .max_modulation_index = 1.0f / sqrtf(3.0f),
+        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor,
 				.config_PMSM = pmsm_config_dq
         	};
 
@@ -138,7 +138,7 @@ int main(void)
         	    .decoupling_select = no_decoupling,
         	    .config_id = config_ix,
         	    .config_iq = config_iy,
-        	    .max_modulation_index = 1.0f / sqrtf(3.0f)
+        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor
         	};
 
         	Global_Data.objects.CC_dq_instance = uz_CurrentControl_init(CC_dq_config);

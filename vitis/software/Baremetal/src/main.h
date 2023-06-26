@@ -53,7 +53,7 @@
 
 #include "include/pwm_init.h"
 #include "include/resolver_init.h"
-
+#include "include/tempMeasurement.h"
 
 //----------------------------------------------------
 // FUNCTIONS

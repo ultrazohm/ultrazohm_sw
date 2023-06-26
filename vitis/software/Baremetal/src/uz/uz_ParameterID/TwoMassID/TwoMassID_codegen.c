@@ -127,12 +127,14 @@ typedef struct {
   } wordL;
 } IEEESingle;
 
+
 real_T rtInf;
 real_T rtMinusInf;
 real_T rtNaN;
 real32_T rtInfF;
 real32_T rtMinusInfF;
 real32_T rtNaNF;
+
 
 /*
  * Initialize rtInf needed by the generated code.

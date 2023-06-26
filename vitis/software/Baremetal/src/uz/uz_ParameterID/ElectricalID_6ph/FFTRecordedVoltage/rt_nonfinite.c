@@ -21,12 +21,14 @@
 #pragma warning(disable : 264)
 #endif
 
+/*
 real_T rtNaN = (real_T)NAN;
 real_T rtInf = (real_T)INFINITY;
 real_T rtMinusInf = -(real_T)INFINITY;
 real32_T rtNaNF = (real32_T)NAN;
 real32_T rtInfF = (real32_T)INFINITY;
 real32_T rtMinusInfF = -(real32_T)INFINITY;
+*/
 
 #if defined(__ICL) && __ICL == 1700
 #pragma warning(default : 264)

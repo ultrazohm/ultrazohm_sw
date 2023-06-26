@@ -1,0 +1,10 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/AD2S1210_Interface.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'AD2S1210_Interface'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/Resolver_Interface_v1_0.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'Resolver_Interface_v1_0'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/Resolver_Interface_v1_0_S00_AXI.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'Resolver_Interface_v1_0_S00_AXI'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/src/spi_master_LTC.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'spi_master_LTC'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_resolverIP/sim/resolver_ip_tb.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'resolver_ip_tb'

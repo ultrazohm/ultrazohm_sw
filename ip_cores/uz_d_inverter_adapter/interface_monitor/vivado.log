@@ -1,0 +1,398 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Wed Dec 21 12:52:57 2022
+# Process ID: 18320
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent30064 C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_d_inverter_adapter\interface_monitor\interface_monitor.xpr
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr
+INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
+Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_definition'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+open_project: Time (s): cpu = 00:00:10 ; elapsed = 00:00:06 . Memory (MB): peak = 1058.762 ; gain = 0.000
+update_compile_order -fileset sources_1
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd}
+Successfully read diagram <interface_mon> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd>
+validate_bd_design -force
+ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force
+INFO: [BD 41-1637] Generated targets are already up-to-date for block design 'interface_mon' - hence not re-generating.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property interface_mode master [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+save_bd_design
+Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_d_inverter_adapter\interface_monitor\interface_monitor.srcs\sources_1\bd\interface_mon\interface_mon.bd> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/ui/bd_9b936e46.ui> 
+set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+INFO: [IP_Flow 19-725] Reloaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] IPUserFilesDir: Could not find the directory 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.ip_user_files'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:IncreEncoder_V24_ip:24.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/IncreEncoder_V24_ip_v24_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/PWM_and_SS_control_V3_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V3_ip_v1_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:Trans_123_dq_V12_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Simulation/hdl_prj/ipcore/Trans_123_dq_V12_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Trans_123_dq_V12_ip_v1_0
+open_project: Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 1286.785 ; gain = 228.023
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd}
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A1_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A1_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A1_iobufds_inst
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_analog_adapter/A1_adapter/adc_debug/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_8
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_9
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A2_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A2_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A2_iobufds_inst
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A3_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A3_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - iobufds_inst_2
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_0
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_1
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_2
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_3
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_0
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_1
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_2
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_3
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_2L
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Gates_Vector
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - Interrupt_Start_Center
+Adding component instance block -- mwn.de:ip:PWM_SS_3L_ip:1.4 - PWM_SS_3L_ip_0
+Adding component instance block -- xilinx.com:ip:vio:3.0 - Set_Deadtime_3L
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D2_adapter/Gates_3L/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:module_ref:top_npc_state_machine:1.0 - top_npc_state_machine_0
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_3L
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+WARNING: [BD 41-1731] Type mismatch between connected pins: /uz_digital_adapter/D2_adapter/Gates_3L/Enable_Gates(rst) and /uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/enable(undef)
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_D3_test
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_Encoder
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D5_adapter/ila_Encoder: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- TUM:user:AXI2TCM:1.1 - AXI2TCM_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/DataMover/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Concat_interrupts
+Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - Trigger_f_cc
+Adding component instance block -- xilinx.com:ip:vio:3.0 - adc_delay
+Adding component instance block -- xilinx.com:module_ref:delay_trigger:1.0 - delay_trigger_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/Interrupt/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:mux_axi_ip:1.2 - mux_axi_ip_1
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_interrupt
+WARNING: [BD 41-1731] Type mismatch between connected pins: /uz_system/Interrupt/Trigger_f_cc/interrupt(intr) and /uz_system/Interrupt/ila_0/probe6(undef)
+Adding component instance block -- xilinx.com:ip:axi_timebase_wdt:3.0 - axi_timebase_wdt_0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1
+Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - timer_uptime_64bit
+Adding component instance block -- xilinx.com:ip:clk_wiz:6.0 - clk_wiz_0
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_100MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_10MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_25MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_50MHz
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - Enable_Gates_CPLD_High
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - Enable_Gates_CPLD_Low
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - axi_gpio_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_AXI2TCM_Bit4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_Gate_Bit1
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_Inverter_Bit0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1
+Adding component instance block -- user.org:ip:uz_axi_testIP:1.0 - uz_axi_testIP_0
+Adding component instance block -- xilinx.com:ip:uz_d_inverter_adapter:1.0 - uz_d_inverter_adapter_0
+Adding component instance block -- xilinx.com:ip:uz_d_inverter_adapter:1.0 - uz_d_inverter_adapter_1
+Adding component instance block -- xilinx.com:user:uz_inverter_adapter_mapping:1.0 - uz_inverter_adapter_0
+Adding component instance block -- xilinx.com:user:uz_inverter_adapter_mapping:1.0 - uz_inverter_adapter_1
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_0
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_1
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_1
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_2
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_FAULT_diff
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_user/ila_FAULT_diff: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7
+Adding component instance block -- xilinx.com:ip:zynq_ultra_ps_e:3.3 - zynq_ultra_ps_e_0
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0
+Excluding slave segment /zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH from address space /uz_system/DataMover/AXI2TCM_0/M00_AXI.
+Successfully read diagram <zusys> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd>
+open_bd_design: Time (s): cpu = 00:00:21 ; elapsed = 00:00:21 . Memory (MB): peak = 1611.801 ; gain = 142.184
+update_compile_order -fileset sources_1
+update_ip_catalog -rebuild
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'.
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:IncreEncoder_V24_ip:24.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/IncreEncoder_V24_ip_v24_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/PWM_and_SS_control_V3_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V3_ip_v1_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:Trans_123_dq_V12_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Simulation/hdl_prj/ipcore/Trans_123_dq_V12_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Trans_123_dq_V12_ip_v1_0
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0
+endgroup
+delete_bd_objs [get_bd_cells uz_user/interface_mon_0]
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr
+INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
+Current project path is 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_definition'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+update_compile_order -fileset sources_1
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd}
+Successfully read diagram <interface_mon> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd>
+ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force
+INFO: [BD 41-1637] Generated targets are already up-to-date for block design 'interface_mon' - hence not re-generating.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property interface_mode monitor [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+INFO: [IP_Flow 19-725] Reloaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor'
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr
+Scanning sources...
+Finished scanning sources
+WARNING: [filemgmt 56-3] IPUserFilesDir: Could not find the directory 'C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.ip_user_files'.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:IncreEncoder_V24_ip:24.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/IncreEncoder_V24_ip_v24_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/PWM_and_SS_control_V3_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V3_ip_v1_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:Trans_123_dq_V12_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Simulation/hdl_prj/ipcore/Trans_123_dq_V12_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Trans_123_dq_V12_ip_v1_0
+open_project: Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 2130.797 ; gain = 0.000
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd}
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A1_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A1_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A1_iobufds_inst
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_analog_adapter/A1_adapter/adc_debug/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_8
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_9
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A2_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A2_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - A2_iobufds_inst
+Adding component instance block -- UltraZohm:user:ADC_LTC2311:3.0 - A3_ADC_LTC2311
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - A3_inv_input
+Adding component instance block -- xilinx.com:module_ref:iobufds_inst:1.0 - iobufds_inst_2
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_0
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_1
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_2
+Adding component instance block -- xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 - PWM_and_SS_control_V_3
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_0
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_1
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_2
+Adding component instance block -- user.org:ip:uz_interlockDeadtime2L:1.0 - uz_interlockDeadtime_3
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_2L
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Gates_Vector
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - Interrupt_Start_Center
+Adding component instance block -- mwn.de:ip:PWM_SS_3L_ip:1.4 - PWM_SS_3L_ip_0
+Adding component instance block -- xilinx.com:ip:vio:3.0 - Set_Deadtime_3L
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D2_adapter/Gates_3L/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:module_ref:top_npc_state_machine:1.0 - top_npc_state_machine_0
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_Gates_3L
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+WARNING: [BD 41-1731] Type mismatch between connected pins: /uz_digital_adapter/D2_adapter/Gates_3L/Enable_Gates(rst) and /uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/enable(undef)
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_D3_test
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_Encoder
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_digital_adapter/D5_adapter/ila_Encoder: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- TUM:user:AXI2TCM:1.1 - AXI2TCM_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/DataMover/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:util_vector_logic:2.0 - util_vector_logic_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - Concat_interrupts
+Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - Trigger_f_cc
+Adding component instance block -- xilinx.com:ip:vio:3.0 - adc_delay
+Adding component instance block -- xilinx.com:module_ref:delay_trigger:1.0 - delay_trigger_0
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_0
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_system/Interrupt/ila_0: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:mux_axi_ip:1.2 - mux_axi_ip_1
+Adding component instance block -- xilinx.com:ip:vio:3.0 - vio_interrupt
+WARNING: [BD 41-1731] Type mismatch between connected pins: /uz_system/Interrupt/Trigger_f_cc/interrupt(intr) and /uz_system/Interrupt/ila_0/probe6(undef)
+Adding component instance block -- xilinx.com:ip:axi_timebase_wdt:3.0 - axi_timebase_wdt_0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1
+Adding component instance block -- xilinx.com:ip:axi_timer:2.0 - timer_uptime_64bit
+Adding component instance block -- xilinx.com:ip:clk_wiz:6.0 - clk_wiz_0
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_100MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_10MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_25MHz
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - proc_sys_reset_50MHz
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - Enable_Gates_CPLD_High
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - Enable_Gates_CPLD_Low
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - axi_gpio_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_AXI2TCM_Bit4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_Gate_Bit1
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_Enable_Inverter_Bit0
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - smartconnect_1
+Adding component instance block -- user.org:ip:uz_axi_testIP:1.0 - uz_axi_testIP_0
+Adding component instance block -- xilinx.com:ip:uz_d_inverter_adapter:1.0 - uz_d_inverter_adapter_0
+Adding component instance block -- xilinx.com:ip:uz_d_inverter_adapter:1.0 - uz_d_inverter_adapter_1
+Adding component instance block -- xilinx.com:user:uz_inverter_adapter_mapping:1.0 - uz_inverter_adapter_0
+Adding component instance block -- xilinx.com:user:uz_inverter_adapter_mapping:1.0 - uz_inverter_adapter_1
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_0
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_1
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_0
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_1
+Adding component instance block -- xilinx.com:ip:IncreEncoder_V24_ip:24.0 - IncreEncoder_V24_ip_2
+Adding component instance block -- xilinx.com:ip:ila:6.2 - ila_FAULT_diff
+INFO: [xilinx.com:ip:ila:6.2-6] /uz_user/ila_FAULT_diff: Xilinx recommends using the System ILA IP in IP Integrator. The System ILA IP is functionally equivalent to an ILA and offers additional benefits in debugging interfaces both within IP Integrator and the Hardware Manager. Consult the Programming and Debug User Guide UG908 for further details.
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_2
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_3
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_4
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_5
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_6
+Adding component instance block -- xilinx.com:ip:xlslice:1.0 - xlslice_7
+Adding component instance block -- xilinx.com:ip:zynq_ultra_ps_e:3.3 - zynq_ultra_ps_e_0
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0
+Excluding slave segment /zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH from address space /uz_system/DataMover/AXI2TCM_0/M00_AXI.
+Successfully read diagram <zusys> from BD file <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd>
+open_bd_design: Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2130.797 ; gain = 0.000
+update_compile_order -fileset sources_1
+update_ip_catalog -rebuild
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores'.
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:IncreEncoder_V24_ip:24.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/IncreEncoder_V24_ip_v24_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/IncreEncoder_V24_ip/Simulation/hdl_prj/ipcore/IncreEncoder_V24_ip_v24_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:PWM_and_SS_control_V3_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/PWM_and_SS_control_V3_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/PWM_and_SS_control_ip_v3_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V3_ip_v1_0
+WARNING: [IP_Flow 19-1663] Duplicate IP found for 'xilinx.com:ip:Trans_123_dq_V12_ip:1.0'. The one found in IP location 'c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Simulation/hdl_prj/ipcore/Trans_123_dq_V12_ip_v1_0' will take precedence over the same IP in location c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/Trans_123_dq_V12_ip/Trans_123_dq_V12_ip_v1_0
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0
+endgroup
+connect_bd_intf_net [get_bd_intf_pins uz_user/interface_mon_0/uz_inverter_adapter] [get_bd_intf_pins uz_user/uz_inverter_adapter_0/uz_inverter_adapter]
+connect_bd_net [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon] [get_bd_pins uz_user/ila_FAULT_diff/probe0]
+delete_bd_objs [get_bd_nets uz_user/interface_mon_0_H3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe0] [get_bd_pins uz_user/interface_mon_0/L3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe1] [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe2] [get_bd_pins uz_user/interface_mon_0/L2_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe3] [get_bd_pins uz_user/interface_mon_0/H2_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe4] [get_bd_pins uz_user/interface_mon_0/L1_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe5] [get_bd_pins uz_user/interface_mon_0/H1_FAULT_mon]
+save_bd_design
+Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\vivado\project\zusys\zusys.bd> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ec7575b2.ui> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ecf4f3b3.ui> 
+validate_bd_design
+WARNING: [BD 41-702] Propagation TCL tries to overwrite USER strength parameter PSU__M_AXI_GP2__FREQMHZ(100.0) on '/zynq_ultra_ps_e_0' with propagated value(99.999985). Command ignored
+INFO: [Ipptcl 7-1463] No Compatible Board Interface found. Board Tab not created in customize GUI
+xit::source_ipfile: Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 2333.988 ; gain = 0.000
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m00_exit_pipeline/m00_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m01_exit_pipeline/m01_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m02_exit_pipeline/m02_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m03_exit_pipeline/m03_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m04_exit_pipeline/m04_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m05_exit_pipeline/m05_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m06_exit_pipeline/m06_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m08_exit_pipeline/m08_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m09_exit_pipeline/m09_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m10_exit_pipeline/m10_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m11_exit_pipeline/m11_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m12_exit_pipeline/m12_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m13_exit_pipeline/m13_exit' is ignored
+WARNING: [BD 41-721] Attempt to set value '0' on disabled parameter 'HAS_LOCK' of cell '/m14_exit_pipeline/m14_exit' is ignored
+xit::source_ipfile: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2333.988 ; gain = 0.000
+INFO: [xilinx.com:ip:clk_wiz:6.0-1] /uz_system/uz_clocks/clk_wiz_0 clk_wiz propagate
+WARNING: [BD 41-237] Bus Interface property AWUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_0/AXI4(0) and /uz_system/smartconnect_0/M07_AXI(16)
+WARNING: [BD 41-237] Bus Interface property ARUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_0/AXI4(0) and /uz_system/smartconnect_0/M07_AXI(16)
+WARNING: [BD 41-237] Bus Interface property AWUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_1/AXI4(0) and /uz_system/smartconnect_1/M02_AXI(16)
+WARNING: [BD 41-237] Bus Interface property ARUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_1/AXI4(0) and /uz_system/smartconnect_1/M02_AXI(16)
+WARNING: [BD 41-237] Bus Interface property AWUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_2/AXI4(0) and /uz_system/smartconnect_1/M03_AXI(16)
+WARNING: [BD 41-237] Bus Interface property ARUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_2/AXI4(0) and /uz_system/smartconnect_1/M03_AXI(16)
+WARNING: [BD 41-237] Bus Interface property AWUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4(0) and /uz_system/smartconnect_1/M04_AXI(16)
+WARNING: [BD 41-237] Bus Interface property ARUSER_WIDTH does not match between /uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4(0) and /uz_system/smartconnect_1/M04_AXI(16)
+WARNING: [BD 41-237] Bus Interface property WUSER_WIDTH does not match between /zynq_ultra_ps_e_0/S_AXI_LPD(0) and /uz_system/DataMover/AXI2TCM_0/M00_AXI(1)
+WARNING: [BD 41-237] Bus Interface property RUSER_WIDTH does not match between /zynq_ultra_ps_e_0/S_AXI_LPD(0) and /uz_system/DataMover/AXI2TCM_0/M00_AXI(1)
+WARNING: [BD 41-237] Bus Interface property BUSER_WIDTH does not match between /zynq_ultra_ps_e_0/S_AXI_LPD(0) and /uz_system/DataMover/AXI2TCM_0/M00_AXI(1)
+WARNING: [BD 41-237] Bus Interface property AWUSER_WIDTH does not match between /uz_user/uz_axi_testIP_0/AXI4(0) and /uz_user/smartconnect_1/M00_AXI(16)
+WARNING: [BD 41-237] Bus Interface property ARUSER_WIDTH does not match between /uz_user/uz_axi_testIP_0/AXI4(0) and /uz_user/smartconnect_1/M00_AXI(16)
+validate_bd_design: Time (s): cpu = 00:01:56 ; elapsed = 00:03:18 . Memory (MB): peak = 2349.344 ; gain = 15.355
+save_bd_design
+Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\vivado\project\zusys\zusys.bd> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ec7575b2.ui> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ecf4f3b3.ui> 
+save_bd_design: Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 2349.344 ; gain = 0.000
+reset_run synth_1
+reset_run zusys_smartconnect_1_1_synth_1
+reset_run zusys_smartconnect_0_0_synth_1
+reset_run zusys_smartconnect_1_0_synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+INFO: [BD 41-1662] The design 'zusys.bd' is already validated. Therefore parameter propagation will not be re-run.
+Wrote  : <C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\vivado\project\zusys\zusys.bd> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ec7575b2.ui> 
+Wrote  : <C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/ui/bd_ecf4f3b3.ui> 

@@ -1,0 +1,10 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../src/AD2S1210_Interface.vhd" \
+"../../../../src/Resolver_Interface_v1_0.vhd" \
+"../../../../src/Resolver_Interface_v1_0_S00_AXI.vhd" \
+"../../../../src/spi_master_LTC.vhd" \
+"../../../../sim/resolver_ip_tb.vhd" \
+
+# Do not sort compile order
+nosort

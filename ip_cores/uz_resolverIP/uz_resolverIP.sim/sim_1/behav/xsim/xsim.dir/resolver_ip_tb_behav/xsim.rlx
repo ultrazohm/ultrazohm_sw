@@ -1,0 +1,12 @@
+
+{ 
+    crc :  7337280774684765690  , 
+    ccp_crc :  0  , 
+    cmdline : " -wto 39f7d946e63f4e798e654901b15f11a9 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot resolver_ip_tb_behav xil_defaultlib.resolver_ip_tb" , 
+    buildDate : "Aug  5 2020" , 
+    buildTime : "23:19:43" , 
+    linkCmd : "C:\\Xilinx\\Vivado\\2020.1\\data\\..\\tps\\mingw\\6.2.0\\win64.o\\nt\\bin\\gcc.exe -Wa,-W  -O -Wl,--stack,104857600 -o \"xsim.dir/resolver_ip_tb_behav/xsimk.exe\"   \"xsim.dir/resolver_ip_tb_behav/obj/xsim_0.win64.obj\" \"xsim.dir/resolver_ip_tb_behav/obj/xsim_1.win64.obj\" -L\"C:\\Xilinx\\Vivado\\2020.1\\lib\\win64.o\" -lrdi_simulator_kernel   -lrdi_simbridge_kernel" , 
+    aggregate_nets : 
+    [ 
+    ] 
+} 

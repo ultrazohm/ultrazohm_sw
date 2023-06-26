@@ -1,0 +1,99 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Wed Dec 21 12:52:57 2022
+# Process ID: 18320
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent30064 C:\GIT\UltraZohm\software\ultrazohm_sw_PullRequests\ip_cores\uz_d_inverter_adapter\interface_monitor\interface_monitor.xpr
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd}
+validate_bd_design -force
+ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force
+ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property interface_mode master [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+save_bd_design
+set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd}
+update_compile_order -fileset sources_1
+update_ip_catalog -rebuild
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0
+endgroup
+delete_bd_objs [get_bd_cells uz_user/interface_mon_0]
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor/interface_monitor.srcs/sources_1/bd/interface_mon/interface_mon.bd}
+ipx::package_project -root_dir C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor -vendor xilinx.com -library user -taxonomy /UserIP -module interface_mon -force
+ipx::add_bus_interface uz_inverter_adapter [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+set_property abstraction_type_vlnv th-nuernberg.de:user:uz_inverter_adapter_rtl:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property bus_type_vlnv th-nuernberg.de:user:uz_inverter_adapter:1.0 [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property interface_mode monitor [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+ipx::add_port_map h3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H3_FAULT [ipx::get_port_maps h3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H2_FAULT [ipx::get_port_maps h2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l3_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L3_FAULT [ipx::get_port_maps l3_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L1_FAULT [ipx::get_port_maps l1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map h1_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name H1_FAULT [ipx::get_port_maps h1_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+ipx::add_port_map l2_fault [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]
+set_property physical_name L2_FAULT [ipx::get_port_maps l2_fault -of_objects [ipx::get_bus_interfaces uz_inverter_adapter -of_objects [ipx::find_open_core xilinx.com:user:interface_mon:1.0]]]
+set_property core_revision 2 [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::create_xgui_files [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::update_checksums [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+ipx::save_core [ipx::find_open_core xilinx.com:user:interface_mon:1.0]
+update_ip_catalog -rebuild -repo_path c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/ip_cores/uz_d_inverter_adapter/interface_monitor
+close_project
+open_project C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/ultrazohm.xpr
+open_bd_design {C:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests/vivado/project/zusys/zusys.bd}
+update_compile_order -fileset sources_1
+update_ip_catalog -rebuild
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:user:interface_mon:1.0 uz_user/interface_mon_0
+endgroup
+connect_bd_intf_net [get_bd_intf_pins uz_user/interface_mon_0/uz_inverter_adapter] [get_bd_intf_pins uz_user/uz_inverter_adapter_0/uz_inverter_adapter]
+connect_bd_net [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon] [get_bd_pins uz_user/ila_FAULT_diff/probe0]
+delete_bd_objs [get_bd_nets uz_user/interface_mon_0_H3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe0] [get_bd_pins uz_user/interface_mon_0/L3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe1] [get_bd_pins uz_user/interface_mon_0/H3_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe2] [get_bd_pins uz_user/interface_mon_0/L2_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe3] [get_bd_pins uz_user/interface_mon_0/H2_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe4] [get_bd_pins uz_user/interface_mon_0/L1_FAULT_mon]
+connect_bd_net [get_bd_pins uz_user/ila_FAULT_diff/probe5] [get_bd_pins uz_user/interface_mon_0/H1_FAULT_mon]
+save_bd_design
+validate_bd_design
+save_bd_design
+reset_run synth_1
+reset_run zusys_smartconnect_1_1_synth_1
+reset_run zusys_smartconnect_0_0_synth_1
+reset_run zusys_smartconnect_1_0_synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 6

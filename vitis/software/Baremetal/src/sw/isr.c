@@ -318,7 +318,7 @@ void ISR_Control(void *data)
         	v_dqxy_limited_volts.z1 = 0.0f;
         	v_dqxy_limited_volts.z2 = 0.0f;
         	REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_to_abc(v_dqxy_limited_volts, Global_Data.av.theta_elec);
-        	DutyCycle_output = uz_Sinusoidal_generate_DutyCycles_6ph(REAL_v_abc_ref, Global_Data.av.v_dc2);
+        	DutyCycle_output = uz_spwm_abc_6ph(REAL_v_abc_ref, Global_Data.av.v_dc2);
         	Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.system1.DutyCycle_A;
         	Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.system1.DutyCycle_B;
         	Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.system1.DutyCycle_C;

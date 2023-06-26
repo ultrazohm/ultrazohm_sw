@@ -55,6 +55,9 @@
 #include "include/resolver_init.h"
 #include "include/tempMeasurement.h"
 
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

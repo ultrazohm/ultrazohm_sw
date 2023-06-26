@@ -85,4 +85,23 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t* self, float input);
  */
 uz_3ph_dq_t uz_signals_IIR_Filter_dq_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint);
 
+/**
+ * @brief Evaluates the input. sets the output to one if the input is bigger than the threshold value otherwise to zero
+ *
+ * @param input Any input signal
+ * @param threshold Threshold value for evaluation
+ * @return float evaluation value (0 or 1)
+ */
+float uz_signals_threshold_Evaluation(float input, float threshold);
+
+/**
+ * @brief Passes the input signal through if it is inside the hysteresis band limited by the upper or lower limit, otherwise the output is zero
+ *
+ * @param input Any input signal
+ * @param upper_limit Upper limit of the hysteresis band
+ * @param lower_limit Lower limit of the hysteresis band (needs to be smaller than the upper limit)
+ * @return float filtered signal
+ */
+float uz_signals_hysteresisband_filter(float input, float upper_limit, float lower_limit);
+
 #endif // UZ_SIGNALS_H

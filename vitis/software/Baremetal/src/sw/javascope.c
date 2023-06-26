@@ -106,9 +106,9 @@ int JavaScope_initalize(DS_Data* data)
 	//js_ch_observable[JSO_omega_el] = &(ParaID_Data.ActualValues.omega_el);
 	//js_ch_observable[JSO_Theta_el] = &ParaID_Data.ActualValues.theta_el;
 	//js_ch_observable[JSO_theta_mech] = &ParaID_Data.ActualValues.theta_m;
-	js_ch_observable[JSO_omega_el] = &data->av.omega_el);
-	js_ch_observable[JSO_Theta_el] = &data->av.theta_el;
-	js_ch_observable[JSO_theta_mech] = &data->av.theta_m;
+	js_ch_observable[JSO_omega_el] = &data->av.electricalRotorSpeedRADpS;
+	js_ch_observable[JSO_Theta_el] = &data->av.theta_elec_rad;
+	js_ch_observable[JSO_theta_mech] = &data->av.theta_mech_rad;
 
 	js_ch_observable[JSO_state] = &(para_state);
 

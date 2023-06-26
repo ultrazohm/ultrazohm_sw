@@ -31,6 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -273,11 +274,6 @@ void ISR_Control(void *data)
 	Global_Data.rasv.i_vsd_6ph_ref.z1 = 0;
 	Global_Data.rasv.i_vsd_6ph_ref.z2 = 0;
 
-	Global_Data.rasv.i_xy_ref.alpha = Global_Data.rasv.i_vsd_6ph_ref.x;
-	Global_Data.rasv.i_xy_ref.beta = Global_Data.rasv.i_vsd_6ph_ref.x;
-	Global_Data.rasv.i_zero_ref.d = Global_Data.rasv.i_vsd_6ph_ref.z1;
-	Global_Data.rasv.i_zero_ref.q = Global_Data.rasv.i_vsd_6ph_ref.z2;
-
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -289,6 +285,24 @@ void ISR_Control(void *data)
 		// change DutyCycles=0 to 0.01
 		ParaID_DutyCycle.system1 = dc_non_zero(ParaID_DutyCycle.system1);
 		ParaID_DutyCycle.system2 = dc_non_zero(ParaID_DutyCycle.system2);
+
+
+		// fault detection:
+
+		Global_Data.av.faultindices = uz_vsd_opf_6ph_faultdetection_step(Global_Data.objects.OPF_FD, Global_Data.av.i_vsd_6ph, Global_Data.av.electricalRotorSpeedRADpS);
+
+		//
+
+		// OPF Control reference values:
+
+		Global_Data.av.k_parameter = uz_get_k_parameter(Global_Data.av.faultindices, Global_Data.av.N1N2, Global_Data.av.MLMT);
+
+		Global_Data.rasv.i_xy_ref.alpha = Global_Data.av.k_parameter.k1 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k2 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+		Global_Data.rasv.i_xy_ref.beta  = Global_Data.av.k_parameter.k3 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k4 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+		Global_Data.rasv.i_zero_ref.d   = Global_Data.av.k_parameter.k5 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k6 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+		Global_Data.rasv.i_zero_ref.q   = Global_Data.av.k_parameter.k7 * Global_Data.rasv.i_vsd_6ph_ref.alpha + Global_Data.av.k_parameter.k8 * Global_Data.rasv.i_vsd_6ph_ref.beta;
+
+		//
 
 
 		// dq control

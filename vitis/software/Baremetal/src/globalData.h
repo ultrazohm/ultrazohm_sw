@@ -13,6 +13,7 @@
 #include "uz/uz_ResonantController/uz_resonant_controller.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_FD.h"
+#include "uz/uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -109,6 +110,10 @@ typedef struct _actualValues_ {
 	uz_3ph_alphabeta_t i_xy;
 	uz_3ph_dq_t i_xy_n;
 	uz_3ph_dq_t i_zero;
+	uz_6phFD_indices faultindices;
+	uz_6ph_MLMT_kparameter k_parameter;
+	ML_MT_optimization MLMT;
+	neutral_point_configuration N1N2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

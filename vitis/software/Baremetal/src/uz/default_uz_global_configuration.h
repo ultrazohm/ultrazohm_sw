@@ -57,6 +57,7 @@
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               1U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES		1U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES			10U
+#define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -96,4 +97,5 @@
     #define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        5U
     #define UZ_PARAMETERID_MAX_INSTANCES					5U
 	#define UZ_PARAMETERID_6PH_MAX_INSTANCES				5U
+	#define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #endif

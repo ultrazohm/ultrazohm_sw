@@ -185,76 +185,57 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
 	return (decouple_voltage);
 }
 
-float uz_CurrentControl_set_Kp_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, float tau_sigma_sec)
 {
-	float Kp_id = config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
-	return (Kp_id);
+	uz_assert_not_NULL(self);
+	uz_assert(tau_sigma_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Ki_id = self->config.config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	float Kp_id = self->config.config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	float Kp_iq = self->config.config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	float Ki_iq = self->config.config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
 }
 
-float uz_CurrentControl_set_Ki_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t *self, float tau_sigma_sec)
 {
-	float Ki_id = config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
-	return (Ki_id);
+	uz_assert_not_NULL(self);
+	uz_assert(tau_sigma_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Kp_id = self->config.config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	float Ki_id = self->config.config_PMSM.Ld_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	float Kp_iq = self->config.config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	float Ki_iq = self->config.config_PMSM.Lq_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
 }
 
-float uz_CurrentControl_set_Kp_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, float bandwidth_rad_per_sec)
 {
-	float Kp_iq = config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
-	return (Kp_iq);
+	uz_assert_not_NULL(self);
+	uz_assert(bandwidth_rad_per_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Kp_id = self->config.config_PMSM.Ld_Henry * bandwidth_rad_per_sec;
+	float Ki_id = self->config.config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	float Kp_iq = self->config.config_PMSM.Lq_Henry * bandwidth_rad_per_sec;
+	float Ki_iq = self->config.config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
 }
 
-float uz_CurrentControl_set_Ki_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
-{
-	float Ki_iq = config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
-	return (Ki_iq);
-}
 
-float uz_CurrentControl_set_Kp_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
-{
-	float Kp_id = config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
-	return (Kp_id);
-}
-
-float uz_CurrentControl_set_Ki_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
-{
-	float Ki_id = config_PMSM.Ld_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
-	return (Ki_id);
-}
-
-float uz_CurrentControl_set_Kp_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
-{
-	float Kp_iq = config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
-	return (Kp_iq);
-}
-
-float uz_CurrentControl_set_Ki_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
-{
-	float Ki_iq = config_PMSM.Lq_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
-	return (Ki_iq);
-}
-
-float uz_CurrentControl_set_Kp_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
-{
-	float Kp_id = config_PMSM.Ld_Henry * bandwidth_rad_per_sec;
-	return (Kp_id);
-}
-
-float uz_CurrentControl_set_Ki_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
-{
-	float Ki_id = config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
-	return (Ki_id);
-}
-
-float uz_CurrentControl_set_Kp_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
-{
-	float Kp_iq = config_PMSM.Lq_Henry * bandwidth_rad_per_sec;
-	return (Kp_iq);
-}
-
-float uz_CurrentControl_set_Ki_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
-{
-	float Ki_iq = config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
-	return (Ki_iq);
-}
 
 #endif

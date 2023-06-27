@@ -28,6 +28,8 @@ typedef struct uz_SetPoint_t uz_SetPoint_t;
 struct uz_SetPoint_config {
 	uz_PMSM_t config_PMSM; /**< PMSM struct which carries necessary motor related parameters for field weakening and MTPA */
 	float id_ref_Ampere; 	/**< manual i_d reference current. Will be added on top of the MTPA d-current. Unused, if FW is active. */
+	float relative_torque_tolerance; /**< sets the relative torque tolerance for the newton raphson solver in percent. I.e. with 0.01 tolerance and a M_ref = 8 Nm, the absolute tolerance
+									will be max 0.08 Nm. An assertion triggers, if the approximated iq-current leads to a estimated M_ref which is outside of this tolerance band. */
 	bool is_field_weakening_enabled; /**< flag to enable field_weaking. True = enabled */
 	enum uz_Setpoint_motor_type motor_type;/**< Selection for which motor type is used \n
 											SMPMSM -> surface-mounted PMSM (Ld=Lq) \n

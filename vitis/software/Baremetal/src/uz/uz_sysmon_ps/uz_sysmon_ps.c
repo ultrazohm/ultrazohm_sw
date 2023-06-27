@@ -75,14 +75,14 @@ uz_sysmon_ps_t *uz_sysmon_ps_init(uint16_t sysmon_device_id)
     return (self);
 }
 
-float uz_sysmon_ps_read_temperature(uz_sysmon_ps_t *self)
+float uz_sysmon_ps_read_temperature_degree_celsius(uz_sysmon_ps_t *self)
 {
     uint32_t TempRawData = XSysMonPsu_GetAdcData(&self->SysMonInst, XSM_CH_TEMP, XSYSMON_TYPE);
     self->chip_temperature_degree_celsius = XSysMonPsu_RawToTemperature_OnChip(TempRawData);
     return self->chip_temperature_degree_celsius;
 }
 
-float sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self)
+float uz_sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self)
 {
     uint32_t Supply1RawData = XSysMonPsu_GetAdcData(&self->SysMonInst, XSM_CH_SUPPLY1, XSYSMON_TYPE);
     // XSysMonPsu_RawToVoltage is a define 
@@ -90,14 +90,14 @@ float sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self)
     return self->vcc_psint_lp_volt;
 }
 
-float sysmon_ps_read_vcc_psint_fp_volt(uz_sysmon_ps_t *self)
+float uz_sysmon_ps_read_vcc_psint_fp_volt(uz_sysmon_ps_t *self)
 {
     uint32_t Supply1RawData = XSysMonPsu_GetAdcData(&self->SysMonInst, XSM_CH_SUPPLY2, XSYSMON_TYPE);
     self->vcc_psint_fp_volt = XSysMonPsu_RawToVoltage(Supply1RawData);
     return self->vcc_psint_fp_volt;
 }
 
-float sysmon_ps_read_vcc_psaux_volt(uz_sysmon_ps_t *self)
+float uz_sysmon_ps_read_vcc_psaux_volt(uz_sysmon_ps_t *self)
 {
     uint32_t Supply3RawData = XSysMonPsu_GetAdcData(&self->SysMonInst, XSM_CH_SUPPLY3, XSYSMON_TYPE);
     self->vcc_psaux_volt = XSysMonPsu_RawToVoltage(Supply3RawData);

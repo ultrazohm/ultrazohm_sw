@@ -36,10 +36,10 @@ Since the values, especially the temperature, are not time critical, consider no
         float vcc_fp=0.0f;
         float fcc_aux=0.0f;
         while(1){
-            temp = uz_sysmon_ps_read_temperature(sysmon_instance);
-            vcc_lp =  sysmon_ps_read_vcc_psint_lp_volt(sysmon_instance);
-            vcc_fp =  sysmon_ps_read_vcc_psint_fp_volt(sysmon_instance);
-            fcc_aux = sysmon_ps_read_vcc_psaux_volt(sysmon_instance);
+            temp = uz_sysmon_ps_read_temperature_degree_celsius(sysmon_instance);
+            vcc_lp =  uz_sysmon_ps_read_vcc_psint_lp_volt(sysmon_instance);
+            vcc_fp =  uz_sysmon_ps_read_vcc_psint_fp_volt(sysmon_instance);
+            fcc_aux = uz_sysmon_ps_read_vcc_psaux_volt(sysmon_instance);
         }
     }
 
@@ -52,13 +52,13 @@ Reference
 
 .. doxygenfunction:: uz_sysmon_ps_init
 
-.. doxygenfunction:: uz_sysmon_ps_read_temperature
+.. doxygenfunction:: uz_sysmon_ps_read_temperature_degree_celsius
 
-.. doxygenfunction:: sysmon_ps_read_vcc_psint_lp_volt
+.. doxygenfunction:: uz_sysmon_ps_read_vcc_psint_lp_volt
     
-.. doxygenfunction:: sysmon_ps_read_vcc_psint_fp_volt
+.. doxygenfunction:: uz_sysmon_ps_read_vcc_psint_fp_volt
 
-.. doxygenfunction:: sysmon_ps_read_vcc_psaux_volt
+.. doxygenfunction:: uz_sysmon_ps_read_vcc_psaux_volt
 
 
 

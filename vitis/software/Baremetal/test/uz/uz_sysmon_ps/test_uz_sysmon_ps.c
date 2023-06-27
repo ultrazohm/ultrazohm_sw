@@ -41,7 +41,7 @@ void test_uz_sysmon_ps_read_temperature(void)
     uz_sysmon_ps_t *test_instance = uz_sysmon_ps_init(sysmon_device_id);
 
     XSysMonPsu_GetAdcData_ExpectAndReturn(&SysMonInst, XSM_CH_TEMP, XSYSMON_PS, 0x0U);
-    uz_sysmon_ps_read_temperature(test_instance);
+    uz_sysmon_ps_read_temperature_degree_celsius(test_instance);
     // No test with the returned value as all logic is inside Xilinx driver
 }
 

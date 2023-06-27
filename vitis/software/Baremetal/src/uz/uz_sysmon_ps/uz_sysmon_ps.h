@@ -23,7 +23,7 @@ uz_sysmon_ps_t *uz_sysmon_ps_init(uint16_t sysmon_device_id);
  * @param self Pointer to driver instance
  * @return float On-chip temperature in degree celsius
  */
-float uz_sysmon_ps_read_temperature(uz_sysmon_ps_t *self);
+float uz_sysmon_ps_read_temperature_degree_celsius(uz_sysmon_ps_t *self);
 
 /**
  * @brief Reads the supply voltage of the low power domain (LP)
@@ -31,7 +31,7 @@ float uz_sysmon_ps_read_temperature(uz_sysmon_ps_t *self);
  * @param self 
  * @return float Low power domain supply voltage PSINTLP in volt.
  */
-float sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self);
+float uz_sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self);
 
 /**
  * @brief Reads the supply voltage of the full power domain (LP)
@@ -39,7 +39,7 @@ float sysmon_ps_read_vcc_psint_lp_volt(uz_sysmon_ps_t *self);
  * @param self
  * @return float full power domain supply voltage PSINTFP in volt.
  */
-float sysmon_ps_read_vcc_psint_fp_volt(uz_sysmon_ps_t *self);
+float uz_sysmon_ps_read_vcc_psint_fp_volt(uz_sysmon_ps_t *self);
 
 /**
  * @brief Reads the supply voltage of PSAUX.
@@ -47,6 +47,6 @@ float sysmon_ps_read_vcc_psint_fp_volt(uz_sysmon_ps_t *self);
  * @param self
  * @return float Low power domain supply voltage PSAUX in volt.
  */
-float sysmon_ps_read_vcc_psaux_volt(uz_sysmon_ps_t *self);
+float uz_sysmon_ps_read_vcc_psaux_volt(uz_sysmon_ps_t *self);
 
 #endif // UZ_SYSMON_PS_H

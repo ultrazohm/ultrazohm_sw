@@ -230,8 +230,16 @@ Program (Debug)
 
 - Click on the red-marked windows to see the design perspective in Vitis.
 - Click the arrow next to the debug-icon and choose ``Debug Configurations`` .
-- Choose ``Debug_FreeRTOS_Baremetal_FPGA`` .
+- Choose the appropriate debug config.
   If the debug configurations are not visible, follow the advice :ref:`here <vitis_restart_debug>` .
+
+.. note:: There are two different debug configurations:
+   
+          - To debug the code and use breakpoints, click on the debug-icon (red) and select the ``Debug-UltraZohm`` config.
+          - To run the code and ignore all breakpoints, click on the run-icon (green) and select the ``Run-UltraZohm`` config.
+ 
+          .. image:: ./img_debug/4_debug_buttons.png
+
 - Click on ``Debug`` .
 - After the first debug run, it is sufficient to click the debug-icon.
 - Start all processors (click on the play button).

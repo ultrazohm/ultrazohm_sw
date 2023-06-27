@@ -58,6 +58,7 @@ bool debug_output = false;
 
     struct uz_inverter_adapter_t {
         bool is_ready;
+        uint32_t temp_select_counter;
         struct uz_inverter_adapter_config_t config;
         struct uz_inverter_adapter_outputs_t outputs;
     };   
@@ -469,10 +470,15 @@ void test_uz_inverter_adapter_dutycyc_to_temperature_results(void)
         uz_inverter_adapter_hw_get_PWMdutyCycNormalized_L3_IgnoreAndReturn(test_instance->outputs.PWMdutyCycNormalized_L3);
         uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_H1_result[i] = test_instance->outputs.ChipTempDegreesCelsius_H1;
+        uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_L1_result[i] = test_instance->outputs.ChipTempDegreesCelsius_L1;
+        uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_H2_result[i] = test_instance->outputs.ChipTempDegreesCelsius_H2;
+        uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_L2_result[i] = test_instance->outputs.ChipTempDegreesCelsius_L2;
+        uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_H3_result[i] = test_instance->outputs.ChipTempDegreesCelsius_H3;
+        uz_inverter_adapter_update_states(test_instance);
         temperature_degrees_celsius_L3_result[i] = test_instance->outputs.ChipTempDegreesCelsius_L3;
         if(debug_output == true) {
          //casting to double to get rid of compiler warnings. printf doesn't support floats

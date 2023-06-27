@@ -34,3 +34,6 @@ Software Framework
     matrix/matrix_math
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
+    uz_integrator/uz_integrator
+    VSD_6ph_FD_control/uz_VSD_6ph_FD_control
+    uz_sinus_pwm/uz_sinus_pwm

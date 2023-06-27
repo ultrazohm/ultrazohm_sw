@@ -37,3 +37,4 @@ Software Framework
     uz_integrator/uz_integrator
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
     uz_sinus_pwm/uz_sinus_pwm
+    controller_setpoint_filter/controller_setpoint_filter

@@ -72,4 +72,45 @@ void test_uz_spwm_dq_6ph(void)
     TEST_ASSERT_EQUAL_FLOAT(0.30956f, out.system2.DutyCycle_C);
 }
 
+void test_uz_spwm_abc_9ph(void)
+{
+    uz_9ph_abc_t input = {
+        .a1 = 1.0f,
+        .b1 = 0.0f,
+        .c1 = 0.0f,
+        .a2 = 0.5f,
+        .b2 = 0.0f,
+        .c2 = 0.0f,
+        .a3 = -0.5f,
+        .b3 = -1.0f,
+        .c3 = 0.0f};
+    struct uz_DutyCycle_3x3ph_t out = uz_spwm_abc_9ph(input, 2.0f);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, out.system1.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system1.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system1.DutyCycle_C);
+    TEST_ASSERT_EQUAL_FLOAT(0.75f, out.system2.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system2.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system2.DutyCycle_C);
+    TEST_ASSERT_EQUAL_FLOAT(0.25f, out.system3.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, out.system3.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system3.DutyCycle_C);
+}
+
+void test_uz_spwm_dq_9ph(void)
+{
+    uz_9ph_dq_t input = {0};
+    input.d = 0.0f;
+    input.q = 0.0f;
+    struct uz_DutyCycle_3x3ph_t out = uz_spwm_dq_9ph(input, 3.0f, 1.0f);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system1.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system1.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system1.DutyCycle_C);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system2.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system2.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system2.DutyCycle_C);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system3.DutyCycle_A);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system3.DutyCycle_B);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, out.system3.DutyCycle_C);
+}
+
 #endif // TEST

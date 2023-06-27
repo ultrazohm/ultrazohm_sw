@@ -1,18 +1,18 @@
 /******************************************************************************
-* Copyright Contributors to the UltraZohm project.
-* Copyright 2022 Dennis Hufnagel
-* 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and limitations under the License.
-******************************************************************************/
+ * Copyright Contributors to the UltraZohm project.
+ * Copyright 2022 Dennis Hufnagel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
 
 #include "uz_CurrentControl.h"
 #include "../uz_global_configuration.h"
@@ -22,44 +22,43 @@
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
-
-
-
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
-typedef struct uz_CurrentControl_t {
+typedef struct uz_CurrentControl_t
+{
 	bool is_ready;
 	bool ext_clamping;
 	struct uz_CurrentControl_config config;
-	struct uz_PI_Controller* Controller_id;
-	struct uz_PI_Controller* Controller_iq;
-}uz_CurrentControl_t;
+	struct uz_PI_Controller *Controller_id;
+	struct uz_PI_Controller *Controller_iq;
+} uz_CurrentControl_t;
 
-static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static uint32_t instances_counter_CurrentControl = 0;
 
 static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTANCES] = {0};
-
 
 /**
  * @brief Memory allocation of the uz_CurrentControl_t struct
  *
  * @return Pointer to uz_CurrentControl_t instance
  */
-static uz_CurrentControl_t* uz_CurrentControl_allocation(void);
+static uz_CurrentControl_t *uz_CurrentControl_allocation(void);
 
-static uz_CurrentControl_t* uz_CurrentControl_allocation(void) {
+static uz_CurrentControl_t *uz_CurrentControl_allocation(void)
+{
 	uz_assert(instances_counter_CurrentControl < UZ_CURRENTCONTROL_MAX_INSTANCES);
-	uz_CurrentControl_t* self = &instances_CurrentControl[instances_counter_CurrentControl];
+	uz_CurrentControl_t *self = &instances_CurrentControl[instances_counter_CurrentControl];
 	uz_assert(self->is_ready == false);
 	instances_counter_CurrentControl++;
 	self->is_ready = true;
 	return (self);
 }
 
-uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config config) {
-	uz_CurrentControl_t* self = uz_CurrentControl_allocation();
-	//Disables the built in limitation of the PI-Controllers, since the limitation is done by the space-vector-limitation module
+uz_CurrentControl_t *uz_CurrentControl_init(struct uz_CurrentControl_config config)
+{
+	uz_CurrentControl_t *self = uz_CurrentControl_allocation();
+	// Disables the built in limitation of the PI-Controllers, since the limitation is done by the space-vector-limitation module
 	config.config_id.upper_limit = INFINITY;
 	config.config_id.lower_limit = -INFINITY;
 	config.config_iq.upper_limit = INFINITY;
@@ -71,7 +70,8 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
 	return (self);
 }
 
-uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) {
+uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(V_dc_volts > 0.0f);
@@ -83,25 +83,27 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t* self, uz_3ph_dq_t i_re
 	return (v_output_Volts);
 }
 
-uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) {
+uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_3ph_dq_t v_dq_Volts = uz_CurrentControl_sample(self, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
 	uz_3ph_abc_t v_output_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, theta_el_rad);
-	return(v_output_Volts);
+	return (v_output_Volts);
 }
 
-static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	uz_3ph_dq_t v_output_Volts = { 0 };
+	uz_3ph_dq_t v_output_Volts = {0};
 	v_output_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
 	v_output_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
 	return (v_output_Volts);
-
 }
 
-void uz_CurrentControl_reset(uz_CurrentControl_t* self){
+void uz_CurrentControl_reset(uz_CurrentControl_t *self)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_PI_Controller_reset(self->Controller_id);
@@ -109,130 +111,150 @@ void uz_CurrentControl_reset(uz_CurrentControl_t* self){
 	self->ext_clamping = false;
 }
 
-void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id){
+void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t *self, float Kp_id)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Kp_id >= 0.0f);
 	uz_PI_Controller_set_Kp(self->Controller_id, Kp_id);
 }
 
-void uz_CurrentControl_set_Ki_id(uz_CurrentControl_t* self, float Ki_id){
+void uz_CurrentControl_set_Ki_id(uz_CurrentControl_t *self, float Ki_id)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Ki_id >= 0.0f);
 	uz_PI_Controller_set_Ki(self->Controller_id, Ki_id);
 }
 
-void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq){
+void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t *self, float Kp_iq)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Kp_iq >= 0.0f);
 	uz_PI_Controller_set_Kp(self->Controller_iq, Kp_iq);
 }
 
-void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t* self, float Ki_iq){
+void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t *self, float Ki_iq)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Ki_iq >= 0.0f);
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
 }
 
-void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t pmsm_config) {
+void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t *self, uz_PMSM_t pmsm_config)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	//Only assert relevant parts of the PMSM-struct
-    uz_assert(pmsm_config.Ld_Henry > 0.0f);
+	// Only assert relevant parts of the PMSM-struct
+	uz_assert(pmsm_config.Ld_Henry > 0.0f);
 	uz_assert(pmsm_config.Lq_Henry > 0.0f);
 	uz_assert(pmsm_config.Psi_PM_Vs >= 0.0f);
 	self->config.config_PMSM = pmsm_config;
 }
 
-void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select) {
+void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t *self, enum uz_CurrentControl_decoupling_select decoupling_select)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->config.decoupling_select=decoupling_select;
+	self->config.decoupling_select = decoupling_select;
 }
 
-bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
+bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t *self)
+{
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(self->ext_clamping);
+	return (self->ext_clamping);
 }
 
-static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
-	uz_3ph_dq_t decouple_voltage={0};
+static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec)
+{
+	uz_3ph_dq_t decouple_voltage = {0};
 	switch (decoupling_select)
-    {
-    case no_decoupling:
-        // do nothing since no decoupling
-        break;
-    case linear_decoupling:
-        decouple_voltage=uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-        break;
-    default:
-        break;
-    }
+	{
+	case no_decoupling:
+		// do nothing since no decoupling
+		break;
+	case linear_decoupling:
+		decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+		break;
+	default:
+		break;
+	}
 	return (decouple_voltage);
 }
 
-float uz_CurrentControl_set_Kp_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Kp_id = config_PMSM.Ld_Henry/(2.0f*tau_sigma_sec);
-	return(Kp_id);
+float uz_CurrentControl_set_Kp_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Kp_id = config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	return (Kp_id);
 }
 
-float uz_CurrentControl_set_Ki_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Ki_id = config_PMSM.R_ph_Ohm/(2.0f*tau_sigma_sec);
-	return(Ki_id);
+float uz_CurrentControl_set_Ki_id_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Ki_id = config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	return (Ki_id);
 }
 
-float uz_CurrentControl_set_Kp_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Kp_iq = config_PMSM.Lq_Henry/(2.0f*tau_sigma_sec);
-	return(Kp_iq);
+float uz_CurrentControl_set_Kp_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Kp_iq = config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	return (Kp_iq);
 }
 
-float uz_CurrentControl_set_Ki_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Ki_iq = config_PMSM.R_ph_Ohm/(2.0f*tau_sigma_sec);
-	return(Ki_iq);
+float uz_CurrentControl_set_Ki_iq_magnitude_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Ki_iq = config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	return (Ki_iq);
 }
 
-float uz_CurrentControl_set_Kp_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Kp_id = config_PMSM.Ld_Henry/(2.0f*tau_sigma_sec);
-	return(Kp_id);
+float uz_CurrentControl_set_Kp_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Kp_id = config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	return (Kp_id);
 }
 
-float uz_CurrentControl_set_Ki_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Ki_id = config_PMSM.Ld_Henry/(8.0f*tau_sigma_sec*tau_sigma_sec);
-	return(Ki_id);
+float uz_CurrentControl_set_Ki_id_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Ki_id = config_PMSM.Ld_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	return (Ki_id);
 }
 
-float uz_CurrentControl_set_Kp_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Kp_iq = config_PMSM.Lq_Henry/(2.0f*tau_sigma_sec);
-	return(Kp_iq);
+float uz_CurrentControl_set_Kp_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Kp_iq = config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	return (Kp_iq);
 }
 
-float uz_CurrentControl_set_Ki_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec){
-	float Ki_iq = config_PMSM.Lq_Henry/(8.0f*tau_sigma_sec*tau_sigma_sec);
-	return(Ki_iq);
+float uz_CurrentControl_set_Ki_iq_symmetric_optimum(uz_PMSM_t config_PMSM, float tau_sigma_sec)
+{
+	float Ki_iq = config_PMSM.Lq_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	return (Ki_iq);
 }
 
-float uz_CurrentControl_set_Kp_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec){
-	float Kp_id = config_PMSM.Ld_Henry*bandwidth_rad_per_sec;
-	return(Kp_id);
+float uz_CurrentControl_set_Kp_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
+{
+	float Kp_id = config_PMSM.Ld_Henry * bandwidth_rad_per_sec;
+	return (Kp_id);
 }
 
-float uz_CurrentControl_set_Ki_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec){
-	float Ki_id = config_PMSM.R_ph_Ohm*bandwidth_rad_per_sec;
-	return(Ki_id);
+float uz_CurrentControl_set_Ki_id_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
+{
+	float Ki_id = config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	return (Ki_id);
 }
 
-float uz_CurrentControl_set_Kp_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec){
-	float Kp_iq = config_PMSM.Lq_Henry*bandwidth_rad_per_sec;
-	return(Kp_iq);
+float uz_CurrentControl_set_Kp_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
+{
+	float Kp_iq = config_PMSM.Lq_Henry * bandwidth_rad_per_sec;
+	return (Kp_iq);
 }
 
-float uz_CurrentControl_set_Ki_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec){
-	float Ki_iq = config_PMSM.R_ph_Ohm*bandwidth_rad_per_sec;
-	return(Ki_iq);
+float uz_CurrentControl_set_Ki_iq_bandwidth(uz_PMSM_t config_PMSM, float bandwidth_rad_per_sec)
+{
+	float Ki_iq = config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	return (Ki_iq);
 }
 
 #endif

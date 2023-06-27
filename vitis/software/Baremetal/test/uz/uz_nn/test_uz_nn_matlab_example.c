@@ -16,7 +16,7 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
-#define NUMBER_OF_EPOCHS 5
+#define NUMBER_OF_EPOCHS 200
 #define MINI_BATCH_SIZE 252
 
 // sumout
@@ -229,7 +229,7 @@ void test_uz_nn_matlab(void)
       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
       {
       uint32_t mb_size = uz_matrix_get_number_of_rows(input);
-      for(size_t j=0; j<mb_size;j++){
+      for(uint32_t j=0; j<mb_size;j++){
         uz_matrix_get_row_vector_zero_based(input,X,j);
         uz_nn_ff(test,X);
         uz_matrix_t* output=uz_nn_get_output_data(test);
@@ -249,6 +249,7 @@ void test_uz_nn_matlab(void)
         float result=uz_matrix_get_element_zero_based(output,0,0);
         printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
         printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
+        uz_nn_set_gradients_zero(test);
         }
 }
       //  uz_nn_mat_export(test);

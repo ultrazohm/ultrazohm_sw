@@ -220,7 +220,7 @@ REAL,
 CurrentControl,
 DDPG_1_64,
 DDPG_3_64,
-MyButton6,
+Enable Current Sweep,
 MyButton7,
 MyButton8,
 MYBUTTONS_LABELS_ENDMARKER

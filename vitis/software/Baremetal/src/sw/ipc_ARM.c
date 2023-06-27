@@ -249,7 +249,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			if(select_automatic_idiq) {
+				select_automatic_idiq = false;
+			} else {
+				select_automatic_idiq = true;
+			}
 			break;
 
 		case (My_Button_7):
@@ -337,7 +341,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (select_automatic_idiq == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		 js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

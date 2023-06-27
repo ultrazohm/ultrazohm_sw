@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "test_assert_with_exception.h"
 
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
@@ -10,7 +11,7 @@
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 #include <time.h>
 
-
+#define NUMBER_OF_EPSGREEDYSTEPS 1000
 #define NUMBER_OF_INPUTS 1
 #define NUMBER_OF_OUTPUTS 1
 #define NUMBER_OF_HIDDEN_LAYER 3
@@ -269,5 +270,46 @@ void test_uz_nn_set_gradient_matrix(void)
             x = gradsoll->data[i];
             TEST_ASSERT_EQUAL_FLOAT(x,f1[i]);
     }
+}
+
+void test_calc_epsilon_greedy_assert_start_greater_min(void)
+{
+float epsilon_start = 0.3f;
+float epsilon_min = 0.5f;
+float epsilon_decay = 0.09f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
+}
+
+void test_calc_epsilon_greedy_too_high_decay(void)
+{
+float epsilon_start = 0.8f;
+float epsilon_min = 0.2f;
+float epsilon_decay = 0.2f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
+}
+
+void test_calc_epsilon_greedy_test_eps_min(void)
+{
+float epsilon_start = 0.8f;
+float epsilon_min = 0.2f;
+float epsilon_decay = 0.5f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay))
+
+
+}
+
+void test_calc_epsilon_greedy_check_values(void)
+{
+float epsilon_start = 0.8f;
+float epsilon_min = 0.2f;
+float epsilon_decay = 0.09f;
+// Test if epsilon_min is calculated right
+for(uint32_t i=0U;i<NUMBER_OF_EPSGREEDYSTEPS;i++){
+            float epsilon = calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay);
+            epsilon_start = epsilon;
+}
+// Test for whole epsilon_calc
+
+// Assert testing
 }
 #endif // TEST

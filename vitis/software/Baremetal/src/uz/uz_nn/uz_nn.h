@@ -168,5 +168,5 @@ uint32_t uz_nn_get_number_of_inputs(uz_nn_t const*const self);
  */
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
 
-
+float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay);
 #endif // UZ_NN_H

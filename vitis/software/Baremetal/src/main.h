@@ -41,6 +41,11 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "include/tempcard.h"
+#include "include/tempMeasurement.h"
+#include "include/resolver.h"
+#include "include/uz_resolver_pl_interface_init.h"
+
 
 #include "uz/uz_HAL.h"
 

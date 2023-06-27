@@ -38,7 +38,7 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        0U
+#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES        3U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
@@ -55,8 +55,6 @@
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
 #define UZ_AXI_GPIO_MAX_INSTANCES 0U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES				1U
-#define UZ_PWM_DUTY_FREQ_DETECTION_MAX_INSTANCES		3U
-
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

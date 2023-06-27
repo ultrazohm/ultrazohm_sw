@@ -65,7 +65,7 @@ void uz_ADC_voltages(DS_Data* Data);
 // for inverter test
 #include "../uz/uz_wavegen/uz_wavegen.h"
 uz_3ph_abc_t out_wavegen = {0};
-float amplitude = 0.2f;
+float amplitude = 0.005f;
 
 // control
 void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* dq, uz_3ph_alphabeta_t* XY1, uz_3ph_alphabeta_t* XY2, uz_3ph_alphabeta_t* XY3, float theta);

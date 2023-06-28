@@ -156,9 +156,9 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	iq,
 	id,
-	send_field_3,
-	send_field_4,
-	send_field_5,
+	dutycycle_a,
+	dutycycle_b,
+	dutycycle_c,
 	send_field_6,
 	SND_FLD_ENDMARKER
 

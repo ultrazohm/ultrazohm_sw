@@ -25,9 +25,9 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern uint32_t js_status_BareToRTOS;
 
 extern bool is_three_phase_active;
-extern float amplitude;
-extern float frequency;
-extern float offset;
+extern float a;
+extern float b;
+extern float c;
 
 extern uz_3ph_dq_t reference_currents_Amp;
 
@@ -202,15 +202,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+		a = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+		b = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+		c= value;
 			break;
 
 		case (Set_Send_Field_6):

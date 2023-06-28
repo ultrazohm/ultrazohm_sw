@@ -75,8 +75,9 @@ int main(void)
             initialization_chain = init_software;
             break;
         case init_software:
+        	//Initialize_Timer();
             uz_SystemTime_init();
-            JavaScope_initalize(&Global_Data);
+            JavaScope_initialize(&Global_Data);
             initialization_chain = init_CurrentControl_pmsm;
             break;
         case init_CurrentControl_pmsm:

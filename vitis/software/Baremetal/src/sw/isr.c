@@ -41,9 +41,9 @@ extern DS_Data Global_Data;
 
 uz_3ph_abc_t three_phase_output = {0};
 bool is_three_phase_active = false;
-float amplitude = 2.0f;
-float frequency = 5.0f;
-float offset = 0.0f;
+float a = 0.0f;
+float b = 0.0f;
+float c = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -66,16 +66,13 @@ extern uz_pmsmModel_t *pmsm;
 
 
 
+
  struct uz_3ph_abc_t v_abc_Volts = {0};
  struct uz_3ph_abc_t i_abc_Amps = {0};
  float v_DC_Volts = 0.0f;
  float i_DC_Amps = 0.0f;
 
  float pwm_period = 1/UZ_PWM_FREQUENCY;
-
-
-
-
 
 void ISR_Control(void *data)
 {
@@ -121,6 +118,11 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;
     	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;
 
+//    	Global_Data.rasv.halfBridge1DutyCycle = a;
+//    	Global_Data.rasv.halfBridge2DutyCycle = b;
+//    	Global_Data.rasv.halfBridge3DutyCycle = c;
+//    	//PI-Regler Resetten
+//    	uz_CurrentControl_reset(CurrentControl_instance);
     }
 
     else

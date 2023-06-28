@@ -18,7 +18,7 @@ void tearDown(void)
 
 void test_uz_signals_IIR_Filter_dq_setpoint(void){
     uz_3ph_dq_t setpoint = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_signals_IIR_Filter_dq_setpoint(NULL, NULL, setpoint));
+    TEST_ASSERT_FAIL_ASSERT(uz_signals_IIR_Filter_dq_setpoint(NULL, setpoint));
 }
 
 #endif // TEST

@@ -17,6 +17,9 @@
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 10
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 10
+float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
+#include "functions_weights/epsmat.csv"
+};
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -294,22 +297,18 @@ float epsilon_start = 0.8f;
 float epsilon_min = 0.2f;
 float epsilon_decay = 0.5f;
 TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay))
-
-
 }
 
 void test_calc_epsilon_greedy_check_values(void)
 {
-float epsilon_start = 0.8f;
-float epsilon_min = 0.2f;
-float epsilon_decay = 0.09f;
+float epsilon_start = 0.9f;
+float epsilon_min = 0.05f;
+float epsilon_decay = 0.002f;
 // Test if epsilon_min is calculated right
 for(uint32_t i=0U;i<NUMBER_OF_EPSGREEDYSTEPS;i++){
             float epsilon = calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay);
-            epsilon_start = epsilon;
+                        epsilon_start = epsilon;
+            TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 }
-// Test for whole epsilon_calc
-
-// Assert testing
 }
 #endif // TEST

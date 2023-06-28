@@ -106,6 +106,9 @@ MLP are implemented with the following definition and representation of the neur
 The neural network has a number of layers which consists of the input layer, the output layer, and the number of hidden layer :math:`l`).
 Each layer has a number of neurons.
 
+Feedforward example
+********************
+
 .. _nn_structure:
 
 .. figure:: img/nn_structure.svg
@@ -224,6 +227,199 @@ Activation function:
       y^{3} &= linear(\boldsymbol{s^{(3)}}) \\
       y^{3} &= linear(   \left[ \begin{array}{rr} 846 \\ \end{array}\right])\\
       &=  \left[ \begin{array}{rr} 846 \\ \end{array}\right]
+
+Training example with Backpropagation
+**************************************
+The trainable MLPs are implemented with the following definition and representation of the neural network.
+The neural network has the same definition as the feedforward example. As a reference the simplified example[#intelligente_verfahren]_ is used to show the training algorithm implementation. The network is 
+
+
+.. _nn_backprop_schroeder:
+
+.. figure:: img/nn_structure.svg
+   :align: center
+
+   Structure of the schroeder backpropagation example
+
+The MLP shown in :numref:`nn_backprop_schroeder` has one input, two hidden layer with two neurons each, and one output.
+The input is defined as:
+
+.. math::
+
+    u &=y^{(0)}=\left[ \begin{array}{rr} x_{1} \end{array}\right] \\
+    u &=y^{(0)}=\left[ \begin{array}{rr} -5 \end{array}\right] 
+
+The output is defined as:
+
+.. math::
+
+    y^{(3)}=\left[ \begin{array}{rr} y_{1} \\ \end{array}\right] \\
+    y^{(3)}=\left[ \begin{array}{rr} -4.41 \ \end{array}\right] 
+
+The weights and bias matrices for each layer with example values are given n the following.
+For the first hidden layer:
+
+.. math::
+
+   w^{(1)} &=\left[ \begin{array}{rr} w_{11}\\ w_{21}\\ \end{array}\right] \\
+   w^{(1)} &=\left[ \begin{array}{rr} 1\\ -0.15\\ \end{array}\right] \\
+   b^{(1)} &=\left[ \begin{array}{rr} b_1 & b_2\\ \end{array}\right] \\
+   b^{(1)} &=\left[ \begin{array}{rr} 1 & 0\\ \end{array}\right]
+
+For the second hidden layer:
+
+.. math::
+
+   w^{(2)} &=\left[ \begin{array}{rr} w_{11} & w_{12}\ w_{21} & w_{22}\end{array}\right] \\
+   w^{(2)} &=\left[ \begin{array}{rr} 0.02 & 5.36 \\ -0.78 & -1.26 \end{array}\right] \\
+   b^{(2)} &=\left[ \begin{array}{rr} b_1 & b_2 \\ \end{array}\right] \\
+   b^{(2)} &=\left[ \begin{array}{rr} 0 & 0\\ \end{array}\right]
+
+For the output layer:
+
+.. math::
+
+   w^{(3)} &=\left[ \begin{array}{rr} w_{11} & w_{12}\end{array}\right] \\
+   w^{(3)} &=\left[ \begin{array}{rr} -1.42 & 3.25\end{array}\right] \\
+   b^{(3)} &=\left[ \begin{array}{rr} b_1 \\ \end{array}\right] \\
+   b^{(3)} &=\left[ \begin{array}{rr} 0 \\ \end{array}\right]
+
+The activation function of the hidden layer is set to ReLU, the output activation function to linear.
+The following section calculates all steps and intermediate results in the network.
+Feedforward
+************
+First layer
+***********
+
+.. math::
+
+   \boldsymbol{x} \boldsymbol{w^{(1)}} + \boldsymbol{b^{(1)}} &= \boldsymbol{s^{(1)}} \\  
+   \left[ \begin{array}{rr} -5 \\ \end{array}\right]
+   \left[ \begin{array}{rr} 1 \\-0.15 \\ \end{array}\right]
+   +
+   \left[ \begin{array}{rr} 1 \\ 0 \\ \end{array}\right] 
+   &= 
+   \left[ \begin{array}{rr} -4\\ 0.75 \\ \end{array}\right]
+
+Activation function:
+
+.. math::
+
+      y^{1} &= Tanh(\boldsymbol{s^{(1)}}) \\
+      y^{1} &= Tanh(   \left[ \begin{array}{rr} -4\\ 0.75  \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} -1 \\ 0.64\\ \end{array}\right]
+
+Second layer
+************
+
+The input of the second hidden layer is the output of the first hidden layer :math:`y^{(1)}`:
+
+.. math::
+
+   \boldsymbol{y^{(1)}} \boldsymbol{w^{(2)}} + \boldsymbol{b^{(2)}} &= \boldsymbol{s^{(2)}} \\  
+   \left[ \begin{array}{rr} -1 \\ 0.64\\ \end{array}\right]
+   \left[ \begin{array}{rr} 0.02 & 5.36 \\ -0.78 & -1.26 \end{array}\right] 
+   +
+   \left[ \begin{array}{rr} 0 & 0\\ \end{array}\right]
+   &= 
+   \left[ \begin{array}{rr} 3.41 & -0.03 \\ \end{array}\right]
+
+Activation function:
+
+.. math::
+
+      y^{2} &= ReLU(\boldsymbol{s^{(2)}}) \\
+      y^{2} &= ReLU(   \left[ \begin{array}{rr} 3.41 \\-0.03  \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} 1 \\ -0.03  \\ \end{array}\right]
+
+Output layer
+************
+
+The input of the output layer is the output of the second hidden layer :math:`y^{(2)}`:
+
+.. math::
+
+   \boldsymbol{y^{(2)}} \boldsymbol{w^{(3)}} + \boldsymbol{b^{(3)}} &= \boldsymbol{s^{(3)}} \\  
+   \left[ \begin{array}{rr} -1.42 & 3.25\\ \end{array}\right]
+   \left[ \begin{array}{rr} 1 \\ -0.03 \end{array}\right] 
+   +
+   \left[ \begin{array}{rr} 0 \\ \end{array}\right]
+   &= 
+   \left[ \begin{array}{rr} -1.52 \\ \end{array}\right]
+
+Activation function:
+
+.. math::
+
+      y^{3} &= linear(\boldsymbol{s^{(3)}}) \\
+      y^{3} &= linear(   \left[ \begin{array}{rr} -1.52 \\ \end{array}\right])\\
+      &=  \left[ \begin{array}{rr} -1.52 \\ \end{array}\right]
+
+Backpropagation
+****************
+Step 1: Calculate Error
+************************
+
+.. math::
+
+      \hat{y_{out}}= & y^{3} =( \left[ \begin{array}{rr} -1.52 \\ \end{array}\right])\\
+      e^{(1)}= y_{target}- \hat{y_{out}} &= -4.41 + 1.52
+      &= 
+      -2.89 \\
+
+Step 2: Backpropragation
+************************
+
+.. math::
+
+      \dot{T}(s_{1}^{3}) &= 1 \text{ (output neuron has linear transfer function)} \\
+      \dot{T}(s_{1}^{2}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{2})& 0 \\ 0 & 1-\tanh^2(s_{2}^{1}) \end{array}\right] \\
+      \dot{T}(s_{1}^{1}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{1})& 0 \\ 0 & 1-\tanh^2(s_{1}^{2}) \end{array}\right] \\
+
+Output layer
+************
+
+.. math::
+
+   l=3:\delta_{1}^{3} &= -1 \cdot e^{(1)} &= 2.89 \\  
+
+Second layer
+************
+
+.. math:: 
+
+   l=2:\delta_{1}^{2} &= \dot{T}(s_{1}^{2}) \cdot {w^{3}}^{T}\\
+    =&
+   \left[ \begin{array}{rr} 0 & 0\\0 & 1 \end{array}\right]
+   \cdot
+   \left[ \begin{array}{rr} 1.42\\ 3.25 \end{array}\right]
+   \cdot 2.89   
+   &= 
+   \left[ \begin{array}{rr} 0 \\ 9.39 \end{array}\right]
+
+First layer
+************
+
+.. math::
+
+   l=1:\delta_{1}^{1} &= \dot{T}(s_{1}^{1}) \cdot {w^{2}}^{T} \cdot \delta_{1}^{2}\\  
+    =&
+   \left[ \begin{array}{rr} 0 & 0\\0 & 0.6 \end{array}\right]
+   \cdot
+   \left[ \begin{array}{rr} 0.02 & -0.78\\5.36 & -1.26 \end{array}\right]
+   \cdot
+      \left[ \begin{array}{rr} 0 \\ 9.39\end{array}\right]  
+   &= 
+   \left[ \begin{array}{rr} 0 \\ -7.14 \end{array}\right]
+
+
+Step 3: Calculate Gradients
+****************************
+
+.. math::
+
+ l=1: \frac{\partial E_{1}}{\partial {w}^{1}} = \delta_{1}^{1} \cdot (y_1^{(0)})^{T}
+
 
 Sources
 =======

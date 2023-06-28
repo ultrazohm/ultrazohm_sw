@@ -65,7 +65,7 @@
 #include "include/uz_PWM_duty_freq_detection_init.h"
 #include "uz/uz_spwm/uz_spwm.h"
 // Network definition
-#define NN_15_INPUT_1_64  0
+#define NN_15_INPUT_1_64  1
 #define NN_15_INPUT_3_64  0
 
 //----------------------------------------------------

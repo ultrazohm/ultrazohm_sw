@@ -147,10 +147,10 @@ int main(void)
         	break;
 
         case init_nn:
-#if NN_9_INPUT_1_64==1
+#if NN_15_INPUT_1_64==1
         	nn_15_input_1_64_init();
 #endif
-#if NN_9_INPUT_3_64==1
+#if NN_15_INPUT_3_64==1
         	nn_15_input_3_64_init();
 #endif
         	initialization_chain = init_ip_cores;

@@ -21,6 +21,9 @@
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            5.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
+#define DEPENGINE								0U
+#define HEIDRIVE								1U
+#define BROSE									0U
 
 
 // Configuration defines for the number of used instances

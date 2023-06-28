@@ -85,16 +85,7 @@ void uz_matrix_columnvec_matrix_product(uz_matrix_t const *const A, uz_matrix_t 
     {
         for (uint32_t column = 0; column < B->columns; column++)
         {
-        if (A->columns == 1)
-        {
             C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
-        }
-        else if (A->rows == 1){
-        C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
-        }
-        else if (A->columns == B-> columns){
-        C_out->data[(row * B->columns) + column] = A->data[(row * B->columns) + column] * B->data[(row * B->columns) + column];
-        }
         }
     }
 }

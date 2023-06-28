@@ -226,10 +226,10 @@ void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 
 /**
- * @brief Calculates the elementwise product C_out= A .* B of all elements of the matrix A and B, differs from the uz_matrix_elemtwise_product, because it can handle different dimensions.
+ * @brief Calculates the elementwise product C_out= A .* B of all elements of the columncevtor A and the matrix B, differs from the uz_matrix_elemtwise_product, because it can handle different dimensions.
  * See https://de.mathworks.com/help/matlab/ref/times.html.
  * 
- * @param A Pointer to a uz_matrix_t instance 
+ * @param A Pointer to a uz_matrix_t instance, must be a Columnvector
  * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the elementwise product is written to C_out
  */

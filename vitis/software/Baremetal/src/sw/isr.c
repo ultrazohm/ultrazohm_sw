@@ -303,8 +303,8 @@ void ISR_Control(void *data)
         	REAL_i_z1z2_meas.q = REAL_i_dqxy_meas.z2;
 
         	if(select_CurrentControl) {
-        		REAL_v_dq_reference = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, REAL_i_dq_meas, V_DC_Volts, Global_Data.av.omega_elec);
-        		REAL_v_xy_reference = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, REAL_i_xy_meas, V_DC_Volts, Global_Data.av.omega_elec);
+        		REAL_v_dq_reference = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, REAL_i_dq_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
+        		REAL_v_xy_reference = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, REAL_i_xy_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
 
         	} else if(select_DDPG_1_64) {
 

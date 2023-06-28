@@ -25,12 +25,7 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
-
-#define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-
 struct APU_to_RPU_t ControlData;
-
-extern A53_Data Global_Data_A53;
 extern int js_connection_established;
 
 // Javascope Queue parameters
@@ -69,9 +64,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 		if (queue_status == errQUEUE_FULL)
 		{
 			js_queue_full++;
-			// xil_printf("OsziData_queue is full\r\n");
+			// uz_printf("OsziData_queue is full\r\n");
 		}
 	}
+	// queue is purged when new connection is established
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU
@@ -102,14 +98,14 @@ int Initialize_InterruptHandler(){
 	// Interrupt controller configuration
 	IntcConfig = XScuGic_LookupConfig(XPAR_SCUGIC_0_DEVICE_ID);
 		if(IntcConfig == NULL) {
-			xil_printf("APU: Error: GIC Config failed\r\n");
+			uz_printf("APU: Error: GIC Config failed\r\n");
 			return XST_FAILURE;
 		}
 
 	// Interrupt controller initialization
 	Status = XScuGic_CfgInitialize(&INTCipc, IntcConfig, IntcConfig->CpuBaseAddress);
 		if(Status != XST_SUCCESS) {
-			xil_printf("APU: Error: GIC initialization failed\r\n");
+			uz_printf("APU: Error: GIC initialization failed\r\n");
 			return XST_FAILURE;
 		}
 
@@ -128,21 +124,21 @@ int Initialize_ISR(){
 	// Initialize RPU GIC and Connect IPI interrupt
 	Status = Apu_GicInit(&INTCipc, XPAR_XIPIPSU_0_INT_ID,(Xil_ExceptionHandler)Transfer_ipc_Intr_Handler, &INTCInst_IPI);
 	if(Status != XST_SUCCESS) {
-		xil_printf("APU: Error: GIC initialization failed\r\n");
+		uz_printf("APU: Error: GIC initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
 	// create queue for buffering R5 interrupt -> ethernet thread
 	js_queue = xQueueCreate( JS_QUEUE_SIZE_ELEMENTS, sizeof(struct javascope_data_t) );
 	if (js_queue == NULL){
-		xil_printf("APU: Error: Queue creation failed\r\n");
+		uz_printf("APU: Error: Queue creation failed\r\n");
 		return XST_FAILURE;
 	}
 
 	// Initialize interrupt controller for the IPI -> Initialize RPU IPI
 	Status = Apu_IpiInit(&INTCInst_IPI, INTERRUPT_ID_IPI);
 	if(Status != XST_SUCCESS) {
-		xil_printf("APU: Error: IPI initialization failed\r\n");
+		uz_printf("APU: Error: IPI initialization failed\r\n");
 		return XST_FAILURE;
 	}
 
@@ -173,7 +169,7 @@ u32 Apu_GicInit(XScuGic *IntcInstPtr, u32 IntId, Xil_ExceptionHandler Handler, v
 
 	XScuGic_Enable(IntcInstPtr, IntId);
 
-	//xil_printf("APU: Apu_GicInit: Done\r\n");
+	//uz_printf("APU: Apu_GicInit: Done\r\n");
 	return Status;
 }
 
@@ -192,19 +188,19 @@ u32 Apu_IpiInit(XIpiPsu *IntcInst_IPI_Ptr,u16 DeviceId)
 	// Interrupt controller configuration
 	IntcConfig_IPI = XIpiPsu_LookupConfig(DeviceId);
 		if (IntcConfig_IPI == NULL) {
-			xil_printf("APU: Error: Ipi Init failed\r\n");
+			uz_printf("APU: Error: Ipi Init failed\r\n");
 			return XST_FAILURE;
 		}
 
 	// Interrupt controller initialization
 	status = XIpiPsu_CfgInitialize(IntcInst_IPI_Ptr, IntcConfig_IPI, IntcConfig_IPI->BaseAddress);
 		if (status != XST_SUCCESS) {
-			xil_printf("APU: Error: IPI Config failed\r\n");
+			uz_printf("APU: Error: IPI Config failed\r\n");
 			return XST_FAILURE;
 		}
 
 	XIpiPsu_InterruptEnable(IntcInst_IPI_Ptr, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
 
-	xil_printf("APU: APU_IpiInit: Done\r\n");
+	uz_printf("APU: APU_IpiInit: Done\r\n");
 	return XST_SUCCESS;
 }

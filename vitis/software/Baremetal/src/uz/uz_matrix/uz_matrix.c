@@ -281,3 +281,17 @@ void uz_matrix_transpose(uz_matrix_t *A)
         }
     }
 }
+
+void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destination)
+{    
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    uz_assert(source->length_of_data == destination->length_of_data);
+    destination->rows=source->rows;
+    destination->columns=source->columns;
+
+    for(uint32_t i=0U;i<destination->length_of_data;i++){
+        destination->data[i]=source->data[i];
+    }
+
+}

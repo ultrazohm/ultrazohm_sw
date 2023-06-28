@@ -13,6 +13,8 @@
 *.str
 !.gitignore
 
+!Temp_Card_Interface_V1_PRJ.srcs/*
+
 ### Long gitignore based on template for Xilinx Vivado Design Suite
 ## [home]
 #*.jou

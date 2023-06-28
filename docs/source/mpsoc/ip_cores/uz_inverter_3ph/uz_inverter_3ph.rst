@@ -74,7 +74,7 @@ Example Usage
 
 The inverter IP-core can be used in several different ways because the inputs and outputs can be accessed from PS or PL individually.
 For this example only the access via PS is shown.
-Using the IP-core in PL mainly demands the usage of other IP-cores to provide the inputs and utilize the outputs which is shown in :ref:`uz_pmsm_model_9ph_dq`.
+Using the IP-core in PL mainly demands the usage of other IP-cores to provide the inputs and utilize the outputs which is shown in :ref:`uz_pmsm_model_multiph_dq`.
 To use the IP-core with the PS only, the PL inputs do not need to be connected, although the ``u_abc_pl`` in the figure below is connected to an ILA in the greyed area.
 This is not necessary and only done for verification purposes.
 

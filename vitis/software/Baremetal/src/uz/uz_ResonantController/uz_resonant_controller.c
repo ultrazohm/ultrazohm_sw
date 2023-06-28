@@ -120,4 +120,18 @@ void uz_resonantController_set_config(uz_resonantController_t *self, struct uz_r
     self->input.in_m = config.in_measured_value;
 }
 
+void uz_resonantController_set_gain(uz_resonantController_t *self, float gain){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(gain > 0.0f);
+    self->input.VR = gain;
+}
+
+void uz_resonantController_set_harmonic_order(uz_resonantController_t *self, float harmonic_order){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(harmonic_order > 0.0f);
+    self->input.h = harmonic_order;
+}
+
 #endif

@@ -16,6 +16,14 @@ Their voltage outputs are connected with the respective inputs of the Transforma
 The transformation's transformed output is connected with the PMSM, while the PMSM's rotor angle and current outputs are connected with the Transformation.
 The trigger and refresh signals of the Transformation are connected with the RS-Flip-Flop as shown below.
 
+.. note:: 
+
+   To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP-Cores automatically and connects them.
+   To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
+   "cd [ get_property DIRECTORY [current_project] ]" 
+   "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
+
+
 .. figure:: vivado_6ph.jpg
 
     Vivado setup
@@ -38,7 +46,7 @@ The init functions are called during the init process of all IP-cores.
 
   ...
   // includes
-  #include "IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
+  #include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
   #include "IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
   #include "IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
   #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
@@ -127,6 +135,7 @@ The init functions are called during the init process of all IP-cores.
     ...
     case init_ip_cores:
       // init IP-cores
+	  pmsm = uz_pmsm_model6ph_dq_init(cil_pmsm_comfig);
       transformation = uz_pmsm6ph_transformation_init(cil_transformation_config);
       inverter1 = uz_inverter_3ph_init(cil_inverter1_config);
       inverter2 = uz_inverter_3ph_init(cil_inverter2_config);
@@ -150,8 +159,8 @@ Depending on the used controller, this might not be necessary.
 
   ...
   // Data for PMSM
-  #include "../IP_Cores/uz_pmsm_model6ph_dq/uz_pmsm_model6ph_dq.h"
-  extern uz_pmsm_model6ph_dq_t pmsm;
+  #include "../IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+  extern uz_pmsm_model6ph_dq_t *pmsm;
   float omega_mech = 100.0f;
   float load_torque = 0.0f;
   struct uz_pmsm_model6ph_dq_outputs_general_t pmsm_output = {0};
@@ -159,7 +168,7 @@ Depending on the used controller, this might not be necessary.
   // Data for Transformation
   #include "../IP_Cores/uz_pmsm6ph_transformation/uz_pmsm6ph_transformation.h"
   #include "../uz/uz_Transformation/uz_Transformation.h"
-  extern uz_pmsm6ph_transformation_t transformation;
+  extern uz_pmsm6ph_transformation_t *transformation;
   uz_6ph_abc_t transformation_currents_abc = {0};
   float theta_el = 0.0f;
 
@@ -177,8 +186,8 @@ Depending on the used controller, this might not be necessary.
   // Data for PWM
   #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
   #include "../uz/uz_FOC/uz_FOC.h"
-  extern uz_PWM_SS_2L_t PWM1;
-  extern uz_PWM_SS_2L_t PWM2;
+  extern uz_PWM_SS_2L_t *PWM1;
+  extern uz_PWM_SS_2L_t *PWM2;
   float V_dc_volts = 500.0f;
   struct uz_DutyCycle_t duty_cycle_sys1 = {0};
   struct uz_DutyCycle_t duty_cycle_sys2 = {0};

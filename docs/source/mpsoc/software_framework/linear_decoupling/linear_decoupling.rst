@@ -4,7 +4,7 @@
 Linear decoupling
 =================
 
-.. doxygenfunction:: uz_FOC_linear_decoupling
+.. doxygenfunction:: uz_CurrentControl_linear_decoupling
 
 Example
 =======
@@ -13,7 +13,7 @@ Example
   :linenos:
   :caption: Example function call for linear decoupling. For ``uz_PMSM_t`` struct check :ref:`uz_PMSM_config`. 
 
-  #include "uz/uz_FOC/uz_linear_decoupling.h"
+  #include "uz/uz_CurrentControl/uz_linear_decoupling.h"
   int main(void) {
      struct uz_PMSM_t config_pmsm = {
         .Ld_Henry = 0.0001f,
@@ -22,7 +22,7 @@ Example
      }; //only these parameters are needed
      float omega_el_rad_per_sec = 100.0f;
      struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-     struct uz_3ph_dq_t output = uz_FOC_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t output = uz_CurrentControl_linear_decoupling(config_pmsm, i_actual_Ampere, omega_el_rad_per_sec);
   }
 
 Description
@@ -35,7 +35,7 @@ Calculates the values for a linear decoupling according to the following formula
     v_{d,decoup} &= -\omega_{el} \cdot L_q \cdot i_q \\
     v_{q,decoup} &= \omega_{el} \cdot (L_d \cdot i_d + \psi_{PM})
 
-This function is already included in the :ref:`uz_FOC`, but it can be used independently for any other purpose.
+This function is already included in the :ref:`uz_CurrentControl`, but it can be used independently for any other purpose.
 
 .. tikz:: linear decoupling
   :align: left

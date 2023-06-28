@@ -15,7 +15,7 @@ Example
 
   int main(void) {
   bool ext_clamping = true;
-     uz_SpeedControl_set_ext_clamping(SpeedControl_instance, ext_clamping);
+     uz_SpeedControl_set_ext_clamping(SC_instance, ext_clamping);
   }
 
 Description

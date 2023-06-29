@@ -7,10 +7,10 @@
 		.base_address = XPAR_RESOLVER_CARD_INTERFACE_UZ_RESOLVER_PL_INTER_0_BASEADDR,
 		.bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
 		.ip_clk_frequency_Hz = 100000000,
-		.machine_polepairs = 4,
+		.machine_polepairs = UZ_D5_MOTOR_POLE_PAIR_NUMBER,
 		.position_intmax = 65535,
-		.resolver_polepairs = 1,
-		.theta_m_offset_rad = -0.3964f
+		.resolver_polepairs = 3,
+		.theta_m_offset_rad = -0.0f
  };
  struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d2 = {
 		.n_mech_rpm = 0.0f,

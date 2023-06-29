@@ -81,6 +81,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq] 			= &data->av.full_currents_dq.q;
 	js_ch_observable[JSO_id] 			= &data->av.full_currents_dq.d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
+	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
 	js_ch_observable[JSO_ud]			= &data->av.full_voltages_dq.d;
 	js_ch_observable[JSO_uq]			= &data->av.full_voltages_dq.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
@@ -102,7 +103,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
+	js_slowDataArray[JSSD_FLOAT_temperature_inv1]		= &(data->av.temperature_inv_1);
+	js_slowDataArray[JSSD_FLOAT_temperature_inv2]		= &(data->av.temperature_inv_2);
+	js_slowDataArray[JSSD_FLOAT_temperature_inv3]		= &(data->av.temperature_inv_3);
+	js_slowDataArray[JSSD_FLOAT_u_dc_inv1]				= &(data->av.U_ZK1);
+	js_slowDataArray[JSSD_FLOAT_u_dc_inv2]				= &(data->av.U_ZK2);
+	js_slowDataArray[JSSD_FLOAT_u_dc_inv3]				= &(data->av.U_ZK3);
+	js_slowDataArray[JSSD_FLOAT_i_dc_inv1]				= &(data->av.i_ZK1);
+	js_slowDataArray[JSSD_FLOAT_i_dc_inv2]				= &(data->av.i_ZK2);
+	js_slowDataArray[JSSD_FLOAT_i_dc_inv3]				= &(data->av.i_ZK3);
 	return Status;
 }
 

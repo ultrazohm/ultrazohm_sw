@@ -42,7 +42,7 @@ extern DS_Data Global_Data;
 
 // software limits
 #define MAX_PHASE_CURRENT_AMP  20.0f
-#define MAX_DC_VOLT 590.0f
+#define MAX_DC_VOLT 800.0f//590.0f
 #define MAX_TEMP_DEG 90.0f
 
 // start uz tempcard

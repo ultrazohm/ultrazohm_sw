@@ -19,7 +19,7 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            5.0f
+#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            13.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
 

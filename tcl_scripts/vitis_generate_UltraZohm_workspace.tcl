@@ -257,13 +257,12 @@ puts "Info (UltraZohm): Path to launches:"
 puts stdout $filename_launches
 
 file mkdir $filename_launches
-set DebugBaremetal [file join $EXPORT_FOLDER DebugBaremetal.launch]
-set DebugFreeRTOS [file join $EXPORT_FOLDER DebugFreeRTOS.launch]
-set DebugAll [file join $EXPORT_FOLDER Debug_FreeRTOS_Baremetal_FPGA.launch]
-#     file copy ?-force? ?--? source ?source ...? targetDir
+set DebugAll_TCL [file join $EXPORT_FOLDER Debug_UltraZohm.launch]
+set RunAll_TCL [file join $EXPORT_FOLDER Run_UltraZohm.launch]
+#file copy ?-force? ?--? source ?source ...? targetDir
 #file copy -force -- $DebugBaremetal $filename_launches
-file copy -force -- $DebugFreeRTOS $filename_launches
-file copy -force -- $DebugAll $filename_launches
+file copy -force -- $DebugAll_TCL $filename_launches
+file copy -force -- $RunAll_TCL $filename_launches
 puts "========================================"
 puts "Info (UltraZohm): debug files copied"
 puts "Info (UltraZohm): debug configurations are visible after restarting Vitis"

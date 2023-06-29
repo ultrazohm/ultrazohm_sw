@@ -103,6 +103,16 @@ void test_uz_CurrentControl_SpaceVector_Limitation_output_limited(void){
     }
 }
 
+void test_uz_CurrentControl_SpaceVector_Limitation_max_modulation_index_negative(void){
+    max_modulation_index = -5.2f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
+}
+
+void test_uz_CurrentControl_SpaceVector_Limitation_max_modulation_index_zero(void){
+    max_modulation_index = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_SpaceVector_Limitation(u_input_Volts,V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping));
+}
+
 void test_uz_CurrentControl_SpaceVector_Limitation_very_low_V_dc_d_axis_prio(void){
     //Tests, that the function still works, if very low values for V_dc are used and the d-axis is prioritized
     //Values for comparision manually calculated

@@ -9,8 +9,8 @@
  * @brief Configuration struct for Setpoint Filter. Pass to init function. Accessible by the user.
  */
 struct uz_dq_setpoint_filter_config {
-	struct uz_IIR_Filter_config config_filter_d;
-    struct uz_IIR_Filter_config config_filter_q;
+	struct uz_IIR_Filter_config config_filter_d; /**< Filter config d-setpoint \n */
+    struct uz_IIR_Filter_config config_filter_q; /**< Filter config q-setpoint \n */
 };
 
 /**
@@ -22,15 +22,15 @@ typedef struct uz_dq_setpoint_filter uz_dq_setpoint_filter;
 /**
  * @brief Initialization of the uz_dq_setpoint_filter object
  *
- * @param config uuz_dq_setpoint_filter_config configuration struct
- * @return Pointer to uuz_dq_setpoint_filter instance
+ * @param config uz_dq_setpoint_filter_config struct
+ * @return Pointer to uz_dq_setpoint_filter instance
  */
 uz_dq_setpoint_filter* uz_uz_dq_setpoint_filter_init(struct uz_dq_setpoint_filter_config config);
 
 /**
  * @brief Function to filter/smooth out a dq setpoint e.g. for current control
  *
- * @param uz_dq_setpoint_filter pointer to instance
+ * @param self pointer to instance
  * @param setpoint raw setpoint for control algorithm
  * @return filtered dq struct
  */

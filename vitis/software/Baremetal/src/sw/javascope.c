@@ -94,6 +94,8 @@ int JavaScope_initialize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_TEMP_VSI1] 			    = &(data->av.temp_VSI_1);
 	js_slowDataArray[JSSD_FLOAT_TEMP_VSI2] 			    = &(data->av.temp_VSI_2);
+	js_slowDataArray[JSSD_FLOAT_V_DC_1]					= &(data->av.v_dc1);
+	js_slowDataArray[JSSD_FLOAT_V_DC_2]					= &(data->av.v_dc2);
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);

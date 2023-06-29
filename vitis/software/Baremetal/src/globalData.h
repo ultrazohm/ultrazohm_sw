@@ -11,6 +11,7 @@
 #include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 // union allows to access the values as array and individual variables
@@ -145,6 +146,7 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_2;
 	uz_axi_gpio_t * GPIO_InverterEnable;
 	uz_axi_gpio_t * GPIO_InverterFault;
+	uz_resolverIP_t* resolver_interface;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

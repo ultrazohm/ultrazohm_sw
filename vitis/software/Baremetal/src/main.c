@@ -128,6 +128,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            Global_Data.objects.resolver_interface = initialize_resolver_interface();
             Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
             Global_Data.objects.pwm_duty_freq_detection_VSI_1 = initialize_PWM_duty_freq_detection_VSI_1();
             Global_Data.objects.pwm_duty_freq_detection_VSI_2 = initialize_PWM_duty_freq_detection_VSI_2();

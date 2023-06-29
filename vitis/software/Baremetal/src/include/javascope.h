@@ -75,6 +75,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_TEMP_VSI1,
 	JSSD_FLOAT_TEMP_VSI2,
+	JSSD_FLOAT_V_DC_1,
+	JSSD_FLOAT_V_DC_2,
 	JSSD_FLOAT_polePairs,
 	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_u_d,

@@ -31,24 +31,6 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.27f,
         	    .polePairs = 5.0f
         	};
-        	struct uz_CurrentControl_config CC_dq_config = {
-        	    .decoupling_select = linear_decoupling,
-        	    .config_id = config_id,
-        	    .config_iq = config_iq,
-        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor,
-				.config_PMSM = pmsm_config_dq
-        	};
-
-        	struct uz_CurrentControl_config CC_xy_config = {
-        	    .decoupling_select = no_decoupling,
-        	    .config_id = config_ix,
-        	    .config_iq = config_iy,
-        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor
-        	};
-
-        	Global_Data.objects.CC_dq_instance = uz_CurrentControl_init(CC_dq_config);
-        	Global_Data.objects.CC_xy_instance = uz_CurrentControl_init(CC_xy_config);
-
 #endif
 
 
@@ -80,7 +62,6 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.543f,
         	    .polePairs = 3.0f
         	};
-
 #endif
 
 #if BROSE==1
@@ -111,7 +92,6 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.1278f,
         	    .polePairs = 5.0f
         	};
-
 #endif
 
 

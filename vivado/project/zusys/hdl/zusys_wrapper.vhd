@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Jun 26 14:51:22 2023
+--Date        : Thu Jun 29 13:33:49 2023
 --Host        : LAPTOP-ME665JGB running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -89,20 +89,11 @@ entity zusys_wrapper is
     Dig_14_Ch5 : in STD_LOGIC;
     Dig_15_Ch1 : in STD_LOGIC;
     Dig_15_Ch4 : out STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
     Dig_16_Ch1 : in STD_LOGIC;
     Dig_16_Ch2 : in STD_LOGIC;
     Dig_16_Ch4 : in STD_LOGIC;
-    Dig_16_Ch5 : in STD_LOGIC;
     Dig_17_Ch1 : in STD_LOGIC;
-    Dig_17_Ch5 : in STD_LOGIC;
-    Dig_18_Ch4 : out STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC;
-    Dig_20_Ch5 : in STD_LOGIC;
-    Dig_21_Ch5 : in STD_LOGIC;
-    Dig_22_Ch5 : in STD_LOGIC;
-    Dig_23_Ch5 : in STD_LOGIC
+    Dig_18_Ch4 : out STD_LOGIC
   );
 end zusys_wrapper;
 
@@ -139,15 +130,6 @@ architecture STRUCTURE of zusys_wrapper is
     D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_14_Ch5 : in STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
-    Dig_16_Ch5 : in STD_LOGIC;
-    Dig_17_Ch5 : in STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC;
-    Dig_20_Ch5 : in STD_LOGIC;
-    Dig_21_Ch5 : in STD_LOGIC;
-    Dig_22_Ch5 : in STD_LOGIC;
-    Dig_23_Ch5 : in STD_LOGIC;
     Dig_00_Ch4 : out STD_LOGIC;
     Dig_01_Ch4 : out STD_LOGIC;
     Dig_03_Ch4 : out STD_LOGIC;
@@ -280,19 +262,10 @@ zusys_i: component zusys
       Dig_14_Ch5 => Dig_14_Ch5,
       Dig_15_Ch1 => Dig_15_Ch1,
       Dig_15_Ch4 => Dig_15_Ch4,
-      Dig_15_Ch5 => Dig_15_Ch5,
       Dig_16_Ch1 => Dig_16_Ch1,
       Dig_16_Ch2 => Dig_16_Ch2,
       Dig_16_Ch4 => Dig_16_Ch4,
-      Dig_16_Ch5 => Dig_16_Ch5,
       Dig_17_Ch1 => Dig_17_Ch1,
-      Dig_17_Ch5 => Dig_17_Ch5,
-      Dig_18_Ch4 => Dig_18_Ch4,
-      Dig_18_Ch5 => Dig_18_Ch5,
-      Dig_19_Ch5 => Dig_19_Ch5,
-      Dig_20_Ch5 => Dig_20_Ch5,
-      Dig_21_Ch5 => Dig_21_Ch5,
-      Dig_22_Ch5 => Dig_22_Ch5,
-      Dig_23_Ch5 => Dig_23_Ch5
+      Dig_18_Ch4 => Dig_18_Ch4
     );
 end STRUCTURE;

@@ -248,7 +248,7 @@ begin
 						end if;
 			----------------------------------------------------------------------------------------
 				when LTC_Wakeup =>
-					if(wakeup_counter >= 20) then											-- 200ms warten nach POR  (20000000)
+					if(wakeup_counter >= 20000000) then											-- 200ms warten nach POR  (20000000)
 						
 						LTC_Channelconfigs(0)	<= LTC_CH_0_config_in;							-- Latchen der Configdaten,. nur nach Reset kann die Config verändert werden
 						LTC_Channelconfigs(1)	<= LTC_CH_1_config_in;							-- keine neukonfigurierung des LTC im laufenden Betrieb, da nicht gebraucht

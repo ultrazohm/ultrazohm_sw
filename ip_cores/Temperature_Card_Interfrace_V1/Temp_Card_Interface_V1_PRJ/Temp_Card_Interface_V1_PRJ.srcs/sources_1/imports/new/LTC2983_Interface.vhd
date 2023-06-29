@@ -18,7 +18,6 @@
 -- 
 ----------------------------------------------------------------------------------
 
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -90,7 +89,10 @@ entity LTC2983_Interface is
 		LTC_CH_16_config_in		: IN  std_logic_vector(31 DOWNTO 0);
 		LTC_CH_17_config_in		: IN  std_logic_vector(31 DOWNTO 0);
 		LTC_CH_18_config_in		: IN  std_logic_vector(31 DOWNTO 0);
-		LTC_CH_19_config_in		: IN  std_logic_vector(31 DOWNTO 0)
+		LTC_CH_19_config_in		: IN  std_logic_vector(31 DOWNTO 0);
+		--
+		LTC_Global_config_in	: IN  std_logic_vector(7 DOWNTO 0);
+		LTC_Mux_config_in	    : IN  std_logic_vector(7 DOWNTO 0)
 	);
 end LTC2983_Interface;
 
@@ -102,9 +104,11 @@ constant SPI_writeCMD				: std_logic_vector	:= x"02";
 
 constant LTC_Channeladdr_start    	: std_logic_vector := x"0200";
 constant LTC_resultsaddr_start		: std_logic_vector := x"0010";
+constant LTC_ConfigRegsaddr_start	: std_logic_vector := x"00F0";
+constant LTC_MuxRegsaddr_start	    : std_logic_vector := x"00FF";
 
 -- Signale anlegen----------------------------------------------------------------------------------
-type states_LTC2983_Interface is (LTC_powerup, LTC_Resetcounter, LTC_Wakeup, LTC_SendCFG, LTC_start, LTC_ConvStart, LTC_WaitConversion, LTC_InitialReadData, LTC_ReadData, LTC_Output, LTC_SPI_Waittransmit1, LTC_SPI_Waittransmit2, LTC_SPI_WaitCShigh, LTC_Failstate);
+type states_LTC2983_Interface is (LTC_powerup, LTC_Resetcounter, LTC_Wakeup, LTC_SendCFG, LTC_SendMuxCFG, LTC_SendChannelCFG, LTC_start, LTC_ConvStart, LTC_WaitConversion, LTC_InitialReadData, LTC_ReadData, LTC_Output, LTC_SPI_Waittransmit1, LTC_SPI_Waittransmit2, LTC_SPI_WaitCShigh, LTC_Failstate);
 signal state_LTC_Interface : states_LTC2983_Interface;
 signal laststate_LTC_Interface : states_LTC2983_Interface;
 
@@ -119,6 +123,9 @@ signal wakeup_counter		: unsigned(31 downto 0);
 
 type LTC_Channelconfigdata_type is array (Channelcount-1 downto 0) of std_logic_vector(31 downto 0);
 signal LTC_Channelconfigs	: LTC_Channelconfigdata_type;
+
+signal LTC_Global_config_s  : std_logic_vector(7 DOWNTO 0);
+signal LTC_Mux_config_s     : std_logic_vector(7 DOWNTO 0);
 
 type LTC_Channelresultdata_type is array (Channelcount-1 downto 0) of std_logic_vector(31 downto 0);
 signal LTC_Channelresults	: LTC_Channelresultdata_type;
@@ -241,7 +248,7 @@ begin
 						end if;
 			----------------------------------------------------------------------------------------
 				when LTC_Wakeup =>
-					if(wakeup_counter >= 20000000) then											-- 200ms warten nach POR  (20000000)
+					if(wakeup_counter >= 20) then											-- 200ms warten nach POR  (20000000)
 						
 						LTC_Channelconfigs(0)	<= LTC_CH_0_config_in;							-- Latchen der Configdaten,. nur nach Reset kann die Config verändert werden
 						LTC_Channelconfigs(1)	<= LTC_CH_1_config_in;							-- keine neukonfigurierung des LTC im laufenden Betrieb, da nicht gebraucht
@@ -264,37 +271,19 @@ begin
 						LTC_Channelconfigs(18)	<= LTC_CH_18_config_in;
 						LTC_Channelconfigs(19)	<= LTC_CH_19_config_in;
 						
+						LTC_Global_config_s     <= LTC_Global_config_in;
+                        LTC_Mux_config_s        <= LTC_Mux_config_in;
+						
 						state_LTC_Interface				<= LTC_SendCFG;							-- Prozedur laut Datenblat LTC2983
 						laststate_LTC_Interface			<= LTC_Wakeup;
 						wakeup_counter					<= (others=> '0');
 					else
 						wakeup_counter					<= wakeup_counter + 1;
 					end if;
-			----------------------------------------------------------------------------------------
-				when LTC_SendCFG =>																--Initiale Kanalconfig senden
-					if(byte_tx_counter <= 79) then												-- Channelkonfig senden
-						SPI_TX_Data						<= SPI_writeCMD & std_logic_vector((unsigned(LTC_Channeladdr_start) + byte_tx_counter)) & LTC_Channelconfigs(to_integer(byte_tx_counter(7 downto 2))) (31-(8*to_integer(byte_tx_counter(1 downto 0))) downto 24-(8*to_integer(byte_tx_counter(1 downto 0))));					
-						SPI_enable						<= '1';
-						SPI_SS							<= '0';
-						byte_tx_counter					<= byte_tx_counter +1;
-						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
-						laststate_LTC_Interface			<= LTC_SendCFG;	
-					elsif(byte_tx_counter = 80) then					-- Multichannelconversionmask CH20-CH17 setzen senden
-						SPI_TX_Data						<= SPI_writeCMD & x"00F5" & x"0F";
-						SPI_enable						<= '1';
-						SPI_SS							<= '0';
-						byte_tx_counter					<= byte_tx_counter +1;
-						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
-						laststate_LTC_Interface			<= LTC_SendCFG;	
-					elsif(byte_tx_counter = 81) then					-- Multichannelconversionmask CH16-CH9 setzen senden
-						SPI_TX_Data						<= SPI_writeCMD & x"00F6" & x"FF";
-						SPI_enable						<= '1';
-						SPI_SS							<= '0';
-						byte_tx_counter					<= byte_tx_counter +1;
-						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
-						laststate_LTC_Interface			<= LTC_SendCFG;	
-					elsif(byte_tx_counter = 82) then					-- Multichannelconversionmask CH8-CH0 setzen senden
-						SPI_TX_Data						<= SPI_writeCMD & x"00F7" & x"FF";
+			---------------------------------------------------------------------------------------			
+				when LTC_SendCFG =>
+				    if(byte_tx_counter = 0) then       
+						SPI_TX_Data						<= SPI_writeCMD & LTC_ConfigRegsaddr_start & LTC_Global_config_s;
 						SPI_enable						<= '1';
 						SPI_SS							<= '0';
 						byte_tx_counter					<= byte_tx_counter +1;
@@ -302,8 +291,57 @@ begin
 						laststate_LTC_Interface			<= LTC_SendCFG;	
 					else
 						byte_tx_counter					<= (others=>'0');
-						state_LTC_Interface				<= LTC_start;
+						state_LTC_Interface				<= LTC_SendMuxCFG;
 						laststate_LTC_Interface			<= LTC_SendCFG;	
+					end if;			
+			---------------------------------------------------------------------------------------		
+				when LTC_SendMuxCFG =>
+				    if(byte_tx_counter = 0) then       
+						SPI_TX_Data						<= SPI_writeCMD & LTC_MuxRegsaddr_start & LTC_Mux_config_s;
+						SPI_enable						<= '1';
+						SPI_SS							<= '0';
+						byte_tx_counter					<= byte_tx_counter +1;
+						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
+						laststate_LTC_Interface			<= LTC_SendMuxCFG;	
+					else
+						byte_tx_counter					<= (others=>'0');
+						state_LTC_Interface				<= LTC_SendChannelCFG;
+						laststate_LTC_Interface			<= LTC_SendMuxCFG;	
+					end if;	
+			----------------------------------------------------------------------------------------
+				when LTC_SendChannelCFG =>																--Initiale Kanalconfig senden
+					if(byte_tx_counter <= 79) then												-- Channelkonfig senden
+						SPI_TX_Data						<= SPI_writeCMD & std_logic_vector((unsigned(LTC_Channeladdr_start) + byte_tx_counter)) & LTC_Channelconfigs(to_integer(byte_tx_counter(7 downto 2))) (31-(8*to_integer(byte_tx_counter(1 downto 0))) downto 24-(8*to_integer(byte_tx_counter(1 downto 0))));					
+						SPI_enable						<= '1';
+						SPI_SS							<= '0';
+						byte_tx_counter					<= byte_tx_counter +1;
+						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
+						laststate_LTC_Interface			<= LTC_SendChannelCFG;	
+					elsif(byte_tx_counter = 80) then					-- Multichannelconversionmask CH20-CH17 setzen senden
+						SPI_TX_Data						<= SPI_writeCMD & x"00F5" & x"0F";
+						SPI_enable						<= '1';
+						SPI_SS							<= '0';
+						byte_tx_counter					<= byte_tx_counter +1;
+						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
+						laststate_LTC_Interface			<= LTC_SendChannelCFG;	
+					elsif(byte_tx_counter = 81) then					-- Multichannelconversionmask CH16-CH9 setzen senden
+						SPI_TX_Data						<= SPI_writeCMD & x"00F6" & x"FF";
+						SPI_enable						<= '1';
+						SPI_SS							<= '0';
+						byte_tx_counter					<= byte_tx_counter +1;
+						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
+						laststate_LTC_Interface			<= LTC_SendChannelCFG;	
+					elsif(byte_tx_counter = 82) then					-- Multichannelconversionmask CH8-CH0 setzen senden
+						SPI_TX_Data						<= SPI_writeCMD & x"00F7" & x"FF";
+						SPI_enable						<= '1';
+						SPI_SS							<= '0';
+						byte_tx_counter					<= byte_tx_counter +1;
+						state_LTC_Interface				<= LTC_SPI_Waittransmit1;
+						laststate_LTC_Interface			<= LTC_SendChannelCFG;	
+					else
+						byte_tx_counter					<= (others=>'0');
+						state_LTC_Interface				<= LTC_start;
+						laststate_LTC_Interface			<= LTC_SendChannelCFG;	
 					end if;			
 			----------------------------------------------------------------------------------------
 				when LTC_start =>																-- Design wartet auf globalen Trigger 

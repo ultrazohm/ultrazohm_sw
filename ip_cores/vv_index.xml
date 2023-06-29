@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/Repos/Ultrazohm/ultrazohm_sw/ip_cores">
+	<Repository value="e:/01_Repos/Ultrazohm/ultrazohm_sw/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -1377,13 +1377,13 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:user:Temperature_Card_Interface_v1_0:1.0">
+		<VLNV value="xilinx.com:user:Temperature_Card_Interface_v1_0:1.1">
 		</VLNV>
 		<DisplayName value="Temperature_Card_Interface_v1_0_v1_0">
 		</DisplayName>
 		<Description value="Temperature_Card_Interface_v1_0_v1_0">
 		</Description>
-		<CoreRevision value="6">
+		<CoreRevision value="7">
 		</CoreRevision>
 		<ComponentPath value="Temperature_Card_Interfrace_V1/Temp_Card_Interface_V1_PRJ/Temp_Card_Interface_V1_PRJ.srcs/sources_1/imports/component.xml">
 		</ComponentPath>

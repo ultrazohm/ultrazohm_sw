@@ -352,6 +352,13 @@ architecture arch_imp of Temperature_Card_Interface_v1_0_S00_AXI is
     signal error_flag_2_s		: STD_LOGIC;					--Error occured, need reset
     signal error_flag_3_s		: STD_LOGIC;					--Error occured, need reset
     
+    signal LTC_Global_config_1_s	: std_logic_vector(7 DOWNTO 0);
+    signal LTC_Mux_config_1_s	    : std_logic_vector(7 DOWNTO 0);
+    signal LTC_Global_config_2_s	: std_logic_vector(7 DOWNTO 0);
+    signal LTC_Mux_config_2_s	    : std_logic_vector(7 DOWNTO 0);
+    signal LTC_Global_config_3_s	: std_logic_vector(7 DOWNTO 0);
+    signal LTC_Mux_config_3_s	    : std_logic_vector(7 DOWNTO 0);
+    
     signal Temp_00_out_LTC_1_s    : std_logic_vector(31 downto 0);				
     signal Temp_01_out_LTC_1_s    : std_logic_vector(31 downto 0);				
     signal Temp_02_out_LTC_1_s    : std_logic_vector(31 downto 0);				
@@ -487,7 +494,10 @@ component LTC2983_Interface is
 		LTC_CH_16_config_in		: IN  std_logic_vector(31 DOWNTO 0);
 		LTC_CH_17_config_in		: IN  std_logic_vector(31 DOWNTO 0);
 		LTC_CH_18_config_in		: IN  std_logic_vector(31 DOWNTO 0);
-		LTC_CH_19_config_in		: IN  std_logic_vector(31 DOWNTO 0)
+		LTC_CH_19_config_in		: IN  std_logic_vector(31 DOWNTO 0);
+		--
+		LTC_Global_config_in	: IN  std_logic_vector(7 DOWNTO 0);
+		LTC_Mux_config_in	    : IN  std_logic_vector(7 DOWNTO 0)
 	);
 end component LTC2983_Interface;
 
@@ -2307,7 +2317,10 @@ LTC2983_Handler_1 : LTC2983_Interface
 		LTC_CH_16_config_in		=> slv_reg44,
 		LTC_CH_17_config_in		=> slv_reg45,
 		LTC_CH_18_config_in		=> slv_reg46,
-		LTC_CH_19_config_in		=> slv_reg47
+		LTC_CH_19_config_in		=> slv_reg47,
+		
+		LTC_Global_config_in    => LTC_Global_config_1_s,
+        LTC_Mux_config_in       => LTC_Mux_config_1_s
 	);
 
 LTC2983_Handler_2 : LTC2983_Interface 
@@ -2370,7 +2383,10 @@ LTC2983_Handler_2 : LTC2983_Interface
 		LTC_CH_16_config_in		=> slv_reg84,
 		LTC_CH_17_config_in		=> slv_reg85,
 		LTC_CH_18_config_in		=> slv_reg86,
-		LTC_CH_19_config_in		=> slv_reg87
+		LTC_CH_19_config_in		=> slv_reg87,
+		
+		LTC_Global_config_in    => LTC_Global_config_2_s,
+        LTC_Mux_config_in       => LTC_Mux_config_2_s
 	);
 	
 LTC2983_Handler_3 : LTC2983_Interface 
@@ -2433,7 +2449,10 @@ LTC2983_Handler_3 : LTC2983_Interface
 		LTC_CH_16_config_in		=> slv_reg124,
 		LTC_CH_17_config_in		=> slv_reg125,
 		LTC_CH_18_config_in		=> slv_reg126,
-		LTC_CH_19_config_in		=> slv_reg127
+		LTC_CH_19_config_in		=> slv_reg127,
+		
+		LTC_Global_config_in    => LTC_Global_config_3_s,
+        LTC_Mux_config_in       => LTC_Mux_config_3_s
 	);
 	
 	-- Generate Trigger
@@ -2470,6 +2489,13 @@ LTC2983_Handler_3 : LTC2983_Interface
 	busy_3         <= busy_3_s       ;
 	ready_3        <= ready_3_s      ;
 	error_flag_3   <= error_flag_3_s ;
+	
+	LTC_Global_config_1_s   <= slv_reg2(7  downto 0 );
+    LTC_Mux_config_1_s      <= slv_reg3(7  downto 0 );
+    LTC_Global_config_2_s   <= slv_reg2(15 downto 8 );
+    LTC_Mux_config_2_s      <= slv_reg3(15 downto 8 );
+    LTC_Global_config_3_s   <= slv_reg2(23 downto 16);
+    LTC_Mux_config_3_s      <= slv_reg3(23 downto 16);
 	
 	Temp_00_out_LTC_1       <=    Temp_00_out_LTC_1_s;
     Temp_01_out_LTC_1       <=    Temp_01_out_LTC_1_s;

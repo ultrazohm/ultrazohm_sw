@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x9BA01FFC6D31A734",
+      "boundary_crc": "0x2CAB09FC07733563",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -69,10 +69,6 @@
         },
         "D3_adapter": {
           "vio_D3_test": ""
-        },
-        "D5_adapter": {
-          "IncreEncoder_V24_ip_0": "",
-          "system_ila_0": ""
         }
       },
       "uz_system": {
@@ -298,33 +294,6 @@
         "right": "0"
       },
       "Dig_14_Ch5": {
-        "direction": "I"
-      },
-      "Dig_15_Ch5": {
-        "direction": "I"
-      },
-      "Dig_16_Ch5": {
-        "direction": "I"
-      },
-      "Dig_17_Ch5": {
-        "direction": "I"
-      },
-      "Dig_18_Ch5": {
-        "direction": "I"
-      },
-      "Dig_19_Ch5": {
-        "direction": "I"
-      },
-      "Dig_20_Ch5": {
-        "direction": "I"
-      },
-      "Dig_21_Ch5": {
-        "direction": "I"
-      },
-      "Dig_22_Ch5": {
-        "direction": "I"
-      },
-      "Dig_23_Ch5": {
         "direction": "I"
       },
       "Dig_00_Ch4": {
@@ -1662,11 +1631,6 @@
             "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
           },
-          "AXI4_Lite3": {
-            "mode": "Slave",
-            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-            "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-          },
           "AXI4_Lite_PWM_0": {
             "mode": "Slave",
             "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
@@ -1739,21 +1703,6 @@
             "left": "25",
             "right": "0"
           },
-          "Dig_11_Ch5": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
-          },
-          "Dig_12_Ch5": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
-          },
-          "Dig_13_Ch5": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
-          },
           "Enable_Gate": {
             "direction": "I",
             "left": "0",
@@ -1781,11 +1730,6 @@
           "clk": {
             "type": "clk",
             "direction": "I"
-          },
-          "probe5": {
-            "direction": "I",
-            "left": "0",
-            "right": "0"
           }
         },
         "components": {
@@ -3262,150 +3206,6 @@
                 ]
               }
             }
-          },
-          "D5_adapter": {
-            "interface_ports": {
-              "AXI4_Lite": {
-                "mode": "Slave",
-                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-              }
-            },
-            "ports": {
-              "AXI4_LITE_ACLK": {
-                "type": "clk",
-                "direction": "I"
-              },
-              "AXI4_Lite_ARESETN": {
-                "type": "rst",
-                "direction": "I"
-              },
-              "Dig_11_Ch5": {
-                "direction": "I",
-                "left": "0",
-                "right": "0"
-              },
-              "Dig_12_Ch5": {
-                "direction": "I",
-                "left": "0",
-                "right": "0"
-              },
-              "Dig_13_Ch5": {
-                "direction": "I",
-                "left": "0",
-                "right": "0"
-              },
-              "probe5": {
-                "direction": "I",
-                "left": "0",
-                "right": "0"
-              }
-            },
-            "components": {
-              "IncreEncoder_V24_ip_0": {
-                "vlnv": "xilinx.com:ip:IncreEncoder_V24_ip:24.0",
-                "xci_name": "zusys_IncreEncoder_V24_ip_0_0",
-                "xci_path": "ip\\zusys_IncreEncoder_V24_ip_0_0_8\\zusys_IncreEncoder_V24_ip_0_0.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0"
-              },
-              "system_ila_0": {
-                "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_2",
-                "xci_path": "ip\\zusys_system_ila_0_2_3\\zusys_system_ila_0_2.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/system_ila_0",
-                "parameters": {
-                  "C_DATA_DEPTH": {
-                    "value": "1024"
-                  },
-                  "C_MON_TYPE": {
-                    "value": "NATIVE"
-                  },
-                  "C_NUM_MONITOR_SLOTS": {
-                    "value": "8"
-                  },
-                  "C_NUM_OF_PROBES": {
-                    "value": "8"
-                  }
-                }
-              }
-            },
-            "interface_nets": {
-              "AXI4_Lite_1": {
-                "interface_ports": [
-                  "AXI4_Lite",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite"
-                ]
-              }
-            },
-            "nets": {
-              "AXI4_Lite_ARESETN_1": {
-                "ports": [
-                  "AXI4_Lite_ARESETN",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN",
-                  "IncreEncoder_V24_ip_0/IPCORE_RESETN"
-                ]
-              },
-              "A_1": {
-                "ports": [
-                  "Dig_12_Ch5",
-                  "IncreEncoder_V24_ip_0/A",
-                  "system_ila_0/probe0"
-                ]
-              },
-              "B_1": {
-                "ports": [
-                  "Dig_13_Ch5",
-                  "IncreEncoder_V24_ip_0/B",
-                  "system_ila_0/probe1"
-                ]
-              },
-              "I_1": {
-                "ports": [
-                  "Dig_11_Ch5",
-                  "IncreEncoder_V24_ip_0/I",
-                  "system_ila_0/probe2"
-                ]
-              },
-              "IncreEncoder_V24_ip_0_OverSamplFactor": {
-                "ports": [
-                  "IncreEncoder_V24_ip_0/OverSamplFactor",
-                  "system_ila_0/probe7"
-                ]
-              },
-              "IncreEncoder_V24_ip_0_omega": {
-                "ports": [
-                  "IncreEncoder_V24_ip_0/omega",
-                  "system_ila_0/probe3"
-                ]
-              },
-              "IncreEncoder_V24_ip_0_position": {
-                "ports": [
-                  "IncreEncoder_V24_ip_0/position",
-                  "system_ila_0/probe6"
-                ]
-              },
-              "IncreEncoder_V24_ip_0_theta_el": {
-                "ports": [
-                  "IncreEncoder_V24_ip_0/theta_el",
-                  "system_ila_0/probe4"
-                ]
-              },
-              "Interrupt_muxed": {
-                "ports": [
-                  "probe5",
-                  "IncreEncoder_V24_ip_0/PeriodEnd",
-                  "system_ila_0/probe5"
-                ]
-              },
-              "zynq_ultra_ps_e_0_pl_clk1": {
-                "ports": [
-                  "AXI4_LITE_ACLK",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK",
-                  "IncreEncoder_V24_ip_0/IPCORE_CLK",
-                  "system_ila_0/clk"
-                ]
-              }
-            }
           }
         },
         "interface_nets": {
@@ -3419,12 +3219,6 @@
             "interface_ports": [
               "AXI4_Lite_PWM_0",
               "D1_adapter/AXI4_Lite_PWM_0"
-            ]
-          },
-          "AXI4_Lite_2": {
-            "interface_ports": [
-              "AXI4_Lite3",
-              "D5_adapter/AXI4_Lite"
             ]
           },
           "AXI4_Lite_3": {
@@ -3471,18 +3265,6 @@
           }
         },
         "nets": {
-          "A_1": {
-            "ports": [
-              "Dig_12_Ch5",
-              "D5_adapter/Dig_12_Ch5"
-            ]
-          },
-          "B_1": {
-            "ports": [
-              "Dig_13_Ch5",
-              "D5_adapter/Dig_13_Ch5"
-            ]
-          },
           "Gates_3L_Gate_Signals_3L": {
             "ports": [
               "D2_adapter/D2_OUT",
@@ -3531,24 +3313,11 @@
               "D1_OUT"
             ]
           },
-          "I_1": {
-            "ports": [
-              "Dig_11_Ch5",
-              "D5_adapter/Dig_11_Ch5"
-            ]
-          },
-          "Interrupt_muxed": {
-            "ports": [
-              "probe5",
-              "D5_adapter/probe5"
-            ]
-          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "RESETN",
               "D1_adapter/RESETN",
-              "D2_adapter/AXI4_Lite_ARESETN",
-              "D5_adapter/AXI4_Lite_ARESETN"
+              "D2_adapter/AXI4_Lite_ARESETN"
             ]
           },
           "vio_D2_test_probe_out0": {
@@ -3568,8 +3337,7 @@
               "clk",
               "D1_adapter/CLK",
               "D2_adapter/AXI4_Lite_ACLK",
-              "D3_adapter/clk",
-              "D5_adapter/AXI4_LITE_ACLK"
+              "D3_adapter/clk"
             ]
           }
         }
@@ -10369,12 +10137,6 @@
           "uz_system/AXI4_Lite_PWM_0"
         ]
       },
-      "AXI4_Lite_2": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite3",
-          "uz_system/M09_AXI"
-        ]
-      },
       "AXI4_Lite_3": {
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite",
@@ -10676,7 +10438,6 @@
         "ports": [
           "uz_system/trigger_converesions",
           "uz_analog_adapter/TRIGGER_CNV",
-          "uz_digital_adapter/probe5",
           "resolver_card_interface/sample_trigger"
         ]
       },
@@ -11055,11 +10816,6 @@
                 "range": "64K",
                 "offset_base_param": "C_S00_AXI_BASEADDR",
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
-              },
-              "SEG_IncreEncoder_V24_ip_0_reg0": {
-                "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0/AXI4_Lite/reg0",
-                "offset": "0x0080070000",
-                "range": "64K"
               },
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",

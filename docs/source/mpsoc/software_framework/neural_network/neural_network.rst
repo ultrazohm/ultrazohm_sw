@@ -231,7 +231,7 @@ Activation function:
 Training example with Backpropagation
 **************************************
 The trainable MLPs are implemented with the following definition and representation of the neural network.
-The neural network has the same definition as the feedforward example. As a reference the simplified example[#intelligente_verfahren]_ is used to show the training algorithm implementation. The network is 
+The neural network has the same definition as the feedforward example. As a reference the simplified example [#intelligente_verfahren]_ is used to show the training algorithm implementation. The network is 
 
 
 .. _nn_backprop_schroeder:
@@ -286,8 +286,10 @@ For the output layer:
 
 The activation function of the hidden layer is set to ReLU, the output activation function to linear.
 The following section calculates all steps and intermediate results in the network.
+
 Feedforward
 ************
+
 First layer
 ***********
 
@@ -360,6 +362,14 @@ Backpropagation
 Step 1: Calculate Error
 ************************
 
+For the backpropagation the error of the network has to be calculated. This is done with a loss function. The mean squared error loss function is the common used function for neural networks.
+
+.. math::
+
+      MSE = \frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})^2
+
+In the schroeder example, the loss function is calculated as the linear error:
+
 .. math::
 
       \hat{y_{out}}= & y^{3} =( \left[ \begin{array}{rr} -1.52 \\ \end{array}\right])\\
@@ -367,7 +377,7 @@ Step 1: Calculate Error
       &= 
       -2.89 \\
 
-Step 2: Backpropragation
+Step 2: Delta Rule
 ************************
 
 .. math::
@@ -416,9 +426,36 @@ First layer
 Step 3: Calculate Gradients
 ****************************
 
+Gradients of the weights
+
 .. math::
 
- l=1: \frac{\partial E_{1}}{\partial {w}^{1}} = \delta_{1}^{1} \cdot (y_1^{(0)})^{T}
+ l=1: \frac{\partial E_{1}}{\partial {w}^{1}} = \delta_{1}^{1} \cdot (y_1^{(0)})^{T} &=\left[ \begin{array}{rr} 0\\ -7.14\\ \end{array}\right]  \cdot -5 &= \left[ \begin{array}{rr} 0\\ 35.70\\ \end{array}\right]\\
+ l=2: \frac{\partial E_{1}}{\partial {w}^{2}} = \delta_{1}^{2} \cdot (y_1^{(1)})^{T} &=\left[ \begin{array}{rr} 0\\ 9.39\\ \end{array}\right] \cdot \left[\begin{array}{rr} -1 & 0.64 \end{array}\right] &=\left[ \begin{array}{rr} 0 & 0\\-9.39 & 6.01 \end{array}\right]\\
+ l=3: \frac{\partial E_{1}}{\partial {w}^{3}} = \delta_{1}^{3} \cdot (y_1^{(2)})^{T} &=-2.89 \cdot \left[ \begin{array}{rr} 1 & -0.03\\ \end{array}\right] &= \left[ \begin{array}{rr} 2.89 & -0.09\\ \end{array}\right]\\\\
+
+Gradients of the bias
+
+.. math::
+
+ l=1: \frac{\partial E_{1}}{\partial {b}^{1}} = \delta_{1}^{1} &= \left[ \begin{array}{rr} 0 \\ -7.14 \end{array}\right]\\
+ l=2: \frac{\partial E_{1}}{\partial {b}^{2}} = \delta_{1}^{2} &= \left[ \begin{array}{rr} 0 \\ 9.39 \end{array}\right]\\
+ l=3: \frac{\partial E_{1}}{\partial {b}^{3}} = \delta_{1}^{3} &= 2.89 \\
+
+Step 4: Gradient Descent Step
+******************************
+
+The previous calculated gradients are used for updating the learnable parameters of the network. There are different methods possible for updating the weights. The basic method is the
+gradient descent method, where the parameters are updated in negative gradient direction with a step size. This step size is called the learnrate :math:`\eta`. For calculating more than one trainingsdataset, the minibatch method is used.
+Therefore the gradients are stochastically estimated. From an big dataset of size :math:`M`, just a part from it is used to compute the loss function and to calculate the gradients. :math:`N` denotes the minibatch size.
+The update formula for gradient descent with minibatch is as follows:
+
+.. math::
+
+ W \rightarrow W^{'} = W - \eta \cdot \frac{1}{N} \cdot \sum_{n = 0}^{N-1} \frac{\partial C_x(x^n)}{\partial W} \\
+ b \rightarrow b^{'} = b - \eta \cdot \frac{1}{N} \cdot \sum_{n = 0}^{N-1} \frac{\partial C_x(x^n)}{\partial b} \\
+
+
 
 
 Sources

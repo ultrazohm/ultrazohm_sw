@@ -5,23 +5,23 @@ float Limitation_saftey_factor = 0.8f; //To represent the saftey factor from sim
 
 #if DEPENGINE==1
 struct uz_PI_Controller_config config_id = {
-        		.Kp = 5.8f,//5.0f
-        		.Ki = 900.0f,//1000.0f
+        		.Kp = 5.0f,//5.8f,//5.0f
+        		.Ki = 1000.0f,//900.0f,//1000.0f
         		.samplingTime_sec = 0.0001f,
         	};
         	struct uz_PI_Controller_config config_iq = {
-        		.Kp = 12.67f,//5.0f
-        	    .Ki = 900.0f,//1000.0f
+        		.Kp = 5.0f,//12.67f,//5.0f
+        	    .Ki = 1000.0f,900.0f,//1000.0f
         	    .samplingTime_sec = 0.0001f,
         	};
         	struct uz_PI_Controller_config config_ix = {
-        		.Kp = 9.33f,//15.0f
-        		.Ki = 900.0f,//500.0f
+        		.Kp = 15.0f,//9.33f,//15.0f
+        		.Ki = 500.0f,//900.0f,//500.0f
         		.samplingTime_sec = 0.0001f,
         	};
         	struct uz_PI_Controller_config config_iy = {
-        		.Kp = 8.83f,//15.0f
-        	    .Ki = 900.0f,//500.0f
+        		.Kp = 15.0f,//8.83f,//15.0f
+        	    .Ki = 500.0f,900.0f,//500.0f
         	    .samplingTime_sec = 0.0001f,
         	};
         	struct uz_PMSM_t pmsm_config_dq = {
@@ -97,7 +97,7 @@ struct uz_PI_Controller_config config_id = {
 
 void init_FOC(void) {
 	struct uz_CurrentControl_config CC_dq_config = {
-	    .decoupling_select = linear_decoupling,
+	    .decoupling_select = no_decoupling,
 	    .config_id = config_id,
 	    .config_iq = config_iq,
 	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor,

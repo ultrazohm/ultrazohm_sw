@@ -71,7 +71,7 @@ uz_3ph_dq_t REAL_i_xy_meas = {0};
 uz_3ph_dq_t REAL_i_z1z2_meas = {0};
 struct uz_DutyCycle_2x3ph_t DutyCycle_output = {0};
 float CIL_omega_mech = 100.0f; //fixed speed for the CIL model
-
+float max_modulation_index = (1.0f / sqrtf(3.0f)) * 0.8f;
 float rated_Speed_rpm = 3000.0f;
 float speed_weight = 1.0f / 3000.0f;
 float ts = 1.0f / UZ_PWM_FREQUENCY;
@@ -236,7 +236,7 @@ void ISR_Control(void *data)
         //VSD-Transformation
         REAL_i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq(REAL_i_abc_meas, Global_Data.av.theta_elec);
         Global_Data.av.I_d = REAL_i_dqxy_meas.d;
-        Global_Data.av.I_d = REAL_i_dqxy_meas.q;
+        Global_Data.av.I_q = REAL_i_dqxy_meas.q;
         Global_Data.av.I_X = REAL_i_dqxy_meas.x;
         Global_Data.av.I_Y = REAL_i_dqxy_meas.y;
 
@@ -376,7 +376,7 @@ void ISR_Control(void *data)
         	v_dqxy_limited_volts.d = REAL_v_dq_reference.d;
         	v_dqxy_limited_volts.q = REAL_v_dq_reference.q;
         	v_dqxy_limited_volts.x = REAL_v_xy_reference.d;
-        	v_dqxy_limited_volts.y = REAL_v_xy_reference.d;
+        	v_dqxy_limited_volts.y = REAL_v_xy_reference.q;
         	v_dqxy_limited_volts.z1 = 0.0f;
         	v_dqxy_limited_volts.z2 = 0.0f;
         	REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_to_abc(v_dqxy_limited_volts, Global_Data.av.theta_elec);

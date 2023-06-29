@@ -28,9 +28,12 @@ Calculates the reference currents based on the user selection.
 Depending on the operating condition of the machine, either an MTPA or a field-weakening is active.
 The reference currents are always limited to the max. allowed current. 
 I.e. if :math:`I_{max} = 15A`, in all cases :math:`\sqrt{I_{d,ref}^2 + I_{q,ref}^2}` will be lower than the max allowed current.
+To ensure, that the resulting set-currents after solving the polynomials for the MTPA and FW approximate with a sufficient degree of accuracy the reference torque, a comparison between the reference torque and the actual torque via the resulting set-currents is made.
+If the difference between these two variables exceeds a user-configurable threshold, an assertion is triggered.
 If a manual :math:`I_{d,manual}` input current is set in the MPTA state, this current will be added on top of the :math:`I_{d,MTPA}` current.
 In FW operation, the :math:`I_{d,manual}` input will be ignored.
 The cut-off rotational speed for the field-weakening is calculated based on the max possible field excitation :math:`V_{FE,max}` and the measured total current :math:`I_1` [[#Wilfling]_].:
+
 
 .. math::
 
@@ -64,7 +67,7 @@ I-PMSM[[#Schroeder]_ S.1095ff.]
   :math:`L_d \neq L_q` is necessary and will be checked.
 
 .. math::
-  M_{ref} &= \frac{3}{2}  p  \left(\psi_{PM}  I_{q,MTPA} + \frac{1}{2}  \left(-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}\right)\right)\\
+  M_{ref} &= \frac{3}{2}  p I_{q,MTPA} \left(\psi_{PM} + \frac{1}{2}  \left(-\psi_{PM} - \sqrt{\psi_{PM}^2 + 4  (L_d - L_q)^2  I_{q,MTPA}^2}\right)\right)\\
   0 &= I_{q,MTPA}^4 + \frac{2 M_{ref}  \psi_{PM}}{3 (L_d - L_q)^2  p}  I_{q,MTPA} - \frac{4 M_{ref}^2}{9 (L_d - L_q)^2  p^2} \\
 
 This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, with the initial guess being:

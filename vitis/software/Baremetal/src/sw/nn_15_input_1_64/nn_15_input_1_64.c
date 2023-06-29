@@ -61,7 +61,7 @@ void nn_15_input_1_64_init(void){
 
 
 Global_Data.objects.matrix_input_15n=uz_matrix_init(&input_matrix_15n,x_15,UZ_MATRIX_SIZE(x_15),1U,NUMBER_OF_INPUTS);
-Global_Data.objects.nn_layer_15n = uz_nn_init(config_15nn, 2U);
+Global_Data.objects.nn_layer_15n = uz_nn_init(config_15nn, 2U); //Warning is a GCC 11 bug
 
 
 }

@@ -64,6 +64,8 @@
 #include "uz/uz_math_constants.h"
 #include "include/uz_PWM_duty_freq_detection_init.h"
 #include "uz/uz_spwm/uz_spwm.h"
+#include "sw/nn_15_input_1_64/nn_15_input_1_64.h"
+#include "sw/init_FOC/init_FOC.h"
 // Network definition
 #define NN_15_INPUT_1_64  1
 #define NN_15_INPUT_3_64  0

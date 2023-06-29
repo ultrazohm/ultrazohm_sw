@@ -15,8 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#include "xparameters.h"
-#include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+
 //#include "sw/nn_15_input_1_64/nn_15_input_1_64.h"
 //#include "sw/nn_15_input_3_64/nn_15_input_3_64.h"
 // Initialize the global variables
@@ -48,7 +47,7 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
-	init_FOC,
+	init_CurrentControl,
 	init_nn,
     init_ip_cores,
     print_msg,
@@ -73,7 +72,7 @@ struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
 		.simulate_mechanical_system = false,
 		.switch_pspl = true
 };
-float Limitation_saftey_factor = 0.8f; //To represent the saftey factor from simulation
+
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -95,54 +94,11 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_FOC;
+            initialization_chain = init_CurrentControl;
             break;
 
-        case init_FOC:
-        	struct uz_PI_Controller_config config_id = {
-        		.Kp = 5.0f,
-        		.Ki = 1000.0f,
-        		.samplingTime_sec = 0.00005f,
-        	};
-        	struct uz_PI_Controller_config config_iq = {
-        		.Kp = 5.0f,
-        	    .Ki = 1000.0f,
-        	    .samplingTime_sec = 0.00005f,
-        	};
-        	struct uz_PI_Controller_config config_ix = {
-        		.Kp = 15.0f,
-        		.Ki = 500.0f,
-        		.samplingTime_sec = 0.00005f,
-        	};
-        	struct uz_PI_Controller_config config_iy = {
-        		.Kp = 15.0f,
-        	    .Ki = 500.0f,
-        	    .samplingTime_sec = 0.00005f,
-        	};
-        	struct uz_PMSM_t pmsm_config_dq = {
-        		.Ld_Henry = 0.00174f,
-        	    .Lq_Henry = 0.0038f,
-        	    .Psi_PM_Vs = 0.194f,
-        	    .R_ph_Ohm = 0.27f,
-        	    .polePairs = 5.0f
-        	};
-        	struct uz_CurrentControl_config CC_dq_config = {
-        	    .decoupling_select = linear_decoupling,
-        	    .config_id = config_id,
-        	    .config_iq = config_iq,
-        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor,
-				.config_PMSM = pmsm_config_dq
-        	};
-
-        	struct uz_CurrentControl_config CC_xy_config = {
-        	    .decoupling_select = no_decoupling,
-        	    .config_id = config_ix,
-        	    .config_iq = config_iy,
-        	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor
-        	};
-
-        	Global_Data.objects.CC_dq_instance = uz_CurrentControl_init(CC_dq_config);
-        	Global_Data.objects.CC_xy_instance = uz_CurrentControl_init(CC_xy_config);
+        case init_CurrentControl:
+        	init_FOC();
         	initialization_chain = init_nn;
         	break;
 

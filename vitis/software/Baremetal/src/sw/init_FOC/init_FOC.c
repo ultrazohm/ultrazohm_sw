@@ -31,6 +31,24 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.27f,
         	    .polePairs = 5.0f
         	};
+        	struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
+        			.base_address = XPAR_UZ_USER_PMSM_CIL_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
+        			.ip_core_frequency_Hz = 100000000U,
+        			.polepairs = 5.0f,
+        			.r_1 = 0.27f,
+        			.inductance.d = 0.00174f,
+        			.inductance.q = 0.0038f,
+        			.inductance.x = 0.0028f,
+        			.inductance.y = 0.00265f,
+        			.inductance.z1 = 0.00153f,
+        			.inductance.z2 = 0.00120f,
+        			.psi_pm = 0.194f,
+        			.friction_coefficient = 0.001f,
+        			.coulomb_friction_constant = 0.001f,
+        			.inertia = 0.001f,
+        			.simulate_mechanical_system = false,
+        			.switch_pspl = true
+        	};
 #endif
 
 
@@ -62,6 +80,24 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.543f,
         	    .polePairs = 3.0f
         	};
+        	struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
+        			.base_address = XPAR_UZ_USER_PMSM_CIL_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
+        			.ip_core_frequency_Hz = 100000000U,
+        			.polepairs = 3.0f,
+        			.r_1 = 0.543f,
+        			.inductance.d = 0.00113f,
+        			.inductance.q = 0.00142f,
+        			.inductance.x = 0.00125f,
+        			.inductance.y = 0.0012f,
+        			.inductance.z1 = 0.00153f,
+        			.inductance.z2 = 0.00120f,
+        			.psi_pm = 0.0169f,
+        			.friction_coefficient = 0.001f,
+        			.coulomb_friction_constant = 0.001f,
+        			.inertia = 0.001f,
+        			.simulate_mechanical_system = false,
+        			.switch_pspl = true
+        	};
 #endif
 
 #if BROSE==1
@@ -92,6 +128,24 @@ struct uz_PI_Controller_config config_id = {
         	    .R_ph_Ohm = 0.1278f,
         	    .polePairs = 5.0f
         	};
+        	struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
+        			.base_address = XPAR_UZ_USER_PMSM_CIL_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
+        			.ip_core_frequency_Hz = 100000000U,
+        			.polepairs = 5.0f,
+        			.r_1 = 0.1278f,
+        			.inductance.d = 0.0001473f,
+        			.inductance.q = 0.0001484,
+        			.inductance.x = 0.0000557f,
+        			.inductance.y = 0.0000499f,
+        			.inductance.z1 = 0.0000889f,
+        			.inductance.z2 = 0.0000863f,
+        			.psi_pm = 0.0047f,
+        			.friction_coefficient = 0.001f,
+        			.coulomb_friction_constant = 0.001f,
+        			.inertia = 0.001f,
+        			.simulate_mechanical_system = false,
+        			.switch_pspl = true
+        	};
 #endif
 
 
@@ -114,4 +168,8 @@ void init_FOC(void) {
 	Global_Data.objects.CC_dq_instance = uz_CurrentControl_init(CC_dq_config);
 	Global_Data.objects.CC_xy_instance = uz_CurrentControl_init(CC_xy_config);
 
+}
+
+void init_CIL_6ph_PMSM(void) {
+	Global_Data.objects.CIL_pmsm = uz_pmsm_model6ph_dq_init(pmsm_CIL_config);
 }

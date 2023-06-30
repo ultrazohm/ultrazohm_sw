@@ -54,24 +54,7 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
-		.base_address = XPAR_UZ_USER_PMSM_CIL_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
-		.ip_core_frequency_Hz = 100000000U,
-		.polepairs = 5.0f,
-		.r_1 = 0.27f,
-		.inductance.d = 0.00174f,
-		.inductance.q = 0.0038f,
-		.inductance.x = 0.0028f,
-		.inductance.y = 0.00265f,
-		.inductance.z1 = 0.00153f,
-		.inductance.z2 = 0.00120f,
-		.psi_pm = 0.194f,
-		.friction_coefficient = 0.001f,
-		.coulomb_friction_constant = 0.001f,
-		.inertia = 0.001f,
-		.simulate_mechanical_system = false,
-		.switch_pspl = true
-};
+
 
 enum init_chain initialization_chain = init_assertions;
 
@@ -114,7 +97,7 @@ int main(void)
 
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
-            Global_Data.objects.CIL_pmsm = uz_pmsm_model6ph_dq_init(pmsm_CIL_config);
+            init_CIL_6ph_PMSM();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

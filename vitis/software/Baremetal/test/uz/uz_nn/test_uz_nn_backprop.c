@@ -14,8 +14,8 @@
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1
 #define NUMBER_OF_HIDDEN_LAYER 3
-#define NUMBER_OF_NEURONS_IN_FIRST_LAYER 5
-#define NUMBER_OF_NEURONS_IN_SECOND_LAYER 2
+#define NUMBER_OF_NEURONS_IN_FIRST_LAYER 3
+#define NUMBER_OF_NEURONS_IN_SECOND_LAYER 3
 #define NUMBER_OF_EPOCHS 500
 
 // stuff for training and update
@@ -87,7 +87,7 @@ float T1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] =
 float T2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 
-float gradtest1[30] = {
+float gradtest1[25] = {
 #include "functions_weights/gradmat.csv"
 };
 float msesoll[NUMBER_OF_EPOCHS] = {
@@ -212,27 +212,22 @@ void test_uz_nn_train_checkgradients(void)
      gradhelpertest1[6] = uz_matrix_get_element_zero_based(gradhelptest1,6,0);
      gradhelpertest1[7] = uz_matrix_get_element_zero_based(gradhelptest1,7,0);
      gradhelpertest1[8] = uz_matrix_get_element_zero_based(gradhelptest1,8,0);
-     gradhelpertest1[9] = uz_matrix_get_element_zero_based(gradhelptest1,9,0);
-     gradhelpertest1[10] = uz_matrix_get_element_zero_based(gradhelptest1,10,0);
-     gradhelpertest1[11] = uz_matrix_get_element_zero_based(gradhelptest1,11,0);
-     gradhelpertest1[12] = uz_matrix_get_element_zero_based(gradhelptest1,12,0);
-     gradhelpertest1[13] = uz_matrix_get_element_zero_based(gradhelptest1,13,0);
-     gradhelpertest1[14] = uz_matrix_get_element_zero_based(gradhelptest1,14,0);
-     gradhelpertest1[15] = uz_matrix_get_element_zero_based(gradhelptest2,0,0);
-     gradhelpertest1[16] = uz_matrix_get_element_zero_based(gradhelptest2,1,0);
-     gradhelpertest1[17] = uz_matrix_get_element_zero_based(gradhelptest2,2,0);
-     gradhelpertest1[18] = uz_matrix_get_element_zero_based(gradhelptest2,3,0);
-     gradhelpertest1[19] = uz_matrix_get_element_zero_based(gradhelptest2,4,0);
-     gradhelpertest1[20] = uz_matrix_get_element_zero_based(gradhelptest2,5,0);
-     gradhelpertest1[21] = uz_matrix_get_element_zero_based(gradhelptest2,6,0);
-     gradhelpertest1[22] = uz_matrix_get_element_zero_based(gradhelptest2,7,0);
-     gradhelpertest1[23] = uz_matrix_get_element_zero_based(gradhelptest2,8,0);
-     gradhelpertest1[24] = uz_matrix_get_element_zero_based(gradhelptest2,9,0);
-     gradhelpertest1[25] = uz_matrix_get_element_zero_based(gradhelptest2,10,0);
-     gradhelpertest1[26] = uz_matrix_get_element_zero_based(gradhelptest2,11,0);
-     gradhelpertest1[27] = uz_matrix_get_element_zero_based(gradhelptest3,0,0);
-     gradhelpertest1[28] = uz_matrix_get_element_zero_based(gradhelptest3,1,0);
-     gradhelpertest1[29] = uz_matrix_get_element_zero_based(gradhelptest3,2,0);
+     gradhelpertest1[9] = uz_matrix_get_element_zero_based(gradhelptest2,0,0);
+     gradhelpertest1[10] = uz_matrix_get_element_zero_based(gradhelptest2,1,0);
+     gradhelpertest1[11] = uz_matrix_get_element_zero_based(gradhelptest2,2,0);
+     gradhelpertest1[12] = uz_matrix_get_element_zero_based(gradhelptest2,3,0);
+     gradhelpertest1[13] = uz_matrix_get_element_zero_based(gradhelptest2,4,0);
+     gradhelpertest1[14] = uz_matrix_get_element_zero_based(gradhelptest2,5,0);
+     gradhelpertest1[15] = uz_matrix_get_element_zero_based(gradhelptest2,6,0);
+     gradhelpertest1[16] = uz_matrix_get_element_zero_based(gradhelptest2,7,0);
+     gradhelpertest1[17] = uz_matrix_get_element_zero_based(gradhelptest2,8,0);
+     gradhelpertest1[18] = uz_matrix_get_element_zero_based(gradhelptest2,9,0);
+     gradhelpertest1[19] = uz_matrix_get_element_zero_based(gradhelptest2,10,0);
+     gradhelpertest1[20] = uz_matrix_get_element_zero_based(gradhelptest2,11,0);
+     gradhelpertest1[21] = uz_matrix_get_element_zero_based(gradhelptest3,0,0);
+     gradhelpertest1[22] = uz_matrix_get_element_zero_based(gradhelptest3,1,0);
+     gradhelpertest1[23] = uz_matrix_get_element_zero_based(gradhelptest3,2,0);
+     gradhelpertest1[24] = uz_matrix_get_element_zero_based(gradhelptest3,3,0);
      // check gradients
      for(size_t i = 0;i< (int)(sizeof(gradhelpertest1) / sizeof(float));i++) {
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, gradtest1[i], gradhelpertest1[i]);

@@ -1,8 +1,8 @@
 /*
- * bsp_ringBuffer.h
+ * Copyright (c) 2023 Jens Wenzl
+ * Author: Jens Wenzl jens_wenzl@t-online.de
  *
- *  Created on: 24.06.2019
- *      Author: Jens
+ * Ring buffer
  */
 
 #ifndef BSP_RINGBUFFER_H_

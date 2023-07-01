@@ -24,6 +24,7 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
+#include "control.h"
 
 
 #define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
@@ -91,13 +92,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-
-extern volatile uint32_t fpga_irq_cnt;
-volatile uint32_t fpga_irq_cnt = 0;
-void irq_fpga(void *data)
-{
-	fpga_irq_cnt++;
-}
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INITIALIZE THE INTERRUPT HAndler (from main)

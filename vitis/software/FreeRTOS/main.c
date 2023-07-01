@@ -31,7 +31,7 @@
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 #include "sw/xcp/xcp_interface.h"
-
+#include "sw/control.h"
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
@@ -294,6 +294,9 @@ int main_thread()
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			sys_thread_new("xcp-if", xcp_interface, 0,
+					THREAD_STACKSIZE,
+					DEFAULT_THREAD_PRIO);
+			sys_thread_new("basis", basis_setup, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;

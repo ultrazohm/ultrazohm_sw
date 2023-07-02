@@ -3,6 +3,7 @@
 #include "../../uz/uz_fixedpoint/uz_fixedpoint.h"
 #include <math.h>
 #include <string.h>
+#include "../../uz/uz_AXI.h"
 
 #define MAX_VALUE_10_BIT 1024U
 #define MAX_VALUE_8_BIT 256U

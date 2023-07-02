@@ -252,6 +252,9 @@ int main_thread()
 		THREAD_STACKSIZE,
             DEFAULT_THREAD_PRIO);
 
+	sys_thread_new("basis", basis_setup, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 
 #if LWIP_DHCP==1
     while (1) {
@@ -294,9 +297,6 @@ int main_thread()
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			sys_thread_new("xcp-if", xcp_interface, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
-			sys_thread_new("basis", basis_setup, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;

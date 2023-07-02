@@ -128,7 +128,7 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 
     Xil_ExceptionEnable();
 
-#define Interrupt_ISR_ID XPS_FPGA1_INT_ID
+//#define Interrupt_ISR_ID XPS_FPGA1_INT_ID
 	// setting interrupt trigger sensitivity
     // b01	Active HIGH level sensitive
     // b11 	Rising edge sensitive

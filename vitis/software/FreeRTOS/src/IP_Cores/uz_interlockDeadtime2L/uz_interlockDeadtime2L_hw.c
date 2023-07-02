@@ -16,6 +16,7 @@
 
 #include "uz_interlockDeadtime2L_hw.h"
 #include "uz_interlockDeadtime2L_hwAddresses.h"
+#include "../../uz/uz_AXI.h"
 
 void uz_interlockDeadtime2L_hw_set_reset(uint32_t base_address, bool reset) {
 	uz_assert_not_zero_uint32(base_address);

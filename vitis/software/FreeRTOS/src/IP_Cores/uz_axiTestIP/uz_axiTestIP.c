@@ -1,6 +1,7 @@
 #include "uz_axiTestIP.h"
 #include "uz_axiTestIP_private.h"
 #include "uz_axiTestIP_hwAddresses.h"
+#include "../../uz/uz_AXI.h"
 
 uz_axiTestIP_handle uz_axiTestIP_init(uz_axiTestIP_handle self) {
 	uz_assert_not_NULL(self); // Make sure no NULL pointer is passed to the function since this would be an error

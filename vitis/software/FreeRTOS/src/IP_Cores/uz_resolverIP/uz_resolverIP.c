@@ -21,6 +21,7 @@
 #include "uz_resolverIP.h"
 #include "uz_resolverIP_hw.h"
 #include "../../uz/uz_math_constants.h"
+#include "../../uz/uz_AXI.h"
 
 /**
  * @brief Data type for object resolverIP

@@ -6,6 +6,7 @@
 #include "../../uz/uz_HAL.h"
 #include "../../uz/uz_math_constants.h"
 #include "../../uz/uz_SystemTime/uz_SystemTime.h"
+#include "../../uz/uz_AXI.h"
 
 static void uz_simscapeExample_set_Vin(uz_simscapeExample_handle self, float Vin);
 static float uz_simscapeExample_get_IR(uz_simscapeExample_handle self);

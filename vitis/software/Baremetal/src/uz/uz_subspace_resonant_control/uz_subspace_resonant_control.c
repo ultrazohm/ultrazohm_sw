@@ -20,7 +20,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 
-#if UZ_RESONANT_CONTROL_MAX_INSTANCES > 0
+#if UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES > 0
 
 
 typedef struct uz_subspace_resonant_control {
@@ -31,21 +31,12 @@ typedef struct uz_subspace_resonant_control {
 }uz_subspace_resonant_control;
 
 static uint32_t instances_counter_resonant_control = 0;
-
-static uz_subspace_resonant_control instances_resonant_control[UZ_RESONANT_CONTROL_MAX_INSTANCES] = {0};
-
-
-/**
- * @brief Memory allocation of the uz_CurrentControl_t struct
- *
- * @return Pointer to uz_CurrentControl_t instance
- */
+static uz_subspace_resonant_control instances_resonant_control[UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES] = {0};
 static uz_subspace_resonant_control* uz_subspace_resonant_control_allocation(void);
-
 static void uz_subspace_resonant_control_step_controllers_general(uz_subspace_resonant_control* self, float actual1, float actual2, float ref1, float ref2, float* out1, float* out2, float omega_el_fundamental);
 
 static uz_subspace_resonant_control* uz_subspace_resonant_control_allocation(void) {
-	uz_assert(instances_counter_resonant_control < UZ_RESONANT_CONTROL_MAX_INSTANCES);
+	uz_assert(instances_counter_resonant_control < UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES);
 	uz_subspace_resonant_control* self = &instances_resonant_control[instances_counter_resonant_control];
 	uz_assert(self->is_ready == false);
 	instances_counter_resonant_control++;

@@ -8,12 +8,12 @@
 
 
 /**
- * @brief Configuration struct for CurrentControl. Accessible by the user
+ * @brief Configuration struct for uz_subspace_resonant_control. Accessible by the user
  */
 struct uz_subspace_resonant_control_config {
-    float sampling_time;         /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
-    float gain_1;                /**< Gain of the resonant Controller*/
-    float gain_2;                /**< Gain of the resonant Controller*/
+    float sampling_time;         /**< SamplingTime of the resonant controller in seconds. Must be greater than 0.0f */
+    float gain_1;                /**< Gain of the resonant Controller for d/alpha*/
+    float gain_2;                /**< Gain of the resonant Controller for q/beta*/
     float harmonic_order;        /**< Order of harmonic to be controlled*/
     float lower_limit;           /**< Lower limit for the output limitation */
     float upper_limit;           /**< Upper limit for the output limitation. Must be greater than lower limit */
@@ -21,7 +21,7 @@ struct uz_subspace_resonant_control_config {
 };
 
 /**
- * @brief Object definition for CurrentControl
+ * @brief Object definition for uz_subspace_resonant_control
  *
  */
 typedef struct uz_subspace_resonant_control uz_subspace_resonant_control;

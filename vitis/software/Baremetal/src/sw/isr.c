@@ -325,14 +325,14 @@ void ISR_Control(void *data)
     		observation_ip_15n[4] = CIL_i_dqxy_meas.d / rated_current;
     		observation_ip_15n[5] = CIL_i_dqxy_meas.q / rated_current;
     		observation_ip_15n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
-    		observation_ip_15n[7] = v_dqxy_limited_volts.d / Voltage_Scaling;
-    		observation_ip_15n[8] = v_dqxy_limited_volts.q / Voltage_Scaling;
+    		observation_ip_15n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
+    		observation_ip_15n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
     		observation_ip_15n[9] = i_dqxy_error.x;
     		observation_ip_15n[10] = i_dqxy_integrated_error.x * UZ_PWM_FREQUENCY;
     		observation_ip_15n[11] = i_dqxy_error.y;
     		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_PWM_FREQUENCY;
-    		observation_ip_15n[13] = v_dqxy_limited_volts.x / Voltage_Scaling;
-    		observation_ip_15n[14] = v_dqxy_limited_volts.y / Voltage_Scaling;
+    		observation_ip_15n[13] = v_dqxy_limited_volts.x * Voltage_Scaling;
+    		observation_ip_15n[14] = v_dqxy_limited_volts.y * Voltage_Scaling;
 	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
 	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_15n,observation_ip_15n[i],0U,i);
 	        }

@@ -76,8 +76,6 @@ uz_3ph_dq_t REAL_i_z1z2_meas = {0};
 struct uz_DutyCycle_2x3ph_t DutyCycle_output = {0};
 float CIL_omega_mech = 100.0f; //fixed speed for the CIL model
 float max_modulation_index = (1.0f / sqrtf(3.0f)) * 0.8f;
-float rated_Speed_rpm = 3000.0f;
-float speed_weight = 1.0f / 3000.0f;
 float ts = 1.0f / UZ_PWM_FREQUENCY;
 #if DEPENGINE==1
  float V_DC_Volts = 565.0f;
@@ -85,6 +83,8 @@ float ts = 1.0f / UZ_PWM_FREQUENCY;
  float Voltage_Scaling = 1.0f / (565.0f / 1.732050808f);
  float rated_current = 10.0f;
  float polepairs = 5.0f;
+ float rated_Speed_rpm = 3000.0f;
+ float speed_weight = 1.0f / 3000.0f;
 #endif
 #if BROSE==1
  float V_DC_Volts = 36.0f;
@@ -92,6 +92,8 @@ float ts = 1.0f / UZ_PWM_FREQUENCY;
  float Voltage_Scaling = 1.0f / (36.0f / 1.732050808f);
  float rated_current = 24.0f;
  float polepairs = 5.0f;
+ float rated_Speed_rpm = 1100.0f;
+ float speed_weight = 1.0f / 1100.0f;
 #endif
 #if HEIDRIVE==1
  float V_DC_Volts = 48.0f;
@@ -99,6 +101,8 @@ float ts = 1.0f / UZ_PWM_FREQUENCY;
  float Voltage_Scaling = 1.0f / (48.0f / 1.732050808f);
  float rated_current = 4.2f;
  float polepairs = 3.0f;
+ float rated_Speed_rpm = 3000.0f;
+ float speed_weight = 1.0f / 3000.0f;
 #endif
 bool ext_clamping_dq = false;
 bool ext_clamping_xy = false;

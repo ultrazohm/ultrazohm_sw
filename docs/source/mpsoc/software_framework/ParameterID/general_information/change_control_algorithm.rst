@@ -5,11 +5,11 @@ Change control algorithm for ParameterID
 ========================================
 
 The ParameterID does not have its own control algorithm. This is done externally, as shown in :numref:`ParaID_overview_schematic`.
-In the ParameterID library standard functions with the :ref:`uz_CurrentControl` and :ref:`uz_SpeedControl` are included. 
-If it is desired to change the used controller, these functions have to be adjusted.
+The ParameterID is based on functions from the :ref:`uz_CurrentControl` and :ref:`uz_SpeedControl` module. 
+If changing the used controller is desired, these functions must be adjusted.
 
-Following is the code of the function ``uz_ParameterID_Controller``, with the function calls to the ``uz_FOC`` and ``uz_SpeedController`` removed. 
-This can be used as an template to include your new controller.
+Following is the code of the function ``uz_ParameterID_Controller``, with the function calls to ``uz_FOC`` and ``uz_SpeedController`` removed. 
+This can be used as a template to include your new controller.
 
 .. code-block:: c
   :linenos:
@@ -26,18 +26,18 @@ This can be used as an template to include your new controller.
     float SpeedControl_reference_torque = 0.0f;
 
     if (Data->Controller_Parameters.enableFOC_speed) {
-      //Add your speedcontroller here. Should output reference-dq-currents in the uz_3ph_dq_t system or a reference-torque for a subsequent setpoint module.
-      //In the later case the setpoint module has to output the reference dq-currents.
+      //Add your speed controller here. Should output reference-dq-currents in the uz_3ph_dq_t system or a reference-torque for a subsequent setpoint module.
+      //In the latter case, the setpoint module has to output the reference dq-currents.
       i_SpeedControl_reference_Ampere = ....
       //ADD PRBS excitation for TwoMassID
       i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
     }
     if (Data->Controller_Parameters.enableFOC_torque) {
-      //Add your setpoint module here which calculates dq-currents based on a reference torque.
+      //Add your setpoint module here, which calculates dq-currents based on a reference torque.
       i_SpeedControl_reference_Ampere = ....
-	  }
+    }
     if (Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed || Data->Controller_Parameters.enableFOC_torque) {
-      //Add your currentcontroller here. Should output dq-currents in the uz_3ph_dq_t system
+      //Add your current controller here. Should output dq-currents in the uz_3ph_dq_t system
       if (Data->Controller_Parameters.enableFOC_current) {
         //If CurrentControl is active, use Data->Controller_Parameters.i_dq_ref as input reference currents
         v_dq_Volts = ....
@@ -59,7 +59,7 @@ This can be used as an template to include your new controller.
         //Change decoupling method, if needed
         ....
       }
-      //During identification, if an FOC is used, update the control-parameters (Kp,Ki) here
+      //During identification, if a FOC is used, update the control parameters (Kp,Ki) here
       ....
     }
     //This is the setup for the Controller for Online-ID-states
@@ -69,7 +69,7 @@ This can be used as an template to include your new controller.
         if (Data->ParaID_Control_Selection == Speed_Control) {
           //Add your speedcontroller here. Should output reference-dq-currents in the uz_3ph_dq_t system or a reference-torque for a subsequent setpoint module.
           //In the later case the setpoint module has to output the reference dq-currents.
-          Online_current_ref = ....		
+          Online_current_ref = ....   
         } else if (Data->ParaID_Control_Selection == Torque_Control) {
           //Add your setpoint module here which calculates dq-currents based on a reference torque.
           Online_current_ref = ....
@@ -92,7 +92,7 @@ This can be used as an template to include your new controller.
         }
       }
       //Add your CurrentController here. The controller should output reference voltages for the SVM in the dq-plane.
-      v_dq_Volts = ....	
+      v_dq_Volts = .... 
     }
     return (v_dq_Volts);
   }
@@ -114,8 +114,8 @@ The function ``uz_ParameterID_generate_DutyCycle``, can be adjusted as well. It 
       output_DutyCycle.DutyCycle_V = Data->ElectricalID_Output->PWM_Switch_2;
       output_DutyCycle.DutyCycle_W = Data->ElectricalID_Output->PWM_Switch_4;
     } else if ((Data->Controller_Parameters.enableFOC_current || Data->Controller_Parameters.enableFOC_speed || Data->Controller_Parameters.enableFOC_torque)
-	                || (Data->ControlFlags->finished_all_Offline_states && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control))) {
-      //Use your own function to generate DutyCycles here, if the control-algorithms are used
+                  || (Data->ControlFlags->finished_all_Offline_states && (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control))) {
+      //Use your own function to generate DutyCycles here, if the control algorithms are used
       output_DutyCycle = ....
     } else {
       output_DutyCycle.DutyCycle_U = 0.0f;

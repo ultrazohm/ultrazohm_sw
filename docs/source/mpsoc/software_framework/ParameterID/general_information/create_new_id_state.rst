@@ -11,26 +11,26 @@ Before starting the procedure of creating a new state, it is advised to read up 
 General information
 ===================
 
-* To ensure proper independence of the stateflows from the sampleTime, try to make if-statements with a counter value in relation to the sampleTime. 
+* To ensure proper independence of the Stateflow from the sampleTime, try to make if-statements with a counter value in relation to the sampleTime. 
   (instead of ``==20000`` create a variable in the init-functions of the stateflow with ``two_seconds_counter==uint32(2/GlobalConfig.sampleTimeISR)`` ).
-* Avoid i.e. ``after(1.0,sec)`` state transition conditions. Create custom counter values for i.e. 1 second delays. Otherwise the transition won't scale with different sample times.
-* A three-phase testbench setup with a PMSM, inverter, load machine and physical couplings is included in the subsystem ``Hardware``. This can be used to test the new stateflow. 
-* To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx`` the decimals for the substates (i.e. 621). 
+* Avoid i.e. ``after(1.0,sec)`` state transition conditions. Create custom counter values for, i.e., 1-second delays. Otherwise, the transition won't scale with different sample times.
+* A three-phase testbench setup with a PMSM, inverter, load machine, and physical couplings is included in the subsystem ``Hardware``. This can be used to test the new Stateflow. 
+* To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx``is the decimal for the sub-states (i.e., 621). 
 * The simulink model resides in the ParameterID docs folder ``docs/source/mpsoc/software_framework/ParameterID/simulink_model``.
 * The ParameterID simulink model uses `subsystem references <https://de.mathworks.com/help/simulink/ug/referenced-subsystem-1.html>`_ to include the various ID-States.
-  This has the advantage, that ``ID-States`` which work even for different ParameterID configurations (i.e. 3ph, 6ph, 9ph, etc.), can be referenced. This ensures, that less code duplication is needed.
+  This has the advantage that ``ID-States``, which work even for different ParameterID configurations (i.e., 3ph, 6ph, 9ph, etc.), can be referenced. This ensures that less code duplication is needed.
 
-Changes in the Simulation model
+Changes in the simulation model
 ===============================
 
 #. Open the ParameterID model and insert a new chart. 
 #. Add the necessary inputs. These most likely include :ref:`uz_Global_config_struct`, :ref:`uz_Control_flags_struct` and :ref:`uz_Actual_values_struct`.
 #. If applicable, add the :ref:`uz_Controller_parameters_struct` bus as output with the name.
-#. Select the appropriate bus types for the inputs and outputs. I.e. for the ControlFlags bus.
+#. Select the appropriate bus types for the inputs and outputs. I.e., for the ControlFlags bus.
   
     .. image:: ../images/assign_bus.png
 
-#. Add acknowledgement-flags as outputs of the state.
+#. Add acknowledgement flags as outputs of the state.
   
    * If the state is designed as an OfflineID-state, add two outputs with the names ``enteredStateID`` and ``finishedStateID``.
    * If it is designed as an OnlineID-state, the output ``enteredStateID`` is sufficient. 
@@ -39,49 +39,49 @@ Changes in the Simulation model
 
     .. image:: ../images/chart_first_look.png
 
-#. The ParameterID is shipped with a ``.mat`` file which includes all necessary busses. Open it with the bus-editor.
+#. The ParameterID is shipped with a ``.mat`` file which includes all necessary busses. Open it with the bus editor.
 
    .. note::
 
-      Stick to the data types ``boolean``, ``single`` and if necessary ``uint32``. Do not use ``double``, since the UltraZohm PS has no dedicated hardware for FP64 calculations. 
+      Stick to the data types ``boolean``, ``single``, and if necessary ``uint32``. Do not use ``double``, since the UltraZohm PS has no dedicated hardware for FP64 calculations. 
   
    * Add a new bus for the state-specific configuration values ``uz_ParaID_StateIDConfig_t`` and add all config values to this bus.
-   * Add a new bus for the state-specific output/identification-values ``uz_ParaID_StateID_output_t`` and add all necessary values.
+   * Add a new bus for the state-specific output/identification values ``uz_ParaID_StateID_output_t`` and add all necessary values.
    * Open the ``uz_ParaID_GlobalConfig_t`` bus and add a new ``boolean`` member with the name ``StateID``.
-   * Open the ``uz_ParaID_ControlFlags_t`` bus and add a new ``boolean`` member with the name ``startStateID``. If its an Online-state, add ``enableStateID``.
+   * Open the ``uz_ParaID_ControlFlags_t`` bus and add a new ``boolean`` member with the name ``startStateID``. If it is an Online-state, add ``enableStateID``.
 
       .. image:: ../images/Bus_editor.png
 
    * Save the file by exporting it and overwriting the old one. 
 
-#. Add the ``uz_ParaID_StateIDConfig_t`` bus with the name ``StateIDConfig`` as input to the new stateflow.
-#. Add the ``uz_ParaID_StateID_output_t`` bus with the name ``StateID_state_output`` as output to the new stateflow.
+#. Add the ``uz_ParaID_StateIDConfig_t`` bus with the name ``StateIDConfig`` as input to the new Stateflow.
+#. Add the ``uz_ParaID_StateID_output_t`` bus with the name ``StateID_state_output`` as output to the new Stateflow.
 #. Give the new subsystem the name ``StateID_subsystem`` . 
-#. To clean up the signalflow, ``Go-to`` and ``From`` blocks are used. 
+#. To clean up the signal flow, ``Go-to`` and ``From`` blocks are used. 
   
    * Copy the three appropriate input ``From``-blocks (GlobalConfig, ActualValues, ControlFlags) from another state and connect them.
-   * Copy the output ``Go-to`` block from another state, change its name according to the state name ``stateID_FOC_output`` and adjust its color accordingly. This type of output block has different shades of blue.
+   * Copy the output ``Go-to`` block from another state, change its name to the state name ``stateID_FOC_output``, and adjust its color accordingly. This type of output block has different shades of blue.
    * Copy the appropriate entered/finishedStateID ``Go-to`` blocks from another state and adjust the names and colors.
    * Add the ``From`` block for the individual config bus in the appropriate color.
 
       .. image:: ../images/inputs_outputs2.png
 
-   * Add the config setup ,similar to the other states, for this state in the subsystem called ``config`` at the top of the ParameterID. Don't forget to add the new entry to the ``GlobalConfig`` Buscreator as well.
+   * Add the config setup, similar to the other states, for this state in the subsystem called ``config`` at the top of the ParameterID. Don't forget to add the new entry to the ``GlobalConfig`` Buscreator.
 
       .. image:: ../images/config_buscreator.png
 
    * Add the ``Go-to`` block subsystem to the appropriate output of the subsystem to connect to the already existing ``From`` block.
-   * Add the corresponding ``From`` blocks for ``enteredStateID`` and ``finishedStateID`` to the ControlState as an input and adjust the colors.
+   * Add the corresponding ``From`` blocks for ``enteredStateID`` and ``finishedStateID`` to the ControlState as input and adjust the colors.
 
       .. image:: ../images/ControlState_changes.png
 
-#. Inside the ControlState create a new variable called ``finishedStateID_loc``.
-#. Initialize it in the ``InitParams`` function similar to the other variables.
+#. Inside the ControlState, create a new variable called ``finishedStateID_loc``.
+#. Initialize it in the ``InitParams`` function, similar to the other variables.
 #. Add the passthrough of the ``StateID``-member of the GlobalConfig at the entry of the Superstate.
 
    * For OfflineID states
    
-      * copy the three substates from another ``ID-state`` and adjust the variables.
+      * Copy the three substates from another ``ID-state`` and adjust the variables.
    
          .. image:: ../images/ControlState_changes2.png
 
@@ -121,34 +121,34 @@ Changes in the Simulation model
             ControlFlags.enableStateID=boolean(0);
          end
 
-#. Add a superstate to the new state-flow.
-#. Add a empty state next to the ``super state``. This will work as the ``idle state``.
-#. Copy the transitions between the ``idle state`` and the ``super state`` from a different ``ID-state`` and adjust them according to the new state name. OfflineID and OnlineID states do have different transition conditions, so be wary, from which state you copy these.
+#. Add a superstate to the new Stateflow.
+#. Add an empty state next to the ``super state``. This will work as the ``idle state``.
+#. Copy the transitions between the ``idle state`` and the ``super state`` from a different ``ID-state`` and adjust them according to the new state name. OfflineID and OnlineID states do have different transition conditions, so be wary of which state you copy these.
 #. Copy the ``initParams`` and the ``reset_FOC_output`` (if the struct :ref:`uz_Controller_parameters_struct` is used) and adjust them accordingly.
 #. Now you can create substates in the ``super state`` and fill them with functionality/code.
 
    .. image:: ../images/stateID.png
 
 #. If the :ref:`uz_Controller_parameters_struct` is used, add its corresponding ``From`` block to the FOC subsystem and adjust the code inside the function ``Busselector`` accordingly.
-#. After the in- and output signals are connected, right-click on the new stateflow.
+#. After the in- and output signals are connected, right-click on the new Stateflow.
 
    * Go to `Subsystem & Model references` .
    * Go to `Convert To` .
    * Go to `Referenced Model...` .
    * Now save the newly created state-subsystem in the ``../Subsystem`` folder and give it an appropriate name (i.e. StateID_ref.slx).
-     The ``_ref`` appendix to the name is important, otherwise Matlab gets confused with the names during code-generation.
+     The ``_ref`` appendix to the name is important; otherwise, Matlab gets confused with the names during code generation.
 
 #. It should look similar to this.
 
     .. image:: ../images/inputs_outputs3.png
 
-#. Add a new switch for the new stateflow to the already existing ones. 
+#. Add a new switch for the new Stateflow to the already existing ones. 
 
     
 Changes in the UltraZohm software
 =================================
 
-After code generating the stateflow the following changes have to be made in the UltraZohm software repository. 
+After code generation of the Stateflow, the following changes must be made in the UltraZohm software repository. 
 
 #. Create a new subfolder in the ``Baremetal/src/uz/uz_ParameterID`` folder with the appropriate name.
 #. Copy the code generated .h and .c file into this folder and rename them to ``StateID_codegen.c/h``.
@@ -156,7 +156,7 @@ After code generating the stateflow the following changes have to be made in the
 
    .. code-block:: c
          :linenos:
-         :caption: Changes made to the codegenerated header file
+         :caption: Changes made to the code generated header file
  
          #include "../uz_ParameterID_data.h"
          #include "../rtwtypes.h"
@@ -165,13 +165,13 @@ After code generating the stateflow the following changes have to be made in the
 
 #. Copy the individual structs (``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t``) from the codegenerated header file ``StateID_codegen.h``. 
 #. Paste them into the ``uz_ParameterID_data.h`` file, add doxygen comments and remove them from ``StateID_codegen.h``.
-#. Compare the global structs (:ref:`uz_Actual_values_struct` , :ref:`uz_Global_config_struct` , :ref:`uz_Control_flags_struct` , :ref:`uz_Controller_parameters_struct`) in the codegenerated header file with the ones in the ``uz_ParameterID_data.h`` file and add the missing struct members to ``uz_ParameterID_data.h``. 
+#. Compare the global structs (:ref:`uz_Actual_values_struct` , :ref:`uz_Global_config_struct` , :ref:`uz_Control_flags_struct` , :ref:`uz_Controller_parameters_struct`) in the code generated header file with the ones in the ``uz_ParameterID_data.h`` file and add the missing struct members to ``uz_ParameterID_data.h``. 
 #. Remove the declaration of these global structs in the ``StateID_codegen.h`` file.
 #. Add the following changes to the .c file
 
    .. code-block:: c
          :linenos:
-         :caption: Changes made to the codegenerated source file
+         :caption: Changes made to the code generated source file
 
          #include "StateID_codegen.h"
          #include "../../uz_global_configuration.h"
@@ -201,11 +201,11 @@ After code generating the stateflow the following changes have to be made in the
          * 
          */
          typedef struct uz_ParaID_StateID_t{
-	         ExtY_StateID_t output;
-	         ExtU_StateID_t input;
-	         DW_StateID_t rtDW; /* Observable states */
-	         RT_MODEL_StateID_t modelData;
-	         RT_MODEL_StateID_t *PtrToModelData;
+            ExtY_StateID_t output;
+            ExtU_StateID_t input;
+            DW_StateID_t rtDW; /* Observable states */
+            RT_MODEL_StateID_t modelData;
+            RT_MODEL_StateID_t *PtrToModelData;
          } uz_ParaID_StateID_t;
          
          /**
@@ -238,31 +238,31 @@ After code generating the stateflow the following changes have to be made in the
          static uz_ParaID_StateID_t* uz_ParaID_StateID_allocation(void);
 
          static uz_ParaID_StateID_t* uz_ParaID_StateID_allocation(void) {
-	         uz_assert(instances_counter_ParaID_StateID < UZ_PARAMETERID_MAX_INSTANCES);
-	         uz_ParaID_ControlState_t* self = &instances_ParaID_StateID[instances_counter_ParaID_StateID];
-	         instances_counter_ParaID_StateID++;
-	         return (self);
+            uz_assert(instances_counter_ParaID_StateID < UZ_PARAMETERID_MAX_INSTANCES);
+            uz_ParaID_ControlState_t* self = &instances_ParaID_StateID[instances_counter_ParaID_StateID];
+            instances_counter_ParaID_StateID++;
+            return (self);
          }
 
          uz_ParaID_StateID_t* uz_StateID_init(void) {
-	         uz_ParaID_StateID_t* self = uz_ParaID_StateID_allocation();
-	         self->PtrToModelData = &self->modelData;
-	         self->PtrToModelData->dwork = &self->rtDW;
-	         self->PtrToModelData->inputs = &self->input;
-	         self->PtrToModelData->outputs = &self->output;
-	         StateID_initialize(self->PtrToModelData);
-	         return (self);
+            uz_ParaID_StateID_t* self = uz_ParaID_StateID_allocation();
+            self->PtrToModelData = &self->modelData;
+            self->PtrToModelData->dwork = &self->rtDW;
+            self->PtrToModelData->inputs = &self->input;
+            self->PtrToModelData->outputs = &self->output;
+            StateID_initialize(self->PtrToModelData);
+            return (self);
          }
 
          void uz_StateID_step(uz_ParaID_StateID_t *self) {
-	         uz_assert_not_NULL(self);
-	         StateID_step(self->PtrToModelData);
+            uz_assert_not_NULL(self);
+            StateID_step(self->PtrToModelData);
          }
          #endif
 
 
 #. Include the ``uz_ParaID_StateID.h`` file to the ``uz_ParameterID.h`` file.
-#. Add the new ``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct` in the ``uz_ParameterID_data.h`` file. Add the output struct as a pointer, similarly to the other output structs. 
+#. Add the new ``uz_ParaID_StateIDConfig_t`` and ``uz_ParaID_StateID_output_t`` to the :ref:`uz_ParameterID_Data_struct` in the ``uz_ParameterID_data.h`` file. Add the output struct as a pointer, similar to the other output structs. 
 #. Add default values for the config struct to the ``uz_ParameterID_initialize_data_structs`` function (like for the other states). Assign the address of the output struct here as well. 
 #. Add the new state to the ``uz_ParameterID_t`` declaration and ``uz_ParameterID_init`` function.
 #. Add new ``get`` and ``set`` functions for all necessary in- and outputs to the ``uz_ParaID_StateID.c/.h`` files (similar to the other ``ID-States`` ). For example, a set function for the GlobalConfig.
@@ -338,4 +338,4 @@ After code generating the stateflow the following changes have to be made in the
             uz_ParaID_StateID_step(self, Data);
          }
 
-#. All necessary changes are now done. Depending on your setup, respectively the purpose of the new ``ID-state``, it may be feasible to adjust the ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` functions. Otherwise write new functions for this.
+#. All necessary changes are now done. Depending on your setup, respectively the purpose of the new ``ID-state``, it may be feasible to adjust the ``uz_ParameterID_Controller`` and ``uz_ParameterID_generate_DutyCycle`` functions. Otherwise, write new functions for this.

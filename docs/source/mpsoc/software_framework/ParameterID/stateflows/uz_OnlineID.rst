@@ -7,18 +7,18 @@ OnlineID
 Description
 ===========
 
-This stateflow is used to detect special transient states and to gather measuring data in these states. 
+This Stateflow is used to detect special transient states and to gather measuring data in these states. 
 It is based on [[#Gebhardt_Masterthesis]_ , [#Hufnagel_Masterthesis]_ ] and has been modified to fit into the ParameterID library of the UltraZohm.
 It functions as an indefinite loop and continuously identifies its parameters. 
-This is done to identify the parameters of the linear pmsm model. 
-This includes the stator resistance :math:`R_s`, direct inductance :math:`L_d`, quadrature inductance :math:`L_q` and permanent magnet flux :math:`\psi_{PM}`. The flux maps :math:`\psi_d` and :math:`\psi_q` can be identified aswell. 
-With each new operating point the relevant signals are measured and the flux in the specific operating point is calculated. 
+This is done to identify the parameters of the linear PMSM model. 
+This includes the stator resistance :math:`R_s`, direct inductance :math:`L_d`, quadrature inductance :math:`L_q` and permanent magnet flux :math:`\psi_{PM}`. The flux maps :math:`\psi_d` and :math:`\psi_q` can be identified as well. 
+The relevant signals are measured with each new operating point, and the flux in the specific operating point is calculated. 
 Up to 100 unique values will be stored in an array, which will later be cleaned up with external functions. 
-In contrast to the FluxMapID state, this state does not actively control the machine via reference currents(except the addition of a injection signal with low amplitude/frequency on top of the reference d-axis current).
+In contrast to the FluxMapID state, this state does not actively control the machine via reference currents (except by adding an injection signal with low amplitude/frequency on top of the reference d-axis current).
 Thus it measures and calculates the flux in the operating points. 
 
-To assist the identification of the flux maps an :ref:`uz_AutoRefCurrents` does exist. It is an external stateflow purposefully designed for the OnlineID state. 
-It gives out reference currents of a circular determined current map to quickly cycle through different operating points and therefore identify flux map values over a wide operating point.
+To assist in the identification of the flux maps, an :ref:`uz_AutoRefCurrents` does exist. It is an external Stateflow purposefully designed for the OnlineID state. 
+It returns reference currents of a circular determined current map to quickly cycle through different operating points and identify flux map values over a wide operating point.
 
 .. tikz:: Schematic overview of the FrictionID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows

@@ -9,7 +9,7 @@ Description
 
 This state includes an automated identification process for different friction/torque parameters. 
 It is based on [[#Gebhardt_ProjectReport1]_] and has been modified to fit into the ParameterID library of the UltraZohm.
-The breakaway torque :math:`M_{break}`, coloumb torque :math:`M_{coul}` and viscous friction torque :math:`d_{fric}` will be identified. 
+The breakaway torque :math:`M_{break}`, coloumb torque :math:`M_{coul}`, and viscous friction torque :math:`d_{fric}` will be identified. 
 This state requires some sort of speed control. 
 
 .. tikz:: Schematic overview of the FrictionID

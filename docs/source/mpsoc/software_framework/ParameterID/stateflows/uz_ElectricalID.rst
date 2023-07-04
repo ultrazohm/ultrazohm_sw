@@ -14,7 +14,7 @@ direct inductance :math:`L_d`, quadrature inductance :math:`L_q`, permanent magn
 The control parameters of a FOC will be calculated with the identified parameters and are therefore tuned for the used machine. 
 This state requires some sort of speed control.
 
-This state does require multiple ACCEPT flags to continue, since for the identification of :math:`L_q` a manual operation on the motor has to be done.
+This state does require multiple ACCEPT flags to continue since, for the identification of :math:`L_q`, manual operation on the motor is required. 
 
 .. tikz:: Schematic overview of the ElectricalID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows

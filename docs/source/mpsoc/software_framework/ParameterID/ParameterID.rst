@@ -4,15 +4,15 @@
 ParameterID
 ===========
 
-Toolbox for different code-generated stateflows to identify common parameters of a permanent magnet synchronous motor. This page explains the general structure of the ParameterID. 
-To set the ParameterID up in the UltraZohm software check out :ref:`uz_ParaID_setup`.
+The ParameterID is a toolbox to identify common permanent magnet synchronous motor parameters based on different code-generated Stateflows. This page explains the general structure of the ParameterID. 
+To set the ParameterID up in the UltraZohm software, see :ref:`uz_ParaID_setup`.
 For further information visit, :ref:`uz_ParameterID_Data_structs`, :ref:`uz_ParaID_new_control_algorithm`, :ref:`uz_ParaID_GUI` and :ref:`uz_ParaID_new_ID_state`.
 
-Overwiew
+Overview
 ========
 .. _ParaID_overview_schematic:
 
-.. tikz:: Schematic overview of the ParameterID signalflow
+.. tikz:: Schematic overview of the ParameterID signal flow
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
@@ -42,32 +42,32 @@ Overwiew
   \node [circle,fill,inner sep=1pt] at ($(state2.east)+(0.2cm,0)$){};
   \end{tikzpicture}
 
-The ParameterID encapsules a ``ControlState`` and all subsequent ``Identification-states`` (short ``ID-states``). 
-The ``ControlState`` is the brain of the ParameterID and controls the system, by determining which ``ID-state`` is entered next, based on the user-request and the acknowledgement flags of other states.
+The ParameterID encapsulates a ``ControlState`` and all subsequent ``Identification-states`` (short ``ID-states``). 
+The ``ControlState`` is the brain of the ParameterID and controls the system by determining which ``ID-state`` is entered next, based on the user-request and the acknowledgment flags of other states.
 The individual ``ID-states`` are completely independent of each other. They only directly communicate with the ``ControlState``. 
 The :ref:`uz_ParameterID_Data_t struct<uz_ParameterID_Data_struct>` is used to communicate with the ParameterID. It includes all necessary in- and outputs.  
-The ParameterID operates independently of a underlying control algorithm and therefore is indifferent to what specific type the controller is.
-This means, that the ParameterID outputs reference values which the controller then can use to control the hardware.
-On top of that the ``ID-states`` inside the ParameterID are separated into two different groups:
+The ParameterID operates independently of an underlying control algorithm and therefore is indifferent to what specific type the controller is.
+This means that the ParameterID outputs reference values, which the controller can use to control the hardware.
+On top of that, the ``ID-states`` inside the ParameterID are separated into two different groups:
 
 * OfflineID states
   
-    OfflineID states represents identification stateflows, which are to be used before the general operation of the motor is started. 
-    They can not be executed in parallel to the general motor operation, because they take active control of the machine. 
-    They, for example, tell the external control-algorithm which reference currents or speeds it is supposed to target. 
+    OfflineID states represent identification Stateflows, which are to be used before the general operation of the motor is started. 
+    They can not be executed parallel to the general motor operation because they take active control of the machine. 
+    They, for example, tell the external control algorithm which reference currents or speeds it is supposed to target. 
     Thus only one OfflineID-state can be active at the same time.
   
 * OnlineID states
 
-    OnlineID states represents identification stateflows, which are used during the general operation of the motor. 
+    OnlineID states represent identification Stateflows, which are used during the general operation of the motor. 
     They are designed as an observer of some sorts of the machine. 
-    This means, they use all existing measurement during normal operation and identify their parameters this way. 
-    They therefore don't have to actively control the machine. Thus they can operate parallel to the general operation of the motor. 
+    This means they use all existing measurements during normal operation and identify their parameters this way. 
+    They, therefore, don't have to actively control the machine. Thus, they can operate parallel to the general operation of the motor. 
 
 .. note::
 
-      All states have been configured in such a way, that they are independent of the sampleTime. 
-      This works, if the ``sampleTimeISR`` member of the :ref:`uz_Global_config_struct` is equal to the sampleTime of the function call. 
+      All states have been configured in such a way that they are independent of the sampleTime. 
+      This works if the ``sampleTimeISR`` member of the :ref:`uz_Global_config_struct` equals the sampleTime of the function call. 
       This has been confirmed for an ISR-frequency of 10kHz and 20kHz.
 
 .. _ParaID_signalflow:
@@ -122,8 +122,8 @@ The ParameterID has three global structs (highlighted in orange), which are shar
 These are the following:
 
   * :ref:`ActualValues struct<uz_Actual_values_struct>`, which carries all the measurement values.
-  * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables, which affect multiple or all states. 
-  * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to enable and disable the individual states.
+  * :ref:`GlobalConfig struct<uz_Global_config_struct>`, which carries general configuration variables which affect multiple or all states. 
+  * :ref:`ControlFlags struct<uz_Control_flags_struct>`, which carries all flags to turn the individual states on and off.
    
 On top of that, each unique ``ID-state`` has its own individual structs and signals:
 

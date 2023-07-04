@@ -15,7 +15,7 @@ General information
   (instead of ``==20000`` create a variable in the init-functions of the stateflow with ``two_seconds_counter==uint32(2/GlobalConfig.sampleTimeISR)`` ).
 * Avoid i.e. ``after(1.0,sec)`` state transition conditions. Create custom counter values for, i.e., 1-second delays. Otherwise, the transition won't scale with different sample times.
 * A three-phase testbench setup with a PMSM, inverter, load machine, and physical couplings is included in the subsystem ``Hardware``. This can be used to test the new Stateflow. 
-* To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx``is the decimal for the sub-states (i.e., 621). 
+* To signal which state is currently active, each state in one ``ID-state`` has a unique ``activeState`` value. Each ``ID-state`` follows the naming scheme of ``Yxx``, where ``Y`` is the decimal for the state, and ``xx`` is the decimal for the sub-states (i.e., 621). 
 * The simulink model resides in the ParameterID docs folder ``docs/source/mpsoc/software_framework/ParameterID/simulink_model``.
 * The ParameterID simulink model uses `subsystem references <https://de.mathworks.com/help/simulink/ug/referenced-subsystem-1.html>`_ to include the various ID-States.
   This has the advantage that ``ID-States``, which work even for different ParameterID configurations (i.e., 3ph, 6ph, 9ph, etc.), can be referenced. This ensures that less code duplication is needed.

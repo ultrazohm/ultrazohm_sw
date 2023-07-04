@@ -92,7 +92,7 @@ The following figure shows what the measurement results look like.
 The black line indicates the determined offset angle.
 The initial angle was 5.4 rad.
 
-.. figure:: theta_off-eps-converted-to.pdf
+.. figure:: theta_off.svg
    :width: 800px
    :align: center
 

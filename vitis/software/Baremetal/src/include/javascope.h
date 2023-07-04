@@ -222,7 +222,7 @@ MYBUTTONS_LABELS_ENDMARKER
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 
-int JavaScope_initalize(DS_Data* data);
+int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

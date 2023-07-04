@@ -16,7 +16,7 @@
 #include "../include/gpio_axi.h"
 #include "xgpio.h"
 
-#define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_BASEADDR /* GPIO device that GPIO is connected to output*/
+#define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID /* GPIO device that GPIO is connected to output*/
 
 #define AXI_GPIO_CHANNEL 1
 

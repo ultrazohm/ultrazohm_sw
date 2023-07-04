@@ -132,7 +132,6 @@ void uz_pmsm_model6ph_dq_set_voltage(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t vo
     uz_pmsm_model6ph_hw_write_u_y(self->config.base_address, voltages.y);
     uz_pmsm_model6ph_hw_write_u_z1(self->config.base_address, voltages.z1);
     uz_pmsm_model6ph_hw_write_u_z2(self->config.base_address, voltages.z2);
-    uz_pmsm_model6ph_trigger_voltage_input_strobe(self);
 }
 
 void uz_pmsm_model6ph_dq_set_voltage_unsafe(uz_pmsm_model6ph_dq_t *self, uz_6ph_dq_t voltages){
@@ -165,7 +164,6 @@ uz_6ph_dq_t uz_pmsm_model6ph_dq_get_output_currents(uz_pmsm_model6ph_dq_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_6ph_dq_t out = {0};
-    uz_pmsm_model6ph_trigger_current_output_strobe(self);
     out.d = uz_pmsm_model6ph_hw_read_i_d(self->config.base_address);
     out.q =  uz_pmsm_model6ph_hw_read_i_q(self->config.base_address);
     out.x = uz_pmsm_model6ph_hw_read_i_x(self->config.base_address);

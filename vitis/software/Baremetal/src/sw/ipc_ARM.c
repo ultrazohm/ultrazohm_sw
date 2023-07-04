@@ -21,6 +21,17 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+bool select_CurrentControl = false;
+bool select_DDPG_1_64 = false;
+bool select_DDPG_3_64 = false;
+bool select_Real = false;
+bool select_CIL = false;
+bool select_automatic_idiq = false;
+float n_ref_rpm = 0.0f;
+float i_d_ref = 0.0f;
+float i_q_ref = 0.0f;
+float i_X_ref = 0.0f;
+float i_Y_ref = 0.0f;
 
 extern uint32_t js_status_BareToRTOS;
 
@@ -186,23 +197,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			i_d_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+			i_q_ref = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			i_X_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+			i_Y_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -210,27 +221,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			select_Real = false;
+			select_CIL = true;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			select_Real = true;
+			select_CIL = false;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			select_CurrentControl = true;
+			select_DDPG_1_64 = false;
+			select_DDPG_3_64 = false;
 			break;
 
 		case (My_Button_4):
-
+			select_CurrentControl = false;
+			select_DDPG_1_64 = true;
+			select_DDPG_3_64 = false;
 			break;
 
 		case (My_Button_5):
-
+			select_CurrentControl = false;
+			select_DDPG_1_64 = false;
+			select_DDPG_3_64 = true;
 			break;
 
 		case (My_Button_6):
-
+			if(select_automatic_idiq) {
+				select_automatic_idiq = false;
+			} else {
+				select_automatic_idiq = true;
+			}
 			break;
 
 		case (My_Button_7):
@@ -254,19 +277,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			uz_assert(0); // unknown command -> throw error
 		}
 	}
-
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
 	if (ultrazohm_state_get_led_ready()) {
-	js_status_BareToRTOS |= 1 << 0;
+		js_status_BareToRTOS |= 1 << 0;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
 
 	/* Bit 1 - Running LED */
 	if (ultrazohm_state_get_led_running()) {
-	js_status_BareToRTOS |= 1 << 1;
+		js_status_BareToRTOS |= 1 << 1;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
@@ -274,38 +295,57 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 2 - Error LED */
 	if (ultrazohm_state_get_led_error()) {
 		js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
+	} else {
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
 
 	/* Bit 3 - User LED */
 	if (ultrazohm_state_get_led_user()) {
 		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 3);
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	if (select_CIL == true) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	if (select_Real == true) {
+		js_status_BareToRTOS |= (1 << 5);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	if (select_CurrentControl == true) {
+	 	js_status_BareToRTOS |= (1 << 6);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
-
+	if (select_DDPG_1_64 == true) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+	 	js_status_BareToRTOS &= ~(1 << 7);
+	}
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	if (select_DDPG_3_64 == true) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+	 	js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (select_automatic_idiq == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		 js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

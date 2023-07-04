@@ -34,6 +34,7 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -60,18 +61,28 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_ia1] 			= &data->av.i_a1;
+	js_ch_observable[JSO_ib1] 			= &data->av.i_b1;
+	js_ch_observable[JSO_ic1] 			= &data->av.i_c1;
+	js_ch_observable[JSO_ia2] 			= &data->av.i_a2;
+	js_ch_observable[JSO_ib2] 			= &data->av.i_b2;
+	js_ch_observable[JSO_ic2] 			= &data->av.i_c2;
+	js_ch_observable[JSO_va1] 			= &data->av.v_a1;
+	js_ch_observable[JSO_vb1] 			= &data->av.v_b1;
+	js_ch_observable[JSO_vc1] 			= &data->av.v_c1;
+	js_ch_observable[JSO_va2] 			= &data->av.v_a2;
+	js_ch_observable[JSO_vb2] 			= &data->av.v_b2;
+	js_ch_observable[JSO_vc2] 			= &data->av.v_c2;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+	js_ch_observable[JSO_iX]			= &data->av.I_X;
+	js_ch_observable[JSO_iY]			= &data->av.I_Y;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_uX]			= &data->av.U_X;
+	js_ch_observable[JSO_uY]			= &data->av.U_Y;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -81,10 +92,18 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
+	js_slowDataArray[JSSD_FLOAT_TEMP_VSI1] 			    = &(data->av.temp_VSI_1);
+	js_slowDataArray[JSSD_FLOAT_TEMP_VSI2] 			    = &(data->av.temp_VSI_2);
+	js_slowDataArray[JSSD_FLOAT_V_DC_1]					= &(data->av.v_dc1);
+	js_slowDataArray[JSSD_FLOAT_V_DC_2]					= &(data->av.v_dc2);
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_u_X] 			        = &(data->av.U_X);
+	js_slowDataArray[JSSD_FLOAT_u_Y] 			        = &(data->av.U_Y);
+	js_slowDataArray[JSSD_FLOAT_i_X] 			        = &(data->av.I_X);
+	js_slowDataArray[JSSD_FLOAT_i_Y] 			        = &(data->av.I_Y);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

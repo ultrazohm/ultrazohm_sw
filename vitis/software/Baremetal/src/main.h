@@ -54,6 +54,19 @@
 
 #include "include/pwm_init.h"
 
+//Changes
+#include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_math_constants.h"
+#include "sw/nn_15_input_1_64/nn_15_input_1_64.h"
+#include "sw/init_FOC/init_FOC.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "sw/init_Inv/init_inverter.h"
+#include "uz/uz_spwm/uz_spwm.h"
+// Network definition
+#define NN_15_INPUT_1_64  1
+#define NN_15_INPUT_3_64  0
 
 //----------------------------------------------------
 // FUNCTIONS

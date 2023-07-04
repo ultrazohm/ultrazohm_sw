@@ -155,6 +155,8 @@ static void ReadAllADC();
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    uz_pmsm_model6ph_trigger_voltage_input_strobe(self);
+    uz_pmsm_model6ph_trigger_voltage_output_strobe(self);
     ReadAllADC();
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -278,8 +280,6 @@ void ISR_Control(void *data)
         	if(reset) {
         		uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions
         	}
-        	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
-        	uz_pmsm_model6ph_dq_set_voltage(Global_Data.objects.CIL_pmsm,v_dqxy_limited_volts);              // set input voltage
         	CIL_out_general = uz_pmsm_model6ph_dq_get_outputs_general(Global_Data.objects.CIL_pmsm);    // read out resulting general outputs
         	CIL_i_dqxy_meas = uz_pmsm_model6ph_dq_get_output_currents(Global_Data.objects.CIL_pmsm);   // read out actual currents
         	Global_Data.av.mechanicalRotorSpeed = (CIL_out_general.omega_mech * 60.0f) / (2.0f * UZ_PIf);
@@ -360,6 +360,8 @@ void ISR_Control(void *data)
         	Global_Data.av.U_q = v_dqxy_limited_volts.q;
         	Global_Data.av.U_X = v_dqxy_limited_volts.x;
         	Global_Data.av.U_Y = v_dqxy_limited_volts.y;
+        	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
+        	uz_pmsm_model6ph_dq_set_voltage(Global_Data.objects.CIL_pmsm,v_dqxy_limited_volts);              // set input voltage
 
         } else {
         	uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions

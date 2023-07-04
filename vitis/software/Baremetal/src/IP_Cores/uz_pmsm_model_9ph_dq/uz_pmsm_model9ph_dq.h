@@ -27,7 +27,7 @@ struct uz_pmsm_model9ph_dq_config_t
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */
     bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
-    bool switch_pspl; //true: inputs from PS, false: inputs from PL
+    bool switch_pspl; /**< true: inputs from PS, false: inputs from PL */
 };
 
 /**

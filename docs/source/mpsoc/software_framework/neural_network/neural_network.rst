@@ -230,175 +230,64 @@ Activation function:
 
 Training example with Backpropagation
 **************************************
-The trainable MLPs are implemented with the following definition and representation of the neural network.
-The neural network has the same definition as the feedforward example. As a reference the simplified example [#intelligente_verfahren]_ is used to show the training algorithm implementation. The network is 
-
-
-.. _nn_backprop_schroeder:
-
-.. figure:: img/nn_structure.svg
-   :align: center
-
-   Structure of the schroeder backpropagation example
-
-The MLP shown in :numref:`nn_backprop_schroeder` has one input, two hidden layer with two neurons each, and one output.
-The input is defined as:
-
-.. math::
-
-    u &=y^{(0)}=\left[ \begin{array}{rr} x_{1} \end{array}\right] \\
-    u &=y^{(0)}=\left[ \begin{array}{rr} -5 \end{array}\right] 
-
-The output is defined as:
-
-.. math::
-
-    y^{(3)}=\left[ \begin{array}{rr} y_{1} \\ \end{array}\right] \\
-    y^{(3)}=\left[ \begin{array}{rr} -4.41 \ \end{array}\right] 
-
-The weights and bias matrices for each layer with example values are given n the following.
-For the first hidden layer:
-
-.. math::
-
-   w^{(1)} &=\left[ \begin{array}{rr} w_{11}\\ w_{21}\\ \end{array}\right] \\
-   w^{(1)} &=\left[ \begin{array}{rr} 1\\ -0.15\\ \end{array}\right] \\
-   b^{(1)} &=\left[ \begin{array}{rr} b_1 & b_2\\ \end{array}\right] \\
-   b^{(1)} &=\left[ \begin{array}{rr} 1 & 0\\ \end{array}\right]
-
-For the second hidden layer:
-
-.. math::
-
-   w^{(2)} &=\left[ \begin{array}{rr} w_{11} & w_{12}\ w_{21} & w_{22}\end{array}\right] \\
-   w^{(2)} &=\left[ \begin{array}{rr} 0.02 & 5.36 \\ -0.78 & -1.26 \end{array}\right] \\
-   b^{(2)} &=\left[ \begin{array}{rr} b_1 & b_2 \\ \end{array}\right] \\
-   b^{(2)} &=\left[ \begin{array}{rr} 0 & 0\\ \end{array}\right]
-
-For the output layer:
-
-.. math::
-
-   w^{(3)} &=\left[ \begin{array}{rr} w_{11} & w_{12}\end{array}\right] \\
-   w^{(3)} &=\left[ \begin{array}{rr} -1.42 & 3.25\end{array}\right] \\
-   b^{(3)} &=\left[ \begin{array}{rr} b_1 \\ \end{array}\right] \\
-   b^{(3)} &=\left[ \begin{array}{rr} 0 \\ \end{array}\right]
-
-The activation function of the hidden layer is set to ReLU, the output activation function to linear.
-The following section calculates all steps and intermediate results in the network.
-
-Feedforward
-************
-
-First layer
-***********
-
-.. math::
-
-   \boldsymbol{x} \boldsymbol{w^{(1)}} + \boldsymbol{b^{(1)}} &= \boldsymbol{s^{(1)}} \\  
-   \left[ \begin{array}{rr} -5 \\ \end{array}\right]
-   \left[ \begin{array}{rr} 1 \\-0.15 \\ \end{array}\right]
-   +
-   \left[ \begin{array}{rr} 1 \\ 0 \\ \end{array}\right] 
-   &= 
-   \left[ \begin{array}{rr} -4\\ 0.75 \\ \end{array}\right]
-
-Activation function:
-
-.. math::
-
-      y^{1} &= Tanh(\boldsymbol{s^{(1)}}) \\
-      y^{1} &= Tanh(   \left[ \begin{array}{rr} -4\\ 0.75  \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} -1 \\ 0.64\\ \end{array}\right]
-
-Second layer
-************
-
-The input of the second hidden layer is the output of the first hidden layer :math:`y^{(1)}`:
-
-.. math::
-
-   \boldsymbol{y^{(1)}} \boldsymbol{w^{(2)}} + \boldsymbol{b^{(2)}} &= \boldsymbol{s^{(2)}} \\  
-   \left[ \begin{array}{rr} -1 \\ 0.64\\ \end{array}\right]
-   \left[ \begin{array}{rr} 0.02 & 5.36 \\ -0.78 & -1.26 \end{array}\right] 
-   +
-   \left[ \begin{array}{rr} 0 & 0\\ \end{array}\right]
-   &= 
-   \left[ \begin{array}{rr} 3.41 & -0.03 \\ \end{array}\right]
-
-Activation function:
-
-.. math::
-
-      y^{2} &= ReLU(\boldsymbol{s^{(2)}}) \\
-      y^{2} &= ReLU(   \left[ \begin{array}{rr} 3.41 \\-0.03  \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} 1 \\ -0.03  \\ \end{array}\right]
-
-Output layer
-************
-
-The input of the output layer is the output of the second hidden layer :math:`y^{(2)}`:
-
-.. math::
-
-   \boldsymbol{y^{(2)}} \boldsymbol{w^{(3)}} + \boldsymbol{b^{(3)}} &= \boldsymbol{s^{(3)}} \\  
-   \left[ \begin{array}{rr} -1.42 & 3.25\\ \end{array}\right]
-   \left[ \begin{array}{rr} 1 \\ -0.03 \end{array}\right] 
-   +
-   \left[ \begin{array}{rr} 0 \\ \end{array}\right]
-   &= 
-   \left[ \begin{array}{rr} -1.52 \\ \end{array}\right]
-
-Activation function:
-
-.. math::
-
-      y^{3} &= linear(\boldsymbol{s^{(3)}}) \\
-      y^{3} &= linear(   \left[ \begin{array}{rr} -1.52 \\ \end{array}\right])\\
-      &=  \left[ \begin{array}{rr} -1.52 \\ \end{array}\right]
 
 Backpropagation
 ****************
 Step 1: Calculate Error
 ************************
 
-For the backpropagation the error of the network has to be calculated. This is done with a loss function. The mean squared error loss function is the common used function for neural networks.
+For the backpropagation the error of the network's error must be known. This error in the output layer is calculated with a loss or so named cost function.
+The mean squared error loss function is the common used function for neural networks.
 
 .. math::
 
       MSE = \frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})^2
 
-In the schroeder example, the loss function is calculated as the linear error:
+For the example the MSE is:
 
 .. math::
 
-      \hat{y_{out}}= & y^{3} =( \left[ \begin{array}{rr} -1.52 \\ \end{array}\right])\\
-      e^{(1)}= y_{target}- \hat{y_{out}} &= -4.41 + 1.52
+      \hat{y_{out}}= & y^{3} =( \left[ \begin{array}{rr} -0.343 \\ \end{array}\right])\\
+      e^{(p)}= 0.5 \cdot (y_{target}- \hat{y_{out}})^2 &= (13.2 + 0.343)^2
       &= 
-      -2.89 \\
+      91.71 \\
 
 Step 2: Delta Rule
 ************************
 
+With the delta rule the local gradient of the output layer can be calculated. This is also the start value of the backpropagation rule. For the calcuation, the derivate of the activation function needs to be calculated.
+For an linear output layer:
+
 .. math::
 
-      \dot{T}(s_{1}^{3}) &= 1 \text{ (output neuron has linear transfer function)} \\
-      \dot{T}(s_{1}^{2}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{2})& 0 \\ 0 & 1-\tanh^2(s_{2}^{1}) \end{array}\right] \\
-      \dot{T}(s_{1}^{1}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{1})& 0 \\ 0 & 1-\tanh^2(s_{1}^{2}) \end{array}\right] \\
+      \dot{\mathcal{F}}(s_{1}^{3}) &= 1 \text{ (output neuron has linear transfer function)} \\
 
 Output layer
 ************
 
+For the output layer, the general calcuation rule is the product of the negative derivate of the activation_function multiplied with the sumout of the output layer and the error.
+
+.. math::
+	\delta_{p}^{L} &= -\dot{\mathcal{F}}^{L}(s_{p}^{L})e^{(p)} \\
+   l=3:\delta_{1}^{3} &= -1 \cdot e^{(p)} &= -91.71\\ 
+
+With the local gradient of the output layer, the gradients of all hidden layer can be calculated:
+
 .. math::
 
-   l=3:\delta_{1}^{3} &= -1 \cdot e^{(1)} &= 2.89 \\  
+   \delta_{p}^{l} &= -\dot{\mathcal{F}}^{l}(s_{p}^{l})(\hat{\Theta}^{l+1})^{\mathcal{F}}\delta_{p}^{l+1} \\
 
-Second layer
-************
+For the second and first hidden layer this results in :
+
+.. math::
+
+
+      \dot{\mathcal{F}}(s_{1}^{2}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{2})& 0 \\ 0 & 1-\tanh^2(s_{2}^{1}) \end{array}\right] \\
+      \dot{\mathcal{F}}(s_{1}^{1}) &=\left[ \begin{array}{rr} 1-\tanh^2(s_{1}^{1})& 0 \\ 0 & 1-\tanh^2(s_{1}^{2}) \end{array}\right] \\
 
 .. math:: 
 
-   l=2:\delta_{1}^{2} &= \dot{T}(s_{1}^{2}) \cdot {w^{3}}^{T}\\
+   l=2:\delta_{1}^{2} &= \dot{\mathcal{F}}(s_{1}^{2}) \cdot {w^{3}}^{T}\\
     =&
    \left[ \begin{array}{rr} 0 & 0\\0 & 1 \end{array}\right]
    \cdot
@@ -407,12 +296,9 @@ Second layer
    &= 
    \left[ \begin{array}{rr} 0 \\ 9.39 \end{array}\right]
 
-First layer
-************
-
 .. math::
 
-   l=1:\delta_{1}^{1} &= \dot{T}(s_{1}^{1}) \cdot {w^{2}}^{T} \cdot \delta_{1}^{2}\\  
+   l=1:\delta_{1}^{1} &= \dot{\mathcal{F}}(s_{1}^{1}) \cdot {w^{2}}^{T} \cdot \delta_{1}^{2}\\  
     =&
    \left[ \begin{array}{rr} 0 & 0\\0 & 0.6 \end{array}\right]
    \cdot
@@ -426,7 +312,11 @@ First layer
 Step 3: Calculate Gradients
 ****************************
 
-Gradients of the weights
+The calculation of the local gradients need to be done to get the gradient from the weights and bias. For the weights, the gradient results in 
+the product of the local gradient with the output of the previous layer.
+
+So the weight gradients of the example network are.
+
 
 .. math::
 
@@ -434,7 +324,8 @@ Gradients of the weights
  l=2: \frac{\partial E_{1}}{\partial {w}^{2}} = \delta_{1}^{2} \cdot (y_1^{(1)})^{T} &=\left[ \begin{array}{rr} 0\\ 9.39\\ \end{array}\right] \cdot \left[\begin{array}{rr} -1 & 0.64 \end{array}\right] &=\left[ \begin{array}{rr} 0 & 0\\-9.39 & 6.01 \end{array}\right]\\
  l=3: \frac{\partial E_{1}}{\partial {w}^{3}} = \delta_{1}^{3} \cdot (y_1^{(2)})^{T} &=-2.89 \cdot \left[ \begin{array}{rr} 1 & -0.03\\ \end{array}\right] &= \left[ \begin{array}{rr} 2.89 & -0.09\\ \end{array}\right]\\\\
 
-Gradients of the bias
+The bias gradients are the local gradients.
+
 
 .. math::
 
@@ -456,7 +347,14 @@ The update formula for gradient descent with minibatch is as follows:
  b \rightarrow b^{'} = b - \eta \cdot \frac{1}{N} \cdot \sum_{n = 0}^{N-1} \frac{\partial C_x(x^n)}{\partial b} \\
 
 
+Minibatch implementation
+*************************
 
+.. _comparison_matlab_c:
+.. tikz:: Result of the training of the above NN with 500 Episodes and a learning rate :math:`\alpha = 0.001`
+   :include: MSE_C_Matlab.tex
+   :align: center
+   :xscale: 100
 
 Sources
 =======

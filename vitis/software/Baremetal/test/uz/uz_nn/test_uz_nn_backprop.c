@@ -52,28 +52,28 @@ float reference_output[NUMBER_OF_OUTPUTS]= {
 };
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-#include "functions_weights/layer1_weights_test1.csv"
+1.0f,2.0f,3.0f,4.0f,5.0f,6.0f
 };
 float bx_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-#include "functions_weights/layer1_bias_test1.csv"
+1.0f,2.0f,3.0f
 };
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
 
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-#include "functions_weights/layer2_weights_test1.csv"
+-7.0f,-8.0f,-9.0f,-10.0f,-11.0f,-12.0f,13.0f,14.0f,-15.0f
 };
 float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-#include "functions_weights/layer2_bias_test1.csv"
+4.0f,5.0f,6.0f
 };
 float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
 
 float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
-#include "functions_weights/layer3_weights_test1.csv"
+16.0f,17.0f,-18.0f
 };
 float b_3[NUMBER_OF_OUTPUTS] = {
-#include "functions_weights/layer3_bias_test1.csv"
+7.0f
 };
 float y_3[NUMBER_OF_OUTPUTS] = {0};
 // error
@@ -99,7 +99,7 @@ float msetest [NUMBER_OF_EPOCHS] = {0.0f};
 float msederv [NUMBER_OF_EPOCHS] = {0.0f};
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
-        .activation_function = activation_tanh,
+        .activation_function = activation_ReLU,
         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
         .number_of_inputs = NUMBER_OF_INPUTS,
         .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
@@ -125,7 +125,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .cachegradients = cacheg_1,
         .error = e_1},
     [1] = {
-      .activation_function = activation_tanh, 
+      .activation_function = activation_ReLU, 
       .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
       .number_of_cachegradrows = NUMBER_OF_NEURONS_IN_SECOND_LAYER,

@@ -14,6 +14,7 @@ Software Framework
     complex/uz_complex
     uz_Transformation/uz_Transformation
     CurrentControl/CurrentControl
+    ParameterID/ParameterID
     newton_raphson/newton_raphson
     movingAverage/movingAverage
     linear_decoupling/linear_decoupling

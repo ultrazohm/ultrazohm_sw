@@ -45,7 +45,7 @@ static void uz_SystemTime_update() {
 	timingR5.interrupt_counter++;
 
 	// calculate ISR execution time of previous control cycle
-	int timestamp_diff_isr_exec = timingR5.timestamp_ISR_end - previous_timestamp_ISR_start;
+	int timestamp_diff_isr_exec = timingR5.timestamp_ISR_end - timingR5.timestamp_ISR_start;
 	timingR5.isr_execution_time_us = (float) timestamp_diff_isr_exec / Uptime_timer_counts_per_us; //PL clock-Ticks* @100MHz Clock [us]
 
 	// calculate ISR period
@@ -59,7 +59,7 @@ static void uz_SystemTime_update() {
 void uz_SystemTime_ISR_Tic() {
 	uz_assert(timingR5.IsReady);
 	timingR5.timestamp_ISR_start = uz_AxiTimer64Bit_ReadValue64Bit();
-	uz_SystemTime_update();
+	//uz_SystemTime_update();
 	timingR5.TicTocLock = true;
 }
 
@@ -68,6 +68,7 @@ void uz_SystemTime_ISR_Toc() {
 	uz_assert(timingR5.TicTocLock);
 	timingR5.TicTocLock = false;
 	timingR5.timestamp_ISR_end = uz_AxiTimer64Bit_ReadValue64Bit();
+	uz_SystemTime_update();
 }
 
 float uz_SystemTime_GetIsrExectionTimeInUs() {

@@ -44,6 +44,10 @@ struct uz_nn_layer_t
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
+//    float time_multiply_ff;
+//    float time_multiply_backprop;
+//    float time_rest_ff
+//    float time_rest_backprop;
 };
 
 
@@ -128,23 +132,15 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_assert(self->is_ready);
     uz_assert(uz_matrix_get_number_of_rows(input) == 1U);
     uz_matrix_set_zero(self->output);
-    uz_matrix_multiply(input, self->weights, self->output);
+//    tic
+//    uz_matrix_multiply(input, self->weights, self->output);
+//    toc
+//	self->time_multiply=get_t....
     uz_matrix_add(self->bias, self->output);
     uz_matrix_copy(self->output,self->sumout);
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
 }
 
-void uz_nn_layer_ff_matrix(uz_nn_layer_t *const self, uz_matrix_t const *const input)
-{
-    uz_assert_not_NULL(self);
-    uz_assert_not_NULL(input);
-    uz_assert(self->is_ready);
-    uz_assert(uz_matrix_get_number_of_rows(input) == 1U);
-    uz_matrix_multiply_acc(input, self->weights, self->output);
-    uz_matrix_add(self->bias, self->output);
-    uz_matrix_copy(self->output,self->sumout);
-    uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
-}
 
 void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev, uz_matrix_t *const weightprev)
 {
@@ -172,7 +168,7 @@ void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const ou
     uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
 }
 
-void uz_nn_layer_calc_gradients_matrix(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
+void uz_nn_layer_calc_gradients_mini_batch(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -187,23 +183,11 @@ uz_matrix_multiply_by_scalar(self->cachegradients,-1.0f);
 uz_matrix_transpose(self->weights);
 uz_matrix_add(self->cachegradients,self->weights);
 uz_matrix_transpose(self->weights);
-// uint32_t bias_index = self->bias->length_of_data;
-uint32_t weight_index = self->weights->length_of_data;
-//erst weights
-// for(size_t i=0;i< weight_index;i++)
-// {
-// self->weights->data[i] = self->weights->data[i] + ( lernrate * (-1.0f * self->gradients->data[i]));
-// }
 uz_matrix_multiply_by_scalar(self->delta,lernrate);
 uz_matrix_multiply_by_scalar(self->delta,-1.0f);
 uz_matrix_transpose(self->delta);
 uz_matrix_add(self->delta,self->bias);
 uz_matrix_transpose(self->delta);
-//dann bias
-// for(size_t i=weight_index;i<(weight_index+bias_index);i++)
-// {
-// self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate * (-1.0f * self->gradients->data[i]));
-// }
 }
 
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize)

@@ -53,7 +53,14 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+// nn stuff
 
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_layer.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_matrix/uz_matrix.h"
+#include "uz/uz_sum/uz_sum.h"
+#include "uz/uz_sum/uz_codegen0_ert_rtw/uz_codegen0.h"
 
 //----------------------------------------------------
 // FUNCTIONS

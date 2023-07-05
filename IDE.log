@@ -1,0 +1,18 @@
+10:20:04 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\ultrazohm_minibatch_test\ultrazohm_sw\temp_xsdb_launch_script.tcl
+10:20:04 INFO  : Registering command handlers for Vitis TCF services
+10:20:07 INFO  : XSCT server has started successfully.
+10:20:08 INFO  : Successfully done setting XSCT server connection channel  
+10:20:08 INFO  : plnx-install-location is set to ''
+10:20:08 INFO  : Successfully done query RDI_DATADIR 
+10:20:08 INFO  : Successfully done setting workspace for the tool. 
+10:20:09 INFO  : Platform repository initialization has completed.
+10:20:51 ERROR : (XSDB Server)couldn't read file "../../tcl_scripts/vitis_generate_UltraZohm_workspace.tcl": no such file or directory
+
+10:21:33 INFO  : Launching XSCT server: xsct.bat -n  -interactive C:\ultrazohm_minibatch_test\ultrazohm_sw\temp_xsdb_launch_script.tcl
+10:21:35 INFO  : Registering command handlers for Vitis TCF services
+10:21:36 INFO  : XSCT server has started successfully.
+10:21:36 INFO  : Successfully done setting XSCT server connection channel  
+10:21:37 INFO  : plnx-install-location is set to ''
+10:21:37 INFO  : Successfully done setting workspace for the tool. 
+10:21:37 INFO  : Successfully done query RDI_DATADIR 
+10:21:40 INFO  : Platform repository initialization has completed.

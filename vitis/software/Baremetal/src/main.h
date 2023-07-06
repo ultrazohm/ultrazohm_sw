@@ -45,8 +45,6 @@
 #include "include/tempMeasurement.h"
 #include "include/resolver.h"
 #include "include/uz_resolver_pl_interface_init.h"
-
-
 #include "uz/uz_HAL.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
@@ -58,6 +56,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "sw/control/control.h"
 
 
 //----------------------------------------------------

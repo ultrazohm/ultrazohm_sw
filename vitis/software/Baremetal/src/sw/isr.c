@@ -31,8 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
-#include "../include/control.h"
 #include "../include/testbench.h"
+#include "control/control.h"
 
 
 // Initialize the Interrupt structure
@@ -49,10 +49,9 @@ extern DS_Data Global_Data;
 #define MAX_TEMP_DEG 90.0f
 
 // control
-#include "../include/control.h"
+#include "control/control.h"
 uz_9ph_abc_t ref_voltages = {0};
-enum controller_type {PI_0, PI_PI, PI_R, PIR_PIR};
-enum controller_type selected_controller = PI_0;
+enum controller_type selected_controller = reset;
 
 // modulation
 #include "../uz/uz_spwm/uz_spwm.h"
@@ -132,9 +131,37 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	//    	out_wavegen = uz_wavegen_three_phase_sample(amplitude, 50.0f, 0.5f);
+    	//    	Global_Data.rasv.halfBridge1DutyCycle = out_wavegen.a;
+    	//    	Global_Data.rasv.halfBridge2DutyCycle = out_wavegen.b;
+    	//    	Global_Data.rasv.halfBridge3DutyCycle = out_wavegen.c;
 
+		switch(selected_controller){
+		case PI_0:
+			ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
+			break;
+		case PI_PI:
+			ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
+			break;
+		case PI_R:
+			ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
+			break;
+		default:
+		case reset:
+			uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+			reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+			reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+			break;
+		}
+		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
+		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 
-    }
+    }else{
+		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+		selected_controller = reset;
+	}
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////PWM set//////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////

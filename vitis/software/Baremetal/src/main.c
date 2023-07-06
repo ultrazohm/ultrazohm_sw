@@ -95,6 +95,19 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
+            // controllers
+            // PI_0
+            Global_Data.objects.cc_instance_dq = init_PI_0_cc_dq();
+            // PI_PI
+            Global_Data.objects.objects_PI_PI.dq = Global_Data.objects.cc_instance_dq;
+            Global_Data.objects.objects_PI_PI.xy1 = init_PI_PI_cc_xy1();
+            Global_Data.objects.objects_PI_PI.xy2 = init_PI_PI_cc_xy2();
+            Global_Data.objects.objects_PI_PI.xy3 = init_PI_PI_cc_xy3();
+            // PI_R
+            Global_Data.objects.objects_PI_R.dq = Global_Data.objects.cc_instance_dq;
+			Global_Data.objects.objects_PI_R.XY1 = init_PI_R_resonant_XY1();
+			Global_Data.objects.objects_PI_R.XY2 = init_PI_R_resonant_XY2();
+			Global_Data.objects.objects_PI_R.XY3 = init_PI_R_resonant_XY3();
             //ADC
             filter_1 = uz_movingAverageFilter_init(filter_cfg, circularBuffer_1);
             filter_2 = uz_movingAverageFilter_init(filter_cfg, circularBuffer_2);

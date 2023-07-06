@@ -145,20 +145,27 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     // i.e. A->row x B->column
     uz_assert(A->rows == C_out->rows);
     uz_assert(B->columns == C_out->columns);
-    uz_matrix_set_zero(C_out);
+ //   uz_matrix_set_zero(C_out);
     // The following implementation is "slow" as in it does not use special mechanism to speed it up. See the following resources for possible improvements.
     // https://github.com/deuxbot/fast-matrix-multiplication/blob/master/mxm.c
     // https://en.wikipedia.org/wiki/Matrix_multiplication
     uint32_t m = A->rows;
     uint32_t n = A->columns;
     uint32_t p = B->columns;
+    bool set_zero = true;
+
     for (uint32_t i = 0; i < m; i++)
     {
         for (uint32_t j = 0; j < p; j++)
         {
+            if(set_zero){
+                C_out->data[(p * i) + j]=0.0f;
+                set_zero=false;
+            }
             for (uint32_t k = 0; k < n; k++)
             {
                 C_out->data[(p * i) + j] += A->data[(n * i) + k] * B->data[(p * k) + j];
+                set_zero = true;
             }
         }
     }

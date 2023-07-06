@@ -97,7 +97,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_assert_not_NULL(input);
     uz_assert(self->is_ready);
     uz_assert(uz_matrix_get_number_of_rows(input) == 1U);
-    uz_matrix_set_zero(self->output);
+   // uz_matrix_set_zero(self->output);
     uz_matrix_multiply(input, self->weights, self->output);
     uz_matrix_add(self->bias, self->output);
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);

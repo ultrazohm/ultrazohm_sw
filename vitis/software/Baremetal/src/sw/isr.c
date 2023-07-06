@@ -123,8 +123,10 @@ static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    uz_pmsm_model6ph_trigger_voltage_input_strobe(Global_Data.objects.CIL_pmsm);
-    uz_pmsm_model6ph_trigger_current_output_strobe(Global_Data.objects.CIL_pmsm);
+    if(select_CIL) {
+    	uz_pmsm_model6ph_trigger_voltage_input_strobe(Global_Data.objects.CIL_pmsm);
+    	uz_pmsm_model6ph_trigger_current_output_strobe(Global_Data.objects.CIL_pmsm);
+    }
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 

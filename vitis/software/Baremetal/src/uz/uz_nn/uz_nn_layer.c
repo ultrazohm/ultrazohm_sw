@@ -18,6 +18,7 @@
 #if UZ_NN_LAYER_MAX_INSTANCES > 0U
 #include "uz_nn_layer.h"
 #include "../uz_HAL.h"
+#include "../uz_SystemTime/uz_SystemTime.h"
 #include <stdbool.h>
 #include <stdio.h>
 struct uz_nn_layer_t
@@ -44,10 +45,11 @@ struct uz_nn_layer_t
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
-//    float time_multiply_ff;
-//    float time_multiply_backprop;
-//    float time_rest_ff
-//    float time_rest_backprop;
+    float time_multiply_ff;
+    float time_multiply_backprop;
+    float time_rest_ff;
+    float time_rest_backprop;
+    float time_calc_gradients;
 };
 
 
@@ -132,13 +134,16 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
     uz_assert(self->is_ready);
     uz_assert(uz_matrix_get_number_of_rows(input) == 1U);
     uz_matrix_set_zero(self->output);
-//    tic
-//    uz_matrix_multiply(input, self->weights, self->output);
-//    toc
-//	self->time_multiply=get_t....
+    uz_SystemTime_ISR_Tic();
+    uz_matrix_multiply(input, self->weights, self->output);
+    uz_SystemTime_ISR_Toc();
+    self->time_multiply_ff = uz_SystemTime_GetIsrExectionTimeInUs();
+    uz_SystemTime_ISR_Tic();
     uz_matrix_add(self->bias, self->output);
     uz_matrix_copy(self->output,self->sumout);
     uz_matrix_apply_function_to_each_element(self->output, self->activation_function);
+    uz_SystemTime_ISR_Toc();
+    self->time_rest_ff = uz_SystemTime_GetIsrExectionTimeInUs();
 }
 
 
@@ -146,34 +151,52 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_SystemTime_ISR_Tic();
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
     uz_matrix_transpose(self->sumout);
+    uz_SystemTime_ISR_Toc();
+    self->time_rest_backprop = uz_SystemTime_GetIsrExectionTimeInUs();
+    uz_SystemTime_ISR_Tic();
     uz_matrix_columnvec_matrix_product(self->sumout,weightprev,self->temporarybackprop); 
     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
+    uz_SystemTime_ISR_Toc();
+    self->time_multiply_backprop = uz_SystemTime_GetIsrExectionTimeInUs();
 }
 void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_SystemTime_ISR_Tic();
     self->error->data = error;
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
+    uz_SystemTime_ISR_Toc();
+    self->time_rest_backprop = uz_SystemTime_GetIsrExectionTimeInUs();
+    uz_SystemTime_ISR_Tic();
     uz_matrix_elementwise_product(self->sumout,self->error,self->delta);
+    uz_SystemTime_ISR_Toc();
+    self->time_multiply_backprop = uz_SystemTime_GetIsrExectionTimeInUs();
 }
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_SystemTime_ISR_Tic();
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);  
+    uz_matrix_reshape_and_concatenate(self->cachegradients,self->delta,self->gradients);
+    uz_SystemTime_ISR_Toc();
+    self->time_calc_gradients = uz_SystemTime_GetIsrExectionTimeInUs();
 }
 
 void uz_nn_layer_calc_gradients_mini_batch(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_SystemTime_ISR_Tic();
     uz_matrix_multiply(self->delta,outputprev,self->cachegradients);
-    uz_matrix_reshape_and_concatenate_acc(self->cachegradients,self->delta,self->gradients);  
+    uz_matrix_reshape_and_concatenate_acc(self->cachegradients,self->delta,self->gradients);
+    uz_SystemTime_ISR_Toc();
+    self->time_calc_gradients = uz_SystemTime_GetIsrExectionTimeInUs();
 }
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)

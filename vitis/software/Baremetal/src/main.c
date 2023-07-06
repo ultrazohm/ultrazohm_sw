@@ -23,12 +23,6 @@ float calculation_time_sleep30= 30.0f;
 float calculation_time_sleep1000 = 1000.0f;
 float calculation_time_sleep10000 = 10000.0f;
 
-//function time measuring
-float time_rowvector_us = 0.0f;
-float time_nnff_us = 0.0f;
-float time_backprop_us = 0.0f;
-float time_gd_us = 0.0f;
-
 int uintcountertiming = 500000;
 uint64_t Timestart = 0;
 uint64_t Timeend = 0;
@@ -45,6 +39,7 @@ float resultjava = 0.0f;
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
 #define NUMBER_OF_EPOCHS 2
+//#define MINI_BATCH_SIZE 2
 #define MINI_BATCH_SIZE 250
 
 float lernrate = 0.001f;
@@ -160,6 +155,10 @@ struct uz_nn_layer_config config_nn[NUMBER_OF_HIDDEN_LAYER] = {
         .gradients = g_1,
         .cachegradients = cacheg_1,
         .error = e_1},
+//		.time_multiply_ff = &time_multiply_ffl1,
+//		.time_multiply_backprop = &time_multiply_backpropl1,
+//		.time_rest_ff=&time_rest_ffl1,
+//		.time_rest_backprop=&time_rest_backpropl1},
     [1] = {
       .activation_function = activation_tanh,
       .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
@@ -186,6 +185,10 @@ struct uz_nn_layer_config config_nn[NUMBER_OF_HIDDEN_LAYER] = {
       .gradients = g_2,
       .cachegradients = cacheg_2,
       .error=e_2},
+//	  .time_multiply_ff = &time_multiply_ffl2,
+//	  .time_multiply_backprop = &time_multiply_backpropl2,
+//	  .time_rest_ff=&time_rest_ffl2,
+//	  .time_rest_backprop=&time_rest_backpropl2},
   [2] = {.activation_function = activation_linear,
    .number_of_neurons = NUMBER_OF_OUTPUTS,
    .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
@@ -210,7 +213,11 @@ struct uz_nn_layer_config config_nn[NUMBER_OF_HIDDEN_LAYER] = {
    .temporarybackprop = T3,
    .gradients = g_3,
    .cachegradients = cacheg_3,
-   .error= e_3}
+   .error= e_3},
+//   .time_multiply_ff = &time_multiply_ffl3,
+//   .time_multiply_backprop = &time_multiply_backpropl3,
+//   .time_rest_ff=&time_rest_ffl3,
+//   .time_rest_backprop=&time_rest_backpropl3},
   };
 
 // Initialize the global variables
@@ -300,7 +307,7 @@ int main(void)
             break;
         case init_interrupts:
             uz_axigpio_enable_datamover();
-        	//check_isr_time();
+//        	check_isr_time();
             nn_train_minibatch();
             //Initialize_ISR(); // Initialize the Interrupts and enable them - last line of code before infinite loop
             initialization_chain = infinite_loop;
@@ -323,30 +330,29 @@ int main(void)
     return (status);
 }
 
-static void check_isr_time(void)
-{
-	uz_SystemTime_ISR_Tic();
-    uz_sleep_useconds(10);
-    uz_SystemTime_ISR_Toc();
-	calculation_time_sleep10 = uz_SystemTime_GetIsrExectionTimeInUs();
-	//own check time function, 30*500*10e6/10e6 = 15000 steps ,30us
-	uz_SystemTime_ISR_Tic();
-	uz_sleep_seconds(2);
-    uz_SystemTime_ISR_Toc();
-    calculation_time_sleep100 = uz_SystemTime_GetIsrExectionTimeInUs();
-	uz_SystemTime_ISR_Tic();
-    uz_sleep_useconds(1000);
-    uz_SystemTime_ISR_Toc();
-    calculation_time_sleep1000 = uz_SystemTime_GetIsrExectionTimeInUs();
-	uz_SystemTime_ISR_Tic();
-    uz_sleep_useconds(10000);
-    uz_SystemTime_ISR_Toc();
-    calculation_time_sleep10000 = uz_SystemTime_GetIsrExectionTimeInUs();
-}
+//static void check_isr_time(void)
+//{
+//	uz_SystemTime_ISR_Tic();
+//    uz_sleep_useconds(10);
+//    uz_SystemTime_ISR_Toc();
+//	calculation_time_sleep10 = uz_SystemTime_GetIsrExectionTimeInUs();
+//	//own check time function, 30*500*10e6/10e6 = 15000 steps ,30us
+//	uz_SystemTime_ISR_Tic();
+//	uz_sleep_seconds(2);
+//    uz_SystemTime_ISR_Toc();
+//    calculation_time_sleep100 = uz_SystemTime_GetIsrExectionTimeInUs();
+//	uz_SystemTime_ISR_Tic();
+//    uz_sleep_useconds(1000);
+//    uz_SystemTime_ISR_Toc();
+//    calculation_time_sleep1000 = uz_SystemTime_GetIsrExectionTimeInUs();
+//	uz_SystemTime_ISR_Tic();
+//    uz_sleep_useconds(10000);
+//    uz_SystemTime_ISR_Toc();
+//    calculation_time_sleep10000 = uz_SystemTime_GetIsrExectionTimeInUs();
+//}
 
 static void nn_train_minibatch(void)
 {
-    uz_SystemTime_ISR_Tic();
     uz_nn_t* test = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
     struct uz_matrix_t refmatrix={0};
     uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
@@ -364,29 +370,18 @@ static void nn_train_minibatch(void)
     uint32_t mb_size = uz_matrix_get_number_of_rows(input);
     for(size_t j=0; j<mb_size;j++){
       uz_matrix_get_row_vector_zero_based(input,X,j);
-//      uz_SystemTime_ISR_Toc();
-//      time_rowvector_us= uz_SystemTime_GetIsrExectionTimeInUs();
-//      uz_SystemTime_ISR_Tic();
       uz_nn_ff(test,X);
-//      uz_SystemTime_ISR_Toc();
-//      time_nnff_us= uz_SystemTime_GetIsrExectionTimeInUs();
       uz_matrix_t* output=uz_nn_get_output_data(test);
       resultjava=uz_matrix_get_element_zero_based(output,0,0);
       uz_matrix_get_row_vector_zero_based(refout,ref,j);
       msejava= uz_nn_mse(output,ref);
       msederv[j] = uz_nn_mse_derv(output,ref);
       float *msed = &msederv[j];
-//      uz_SystemTime_ISR_Tic();
       uz_nn_backward_pass_mini_batch(test,msed,X);
       }
-//      uz_SystemTime_ISR_Toc();
-//      time_backprop_us= uz_SystemTime_GetIsrExectionTimeInUs();
       float lernrate = 0.001f;
-//      uz_SystemTime_ISR_Tic();
       uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
       uz_matrix_t* output=uz_nn_get_output_data(test);
       msebatch[i] = uz_nn_mse(output,ref);
-      }
-    uz_SystemTime_ISR_Toc();
-    time_gd_us= uz_SystemTime_GetIsrExectionTimeInUs();
+     }
 }

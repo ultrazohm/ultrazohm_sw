@@ -1,5 +1,6 @@
 #ifndef UZ_NN_LAYER_H
 #define UZ_NN_LAYER_H
+#include "../uz_SystemTime/uz_SystemTime.h"
 #include "../uz_matrix/uz_matrix.h"
 #include "uz_nn_activation_functions.h"
 #include <stdint.h>
@@ -56,6 +57,10 @@ struct uz_nn_layer_config{
     float *const error; /** Pointer to an array that stores the error values from the layer*/
     float *const gradients; /** Pointer to an array that stores the gradient values*/
     float *const cachegradients; /** Pointer to an array that stores the cache values for the gradient*/
+//    float *const time_multiply_ff;
+//    float *const time_multiply_backprop;
+//    float *const time_rest_ff;
+//    float *const time_rest_backprop;
 };
 /**
  * @brief Initializes a layer of a neural network.

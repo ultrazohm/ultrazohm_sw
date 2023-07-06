@@ -158,7 +158,7 @@ void ISR_Control(void *data)
 
         //Read out inverter temp
         Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
-        Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+        Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
         Global_Data.av.temp_VSI_1 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L1,
         		Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H2, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L2,
 				Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H3, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
@@ -169,15 +169,15 @@ void ISR_Control(void *data)
         // check current limit
         if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
         	fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-        	uz_assert(0);
+        		uz_assert(0);
         }
            // check DC Bus
            if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
-           		uz_assert(0);
+        	   uz_assert(0);
            }
            // check inverter temp
            if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
-           	uz_assert(0);
+        	   uz_assert(0);
            }
 
            //write to structs
@@ -292,18 +292,18 @@ void ISR_Control(void *data)
        		i_dqxy_error.x = (i_xy_reference.d - CIL_i_dqxy_meas.x) / rated_current;
        		i_dqxy_error.y = (i_xy_reference.q - CIL_i_dqxy_meas.y) / rated_current;
        		observation_ip_15n[0] = i_dqxy_error.d;
-       		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_PWM_FREQUENCY;
+       		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
        		observation_ip_15n[2] = i_dqxy_error.q;
-       		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_PWM_FREQUENCY;
+       		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
        		observation_ip_15n[4] = CIL_i_dqxy_meas.d / rated_current;
        		observation_ip_15n[5] = CIL_i_dqxy_meas.q / rated_current;
        		observation_ip_15n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
        		observation_ip_15n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
        		observation_ip_15n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
        		observation_ip_15n[9] = i_dqxy_error.x;
-       		observation_ip_15n[10] = i_dqxy_integrated_error.x * UZ_PWM_FREQUENCY;
+       		observation_ip_15n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
        		observation_ip_15n[11] = i_dqxy_error.y;
-       		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_PWM_FREQUENCY;
+       		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
        		observation_ip_15n[13] = v_dqxy_limited_volts.x * Voltage_Scaling;
        		observation_ip_15n[14] = v_dqxy_limited_volts.y * Voltage_Scaling;
    	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
@@ -376,18 +376,18 @@ void ISR_Control(void *data)
            		i_dqxy_error.x = (i_xy_reference.d - REAL_i_dqxy_meas.x) / rated_current;
            		i_dqxy_error.y = (i_xy_reference.q - REAL_i_dqxy_meas.y) / rated_current;
            		observation_ip_15n[0] = i_dqxy_error.d;
-           		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_PWM_FREQUENCY;
+           		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
            		observation_ip_15n[2] = i_dqxy_error.q;
-           		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_PWM_FREQUENCY;
+           		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
            		observation_ip_15n[4] = REAL_i_dqxy_meas.d / rated_current;
            		observation_ip_15n[5] = REAL_i_dqxy_meas.q / rated_current;
            		observation_ip_15n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
            		observation_ip_15n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
            		observation_ip_15n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
            		observation_ip_15n[9] = i_dqxy_error.x;
-           		observation_ip_15n[10] = i_dqxy_integrated_error.x * UZ_PWM_FREQUENCY;
+           		observation_ip_15n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
            		observation_ip_15n[11] = i_dqxy_error.y;
-           		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_PWM_FREQUENCY;
+           		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
            		observation_ip_15n[13] = v_dqxy_limited_volts.x * Voltage_Scaling;
            		observation_ip_15n[14] = v_dqxy_limited_volts.y * Voltage_Scaling;
            		for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
@@ -401,8 +401,8 @@ void ISR_Control(void *data)
            		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_15n,0U,2U);
            		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_15n,0U,3U);
 
-           		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_dq_meas, &ext_clamping_dq);
-           		v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_xy_meas, &ext_clamping_xy);
+           		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_dq_meas, &ext_clamping_dq);
+           		v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_xy_meas, &ext_clamping_xy);
 
            	} else if(select_DDPG_3_64) {
 
@@ -414,7 +414,7 @@ void ISR_Control(void *data)
            	v_dqxy_limited_volts.z1 = 0.0f;
            	v_dqxy_limited_volts.z2 = 0.0f;
            	REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_to_abc(v_dqxy_limited_volts, Global_Data.av.theta_elec);
-           	DutyCycle_output = uz_spwm_abc_6ph(REAL_v_abc_ref, Global_Data.av.v_dc2);
+           	DutyCycle_output = uz_spwm_abc_6ph(REAL_v_abc_ref, V_DC_Volts);
            	Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.system1.DutyCycle_A;
            	Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.system1.DutyCycle_B;
            	Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.system1.DutyCycle_C;

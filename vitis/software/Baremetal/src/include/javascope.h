@@ -21,9 +21,9 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
-	JSO_ISR_ExecTime_us,
-	JSO_ISR_Period_us,
-	JSO_lifecheck,
+	JSO_medium_a,
+	JSO_medium_b,
+	JSO_medium_c,
 	JSO_ia1,
 	JSO_ib1,
 	JSO_ic1,
@@ -49,6 +49,9 @@ enum JS_OberservableData {
 	JSO_Speed_rpm,
 	JSO_Theta_el,
 	JSO_Theta_mech,
+	JSO_ISR_ExecTime_us,
+	JSO_ISR_Period_us,
+	JSO_lifecheck,
 	JSO_ENDMARKER
 };
 

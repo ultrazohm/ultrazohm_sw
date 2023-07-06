@@ -11,7 +11,8 @@
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
-
+#include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 
 // union allows to access the values as array and individual variables
@@ -60,17 +61,16 @@ typedef struct _actualValues_ {
 	float isr_samplerate_s;
 	float U_ZK1; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
-	float U_ZK3; 	// DC-Link voltage 2 in V
+	float U_ZK3; 	// DC-Link voltage 3 in V
+	float U_ZK; 	// Medium DC-Link voltage n V
 	float i_ZK1; 		// DC-Link voltage in V
 	float i_ZK2; 	// DC-Link voltage 2 in V
 	float i_ZK3; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float theta_elec;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	uz_9ph_abc_t winding_temperature;
 	float avg_winding_temperature;
 	float temperature_inv_1;
@@ -85,6 +85,9 @@ typedef struct _actualValues_ {
 	uz_3ph_alphabeta_t currents_XY1;
 	uz_3ph_alphabeta_t currents_XY2;
 	uz_3ph_alphabeta_t currents_XY3;
+	uz_3ph_dq_t currents_xy1;
+	uz_3ph_dq_t currents_xy2;
+	uz_3ph_dq_t currents_xy3;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -100,6 +103,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	uz_3ph_dq_t dq_setpoints;
 } referenceAndSetValues;
 
 typedef struct{
@@ -118,6 +122,13 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
+	uz_CurrentControl_t* cc_instance_dq;
+	uz_subspace_resonant_control* resonant_instance_XY1;
+	uz_subspace_resonant_control* resonant_instance_XY2;
+	uz_subspace_resonant_control* resonant_instance_XY3;
+	uz_CurrentControl_t* cc_instance_xy1;
+	uz_CurrentControl_t* cc_instance_xy2;
+	uz_CurrentControl_t* cc_instance_xy3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

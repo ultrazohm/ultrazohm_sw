@@ -112,6 +112,26 @@ float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 float u_a1c1 = 0.0f;
 float u_a2c2 = 0.0f;
+
+float id_setpoints[22]={
+#include "id_setpoints.csv"
+};
+
+float iq_setpoints[22]={
+#include "iq_setpoints.csv"
+};
+
+float iX_setpoints[22]={
+#include "iX_setpoints.csv"
+};
+
+float iY_setpoints[22]={
+#include "iY_setpoints.csv"
+};
+uint64_t old_uptime=0U;
+uint32_t setpoint_index=0U;
+bool automatic_idiq_lock=false; // hack to only do it once
+float start_marker=0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -132,10 +152,37 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
-   	i_dq_reference.d = i_d_ref;
-   	i_dq_reference.q = i_q_ref;
-   	i_xy_reference.d = i_X_ref;
-   	i_xy_reference.q = i_Y_ref;
+    if( (select_automatic_idiq) ){
+    	start_marker=1.0f;
+    	i_dq_reference.d=id_setpoints[setpoint_index];
+    	i_dq_reference.q=iq_setpoints[setpoint_index];
+    	i_xy_reference.d=iX_setpoints[setpoint_index];
+		i_xy_reference.q=iY_setpoints[setpoint_index];
+
+    	// step throught the array
+    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+    	if(current_uptime>(old_uptime +300 ) ){
+    		old_uptime=current_uptime;
+
+    		if(setpoint_index<21){
+    			setpoint_index++;
+    		}else{
+    			setpoint_index=0;
+    			select_automatic_idiq=false;
+    			start_marker=0.0f;
+    		}
+
+
+
+    	}
+    }else{
+       	i_dq_reference.d = i_d_ref;
+       	i_dq_reference.q = i_q_ref;
+       	i_xy_reference.d = i_X_ref;
+       	i_xy_reference.q = i_Y_ref;
+    }
+
+
 
     //Take measurements independent of control_state
     if(select_Real) {

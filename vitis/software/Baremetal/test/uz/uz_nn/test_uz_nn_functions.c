@@ -283,19 +283,19 @@ float epsilon_decay = 0.09f;
 TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
 }
 
-void test_calc_epsilon_greedy_too_high_decay(void)
+void test_calc_epsilon_greedy_assert_decay(void)
 {
 float epsilon_start = 0.8f;
 float epsilon_min = 0.2f;
-float epsilon_decay = 0.2f;
+float epsilon_decay = 1.5f;
 TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
 }
 
-void test_calc_epsilon_greedy_test_eps_min(void)
+void test_calc_epsilon_assert_negative(void)
 {
-float epsilon_start = 0.8f;
+float epsilon_start = 1.5f;
 float epsilon_min = 0.2f;
-float epsilon_decay = 0.5f;
+float epsilon_decay = -1.5f;
 TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay))
 }
 

@@ -44,11 +44,11 @@ float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER 
 float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
 float x[NUMBER_OF_INPUTS] = {
-#include "functions_weights/X_test1.csv"
+1.0f,2.0f
 };
 
 float reference_output[NUMBER_OF_OUTPUTS]= {
-#include "functions_weights/T_test1.csv"
+850.0f
 };
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
@@ -247,7 +247,7 @@ void test_uz_nn_train_check_mse_param(void)
     uz_nn_ff(test2,input);
     uz_matrix_t* outputnn2=uz_nn_get_output_data(test2);
     msetest[i] =  uz_nn_mse(outputnn2,refout);
-    // check mse
+    // // check mse
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, msesoll[i], msetest[i]);
     msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
     float *msed = &msederv[i];
@@ -258,6 +258,7 @@ void test_uz_nn_train_check_mse_param(void)
     float lernrate = 0.001f;
     uz_nn_gradient_descent(test2,lernrate);
     }
+    struct uz_matrix_t refmatri22x={0};
 }
 
 #endif // TEST

@@ -131,6 +131,12 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+   	i_dq_reference.d = i_d_ref;
+   	i_dq_reference.q = i_q_ref;
+   	i_xy_reference.d = i_X_ref;
+   	i_xy_reference.q = i_Y_ref;
+
     //Take measurements independent of control_state
     if(select_Real) {
     	//Read out speed&position
@@ -245,10 +251,6 @@ void ISR_Control(void *data)
        if (current_state==control_state)
        {
            if(select_CIL) {
-           	i_dq_reference.d = i_d_ref;
-           	i_dq_reference.q = i_q_ref;
-           	i_xy_reference.d = i_X_ref;
-           	i_xy_reference.q = i_Y_ref;
            	CIL_omega_mech = (n_ref_rpm / 60.0f) * 2.0f * UZ_PIf;
            	if(reset) {
            		uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions
@@ -343,10 +345,6 @@ void ISR_Control(void *data)
            }
 
            if(select_Real) {
-           	i_dq_reference.d = i_d_ref;
-           	i_dq_reference.q = i_q_ref;
-           	i_xy_reference.d = i_X_ref;
-           	i_xy_reference.q = i_Y_ref;
            	REAL_i_dq_meas.d = REAL_i_dqxy_meas.d;
            	REAL_i_dq_meas.q = REAL_i_dqxy_meas.q;
            	REAL_i_xy_meas.d = REAL_i_dqxy_meas.x;

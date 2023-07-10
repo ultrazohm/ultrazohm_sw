@@ -21,6 +21,7 @@
 #define MAX_POLYNOMIAL_ORDER 10U
 
 static float uz_newton_raphson_calculate_f_x(struct uz_newton_raphson_config config, uz_array_float_t xpow, float result);
+static void uz_newton_raphson_check_absolute_tolerance(struct uz_newton_raphson_config config, uz_array_float_t xpow, float result);
 
 float uz_newton_raphson(struct uz_newton_raphson_config config) {
     uz_assert(config.coefficients.length <= (MAX_POLYNOMIAL_ORDER + 1U));
@@ -42,12 +43,9 @@ float uz_newton_raphson(struct uz_newton_raphson_config config) {
         f_x = 0.0f;
         f_derivate_x = 0.0f;  
     }
-    f_x=0.0f;
-    f_x = uz_newton_raphson_calculate_f_x(config, xpow, result);
-    if( (f_x > config.root_absolute_tolerance ) || ( f_x< -config.root_absolute_tolerance) ){
-        uz_assert(0U); // Root could not be approximated with sufficient precision
+    if (config.check_for_absolute_tolerance) {
+        uz_newton_raphson_check_absolute_tolerance(config, xpow, result);
     }
-
     return (result);
 }
 
@@ -75,6 +73,13 @@ static float uz_newton_raphson_calculate_f_x(struct uz_newton_raphson_config con
             f_x += config.coefficients.data[i] * xpow.data[i];
         }
     return(f_x);
+}
+
+static void uz_newton_raphson_check_absolute_tolerance(struct uz_newton_raphson_config config, uz_array_float_t xpow, float result) {
+    float f_x = uz_newton_raphson_calculate_f_x(config, xpow, result);
+    if( (f_x > config.root_absolute_tolerance ) || ( f_x< -config.root_absolute_tolerance) ){
+        uz_assert(0U); // Root could not be approximated with sufficient precision
+    }
 }
 
 

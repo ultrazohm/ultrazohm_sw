@@ -13,7 +13,8 @@ Software Framework
     array/array
     complex/uz_complex
     uz_Transformation/uz_Transformation
-    FOC/FOC
+    CurrentControl/CurrentControl
+    ParameterID/ParameterID
     newton_raphson/newton_raphson
     movingAverage/movingAverage
     linear_decoupling/linear_decoupling
@@ -24,6 +25,8 @@ Software Framework
     exponential_smoothing/uz_exp_smooth
     space_vector_limitation/space_vector_limitation
     SpeedControl/SpeedControl
+    SetPoint/SetPoint
+    space_vector_modulation/space_vector_modulation
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests
@@ -32,3 +35,7 @@ Software Framework
     matrix/matrix_math
     neural_network/neural_network
     uz_fixedpoint/uz_fixedpoint
+    uz_integrator/uz_integrator
+    uz_sysmon_ps/uz_sysmon_ps
+    VSD_6ph_FD_control/uz_VSD_6ph_FD_control
+    uz_sinus_pwm/uz_sinus_pwm

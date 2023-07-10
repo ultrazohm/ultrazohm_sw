@@ -119,10 +119,11 @@ proc create_hier_cell_uz_user { parentCell nameHier } {
 
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_1 ]
-  set_property -dict [ list \
-   CONFIG.NUM_MI {1} \
-   CONFIG.NUM_SI {1} \
- ] $smartconnect_1
+  set_property -dict [list \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {1} \
+  ] $smartconnect_1
+
 
   # Create instance: uz_axi_testIP_0, and set properties
   set uz_axi_testIP_0 [ create_bd_cell -type ip -vlnv user.org:ip:uz_axi_testIP:1.0 uz_axi_testIP_0 ]

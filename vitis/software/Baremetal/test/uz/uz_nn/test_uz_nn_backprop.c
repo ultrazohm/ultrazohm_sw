@@ -48,32 +48,32 @@ float x[NUMBER_OF_INPUTS] = {
 };
 
 float reference_output[NUMBER_OF_OUTPUTS]= {
-850.0f
+2.0f
 };
 
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-1.0f,2.0f,3.0f,4.0f,5.0f,6.0f
+0.8f,0.1f,0.6f,0.9f,0.9f,0.1f
 };
-float bx_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
-1.0f,2.0f,3.0f
+float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+0.8f,1.0f,0.7f
 };
 float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 
 
 float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
--7.0f,-8.0f,-9.0f,-10.0f,-11.0f,-12.0f,13.0f,14.0f,-15.0f
+0.3f,1.0f,1.0f,0.5f,0.2f,0.5f,1.0f,1.0f,0.8f
 };
 float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
-4.0f,5.0f,6.0f
+0.0f,0.8f,0.9f
 };
 float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 
 
 float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
-16.0f,17.0f,-18.0f
+0.1f,0.4f,0.9f
 };
 float b_3[NUMBER_OF_OUTPUTS] = {
-7.0f
+0.7f
 };
 float y_3[NUMBER_OF_OUTPUTS] = {0};
 // error
@@ -107,7 +107,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .number_of_temporaryrows = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
         .number_of_temporarycolumns = NUMBER_OF_NEURONS_IN_SECOND_LAYER,
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
-        .length_of_bias = UZ_MATRIX_SIZE(bx_1),
+        .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
         .length_of_sumout = UZ_MATRIX_SIZE(s_1),
         .length_of_delta = UZ_MATRIX_SIZE(delta_1),
@@ -116,7 +116,7 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_temporarybackprop = UZ_MATRIX_SIZE(T1),
         .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_1),
         .weights = w_1,
-        .bias = bx_1,
+        .bias = b_1,
         .output = y_1,
         .sumout = s_1,
         .delta = delta_1,
@@ -255,10 +255,9 @@ void test_uz_nn_train_check_mse_param(void)
     printf("output von step %d ist = %.8f \n",(int)i, (double)result);
     printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
     uz_nn_backward_pass(test2,msed,input);
-    float lernrate = 0.001f;
+    float lernrate = 0.0001f;
     uz_nn_gradient_descent(test2,lernrate);
     }
-    struct uz_matrix_t refmatri22x={0};
 }
 
 #endif // TEST

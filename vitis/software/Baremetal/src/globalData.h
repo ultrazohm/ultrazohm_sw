@@ -140,6 +140,8 @@ typedef struct{
 	uz_CurrentControl_t* CC_xy_instance;
 	uz_matrix_t* matrix_input_15n;
 	uz_nn_t* nn_layer_15n;
+	uz_matrix_t* matrix_input_17n;
+	uz_nn_t* nn_layer_17n;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
 }object_pointers_t;

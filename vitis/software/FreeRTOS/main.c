@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Sebastian Wendel, Eyke Liegmann
+* Copyright 2021-2023 Sebastian Wendel, Eyke Liegmann, Martin Geier
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -35,6 +35,9 @@
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
+
+// APU-local "mirror" of RPU status word: Written in isr.c, read below in i2cio_thread
+uint32_t javascope_data_status = 0;
 
 #if LWIP_DHCP==1
  extern volatile int dhcp_timoutcntr;
@@ -111,6 +114,9 @@ void network_thread(void *p)
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
+    if ( XST_SUCCESS != uz_platform_macread(1, mac_ethernet_address) )
+        uz_printf("APU: Error fetching MAC address from EEPROM, using default\r\n");
+
 #if LWIP_IPV6==0
     ip_addr_t ipaddr, netmask, gw;
 #if LWIP_DHCP==1
@@ -169,6 +175,12 @@ void network_thread(void *p)
 	can_frame_t can_frame_rx; //CAN interface
 #endif
 
+/*	// Enable
+	uz_platform_gposet(I2CLED_RING, UZP_GPO_ENABLE2PUSHPULLED);
+*/
+	// Set
+	uz_platform_gposet(I2CLED_RING, UZP_GPO_ASSERT);
+
 #if LWIP_DHCP==1
     dhcp_start(netif);
     // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
@@ -224,6 +236,8 @@ void network_thread(void *p)
 		}
 #endif
 
+		uz_platform_gposet(I2CLED_RING, UZP_GPO_TOGGLE_QUEUED);
+
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 
 	}	// endless while(1)
@@ -231,6 +245,28 @@ void network_thread(void *p)
     return;
 }
 
+void i2cio_thread()
+{
+/*	// Enable
+	uz_platform_gposet(I2CLED_1RDY, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_2RUN, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_3ERR, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_4USR, UZP_GPO_ENABLE2PUSHPULLED);
+*/
+	while(1) {
+		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
+		uz_platform_gposet(I2CLED_1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+
+		// Push all (I²C-)GPO changes to hardware
+		uz_platform_gpoupdate();
+
+		vTaskDelay(I2CIO_THREAD_TIMER_MS / portTICK_RATE_MS);
+
+	}	// endless while(1)
+}
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
@@ -307,6 +343,10 @@ int main_thread()
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);
 #endif
+
+	sys_thread_new("i2cio", i2cio_thread, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 
     vTaskDelete(NULL);
     return 0;

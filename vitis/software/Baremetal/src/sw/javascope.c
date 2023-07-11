@@ -32,7 +32,10 @@ static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
 uint32_t i_fetchDataLifeCheck=0;
-uint32_t js_status_BareToRTOS=0;
+uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status of the for "UltraZohm LEDs" (cf. ipc_ARM.c):
+												//  Bits 3-0: User (3), Error (2), Running (1) and Ready (0)
+												//  This is probably it?
+												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!

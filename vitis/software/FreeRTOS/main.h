@@ -33,6 +33,9 @@ extern "C" {
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 
+// Period (in ms) of the endless loop in i2cio_thread()
+#define I2CIO_THREAD_TIMER_MS	(50U)
+
 // ========== JavaScope-Ethernet =========================================================================
 // Period (in ms) of the endless loop in network_thread()
 #define NETWORK_LOOPPERIOD_MS	(500U)

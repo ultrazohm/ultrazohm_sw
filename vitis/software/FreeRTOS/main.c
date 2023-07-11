@@ -29,6 +29,7 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+#include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
 
@@ -73,6 +74,10 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*/
 int main()
 {
+#if (UZ_PLATFORM_ENABLE==1)
+	uz_assert( UZ_SUCCESS == uz_platform_init() );
+#endif
+
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 
@@ -142,8 +147,8 @@ void network_thread(void *p)
 
     /* Add network interface to the netif_list, and set it as default */
     if (!xemac_add(netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
-	uz_printf("APU: Error adding N/W interface\r\n");
-	return;
+		uz_printf("APU: Error adding N/W interface\r\n");
+		return;
     }
 
     netif_set_default(netif);
@@ -279,7 +284,7 @@ int main_thread()
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=5000) { // define timeout time here
+		if (mscnt >=7500) { // define timeout time here
 			uz_printf("APU: DHCP request timed out\r\n");
 			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);

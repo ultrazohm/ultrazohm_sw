@@ -175,8 +175,8 @@ enum gui_button_mapping {
 	set_Torque,
 	set_I_d,
 	set_I_q,
-	kp_q,
-	ki_q,
+	kp_d,
+	ki_d,
 	SND_FLD_ENDMARKER
 
 

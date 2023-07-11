@@ -81,15 +81,15 @@ int main(void)
                 .Psi_PM_Vs = 0.0f};
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 2.2f, //2
-                .Ki = 2.0f, //2.83
+                .Kp = 8.0f,
+                .Ki = 6.0f,
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 2.0f, // 2
-                .Ki = 2.0f, // 39.22
+                .Kp = 22.0f, // 20
+                .Ki = 6.5f,  // 5
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};

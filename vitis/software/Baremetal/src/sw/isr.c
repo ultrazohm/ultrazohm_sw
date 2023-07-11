@@ -92,17 +92,17 @@ static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f
 #define ADC_CURRENT_SCALING_W               -32.887f
 #define ADC_CURRENT_OFFSET_W				-0.08244f
 
-#define PHASE_CURRENT_CONV_U					33.722//37.735
-#define PHASE_CURRENT_CONV_V					35.983//37.735
-#define PHASE_CURRENT_CONV_W					34.206//37.735
+#define PHASE_CURRENT_CONV_U					33.722//37.735 // 31,732
+#define PHASE_CURRENT_CONV_V					35.983//37.735 // 33.86
+#define PHASE_CURRENT_CONV_W					34.206//37.735 // 32.188
 
 #define DC_VOLT_CONV						240 // -240.0f //12.5f	// Scaling factor for voltage measurement
 #define DC_VOLT_OFFSET						240 //-1.0f    // Offset for DC voltage sensor
 #define PHASE_VOLT_CONV						1.0f //12.5f	// Scaling factor for voltage measurement
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
-#define MAX_CURRENT_ASSERTION				55.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					2500.0f	// Maximum Speed
+#define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
+#define MAX_SPEED_ASSERTION					2800.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -187,8 +187,8 @@ void ISR_Control(void *data)
 //    uz_CurrentControl_set_Kp_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_d);
 //    uz_CurrentControl_set_Ki_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_d);
 
-    uz_CurrentControl_set_Kp_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_q);
-    uz_CurrentControl_set_Ki_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_q);
+//    uz_CurrentControl_set_Kp_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_q);
+//    uz_CurrentControl_set_Ki_iq(Global_Data.objects.CurrentControl_instance, Global_Data.av.ki_q);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();

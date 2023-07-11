@@ -39,8 +39,10 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 //Changes
-#define NUMBER_OF_INPUTS 15U
+#define NUMBER_OF_INPUTS_15N 15U
+#define NUMBER_OF_INPUTS_17N 17U
 uz_matrix_t* matrix_output_15n;
+uz_matrix_t* matrix_output_17n;
 struct uz_pmsm_model6ph_dq_outputs_general_t CIL_out_general = {0};
 uz_6ph_dq_t v_dqxy_limited_volts = {0};
 uz_3ph_dq_t v_dq_limited_volts = {0};
@@ -96,7 +98,8 @@ extern float i_d_ref;
 extern float i_q_ref;
 extern float i_X_ref;
 extern float i_Y_ref;
-float observation_ip_15n[NUMBER_OF_INPUTS] = {0};
+float observation_ip_15n[NUMBER_OF_INPUTS_15N] = {0};
+float observation_ip_17n[NUMBER_OF_INPUTS_17N] = {0};
 int reset = 0U;
 //Offset from Valentin
 float theta_offset = 5.4843f;
@@ -324,14 +327,14 @@ void ISR_Control(void *data)
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, CIL_i_xy_meas, V_DC_Volts, Global_Data.av.omega_elec);
 
            	} else if(select_DDPG_1_64) {
-       			if(ext_clamping_dq == false) {
+       			if(ext_clamping_dq == false || ext_clamping_xy == false) {
        				i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
        				i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
        			} else {
        				i_dqxy_integrated_error.d += 0.0f;
        				i_dqxy_integrated_error.q += 0.0f;
        			}
-       			if(ext_clamping_xy == false) {// use Forward-Euler with error of previous timestep for integration
+       			if(ext_clamping_xy == false || ext_clamping_dq == false) {// use Forward-Euler with error of previous timestep for integration
        			    i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
        			    i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
        			} else {
@@ -342,6 +345,7 @@ void ISR_Control(void *data)
        		i_dqxy_error.q = (i_dq_reference.q - CIL_i_dqxy_meas.q) / rated_current;
        		i_dqxy_error.x = (i_xy_reference.d - CIL_i_dqxy_meas.x) / rated_current;
        		i_dqxy_error.y = (i_xy_reference.q - CIL_i_dqxy_meas.y) / rated_current;
+#if NN_15_INPUT_1_64==1
        		observation_ip_15n[0] = i_dqxy_error.d;
        		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
        		observation_ip_15n[2] = i_dqxy_error.q;
@@ -357,7 +361,7 @@ void ISR_Control(void *data)
        		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
        		observation_ip_15n[13] = v_dqxy_limited_volts.x * Voltage_Scaling;
        		observation_ip_15n[14] = v_dqxy_limited_volts.y * Voltage_Scaling;
-   	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
+   	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_15N; i++) {
    	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_15n,observation_ip_15n[i],0U,i);
    	        }
    	        uz_nn_ff(Global_Data.objects.nn_layer_15n,Global_Data.objects.matrix_input_15n);
@@ -367,13 +371,42 @@ void ISR_Control(void *data)
    	        v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_15n,0U,1U);
    	        v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_15n,0U,2U);
    	        v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_15n,0U,3U);
+#endif
+#if NN_17_INPUT_1_64==1
+       		observation_ip_17n[0] = i_dqxy_error.d;
+       		observation_ip_17n[1] = i_dqxy_integrated_error.d * (UZ_ISR_FREQUENCY * 0.5f);//Setup 3 only uses half the frequency for I-weight
+       		observation_ip_17n[2] = i_dqxy_error.q;
+       		observation_ip_17n[3] = i_dqxy_integrated_error.q * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[4] = CIL_i_dqxy_meas.d / rated_current;
+       		observation_ip_17n[5] = CIL_i_dqxy_meas.q / rated_current;
+       		observation_ip_17n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+       		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
+       		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
+       		observation_ip_17n[9] = i_dqxy_error.x;
+       		observation_ip_17n[10] = i_dqxy_integrated_error.x * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[11] = i_dqxy_error.y;
+       		observation_ip_17n[12] = i_dqxy_integrated_error.y * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[13] = CIL_i_dqxy_meas.x / rated_current;
+       		observation_ip_17n[14] = CIL_i_dqxy_meas.y / rated_current;
+       		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;
+       		observation_ip_17n[16] = v_dqxy_limited_volts.y * Voltage_Scaling;
+   	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
+   	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_17n,observation_ip_17n[i],0U,i);
+   	        }
+   	        uz_nn_ff(Global_Data.objects.nn_layer_17n,Global_Data.objects.matrix_input_17n);
+   	        matrix_output_17n = uz_nn_get_output_data(Global_Data.objects.nn_layer_17n);
+   	        uz_matrix_multiply_by_scalar(matrix_output_17n,U_max); // scaling layer of nn
+   	        v_dq_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,0U);
+   	        v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,1U);
+   	        v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,2U);
+   	        v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,3U);
+#endif
 
            	v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_dq_meas, &ext_clamping_dq);
    			v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_xy_meas, &ext_clamping_xy);
 
-           	} else if(select_DDPG_3_64) {
-
            	}
+
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
            	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
@@ -422,6 +455,7 @@ void ISR_Control(void *data)
            		i_dqxy_error.q = (i_dq_reference.q - REAL_i_dqxy_meas.q) / rated_current;
            		i_dqxy_error.x = (i_xy_reference.d - REAL_i_dqxy_meas.x) / rated_current;
            		i_dqxy_error.y = (i_xy_reference.q - REAL_i_dqxy_meas.y) / rated_current;
+#if NN_15_INPUT_1_64==1
            		observation_ip_15n[0] = i_dqxy_error.d;
            		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
            		observation_ip_15n[2] = i_dqxy_error.q;
@@ -437,7 +471,7 @@ void ISR_Control(void *data)
            		observation_ip_15n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
            		observation_ip_15n[13] = v_dqxy_limited_volts.x * Voltage_Scaling;
            		observation_ip_15n[14] = v_dqxy_limited_volts.y * Voltage_Scaling;
-           		for (uint32_t i = 0; i < NUMBER_OF_INPUTS; i++) {
+           		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_15N; i++) {
            			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_15n,observation_ip_15n[i],0U,i);
            		}
            		uz_nn_ff(Global_Data.objects.nn_layer_15n,Global_Data.objects.matrix_input_15n);
@@ -447,13 +481,42 @@ void ISR_Control(void *data)
            		v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_15n,0U,1U);
            		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_15n,0U,2U);
            		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_15n,0U,3U);
+#endif
 
+#if NN_17_INPUT_1_64==1
+           		observation_ip_17n[0] = i_dqxy_error.d;
+           		observation_ip_17n[1] = i_dqxy_integrated_error.d * (UZ_ISR_FREQUENCY * 0.5f);//Setup 3 only uses half the frequency for I-weight
+           		observation_ip_17n[2] = i_dqxy_error.q;
+           		observation_ip_17n[3] = i_dqxy_integrated_error.q * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[4] = REAL_i_dqxy_meas.d / rated_current;
+           		observation_ip_17n[5] = REAL_i_dqxy_meas.q / rated_current;
+           		observation_ip_17n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+           		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
+           		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
+           		observation_ip_17n[9] = i_dqxy_error.x;
+           		observation_ip_17n[10] = i_dqxy_integrated_error.x * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[11] = i_dqxy_error.y;
+           		observation_ip_17n[12] = i_dqxy_integrated_error.y * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[13] = REAL_i_dqxy_meas.x / rated_current;
+           		observation_ip_17n[14] = REAL_i_dqxy_meas.y / rated_current;
+           		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;
+           		observation_ip_17n[16] = v_dqxy_limited_volts.y * Voltage_Scaling;
+           		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
+           			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_17n,observation_ip_17n[i],0U,i);
+           		}
+           		uz_nn_ff(Global_Data.objects.nn_layer_17n,Global_Data.objects.matrix_input_17n);
+           		matrix_output_17n = uz_nn_get_output_data(Global_Data.objects.nn_layer_17n);
+           		uz_matrix_multiply_by_scalar(matrix_output_17n,U_max); // scaling layer of nn
+           		v_dq_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,0U);
+           		v_dq_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,1U);
+           		v_xy_non_limited_volts.d = uz_matrix_get_element_zero_based(matrix_output_17n,0U,2U);
+           		v_xy_non_limited_volts.q = uz_matrix_get_element_zero_based(matrix_output_17n,0U,3U);
+#endif
            		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_dq_meas, &ext_clamping_dq);
            		v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_xy_meas, &ext_clamping_xy);
 
-           	} else if(select_DDPG_3_64) {
-
            	}
+
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
            	v_dqxy_limited_volts.x = v_xy_limited_volts.d;

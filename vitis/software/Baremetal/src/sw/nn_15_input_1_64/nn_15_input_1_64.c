@@ -1,5 +1,5 @@
 // configuration of neural network
-#define NUMBER_OF_INPUTS 15
+#define NUMBER_OF_INPUTS_15N 15
 #define NUMBER_OF_OUTPUTS 4
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 
@@ -11,8 +11,8 @@ extern DS_Data Global_Data;
 // config structs neural network
 // read in weights and bias from .csv
 //for 15 observations
-float x_15[NUMBER_OF_INPUTS] = {0};
-static float w_1_15[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+float x_15[NUMBER_OF_INPUTS_15N] = {0};
+static float w_1_15[NUMBER_OF_INPUTS_15N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "ac_layer1_weights.csv"
 };
 
@@ -35,7 +35,7 @@ struct uz_nn_layer_config config_15nn[2] = {
 [0] = {
     .activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
-    .number_of_inputs = NUMBER_OF_INPUTS,
+    .number_of_inputs = NUMBER_OF_INPUTS_15N,
     .length_of_weights = UZ_MATRIX_SIZE(w_1_15),
     .length_of_bias = UZ_MATRIX_SIZE(b_1_15),
     .length_of_output = UZ_MATRIX_SIZE(y_1_15),
@@ -60,7 +60,7 @@ struct uz_matrix_t input_matrix_15n={0};
 void nn_15_input_1_64_init(void){
 
 
-Global_Data.objects.matrix_input_15n=uz_matrix_init(&input_matrix_15n,x_15,UZ_MATRIX_SIZE(x_15),1U,NUMBER_OF_INPUTS);
+Global_Data.objects.matrix_input_15n=uz_matrix_init(&input_matrix_15n,x_15,UZ_MATRIX_SIZE(x_15),1U,NUMBER_OF_INPUTS_15N);
 Global_Data.objects.nn_layer_15n = uz_nn_init(config_15nn, 2U); //Warning is a GCC 11 bug
 
 

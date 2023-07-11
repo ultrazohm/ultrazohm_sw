@@ -323,6 +323,9 @@ Step 3: Calculate Gradients
 The calculation of the local gradients need to be done to get the gradient from the weights and bias. For the weights, the gradient results in 
 the product of the local gradient with the output of the previous layer.
 
+
+
+
 So the weight gradients of the example network are.
 
 
@@ -344,7 +347,7 @@ Step 4: Gradient Descent Step
 ******************************
 
 The previous calculated gradients are used for updating the learnable parameters of the network. There are different methods possible for updating the weights. The basic method is the
-gradient descent method, where the parameters are updated in negative gradient direction with a step size. This step size is called the learnrate :math:`\eta`. For calculating more than one trainingsdataset, the minibatch method is used.
+gradient descent method, where the parameters are updated in negative gradient direction with a fixed step size. This step size is called the learnrate :math:`\eta`. For calculating more than one trainingsdataset, the minibatch method is used.
 Therefore the gradients are stochastically estimated. From an big dataset of size :math:`M`, just a part from it is used to compute the loss function and to calculate the gradients. :math:`N` denotes the minibatch size.
 The update formula for gradient descent with minibatch is as follows:
 
@@ -353,7 +356,7 @@ The update formula for gradient descent with minibatch is as follows:
  W \rightarrow W^{'} = W - \eta \cdot \frac{1}{N} \cdot \sum_{n = 0}^{N-1} \frac{\partial C_x(x^n)}{\partial W} \\
  b \rightarrow b^{'} = b - \eta \cdot \frac{1}{N} \cdot \sum_{n = 0}^{N-1} \frac{\partial C_x(x^n)}{\partial b} \\
 
-In this example, the minibatch size is 1, so the weights and bias the new parameters with a learnrate :math:`\eta = 0.001` are:
+In this example, the minibatch size is 1, so the weights and bias the new parameters with a learnrate :math:`\eta = 0.001` and the calculated gradients are:
 
 .. math::
 
@@ -367,7 +370,7 @@ The update process is the same for the other layers.
 .. _comparison_ultrazohm_backprop:
 
 .. tikz:: Result of the training of the example dataset with 500 Episodes and a learning rate :math:`\alpha = 0.0001`
-   :include: MSE_UZ_Matlab_backprop.tex
+   :include: img/MSE_UZ_Matlab_backprop.tex
    :align: center
    :xscale: 100
 
@@ -375,14 +378,14 @@ The update process is the same for the other layers.
 Minibatch implementation
 *************************
 
-For the minibatch implementation,the example dataset `bodyfat <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_ ,from matlab is used. 
-The advantage over the previous example is the correlation between input and output data, so the gradients do not get as high as in Training example with Backpropagation. 
+For the minibatch implementation, the example dataset `bodyfat <https://de.mathworks.com/help/deeplearning/ug/train-and-apply-multilayer-neural-networks.html>`_ ,from matlab is used. 
+The advantage over the previous example is the correlation between input and output data, so the training example with Backpropagation $. 
 
 
 .. _comparison_matlab_c:
 
 .. tikz:: Result of the training of the example dataset with 200 Episodes and a learning rate :math:`\alpha = 0.001`
-   :include: MSE_C_Matlab.tex
+   :include: img/MSE_C_Matlab.tex
    :align: center
    :xscale: 100
 

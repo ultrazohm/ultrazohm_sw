@@ -270,13 +270,13 @@ void ISR_Control(void *data)
            REAL_v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
 
            //VSD-Transformation
-           REAL_i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq(REAL_i_abc_meas, Global_Data.av.theta_elec);
+           REAL_i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_i_abc_meas, Global_Data.av.theta_elec);
            Global_Data.av.I_d = REAL_i_dqxy_meas.d;
            Global_Data.av.I_q = REAL_i_dqxy_meas.q;
            Global_Data.av.I_X = REAL_i_dqxy_meas.x;
            Global_Data.av.I_Y = REAL_i_dqxy_meas.y;
 
-           REAL_v_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq(REAL_v_abc_meas, Global_Data.av.theta_elec);
+           REAL_v_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_v_abc_meas, Global_Data.av.theta_elec);
            Global_Data.av.U_d = REAL_v_dqxy_meas.d;
            Global_Data.av.U_q = REAL_v_dqxy_meas.q;
            Global_Data.av.U_X = REAL_v_dqxy_meas.x;
@@ -523,7 +523,7 @@ void ISR_Control(void *data)
            	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
            	v_dqxy_limited_volts.z1 = 0.0f;
            	v_dqxy_limited_volts.z2 = 0.0f;
-           	REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_to_abc(v_dqxy_limited_volts, Global_Data.av.theta_elec);
+           	REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_xy_to_abc(v_dqxy_limited_volts, Global_Data.av.theta_elec);
            	DutyCycle_output = uz_spwm_abc_6ph(REAL_v_abc_ref, V_DC_Volts);
            	Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.system1.DutyCycle_A;
            	Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.system1.DutyCycle_B;

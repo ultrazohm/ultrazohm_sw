@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>62ec7371</spirit:value>
+            <spirit:value>173dd5b6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>62ec7371</spirit:value>
+            <spirit:value>173dd5b6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1298,7 +1298,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_6ph_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_4eb333ed</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_de83320b</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1495,14 +1495,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model_6ph_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113115319</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-07-12T12:40:13Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113115475</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-07-12T15:15:55Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="fa02d650"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b21f341d"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="7c33e570"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="d9bb375a"/>
     </xilinx:packagingInfo>

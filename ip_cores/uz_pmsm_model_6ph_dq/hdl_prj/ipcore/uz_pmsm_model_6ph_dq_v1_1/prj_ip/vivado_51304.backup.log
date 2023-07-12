@@ -2,13 +2,13 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 04:59:54 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Wed Jul 12 17:15:45 2023
-# Process ID: 236551
+# Start of session at: Wed Jul 12 14:40:05 2023
+# Process ID: 51304
 # Current directory: /home/hufnagelde/ultrazohm_sw/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_1/prj_ip
 # Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: /home/hufnagelde/ultrazohm_sw/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_1/prj_ip/vivado.log
 # Journal file: /home/hufnagelde/ultrazohm_sw/ip_cores/uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_1/prj_ip/vivado.jou
-# Running On: hufnagelde-TP-T14s, OS: Linux, CPU Frequency: 3430.191 MHz, CPU Physical cores: 16, Host memory: 32344 MB
+# Running On: hufnagelde-TP-T14s, OS: Linux, CPU Frequency: 2032.418 MHz, CPU Physical cores: 16, Host memory: 32344 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
 INFO: [IP_Flow 19-234] Refreshing IP repositories
@@ -42,18 +42,18 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_add_doub
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_add_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_mul_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_mul_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single2double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_single2double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_sub_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_sub_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_sfix_27_En16_to_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_convert_double_to_fixed_18_En14.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_nfp_relop_double_block.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_6ph_dq.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_src_uz_pmsm_model_6ph_dq.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_pkg.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -80,4 +80,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_axi4.vhd" alread
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_6ph_dq.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Wed Jul 12 17:15:55 2023...
+INFO: [Common 17-206] Exiting Vivado at Wed Jul 12 14:40:13 2023...

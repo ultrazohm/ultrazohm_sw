@@ -49,16 +49,18 @@ int main(int argc, char** argv)
 	{
 #if 1
 		eeprom.hw_group					= UZP_HWGROUP_UZOHM3;
-		eeprom.hw_model					= 1 + UZ_PLATFORM_HWMODEL_EXTOFFSET;	// "UltraZohm Basisgerät" o.ä.? Außerdem: Non-ZC-Gerät
-		eeprom.fflags_model				= 0b101010;				// Test
+		eeprom.hw_model					= 1 + UZ_PLATFORM_HWMODEL_EXTOFFSET;	// "UltraZohm Basisgerät" or the like? Further: Non-ZC
+		eeprom.fflags_model				= 0b000000;				// Feature flags (unique per model)
 		eeprom.hw_revision				= 4;					// Rev04
-		eeprom.fflags_revision				= 0b010101;				// Test
-		eeprom.serialdata.hw_batchandserial.batch	= 0;					// FIXME
-		eeprom.serialdata.hw_batchandserial.serial	= 26;					// 26 ("Eyke (Labor f. Studenten)", TU München)
+		eeprom.fflags_revision				= 0b000000;				// Feature flags (unique per model+revision)
+		eeprom.serialdata.hw_batchandserial.batch	= 0;					// 
+		eeprom.serialdata.hw_batchandserial.serial	= 42;					// 
 #else
 		eeprom.hw_group					= UZP_HWGROUP_EXTERNAL;
 		eeprom.hw_model					= 42;
+		eeprom.fflags_model				= 0b000000;				// Feature flags (unique per model)
 		eeprom.hw_revision				= 23;
+		eeprom.fflags_revision				= 0b000000;				// Feature flags (unique per model+revision)
 		eeprom.serialdata.hw_externalserial.extserial	= 654321;
 #endif
 		printf("\nWriting to EEPROM!\n");

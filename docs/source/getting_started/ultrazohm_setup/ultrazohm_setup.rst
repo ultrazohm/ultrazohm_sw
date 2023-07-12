@@ -260,7 +260,6 @@ Javascope
 
    IP: 192.168.1.1
    Subnet-Mask: 255.255.255.0
-   Gateway: 192.168.1.233
 
 - See :ref:`gui`
 - Go to the folder

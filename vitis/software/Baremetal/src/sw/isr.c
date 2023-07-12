@@ -49,6 +49,11 @@ extern DS_Data Global_Data;
 #include "../uz/uz_spwm/uz_spwm.h"
 struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 
+// control
+#include "control/control.h"
+uz_9ph_abc_t ref_voltages = {0};
+enum controller_type selected_controller = reset;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -100,9 +105,32 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	// controller here
+    	switch(selected_controller){
+			case PI_0:
+				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
+				break;
+			case PI_PI:
+				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
+				break;
+			case PI_R:
+				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
+				break;
+			default:
+			case reset:
+				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+				break;
+    	}
+		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
+		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 
     }else{
+    	// reset controllers
+		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+		selected_controller = reset;
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

@@ -6003,8 +6003,8 @@
           },
           "uz_pmsm_model_6ph_dq_0": {
             "vlnv": "user.org:ip:uz_pmsm_model_6ph_dq:1.1",
-            "xci_name": "zusys_uz_pmsm_model_6ph_dq_2_0",
-            "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_2_0/zusys_uz_pmsm_model_6ph_dq_2_0.xci",
+            "xci_name": "zusys_uz_pmsm_model_6ph_dq_0_0",
+            "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_0_0_1/zusys_uz_pmsm_model_6ph_dq_0_0.xci",
             "inst_hier_path": "uz_user/uz_pmsm_model_6ph_dq_0"
           }
         },
@@ -6035,8 +6035,8 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "smartconnect_1/M01_AXI",
-              "uz_pmsm_model_6ph_dq_0/AXI4"
+              "uz_pmsm_model_6ph_dq_0/AXI4",
+              "smartconnect_1/M01_AXI"
             ]
           },
           "smartconnect_1_M02_AXI": {

@@ -321,6 +321,14 @@ void ISR_Control(void *data)
            	Global_Data.av.I_q = CIL_i_dqxy_meas.q;
            	Global_Data.av.I_X = CIL_i_dqxy_meas.x;
            	Global_Data.av.I_Y = CIL_i_dqxy_meas.y;
+           	
+           	uz_6ph_abc_t temp = uz_transformation_asym30deg_6ph_dq_xy_to_abc(CIL_i_dqxy_meas,CIL_out_general.theta_el);
+           	Global_Data.av.i_a1 = temp.a1;
+        	Global_Data.av.i_b1 = temp.b1;
+        	Global_Data.av.i_c1 = temp.c1;
+        	Global_Data.av.i_a2 = temp.a2;
+        	Global_Data.av.i_b2 = temp.b2;
+        	Global_Data.av.i_c2 = temp.c2;
 
            	if(select_CurrentControl) {
            		v_dq_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, CIL_i_dq_meas, V_DC_Volts, Global_Data.av.omega_elec);

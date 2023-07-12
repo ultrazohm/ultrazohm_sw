@@ -611,7 +611,7 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2113115319">
+		<CoreRevision value="2113115475">
 		</CoreRevision>
 		<ComponentPath value="uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_1/component.xml">
 		</ComponentPath>

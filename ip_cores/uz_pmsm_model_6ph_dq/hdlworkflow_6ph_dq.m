@@ -154,7 +154,7 @@ hdlset_param('uz_pmsm_model_6ph_dq/uz_pmsm_model_6ph_dq/omega_mech_out', 'IOInte
 hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','IP Core Generation');
 
 % Specify the top level project directory
-hWC.ProjectFolder = 'C:\Users\valen\Documents\repos\UZ\ultrazohm_sw_pr\ip_cores\uz_pmsm_model_6ph_dq\hdl_prj';
+hWC.ProjectFolder = '\home\hufnagelde\ultrazohm_sw\ip_cores\uz_pmsm_model_6ph_dq\hdl_prj';
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;
 

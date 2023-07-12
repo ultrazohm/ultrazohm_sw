@@ -30,34 +30,34 @@ void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* 
 
 void uz_ADC_currents(DS_Data* Data){
 	// convert ADC readings to currents in Amps
-	Data->av.currents_abc.a1 = (Data->aa.A1.me.ADC_A3 - offset_temp) * factor_temp;
-	Data->av.currents_abc.b1 = (Data->aa.A1.me.ADC_A2 - offset_temp) * factor_temp;
-	Data->av.currents_abc.c1 = (Data->aa.A1.me.ADC_A1 - offset_temp) * factor_temp;
+	Data->av.currents_abc.a1 = (Data->aa.A1.me.ADC_A3 * 12.129f) + 0.10f;
+	Data->av.currents_abc.b1 = (Data->aa.A1.me.ADC_A2 * 11.338f) + 0.12f;
+	Data->av.currents_abc.c1 = (Data->aa.A1.me.ADC_A1 * 12.051f) - 0.07f;
 	Data->av.i_ZK1 = Data->aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-	Data->av.currents_abc.a2 = (Data->aa.A2.me.ADC_A3 - offset_temp) * factor_temp;
-	Data->av.currents_abc.b2 = (Data->aa.A2.me.ADC_A2 - offset_temp) * factor_temp;
-	Data->av.currents_abc.c2 = (Data->aa.A2.me.ADC_A1 - offset_temp) * factor_temp;
+	Data->av.currents_abc.a2 = (Data->aa.A2.me.ADC_A3 * 12.038f) - 0.03f;
+	Data->av.currents_abc.b2 = (Data->aa.A2.me.ADC_A2 * 12.115f) + 0.00f;
+	Data->av.currents_abc.c2 = (Data->aa.A2.me.ADC_A1 * 12.038f) - 0.00f;
 	Data->av.i_ZK2 = Data->aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
-	Data->av.currents_abc.a3 = (Data->aa.A3.me.ADC_A3 - offset_temp) * factor_temp;
-	Data->av.currents_abc.b3 = (Data->aa.A3.me.ADC_A2 - offset_temp) * factor_temp;
-	Data->av.currents_abc.c3 = (Data->aa.A3.me.ADC_A1 - offset_temp) * factor_temp;
+	Data->av.currents_abc.a3 = (Data->aa.A3.me.ADC_A3 * 12.115f) + 0.02f;
+	Data->av.currents_abc.b3 = (Data->aa.A3.me.ADC_A2 * 11.923f) - 0.02f;
+	Data->av.currents_abc.c3 = (Data->aa.A3.me.ADC_A1 * 11.603f) + 0.12f;
 	Data->av.i_ZK3 = Data->aa.A3.me.ADC_B5 * PHASE_CURRENT_CONV;
 }
 
 void uz_ADC_voltages(DS_Data* Data){
 	// convert ADC readings to voltages
-	Data->av.U_ZK1 = Data->aa.A1.me.ADC_A4 * DC_VOLT_CONV + 591.3f;
-	Data->av.voltages_abc.a1 = Data->aa.A1.me.ADC_B8 * DC_VOLT_CONV + 616.0f;
-	Data->av.voltages_abc.b1 = Data->aa.A1.me.ADC_B7 * DC_VOLT_CONV + 614.8f;
-	Data->av.voltages_abc.c1 = Data->aa.A1.me.ADC_B6 * DC_VOLT_CONV + 611.5f;
-	Data->av.U_ZK2 = Data->aa.A2.me.ADC_A4 * DC_VOLT_CONV;
-	Data->av.voltages_abc.a2 = Data->aa.A2.me.ADC_B8 * DC_VOLT_CONV;
-	Data->av.voltages_abc.b2 = Data->aa.A2.me.ADC_B7 * DC_VOLT_CONV;
-	Data->av.voltages_abc.c2 = Data->aa.A2.me.ADC_B6 * DC_VOLT_CONV;
-	Data->av.U_ZK3 = Data->aa.A3.me.ADC_A4 * DC_VOLT_CONV;
-	Data->av.voltages_abc.a3 = Data->aa.A3.me.ADC_B8 * DC_VOLT_CONV;
-	Data->av.voltages_abc.b3 = Data->aa.A3.me.ADC_B7 * DC_VOLT_CONV;
-	Data->av.voltages_abc.c3 = Data->aa.A3.me.ADC_B6 * DC_VOLT_CONV;
+	Data->av.U_ZK1 = (Data->aa.A1.me.ADC_A4 * 100.302f) + 451.30f;
+	Data->av.voltages_abc.a1 = (Data->aa.A1.me.ADC_B8 * 93.108f) + 430.33f;
+	Data->av.voltages_abc.b1 = (Data->aa.A1.me.ADC_B7 * 92.492f) + 427.27f;
+	Data->av.voltages_abc.c1 = (Data->aa.A1.me.ADC_B6 * 92.814f) + 428.30f;
+	Data->av.U_ZK2 = (Data->aa.A2.me.ADC_A4 * 99.700f) + 450.30f;
+	Data->av.voltages_abc.a2 = (Data->aa.A2.me.ADC_B8 * 93.413f) + 429.56f;
+	Data->av.voltages_abc.b2 = (Data->aa.A2.me.ADC_B7 * 93.373f) + 430.57f;
+	Data->av.voltages_abc.c2 = (Data->aa.A2.me.ADC_B6 * 93.413f) + 430.31f;
+	Data->av.U_ZK3 = (Data->aa.A3.me.ADC_A4 * 99.600f) + 450.20f;
+	Data->av.voltages_abc.a3 = (Data->aa.A3.me.ADC_B8 * 92.814f) + 429.13f;
+	Data->av.voltages_abc.b3 = (Data->aa.A3.me.ADC_B7 * 92.814f) + 429.23f;
+	Data->av.voltages_abc.c3 = (Data->aa.A3.me.ADC_B6 * 92.814f) + 427.37f;
 	Data->av.U_ZK = (Data->av.U_ZK1+Data->av.U_ZK2+Data->av.U_ZK3)/3.0f;
 }
 
@@ -94,4 +94,19 @@ void uz_TempCard_Measurement(DS_Data* Data){
 			(channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1) +
 			(channel_A_data.Channels_Valid[15]==1) + (channel_A_data.Channels_Valid[17]==1) + (channel_A_data.Channels_Valid[19]==1));
 	// end uz tempcard
+}
+
+void uz_set_DC_zero(DS_Data* Data){
+	Data->rasv.halfBridge1DutyCycle = 0.0f;
+	Data->rasv.halfBridge2DutyCycle = 0.0f;
+	Data->rasv.halfBridge3DutyCycle = 0.0f;
+	Data->rasv.halfBridge4DutyCycle = 0.0f;
+	Data->rasv.halfBridge5DutyCycle = 0.0f;
+	Data->rasv.halfBridge6DutyCycle = 0.0f;
+	Data->rasv.halfBridge7DutyCycle = 0.0f;
+	Data->rasv.halfBridge8DutyCycle = 0.0f;
+	Data->rasv.halfBridge9DutyCycle = 0.0f;
+	Data->rasv.halfBridge10DutyCycle = 0.0f;
+	Data->rasv.halfBridge11DutyCycle = 0.0f;
+	Data->rasv.halfBridge12DutyCycle = 0.0f;
 }

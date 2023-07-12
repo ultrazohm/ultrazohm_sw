@@ -105,23 +105,16 @@ void ISR_Control(void *data)
 	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
-//		uz_assert(0);
+		uz_assert(0);
 	}
 	// check DC Bus
 	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
-//			uz_assert(0);
+		uz_assert(0);
 	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
-		//uz_assert(0);
+		uz_assert(0);
 	}
-
-
-
-	///freee adc stuff
-	medium_reading.a = uz_movingAverageFilter_sample(filter_1, Global_Data.aa.A1.me.ADC_A3);
-	medium_reading.b = uz_movingAverageFilter_sample(filter_2, Global_Data.aa.A1.me.ADC_A2);
-	medium_reading.c = uz_movingAverageFilter_sample(filter_3, Global_Data.aa.A1.me.ADC_A1);
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -157,10 +150,15 @@ void ISR_Control(void *data)
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 
     }else{
+    	// reset controllers
 		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 		selected_controller = reset;
+		// set Duty Cycles zero when UZ is not running or not active
+		if(current_state!=running_state){
+			uz_set_DC_zero(&Global_Data);
+		}
 	}
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////PWM set//////////////////////////////////

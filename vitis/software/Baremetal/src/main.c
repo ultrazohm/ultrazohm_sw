@@ -40,28 +40,6 @@ DS_Data Global_Data = {
     }
 };
 
-//ADC setup
-#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
-struct uz_movingAverageFilter_config filter_cfg = {
-	.filterLength = 10000};
-uz_movingAverageFilter_t* filter_1 = NULL;
-uz_movingAverageFilter_t* filter_2 = NULL;
-uz_movingAverageFilter_t* filter_3 = NULL;
-float data_1 [10000] = {0};
-   uz_array_float_t circularBuffer_1 = {
-      .length = UZ_ARRAY_SIZE(data_1),
-      .data = &data_1[0]
-   };
-   float data_2 [10000] = {0};
-      uz_array_float_t circularBuffer_2 = {
-         .length = UZ_ARRAY_SIZE(data_2),
-         .data = &data_2[0]
-      };
-      float data_3 [10000] = {0};
-         uz_array_float_t circularBuffer_3 = {
-            .length = UZ_ARRAY_SIZE(data_3),
-            .data = &data_3[0]
-         };
 
 enum init_chain
 {
@@ -108,10 +86,6 @@ int main(void)
 			Global_Data.objects.objects_PI_R.XY1 = init_PI_R_resonant_XY1();
 			Global_Data.objects.objects_PI_R.XY2 = init_PI_R_resonant_XY2();
 			Global_Data.objects.objects_PI_R.XY3 = init_PI_R_resonant_XY3();
-            //ADC
-            filter_1 = uz_movingAverageFilter_init(filter_cfg, circularBuffer_1);
-            filter_2 = uz_movingAverageFilter_init(filter_cfg, circularBuffer_2);
-            filter_3 = uz_movingAverageFilter_init(filter_cfg, circularBuffer_3);
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

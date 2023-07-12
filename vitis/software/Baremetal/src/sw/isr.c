@@ -47,7 +47,7 @@ extern uz_codegen codegenInstance;
 
 #define dc_link 15.0f
 #define VOLTAGE_CONV_FACTOR 12.5f
-#define MAX_CURRENT_ASSERTION 30.0f
+#define MAX_CURRENT_ASSERTION 35.0f
 #define MAX_SPEED_ASSERTION 1500.0f
 #define voltage_offsetL13 8.6f
 #define voltage_offsetL2 8.8f

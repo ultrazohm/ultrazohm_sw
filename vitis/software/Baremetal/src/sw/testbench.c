@@ -140,3 +140,19 @@ void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config){
 	Data->av.voltages_abc.b3 -= u_n3;
 	Data->av.voltages_abc.c3 -= u_n3;
 }
+
+void uz_limit_exceed(DS_Data* Data){
+	ultrazohm_state_machine_set_enable_control(false);
+	Data->rasv.halfBridge1DutyCycle = 0.5f;
+	Data->rasv.halfBridge2DutyCycle = 0.5f;
+	Data->rasv.halfBridge3DutyCycle = 0.5f;
+	Data->rasv.halfBridge4DutyCycle = 0.5f;
+	Data->rasv.halfBridge5DutyCycle = 0.5f;
+	Data->rasv.halfBridge6DutyCycle = 0.5f;
+	Data->rasv.halfBridge7DutyCycle = 0.5f;
+	Data->rasv.halfBridge8DutyCycle = 0.5f;
+	Data->rasv.halfBridge9DutyCycle = 0.5f;
+	Data->rasv.halfBridge10DutyCycle = 0.5f;
+	Data->rasv.halfBridge11DutyCycle = 0.5f;
+	Data->rasv.halfBridge12DutyCycle = 0.5f;
+}

@@ -32,6 +32,8 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../include/testbench.h"
+#include "../uz/uz_math_constants.h"
+#include "../uz/uz_signals/uz_signals.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -41,8 +43,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  20.0f
-#define MAX_DC_VOLT 590.0f
+#define MAX_PHASE_CURRENT_AMP  10.0f
+#define MAX_DC_VOLT 400.0f
+#define MAX_SPEED_RPM 1000.0f
 #define MAX_TEMP_DEG 90.0f
 #define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
 
@@ -76,6 +79,8 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////
     // read speed and angle
     Global_Data.av.rotational_position = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
+    // invert Theta_el because of wrong mounted sensor
+    Global_Data.av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Global_Data.av.rotational_position.position_el_2pi, 2.0f*UZ_PIf);
     // actual values reading functions
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);
@@ -92,15 +97,19 @@ void ISR_Control(void *data)
 	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
-		uz_assert(0);
+		uz_limit_exceed(&Global_Data);
 	}
 	// check DC Bus
 	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
-		uz_assert(0);
+		uz_limit_exceed(&Global_Data);
+	}
+	// check Speed
+	if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
+		uz_limit_exceed(&Global_Data);
 	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
-		uz_assert(0);
+		uz_limit_exceed(&Global_Data);
 	}
 
 

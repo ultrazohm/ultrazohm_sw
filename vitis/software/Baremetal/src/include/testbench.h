@@ -3,6 +3,7 @@
 #include "../IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../globalData.h"
+#include "../include/uz_platform_state_machine.h"
 
 
 // ADC defines
@@ -18,3 +19,4 @@ void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* 
 void uz_duty_cycles_to_rasv(DS_Data* Data, struct uz_DutyCycle_3x3ph_t duty_cycle);
 void uz_set_DC_zero(DS_Data* Data);
 void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config);
+void uz_limit_exceed(DS_Data* Data);

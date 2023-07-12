@@ -113,13 +113,13 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
-        "uz_pmsm_model_6ph_dq_0": "",
         "uz_d_inverter_adapter_0": "",
         "uz_d_inverter_adapter_1": "",
         "uz_inverter_adapter_0": "",
         "uz_inverter_adapter_1": "",
         "xlslice_0": "",
-        "xlslice_1": ""
+        "xlslice_1": "",
+        "uz_pmsm_model_6ph_dq_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5943,12 +5943,6 @@
             "xci_path": "ip/zusys_uz_axi_testIP_0_0_3/zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "uz_pmsm_model_6ph_dq_0": {
-            "vlnv": "xilinx.com:ip:uz_pmsm_model_6ph_dq:1.0",
-            "xci_name": "zusys_uz_pmsm_model_6ph_dq_0_0",
-            "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_0_0_1/zusys_uz_pmsm_model_6ph_dq_0_0.xci",
-            "inst_hier_path": "uz_user/uz_pmsm_model_6ph_dq_0"
-          },
           "uz_d_inverter_adapter_0": {
             "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
             "xci_name": "zusys_uz_d_inverter_adapter_0_0",
@@ -6006,6 +6000,12 @@
                 "value": "24"
               }
             }
+          },
+          "uz_pmsm_model_6ph_dq_0": {
+            "vlnv": "user.org:ip:uz_pmsm_model_6ph_dq:1.1",
+            "xci_name": "zusys_uz_pmsm_model_6ph_dq_2_0",
+            "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_2_0/zusys_uz_pmsm_model_6ph_dq_2_0.xci",
+            "inst_hier_path": "uz_user/uz_pmsm_model_6ph_dq_0"
           }
         },
         "interface_nets": {
@@ -6066,12 +6066,12 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_pmsm_model_6ph_dq_0/IPCORE_RESETN",
-              "uz_pmsm_model_6ph_dq_0/AXI4_ARESETN",
               "uz_d_inverter_adapter_0/IPCORE_RESETN",
               "uz_d_inverter_adapter_0/AXI4_Lite_ARESETN",
               "uz_d_inverter_adapter_1/IPCORE_RESETN",
-              "uz_d_inverter_adapter_1/AXI4_Lite_ARESETN"
+              "uz_d_inverter_adapter_1/AXI4_Lite_ARESETN",
+              "uz_pmsm_model_6ph_dq_0/IPCORE_RESETN",
+              "uz_pmsm_model_6ph_dq_0/AXI4_ARESETN"
             ]
           },
           "uz_d_inverter_adapter_0_PWM_EN": {
@@ -6152,12 +6152,12 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
-              "uz_pmsm_model_6ph_dq_0/IPCORE_CLK",
-              "uz_pmsm_model_6ph_dq_0/AXI4_ACLK",
               "uz_d_inverter_adapter_0/IPCORE_CLK",
               "uz_d_inverter_adapter_0/AXI4_Lite_ACLK",
               "uz_d_inverter_adapter_1/IPCORE_CLK",
-              "uz_d_inverter_adapter_1/AXI4_Lite_ACLK"
+              "uz_d_inverter_adapter_1/AXI4_Lite_ACLK",
+              "uz_pmsm_model_6ph_dq_0/IPCORE_CLK",
+              "uz_pmsm_model_6ph_dq_0/AXI4_ACLK"
             ]
           }
         }

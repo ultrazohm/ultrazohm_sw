@@ -72,7 +72,7 @@ void ISR_Control(void *data)
     // read speed and angle
     Global_Data.av.rotational_position = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
     // invert Theta_el because of wrong mounted sensor
-    Global_Data.av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Global_Data.av.rotational_position.position_el_2pi, 2.0f*UZ_PIf);
+    Global_Data.av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Global_Data.av.rotational_position.position_el_2pi - Global_Data.av.theta_el_offset, 2.0f*UZ_PIf);
     // actual values reading functions
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);

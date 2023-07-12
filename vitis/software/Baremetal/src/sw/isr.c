@@ -55,6 +55,9 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = reset;
 
+//temp ID
+uz_9ph_alphabeta_t ref_voltages_ab = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -107,23 +110,25 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	switch(selected_controller){
-			case PI_0:
-				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
-				break;
-			case PI_PI:
-				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
-				break;
-			case PI_R:
-				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
-				break;
-			default:
-			case reset:
-				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
-				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
-				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
-				break;
-    	}
+//    	switch(selected_controller){
+//			case PI_0:
+//				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
+//				break;
+//			case PI_PI:
+//				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
+//				break;
+//			case PI_R:
+//				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
+//				break;
+//			default:
+//			case reset:
+//				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+//				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+//				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+//				break;
+//    	}
+    	ref_voltages = uz_transformation_9ph_alphabeta_to_abc(ref_voltages_ab);
+
 		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 

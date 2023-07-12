@@ -1,8 +1,5 @@
 #include "../include/testbench.h"
 
-extern float offset_temp;
-extern float factor_temp;
-
 void uz_duty_cycles_to_rasv(DS_Data* Data, struct uz_DutyCycle_3x3ph_t duty_cycle){
 	Data->rasv.halfBridge1DutyCycle = duty_cycle.system1.DutyCycle_A;
 	Data->rasv.halfBridge2DutyCycle = duty_cycle.system1.DutyCycle_B;

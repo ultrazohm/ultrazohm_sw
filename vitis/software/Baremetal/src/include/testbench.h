@@ -7,7 +7,7 @@
 
 // ADC defines
 #define PHASE_CURRENT_CONV	16.75f
-#define DC_VOLT_CONV		140.27f
+
 
 // Function declarations
 void uz_ADC_currents(DS_Data* Data);

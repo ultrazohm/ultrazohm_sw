@@ -14,19 +14,6 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 
-struct pointers_PI_PI{
-	uz_CurrentControl_t* dq;
-	uz_CurrentControl_t* xy1;
-	uz_CurrentControl_t* xy2;
-	uz_CurrentControl_t* xy3;
-};
-struct pointers_PI_R{
-	uz_CurrentControl_t* dq;
-	uz_subspace_resonant_control* XY1;
-	uz_subspace_resonant_control* XY2;
-	uz_subspace_resonant_control* XY3;
-};
-
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -136,8 +123,6 @@ typedef struct{
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
 	uz_CurrentControl_t* cc_instance_dq;
-	struct pointers_PI_PI objects_PI_PI;
-	struct pointers_PI_R objects_PI_R;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

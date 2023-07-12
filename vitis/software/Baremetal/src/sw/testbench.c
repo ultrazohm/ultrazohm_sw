@@ -107,3 +107,36 @@ void uz_set_DC_zero(DS_Data* Data){
 	Data->rasv.halfBridge11DutyCycle = 0.0f;
 	Data->rasv.halfBridge12DutyCycle = 0.0f;
 }
+
+void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config){
+	// calculates phase (strang) voltages from the phase-Udc- voltages, depending on the neutral config
+	float u_n1 = 0.0f;
+	float u_n2 = 0.0f;
+	float u_n3 = 0.0f;
+	switch(neutral_config){
+	case 1U:{
+		u_n1 = (Data->av.voltages_abc.a1 + Data->av.voltages_abc.b1 + Data->av.voltages_abc.c1 +
+				Data->av.voltages_abc.a2 + Data->av.voltages_abc.b2 + Data->av.voltages_abc.c2 +
+				Data->av.voltages_abc.a3 + Data->av.voltages_abc.b3 + Data->av.voltages_abc.c3) / 9.0f;
+		u_n2 = u_n1;
+		u_n3 = u_n1;
+		break;
+	}
+	case 3U:{
+		u_n1 = (Data->av.voltages_abc.a1 + Data->av.voltages_abc.b1 + Data->av.voltages_abc.c1) / 3.0f;
+		u_n2 = (Data->av.voltages_abc.a2 + Data->av.voltages_abc.b2 + Data->av.voltages_abc.c2) / 3.0f;
+		u_n3 = (Data->av.voltages_abc.a3 + Data->av.voltages_abc.b3 + Data->av.voltages_abc.c3) / 3.0f;
+		break;
+	}
+	default: break;
+	}
+	Data->av.voltages_abc.a1 -= u_n1;
+	Data->av.voltages_abc.b1 -= u_n1;
+	Data->av.voltages_abc.c1 -= u_n1;
+	Data->av.voltages_abc.a2 -= u_n2;
+	Data->av.voltages_abc.b2 -= u_n2;
+	Data->av.voltages_abc.c2 -= u_n2;
+	Data->av.voltages_abc.a3 -= u_n3;
+	Data->av.voltages_abc.b3 -= u_n3;
+	Data->av.voltages_abc.c3 -= u_n3;
+}

@@ -1,6 +1,6 @@
 #include "../../main.h"
 extern DS_Data Global_Data;
-float Limitation_saftey_factor = 0.8f; //To represent the saftey factor from simulation
+float Limitation_saftey_factor = 0.707106781f; //To represent the saftey factor from simulation
 
 struct uz_PI_Controller_config config_id = {
         		.Kp = 0.491f,

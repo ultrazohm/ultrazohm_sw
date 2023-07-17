@@ -223,6 +223,7 @@ uint32_t uz_platform_init() {
 					// Nothing to do here, as all pins not used as outputs (cf. above) have been pre-set as inputs (cf. gpioi2c_confreg)
 					break;
 				case UZP_GPIOTYPE_CNT:
+					break;
 				case UZP_GPIOTYPE_NOGPIO:
 					break;
 			}
@@ -246,7 +247,7 @@ uint32_t uz_platform_init() {
 	uz_iic_initdev(&uzp.maceeprom[0], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE0);
 	uz_iic_initdev(&uzp.maceeprom[1], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE1);
 
-	uz_printf("Platform I²C at %d kHz and with sum-status=%i\r\n", UZ_PLATFORM_SCLK_RATEKHZ, status);
+	uz_printf("Platform IIC at %d kHz and with sum-status=%i\r\n", UZ_PLATFORM_SCLK_RATEKHZ, status);
 
 	uzp.is_ready = true;
 

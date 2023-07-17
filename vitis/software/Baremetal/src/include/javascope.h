@@ -100,6 +100,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_i_dc_inv1,
 	JSSD_FLOAT_i_dc_inv2,
 	JSSD_FLOAT_i_dc_inv3,
+	JSSD_FLOAT_theta_off,
+	JSSD_FLOAT_theta_off_progress,
 	JSSD_ENDMARKER
 };
 

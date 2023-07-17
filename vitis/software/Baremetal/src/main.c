@@ -41,6 +41,16 @@ DS_Data Global_Data = {
     }
 };
 
+extern float uq_set;
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+        .ptr_measured_rotor_angle = &Global_Data.av.rotational_position.position_el_2pi,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+        .ptr_offset_angle = &Global_Data.av.theta_el_offset,                           // pointer to global variable holding the offset angle
+        .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+        .ptr_actual_u_q_V = &uq_set,                                    // pointer to q-setpoint voltage
+        .min_omega_el = 700.0f,                                                     // target electric rotor angular speed (USE OWN)
+        .setpoint_current = 0.7f};                                                  // current setpoint to reach speed (USE OWN)
+    uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;
 
 enum init_chain
 {
@@ -87,6 +97,9 @@ int main(void)
 			Global_Data.objects.objects_PI_R.XY1 = init_PI_R_resonant_XY1();
 			Global_Data.objects.objects_PI_R.XY2 = init_PI_R_resonant_XY2();
 			Global_Data.objects.objects_PI_R.XY3 = init_PI_R_resonant_XY3();
+
+			encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
+
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

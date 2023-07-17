@@ -100,6 +100,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy1;
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
+	float omega_el;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

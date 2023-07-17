@@ -38,6 +38,8 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+
+extern float progress;
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -124,6 +126,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv1]				= &(data->av.i_ZK1);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv2]				= &(data->av.i_ZK2);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv3]				= &(data->av.i_ZK3);
+	js_slowDataArray[JSSD_FLOAT_theta_off]				= &(data->av.theta_el_offset);
+	js_slowDataArray[JSSD_FLOAT_theta_off_progress]				= &(progress);
 	return Status;
 }
 

@@ -186,11 +186,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+			data->rasv.dq_setpoints.d = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+			data->rasv.dq_setpoints.q = value;
 			break;
 
 		case (Set_Send_Field_3):

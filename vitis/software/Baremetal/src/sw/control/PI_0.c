@@ -1,11 +1,11 @@
 #include "PI_0.h"
 static const uz_PMSM_t config_PMSM = {
-	.I_max_Ampere = 10.0f,
-	.J_kg_m_squared = 1.0f,
-	.Ld_Henry = 1.0f,
-	.Lq_Henry = 1.0f,
-	.Psi_PM_Vs = 1.0f,
-	.R_ph_Ohm = 1.0f,
+	.I_max_Ampere = 5.0f,
+	.J_kg_m_squared = 0.1f,
+	.Ld_Henry = 0.0029587f,
+	.Lq_Henry = 0.0029587f,
+	.Psi_PM_Vs = 0.0741442f,
+	.R_ph_Ohm = 0.3411f,
 	.polePairs = UZ_D5_MOTOR_POLE_PAIR_NUMBER};
 const struct uz_PI_Controller_config config_d = {
 	.type = parallel,

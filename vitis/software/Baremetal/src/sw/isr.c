@@ -58,11 +58,6 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = reset;
 
-//temp ID
-uz_9ph_alphabeta_t ref_voltages_ab = {0};
-uz_9ph_alphabeta_t zero_ab = {0};
-int step = 0;
-float step_float = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -115,8 +110,6 @@ void ISR_Control(void *data)
 		uz_limit_exceed(&Global_Data);
 	}
 
-	step_float = (float) step;
-
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
@@ -142,64 +135,6 @@ void ISR_Control(void *data)
 //				break;
 //    	}
 
-    	switch(step){
-    	case 0:
-			ref_voltages_ab = zero_ab;
-			break;
-    	case 1:
-    		ref_voltages_ab = zero_ab;
-    		ref_voltages_ab.alpha = 3.0f;
-    		break;
-    	case 2:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.beta = 2.0f;
-			break;
-    	case 3:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.x1 = 2.0f;
-			break;
-    	case 4:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.y1 = 2.0f;
-			break;
-    	case 5:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.x2 = 2.0f;
-			break;
-    	case 6:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.y2 = 2.0f;
-			break;
-    	case 7:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.x3 = 2.0f;
-			break;
-    	case 8:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.y3 = 2.0f;
-			break;
-    	case 9:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			ref_voltages_ab.zero = 2.0f;
-			break;
-    	case 10:
-			ref_voltages_ab = zero_ab;
-			ref_voltages_ab.alpha = 1.0f;
-			break;
-    	default:
-			ref_voltages_ab = zero_ab;
-			break;
-    	}
-
-    	ref_voltages = uz_transformation_9ph_alphabeta_to_abc(ref_voltages_ab);
 
 		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);

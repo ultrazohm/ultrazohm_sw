@@ -63,7 +63,6 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
-	JSO_step,
 	JSO_ENDMARKER
 };
 

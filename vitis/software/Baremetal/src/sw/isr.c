@@ -47,7 +47,7 @@ extern DS_Data Global_Data;
 #define MAX_DC_VOLT 400.0f
 #define MAX_SPEED_RPM 1000.0f
 #define MAX_TEMP_DEG 90.0f
-#define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
+#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
 
 // modulation
 #include "../uz/uz_spwm/uz_spwm.h"
@@ -60,7 +60,9 @@ enum controller_type selected_controller = reset;
 
 //temp ID
 uz_9ph_alphabeta_t ref_voltages_ab = {0};
-
+uz_9ph_alphabeta_t zero_ab = {0};
+int step = 0;
+float step_float = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -89,6 +91,7 @@ void ISR_Control(void *data)
     uz_calc_phase_voltage(&Global_Data, NEUTRAL_CFG);
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);
+    Global_Data.av.full_voltages_dq = uz_transformation_9ph_abc_to_dq(Global_Data.av.voltages_abc, Global_Data.av.rotational_position.position_el_2pi);
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Limits///////////////////////////////////
@@ -111,6 +114,8 @@ void ISR_Control(void *data)
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
 		uz_limit_exceed(&Global_Data);
 	}
+
+	step_float = (float) step;
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -136,6 +141,64 @@ void ISR_Control(void *data)
 //				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 //				break;
 //    	}
+
+    	switch(step){
+    	case 0:
+			ref_voltages_ab = zero_ab;
+			break;
+    	case 1:
+    		ref_voltages_ab = zero_ab;
+    		ref_voltages_ab.alpha = 3.0f;
+    		break;
+    	case 2:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.beta = 2.0f;
+			break;
+    	case 3:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.x1 = 2.0f;
+			break;
+    	case 4:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.y1 = 2.0f;
+			break;
+    	case 5:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.x2 = 2.0f;
+			break;
+    	case 6:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.y2 = 2.0f;
+			break;
+    	case 7:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.x3 = 2.0f;
+			break;
+    	case 8:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.y3 = 2.0f;
+			break;
+    	case 9:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			ref_voltages_ab.zero = 2.0f;
+			break;
+    	case 10:
+			ref_voltages_ab = zero_ab;
+			ref_voltages_ab.alpha = 1.0f;
+			break;
+    	default:
+			ref_voltages_ab = zero_ab;
+			break;
+    	}
+
     	ref_voltages = uz_transformation_9ph_alphabeta_to_abc(ref_voltages_ab);
 
 		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);

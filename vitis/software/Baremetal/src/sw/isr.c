@@ -335,19 +335,16 @@ void ISR_Control(void *data)
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, CIL_i_xy_meas, V_DC_Volts, Global_Data.av.omega_elec);
 
            	} else if(select_DDPG_1_64) {
-       			if(ext_clamping_dq == false || ext_clamping_xy == false) {
+       			if(ext_clamping_dq == false && ext_clamping_xy == false) {
        				i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
        				i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
+       				i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
+       				i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
        			} else {
        				i_dqxy_integrated_error.d += 0.0f;
        				i_dqxy_integrated_error.q += 0.0f;
-       			}
-       			if(ext_clamping_xy == false || ext_clamping_dq == false) {// use Forward-Euler with error of previous timestep for integration
-       			    i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
-       			    i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
-       			} else {
-       			 	i_dqxy_integrated_error.x += 0.0f;
-       			 	i_dqxy_integrated_error.y += 0.0f;
+       				i_dqxy_integrated_error.x += 0.0f;
+       				i_dqxy_integrated_error.y += 0.0f;
        			}
        		i_dqxy_error.d = (i_dq_reference.d - CIL_i_dqxy_meas.d) / rated_current;
        		i_dqxy_error.q = (i_dq_reference.q - CIL_i_dqxy_meas.q) / rated_current;
@@ -445,20 +442,17 @@ void ISR_Control(void *data)
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, REAL_i_xy_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
 
            	} else if(select_DDPG_1_64) {
-           		if(ext_clamping_dq == false) {
-           			i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
-           		    i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
-           		} else {
-           			i_dqxy_integrated_error.d += 0.0f;
-           		    i_dqxy_integrated_error.q += 0.0f;
-           		}
-           		if(ext_clamping_xy == false) {// use Forward-Euler with error of previous timestep for integration
-           		    i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
-           		    i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
-           		} else {
-           			i_dqxy_integrated_error.x += 0.0f;
-           		 	i_dqxy_integrated_error.y += 0.0f;
-           		}
+       			if(ext_clamping_dq == false && ext_clamping_xy == false) {
+       				i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
+       				i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
+       				i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
+       				i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
+       			} else {
+       				i_dqxy_integrated_error.d += 0.0f;
+       				i_dqxy_integrated_error.q += 0.0f;
+       				i_dqxy_integrated_error.x += 0.0f;
+       				i_dqxy_integrated_error.y += 0.0f;
+       			}
            		i_dqxy_error.d = (i_dq_reference.d - REAL_i_dqxy_meas.d) / rated_current;
            		i_dqxy_error.q = (i_dq_reference.q - REAL_i_dqxy_meas.q) / rated_current;
            		i_dqxy_error.x = (i_xy_reference.d - REAL_i_dqxy_meas.x) / rated_current;

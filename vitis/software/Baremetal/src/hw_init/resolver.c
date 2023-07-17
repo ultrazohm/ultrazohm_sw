@@ -12,7 +12,7 @@ static struct uz_resolverIP_config_t resolver_config={
         .resolution = 16,
         .freq_clockin = CRYSTAL_FREQUENCY,
         .zero_position_mechanical = 0.0f,
-        .pole_pairs_machine = UZ_D5_MOTOR_POLE_PAIR_NUMBER,//13
+        .pole_pairs_machine = UZ_D5_MOTOR_POLE_PAIR_NUMBER,
         .pole_pairs_resolver = 3,
 		.mode_after_init = POSITION_VELOCITY_MODE
      };

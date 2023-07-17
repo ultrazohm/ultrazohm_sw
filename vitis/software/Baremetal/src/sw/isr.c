@@ -58,16 +58,6 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = PI_0;
 
-#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
-uz_3ph_dq_t setpoint_current = {0};
-uz_3ph_dq_t ref_voltage_3ph;
-float theta = 0.0f;
-extern uz_encoder_offset_estimation_t* encoder_offset_obj;
-float uq_set=0.0f;
-uz_9ph_dq_t ref_voltages_dq={0};
-uz_3ph_dq_t cc_3ph_out = {0};
-float progress = 0.0f;
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -85,11 +75,7 @@ void ISR_Control(void *data)
 ///////////////////////////////////Actual value/////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
     // read speed and angle
-    Global_Data.av.rotational_position = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d2);
-    // invert Theta_el because of wrong mounted sensor
- //Global_Data.av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Global_Data.av.rotational_position.position_el_2pi - Global_Data.av.theta_el_offset, 2.0f*UZ_PIf);
-    Global_Data.av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Global_Data.av.rotational_position.position_el_2pi, 2.0f*UZ_PIf);
-    theta = Global_Data.av.rotational_position.position_el_2pi - Global_Data.av.theta_el_offset;
+    uz_resolver_read_and_adapt_direction(&Global_Data);
     // actual values reading functions
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);
@@ -127,43 +113,27 @@ void ISR_Control(void *data)
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-	uq_set = cc_3ph_out.q;                                              // write controller output ref voltage to global data
-	Global_Data.av.omega_el = Global_Data.av.rotational_position.omega_mech_rad_s*13.0f;
-	progress = uz_encoder_offset_estimation_get_progress_status(encoder_offset_obj);
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-//    	switch(selected_controller){
-//			case PI_0:
-//				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
-//				break;
-//			case PI_PI:
-//				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
-//				break;
-//			case PI_R:
-//				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
-//				break;
-//			default:
-//			case reset:
-//				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
-//				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
-//				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
-//				break;
-//    	}
+    	switch(selected_controller){
+			case PI_0:
+				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
+				break;
+			case PI_PI:
+				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
+				break;
+			case PI_R:
+				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
+				break;
+			default:
+			case reset:
+				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+				break;
+    	}
 
-    	////temp
-    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
-			setpoint_current = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
-		}else{
-			setpoint_current.d = 0.0f;                                              // else: it is finished, setpoints are 0
-			setpoint_current.q = 0.0f;
-		}
-		// control function, use your own
-		ref_voltage_3ph = uz_CurrentControl_sample(Global_Data.objects.cc_instance_dq, setpoint_current, Global_Data.av.currents_dq, Global_Data.av.U_ZK, Global_Data.av.omega_el);
-		ref_voltages_dq.d = ref_voltage_3ph.d;
-		ref_voltages_dq.q = ref_voltage_3ph.q;
-		ref_voltages = uz_transformation_9ph_dq_to_abc(ref_voltages_dq, theta);
-    	/////temp
 		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 

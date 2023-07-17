@@ -1,4 +1,6 @@
 #include "../include/testbench.h"
+#include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_global_configuration.h"
 
 void uz_duty_cycles_to_rasv(DS_Data* Data, struct uz_DutyCycle_3x3ph_t duty_cycle){
 	Data->rasv.halfBridge1DutyCycle = duty_cycle.system1.DutyCycle_A;
@@ -155,4 +157,10 @@ void uz_limit_exceed(DS_Data* Data){
 	Data->rasv.halfBridge10DutyCycle = 0.5f;
 	Data->rasv.halfBridge11DutyCycle = 0.5f;
 	Data->rasv.halfBridge12DutyCycle = 0.5f;
+}
+
+void uz_resolver_read_and_adapt_direction(DS_Data* Data){
+    Data->av.rotational_position = uz_resolver_pl_interface_get_outputs(Data->objects.resolver_pl_d2);
+    Data->av.rotational_position.position_el_2pi = uz_signals_wrap(2.0f*UZ_PIf-Data->av.rotational_position.position_el_2pi - Data->av.theta_el_offset, 2.0f*UZ_PIf);
+    Data->av.omega_el = -1.0f*Data->av.rotational_position.omega_mech_rad_s*UZ_D5_MOTOR_POLE_PAIR_NUMBER;
 }

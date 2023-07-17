@@ -68,7 +68,7 @@ typedef struct _actualValues_ {
 	float i_ZK3; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float theta_el_offset; //in rad/s
+	float theta_el_offset; //in rad
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	uz_9ph_abc_t winding_temperature;
@@ -88,6 +88,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy1;
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
+	float omega_el;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

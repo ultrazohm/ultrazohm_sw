@@ -249,11 +249,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-			if(select_automatic_idiq) {
-				select_automatic_idiq = false;
-			} else {
 				select_automatic_idiq = true;
-			}
 			break;
 
 		case (My_Button_7):

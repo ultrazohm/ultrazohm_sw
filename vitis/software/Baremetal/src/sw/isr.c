@@ -174,10 +174,8 @@ void ISR_Control(void *data)
     			select_automatic_idiq=false;
     			start_marker=0.0f;
     		}
-
-
-
     	}
+		
     }else{
        	i_dq_reference.d = i_d_ref;
        	i_dq_reference.q = i_q_ref;

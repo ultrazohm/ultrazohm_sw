@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -34,7 +35,8 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-
+extern uz_3ph_dq_t i_dq_reference; 
+extern uz_3ph_dq_t i_xy_reference; 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -77,6 +79,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iX]			= &data->av.I_X;
 	js_ch_observable[JSO_iY]			= &data->av.I_Y;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_id_ref] = &i_dq_reference.d;
+	js_ch_observable[JSO_iq_ref] = &i_dq_reference.q;
+	js_ch_observable[JSO_iX_ref] = &i_xy_reference.d;
+	js_ch_observable[JSO_iY_ref] = &i_xy_reference.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;

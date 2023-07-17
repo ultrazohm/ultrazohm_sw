@@ -126,7 +126,7 @@ if add not in main_h_content:
 with open(main_h_path, 'r') as h_open_r:
     main_h_content = h_open_r.readlines()
 
-lines_to_comment_h = set(range(96, 101))
+lines_to_comment_h = set(range(95, 101))
 
 with open(main_h_path, 'w') as h_open_w:
     for number, line in enumerate(main_h_content):

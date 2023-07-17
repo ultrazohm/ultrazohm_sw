@@ -379,18 +379,18 @@ void ISR_Control(void *data)
 #endif
 #if NN_17_INPUT_1_64==1
        		observation_ip_17n[0] = i_dqxy_error.d;
-       		observation_ip_17n[1] = i_dqxy_integrated_error.d * (UZ_ISR_FREQUENCY * 0.5f);//Setup 3 only uses half the frequency for I-weight
+       		observation_ip_17n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
        		observation_ip_17n[2] = i_dqxy_error.q;
-       		observation_ip_17n[3] = i_dqxy_integrated_error.q * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
        		observation_ip_17n[4] = CIL_i_dqxy_meas.d / rated_current;
        		observation_ip_17n[5] = CIL_i_dqxy_meas.q / rated_current;
        		observation_ip_17n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
        		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
        		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
        		observation_ip_17n[9] = i_dqxy_error.x;
-       		observation_ip_17n[10] = i_dqxy_integrated_error.x * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
        		observation_ip_17n[11] = i_dqxy_error.y;
-       		observation_ip_17n[12] = i_dqxy_integrated_error.y * (UZ_ISR_FREQUENCY * 0.5f);
+       		observation_ip_17n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
        		observation_ip_17n[13] = CIL_i_dqxy_meas.x / rated_current;
        		observation_ip_17n[14] = CIL_i_dqxy_meas.y / rated_current;
        		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;
@@ -487,18 +487,18 @@ void ISR_Control(void *data)
 
 #if NN_17_INPUT_1_64==1
            		observation_ip_17n[0] = i_dqxy_error.d;
-           		observation_ip_17n[1] = i_dqxy_integrated_error.d * (UZ_ISR_FREQUENCY * 0.5f);//Setup 3 only uses half the frequency for I-weight
+           		observation_ip_17n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
            		observation_ip_17n[2] = i_dqxy_error.q;
-           		observation_ip_17n[3] = i_dqxy_integrated_error.q * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
            		observation_ip_17n[4] = REAL_i_dqxy_meas.d / rated_current;
            		observation_ip_17n[5] = REAL_i_dqxy_meas.q / rated_current;
            		observation_ip_17n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
            		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
            		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
            		observation_ip_17n[9] = i_dqxy_error.x;
-           		observation_ip_17n[10] = i_dqxy_integrated_error.x * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
            		observation_ip_17n[11] = i_dqxy_error.y;
-           		observation_ip_17n[12] = i_dqxy_integrated_error.y * (UZ_ISR_FREQUENCY * 0.5f);
+           		observation_ip_17n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
            		observation_ip_17n[13] = REAL_i_dqxy_meas.x / rated_current;
            		observation_ip_17n[14] = REAL_i_dqxy_meas.y / rated_current;
            		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;

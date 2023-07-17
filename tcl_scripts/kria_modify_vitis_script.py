@@ -99,7 +99,7 @@ with open(main_c_path, 'w') as file_w:
 with open(main_c_path, 'r') as file_r:
     main_c_content = file_r.readlines()
 
-lines_to_comment = set(range(24, 26)).union(set(range(155, 162))).union(set(range(170, 193))).union(set(range(303, 371)))
+lines_to_comment = set(range(24, 26)).union(set(range(153, 161))).union(set(range(169, 191))).union(set(range(303, 371)))
 
 with open(main_c_path, 'w') as file_w:
     for number, line in enumerate(main_c_content):
@@ -126,7 +126,7 @@ if add not in main_h_content:
 with open(main_h_path, 'r') as h_open_r:
     main_h_content = h_open_r.readlines()
 
-lines_to_comment_h = set(range(121, 126))
+lines_to_comment_h = set(range(96, 101))
 
 with open(main_h_path, 'w') as h_open_w:
     for number, line in enumerate(main_h_content):

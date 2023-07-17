@@ -151,6 +151,8 @@ uint32_t uz_platform_init() {
 	// Populate IO map
 	switch(uzp.data.hw_group) {
 		case UZP_HWGROUP_UZOHM3:
+			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+			break;
 		case UZP_HWGROUP_UZOHM6:
 			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
 			break;
@@ -160,6 +162,7 @@ uint32_t uz_platform_init() {
 		default:
 			uz_printf("APU: Platform not supported!\r\n");
 			return(UZ_FAILURE);
+			break;
 	}
 
 	status = 0;
@@ -197,6 +200,7 @@ uint32_t uz_platform_init() {
 					XGpioPs_SetDirectionPin(&uzp.gpiops, pin, GPIOPS_DIRECTION_OUT);
 					break;
 				case UZP_GPIOTYPE_CNT:
+					break;
 				case UZP_GPIOTYPE_NOGPIO:
 					break;
 			}
@@ -293,19 +297,22 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 			switch(uzpgpo_op) {
 				case UZP_GPO_ASSERT:
 					immediate = 1;
-					// fallthrough
+					uzp.gpioi2c_outmirror |= 1<<pin;
+					break;
 				case UZP_GPO_ASSERT_QUEUED:
 					uzp.gpioi2c_outmirror |= 1<<pin;
 					break;
 				case UZP_GPO_DEASSERT:
 					immediate = 1;
-					// fallthrough
+					uzp.gpioi2c_outmirror &= ~(1<<pin);
+					break;
 				case UZP_GPO_DEASSERT_QUEUED:
 					uzp.gpioi2c_outmirror &= ~(1<<pin);
 					break;
 				case UZP_GPO_TOGGLE:
 					immediate = 1;
-					// fallthrough
+					uzp.gpioi2c_outmirror ^= 1<<pin;
+					break;
 				case UZP_GPO_TOGGLE_QUEUED:
 					uzp.gpioi2c_outmirror ^= 1<<pin;
 					break;
@@ -342,6 +349,7 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 			}
 			break;
 		case UZP_GPIOTYPE_CNT:
+			break;
 		case UZP_GPIOTYPE_NOGPIO:
 			break;
 	}

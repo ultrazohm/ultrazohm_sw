@@ -44,17 +44,17 @@ void uz_ADC_currents(DS_Data* Data){
 void uz_ADC_voltages(DS_Data* Data){
 	// convert ADC readings to voltages
 	Data->av.U_ZK1 = (Data->aa.A1.me.ADC_A4 * 100.302f) + 451.30f;
-	Data->av.voltages_abc.a1 = (Data->aa.A1.me.ADC_B8 * 93.108f) + 430.33f;
-	Data->av.voltages_abc.b1 = (Data->aa.A1.me.ADC_B7 * 92.492f) + 427.27f;
-	Data->av.voltages_abc.c1 = (Data->aa.A1.me.ADC_B6 * 92.814f) + 428.30f;
+	Data->av.voltages_abc.a1 = (Data->aa.A1.me.ADC_B8 * 101.172f) + 471.60f;
+	Data->av.voltages_abc.b1 = (Data->aa.A1.me.ADC_B7 * 102.587f) + 474.84f;
+	Data->av.voltages_abc.c1 = (Data->aa.A1.me.ADC_B6 * 100.885f) + 468.39f;
 	Data->av.U_ZK2 = (Data->aa.A2.me.ADC_A4 * 99.700f) + 450.30f;
-	Data->av.voltages_abc.a2 = (Data->aa.A2.me.ADC_B8 * 93.413f) + 429.56f;
-	Data->av.voltages_abc.b2 = (Data->aa.A2.me.ADC_B7 * 93.373f) + 430.57f;
-	Data->av.voltages_abc.c2 = (Data->aa.A2.me.ADC_B6 * 93.413f) + 430.31f;
+	Data->av.voltages_abc.a2 = (Data->aa.A2.me.ADC_B8 * 100.444f) + 466.19f;
+	Data->av.voltages_abc.b2 = (Data->aa.A2.me.ADC_B7 * 100.401f) + 467.20f;
+	Data->av.voltages_abc.c2 = (Data->aa.A2.me.ADC_B6 * 100.444f) + 467.00f;
 	Data->av.U_ZK3 = (Data->aa.A3.me.ADC_A4 * 99.600f) + 450.20f;
-	Data->av.voltages_abc.a3 = (Data->aa.A3.me.ADC_B8 * 92.814f) + 429.13f;
-	Data->av.voltages_abc.b3 = (Data->aa.A3.me.ADC_B7 * 92.814f) + 429.23f;
-	Data->av.voltages_abc.c3 = (Data->aa.A3.me.ADC_B6 * 92.814f) + 427.37f;
+	Data->av.voltages_abc.a3 = (Data->aa.A3.me.ADC_B8 * 100.339f) + 468.32f;
+	Data->av.voltages_abc.b3 = (Data->aa.A3.me.ADC_B7 * 100.885f) + 469.95f;
+	Data->av.voltages_abc.c3 = (Data->aa.A3.me.ADC_B6 *  99.800f) + 463.05f;
 	Data->av.U_ZK = (Data->av.U_ZK1+Data->av.U_ZK2+Data->av.U_ZK3)/3.0f;
 }
 

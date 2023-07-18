@@ -95,6 +95,11 @@ float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten la
 float msetest [MINI_BATCH_SIZE] = {0.0f};
 float msederv [MINI_BATCH_SIZE] = {0.0f};
 float msebatch [NUMBER_OF_EPOCHS] = {0.0f};
+
+float mse_mb_train[NUMBER_OF_EPOCHS] = {
+#include "matlab_weights/mse_mini_batch_train.csv"
+};
+
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
         .activation_function = activation_tanh,
@@ -183,6 +188,30 @@ void tearDown(void)
 {
 }
 
+void test_uz_nn_train_minibatch_function(void)
+{
+    //init some instances for mb train function
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    struct uz_matrix_t refmatrix={0};
+    uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
+    struct uz_matrix_t input_matrix={0};
+    uz_matrix_t* input=uz_matrix_init(&input_matrix, x_mat,UZ_MATRIX_SIZE(x_mat),MINI_BATCH_SIZE,NUMBER_OF_INPUTS);
+    float X_data[NUMBER_OF_INPUTS] = {0.0f};
+    struct uz_matrix_t input_vec= {0};
+    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
+    struct uz_matrix_t refvec={0};
+    uz_matrix_t* ref=uz_matrix_init(&refvec,reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+    // set all gradients zero before training
+    uz_nn_set_gradients_zero(test);
+    float mse[NUMBER_OF_EPOCHS] = {0};
+    float lernrate = 0.001f;
+    uz_nn_train_minibatch(test,mse,input,refout,X,ref,0.001f,MINI_BATCH_SIZE,NUMBER_OF_EPOCHS);
+    // check parameter weights and bias to other test
+     for(size_t i = 0;i< (int)(sizeof(mse) / sizeof(float));i++) {
+        TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], mse[i]);
+    }
+}
+
 void test_uz_nn_matlab(void)
   {
       uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
@@ -252,5 +281,6 @@ void test_uz_nn_matlab(void)
         uz_nn_set_gradients_zero(test);
         }
 }
-      //  uz_nn_mat_export(test);
+
+
 #endif // TEST

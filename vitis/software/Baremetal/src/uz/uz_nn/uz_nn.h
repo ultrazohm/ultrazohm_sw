@@ -30,6 +30,8 @@ uz_nn_t* uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
  * @param self Pointer to neural network instance
  * @param input Input matrix of dimension 1 x Inputs
  */
+
+void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const input,uz_matrix_t const*const refout, uz_matrix_t const*const rowvec,uz_matrix_t const*const ref,float const learnrate,uint32_t minibatchsize, uint32_t numberofepochs);
 void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
 
 /**

@@ -27,6 +27,7 @@ static uz_gpio MIO_LedUser;
 static uz_gpio MIO_SWError;
 static uz_gpio MIO_SWControl;
 static uz_gpio MIO_SWSystem;
+static uz_gpio MIO_SWExternalStop;
 
 void uz_frontplane_button_and_led_init() {
 	InitializeXilinxMioGpioInstance();
@@ -59,6 +60,7 @@ static void InitializeMioPinsForButtons() {
 	uz_gpio_init(&MIO_SWError, &Gpio_inst, SW_stop, INPUT_PIN);
 	uz_gpio_init(&MIO_SWSystem, &Gpio_inst, SW_system, INPUT_PIN);
 	uz_gpio_init(&MIO_SWControl, &Gpio_inst, SW_control, INPUT_PIN);
+	uz_gpio_init(&MIO_SWExternalStop, &Gpio_inst, SW_external_stop, INPUT_PIN);
 }
 
 static void InitializeAllPushButtons() {
@@ -66,9 +68,9 @@ static void InitializeAllPushButtons() {
 	swcfg.Stop = &MIO_SWError;
 	swcfg.EnableSystem = &MIO_SWSystem;
 	swcfg.EnableControl = &MIO_SWControl;
+	swcfg.ExternalStop = &MIO_SWExternalStop;
 	uz_PushButton_facade_init(swcfg);
 }
-;
 
 static void enableAllMioWithLEDsAttached() {
 	uz_gpio_set_enable_output(&MIO_LedReady, true);
@@ -81,6 +83,7 @@ static void enableAllMioWithButonsAttached() {
 	uz_gpio_set_enable_output(&MIO_SWError, 1);
 	uz_gpio_set_enable_output(&MIO_SWSystem, 1);
 	uz_gpio_set_enable_output(&MIO_SWControl, 1);
+	uz_gpio_set_enable_output(&MIO_SWExternalStop, 1);
 }
 
 static void InitializeAllStatusLEDs() {

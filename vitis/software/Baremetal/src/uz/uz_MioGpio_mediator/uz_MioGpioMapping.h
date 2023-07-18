@@ -24,11 +24,12 @@
 #define EXT_GPIO_7        53 // Rev. 2 and 3
 #endif
 #if UZ_HARDWARE_VERSION > 3U
-#define EXT_GPIO_6 44 //Rev.04
+#define EXT_GPIO_6 44 // Rev.04
 #define EXT_GPIO_7 30 // Rev.04
+#define EXT_GPIO_8 31 // Rev.04
 #endif
 
-#define EXT_GPIO_8 		55
+//#define EXT_GPIO_8 		55
 
 // LED on carrier board and frontpanel
 #define LED_1								EXT_GPIO_1
@@ -46,7 +47,9 @@
 #define SW_1 EXT_GPIO_6
 #define SW_2 EXT_GPIO_7
 #define SW_3 EXT_GPIO_5
+#define SW_4 EXT_GPIO_8
 
 #define SW_system  SW_1
 #define SW_control SW_2
 #define SW_stop    SW_3
+#define SW_external_stop SW_4

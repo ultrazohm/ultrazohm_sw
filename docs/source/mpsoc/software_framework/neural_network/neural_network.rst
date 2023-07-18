@@ -333,6 +333,11 @@ Step 3: Calculate Gradients
 The calculation of the local gradients need to be done to get the gradient from the weights and bias. For the weights, the gradient results in 
 the product of the local gradient with the output of the previous layer.
 
+.. _nn_structure_backprop:
+
+.. figure:: img/nn_structure_output_backprop.svg
+   :align: center
+
 
 
 

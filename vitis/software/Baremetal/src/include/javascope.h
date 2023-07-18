@@ -33,6 +33,8 @@ enum JS_OberservableData {
 	JSO_ic,
 	JSO_id,
 	JSO_iq,
+	JSO_uq_ref,
+	JSO_ud_ref,
 	JSO_id_ref,
 	JSO_iq_ref,
 	JSO_n_ref,
@@ -45,6 +47,7 @@ enum JS_OberservableData {
 	JSO_SoC_init,
 	JSO_Theta_el,
 	JSO_Theta_el_cor,
+	JSO_Theta_el_off,
 	JSO_Theta_mech,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
@@ -117,6 +120,12 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSSD_FLOAT_TempH1,
+	JSSD_FLOAT_TempL1,
+	JSSD_FLOAT_TempH2,
+	JSSD_FLOAT_TempL2,
+	JSSD_FLOAT_TempH3,
+	JSSD_FLOAT_TempL3,
 	JSSD_ENDMARKER
 };
 
@@ -160,7 +169,7 @@ enum gui_button_mapping {
 	Set_ n_ref,
 	Set_i_q,
 	excitation_amplitude,
-	send_field_4,
+	theta_el_offset,
 	send_field_5,
 	send_field_6,
 	SND_FLD_ENDMARKER

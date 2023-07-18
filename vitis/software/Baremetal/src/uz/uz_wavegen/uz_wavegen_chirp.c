@@ -25,7 +25,6 @@
 struct uz_wavegen_chirp {
 	bool is_ready;
 	bool is_first_call_to_sample;
-	float elapsed_time_since_start;
 	float initial_global_time_sec;
 	float transition_angle;
 	float time;
@@ -62,7 +61,6 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	self->is_first_call_to_sample = true;
-	self->elapsed_time_since_start = 0.0f;
 	self->transition_angle = 0.0f;
 	self->time=0.0f;
 }
@@ -70,20 +68,16 @@ void uz_wavegen_chirp_reset(uz_wavegen_chirp* self) {
 float uz_wavegen_chirp_sample(uz_wavegen_chirp* self, float sampling_time) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	float system_time_sec = 0.0f;
 	// If its the first call, we take the current time as the initial time to have small numbers at start with 0
 	if (self->is_first_call_to_sample) {
 		self->time=0.0f;
-		system_time_sec = self->time;
-		self->initial_global_time_sec = system_time_sec; // system_time_sec holds the current global time, thus we take this value as the inital time
+		self->initial_global_time_sec = self->time; 
 		self->is_first_call_to_sample = false;
 	} else{
 		self->time+=sampling_time;
-		system_time_sec = self->time;
 	}
-	self->elapsed_time_since_start = system_time_sec - self->initial_global_time_sec;
-	float remaining_delay_sec = self->config.initial_delay_sec - self->elapsed_time_since_start;
-	float t_Sec = self->elapsed_time_since_start - self->config.initial_delay_sec;
+	float remaining_delay_sec = self->config.initial_delay_sec - self->time;
+	float t_Sec = self->time - self->config.initial_delay_sec;
 	float chirp_rate = (self->config.end_frequency_Hz - self->config.start_frequency_Hz) / self->config.duration_sec;
 	float chirp_output = 0.0f;
 	if (remaining_delay_sec > 0.0f) {

@@ -29,6 +29,7 @@ extern float Ki_speed;
 extern float n_ref_rpm;
 extern struct uz_3ph_dq_t i_dq_ref_Amps;
 extern float M_ref_Nm;
+extern float theta_el_offset;
 
 // External Declares Wavegen
 extern bool enable_excitation;
@@ -202,19 +203,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				n_ref_rpm = value;
+				//M_ref_Nm = value;
 			break;
 
 		case (Set_Send_Field_2):
-//		        i_dq_ref_Amps.q = value;
+		        i_dq_ref_Amps.q = value;
 			break;
 
 		case (Set_Send_Field_3):
-				excitation_amplitude=value;
+				//excitation_amplitude=value;
 			break;
 
 		case (Set_Send_Field_4):
-
+				//theta_el_offset=value;
 			break;
 
 		case (Set_Send_Field_5):

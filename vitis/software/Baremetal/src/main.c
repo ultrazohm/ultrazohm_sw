@@ -48,15 +48,26 @@ uz_CurrentControl_t* CC_instance;
 // Declare Pointer for Chirp
 uz_wavegen_chirp* chirp_instance;
 
-// Configuration of PMSM
+//// Configuration of Brose PMSM
+//struct uz_PMSM_t config_PMSM = {
+//   .R_ph_Ohm = 0.01664f,
+//   .Ld_Henry = 0.00003f,
+//   .Lq_Henry = 0.00005f,
+//   .Psi_PM_Vs = 0.007f,
+//   .polePairs = 5.0f,
+//   .J_kg_m_squared = 0.00001773f,
+//   .I_max_Ampere = 40.0f
+//};//these parameters are only needed if linear decoupling is selected
+
+// Configuration of Hoerner PMSM
 struct uz_PMSM_t config_PMSM = {
-   .R_ph_Ohm = 0.01664f,
-   .Ld_Henry = 0.00003f,
-   .Lq_Henry = 0.00005f,
-   .Psi_PM_Vs = 0.007f,
-   .polePairs = 5.0f,
-   .J_kg_m_squared = 0.00001773f,
-   .I_max_Ampere = 10.0f
+   .R_ph_Ohm = 0.249f,
+   .Ld_Henry = 0.00044f,
+   .Lq_Henry = 0.00245f,
+   .Psi_PM_Vs = 0.0194f,
+   .polePairs = 4.0f,
+   .J_kg_m_squared = 0.000084f,
+   .I_max_Ampere = 20.0f
 };//these parameters are only needed if linear decoupling is selected
 
 enum init_chain
@@ -78,8 +89,8 @@ int main(void)
 
     // Configuration of Speed Control
     struct uz_SpeedControl_config SC_config = {
-       .config_controller.Kp = 0.4f,
-       .config_controller.Ki = 0.0f,
+       .config_controller.Kp = 0.01f,
+       .config_controller.Ki = 0.1f,
        .config_controller.samplingTime_sec = 0.0001f,
        .config_controller.upper_limit = 1.0f,
        .config_controller.lower_limit = -1.0f,
@@ -89,21 +100,26 @@ int main(void)
     struct uz_SetPoint_config SP_config = {
        .config_PMSM = config_PMSM,
        .control_type = FOC,
-       .motor_type = SMPMSM,
+       .motor_type = IPMSM,
        .is_field_weakening_enabled = false,
-       .id_ref_Ampere = 0.0f
+       .id_ref_Ampere = 0.0f,
+	   .relative_torque_tolerance = 0.1f
     };
 
     // Configuration of Current Control
     struct uz_PI_Controller_config config_id = {
-       .Kp = 1.2f, //0.225, //1.2f, //0.3f
-       .Ki = 460.0f, //124.8f, //230.0f
-       .samplingTime_sec = 0.000033f,
+       .Kp = 1.46f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+       .Ki = 830.0f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+       .samplingTime_sec = 0.0001f,
+	   .upper_limit = 15.0f,
+	   .lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq = {
-       .Kp = 0.5f,
-       .Ki = 230.0f,
-       .samplingTime_sec = 0.000033f,
+       .Kp = 8.16f, // nach BO, 0.5f nach Nina
+       .Ki = 830.0f, // nach BO, 230.0f nach Nina
+       .samplingTime_sec = 0.0001f,
+	   .upper_limit = 15.0f,
+	   .lower_limit = -15.0f
     };
     struct uz_CurrentControl_config CC_config = {
        .decoupling_select = linear_decoupling,
@@ -117,9 +133,9 @@ int main(void)
     struct uz_wavegen_chirp_config config_chirp = {
             .amplitude = 1.0f,
             .start_frequency_Hz = 1.0f,
-            .end_frequency_Hz = 8000.0f,
+            .end_frequency_Hz = 3000.0f,
             .duration_sec = 4.0f,
-            .initial_delay_sec = 2.0f,
+            .initial_delay_sec = 3.0f,
             .offset = 0.0f
     };
 

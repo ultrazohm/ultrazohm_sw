@@ -61,7 +61,7 @@ float M_ref_Nm = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 float omega_el_rad_per_sec = 0.0f;
 float theta_el_rad = 0.0f;
-float theta_el_offset = 1.4f;
+float theta_el_offset = 1.1f;
 struct uz_DutyCycle_t output = {0};
 //float Kp_speed = 0.01f;
 //float Ki_speed = 0.1f;
@@ -77,6 +77,9 @@ extern uz_wavegen_chirp* chirp_instance;
 bool enable_excitation=false;
 float excitation_amplitude=0.0f;
 float sampling_time = 1.0f/30.0e3f;
+
+// Other Declares
+float error_type = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -127,17 +130,18 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	// Noise and Chirp Generation
-    	if(enable_excitation){
-    		i_dq_ref_Amps.q=0.0f;
-    		//i_dq_ref_Amps.d=uz_wavegen_white_noise(excitation_amplitude);
-    		//i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, excitation_amplitude);
-    		//i_dq_ref_Amps.d= excitation_amplitude * uz_wavegen_chirp_sample(chirp_instance, sampling_time);
-    	}else{
+//    	if(enable_excitation){
+//    		}else{
+//
+//    	}
 
-    	}
+    	//i_dq_ref_Amps.q=0.0f;
+    	//i_dq_ref_Amps.d=uz_wavegen_white_noise(excitation_amplitude);
+    	//i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, excitation_amplitude);
+    	//i_dq_ref_Amps.d= excitation_amplitude * uz_wavegen_chirp_sample(chirp_instance, sampling_time);
 
-    	i_dq_ref_Amps.q=0.0f;
-    	i_dq_ref_Amps.d= excitation_amplitude;
+    	//i_dq_ref_Amps.q=0.0f;
+    	//i_dq_ref_Amps.d= excitation_amplitude;
 
     	// Field Oriented Control
     	//M_ref_Nm = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);										// Calculate Reference Torque
@@ -155,6 +159,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
 		uz_SpeedControl_reset(SC_instance);
 		uz_CurrentControl_reset(CC_instance);
+		uz_wavegen_chirp_reset(chirp_instance);
 	}
 
     // Set duty cycles for two-level modulator
@@ -167,12 +172,12 @@ void ISR_Control(void *data)
     //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 
     // Change Variables during Runtime
-    //uz_SpeedControl_set_Kp(SC_instance, Kp_speed);
-    //uz_SpeedControl_set_Ki(SC_instance, Ki_speed);
-    //uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);
-    //uz_CurrentControl_set_Kp_iq(CC_instance, Kp_iq);
-    //uz_CurrentControl_set_Ki_id(CC_instance, Ki_id);
-    //uz_CurrentControl_set_Ki_iq(CC_instance, Ki_iq);
+//    uz_SpeedControl_set_Kp(SC_instance, Kp_speed);
+//    uz_SpeedControl_set_Ki(SC_instance, Ki_speed);
+//    uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);
+//    uz_CurrentControl_set_Kp_iq(CC_instance, Kp_iq);
+//    uz_CurrentControl_set_Ki_id(CC_instance, Ki_id);
+//    uz_CurrentControl_set_Ki_iq(CC_instance, Ki_iq);
 
     // Update JavaScope
     JavaScope_update(&Global_Data);
@@ -180,44 +185,54 @@ void ISR_Control(void *data)
     //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
     //Overtemperature for H1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+        error_type = 1.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for L1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+    	error_type = 2.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+    	error_type = 3.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for L2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+    	error_type = 4.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for H3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+    	error_type = 5.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for L3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+    	error_type = 6.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     //Binding of the signals to the driver is slightly unintuitive
     //Overcurrent for Phase A
     if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+    	error_type = 7.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overcurrent for Phase B
     if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+    	error_type = 8.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overcurrent for Phase C
     if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+    	error_type = 9.0f;
        ultrazohm_state_machine_set_error(true);
     }
     //Overcurrent for DC-link
     if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+    	error_type = 10.0f;
        ultrazohm_state_machine_set_error(true);
     }
 

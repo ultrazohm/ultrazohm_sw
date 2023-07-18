@@ -34,11 +34,14 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+//Extern
 extern float n_ref_rpm;
 extern float theta_el_rad;
+extern float theta_el_offset;
 extern struct uz_3ph_dq_t i_dq_ref_Amps;
 extern struct uz_3ph_dq_t i_dq_Amps;
 extern struct uz_3ph_abc_t i_abc_Amps;
+extern struct uz_3ph_dq_t v_dq_ref_Volts;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -74,17 +77,21 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &i_dq_Amps.q;
 	js_ch_observable[JSO_id] 			= &i_dq_Amps.d;
+	js_ch_observable[JSO_uq_ref]		= &v_dq_ref_Volts.q;
+	js_ch_observable[JSO_ud_ref]		= &v_dq_ref_Volts.d;
 	js_ch_observable[JSO_iq_ref] 		= &i_dq_ref_Amps.q;
 	js_ch_observable[JSO_id_ref] 		= &i_dq_ref_Amps.d;
 	js_ch_observable[JSO_n_ref]			= &n_ref_rpm;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_Theta_el_cor] 	= &theta_el_rad;
+	js_ch_observable[JSO_Theta_el_off] 	= &theta_el_offset;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -101,6 +108,12 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_TempH1]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_TempL1]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempH2]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempL2]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L2);
+	js_slowDataArray[JSSD_FLOAT_TempH3]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H3);
+	js_slowDataArray[JSSD_FLOAT_TempL3]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
 
 	return Status;
 }

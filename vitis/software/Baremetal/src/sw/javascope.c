@@ -47,7 +47,7 @@ extern struct uz_3ph_dq_t v_dq_ref_Volts;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 
-int JavaScope_initalize(DS_Data* data)
+int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero

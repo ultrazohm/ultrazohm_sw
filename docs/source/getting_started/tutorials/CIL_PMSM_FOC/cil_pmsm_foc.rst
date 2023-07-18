@@ -133,7 +133,8 @@ Initial steps
                            .decoupling_select = linear_decoupling,
                            .config_PMSM = config_PMSM,
                            .config_id = config_id,
-                           .config_iq = config_iq};
+                           .config_iq = config_iq
+                           .max_modulation_index = 1.0f / sqrtf(3.0f)};
                        CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
                        struct uz_pmsmModel_config_t pmsm_config={
                            .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,

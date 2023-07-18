@@ -38,7 +38,6 @@ extern float excitation_amplitude;
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
-extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)

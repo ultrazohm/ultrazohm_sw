@@ -159,6 +159,7 @@ For the output layer:
    b^{(3)} &=\left[ \begin{array}{rr} 0.7 \\ \end{array}\right]
 
 The activation function of the hidden layer is set to ReLU, the output activation function to linear.
+In this example all weights and bias are iniitalized between 0 and 1. This is one common way of weight initalization, see `python weight initalization <https://stackoverflow.com/questions/49433936/how-do-i-initialize-weights-in-pytorch>`_ for more input.
 The following section calculates all steps and intermediate results in the network.
 
 First layer
@@ -227,28 +228,35 @@ Activation function:
       y^{3} &= linear(   \left[ \begin{array}{rr} 9.864 \\ \end{array}\right])\\
       &=  \left[ \begin{array}{rr} 9.864 \\ \end{array}\right]
 
+This example until here shows the feedforward calculation of any pretrained or untrained network. The next section covers the training of an neural network on the ARM-Processor on the UltraZohm.
+
 Training example with Backpropagation
 **************************************
 
 Backpropagation
 ****************
+
+
+For the training of a neural network, the error or the loss must be known. There are different types or possibilities for evaluating this loss function. 
+In this example the target output is known and notated as :math:`Y_i` or :math:`y_{target}`.
+
 Step 1: Calculate Error
 ************************
 
-For the backpropagation the error of the network's error must be known. This error in the output layer is calculated with a loss or so named cost function.
+The error is evaluated in the output layer with the loss or so-named cost function.
 The mean squared error loss function is the common used function for neural networks.
 
 .. math::
 
       MSE = \frac{1}{n}\sum_{i=1}^{n}(Y_i - \hat{Y_i})^2
 
-In this example, the target output is random defined.
+In this example, the target output is defined as :math:`2`.
 
 .. math::
 
     y^{(target)}=\left[ \begin{array}{rr} 2 \\ \end{array}\right]
 
-For this example this leads to an error of the output layer with respect to the MSE loss function:
+This leads to an error of the output layer with respect to the MSE loss function:
 
 .. math::
 
@@ -257,11 +265,13 @@ For this example this leads to an error of the output layer with respect to the 
       &= 
       30.9213 \\
 
+This evaluates the loss for the first training epoch. With this loss and the backpropagation algorithm, the gradietns of the learnable parameters of the network can be calculated.
+
 Step 2: Delta Rule
 ************************
 
 With the delta rule the local gradient of the output layer can be calculated. This is also the start value of the backpropagation rule. For the calcuation, the derivate of the activation function needs to be calculated.
-For an linear output layer:
+For an linear output layer, the derivate of the activation function is :math:`1`:
 
 .. math::
 
@@ -276,7 +286,7 @@ simplifies for just one output to:
 .. math::
 
    \frac{\partial e^{(nn)}}{\partial \hat{y_{out}}} &= 
-   2 \cdot 0.5 \cdot (y_{target}- \hat{y_{out}})^{2-1} \cdot -1 &= -(y_{target}- \hat{y_{out}})
+   2 \cdot 0.5 \cdot (y_{target}- \hat{y_{out}})^{2-1} \cdot -1 &= -(y_{target}- \hat{y_{out}}) &= \hat{y_{out}}- y_{target}
    &= 7.864 = \delta_{1}^{3}\\
 
 With the local gradient of the output layer, the gradients of all hidden layer can be calculated:

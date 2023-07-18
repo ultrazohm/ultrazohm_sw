@@ -64,9 +64,9 @@ void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const in
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    for (size_t i = 0; i < numberofepochs; i++)
+    for (uint32_t i = 0; i < numberofepochs; i++)
     {
-    for(size_t j=0; j<minibatchsize;j++){
+    for(uint32_t j=0; j<minibatchsize;j++){
       uz_matrix_get_row_vector_zero_based(input,rowvec,j);
       uz_nn_ff(self,rowvec);
       uz_matrix_t* output=uz_nn_get_output_data(self);

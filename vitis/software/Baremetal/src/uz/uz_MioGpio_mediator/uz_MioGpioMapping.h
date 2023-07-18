@@ -47,9 +47,9 @@
 #define SW_1 EXT_GPIO_6
 #define SW_2 EXT_GPIO_7
 #define SW_3 EXT_GPIO_5
-#define SW_4 EXT_GPIO_8
+#define External_STOP EXT_GPIO_8
 
 #define SW_system           SW_1
 #define SW_control          SW_2
 #define SW_stop             SW_3
-#define SW_external_stop    SW_4
+#define SW_external_stop    External_STOP

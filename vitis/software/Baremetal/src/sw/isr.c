@@ -108,6 +108,26 @@ struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
 		.fractional_bits = 16
 };
 
+// delay comp output fixed point definition
+struct uz_fixedpoint_definition_t delay_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
+// pu voltages vsd output fixed point definition
+struct uz_fixedpoint_definition_t pu_volts_vsd_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
+struct uz_fixedpoint_definition_t i_setpoint_isr_fp_def = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 11
+};
+
 bool first_ISR = false;
 
 
@@ -129,8 +149,8 @@ const uz_PMSM_6ph_t dengine={
 // 2x3ph PMSM rated values
 const rated_val_t rated_val={
 		.VR=400.0f,
-//		.IR=7.071f,
-		.IR=14.142f,
+		.IR=7.071f,
+//		.IR=14.142f,
 		.nR=3000.0f
 };
 
@@ -212,6 +232,20 @@ void ISR_Control(void *data)
     // read park transform ip
     Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
     Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
+
+    Global_Data.av.i_d_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x104, delay_fixedpoint_definition);
+    Global_Data.av.i_q_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x108, delay_fixedpoint_definition);
+    Global_Data.av.i_x_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x10C, delay_fixedpoint_definition);
+    Global_Data.av.i_y_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x110, delay_fixedpoint_definition);
+
+//    //DEBUG write index to pu_voltages ip via AXI
+//    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x100, 0U);
+
+    // read pu_voltages_vsd ip
+    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x108, pu_volts_vsd_fixedpoint_definition);
+    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x10C, pu_volts_vsd_fixedpoint_definition);
+    Global_Data.av.vx_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x110, pu_volts_vsd_fixedpoint_definition);
+    Global_Data.av.vy_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x114, pu_volts_vsd_fixedpoint_definition);
 //
 //    // save raw angles to variables
 //    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
@@ -289,10 +323,16 @@ void ISR_Control(void *data)
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
 	// write reference values to mpc ip
-    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref/base_val.IB, 11));
-    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref/base_val.IB, 11));
-    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(Global_Data.av.i_x_ref/base_val.IB, 11));
-    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(Global_Data.av.i_y_ref/base_val.IB, 11));
+//    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref/base_val.IB, 11));
+//    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref/base_val.IB, 11));
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref_pu, 11));
+//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref_pu, 11));
+//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(Global_Data.av.i_x_ref/base_val.IB, 11));
+//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(Global_Data.av.i_y_ref/base_val.IB, 11));
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==idle_state)
@@ -303,6 +343,8 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
+//		uz_PWM_SS_2L_hw_SetMode(Global_Data.objects.pwm_d1_pin_0_to_5, direct_control_via_FPGA);
+//		uz_PWM_SS_2L_hw_SetMode(Global_Data.objects.pwm_d1_pin_6_to_11, direct_control_via_FPGA);
         // Start: Control algorithm - only if ultrazohm is in control state
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
 
@@ -343,6 +385,13 @@ void ISR_Control(void *data)
     if(Global_Data.av.mechanicalRotorSpeedRADpS_ip > 1.0f) {
     sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.mechanicalRotorSpeedRPM_ip / 60.0f * dengine.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
 
+
+
+
+    } else  {
+    	sw_cnt_avg_time_sec = 1.0f;
+    }
+
     if(passed_time_sec >= sw_cnt_avg_time_sec) {
         	switchNumb = uz_axi_read_uint32(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
         	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);
@@ -353,10 +402,6 @@ void ISR_Control(void *data)
 
         isr_cnt++;
         passed_time_sec = isr_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
-
-
-    }
-
 
     // Set duty cycles for three-level modulator
 //    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

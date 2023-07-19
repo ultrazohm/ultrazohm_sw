@@ -53,6 +53,30 @@ struct uz_FOC_config config = {
 		.decoupling_select = no_decoupling
 };
 
+struct uz_fixedpoint_definition_t delay_comp_fp_def = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 15
+};
+
+struct uz_fixedpoint_definition_t cost_fp_def = {
+		.is_signed = false,
+		.integer_bits = 1,
+		.fractional_bits = 17
+};
+
+struct uz_fixedpoint_definition_t i_max_fp_def = {
+		.is_signed = false,
+		.integer_bits = 3,
+		.fractional_bits = 15
+};
+
+struct uz_fixedpoint_definition_t i_setpoint_fp_def = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 11
+};
+
 extern pre_calc_val_t pre_calc_val;
 extern const base_val_t base_val;
 extern uz_PMSM_6ph_t dengine;
@@ -126,6 +150,8 @@ int main(void)
             Global_Data.av.lambda_y = 1.0f;
             Global_Data.av.lambda_u = 0.000f;
 
+
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -179,41 +205,71 @@ int main(void)
 
             // pu_omega_m IP init
             float pu_omega_m_conversion = 1.0f/base_val.omegaB;
+//            float pu_omega_m_conversion = 0.0f;
             uz_axi_write_uint32(XPAR_MPC_PU_OMEGA_M_0_BASEADDR + 0x17C, uz_convert_float_to_unsigned_fixed(pu_omega_m_conversion, 18)); //omega_m_rad_per_s
 
             // delay_comp IP init
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
-            uz_axi_write_int32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
-            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x13C, dengine.polePairs);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x118, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x11C, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x120, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x124, pre_calc_val.Ts_times_ZB_over_Lx, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x128, pre_calc_val.Ts_times_ZB_over_Ly, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x12C, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x130, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x138, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
+
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
+            uz_axi_write_uint32(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x13C, (uint32_t)(dengine.polePairs));
 
             // prediction IP init
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
-            uz_axi_write_int32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
-            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x13C, dengine.polePairs);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x118, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x11C, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x120, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x124, pre_calc_val.Ts_times_ZB_over_Lx, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x128, pre_calc_val.Ts_times_ZB_over_Ly, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x12C, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x130, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_PREDICTION_0_BASEADDR + 0x138, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
 
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(pre_calc_val.Rs_over_ZB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ld, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lq, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Lx, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x128, uz_convert_float_to_sfixed(pre_calc_val.Ts_times_ZB_over_Ly, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x12C, uz_convert_float_to_sfixed(pre_calc_val.Ld_over_LB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x130, uz_convert_float_to_sfixed(pre_calc_val.Lq_over_LB, 15));
+//            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
+            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x13C, (uint32_t)(dengine.polePairs));
             // cost_optim IP init
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, uz_convert_float_to_sfixed(0.36f, 15)); //current limit in p.u.
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x114, uz_convert_float_to_sfixed(Global_Data.av.lambda_d, 17));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.lambda_q, 17));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(Global_Data.av.lambda_x, 17));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(Global_Data.av.lambda_y, 17));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(Global_Data.av.lambda_u, 17));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
-            uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+            // CHANGE HERE TO uz_fixedpoint_writes !!!
+//            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, 0.36f, i_max_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, 1.0f, i_max_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x114, Global_Data.av.lambda_d, cost_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x118, Global_Data.av.lambda_q, cost_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, uz_convert_float_to_sfixed(0.36f, 15)); //current limit in p.u.
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x114, uz_convert_float_to_sfixed(Global_Data.av.lambda_d, 17));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.lambda_q, 17));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x11C, uz_convert_float_to_sfixed(Global_Data.av.lambda_x, 17));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x120, uz_convert_float_to_sfixed(Global_Data.av.lambda_y, 17));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(Global_Data.av.lambda_u, 17));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11)); //set all reference currents to zero
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
+//            uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(0.0f/base_val.IB, 11));
 
             initialization_chain = print_msg;
             break;

@@ -101,6 +101,8 @@ typedef struct _actualValues_ {
 	struct uz_resolverIP_position_velocity_t posVel_el;
 	float i_d_ref;
 	float i_q_ref;
+	float i_d_ref_pu;
+	float i_q_ref_pu;
 	struct uz_resolver_pl_interface_outputs_t pl_interface;
 	float theta_elec_rad_ip;
 	float theta_mech_rad_ip;
@@ -122,6 +124,10 @@ typedef struct _actualValues_ {
 	float i_q_ip;
 	float v_dc1_ip;
 	float v_dc2_ip;
+	float i_d_delay;
+	float i_q_delay;
+	float i_x_delay;
+	float i_y_delay;
 	float f_sw_avg_Hz;
 	float i_x_ref;
 	float i_y_ref;
@@ -130,6 +136,11 @@ typedef struct _actualValues_ {
 	float lambda_x;
 	float lambda_y;
 	float lambda_u;
+	float vd_pu;
+	float vq_pu;
+	float vx_pu;
+	float vy_pu;
+	uint32_t ref_idx;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

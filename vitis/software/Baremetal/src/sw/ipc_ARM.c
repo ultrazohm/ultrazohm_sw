@@ -25,6 +25,8 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern _Bool bNewControlMethodAvailable;
 extern uint32_t js_status_BareToRTOS;
 
+extern const base_val_t base_val;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -188,15 +190,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 			data->av.i_d_ref = value;
+			data->av.i_d_ref_pu = data->av.i_d_ref/base_val.IB;
 			break;
 
 		case (Set_Send_Field_2):
 			data->av.i_q_ref = value;
+			data->av.i_q_ref_pu = data->av.i_q_ref/base_val.IB;
 			break;
 
 		case (Set_Send_Field_3):
 			data->av.lambda_u = value;
-			uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_sfixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
 			break;
 
 		case (Set_Send_Field_4):
@@ -208,7 +212,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-
+			data->av.ref_idx = (uint32_t)value;
+			uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x104, data->av.ref_idx);
 			break;
 
 		case (My_Button_1):
@@ -272,10 +277,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 					data->rasv.halfBridge4DutyCycle = 0.5f;
 					data->rasv.halfBridge5DutyCycle = 0.5f;
 					data->rasv.halfBridge6DutyCycle = 0.5f;
+//		uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_0_to_5, normalized_input_via_AXI);
+//		uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+//							data->rasv.halfBridge1DutyCycle = 0.0f;
+//							data->rasv.halfBridge2DutyCycle = 0.0f;
+//							data->rasv.halfBridge3DutyCycle = 0.0f;
+//							data->rasv.halfBridge4DutyCycle = 0.0f;
+//							data->rasv.halfBridge5DutyCycle = 0.0f;
+//							data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_8):
-
+//				uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_0_to_5, normalized_input_via_AXI);
+//				uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+//									data->rasv.halfBridge1DutyCycle = 1.0f;
+//									data->rasv.halfBridge2DutyCycle = 1.0f;
+//									data->rasv.halfBridge3DutyCycle = 1.0f;
+//									data->rasv.halfBridge4DutyCycle = 1.0f;
+//									data->rasv.halfBridge5DutyCycle = 1.0f;
+//									data->rasv.halfBridge6DutyCycle = 1.0f;
 			break;
 
 		case (Error_Reset):

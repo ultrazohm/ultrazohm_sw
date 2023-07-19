@@ -66,6 +66,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_i_a2] 				= &data->av.i_a2;
 	js_ch_observable[JSO_i_b2] 				= &data->av.i_b2;
 	js_ch_observable[JSO_i_c2] 				= &data->av.i_c2;
+	js_ch_observable[JSO_vd_pu]				= &data->av.vd_pu;
+	js_ch_observable[JSO_vq_pu]				= &data->av.vq_pu;
+	js_ch_observable[JSO_vx_pu]				= &data->av.vx_pu;
+	js_ch_observable[JSO_vy_pu]				= &data->av.vy_pu;
 	js_ch_observable[JSO_i_a1_ip] 				= &data->av.i_a1_pu;
 	js_ch_observable[JSO_i_b1_ip] 				= &data->av.i_b1_pu;
 	js_ch_observable[JSO_i_c1_ip] 				= &data->av.i_c1_pu;
@@ -86,6 +90,10 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_id] 				= &data->av.i_d;
 	js_ch_observable[JSO_iq_ip] 				= &data->av.i_q_ip;
 	js_ch_observable[JSO_id_ip] 				= &data->av.i_d_ip;
+	js_ch_observable[JSO_id_delay]			= &data->av.i_d_delay;
+	js_ch_observable[JSO_iq_delay]			= &data->av.i_q_delay;
+	js_ch_observable[JSO_ix_delay]			= &data->av.i_x_delay;
+	js_ch_observable[JSO_iy_delay]			= &data->av.i_y_delay;
 	js_ch_observable[JSO_theta_el] 			= &data->av.theta_elec_rad_ip;
 	js_ch_observable[JSO_theta_mech] 		= &data->av.theta_mech_rad_ip;
 	js_ch_observable[JSO_v_d]				= &data->av.v_d;

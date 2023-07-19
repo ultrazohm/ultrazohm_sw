@@ -37,16 +37,17 @@
 #define LED_error 	FrontPanel_LED3
 #define LED_user 	FrontPanel_LED4
 
-#define SW_system 			FrontPanel_switch5
-#define SW_control 			FrontPanel_switch6
-#define SW_stop 			FrontPanel_switch7
+#define SW_system 			FrontPanel_switch6
+#define SW_control 			FrontPanel_switch7
+#define SW_stop 			FrontPanel_switch5
 #define SW_external_stop 	FrontPanel_switch7
 #endif
+
 #if UZ_HARDWARE_VERSION > 3U
 // Defines for PS_GPIO mapping based on carrier board v4 - schematic page 5
 #define PS_1V8_GPIO1 	13
-#define PS_1V8_GPIO2 	32
-#define PS_1V8_GPIO3 	33
+#define PS_1V8_GPIO2 	33
+#define PS_1V8_GPIO3 	34
 #define PS_1V8_GPIO4 	39
 #define PS_1V8_GPIO5 	40
 #define PS_1V8_GPIO6 	44
@@ -70,8 +71,8 @@
 #define LED_error 	FrontPanel_LED3
 #define LED_user 	FrontPanel_LED4
 
-#define SW_system 			FrontPanel_switch5
-#define SW_control 			FrontPanel_switch6
-#define SW_stop 			FrontPanel_switch7
+#define SW_system	FrontPanel_switch6
+#define SW_control	FrontPanel_switch7
+#define SW_stop 	FrontPanel_switch5
 #define SW_external_stop 	FrontPanel_switch8
 #endif

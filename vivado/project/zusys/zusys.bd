@@ -109,8 +109,8 @@
       "uz_user": {
         "uz_axi_testIP_0": "",
         "PMSM_CIL": {
-          "uz_pmsm_model_6ph_dq_0": "",
-          "uz_mlp_three_layer_0": ""
+          "uz_mlp_three_layer_0": "",
+          "uz_pmsm_model_6ph_dq_0": ""
         },
         "Resolver_Interface_v_0": "",
         "axi_gpio_invEn": "",
@@ -4621,8 +4621,8 @@
           },
           "smartconnect_2": {
             "vlnv": "xilinx.com:ip:smartconnect:1.0",
-            "xci_name": "zusys_smartconnect_0_2",
-            "xci_path": "ip/zusys_smartconnect_0_2/zusys_smartconnect_0_2.xci",
+            "xci_name": "zusys_smartconnect_2_0",
+            "xci_path": "ip/zusys_smartconnect_2_0_2/zusys_smartconnect_2_0.xci",
             "inst_hier_path": "uz_system/smartconnect_2",
             "parameters": {
               "NUM_CLKS": {
@@ -5468,21 +5468,21 @@
               }
             },
             "components": {
-              "uz_pmsm_model_6ph_dq_0": {
-                "vlnv": "xilinx.com:ip:uz_pmsm_model_6ph_dq:1.0",
-                "xci_name": "zusys_uz_pmsm_model_6ph_dq_0_0",
-                "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_0_0/zusys_uz_pmsm_model_6ph_dq_0_0.xci",
-                "inst_hier_path": "uz_user/PMSM_CIL/uz_pmsm_model_6ph_dq_0"
-              },
               "uz_mlp_three_layer_0": {
                 "vlnv": "user.org:ip:uz_mlp_three_layer:3.0",
                 "xci_name": "zusys_uz_mlp_three_layer_0_0",
                 "xci_path": "ip/zusys_uz_mlp_three_layer_0_0/zusys_uz_mlp_three_layer_0_0.xci",
                 "inst_hier_path": "uz_user/PMSM_CIL/uz_mlp_three_layer_0"
+              },
+              "uz_pmsm_model_6ph_dq_0": {
+                "vlnv": "user.org:ip:uz_pmsm_model_6ph_dq:1.1",
+                "xci_name": "zusys_uz_pmsm_model_6ph_dq_1_0",
+                "xci_path": "ip/zusys_uz_pmsm_model_6ph_dq_1_0_1/zusys_uz_pmsm_model_6ph_dq_1_0.xci",
+                "inst_hier_path": "uz_user/PMSM_CIL/uz_pmsm_model_6ph_dq_0"
               }
             },
             "interface_nets": {
-              "Conn1": {
+              "AXI4_1": {
                 "interface_ports": [
                   "AXI4",
                   "uz_pmsm_model_6ph_dq_0/AXI4"
@@ -5499,19 +5499,19 @@
               "aclk_1": {
                 "ports": [
                   "aclk",
-                  "uz_pmsm_model_6ph_dq_0/IPCORE_CLK",
-                  "uz_pmsm_model_6ph_dq_0/AXI4_ACLK",
                   "uz_mlp_three_layer_0/AXI4_ACLK",
-                  "uz_mlp_three_layer_0/IPCORE_CLK"
+                  "uz_mlp_three_layer_0/IPCORE_CLK",
+                  "uz_pmsm_model_6ph_dq_0/IPCORE_CLK",
+                  "uz_pmsm_model_6ph_dq_0/AXI4_ACLK"
                 ]
               },
               "aresetn_1": {
                 "ports": [
                   "aresetn",
-                  "uz_pmsm_model_6ph_dq_0/IPCORE_RESETN",
-                  "uz_pmsm_model_6ph_dq_0/AXI4_ARESETN",
                   "uz_mlp_three_layer_0/AXI4_ARESETN",
-                  "uz_mlp_three_layer_0/IPCORE_RESETN"
+                  "uz_mlp_three_layer_0/IPCORE_RESETN",
+                  "uz_pmsm_model_6ph_dq_0/AXI4_ARESETN",
+                  "uz_pmsm_model_6ph_dq_0/IPCORE_RESETN"
                 ]
               }
             }
@@ -5610,8 +5610,8 @@
           },
           "smartconnect_0": {
             "vlnv": "xilinx.com:ip:smartconnect:1.0",
-            "xci_name": "zusys_smartconnect_0_1",
-            "xci_path": "ip/zusys_smartconnect_0_1/zusys_smartconnect_0_1.xci",
+            "xci_name": "zusys_smartconnect_0_0",
+            "xci_path": "ip/zusys_smartconnect_0_0_4/zusys_smartconnect_0_0.xci",
             "inst_hier_path": "uz_user/smartconnect_0",
             "parameters": {
               "NUM_MI": {
@@ -7341,7 +7341,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -8268,16 +8268,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"

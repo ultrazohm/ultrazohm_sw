@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -47,6 +48,9 @@ uz_CurrentControl_t* CC_instance;
 
 // Declare Pointer for Chirp
 uz_wavegen_chirp* chirp_instance;
+
+// Declare Pointer for Offset Estimation
+uz_encoder_offset_estimation_t* encoder_offset_obj;
 
 //// Configuration of Brose PMSM
 //struct uz_PMSM_t config_PMSM = {
@@ -139,6 +143,16 @@ int main(void)
             .offset = 0.0f
     };
 
+    // Encoder offset estimation
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+        .ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+        .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
+        .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+        .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
+        .min_omega_el = 300.0f,                                                     // target electric rotor angular speed (USE OWN)
+        .setpoint_current = 8.0f 													// current setpoint to reach speed (USE OWN)
+    };
+
     // Initialization Chain
     while (1)
     {
@@ -182,7 +196,9 @@ int main(void)
         	SC_instance = uz_SpeedControl_init(SC_config);
         	SP_instance = uz_SetPoint_init(SP_config);
         	CC_instance = uz_CurrentControl_init(CC_config);
-        	chirp_instance=uz_wavegen_chirp_init(config_chirp);
+        	chirp_instance = uz_wavegen_chirp_init(config_chirp);
+        	encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
+        	Global_Data.av.theta_offset = 1.025f;                                             // inital offset (USE OWN)
         	initialization_chain = print_msg;
         	break;
 	    case print_msg:

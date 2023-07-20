@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -43,6 +44,7 @@ extern uz_SpeedControl_t* SC_instance;
 extern uz_SetPoint_t* SP_instance;
 extern uz_CurrentControl_t* CC_instance;
 extern struct uz_PMSM_t config_PMSM;
+extern uz_encoder_offset_estimation_t* encoder_offset_obj;
 
 // Declare Variables FOC
 struct uz_3ph_abc_t v_abc_Volts = {0};
@@ -120,8 +122,12 @@ void ISR_Control(void *data)
     // Calculation of Signals for FOC
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec = omega_m_rad_per_sec*config_PMSM.polePairs;
-    theta_el_rad = Global_Data.av.theta_elec-theta_el_offset;
+    Global_Data.av.omega_el = omega_el_rad_per_sec;
+    theta_el_rad = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
     i_dq_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad);
+
+    // Offset Estimation
+    Global_Data.av.U_q = v_dq_ref_Volts.q;                                              // write controller output ref voltage to global data
 
     // Enable Control
     if (current_state==control_state)
@@ -139,6 +145,14 @@ void ISR_Control(void *data)
 
     	//i_dq_ref_Amps.q=0.0f;
     	//i_dq_ref_Amps.d= excitation_amplitude;
+
+    	// Offset estimation
+//    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
+//    			i_dq_ref_Amps = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
+//    	    }else{
+//    	        i_dq_ref_Amps.d = 0.0f;                                              // else: it is finished, setpoints are 0
+//    	        i_dq_ref_Amps.q = 0.0f;
+//    	    }
 
     	// Field Oriented Control
     	//M_ref_Nm = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);										// Calculate Reference Torque

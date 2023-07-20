@@ -77,9 +77,47 @@ struct uz_fixedpoint_definition_t i_setpoint_fp_def = {
 		.fractional_bits = 11
 };
 
+struct uz_fixedpoint_definition_t i_debug_meas = {
+		.is_signed = true,
+		.integer_bits = 12,
+		.fractional_bits = 15
+};
+
+struct uz_fixedpoint_definition_t omega_m_debug_meas = {
+		.is_signed = true,
+		.integer_bits = 13,
+		.fractional_bits = 11
+};
+
+struct uz_fixedpoint_definition_t theta_el_debug_meas = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 20
+};
+
+struct uz_fixedpoint_definition_t del_fp = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 15
+};
+
+
 extern pre_calc_val_t pre_calc_val;
 extern const base_val_t base_val;
 extern uz_PMSM_6ph_t dengine;
+
+typedef struct pre_calc_val_fixedpoint_t {
+	int32_t Rs_over_ZB;
+	int32_t Ts_times_ZB_over_Ld;
+	int32_t Ts_times_ZB_over_Lq;
+	int32_t Ts_times_ZB_over_Lx;
+	int32_t Ts_times_ZB_over_Ly;
+	int32_t Ld_over_LB;
+	int32_t Lq_over_LB;
+	int32_t psi_pm_over_psiB;
+}pre_calc_val_fixedpoint_t;
+
+pre_calc_val_fixedpoint_t pre_calc_val_fixedpoint={0};
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -176,6 +214,18 @@ int main(void)
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
             reconfig_ADC();
+            // init debug switch ip
+            uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, Global_Data.av.debug_ip_off);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x100, 3.0f, i_debug_meas); // 6-dummy phase currents
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x104, 2.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x108, 1.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x10C, 6.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x110, 5.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x114, 4.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x118, 50.0f, i_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x11C, 0.0f, omega_m_debug_meas);
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x120, 0.0f, theta_el_debug_meas);
+
 
             // init pu-conversion
 //          float pu_current_conversion = 0.1f; // 10A = 1 p.u.
@@ -209,6 +259,9 @@ int main(void)
             uz_axi_write_uint32(XPAR_MPC_PU_OMEGA_M_0_BASEADDR + 0x17C, uz_convert_float_to_unsigned_fixed(pu_omega_m_conversion, 18)); //omega_m_rad_per_s
 
             // delay_comp IP init
+            pre_calc_val_fixedpoint.Rs_over_ZB = uz_fixedpoint_convert_to_signed_fixed(pre_calc_val.Rs_over_ZB, del_fp);
+            pre_calc_val_fixedpoint.Ts_times_ZB_over_Ld = uz_fixedpoint_convert_to_signed_fixed(pre_calc_val.Ts_times_ZB_over_Ld, del_fp);
+
             uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x118, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x11C, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x120, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);

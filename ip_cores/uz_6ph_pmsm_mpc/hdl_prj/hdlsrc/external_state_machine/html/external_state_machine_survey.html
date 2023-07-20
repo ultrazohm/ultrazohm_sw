@@ -36,7 +36,7 @@ external_state_machine
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.121
+1.126
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2023-07-19 17:41:54
+2023-07-20 18:52:48
 </td>
 
 </tr>
@@ -63,8 +63,8 @@ HDL code generated on
 HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('external_state_machine:2601')" name="code2model" class="code2model">
-uz_debug_switch_measurements
+<a href="matlab:coder.internal.code2model('external_state_machine:1360')" name="code2model" class="code2model">
+delay_comp
 </a>
 
 </td>
@@ -132,7 +132,7 @@ on
 HDLSubsystem
 </td>
 <td align="right" valign="top" style="border-style: none">
-external_state_machine/uz_debug_switch_measurements
+external_state_machine/delay_comp
 </td>
 
 </tr>
@@ -141,7 +141,7 @@ external_state_machine/uz_debug_switch_measurements
 ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_debug_ip_src_
+delay_comp_src_
 </td>
 
 </tr>
@@ -247,8 +247,8 @@ Non-default block properties
 
 </a>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2601')" name="code2model" class="code2model">
-uz_debug_switch_measurements
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1360')" name="code2model" class="code2model">
+delay_comp
 </a>
 
 </b>
@@ -261,6 +261,24 @@ uz_debug_switch_measurements
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+IPCoreName
+</td>
+<td align="right" valign="top" style="border-style: none">
+delay_comp
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IPCoreVersion
+</td>
+<td align="right" valign="top" style="border-style: none">
+1.1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -271,8 +289,8 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2602')" name="code2model" class="code2model">
-in0
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1361')" name="code2model" class="code2model">
+id_pu
 </a>
 
 </b>
@@ -295,41 +313,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2603')" name="code2model" class="code2model">
-in0_AXI
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"100"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2604')" name="code2model" class="code2model">
-in1
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1362')" name="code2model" class="code2model">
+iq_pu
 </a>
 
 </b>
@@ -352,41 +337,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2605')" name="code2model" class="code2model">
-in0_AXI1
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"104"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2606')" name="code2model" class="code2model">
-in2
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1363')" name="code2model" class="code2model">
+ix_pu
 </a>
 
 </b>
@@ -409,41 +361,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2607')" name="code2model" class="code2model">
-in0_AXI2
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"108"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2608')" name="code2model" class="code2model">
-in3
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1364')" name="code2model" class="code2model">
+iy_pu
 </a>
 
 </b>
@@ -466,41 +385,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2609')" name="code2model" class="code2model">
-in0_AXI3
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"10C"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2610')" name="code2model" class="code2model">
-in4
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1365')" name="code2model" class="code2model">
+vd_pu
 </a>
 
 </b>
@@ -523,41 +409,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2611')" name="code2model" class="code2model">
-in0_AXI4
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"110"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2612')" name="code2model" class="code2model">
-in5
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1366')" name="code2model" class="code2model">
+vq_pu
 </a>
 
 </b>
@@ -580,41 +433,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2613')" name="code2model" class="code2model">
-in0_AXI5
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"114"
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2614')" name="code2model" class="code2model">
-in6
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1367')" name="code2model" class="code2model">
+vx_pu
 </a>
 
 </b>
@@ -637,8 +457,56 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2615')" name="code2model" class="code2model">
-in0_AXI6
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1368')" name="code2model" class="code2model">
+vy_pu
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1369')" name="code2model" class="code2model">
+omega_m_pu
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1370')" name="code2model" class="code2model">
+Rs_over_ZB_AXI
 </a>
 
 </b>
@@ -670,32 +538,8 @@ x"118"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2616')" name="code2model" class="code2model">
-in7
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2617')" name="code2model" class="code2model">
-in0_AXI7
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1371')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ld_AXI
 </a>
 
 </b>
@@ -727,32 +571,8 @@ x"11C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2661')" name="code2model" class="code2model">
-in8
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2662')" name="code2model" class="code2model">
-in0_AXI8
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1372')" name="code2model" class="code2model">
+Ts_times_ZB_over_Lq_AXI
 </a>
 
 </b>
@@ -784,8 +604,8 @@ x"120"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2618')" name="code2model" class="code2model">
-real_or_debug_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1373')" name="code2model" class="code2model">
+Ts_times_ZB_over_Lx_AXI
 </a>
 
 </b>
@@ -817,8 +637,173 @@ x"124"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2668')" name="code2model" class="code2model">
-adc_valid_trigger
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1374')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ly_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"128"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1375')" name="code2model" class="code2model">
+Ld_over_LB_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"12C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1376')" name="code2model" class="code2model">
+Lq_over_LB_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"130"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1377')" name="code2model" class="code2model">
+psi_pm_over_psiB_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"138"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1378')" name="code2model" class="code2model">
+polepairs_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"13C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1379')" name="code2model" class="code2model">
+trigger_delay_comp
 </a>
 
 </b>
@@ -841,8 +826,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2652')" name="code2model" class="code2model">
-out0
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1380')" name="code2model" class="code2model">
+trigger_park_done
 </a>
 
 </b>
@@ -865,8 +850,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2653')" name="code2model" class="code2model">
-out1
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1560')" name="code2model" class="code2model">
+id_delay_pu
 </a>
 
 </b>
@@ -889,8 +874,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2654')" name="code2model" class="code2model">
-out2
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1561')" name="code2model" class="code2model">
+iq_delay_pu
 </a>
 
 </b>
@@ -913,8 +898,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2655')" name="code2model" class="code2model">
-out3
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1562')" name="code2model" class="code2model">
+ix_delay_pu
 </a>
 
 </b>
@@ -937,8 +922,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2656')" name="code2model" class="code2model">
-out4
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1563')" name="code2model" class="code2model">
+iy_delay_pu
 </a>
 
 </b>
@@ -961,8 +946,140 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2657')" name="code2model" class="code2model">
-out5
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1564')" name="code2model" class="code2model">
+id_delay_pu_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"104"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1565')" name="code2model" class="code2model">
+iq_delay_pu_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"108"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1566')" name="code2model" class="code2model">
+ix_delay_pu_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1567')" name="code2model" class="code2model">
+iy_delay_pu_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"110"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:1568')" name="code2model" class="code2model">
+delay_comp_done
 </a>
 
 </b>
@@ -985,8 +1102,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2658')" name="code2model" class="code2model">
-out6
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2710')" name="code2model" class="code2model">
+Rs_over_ZB
 </a>
 
 </b>
@@ -1009,56 +1126,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2659')" name="code2model" class="code2model">
-out7
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2667')" name="code2model" class="code2model">
-out8
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2671')" name="code2model" class="code2model">
-debug_ip_done
+Block Parameters for:<a href="matlab:coder.internal.code2model('external_state_machine:2714')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ld
 </a>
 
 </b>

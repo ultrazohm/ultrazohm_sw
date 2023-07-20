@@ -217,21 +217,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-					data->rasv.halfBridge1DutyCycle = 0.55f;
-					data->rasv.halfBridge2DutyCycle = 0.5f;
-					data->rasv.halfBridge3DutyCycle = 0.5f;
-					data->rasv.halfBridge4DutyCycle = 0.5f;
-					data->rasv.halfBridge5DutyCycle = 0.5f;
-					data->rasv.halfBridge6DutyCycle = 0.5f;
+				data->av.debug_ip_off = true;
+		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
+//					data->rasv.halfBridge1DutyCycle = 0.55f;
+//					data->rasv.halfBridge2DutyCycle = 0.5f;
+//					data->rasv.halfBridge3DutyCycle = 0.5f;
+//					data->rasv.halfBridge4DutyCycle = 0.5f;
+//					data->rasv.halfBridge5DutyCycle = 0.5f;
+//					data->rasv.halfBridge6DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_2):
-					data->rasv.halfBridge1DutyCycle = 0.5f;
-					data->rasv.halfBridge2DutyCycle = 0.55f;
-					data->rasv.halfBridge3DutyCycle = 0.5f;
-					data->rasv.halfBridge4DutyCycle = 0.5f;
-					data->rasv.halfBridge5DutyCycle = 0.5f;
-					data->rasv.halfBridge6DutyCycle = 0.5f;
+		data->av.debug_ip_off = false;
+		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
+//					data->rasv.halfBridge1DutyCycle = 0.5f;
+//					data->rasv.halfBridge2DutyCycle = 0.55f;
+//					data->rasv.halfBridge3DutyCycle = 0.5f;
+//					data->rasv.halfBridge4DutyCycle = 0.5f;
+//					data->rasv.halfBridge5DutyCycle = 0.5f;
+//					data->rasv.halfBridge6DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_3):

@@ -346,7 +346,9 @@ void ISR_Control(void *data)
 //		uz_PWM_SS_2L_hw_SetMode(Global_Data.objects.pwm_d1_pin_0_to_5, direct_control_via_FPGA);
 //		uz_PWM_SS_2L_hw_SetMode(Global_Data.objects.pwm_d1_pin_6_to_11, direct_control_via_FPGA);
         // Start: Control algorithm - only if ultrazohm is in control state
+    	if (Global_Data.av.debug_ip_off == true) {
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
+    	}
 
 
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);

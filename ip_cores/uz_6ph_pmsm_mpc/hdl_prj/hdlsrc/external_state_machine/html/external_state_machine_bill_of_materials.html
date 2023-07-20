@@ -5,7 +5,7 @@ High-level Resource Utilization Report for external_state_machine
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Multiply_1_2');hdlTableShrink(this, 'Multiply_1_3');hdlTableShrink(this, 'Multiply_1_4');hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_5');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Multiplexer_1_5');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -152,7 +152,7 @@ Summary
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+15
 </td>
 
 </tr>
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+11
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-60
+99
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1446
+1996
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-18
+52
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-727
+657
 </td>
 
 </tr>
@@ -240,31 +240,247 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
-Report for Subsystem:    <a href="matlab:coder.internal.code2model('external_state_machine:2601')" name="code2model" class="code2model">
-uz_debug_switch_measurements
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('external_state_machine:1360')" name="code2model" class="code2model">
+delay_comp
 </a>
 
 </h5>
 <h5>
-Registers (60)
+Multipliers (15)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x27-bit Multiply 							: 8
+</span>
+<span name="Multiply_1_1" id="Multiply_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1510')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1516')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1509')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1520')" name="code2model" class="code2model">
+Product6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1521')" name="code2model" class="code2model">
+Product7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1519')" name="code2model" class="code2model">
+Product5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1512')" name="code2model" class="code2model">
+Product11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1514')" name="code2model" class="code2model">
+Product13
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24x33-bit Multiply 							: 2
+</span>
+<span name="Multiply_1_2" id="Multiply_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1518')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1523')" name="code2model" class="code2model">
+Product9
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27x18-bit Multiply 							: 2
+</span>
+<span name="Multiply_1_3" id="Multiply_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1517')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1522')" name="code2model" class="code2model">
+Product8
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+18x18-bit Multiply 							: 3
+</span>
+<span name="Multiply_1_4" id="Multiply_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1511')" name="code2model" class="code2model">
+Product10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1513')" name="code2model" class="code2model">
+Product12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1515')" name="code2model" class="code2model">
+Product14
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Adders/Subtractors (11)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27x27-bit Adder 							: 5
+</span>
+<span name="Adder_1_1" id="Adder_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1382')" name="code2model" class="code2model">
+Add1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1384')" name="code2model" class="code2model">
+Add3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1386')" name="code2model" class="code2model">
+Add5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1388')" name="code2model" class="code2model">
+Add7
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27x27-bit Subtractor 							: 6
+</span>
+<span name="Subtractor_1_1" id="Subtractor_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1385')" name="code2model" class="code2model">
+Add4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1387')" name="code2model" class="code2model">
+Add6
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Registers (97)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 6
+1-bit Register 							: 8
 </span>
 <span name="Register_1_1" id="Register_1_1">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2633')" name="code2model" class="code2model">
-Delay21
+<a href="matlab:coder.internal.code2model('external_state_machine:1435')" name="code2model" class="code2model">
+Delay50
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2670')" name="code2model" class="code2model">
-Delay29
+<a href="matlab:coder.internal.code2model('external_state_machine:1962')" name="code2model" class="code2model">
+Delay49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1389')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1392')" name="code2model" class="code2model">
+Delay11
 </a>
 
 </li>
@@ -276,157 +492,187 @@ Delay29
 [+]
 </span>
 <span style="font-family:monospace">
-27-bit Register 							: 48
+18-bit Register 							: 47
 </span>
 <span name="Register_1_2" id="Register_1_2">
-<ul class="SystemdefinedCollapse" id="0f369e82-2102-413d-8176-7566939e3357" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e2adfa33-6dc8-4c2b-b019-f8b917a14920" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2620')" name="code2model" class="code2model">
-Delay1
+<a href="matlab:coder.internal.code2model('external_state_machine:1409')" name="code2model" class="code2model">
+Delay27
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2619')" name="code2model" class="code2model">
-Delay
+<a href="matlab:coder.internal.code2model('external_state_machine:1410')" name="code2model" class="code2model">
+Delay28
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2631')" name="code2model" class="code2model">
-Delay2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2638')" name="code2model" class="code2model">
-Delay4
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2637')" name="code2model" class="code2model">
-Delay3
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2639')" name="code2model" class="code2model">
-Delay5
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2641')" name="code2model" class="code2model">
-Delay7
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2640')" name="code2model" class="code2model">
-Delay6
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2642')" name="code2model" class="code2model">
-Delay8
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2621')" name="code2model" class="code2model">
-Delay10
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2643')" name="code2model" class="code2model">
-Delay9
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2622')" name="code2model" class="code2model">
-Delay11
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2624')" name="code2model" class="code2model">
-Delay13
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2623')" name="code2model" class="code2model">
-Delay12
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2625')" name="code2model" class="code2model">
-Delay14
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2627')" name="code2model" class="code2model">
-Delay16
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2626')" name="code2model" class="code2model">
-Delay15
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2628')" name="code2model" class="code2model">
-Delay17
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2630')" name="code2model" class="code2model">
-Delay19
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2629')" name="code2model" class="code2model">
-Delay18
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2632')" name="code2model" class="code2model">
-Delay20
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2664')" name="code2model" class="code2model">
-Delay26
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2663')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1407')" name="code2model" class="code2model">
 Delay25
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2665')" name="code2model" class="code2model">
-Delay27
+<a href="matlab:coder.internal.code2model('external_state_machine:1408')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1391')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1429')" name="code2model" class="code2model">
+Delay45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1420')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1421')" name="code2model" class="code2model">
+Delay38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1390')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1411')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1413')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1402')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1431')" name="code2model" class="code2model">
+Delay47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1418')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1419')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1403')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1422')" name="code2model" class="code2model">
+Delay39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1424')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1404')" name="code2model" class="code2model">
+Delay22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1414')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1415')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1439')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1445')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1406')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1416')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1417')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1450')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1451')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1426')" name="code2model" class="code2model">
+Delay42
 </a>
 
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '0f369e82-2102-413d-8176-7566939e3357')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e2adfa33-6dc8-4c2b-b019-f8b917a14920')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -435,25 +681,166 @@ Delay27
 [+]
 </span>
 <span style="font-family:monospace">
-24-bit Register 							: 6
+27-bit Register 							: 36
 </span>
 <span name="Register_1_3" id="Register_1_3">
-<ul>
+<ul class="SystemdefinedCollapse" id="7c787959-6a45-4f31-8250-95feb8a3a7c3" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2636')" name="code2model" class="code2model">
-Delay24
+<a href="matlab:coder.internal.code2model('external_state_machine:1438')" name="code2model" class="code2model">
+Delay59
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2635')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1436')" name="code2model" class="code2model">
+Delay57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1399')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1401')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1412')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1423')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1434')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1430')" name="code2model" class="code2model">
+Delay46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1440')" name="code2model" class="code2model">
+Delay60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1437')" name="code2model" class="code2model">
+Delay58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1400')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1432')" name="code2model" class="code2model">
+Delay48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1447')" name="code2model" class="code2model">
+Delay71
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1446')" name="code2model" class="code2model">
+Delay70
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1405')" name="code2model" class="code2model">
 Delay23
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2634')" name="code2model" class="code2model">
-Delay22
+<a href="matlab:coder.internal.code2model('external_state_machine:1449')" name="code2model" class="code2model">
+Delay73
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1448')" name="code2model" class="code2model">
+Delay72
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1425')" name="code2model" class="code2model">
+Delay41
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '7c787959-6a45-4f31-8250-95feb8a3a7c3')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+24-bit Register 							: 3
+</span>
+<span name="Register_1_4" id="Register_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1393')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1394')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 3
+</span>
+<span name="Register_1_5" id="Register_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1427')" name="code2model" class="code2model">
+Delay43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1428')" name="code2model" class="code2model">
+Delay44
 </a>
 
 </li>
@@ -462,63 +849,162 @@ Delay22
 
 </span>
 <br /><h5>
-Multiplexers (18)
+Multiplexers (48)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 9
+1-bit 2-to-1 Multiplexer 							: 24
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-27-bit 2-to-1 Multiplexer 							: 8
+18-bit 2-to-1 Multiplexer 							: 12
 </span>
 <span name="Multiplexer_1_2" id="Multiplexer_1_2">
-<ul>
+<ul class="SystemdefinedCollapse" id="bedeba97-6c07-4004-b95a-31fc56133be6" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2644')" name="code2model" class="code2model">
-Switch
+<a href="matlab:coder.internal.code2model('external_state_machine:1543')" name="code2model" class="code2model">
+Switch13
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2645')" name="code2model" class="code2model">
-Switch1
+<a href="matlab:coder.internal.code2model('external_state_machine:1542')" name="code2model" class="code2model">
+Switch12
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2646')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1548')" name="code2model" class="code2model">
+Switch18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1544')" name="code2model" class="code2model">
+Switch14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1547')" name="code2model" class="code2model">
+Switch17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1549')" name="code2model" class="code2model">
+Switch19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1545')" name="code2model" class="code2model">
+Switch15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1550')" name="code2model" class="code2model">
 Switch2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2647')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1546')" name="code2model" class="code2model">
+Switch16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1554')" name="code2model" class="code2model">
 Switch3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2648')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:2709')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:2713')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'bedeba97-6c07-4004-b95a-31fc56133be6')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 10
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1552')" name="code2model" class="code2model">
+Switch28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1540')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1541')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1963')" name="code2model" class="code2model">
 Switch4
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2649')" name="code2model" class="code2model">
-Switch5
+<a href="matlab:coder.internal.code2model('external_state_machine:1553')" name="code2model" class="code2model">
+Switch29
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2650')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1966')" name="code2model" class="code2model">
 Switch6
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2666')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('external_state_machine:1555')" name="code2model" class="code2model">
+Switch30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1968')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1556')" name="code2model" class="code2model">
+Switch31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1970')" name="code2model" class="code2model">
 Switch8
 </a>
 
@@ -527,17 +1013,35 @@ Switch8
 </ul>
 
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_4')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 24-bit 2-to-1 Multiplexer 							: 1
 </span>
-<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<span name="Multiplexer_1_4" id="Multiplexer_1_4">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2651')" name="code2model" class="code2model">
-Switch7
+<a href="matlab:coder.internal.code2model('external_state_machine:1558')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_1_5" id="Multiplexer_1_5">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1551')" name="code2model" class="code2model">
+Switch21
 </a>
 
 </li>
@@ -546,16 +1050,16 @@ Switch7
 
 </span>
 <br /><h5>
-Number of I/O Bits (727)
+Number of I/O Bits (657)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 485
+Number of Input Bits: 403
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="ada6b51c-06c9-485f-9725-0c5e030a002b" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="21b9d78c-1e17-4978-b100-aad90b79fe78" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -566,128 +1070,128 @@ reset: 1 bit
 clk_enable: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2602')" name="code2model" class="code2model">
-in0
+<a href="matlab:coder.internal.code2model('external_state_machine:1361')" name="code2model" class="code2model">
+id_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2603')" name="code2model" class="code2model">
-in0_AXI
+<a href="matlab:coder.internal.code2model('external_state_machine:1362')" name="code2model" class="code2model">
+iq_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2604')" name="code2model" class="code2model">
-in1
+<a href="matlab:coder.internal.code2model('external_state_machine:1363')" name="code2model" class="code2model">
+ix_pu
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1364')" name="code2model" class="code2model">
+iy_pu
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1365')" name="code2model" class="code2model">
+vd_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2605')" name="code2model" class="code2model">
-in0_AXI1
+<a href="matlab:coder.internal.code2model('external_state_machine:1366')" name="code2model" class="code2model">
+vq_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2606')" name="code2model" class="code2model">
-in2
+<a href="matlab:coder.internal.code2model('external_state_machine:1367')" name="code2model" class="code2model">
+vx_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2607')" name="code2model" class="code2model">
-in0_AXI2
+<a href="matlab:coder.internal.code2model('external_state_machine:1368')" name="code2model" class="code2model">
+vy_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2608')" name="code2model" class="code2model">
-in3
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2609')" name="code2model" class="code2model">
-in0_AXI3
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2610')" name="code2model" class="code2model">
-in4
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2611')" name="code2model" class="code2model">
-in0_AXI4
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2612')" name="code2model" class="code2model">
-in5
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2613')" name="code2model" class="code2model">
-in0_AXI5
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2614')" name="code2model" class="code2model">
-in6
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2615')" name="code2model" class="code2model">
-in0_AXI6
-</a>
-: 27 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2616')" name="code2model" class="code2model">
-in7
+<a href="matlab:coder.internal.code2model('external_state_machine:1369')" name="code2model" class="code2model">
+omega_m_pu
 </a>
 : 24 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2617')" name="code2model" class="code2model">
-in0_AXI7
+<a href="matlab:coder.internal.code2model('external_state_machine:1370')" name="code2model" class="code2model">
+Rs_over_ZB_AXI
 </a>
-: 24 bits
+: 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2661')" name="code2model" class="code2model">
-in8
+<a href="matlab:coder.internal.code2model('external_state_machine:1371')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ld_AXI
 </a>
-: 27 bits
+: 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2662')" name="code2model" class="code2model">
-in0_AXI8
+<a href="matlab:coder.internal.code2model('external_state_machine:1372')" name="code2model" class="code2model">
+Ts_times_ZB_over_Lq_AXI
 </a>
-: 27 bits
+: 18 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2618')" name="code2model" class="code2model">
-real_or_debug_AXI
+<a href="matlab:coder.internal.code2model('external_state_machine:1373')" name="code2model" class="code2model">
+Ts_times_ZB_over_Lx_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1374')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ly_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1375')" name="code2model" class="code2model">
+Ld_over_LB_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1376')" name="code2model" class="code2model">
+Lq_over_LB_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1377')" name="code2model" class="code2model">
+psi_pm_over_psiB_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1378')" name="code2model" class="code2model">
+polepairs_AXI
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:1379')" name="code2model" class="code2model">
+trigger_delay_comp
 </a>
 : 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2668')" name="code2model" class="code2model">
-adc_valid_trigger
+<a href="matlab:coder.internal.code2model('external_state_machine:1380')" name="code2model" class="code2model">
+trigger_park_done
 </a>
 : 1 bit
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'ada6b51c-06c9-485f-9725-0c5e030a002b')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '21b9d78c-1e17-4978-b100-aad90b79fe78')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -696,79 +1200,123 @@ adc_valid_trigger
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 242
+Number of Output Bits: 254
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="26f7a49c-ad12-46e1-adbf-388e5c0b512a" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="e1c34996-8f6e-49b1-a4ae-33e453dfefe7" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2652')" name="code2model" class="code2model">
-out0
+<a href="matlab:coder.internal.code2model('external_state_machine:1560')" name="code2model" class="code2model">
+id_delay_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2653')" name="code2model" class="code2model">
-out1
+<a href="matlab:coder.internal.code2model('external_state_machine:1561')" name="code2model" class="code2model">
+iq_delay_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2654')" name="code2model" class="code2model">
-out2
+<a href="matlab:coder.internal.code2model('external_state_machine:1562')" name="code2model" class="code2model">
+ix_delay_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2655')" name="code2model" class="code2model">
-out3
+<a href="matlab:coder.internal.code2model('external_state_machine:1563')" name="code2model" class="code2model">
+iy_delay_pu
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2656')" name="code2model" class="code2model">
-out4
+<a href="matlab:coder.internal.code2model('external_state_machine:1564')" name="code2model" class="code2model">
+id_delay_pu_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2657')" name="code2model" class="code2model">
-out5
+<a href="matlab:coder.internal.code2model('external_state_machine:1565')" name="code2model" class="code2model">
+iq_delay_pu_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2658')" name="code2model" class="code2model">
-out6
+<a href="matlab:coder.internal.code2model('external_state_machine:1566')" name="code2model" class="code2model">
+ix_delay_pu_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2659')" name="code2model" class="code2model">
-out7
-</a>
-: 24 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2667')" name="code2model" class="code2model">
-out8
+<a href="matlab:coder.internal.code2model('external_state_machine:1567')" name="code2model" class="code2model">
+iy_delay_pu_AXI
 </a>
 : 27 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('external_state_machine:2671')" name="code2model" class="code2model">
-debug_ip_done
+<a href="matlab:coder.internal.code2model('external_state_machine:1568')" name="code2model" class="code2model">
+delay_comp_done
 </a>
 : 1 bit
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:2710')" name="code2model" class="code2model">
+Rs_over_ZB
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('external_state_machine:2714')" name="code2model" class="code2model">
+Ts_times_ZB_over_Ld
+</a>
+: 18 bits
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '26f7a49c-ad12-46e1-adbf-388e5c0b512a')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'e1c34996-8f6e-49b1-a4ae-33e453dfefe7')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('external_state_machine:1453')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('external_state_machine:1452')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><p><hr /></p>
 </body>

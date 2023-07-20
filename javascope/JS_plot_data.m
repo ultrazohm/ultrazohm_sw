@@ -5,9 +5,9 @@ format compact
 
 %% settings
 delete_empty_log_files = 0;
-save_all_logged_data = 0; 
+save_all_logged_data = 1; 
 plot_all_channels = 0;
-rename_channels_manually = 0;
+rename_channels_manually = 1;
 import_data_to_simulink_datainspector = 1;
 overwrite_data_in_simulink_datainspector = 1;
 
@@ -106,26 +106,26 @@ if(plot_all_channels ~= 0)
 end
 %% rename channels - if needed - done manually by user!
 if (rename_channels_manually ~= 0)
-    log = renamevars(log, "CH1",  "CH1" );
-    log = renamevars(log, "CH2",  "CH2" );
-    log = renamevars(log, "CH3",  "CH3" );
-    log = renamevars(log, "CH4",  "CH4" );
-    log = renamevars(log, "CH5",  "CH5" );
-    log = renamevars(log, "CH6",  "CH6" );
-    log = renamevars(log, "CH7",  "CH7" );
-    log = renamevars(log, "CH8",  "CH8" );
-    log = renamevars(log, "CH9",  "CH9" );
-    log = renamevars(log, "CH10", "CH10");
-    log = renamevars(log, "CH11", "CH11");
-    log = renamevars(log, "CH12", "CH12");
-    log = renamevars(log, "CH13", "CH13");
-    log = renamevars(log, "CH14", "CH14");
-    log = renamevars(log, "CH15", "CH15");
-    log = renamevars(log, "CH16", "CH16");
-    log = renamevars(log, "CH17", "CH17");
-    log = renamevars(log, "CH18", "CH18");
-    log = renamevars(log, "CH19", "CH19");
-    log = renamevars(log, "CH20", "CH20");
+    log = renamevars(log, "CH1",  "start_marker" );
+    log = renamevars(log, "CH2",  "Speed_rpm" );
+    log = renamevars(log, "CH3",  "ia1" );
+    log = renamevars(log, "CH4",  "ib1" );
+    log = renamevars(log, "CH5",  "ic1" );
+    log = renamevars(log, "CH6",  "ia2" );
+    log = renamevars(log, "CH7",  "ib2" );
+    log = renamevars(log, "CH8",  "ic2" );
+    log = renamevars(log, "CH9",  "ud" );
+    log = renamevars(log, "CH10", "uq");
+    log = renamevars(log, "CH11", "uX");
+    log = renamevars(log, "CH12", "uY");
+    log = renamevars(log, "CH13", "id");
+    log = renamevars(log, "CH14", "iq");
+    log = renamevars(log, "CH15", "iX");
+    log = renamevars(log, "CH16", "iY");
+    log = renamevars(log, "CH17", "iq_ref");
+    log = renamevars(log, "CH18", "id_ref");
+    log = renamevars(log, "CH19", "iX_ref");
+    log = renamevars(log, "CH20", "iY_ref");
     channel_names  = log.Properties.VariableNames;
 end
 

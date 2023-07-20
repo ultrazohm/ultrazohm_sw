@@ -49,6 +49,7 @@ enum JS_OberservableData {
 	JSO_uq,
 	JSO_uX,
 	JSO_uY,
+	JSO_start_marker,
 	JSO_Speed_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,

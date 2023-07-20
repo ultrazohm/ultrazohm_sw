@@ -155,8 +155,8 @@ static void ReadAllADC();
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    uz_pmsm_model6ph_trigger_voltage_input_strobe(self);
-    uz_pmsm_model6ph_trigger_voltage_output_strobe(self);
+    uz_pmsm_model6ph_trigger_voltage_input_strobe(Global_Data.objects.CIL_pmsm);
+    uz_pmsm_model6ph_trigger_voltage_output_strobe(Global_Data.objects.CIL_pmsm);
     ReadAllADC();
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 

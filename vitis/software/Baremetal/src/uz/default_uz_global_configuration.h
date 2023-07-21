@@ -21,6 +21,8 @@
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            5.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_ISR_FREQUENCY   						UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE
+
 #define DEPENGINE								0U
 #define HEIDRIVE								1U
 #define BROSE									0U

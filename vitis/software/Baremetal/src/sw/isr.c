@@ -233,10 +233,10 @@ void ISR_Control(void *data)
     Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
     Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
 
-    Global_Data.av.i_d_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x104, delay_fixedpoint_definition);
-    Global_Data.av.i_q_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x108, delay_fixedpoint_definition);
-    Global_Data.av.i_x_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x10C, delay_fixedpoint_definition);
-    Global_Data.av.i_y_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x110, delay_fixedpoint_definition);
+    Global_Data.av.i_d_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_1_BASEADDR + 0x104, delay_fixedpoint_definition);
+    Global_Data.av.i_q_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_1_BASEADDR + 0x108, delay_fixedpoint_definition);
+    Global_Data.av.i_x_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_1_BASEADDR + 0x10C, delay_fixedpoint_definition);
+    Global_Data.av.i_y_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_1_BASEADDR + 0x110, delay_fixedpoint_definition);
 
 //    //DEBUG write index to pu_voltages ip via AXI
 //    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x100, 0U);

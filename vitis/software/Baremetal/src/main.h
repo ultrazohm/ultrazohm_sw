@@ -69,8 +69,8 @@
 #include "sw/init_FOC/init_FOC.h"
 #include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 // Network definition
-#define NN_15_INPUT_1_64  1
-#define NN_15_INPUT_3_64  0
+#define NN_15_INPUT_1_64  0
+#define NN_17_INPUT_1_64  1
 
 //----------------------------------------------------
 // FUNCTIONS

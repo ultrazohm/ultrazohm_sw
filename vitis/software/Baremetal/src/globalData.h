@@ -141,6 +141,8 @@ typedef struct{
 	uz_CurrentControl_t* CC_xy_instance;
 	uz_matrix_t* matrix_input_15n;
 	uz_nn_t* nn_layer_15n;
+	uz_matrix_t* matrix_input_17n;
+	uz_nn_t* nn_layer_17n;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
 	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_1;
 	uz_PWM_duty_freq_detection_t* pwm_duty_freq_detection_VSI_2;

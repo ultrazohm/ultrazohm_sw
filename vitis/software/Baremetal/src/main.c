@@ -89,8 +89,8 @@ int main(void)
 #if NN_15_INPUT_1_64==1
         	nn_15_input_1_64_init();
 #endif
-#if NN_15_INPUT_3_64==1
-        	nn_15_input_3_64_init();
+#if NN_17_INPUT_1_64==1
+        	nn_17_input_1_64_init();
 #endif
         	initialization_chain = init_ip_cores;
         	break;

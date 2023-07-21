@@ -215,6 +215,7 @@ int main(void)
             initialize_incremental_encoder_ipcore_v25_on_D5_1(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
             initialize_incremental_encoder_ipcore_v25_on_D5_2(UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
             initialize_incremental_encoder_ipcore_v25_on_D5_3(UZ_D5_ANGINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             initialization_chain = init_foc_control_nn;
             break;
         case init_foc_control_nn:
@@ -227,7 +228,7 @@ int main(void)
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
-            Global_Data.rasv.V_dc_volts = 48.0f;
+            Global_Data.mv.V_dc_volts = 12.0f;
 			initialization_chain = print_msg;
         	break;
 	    case print_msg:

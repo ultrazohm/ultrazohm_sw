@@ -1,0 +1,17 @@
+vlib work
+vcom  Incremental_Encoder_src_IncEnc_V25_pac.vhd
+vcom  Incremental_Encoder_src_Counter.vhd
+vcom  Incremental_Encoder_src_Counter_position.vhd
+vcom  Incremental_Encoder_src_Counter_theta_ele.vhd
+vcom  Incremental_Encoder_src_Direction.vhd
+vcom  Incremental_Encoder_src_count_lines.vhd
+vcom  Incremental_Encoder_src_align_oversamples.vhd
+vcom  Incremental_Encoder_src_oversample_factor.vhd
+vcom  Incremental_Encoder_src_OS_factor_logic.vhd
+vcom  Incremental_Encoder_src_Average.vhd
+vcom  Incremental_Encoder_src_HDL_Reciprocal_core.vhd
+vcom  Incremental_Encoder_src_HDL_Reciprocal.vhd
+vcom  Incremental_Encoder_src_invt_mult.vhd
+vcom  Incremental_Encoder_src_calc_omega.vhd
+vcom  Incremental_Encoder_src_speed.vhd
+vcom  Incremental_Encoder_src_IncEnc_V25.vhd

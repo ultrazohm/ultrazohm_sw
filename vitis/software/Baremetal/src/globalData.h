@@ -6,6 +6,7 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
@@ -62,8 +63,6 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float V_dc_volts;
-	float i_DC_Amps;
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
 	float I_L3; 		// Grid side current in A
@@ -104,9 +103,12 @@ typedef struct _actualValues_ {
 } actualValues;
 
 typedef struct _measuredValues_ {
-	struct uz_3ph_abc_t measurement_current;
-	struct uz_3ph_dq_t dq_measurement_current;
-
+	struct uz_3ph_abc_t v_abc_Volts;
+	struct uz_3ph_dq_t v_dq_Volts;
+	struct uz_3ph_abc_t i_abc_Amps;
+	struct uz_3ph_dq_t i_dq_Amps;
+	float V_dc_volts;
+	float i_DC_Amps;
 } measuredValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -124,7 +126,6 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	float n_ref_rpm;
 	float M_ref_Nm;
-	float V_dc_volts;
 	struct uz_3ph_dq_t dq_reference_current;
 	struct uz_3ph_dq_t dq_ref_Volts;
 	struct uz_3ph_abc_t uvw_ref;

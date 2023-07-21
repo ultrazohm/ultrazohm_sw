@@ -71,9 +71,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
 	js_ch_observable[JSO_position_abs]		= &position_abs;
 	js_ch_observable[JSO_position_ref]		= &position_ref;
-	js_ch_observable[JSO_ia] 				= &data->mv.measurement_current.a;
-	js_ch_observable[JSO_ib] 				= &data->mv.measurement_current.b;
-	js_ch_observable[JSO_ic] 				= &data->mv.measurement_current.c;
+	js_ch_observable[JSO_ia] 				= &data->mv.i_abc_Amps.a;
+	js_ch_observable[JSO_ib] 				= &data->mv.i_abc_Amps.b;
+	js_ch_observable[JSO_ic] 				= &data->mv.i_abc_Amps.c;
 	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;
 	js_ch_observable[JSO_dqn_angle_derv] 		= &data->obs.dqn_angle_derv;
 	js_ch_observable[JSO_dqn_chart_position_derv]= &data->obs.dqn_chart_position_derv;
@@ -81,8 +81,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_angle_derv_raw] 		= &data->obs.dqn_angle_derv_raw;
 	js_ch_observable[JSO_dqn_chart_position_derv_raw]= &data->obs.dqn_chart_position_derv_raw;
 	js_ch_observable[JSO_dqn_angle_raw] = 				&data->obs.dqn_angle_raw;
-	js_ch_observable[JSO_iq] 			= &data->mv.dq_measurement_current.q;
-	js_ch_observable[JSO_id] 			= &data->mv.dq_measurement_current.d;
+	js_ch_observable[JSO_iq] 			= &data->mv.i_dq_Amps.q;
+	js_ch_observable[JSO_id] 			= &data->mv.i_dq_Amps.d;
 	js_ch_observable[JSO_ud]			=&data->rasv.dq_ref_Volts.d;
 	js_ch_observable[JSO_uq]			=&data->rasv.dq_ref_Volts.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

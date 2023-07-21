@@ -75,12 +75,6 @@ float angle_derv=0.0f;
 float position_derv=0.0f;
 uint32_t action=0;
 
-// Inverter
-struct uz_3ph_abc_t v_abc_Volts = {0};
-struct uz_3ph_dq_t v_dq_Volts = {0};
-struct uz_3ph_dq_t v_dq_ref_Volts = {0};
-struct uz_3ph_abc_t i_abc_Amps = {0};
-struct uz_3ph_dq_t i_dq_Amps = {0};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -111,14 +105,14 @@ void ISR_Control(void *data)
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
     // Read Measurement Data of Inverter Card
-    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
-    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
-    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
-    Global_Data.av.V_dc_volts 	  = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
-    i_abc_Amps.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
-    i_abc_Amps.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
-    i_abc_Amps.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
-    Global_Data.av.i_DC_Amps    = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    Global_Data.mv.v_abc_Volts.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
+    Global_Data.mv.v_abc_Volts.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
+    Global_Data.mv.v_abc_Volts.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
+    Global_Data.mv.V_dc_volts 	  = Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    Global_Data.mv.i_abc_Amps.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    Global_Data.mv.i_abc_Amps.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+    Global_Data.mv.i_abc_Amps.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+    Global_Data.mv.i_DC_Amps    = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
     // Pendulum and linear axis calculation
     Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum+theta_off_angle_pendulum;
@@ -166,16 +160,12 @@ void ISR_Control(void *data)
         // calculate data pmsm for foc
         Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
         Global_Data.av.theta_mech = Global_Data.av.theta_elec * (1.0f/3.0f);
-        Global_Data.mv.measurement_current.a = adc_scaling * (Global_Data.aa.A2.me.ADC_A2 - 2.5f); // -2.5  Hall Sensor
-        Global_Data.mv.measurement_current.b = adc_scaling * (Global_Data.aa.A2.me.ADC_A4 - 2.5f);
-        Global_Data.mv.measurement_current.c = adc_scaling * (Global_Data.aa.A2.me.ADC_A3 - 2.5f);
-        Global_Data.mv.dq_measurement_current = uz_transformation_3ph_abc_to_dq(Global_Data.mv.measurement_current, Global_Data.av.theta_elec);
         omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f;         // w_mech
         omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
         Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
-        Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
         // Get Current State
         platform_state_t current_state=ultrazohm_state_machine_get_state();
+
         // Enable Inverter Adapter Hardware
         if (current_state == running_state || current_state == control_state) {
         	// enable inverter adapter hardware
@@ -184,6 +174,8 @@ void ISR_Control(void *data)
      	// disable inverter adapter hardware
         	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
         }
+
+        Global_Data.mv.i_dq_Amps = uz_transformation_3ph_abc_to_dq(Global_Data.mv.i_abc_Amps, Global_Data.av.theta_elec);
     // write controller output ref voltage to global data
     if (current_state==control_state)
     {
@@ -230,7 +222,7 @@ void ISR_Control(void *data)
 			case return_to_zero_position:
 				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
-				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.rasv.V_dc_volts, i_dq_Amps);
+				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
 				if( abs(position_abs) < 1){
 					chain=reset_angle;
 				}
@@ -261,7 +253,7 @@ void ISR_Control(void *data)
 				else{
 				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
-				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.rasv.V_dc_volts, i_dq_Amps);
+				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
 				}
 				break;
 			default:
@@ -272,8 +264,8 @@ void ISR_Control(void *data)
     	// Field Oriented Control
     	//M_ref_Nm = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);										// Calculate Reference Torque
     	//i_dq_ref_Amps = uz_SetPoint_sample(SP_instance, omega_m_rad_per_sec, M_ref_Nm, v_DC_Volts, i_dq_Amps);				// Calculate Reference Currents
-    	v_dq_ref_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, Global_Data.rasv.dq_reference_current, Global_Data.mv.dq_measurement_current, Global_Data.rasv.V_dc_volts, omega_el_rad_per_sec);		// Calculate Reference Voltages
-    	output = uz_Space_Vector_Modulation(v_dq_ref_Volts, Global_Data.rasv.V_dc_volts, Global_Data.av.theta_elec);											// Calculate Duty Cycles
+    	Global_Data.rasv.dq_ref_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, Global_Data.rasv.dq_reference_current, Global_Data.mv.i_dq_Amps, Global_Data.mv.V_dc_volts, omega_el_rad_per_sec);		// Calculate Reference Voltages
+    	output = uz_Space_Vector_Modulation(Global_Data.rasv.dq_ref_Volts, Global_Data.mv.V_dc_volts, Global_Data.av.theta_elec);											// Calculate Duty Cycles
     	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;																// Set Duty Cycle A
     	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;																// Set Duty Cycle B
     	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	// Set Duty Cycle C

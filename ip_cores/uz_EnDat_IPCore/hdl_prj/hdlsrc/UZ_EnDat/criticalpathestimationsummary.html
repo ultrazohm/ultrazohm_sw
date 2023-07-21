@@ -1,0 +1,683 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Critical Path Summary Report
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Critical Path Report for UZ_EnDat/UZ_EndDat
+</font>
+<br /><br /><br /><a name="Summary Section">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary Section
+</b>
+
+</font>
+
+</a>
+<hr>Critical Path Delay : 14.041 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_UZ_EnDat:33')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_UZ_EnDat:119')" name="code2model" class="code2model">
+Delay
+</a>
+<br>Highlight Critical Path: <a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated.m</a><br>Highlight Uncharacterized blocks: <a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks.m</a><br><br /><br /><a name="Critical Path Details">
+<font size="+1" color="#000066">
+<b class="midprod">
+Critical Path Details
+</b>
+
+</font>
+
+</a>
+<hr><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Id
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Propagation (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Delay (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Block Path
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+1
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.8410
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.8410
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:33')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+2
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+-2.5110
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:24')" name="code2model" class="code2model">
+Trigger_delay_ctrl_delay
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+3
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.6820
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:25')" name="code2model" class="code2model">
+Trigger_delay_switch
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+4
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9660
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:20')" name="code2model" class="code2model">
+not_Trigger_delayed
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+5
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8540
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8880
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+6
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.8410
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+7
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+3.1250
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:46')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+8
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+3.9850
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8600
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+9
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.9720
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+10
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+5.2560
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:28')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+11
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.1030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8470
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:51')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+12
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+6.1160
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+-0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+13
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.1030
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+14
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+7.3870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:64')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+15
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+9.2340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8470
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:69')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+16
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+8.2470
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+-0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+17
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+9.2340
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+18
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+9.5180
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:82')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+19
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+11.3650
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8470
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:87')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+20
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+10.3780
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+-0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+21
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+11.3650
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+22
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+11.6490
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:100')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+23
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+13.4960
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8470
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:105')" name="code2model" class="code2model">
+Triggered Subsystem
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+24
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+12.5090
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+-0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:21')" name="code2model" class="code2model">
+Trigger_delayed_inverted_and_Trigger
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+25
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+13.4960
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:26')" name="code2model" class="code2model">
+DbypassMux
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+26
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+13.7800
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:118')" name="code2model" class="code2model">
+Logical Operator1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+27
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+14.0410
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2610
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:119')" name="code2model" class="code2model">
+Delay
+</a>
+
+</td>
+
+</tr>
+
+</table>
+<br /><br />
+</body>
+
+</html>

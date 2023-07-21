@@ -57,6 +57,8 @@ int main(void)
     int status = UZ_SUCCESS;
     while (1)
     {
+    }
+    {
         switch (initialization_chain)
         {
         case init_assertions:

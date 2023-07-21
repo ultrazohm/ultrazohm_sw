@@ -9,6 +9,8 @@
 #define XCP_INTERFACE_H_
 
 void xcp_interface(void *p);
-extern void xcp_event_irq(void);
+
+void xcp_event_fast(void);
+void xcp_events_1ms(void);
 
 #endif /* XCP_INTERFACE_H_ */

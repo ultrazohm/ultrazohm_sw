@@ -9,6 +9,9 @@
 #define BSP_TIMER_H_
 
 #include <stdint.h>
+#include "xtime_l.h"
+
+#define BSP_TIMER_TICKS_PER_SECOND		COUNTS_PER_SECOND
 
 void bsp_timer_init(void);
 void bsp_timer_start(void);

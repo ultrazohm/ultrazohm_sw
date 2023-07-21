@@ -13,6 +13,7 @@
 #include "task.h"
 
 #include "global_data.h"
+#include "xcp/xcp_interface.h"
 
 
 
@@ -32,6 +33,19 @@
 #include "../include/isr.h"
 
 
+//====================================================================
+// Type definitions
+//====================================================================
+typedef struct {
+	uint8_t array_50_byte [50];
+	uint8_t array_90_byte [90];
+	uint8_t array_100_byte [100];
+
+	uint8_t saw_u8;
+	int8_t sin_u8;
+	int8_t cos_u8;
+	float sin_f;
+} control_dummy_t;
 
 //====================================================================
 // Configuration
@@ -66,23 +80,102 @@ DS_Data Global_Data = {
 };
 
 
-global_t global;
+global_t global = {0};
+
+extern control_dummy_t control_dummy;
+control_dummy_t control_dummy = {0};
 
 extern volatile uint32_t fpga_irq_cnt;
 volatile uint32_t fpga_irq_cnt = 0;
 
+
+#include "bsp_timer/bsp_timer.h"
+extern float fpga_irq_time;
+float fpga_irq_time = 0;
+extern float fpga_irq_freq;
+float fpga_irq_freq = 0;
+
+
+
+
+
 //====================================================================
-// Functions
+// Static functions
+//====================================================================
+// Todo remove
+static void control_dummy_init(void)
+{
+	for (int i = 0; i < 50; i++) {
+		control_dummy.array_50_byte[i] = i;
+	}
+	for (int i = 0; i < 90; i++) {
+		control_dummy.array_90_byte[i] = i;
+	}
+	for (int i = 0; i < 100; i++) {
+		control_dummy.array_100_byte[i] = i;
+	}
+}
+
+// Todo remove
+static void control_dummy_run(void)
+{
+	for (int i = 0; i < 50; i++) {
+		control_dummy.array_50_byte[i]++;
+	}
+	for (int i = 0; i < 90; i++) {
+		control_dummy.array_90_byte[i]++;
+	}
+	for (int i = 0; i < 100; i++) {
+		control_dummy.array_100_byte[i]++;
+	}
+
+	// Get sine wave with about 1 Hz
+	// Div_factor = call-rate / 255
+	static int div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= 39) {
+		div_cnt = 0;
+
+		static uint8_t cnt_sin = 0;
+		cnt_sin++;
+		control_dummy.saw_u8 = cnt_sin;
+		float angle = (M_PI * 2 * cnt_sin / UINT8_MAX);
+		control_dummy.sin_f = sinf(angle);
+		control_dummy.sin_u8 = sinf(angle) * INT8_MAX;
+		control_dummy.cos_u8 = cosf(angle) * INT8_MAX;
+	}
+}
+
+//====================================================================
+// Global functions
 //====================================================================
 void irq_fpga(void *data)
 {
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+
+	static uint64_t ts_last = 0;
+	fpga_irq_time = bsp_timer_tsU64_delta_us(ts_last, ts_now);
+	fpga_irq_freq = (1 / fpga_irq_time * 1e6);
+	ts_last = ts_now;
+
 	fpga_irq_cnt++;
 
 
-	// control_fast() goes here
+	//---------------------
+	// Fast stuff
+	if (global.ctrl.ctrl_enable) {
+		control_dummy_run();
+	}
+	xcp_event_fast();
 
-	// XCP_event_fast() goes here
-
+	//---------------------
+	// Slow stuff
+	static uint64_t ts_last_activation_1ms = 0;
+	const uint64_t ticks_1ms = (BSP_TIMER_TICKS_PER_SECOND / 1000);
+	if ((ts_now - ts_last_activation_1ms) >= ticks_1ms) {
+		ts_last_activation_1ms = ts_now;
+		xcp_events_1ms();
+	}
 }
 
 void basis_setup(void *p)

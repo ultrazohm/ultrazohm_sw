@@ -36,27 +36,6 @@
 /*-------------------------------------------------------------------
  * Type definitions
  *-----------------------------------------------------------------*/
-typedef struct {
-	uint8_t array_50_byte [50];
-	uint8_t array_90_byte [90];
-	uint8_t array_100_byte [100];
-
-	uint8_t saw_u8;
-	int8_t sin_u8;
-	int8_t cos_u8;
-	float sin_f;
-} meas_t;
-
-typedef struct {
-	uint8_t stop_calc;
-	uint8_t ctrl_enable;
-} stim_t;
-
-typedef struct {
-	meas_t meas;
-	stim_t stim;
-} xcp_data_t;
-
 typedef struct timing_value_t_ {
 	float irq_rate;
 	float control;
@@ -71,9 +50,6 @@ typedef struct timing_t_ {
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
-extern xcp_data_t xcp_data;
-xcp_data_t xcp_data = {0};
-
 static uint32_t xcp_msg_tx_cnt = 0;
 static uint32_t xcp_msg_rx_cnt = 0;
 
@@ -91,57 +67,6 @@ static timing_t timing;
 /*-------------------------------------------------------------------
  * Local functions
  *-----------------------------------------------------------------*/
-// Todo remove
-static void control_dummy_init(void)
-{
-	for (int i = 0; i < 50; i++) {
-		xcp_data.meas.array_50_byte[i] = i;
-	}
-	for (int i = 0; i < 90; i++) {
-		xcp_data.meas.array_90_byte[i] = i;
-	}
-	for (int i = 0; i < 100; i++) {
-		xcp_data.meas.array_100_byte[i] = i;
-	}
-}
-
-// Todo remove
-static void control_dummy(void)
-{
-	for (int i = 0; i < 50; i++) {
-		xcp_data.meas.array_50_byte[i]++;
-	}
-	for (int i = 0; i < 90; i++) {
-		xcp_data.meas.array_90_byte[i]++;
-	}
-	for (int i = 0; i < 100; i++) {
-		xcp_data.meas.array_100_byte[i]++;
-	}
-
-	// Get sine wave with about 1 Hz
-	static int div_cnt = 0;
-	div_cnt++;
-	if (div_cnt >= 800) {
-		div_cnt = 0;
-
-		static uint8_t cnt_sin = 0;
-		cnt_sin++;
-		xcp_data.meas.saw_u8 = cnt_sin;
-		float angle = (M_PI * 2 * cnt_sin / UINT8_MAX);
-		xcp_data.meas.sin_f = sinf(angle);
-		xcp_data.meas.sin_u8 = sinf(angle) * INT8_MAX;
-		xcp_data.meas.cos_u8 = cosf(angle) * INT8_MAX;
-	}
-}
-
-static void print_frame(char *str, uint8_t *data, int len)
-{
-	xil_printf("%s, %d: ", str, len);
-	for (int i = 0; i < len; i++) {
-		xil_printf("%02X ", data[i]);
-	}
-	xil_printf("\n");
-}
 
 static void my_print_ip(ip_addr_t *ip)
 {
@@ -161,8 +86,6 @@ static void xcp_interface_init(void)
     bsp_timer_init();
     bsp_timer_start();
 //	bsp_ringBuffer_init();
-
-    control_dummy_init();
 }
 
 static void xcp_eth_tx(void *arg_p)
@@ -236,77 +159,6 @@ static void xcp_eth_rx(void *arg_p)
 	vTaskDelete(NULL);
 }
 
-static void xcp_event_irq(void)
-{
-	static uint32_t cnt_div_fast = 0;
-	cnt_div_fast++;
-	if (cnt_div_fast >= 5) {
-		cnt_div_fast = 0;
-		XcpEvent(XCP_EVENT_FAST);
-	}
-
-	static uint32_t cnt_div_100us = 1;
-	cnt_div_100us++;
-	if (cnt_div_100us >= 10) {
-		cnt_div_100us = 0;
-		XcpEvent(XCP_EVENT_100US);
-	}
-
-	static uint32_t cnt_div_10 = 1;
-	cnt_div_10++;
-	if (cnt_div_10 >= 100) {
-		cnt_div_10 = 0;
-		XcpEvent(XCP_EVENT_1MS);
-	}
-
-	static uint32_t cnt_div_100 = 2;
-	cnt_div_100++;
-	if (cnt_div_100 >= 1000) {
-		cnt_div_100 = 0;
-		XcpEvent(XCP_EVENT_10MS);
-	}
-
-	static uint32_t cnt_div_1000 = 3;
-	cnt_div_1000++;
-	if (cnt_div_1000 >= 10000) {
-		cnt_div_1000 = 0;
-		XcpEvent(XCP_EVENT_100MS);
-
-		// No xcp background calculations necessary
-//		XcpBackground();
-	}
-
-	static uint32_t cnt_div_10000 = 4;
-	cnt_div_10000++;
-	if (cnt_div_10000 >= 100000) {
-		cnt_div_10000 = 0;
-		XcpEvent(XCP_EVENT_1S);
-	}
-
-	// Also read one incoming XCP message per cycle
-	uint8_t *data_p = 0;
-	if (bsp_ringBuffer_get(rbt_rx, &data_p) > 0) {
-		XcpCommand((uint32_t *) (data_p + XCP_HEADER_LEN));
-	}
-}
-
-static void control_functions(void)
-{
-//    void foc_speed_test(void);
-//    foc_speed_test();
-	control_dummy();
-
-	/*
-	 * TODO: Implementierung/Synchronisierung langsamer Regler?
-	 * - Synchronisierung notwendig: vorher/nachher Datenset auf globale
-	 *   Variablen kopieren
-	 * - Aufruf:
-	 *   * Wenn schnell genug, dann mit im Reglertakt, ansonsten unterbrechbar
-	 *   > In FreeRTOS Task: kann im Hintergrund rechnen
-	 *   > In while(1) main loop als 'task' mit Aktivierungsflag
-	 */
-}
-
 static void timing_max_reset(void)
 {
 	static uint64_t ts_last_activation = 0;
@@ -320,29 +172,49 @@ static void timing_max_reset(void)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-void timer_irq_callback__(void)
+void xcp_event_fast(void)
 {
-	uint64_t ts_start = bsp_timer_timestamp_u64_get();
-	static uint64_t ts_last_start = 0;
-	TS__(irq_rate, ts_last_start, ts_start);
-	ts_last_start = ts_start;
-
+	// Timestamp used for all xcp events
 	xcp_timestamp = bsp_timer_timestamp_get();
-	//xcp_timestamp = (uint32_t)bsp_timer_timestamp_u64_get();
 
-	if (xcp_data.stim.ctrl_enable) {
-		control_functions();
+	XcpEvent(XCP_EVENT_FAST);
+}
+
+// This function shall be called each 1 ms
+// All xcp events, but the fast are derived from this function
+void xcp_events_1ms(void)
+{
+	XcpEvent(XCP_EVENT_1MS);
+
+	static uint32_t cnt_div_10ms = 2;
+	cnt_div_10ms++;
+	if (cnt_div_10ms >= 10) {
+		cnt_div_10ms = 0;
+		XcpEvent(XCP_EVENT_10MS);
 	}
 
-	uint64_t ts_after_ctrl = bsp_timer_timestamp_u64_get();
-	TS__(control, ts_start, ts_after_ctrl);
+	static uint32_t cnt_div_100ms = 3;
+	cnt_div_100ms++;
+	if (cnt_div_100ms >= 100) {
+		cnt_div_100ms = 0;
+		XcpEvent(XCP_EVENT_100MS);
 
-	xcp_event_irq();
+		// No xcp background calculations necessary
+//		XcpBackground();
+	}
 
-	uint64_t ts_end = bsp_timer_timestamp_u64_get();
-	TS__(xcp_event, ts_after_ctrl, ts_end);
+	static uint32_t cnt_div_1s = 4;
+	cnt_div_1s++;
+	if (cnt_div_1s >= 1000) {
+		cnt_div_1s = 0;
+		XcpEvent(XCP_EVENT_1S);
+	}
 
-	timing_max_reset();
+	// Also read one incoming XCP message per cycle
+	uint8_t *data_p = 0;
+	if (bsp_ringBuffer_get(rbt_rx, &data_p) > 0) {
+		XcpCommand((uint32_t *) (data_p + XCP_HEADER_LEN));
+	}
 }
 
 void xcp_interface(void *p)

@@ -41,6 +41,11 @@ extern uz_3ph_dq_t i_xy_reference;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float start_marker;
 
+extern uz_3ph_dq_t v_dq_non_limited_volts;
+extern uz_3ph_dq_t v_xy_non_limited_volts;
+extern uz_3ph_dq_t v_dq_limited_volts;
+extern uz_3ph_dq_t v_xy_limited_volts;
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -79,6 +84,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iX]			= &data->av.I_X;
 	js_ch_observable[JSO_iY]			= &data->av.I_Y;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
+	js_ch_observable[JSO_v_d_non] 			= &v_dq_non_limited_volts.d;
+	js_ch_observable[JSO_v_q_non] 			= &v_dq_non_limited_volts.q;
+	js_ch_observable[JSO_v_x_non] 			= &v_xy_non_limited_volts.d;
+	js_ch_observable[JSO_v_y_non] 			= &v_xy_non_limited_volts.q;
+	js_ch_observable[JSO_v_d_lim] = &v_dq_limited_volts.d;
+	js_ch_observable[JSO_v_q_lim] = &v_dq_limited_volts.q;
+	js_ch_observable[JSO_v_x_lim] = &v_xy_limited_volts.d;
+	js_ch_observable[JSO_v_y_lim] = &v_xy_limited_volts.q;
 	js_ch_observable[JSO_id_ref] = &i_dq_reference.d;
 	js_ch_observable[JSO_iq_ref] = &i_dq_reference.q;
 	js_ch_observable[JSO_iX_ref] = &i_xy_reference.d;

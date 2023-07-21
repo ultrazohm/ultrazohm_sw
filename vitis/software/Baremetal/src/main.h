@@ -60,6 +60,7 @@
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+#include "uz/uz_nn/uz_nn.h"
 #include "include/uz_resolver_pl_interface_init.h"
 #include "uz/uz_math_constants.h"
 #include "include/uz_PWM_duty_freq_detection_init.h"

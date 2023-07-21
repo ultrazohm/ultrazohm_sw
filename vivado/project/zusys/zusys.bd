@@ -10376,7 +10376,7 @@
                 "value": "NATIVE"
               },
               "C_NUM_OF_PROBES": {
-                "value": "9"
+                "value": "15"
               }
             }
           },
@@ -10502,14 +10502,16 @@
             "ports": [
               "pu_voltages_vsd_0/pu_vd",
               "prediction_0/vd_pu",
-              "delay_comp_1/vd_pu"
+              "delay_comp_1/vd_pu",
+              "mpc_ila_0/probe11"
             ]
           },
           "pu_voltages_vsd_0_pu_vq": {
             "ports": [
               "pu_voltages_vsd_0/pu_vq",
               "prediction_0/vq_pu",
-              "delay_comp_1/vq_pu"
+              "delay_comp_1/vq_pu",
+              "mpc_ila_0/probe12"
             ]
           },
           "pu_voltages_vsd_0_pu_vx": {
@@ -10642,13 +10644,15 @@
           "iq_pu_1": {
             "ports": [
               "iq_pu",
-              "delay_comp_1/iq_pu"
+              "delay_comp_1/iq_pu",
+              "mpc_ila_0/probe10"
             ]
           },
           "id_pu_1": {
             "ports": [
               "id_pu",
-              "delay_comp_1/id_pu"
+              "delay_comp_1/id_pu",
+              "mpc_ila_0/probe9"
             ]
           },
           "trigger_start_state_machine_1": {
@@ -10906,13 +10910,15 @@
           "delay_comp_1_id_delay_pu": {
             "ports": [
               "delay_comp_1/id_delay_pu",
-              "prediction_0/id_delay_pu"
+              "prediction_0/id_delay_pu",
+              "mpc_ila_0/probe13"
             ]
           },
           "delay_comp_1_iq_delay_pu": {
             "ports": [
               "delay_comp_1/iq_delay_pu",
-              "prediction_0/iq_delay_pu"
+              "prediction_0/iq_delay_pu",
+              "mpc_ila_0/probe14"
             ]
           },
           "delay_comp_1_ix_delay_pu": {

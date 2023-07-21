@@ -96,7 +96,7 @@ void test_uz_pmsm_model6ph_dq_reset(void){
     uz_pmsm_model6ph_hw_write_u_z1_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
     uz_pmsm_model6ph_hw_write_u_z2_Expect(BASE_ADDRESS, 0.0f); // from uz_pmsm_model6ph_dq_set_voltage
     uz_pmsm_model6ph_trigger_voltage_input_strobe_hw_Expect(BASE_ADDRESS); // from uz_pmsm_model6ph_dq_set_voltage
-    
+
     uz_pmsm_model6ph_hw_write_reset_Expect(BASE_ADDRESS, false);
     uz_pmsm_model6ph_hw_write_reset_Expect(BASE_ADDRESS, true);
     uz_pmsm_model6ph_hw_write_reset_Expect(BASE_ADDRESS, false);
@@ -141,6 +141,7 @@ void test_set_inputs(void){
     uz_pmsm_model6ph_hw_write_u_z2_Expect(BASE_ADDRESS, ninephase_struct_expect.z2);
     uz_pmsm_model6ph_trigger_voltage_input_strobe_hw_Expect(BASE_ADDRESS);
     uz_pmsm_model6ph_dq_set_voltage(test_instance,ninephase_struct_expect);
+    uz_pmsm_model6ph_trigger_voltage_input_strobe(test_instance);
 }
 
 // Testing uz_pmsm_model6ph_dq_get_outputs_general, uz_pmsm_model6ph_dq_get_output_currents and uz_pmsm_model6ph_dq_get_input_voltages
@@ -168,6 +169,8 @@ void test_get_outputs(void){
     uz_pmsm_model6ph_hw_read_i_y_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y);
     uz_pmsm_model6ph_hw_read_i_z1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z1);
     uz_pmsm_model6ph_hw_read_i_z2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z2);
+
+    uz_pmsm_model6ph_trigger_current_output_strobe(test_instance);
     uz_6ph_dq_t out_ninephase = uz_pmsm_model6ph_dq_get_output_currents(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.d,ninephase_struct_expect.d);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.q,ninephase_struct_expect.q);
@@ -184,6 +187,7 @@ void test_get_outputs(void){
     uz_pmsm_model6ph_hw_read_u_y_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.y);
     uz_pmsm_model6ph_hw_read_u_z1_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z1);
     uz_pmsm_model6ph_hw_read_u_z2_ExpectAndReturn(BASE_ADDRESS,ninephase_struct_expect.z2);
+    uz_pmsm_model6ph_trigger_voltage_output_strobe(test_instance);
     out_ninephase = uz_pmsm_model6ph_dq_get_input_voltages(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.d,ninephase_struct_expect.d);
     TEST_ASSERT_EQUAL_FLOAT(out_ninephase.q,ninephase_struct_expect.q);

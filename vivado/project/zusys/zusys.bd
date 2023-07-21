@@ -152,7 +152,6 @@
       "system_ila_0": "",
       "mpc": {
         "pu_voltages_vsd_0": "",
-        "delay_comp_0": "",
         "prediction_0": "",
         "cost_opt_0": "",
         "pu_omega_m_0": "",
@@ -160,7 +159,8 @@
         "axi_mpc": "",
         "mpc_enb_0": "",
         "mpc_ila_0": "",
-        "two_level_sixphase_f_0": ""
+        "two_level_sixphase_f_0": "",
+        "delay_comp_1": ""
       }
     },
     "ports": {
@@ -10100,10 +10100,6 @@
             "vlnv": "xilinx.com:ip:pu_voltages_vsd:1.0",
             "xci_name": "zusys_pu_voltages_vsd_0_0"
           },
-          "delay_comp_0": {
-            "vlnv": "xilinx.com:ip:delay_comp:1.0",
-            "xci_name": "zusys_delay_comp_0_0"
-          },
           "prediction_0": {
             "vlnv": "xilinx.com:ip:prediction:1.0",
             "xci_name": "zusys_prediction_0_0"
@@ -10377,30 +10373,27 @@
                 "value": "4096"
               },
               "C_MON_TYPE": {
-                "value": "MIX"
+                "value": "NATIVE"
               },
               "C_NUM_OF_PROBES": {
-                "value": "11"
-              }
-            },
-            "interface_ports": {
-              "SLOT_0_AXI": {
-                "mode": "Monitor",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+                "value": "9"
               }
             }
           },
           "two_level_sixphase_f_0": {
             "vlnv": "xilinx.com:ip:two_level_sixphase_f_sw_cnt_ip:1.0",
             "xci_name": "zusys_two_level_sixphase_f_0_0"
+          },
+          "delay_comp_1": {
+            "vlnv": "xilinx.com:ip:delay_comp:1.1",
+            "xci_name": "zusys_delay_comp_1_1"
           }
         },
         "interface_nets": {
           "axi_mpc_M03_AXI": {
             "interface_ports": [
               "axi_mpc/M03_AXI",
-              "delay_comp_0/AXI4_Lite",
-              "mpc_ila_0/SLOT_0_AXI"
+              "delay_comp_1/AXI4_Lite"
             ]
           },
           "axi_mpc_M02_AXI": {
@@ -10456,8 +10449,8 @@
           "pu_omega_m_0_out1": {
             "ports": [
               "pu_omega_m_0/out1",
-              "delay_comp_0/omega_m_pu",
-              "prediction_0/omega_m_pu"
+              "prediction_0/omega_m_pu",
+              "delay_comp_1/omega_m_pu"
             ]
           },
           "clk_1": {
@@ -10469,8 +10462,6 @@
               "pu_voltages_vsd_0/AXI4_Lite_ACLK",
               "ctrl_stat_ip_0/IPCORE_CLK",
               "ctrl_stat_ip_0/AXI4_Lite_ACLK",
-              "delay_comp_0/IPCORE_CLK",
-              "delay_comp_0/AXI4_Lite_ACLK",
               "prediction_0/IPCORE_CLK",
               "prediction_0/AXI4_Lite_ACLK",
               "cost_opt_0/IPCORE_CLK",
@@ -10480,7 +10471,9 @@
               "mpc_enb_0/AXI4_Lite_ACLK",
               "mpc_ila_0/clk",
               "two_level_sixphase_f_0/IPCORE_CLK",
-              "two_level_sixphase_f_0/AXI4_Lite_ACLK"
+              "two_level_sixphase_f_0/AXI4_Lite_ACLK",
+              "delay_comp_1/AXI4_Lite_ACLK",
+              "delay_comp_1/IPCORE_CLK"
             ]
           },
           "rst_1": {
@@ -10492,8 +10485,6 @@
               "pu_voltages_vsd_0/AXI4_Lite_ARESETN",
               "ctrl_stat_ip_0/IPCORE_RESETN",
               "ctrl_stat_ip_0/AXI4_Lite_ARESETN",
-              "delay_comp_0/IPCORE_RESETN",
-              "delay_comp_0/AXI4_Lite_ARESETN",
               "prediction_0/IPCORE_RESETN",
               "prediction_0/AXI4_Lite_ARESETN",
               "cost_opt_0/IPCORE_RESETN",
@@ -10503,35 +10494,36 @@
               "mpc_enb_0/AXI4_Lite_ARESETN",
               "two_level_sixphase_f_0/IPCORE_RESETN",
               "two_level_sixphase_f_0/AXI4_Lite_ARESETN",
-              "mpc_ila_0/resetn"
+              "delay_comp_1/AXI4_Lite_ARESETN",
+              "delay_comp_1/IPCORE_RESETN"
             ]
           },
           "pu_voltages_vsd_0_pu_vd": {
             "ports": [
               "pu_voltages_vsd_0/pu_vd",
-              "delay_comp_0/vd_pu",
-              "prediction_0/vd_pu"
+              "prediction_0/vd_pu",
+              "delay_comp_1/vd_pu"
             ]
           },
           "pu_voltages_vsd_0_pu_vq": {
             "ports": [
               "pu_voltages_vsd_0/pu_vq",
-              "delay_comp_0/vq_pu",
-              "prediction_0/vq_pu"
+              "prediction_0/vq_pu",
+              "delay_comp_1/vq_pu"
             ]
           },
           "pu_voltages_vsd_0_pu_vx": {
             "ports": [
               "pu_voltages_vsd_0/pu_vx",
-              "delay_comp_0/vx_pu",
-              "prediction_0/vx_pu"
+              "prediction_0/vx_pu",
+              "delay_comp_1/vx_pu"
             ]
           },
           "pu_voltages_vsd_0_pu_vy": {
             "ports": [
               "pu_voltages_vsd_0/pu_vy",
-              "delay_comp_0/vy_pu",
-              "prediction_0/vy_pu"
+              "prediction_0/vy_pu",
+              "delay_comp_1/vy_pu"
             ]
           },
           "pu_voltages_vsd_0_voltages_done": {
@@ -10539,14 +10531,6 @@
               "pu_voltages_vsd_0/voltages_done",
               "ctrl_stat_ip_0/trigger_voltages_done",
               "mpc_ila_0/probe1"
-            ]
-          },
-          "delay_comp_0_delay_comp_done": {
-            "ports": [
-              "delay_comp_0/delay_comp_done",
-              "ctrl_stat_ip_0/trigger_delay_comp_done",
-              "prediction_0/trigger_delay_comp_done",
-              "mpc_ila_0/probe2"
             ]
           },
           "cost_opt_0_optimization_done": {
@@ -10566,7 +10550,7 @@
           "ctrl_stat_ip_0_trigger_delay_comp": {
             "ports": [
               "ctrl_stat_ip_0/trigger_delay_comp",
-              "delay_comp_0/trigger_delay_comp"
+              "delay_comp_1/trigger_delay_comp"
             ]
           },
           "ctrl_stat_ip_0_trigger_voltages": {
@@ -10646,53 +10630,25 @@
           "iy_pu_1": {
             "ports": [
               "iy_pu",
-              "delay_comp_0/iy_pu"
+              "delay_comp_1/iy_pu"
             ]
           },
           "ix_pu_1": {
             "ports": [
               "ix_pu",
-              "delay_comp_0/ix_pu"
+              "delay_comp_1/ix_pu"
             ]
           },
           "iq_pu_1": {
             "ports": [
               "iq_pu",
-              "delay_comp_0/iq_pu"
+              "delay_comp_1/iq_pu"
             ]
           },
           "id_pu_1": {
             "ports": [
               "id_pu",
-              "delay_comp_0/id_pu"
-            ]
-          },
-          "delay_comp_0_id_delay_pu": {
-            "ports": [
-              "delay_comp_0/id_delay_pu",
-              "prediction_0/id_delay_pu",
-              "mpc_ila_0/probe7"
-            ]
-          },
-          "delay_comp_0_iq_delay_pu": {
-            "ports": [
-              "delay_comp_0/iq_delay_pu",
-              "prediction_0/iq_delay_pu",
-              "mpc_ila_0/probe8"
-            ]
-          },
-          "delay_comp_0_ix_delay_pu": {
-            "ports": [
-              "delay_comp_0/ix_delay_pu",
-              "prediction_0/ix_delay_pu",
-              "mpc_ila_0/probe9"
-            ]
-          },
-          "delay_comp_0_iy_delay_pu": {
-            "ports": [
-              "delay_comp_0/iy_delay_pu",
-              "prediction_0/iy_delay_pu",
-              "mpc_ila_0/probe10"
+              "delay_comp_1/id_pu"
             ]
           },
           "trigger_start_state_machine_1": {
@@ -10712,8 +10668,8 @@
           "ctrl_stat_ip_0_trigger_park_done_statemachine": {
             "ports": [
               "ctrl_stat_ip_0/trigger_park_done_statemachine",
-              "delay_comp_0/trigger_park_done",
-              "pu_voltages_vsd_0/trigger_park_done"
+              "pu_voltages_vsd_0/trigger_park_done",
+              "delay_comp_1/trigger_park_done"
             ]
           },
           "adc_valid_trigger_1": {
@@ -10937,6 +10893,50 @@
             "ports": [
               "ss_in_11",
               "two_level_sixphase_f_0/ss_in_11"
+            ]
+          },
+          "delay_comp_1_delay_comp_done": {
+            "ports": [
+              "delay_comp_1/delay_comp_done",
+              "prediction_0/trigger_delay_comp_done",
+              "ctrl_stat_ip_0/trigger_delay_comp_done",
+              "mpc_ila_0/probe2"
+            ]
+          },
+          "delay_comp_1_id_delay_pu": {
+            "ports": [
+              "delay_comp_1/id_delay_pu",
+              "prediction_0/id_delay_pu"
+            ]
+          },
+          "delay_comp_1_iq_delay_pu": {
+            "ports": [
+              "delay_comp_1/iq_delay_pu",
+              "prediction_0/iq_delay_pu"
+            ]
+          },
+          "delay_comp_1_ix_delay_pu": {
+            "ports": [
+              "delay_comp_1/ix_delay_pu",
+              "prediction_0/ix_delay_pu"
+            ]
+          },
+          "delay_comp_1_iy_delay_pu": {
+            "ports": [
+              "delay_comp_1/iy_delay_pu",
+              "prediction_0/iy_delay_pu"
+            ]
+          },
+          "delay_comp_1_Rs_over_ZB": {
+            "ports": [
+              "delay_comp_1/Rs_over_ZB",
+              "mpc_ila_0/probe7"
+            ]
+          },
+          "delay_comp_1_Ts_times_ZB_over_Ld": {
+            "ports": [
+              "delay_comp_1/Ts_times_ZB_over_Ld",
+              "mpc_ila_0/probe8"
             ]
           }
         }
@@ -11783,8 +11783,8 @@
                 "offset": "0x00801C0000",
                 "range": "64K"
               },
-              "SEG_delay_comp_0_reg0": {
-                "address_block": "/mpc/delay_comp_0/AXI4_Lite/reg0",
+              "SEG_delay_comp_1_reg0": {
+                "address_block": "/mpc/delay_comp_1/AXI4_Lite/reg0",
                 "offset": "0x00801D0000",
                 "range": "64K"
               },

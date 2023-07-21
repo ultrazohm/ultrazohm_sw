@@ -16,6 +16,39 @@
 // Includes from own files
 #include "main.h"
 
+
+// defines for nn
+#define DQN__CONTROL_FREQUENCY 400
+#define NUMBER_OF_INPUTS 5
+#define NUMBER_OF_OUTPUTS 5
+#define NUMBER_OF_HIDDEN_LAYER 3
+#define NUMBER_OF_NEURONS_IN_FIRST_LAYER 128
+#define NUMBER_OF_NEURONS_IN_SECOND_LAYER 128
+
+float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "uz/uz_nn/full_example_weights/layer1_weights.csv"
+};
+float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "uz/uz_nn/full_example_weights/layer1_bias.csv"
+};
+float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+
+float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "uz/uz_nn/full_example_weights/layer2_weights.csv"
+};
+float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "uz/uz_nn/full_example_weights/layer2_bias.csv"
+};
+float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+
+float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "uz/uz_nn/full_example_weights/layer3_weights.csv"
+};
+float b_3[NUMBER_OF_OUTPUTS] = {
+#include "uz/uz_nn/full_example_weights/layer3_bias.csv"
+};
+float y_3[NUMBER_OF_OUTPUTS] = {0};
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -46,15 +79,105 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc_control_nn,
     print_msg,
     init_interrupts,
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
 
+// config heidrive pmsm
+
+struct uz_PMSM_t config_heidrive = {
+    .R_ph_Ohm = 0.543f,
+    .Ld_Henry = 0.00113f,
+    .Lq_Henry = 0.00142f,
+    .Psi_PM_Vs = 0.0169f,
+    .polePairs = 3.0f,
+    .J_kg_m_squared = 0.0000148f,
+    .I_max_Ampere = 10.8f
+};
+static void dqn_step(void);
+static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN__CONTROL_FREQUENCY;
+bool dqn_mutex=false;
+float dqn_mutex_float =0.0f;
+float input_nn[5] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    // Position Controller linear axis
+    struct uz_PI_Controller_config config_position = {
+        .Kp = 5.0f,
+        .Ki = 0.0f,
+        .samplingTime_sec = 0.00005f,
+        .upper_limit = 500.0f,
+        .lower_limit = -500.0f
+    };
+    // Configuration of Speed Control
+
+    struct uz_SpeedControl_config SC_config = {
+        .config_controller.Kp = 0.01f,
+        .config_controller.Ki = 7.0f,
+        .config_controller.samplingTime_sec = 0.00005f,
+        .config_controller.upper_limit = 15.0f,
+        .config_controller.lower_limit = -15.0f,
+    };
+
+    // Configuration of Set Point
+    struct uz_SetPoint_config SP_config = {
+       .config_PMSM = config_heidrive,
+       .control_type = FOC,
+       .motor_type = IPMSM,
+       .is_field_weakening_enabled = false,
+       .id_ref_Ampere = 0.0f,
+	   .relative_torque_tolerance = 0.1f
+    };
+
+    // Configuration of Current Control
+
+    struct uz_PI_Controller_config config_id = {
+        .Kp = 3.0f,
+        .Ki = 600.0f,
+        .samplingTime_sec = 0.00005f,
+        .upper_limit = 40.0f,
+        .lower_limit = -40.0f
+    };
+
+    struct uz_PI_Controller_config config_iq = {
+        .Kp = 3.5f,
+        .Ki = 600.0f,
+        .samplingTime_sec = 0.00005f,
+        .upper_limit = 40.0f,
+        .lower_limit = -40.0f
+    };
+
+    struct uz_CurrentControl_config CC_config = {
+       .decoupling_select = linear_decoupling,
+       .config_PMSM = config_heidrive,
+       .config_id = config_id,
+       .config_iq = config_iq,
+       .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+
+    struct uz_nn_layer_config config_nn[NUMBER_OF_HIDDEN_LAYER] = {
+        [0] = {
+            .activation_function = activation_ReLU,
+            .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+            .number_of_inputs = NUMBER_OF_INPUTS,
+            .length_of_weights = UZ_MATRIX_SIZE(w_1),
+            .length_of_bias = UZ_MATRIX_SIZE(b_1),
+            .length_of_output = UZ_MATRIX_SIZE(y_1),
+            .weights = w_1,
+            .bias = b_1,
+            .output = y_1},
+        [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
+        [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
+
+    struct uz_matrix_t x_matrix = {0};
+    struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
     while (1)
     {
         switch (initialization_chain)
@@ -89,9 +212,24 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            initialize_incremental_encoder_ipcore_v25_on_D5_1(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
+            initialize_incremental_encoder_ipcore_v25_on_D5_2(UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
+            initialize_incremental_encoder_ipcore_v25_on_D5_3(UZ_D5_ANGINCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER, Global_Data.mrp.incrementalEncoder_speed_timeout_in_ms);
+            initialization_chain = init_foc_control_nn;
             break;
+        case init_foc_control_nn:
+        	Global_Data.objects.SP_instance = uz_SetPoint_init(SP_config);
+        	Global_Data.objects.CC_instance = uz_CurrentControl_init(CC_config);
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(SC_config);
+            Global_Data.objects.LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);
+            Global_Data.objects.LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
+            Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
+            Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
+            Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
+            Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
+            Global_Data.rasv.V_dc_volts = 48.0f;
+			initialization_chain = print_msg;
+        	break;
 	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
@@ -106,11 +244,41 @@ int main(void)
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:
-            ultrazohm_state_machine_step();
-            break;
-        default:
-            break;
+                   ultrazohm_state_machine_step();
+
+                   if( !(uz_SystemTime_GetInterruptCounter() % dividingfactordqn) ){
+                       dqn_mutex=false;
+                       dqn_mutex_float=0.0f;
+                       dqn_step();
+                       dqn_mutex=true;
+                       dqn_mutex_float=1.0f;
+                   }
+                   break;
+               default:
+                   break;
         }
     }
     return (status);
+}
+
+static void dqn_step(void)
+{
+	input_nn[0]=Global_Data.obs.dqn_sin_angle;
+	input_nn[1]=Global_Data.obs.dqn_cos_angle;
+	input_nn[2]=Global_Data.obs.dqn_chart_position_derv;
+	input_nn[3]=Global_Data.obs.dqn_chart_position;
+	input_nn[4]=Global_Data.obs.dqn_angle_derv;
+    uz_nn_ff(Global_Data.objects.uz_nn_instance, Global_Data.objects.input_instance);
+}
+void Reset_global_Data(DS_Data *data)
+{
+	data->obs.dqn_angle_raw=0.0f;
+	data->obs.dqn_chart_position_derv_raw=0.0f;
+	data->obs.dqn_angle_derv_raw=0.0f;
+	data->obs.dqn_chart_position=0.0f;
+	data->obs.dqn_angle_derv=0.0f;
+	data->obs.dqn_angle=0.0f;
+	data->obs.dqn_chart_position_derv=0.0f;
+	data->obs.dqn_sin_angle=0.0f;
+	data->obs.dqn_cos_angle=0.0f;
 }

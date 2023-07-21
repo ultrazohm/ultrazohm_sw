@@ -6,6 +6,17 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_piController/uz_piController.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_layer.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -51,6 +62,8 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
+	float V_dc_volts;
+	float i_DC_Amps;
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
 	float I_L3; 		// Grid side current in A
@@ -68,7 +81,8 @@ typedef struct _actualValues_ {
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
+	float mechanicalRotorSpeed_filtered;// in rpm
+	float mechanicalRotorSpeed_IIR_Filter; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
 	float mechanicalTorqueSensitive; // in Nm
@@ -78,12 +92,22 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_pendulum;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float position_motor;
+	float position_pendulum;
+	float trigger_logging;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 } actualValues;
+
+typedef struct _measuredValues_ {
+	struct uz_3ph_abc_t measurement_current;
+	struct uz_3ph_dq_t dq_measurement_current;
+
+} measuredValues;
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
@@ -98,6 +122,12 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float n_ref_rpm;
+	float M_ref_Nm;
+	float V_dc_volts;
+	struct uz_3ph_dq_t dq_reference_current;
+	struct uz_3ph_dq_t dq_ref_Volts;
+	struct uz_3ph_abc_t uvw_ref;
 } referenceAndSetValues;
 
 typedef struct{
@@ -110,13 +140,43 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_SetPoint_t* SP_instance;
+	uz_CurrentControl_t* CC_instance;
+	uz_SpeedControl_t *Speed_instance;
+	uz_IIR_Filter_t *LPF1_instance_position;
+	uz_IIR_Filter_t *LPF1_instance_angle;
+	uz_IIR_Filter_t *LPF1_instance_2;
+	uz_PI_Controller *PI_instance;
+	uz_nn_t *uz_nn_instance;
+	uz_matrix_t *input_instance;
+	uz_inverter_adapter_t* inverter_d1;
 }object_pointers_t;
+
+typedef struct _motorrelatedparameters_ {
+	float incrementalEncoder_speed_timeout_in_ms;
+} motorrelatedparameters;
+
+typedef struct _dqn_observation_ {
+    float dqn_angle_raw;
+	float dqn_chart_position_derv_raw;
+    float dqn_angle_derv_raw;
+	float dqn_chart_error;
+	float dqn_chart_position;
+    float dqn_angle_derv;
+    float dqn_angle;
+	float dqn_chart_position_derv;
+	float dqn_sin_angle;
+	float dqn_cos_angle;
+} dqn_observation;
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
+	measuredValues mv;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	motorrelatedparameters mrp;
+	dqn_observation obs;
 } DS_Data;
 
 #endif

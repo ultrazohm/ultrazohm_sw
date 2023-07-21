@@ -36,11 +36,21 @@
 #include "globalData.h"
 #include "defines.h"
 #include "include/isr.h"
-#include "include/encoder.h"
+#include "include/encoder_v25.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_piController/uz_piController.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_layer.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_matrix/uz_matrix.h"
 
 #include "uz/uz_HAL.h"
 
@@ -53,7 +63,8 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

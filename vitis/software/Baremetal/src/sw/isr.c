@@ -275,12 +275,12 @@ void ISR_Control(void *data)
            Global_Data.av.I_Y = REAL_i_dqxy_meas.y;
 
            REAL_v_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_v_abc_meas, Global_Data.av.theta_elec);
-           Global_Data.av.U_d = REAL_v_dqxy_meas.d;
-           Global_Data.av.U_q = REAL_v_dqxy_meas.q;
-           Global_Data.av.U_X = REAL_v_dqxy_meas.x;
-           Global_Data.av.U_Y = REAL_v_dqxy_meas.y;
+		   Global_Data.av.U_d = v_dqxy_limited_volts.d;
+		   Global_Data.av.U_q = v_dqxy_limited_volts.q;
+		   Global_Data.av.U_X = v_dqxy_limited_volts.x;
+		   Global_Data.av.U_Y = v_dqxy_limited_volts.y;
 
-           //Only allow enable of inverter, if "select_Real" is true
+		   //Only allow enable of inverter, if "select_Real" is true
            if (current_state == running_state || current_state == control_state) {
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);

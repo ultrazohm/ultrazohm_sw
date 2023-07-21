@@ -412,7 +412,8 @@ MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )
 {
 	// Address extension is not used.
 	// --> addr already holds the requested memory address
-	return (MTABYTEPTR) addr;
+
+	return (MTABYTEPTR)((size_t)addr);
 }
 
 void ApplXcpInterruptDisable( void )

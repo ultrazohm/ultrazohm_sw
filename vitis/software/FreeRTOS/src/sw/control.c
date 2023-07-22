@@ -88,9 +88,6 @@ global_t global = {0};
 extern control_dummy_t control_dummy;
 control_dummy_t control_dummy = {0};
 
-extern volatile uint32_t fpga_irq_cnt;
-volatile uint32_t fpga_irq_cnt = 0;
-
 
 #include "bsp_timer/bsp_timer.h"
 extern float fpga_irq_time_us;
@@ -150,23 +147,8 @@ static void control_dummy_run(void)
 	}
 }
 
-//====================================================================
-// Global functions
-//====================================================================
-void irq_fpga(void *data)
+static void task_fast(void)
 {
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-
-	static uint64_t ts_last = 0;
-	fpga_irq_time_us = bsp_timer_tsU64_delta_us(ts_last, ts_now);
-	fpga_irq_freq_kHz = (1 / fpga_irq_time_us * 1e3);
-	ts_last = ts_now;
-
-	fpga_irq_cnt++;
-
-
-	//---------------------
-	// Fast stuff
     ADC_readCardALL(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
@@ -185,33 +167,60 @@ void irq_fpga(void *data)
                         Global_Data.rasv.halfBridge3DutyCycle);
 
 	xcp_event_fast();
+}
+
+static void task_slow(void)
+{
+	xcp_events_1ms();
+}
+
+static void configuration_update(void)
+{
+	if ((global.ctrl.ctrl_enable == 0)
+		&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
+		Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
+		Global_Data.av.isr_samplerate_s = (1.0f / Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_0_to_5,
+								  Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
+								  Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
+								  Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
+								  Global_Data.av.pwm_frequency_hz);
+	}
+}
+
+//====================================================================
+// Global functions
+//====================================================================
+void irq_fpga(void *data)
+{
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+
+	static uint64_t ts_last = 0;
+	fpga_irq_time_us = bsp_timer_tsU64_delta_us(ts_last, ts_now);
+	fpga_irq_freq_kHz = (1 / fpga_irq_time_us * (float)1e3);
+	ts_last = ts_now;
+
+	//---------------------
+	// Fast stuff
+	task_fast();
 
 	//---------------------
 	// Slow stuff
 	static uint64_t ts_last_activation_1ms = 0;
-	const uint64_t ticks_1ms = (BSP_TIMER_TICKS_PER_SECOND / 1000);
-	if ((ts_now - ts_last_activation_1ms) >= ticks_1ms) {
+	const uint64_t TICKS_1MS = (BSP_TIMER_TICKS_PER_SECOND / 1000);
+	if ((ts_now - ts_last_activation_1ms) >= TICKS_1MS) {
 		ts_last_activation_1ms = ts_now;
-		xcp_events_1ms();
+		task_slow();
 	}
 
 	//---------------------
 	// Configuration changes
 	if (global.config.config_update) {
 		global.config.config_update = 0;
-
-		if ((global.ctrl.ctrl_enable == 0)
-			&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
-			Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
-			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_0_to_5,
-									  Global_Data.av.pwm_frequency_hz);
-			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
-									  Global_Data.av.pwm_frequency_hz);
-			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
-									  Global_Data.av.pwm_frequency_hz);
-			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
-									  Global_Data.av.pwm_frequency_hz);
-		}
+		configuration_update();
 	}
 }
 

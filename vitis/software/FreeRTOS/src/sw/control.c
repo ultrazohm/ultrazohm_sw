@@ -30,6 +30,8 @@
 #include "../include/gpio_axi.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/encoder.h"
+#include "../include/pwm_init.h"
+#include "../include/mux_axi.h"
 #include "../include/isr.h"
 
 
@@ -103,22 +105,23 @@ float fpga_irq_freq = 0;
 // Static functions
 //====================================================================
 // Todo remove
-static void control_dummy_init(void)
-{
-	for (int i = 0; i < 50; i++) {
-		control_dummy.array_50_byte[i] = i;
-	}
-	for (int i = 0; i < 90; i++) {
-		control_dummy.array_90_byte[i] = i;
-	}
-	for (int i = 0; i < 100; i++) {
-		control_dummy.array_100_byte[i] = i;
-	}
-}
-
-// Todo remove
 static void control_dummy_run(void)
 {
+	static bool init_once = 1;
+	if (init_once) {
+		init_once = 0;
+
+		for (int i = 0; i < 50; i++) {
+			control_dummy.array_50_byte[i] = i;
+		}
+		for (int i = 0; i < 90; i++) {
+			control_dummy.array_90_byte[i] = i;
+		}
+		for (int i = 0; i < 100; i++) {
+			control_dummy.array_100_byte[i] = i;
+		}
+	}
+
 	for (int i = 0; i < 50; i++) {
 		control_dummy.array_50_byte[i]++;
 	}

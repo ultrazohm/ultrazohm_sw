@@ -22,8 +22,14 @@ typedef struct {
 } ctrl_t;
 
 typedef struct {
+	uint8_t config_update;
+	float PWM_freq_Hz;
+} config_t;
+
+typedef struct {
 	led_t led;
 	ctrl_t ctrl;
+	config_t config;
 } global_t;
 
 //====================================================================

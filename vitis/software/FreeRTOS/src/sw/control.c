@@ -32,6 +32,7 @@
 #include "../include/encoder.h"
 #include "../include/pwm_init.h"
 #include "../include/mux_axi.h"
+#include "../include/adc.h"
 #include "../include/isr.h"
 
 
@@ -92,10 +93,10 @@ volatile uint32_t fpga_irq_cnt = 0;
 
 
 #include "bsp_timer/bsp_timer.h"
-extern float fpga_irq_time;
-float fpga_irq_time = 0;
-extern float fpga_irq_freq;
-float fpga_irq_freq = 0;
+extern float fpga_irq_time_us;
+float fpga_irq_time_us = 0;
+extern float fpga_irq_freq_kHz;
+float fpga_irq_freq_kHz = 0;
 
 
 
@@ -157,8 +158,8 @@ void irq_fpga(void *data)
 	uint64_t ts_now = bsp_timer_timestamp_u64_get();
 
 	static uint64_t ts_last = 0;
-	fpga_irq_time = bsp_timer_tsU64_delta_us(ts_last, ts_now);
-	fpga_irq_freq = (1 / fpga_irq_time * 1e6);
+	fpga_irq_time_us = bsp_timer_tsU64_delta_us(ts_last, ts_now);
+	fpga_irq_freq_kHz = (1 / fpga_irq_time_us * 1e3);
 	ts_last = ts_now;
 
 	fpga_irq_cnt++;
@@ -166,9 +167,23 @@ void irq_fpga(void *data)
 
 	//---------------------
 	// Fast stuff
+    ADC_readCardALL(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
 	if (global.ctrl.ctrl_enable) {
 		control_dummy_run();
 	}
+
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+    // Set duty cycles for three-level modulator
+    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+                        Global_Data.rasv.halfBridge2DutyCycle,
+                        Global_Data.rasv.halfBridge3DutyCycle);
+
 	xcp_event_fast();
 
 	//---------------------
@@ -178,6 +193,25 @@ void irq_fpga(void *data)
 	if ((ts_now - ts_last_activation_1ms) >= ticks_1ms) {
 		ts_last_activation_1ms = ts_now;
 		xcp_events_1ms();
+	}
+
+	//---------------------
+	// Configuration changes
+	if (global.config.config_update) {
+		global.config.config_update = 0;
+
+		if ((global.ctrl.ctrl_enable == 0)
+			&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
+			Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
+			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_0_to_5,
+									  Global_Data.av.pwm_frequency_hz);
+			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
+									  Global_Data.av.pwm_frequency_hz);
+			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
+									  Global_Data.av.pwm_frequency_hz);
+			uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
+									  Global_Data.av.pwm_frequency_hz);
+		}
 	}
 }
 

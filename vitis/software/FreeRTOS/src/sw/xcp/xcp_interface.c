@@ -172,6 +172,14 @@ static void timing_max_reset(void)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
+/*
+ * Implement to override the default handler
+ */
+void timer_irq_callback__(void)
+{
+	return;
+}
+
 void xcp_event_fast(void)
 {
 	// Timestamp used for all xcp events

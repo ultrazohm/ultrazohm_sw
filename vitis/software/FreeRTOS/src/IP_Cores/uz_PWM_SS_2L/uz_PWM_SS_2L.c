@@ -53,6 +53,14 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
     return (self);
 }
 
+void uz_PWM_SS_2L_set_PWM_freq(struct uz_PWM_SS_2L_t *self, float PWM_freq_Hz) {
+    uz_assert_not_NULL(self);
+    uz_assert_not_zero_uint32(self->config.base_address);
+    uz_assert_not_zero(self->is_ready);
+	self->config.PWM_freq_Hz = PWM_freq_Hz;
+	uz_PWM_SS_2L_hw_SetCarrierFrequency(self->config.base_address, self->config.ip_clk_frequency_Hz, self->config.PWM_freq_Hz);
+}
+
 void uz_PWM_SS_2L_set_duty_cycle(struct uz_PWM_SS_2L_t *self, float dutyCyc_HB1, float dutyCyc_HB2, float dutyCyc_HB3) {
     uz_assert_not_NULL(self);
     uz_assert_not_zero_uint32(self->config.base_address);

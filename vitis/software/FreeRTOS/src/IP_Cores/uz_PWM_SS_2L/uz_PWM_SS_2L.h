@@ -59,6 +59,9 @@ struct uz_PWM_SS_2L_config_t{
  */
 uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config);
 
+
+void uz_PWM_SS_2L_set_PWM_freq(struct uz_PWM_SS_2L_t *self, float PWM_freq_Hz);
+
 /**
  * @brief Uses a configuration struct of type uz_PWM_SS_2L_config_t from a
  *        uz_PWM_SS_2L_t instance and writes the configuration to the IP-core

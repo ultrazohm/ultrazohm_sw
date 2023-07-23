@@ -18,7 +18,8 @@ typedef struct {
 } led_t;
 
 typedef struct {
-	uint8_t ctrl_enable;
+	bool pwm_enable;
+	bool ctrl_enable;
 } ctrl_t;
 
 typedef struct {

@@ -176,6 +176,16 @@ static void task_slow(void)
 
 static void configuration_update(void)
 {
+	static bool pwm_enable_last = 0;
+	if (pwm_enable_last != global.ctrl.pwm_enable) {
+		if (global.ctrl.pwm_enable) {
+			uz_axigpio_enable_pwm_and_power_electronics();
+		} else {
+			uz_axigpio_disable_pwm_and_power_electronics();
+		}
+	}
+	pwm_enable_last = global.ctrl.pwm_enable;
+
 	if ((global.ctrl.ctrl_enable == 0)
 		&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
 		Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;

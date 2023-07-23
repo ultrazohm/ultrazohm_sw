@@ -128,14 +128,19 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 
     Xil_ExceptionEnable();
 
-//#define Interrupt_ISR_ID XPS_FPGA1_INT_ID
+    /*
+     * FPGA IRQ is now fixed to fpga-irq-0, which is connected to data-mover-done output.
+     */
+    //const uint32_t FPGA_IRQ_ID = Interrupt_ISR_ID;
+    const uint32_t FPGA_IRQ_ID = XPS_FPGA0_INT_ID;
+
 	// setting interrupt trigger sensitivity
     // b01	Active HIGH level sensitive
     // b11 	Rising edge sensitive
-    XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+    XScuGic_SetPriorityTriggerType(IntcInstPtr, FPGA_IRQ_ID, 0x0, 0b11); // rising-edge
 
     Status = XScuGic_Connect(IntcInstPtr,
-                             Interrupt_ISR_ID,
+                             FPGA_IRQ_ID,
                              (Xil_ExceptionHandler)irq_fpga,
                              (void *)IntcInstPtr);
     if (Status != XST_SUCCESS) {
@@ -143,7 +148,7 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 		return XST_FAILURE;
 	}
 
-    XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
+    XScuGic_Enable(IntcInstPtr, FPGA_IRQ_ID);
 
     return XST_SUCCESS;
 }

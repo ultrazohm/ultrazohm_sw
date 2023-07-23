@@ -9,7 +9,7 @@
 #define DQ_SYSTEM_LIMIT 10.0f
 #define ADDITIONAL_SYSTEM_LIMIT 10.0f
 #define RESONANT_ANTIWINDUP_GAIN 10.0f
-#define MODULATION_INDEX 1.0f
+#define MODULATION_INDEX 1.0f/sqrtf(3)
 
 enum controller_type {reset, PI_0, PI_PI, PI_R, PIR_PIR};
 
@@ -17,9 +17,12 @@ enum controller_type {reset, PI_0, PI_PI, PI_R, PIR_PIR};
 #include "PI_0.h"
 #include "PI_PI.h"
 #include "PI_R.h"
+#include "PIR_PIR.h"
 
 
 // testbench data
 #define PHASE_PSI_PM_3 0.0f
 #define PHASE_PSI_PM_5 0.0f
 #define PHASE_PSI_PM_7 0.0f
+
+void subspace_park_transform(DS_Data* Data);

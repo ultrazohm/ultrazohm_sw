@@ -27,6 +27,17 @@ struct pointers_PI_R{
 	uz_subspace_resonant_control* XY3;
 };
 
+struct pointers_PIR_PIR{
+	uz_CurrentControl_t* PI_dq;
+	uz_CurrentControl_t* PI_xy1;
+	uz_CurrentControl_t* PI_xy2;
+	uz_CurrentControl_t* PI_xy3;
+	uz_subspace_resonant_control* RES_dq;
+	uz_subspace_resonant_control* RES_xy1;
+	uz_subspace_resonant_control* RES_xy2;
+	uz_subspace_resonant_control* RES_xy3;
+};
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -138,6 +149,7 @@ typedef struct{
 	uz_CurrentControl_t* cc_instance_dq;
 	struct pointers_PI_PI objects_PI_PI;
 	struct pointers_PI_R objects_PI_R;
+	struct pointers_PIR_PIR objects_PIR_PIR;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

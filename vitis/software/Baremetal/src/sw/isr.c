@@ -126,11 +126,15 @@ void ISR_Control(void *data)
 			case PI_R:
 				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
 				break;
+			case PIR_PIR:
+				ref_voltages = step_controllers_PIR_PIR(&Global_Data, Global_Data.objects.objects_PIR_PIR);
+				break;
 			default:
 			case reset:
 				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
 				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+				reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
 				break;
     	}
 
@@ -142,6 +146,7 @@ void ISR_Control(void *data)
 		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

@@ -86,6 +86,16 @@ int main(void)
 			Global_Data.objects.objects_PI_R.XY1 = init_PI_R_resonant_XY1();
 			Global_Data.objects.objects_PI_R.XY2 = init_PI_R_resonant_XY2();
 			Global_Data.objects.objects_PI_R.XY3 = init_PI_R_resonant_XY3();
+			// PIR_PIR
+			Global_Data.objects.objects_PIR_PIR.PI_dq = Global_Data.objects.cc_instance_dq;
+			Global_Data.objects.objects_PIR_PIR.PI_xy1 = Global_Data.objects.objects_PI_PI.xy1;
+			Global_Data.objects.objects_PIR_PIR.PI_xy2 = Global_Data.objects.objects_PI_PI.xy2;
+			Global_Data.objects.objects_PIR_PIR.PI_xy3 = Global_Data.objects.objects_PI_PI.xy3;
+			Global_Data.objects.objects_PIR_PIR.RES_dq = init_PIR_PIR_resonant_dq();
+			Global_Data.objects.objects_PIR_PIR.RES_xy1 = init_PIR_PIR_resonant_xy1();
+			Global_Data.objects.objects_PIR_PIR.RES_xy2 = init_PIR_PIR_resonant_xy2();
+			Global_Data.objects.objects_PIR_PIR.RES_xy3 = init_PIR_PIR_resonant_xy3();
+
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

@@ -34,8 +34,7 @@ uz_CurrentControl_t* init_PI_0_cc_dq(void){
 }
 
 uz_9ph_abc_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object){
-	float omega_el = Data->av.rotational_position.omega_mech_rad_s*UZ_D5_MOTOR_POLE_PAIR_NUMBER;
-	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(object, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, omega_el);
+	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(object, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, Data->av.omega_el);
 	uz_9ph_dq_t out_dq = {
 		.d = dq_ref.d,
 		.q = dq_ref.q,

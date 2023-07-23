@@ -1,14 +1,7 @@
 #include "PI_PI.h"
+static const uz_3ph_dq_t zero_ref = {0};;
 
-static const uz_PMSM_t config_PMSM = {
-	.I_max_Ampere = 10.0f,
-	.J_kg_m_squared = 1.0f,
-	.Ld_Henry = 1.0f,
-	.Lq_Henry = 1.0f,
-	.Psi_PM_Vs = 1.0f,
-	.R_ph_Ohm = 1.0f,
-	.polePairs = UZ_D5_MOTOR_POLE_PAIR_NUMBER};
-
+///xy1///
 const struct uz_PI_Controller_config config_x1 = {
 	.type = parallel,
 	.Kp = PI_PI_KP_X1,
@@ -24,11 +17,12 @@ const struct uz_PI_Controller_config config_y1 = {
 	.upper_limit = ADDITIONAL_SYSTEM_LIMIT,
 	.lower_limit = -ADDITIONAL_SYSTEM_LIMIT};
 struct uz_CurrentControl_config cc_config_xy1 = {
-	.config_PMSM = config_PMSM,
 	.config_id = config_x1,
 	.config_iq = config_y1,
 	.decoupling_select = no_decoupling,
 	.max_modulation_index = MODULATION_INDEX};
+
+///xy2///
 const struct uz_PI_Controller_config config_x2 = {
 	.type = parallel,
 	.Kp = PI_PI_KP_X2,
@@ -44,11 +38,12 @@ const struct uz_PI_Controller_config config_y2 = {
 	.upper_limit = ADDITIONAL_SYSTEM_LIMIT,
 	.lower_limit = -ADDITIONAL_SYSTEM_LIMIT};
 struct uz_CurrentControl_config cc_config_xy2 = {
-	.config_PMSM = config_PMSM,
 	.config_id = config_x2,
 	.config_iq = config_y2,
 	.decoupling_select = no_decoupling,
 	.max_modulation_index = MODULATION_INDEX};
+
+///xy3///
 const struct uz_PI_Controller_config config_x3 = {
 	.type = parallel,
 	.Kp = PI_PI_KP_X3,
@@ -64,7 +59,6 @@ const struct uz_PI_Controller_config config_y3 = {
 	.upper_limit = ADDITIONAL_SYSTEM_LIMIT,
 	.lower_limit = -ADDITIONAL_SYSTEM_LIMIT};
 struct uz_CurrentControl_config cc_config_xy3 = {
-	.config_PMSM = config_PMSM,
 	.config_id = config_x3,
 	.config_iq = config_y3,
 	.decoupling_select = no_decoupling,
@@ -86,19 +80,14 @@ uz_CurrentControl_t* init_PI_PI_cc_xy3(void){
 }
 
 uz_9ph_abc_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects){
-	float omega_el = Data->av.rotational_position.omega_mech_rad_s*UZ_D5_MOTOR_POLE_PAIR_NUMBER;
-	uz_3ph_dq_t zero_ref = {0};
-
 	// Park transform subsystems
-	Data->av.currents_xy1 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY1, 3.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_3);
-	Data->av.currents_xy2 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY2, 5.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_5);
-	Data->av.currents_xy3 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY3, 7.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_7);
+	subspace_park_transform(Data);
 
 	// step controllers
-	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(objects.dq, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, omega_el);
-	uz_3ph_dq_t xy1_ref = uz_CurrentControl_sample(objects.xy1, zero_ref, Data->av.currents_xy1, Data->av.U_ZK, omega_el);
-	uz_3ph_dq_t xy2_ref = uz_CurrentControl_sample(objects.xy2, zero_ref, Data->av.currents_xy2, Data->av.U_ZK, omega_el);
-	uz_3ph_dq_t xy3_ref = uz_CurrentControl_sample(objects.xy3, zero_ref, Data->av.currents_xy3, Data->av.U_ZK, omega_el);
+	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(objects.dq, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, Data->av.omega_el);
+	uz_3ph_dq_t xy1_ref = uz_CurrentControl_sample(objects.xy1, zero_ref, Data->av.currents_xy1, Data->av.U_ZK, Data->av.omega_el);
+	uz_3ph_dq_t xy2_ref = uz_CurrentControl_sample(objects.xy2, zero_ref, Data->av.currents_xy2, Data->av.U_ZK, Data->av.omega_el);
+	uz_3ph_dq_t xy3_ref = uz_CurrentControl_sample(objects.xy3, zero_ref, Data->av.currents_xy3, Data->av.U_ZK, Data->av.omega_el);
 
 	// inverse Park transform subsystems
 	uz_3ph_alphabeta_t XY1_ref = uz_transformation_3ph_dq_to_alphabeta(xy1_ref, 3.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_3);

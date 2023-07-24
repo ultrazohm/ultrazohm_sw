@@ -54,7 +54,7 @@ uz_CurrentControl_t* init_xy_FOC(void) {
 	    .decoupling_select = no_decoupling,
 	    .config_id = config_ix,
 	    .config_iq = config_iy,
-	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor
+	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor
 	};
 	return(uz_CurrentControl_init(CC_xy_config));
 
@@ -65,7 +65,7 @@ uz_CurrentControl_t* init_dq_FOC(void) {
 	    .decoupling_select = linear_decoupling,
 	    .config_id = config_id,
 	    .config_iq = config_iq,
-	    .max_modulation_index = (1.0f / sqrtf(3.0f)) * Limitation_saftey_factor,
+	    .max_modulation_index = (1.0f / 2.0f) * Limitation_saftey_factor,
 		.config_PMSM = pmsm_config_dq
 	};
 	return(uz_CurrentControl_init(CC_dq_config));

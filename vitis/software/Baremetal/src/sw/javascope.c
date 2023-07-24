@@ -88,7 +88,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_v_q_non] 			= &v_dq_non_limited_volts.q;
 	js_ch_observable[JSO_v_x_non] 			= &v_xy_non_limited_volts.d;
 	js_ch_observable[JSO_v_y_non] 			= &v_xy_non_limited_volts.q;
-	js_ch_observable[JSO_v_d_lim] = &v_dq_limited_volts.d;
+	js_ch_observable[JSO_v_d_lim] = &v_dq_limited_volts.d;//k
 	js_ch_observable[JSO_v_q_lim] = &v_dq_limited_volts.q;
 	js_ch_observable[JSO_v_x_lim] = &v_xy_limited_volts.d;
 	js_ch_observable[JSO_v_y_lim] = &v_xy_limited_volts.q;
@@ -99,7 +99,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_start_marker] 			= &start_marker;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
+	js_ch_observable[JSO_ud]			= &data->av.U_d;//k-1
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_uX]			= &data->av.U_X;
 	js_ch_observable[JSO_uY]			= &data->av.U_Y;

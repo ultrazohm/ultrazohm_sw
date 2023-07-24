@@ -319,6 +319,10 @@ void ISR_Control(void *data)
            	Global_Data.av.I_q = CIL_i_dqxy_meas.q;
            	Global_Data.av.I_X = CIL_i_dqxy_meas.x;
            	Global_Data.av.I_Y = CIL_i_dqxy_meas.y;
+           	Global_Data.av.U_d = v_dqxy_limited_volts.d;
+           	Global_Data.av.U_q = v_dqxy_limited_volts.q;
+           	Global_Data.av.U_X = v_dqxy_limited_volts.x;
+           	Global_Data.av.U_Y = v_dqxy_limited_volts.y;
            	
            	uz_6ph_abc_t temp = uz_transformation_asym30deg_6ph_dq_xy_to_abc(CIL_i_dqxy_meas,CIL_out_general.theta_el);
            	Global_Data.av.i_a1 = temp.a1;
@@ -416,10 +420,6 @@ void ISR_Control(void *data)
            	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
            	v_dqxy_limited_volts.z1 = 0.0f;
            	v_dqxy_limited_volts.z2 = 0.0f;
-           	Global_Data.av.U_d = v_dqxy_limited_volts.d;
-           	Global_Data.av.U_q = v_dqxy_limited_volts.q;
-           	Global_Data.av.U_X = v_dqxy_limited_volts.x;
-           	Global_Data.av.U_Y = v_dqxy_limited_volts.y;
            	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
            	uz_pmsm_model6ph_dq_set_voltage(Global_Data.objects.CIL_pmsm,v_dqxy_limited_volts);
 

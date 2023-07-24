@@ -1,11 +1,11 @@
 .. _uz_newton_raphson:
 
 =================================
-Newton Raphson root approximation
+Newton-Raphson root approximation
 =================================
 
-The Newton Raphson approximation is an approach for finding the (real-valued) roots of nonlinear equations. 
-This is a relative simple, but fast approach. 
+The Newton-Raphson approximation is an approach for finding the (real-valued) roots of nonlinear equations. 
+This is a relatively simple but fast approach. 
 The original function :math:`f(x)` as well as the derivate :math:`f'(x)` is required.
 This implementation is designed to only work with polynomial functions, i.e., functions that are built from the addition of the exponentiation of variables to a non-negative integer power:
 I.e., functions :math:`P(x)` with the following definition
@@ -16,10 +16,10 @@ I.e., functions :math:`P(x)` with the following definition
 
 with the coefficients :math:`a_k` and the variable :math:`x`. 
 To automatically calculate the derivate, refer to :ref:`uz_newton_raphson_derivate`.
-If there are not enough iterations for the approach to converge to the root, the results can be inaccurate.
-A balance between computational effort (i.e., number of iterations) and accuracy of the results have to be made by the user.
+The results can only be accurate if there are enough iterations for the approach to converge to the root.
+A balance between computational effort (i.e., the number of iterations) and the accuracy of the results have to be made by the user.
 
-.. note:: The basic Newton-Raphson method as implemented in this software module returns only one of the (potentially) multiple roots of the polynomial. Which root is returned depends on the polynomial and the initial guess for :math:`x`, i.e., ``initial_value`` of the ``uz_newton_raphson_config`` struct.
+.. note:: The basic Newton-Raphson method, as implemented in this software module, returns only one of the (potentially) multiple roots of the polynomial. Which root is returned depends on the polynomial and the initial guess for :math:`x`, i.e., ``initial_value`` of the ``uz_newton_raphson_config`` struct.
 
 
 Reference
@@ -115,6 +115,7 @@ The function has two real roots at :math:`\approx 0.953476` and :math:`\approx 3
             .coefficients.data = &coefficients[0],
             .initial_value = 5.0f,
             .iterations = 5U,
+            .check_for_absolute_tolerance = true,
             .root_absolute_tolerance=0.05f
         };
         float output = uz_newton_raphson(config);
@@ -122,7 +123,7 @@ The function has two real roots at :math:`\approx 0.953476` and :math:`\approx 3
 
 Approximating the root of the polynomial takes :math:`\approx 2 us` with 5 iterations (result 3.316525) while 20 iterations take :math:`\approx 5 us`.
 
-Approximating the root of the following polynomial with 15 iteration takes :math:`\approx 9 us`:
+Approximating the root of the following polynomial with 15 iterations takes :math:`\approx 9 us`:
 
 .. math::
 

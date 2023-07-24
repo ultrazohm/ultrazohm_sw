@@ -26,6 +26,10 @@
 
 
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
+#include <math.h>
+#include "../uz_HAL.h"
+#include "uz_linear_decoupling.h"
+#include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
 	bool ext_clamping;
@@ -64,6 +68,7 @@ uz_CurrentControl_t* uz_CurrentControl_init(struct uz_CurrentControl_config conf
 	config.config_id.lower_limit = -INFINITY;
 	config.config_iq.upper_limit = INFINITY;
 	config.config_iq.lower_limit = -INFINITY;
+	uz_assert(config.max_modulation_index > 0.0f);
 	self->Controller_id = uz_PI_Controller_init(config.config_id);
 	self->Controller_iq = uz_PI_Controller_init(config.config_iq);
 	self->config = config;

@@ -67,6 +67,8 @@ dow Baremetal/Debug/Baremetal.elf
 puts "INFO: The application 'workspace/Baremetal/Debug/Baremetal.elf' is downloaded to processor 'psu_cortexr5_0'."
 configparams force-mem-access 0
 puts "INFO: 'configparams force-mem-access 0' command is executed."
+bpadd -addr &main
+puts "INFO: 'Enabled debug mode."
 targets -set -nocase -filter {name =~ "*A53*#0"}
 con
 puts "INFO: connected to 'psu_cortexa53_0'."

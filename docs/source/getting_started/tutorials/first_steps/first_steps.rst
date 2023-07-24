@@ -79,8 +79,8 @@ Initial steps
    * After you copied the contents of ``default_uz_global_configuration.h`` into the new file, no changes except the ``UZ_HARDWARE_VERSION`` have to be made. Adjust this number to the version number of *your* UltraZohm.
 
 #. Build the workspace again. No error should pop up anymore.
-#. Flash the UltraZohm by either pressing the debug or the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations ...*. Vitis will remember the last selection, which means, that for a future flashing operation, the last debug config is already preselected. 
-#. Use for the debug/run selection the ``Debug_FreeRTOS_Baremetal_FPGA`` configuration.
+#. Flash the UltraZohm by either pressing the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations ...*. Vitis will remember the last selection, which means, that for a future flashing operation, the last debug config is already preselected. 
+#. Use for the debug/run selection the ``Run_UltraZohm`` configuration.
 
    ..  _debug_config:
    ..  figure:: ./img/debug_config.png
@@ -97,7 +97,7 @@ Initial steps
    * If the connection was successful, the field left of the IP-address is moving. 
    * If nothing happens, checkout the :ref:`known issues section <GUI_network>`.
 
-#. Five default channels are visible in the scope after pressing the *Run/Stop* and the *sendSelectData (all)* button. 
+#. Five default channels are visible in the scope after pressing the *sendSelectData (all)* button. 
 
    * To get the signals into the scope view, adjust the scaling of the first 3 channels.
    * Adjust the time base of the Scope via the *setTime* button and the dropdown menu to ``x10`` .

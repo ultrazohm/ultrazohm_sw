@@ -23,8 +23,11 @@ void setUp(void)
     config.config_PMSM.Psi_PM_Vs = 0.0075f;
     config.motor_type = SMPMSM;
     config.is_field_weakening_enabled = false;
+    config.relative_torque_tolerance = 1.0f;
     currents.d = 0.0f;
     currents.q = 0.0f;
+    omega_m_rad_per_sec = 0.0f;
+    V_DC_Volts = 24.0f;
 }
 
 void test_uz_SetPoint_init_assert_Rph_negative(void){
@@ -333,6 +336,23 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_M_out(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0f, M_output);
 }
 
+void test_uz_SetPoint_sample_MTPA_IPMSM_operation_check_tolerance(void){
+    //Results for comparision from simulation
+    config.motor_type = IPMSM;
+    config.config_PMSM.R_ph_Ohm = 0.01664f;
+    config.config_PMSM.Ld_Henry = 0.00003f;
+    config.config_PMSM.Lq_Henry = 0.00005f;
+    config.config_PMSM.Psi_PM_Vs = 0.007f;
+    config.config_PMSM.polePairs = 5.0f;
+    config.config_PMSM.I_max_Ampere = 55.0f;
+    config.relative_torque_tolerance = 1e-08f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    M_ref_Nm = 10.0f;
+    //(fabsf(M_ref_Nm - M_estimated_Nm)) / M_ref_Nm = 9.54e-08
+    //Error bigger than relative torque tolerance config->Should assert
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents));
+}
+
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_negative_M_out(void){
     //Results for comparision from simulation
     config.motor_type = IPMSM;
@@ -406,6 +426,27 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.0165f, output.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.5209f, output.d);  
+}
+
+void test_uz_SetPoint_sample_field_weakening_IPMSM_check_tolerance(void){
+    //Results for comparision from simulation
+    config.is_field_weakening_enabled = true;
+    config.motor_type = IPMSM;
+    config.config_PMSM.R_ph_Ohm = 0.01664f;
+    config.config_PMSM.Ld_Henry = 0.00003f;
+    config.config_PMSM.Lq_Henry = 0.00005f;
+    config.config_PMSM.Psi_PM_Vs = 0.007f;
+    config.config_PMSM.polePairs = 5.0f;
+    config.config_PMSM.I_max_Ampere = 55.0f;
+    config.relative_torque_tolerance = 1e-08f;
+    currents.d = -6.65f;
+    currents.q = 1.9f;
+    uz_SetPoint_t* instance = uz_SetPoint_init(config);
+    M_ref_Nm = 1.0f;
+    omega_m_rad_per_sec = 430.13f;
+    //(fabsf(M_ref_Nm - M_estimated_Nm)) / M_ref_Nm = 2.384e-07
+    //Error bigger than relative torque tolerance config->Should assert 
+    TEST_ASSERT_FAIL_ASSERT(uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents));
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_two_instances(void){

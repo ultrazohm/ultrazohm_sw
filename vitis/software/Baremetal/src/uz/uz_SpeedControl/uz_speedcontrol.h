@@ -27,7 +27,7 @@ uz_SpeedControl_t* uz_SpeedControl_init(struct uz_SpeedControl_config config);
  * @brief Calculates reference torque 
  * 
  * @param self pointer to uz_SpeedControl_t object
- * @param omega_m_rad_per_sec mechanical rotational speed in 1/rad
+ * @param omega_m_rad_per_sec mechanical rotational speed in rad/s
  * @param n_ref_rpm reference speed in 1/min
  * @return reference torque in Nm
  */
@@ -60,7 +60,7 @@ void uz_SpeedControl_set_Ki(uz_SpeedControl_t* self, float new_Ki);
  * @brief  Function to change the Kp-value of the PI-Controller during runtime
  * 
  * @param self pointer to uz_SpeedControl_t object
- * @param new_Kp value for Ki. Must be greater or equal than 0.0f
+ * @param new_Kp value for Kp. Must be greater or equal than 0.0f
  */
 void uz_SpeedControl_set_Kp(uz_SpeedControl_t* self, float new_Kp);
 

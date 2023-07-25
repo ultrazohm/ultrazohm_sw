@@ -26,8 +26,8 @@ close all
 %    {'CH19=(23) iX_ref'     }
 %    {'CH20=(24) iY_ref'     }
 
-foc_cil=load('foc_cil_neu.mat');
-foc_real=load('foc_real.mat');
+foc_cil=load('foc_cil.mat');
+foc_real=load('foc_real_even_more_delay.mat');
 % foc_0rpm=load('foc_0rpm.mat');
 % 
 % 
@@ -42,10 +42,10 @@ color_1='#0072BD';
 
 % find all index in which the turn-on signal is changed
 changes = find(diff(foc_cil.log.start_marker))+1;
-foc_cil_start_0_rpm=changes(1)-100;
-foc_cil_start_100_rpm=changes(3)-100;
-foc_cil_start_300_rpm=changes(5)-100;
-foc_cil_start_550_rpm=changes(7)-100;
+foc_cil_start_0_rpm=changes(1);
+foc_cil_start_100_rpm=changes(3);
+foc_cil_start_300_rpm=changes(5);
+foc_cil_start_550_rpm=changes(7);
 % ddpg_cil_start_3000_rpm=changes(9);
 foc_cil_end_0_rpm=changes(2);
 foc_cil_end_100_rpm=changes(4);
@@ -54,10 +54,10 @@ foc_cil_end_550_rpm=changes(8);
 % ddpg_cil_end_3000_rpm=changes(10);
 
 changes = find(diff(foc_real.log.start_marker))+1;
-foc_real_start_0_rpm=changes(1)-101;
-foc_real_start_100_rpm=changes(3)-101;
-foc_real_start_300_rpm=changes(5)-101;
-foc_real_start_550_rpm=changes(7)-101;
+foc_real_start_0_rpm=changes(1);
+foc_real_start_100_rpm=changes(3);
+foc_real_start_300_rpm=changes(5);
+foc_real_start_550_rpm=changes(7);
 % ddpg_cil_start_3000_rpm=changes(9);
 foc_real_end_0_rpm=changes(2);
 foc_real_end_100_rpm=changes(4);
@@ -66,23 +66,23 @@ foc_real_end_550_rpm=changes(8);
 % ddpg_cil_end_3000_rpm=changes(10);
 
 % plot everything
-figure
-subplot(3,1,1)
-foc_time_cil=foc_cil.log.time-foc_cil.log.time(foc_cil_start_0_rpm);
-foc_time_real=foc_real.log.time-foc_real.log.time(foc_real_start_0_rpm);
-
-plot(foc_time_cil,foc_cil.log.iq,'r' ,'LineWidth',2);
-hold on
-%plot(foc_time_cil,foc_cil.log.CH19,'Color',color_1,'LineWidth',2 );
-grid minor
-plot(foc_time_cil,foc_cil.log.id,'b' ,'LineWidth',2);
-plot(foc_time_cil,foc_cil.log.id_ref,'k' ,'LineWidth',1);
-plot(foc_time_cil,foc_cil.log.iq_ref,'k' ,'LineWidth',1);
-
-plot(foc_time_real,foc_real.log.iq,'c' ,'LineWidth',2);
-plot(foc_time_real,foc_real.log.id,'g' ,'LineWidth',2);
-plot(foc_time_real,foc_real.log.id_ref,'k' ,'LineWidth',1);
-plot(foc_time_real,foc_real.log.iq_ref,'k' ,'LineWidth',1);
+% figure
+% subplot(3,1,1)
+% foc_time_cil=foc_cil.log.time-foc_cil.log.time(foc_cil_start_0_rpm);
+% foc_time_real=foc_real.log.time-foc_real.log.time(foc_real_start_0_rpm);
+% 
+% plot(foc_time_cil,foc_cil.log.iq,'r' ,'LineWidth',2);
+% hold on
+% %plot(foc_time_cil,foc_cil.log.CH19,'Color',color_1,'LineWidth',2 );
+% grid minor
+% plot(foc_time_cil,foc_cil.log.id,'b' ,'LineWidth',2);
+% plot(foc_time_cil,foc_cil.log.id_ref,'k' ,'LineWidth',1);
+% plot(foc_time_cil,foc_cil.log.iq_ref,'k' ,'LineWidth',1);
+% 
+% plot(foc_time_real,foc_real.log.iq,'c' ,'LineWidth',2);
+% plot(foc_time_real,foc_real.log.id,'g' ,'LineWidth',2);
+% plot(foc_time_real,foc_real.log.id_ref,'k' ,'LineWidth',1);
+% plot(foc_time_real,foc_real.log.iq_ref,'k' ,'LineWidth',1);
 
 
 %% 
@@ -93,28 +93,28 @@ subplot(2,1,1)
 foc_time_cil=foc_cil.log.time(foc_cil_start_0_rpm:foc_cil_end_0_rpm)-foc_cil.log.time(foc_cil_start_0_rpm);
 foc_time_real=foc_real.log.time(foc_real_start_0_rpm:foc_real_end_0_rpm)-foc_real.log.time(foc_real_start_0_rpm);
 
-plot(foc_time_cil,foc_cil.log.iq(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'r' ,'LineWidth',2);
+plot(foc_time_cil,foc_cil.log.iq(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'rx--' ,'LineWidth',2);
 hold on
 grid minor
-plot(foc_time_cil,foc_cil.log.id(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'b' ,'LineWidth',2);
+plot(foc_time_cil,foc_cil.log.id(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'rx--' ,'LineWidth',2);
 plot(foc_time_cil,foc_cil.log.iq_ref(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'k' ,'LineWidth',1);
 plot(foc_time_cil,foc_cil.log.id_ref(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'k' ,'LineWidth',1);
 
-plot(foc_time_real,foc_real.log.iq(foc_real_start_0_rpm:foc_real_end_0_rpm),'c' ,'LineWidth',1);
-plot(foc_time_real,foc_real.log.id(foc_real_start_0_rpm:foc_real_end_0_rpm),'g' ,'LineWidth',1);
+plot(foc_time_real,foc_real.log.iq(foc_real_start_0_rpm:foc_real_end_0_rpm),'bx--' ,'LineWidth',1);
+plot(foc_time_real,foc_real.log.id(foc_real_start_0_rpm:foc_real_end_0_rpm),'bx--' ,'LineWidth',1);
 plot(foc_time_real,foc_real.log.iq_ref(foc_real_start_0_rpm:foc_real_end_0_rpm),'k' ,'LineWidth',1);
 plot(foc_time_real,foc_real.log.id_ref(foc_real_start_0_rpm:foc_real_end_0_rpm),'k' ,'LineWidth',1);
-
+xlim([0.030 0.0311]);
 
 subplot(2,1,2)
 
-plot(foc_time_cil,foc_cil.log.uq(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'r' ,'LineWidth',2);
+plot(foc_time_cil,foc_cil.log.uq(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'rx--' ,'LineWidth',2);
 hold on
 grid minor
-plot(foc_time_cil,foc_cil.log.ud(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'b' ,'LineWidth',2);
-plot(foc_time_real,foc_real.log.ud(foc_real_start_0_rpm:foc_real_end_0_rpm),'c' ,'LineWidth',2);
-plot(foc_time_real,foc_real.log.uq(foc_real_start_0_rpm:foc_real_end_0_rpm),'g--' ,'LineWidth',2);
-
+plot(foc_time_cil,foc_cil.log.ud(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'rx--' ,'LineWidth',2);
+plot(foc_time_real,foc_real.log.ud(foc_real_start_0_rpm:foc_real_end_0_rpm),'bx--' ,'LineWidth',2);
+plot(foc_time_real,foc_real.log.uq(foc_real_start_0_rpm:foc_real_end_0_rpm),'bx--' ,'LineWidth',2);
+xlim([0.030 0.0311]);
 % subplot(3,1,3)
 % plot(foc_time_cil,foc_cil.log.start_marker(foc_cil_start_0_rpm:foc_cil_end_0_rpm),'r' ,'LineWidth',2);
 % hold on

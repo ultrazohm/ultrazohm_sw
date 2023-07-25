@@ -26,6 +26,10 @@
 
 
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
+#include <math.h>
+#include "../uz_HAL.h"
+#include "uz_linear_decoupling.h"
+#include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
 	bool ext_clamping;

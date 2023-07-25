@@ -124,12 +124,12 @@ float iq_setpoints[22]={
 #include "iq_setpoints.csv"
 };
 
-float iX_setpoints[22]={
-#include "iX_setpoints.csv"
+float ix_setpoints[22]={
+#include "ix_setpoints.csv"
 };
 
-float iY_setpoints[22]={
-#include "iY_setpoints.csv"
+float iy_setpoints[22]={
+#include "iy_setpoints.csv"
 };
 uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
@@ -159,8 +159,8 @@ void ISR_Control(void *data)
     	start_marker=1.0f;
     	i_dq_reference.d=id_setpoints[setpoint_index];
     	i_dq_reference.q=iq_setpoints[setpoint_index];
-    	i_xy_reference.d=iX_setpoints[setpoint_index];
-		i_xy_reference.q=iY_setpoints[setpoint_index];
+    	i_xy_reference.d=ix_setpoints[setpoint_index];
+		i_xy_reference.q=iy_setpoints[setpoint_index];
 
     	// step throught the array
     	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();

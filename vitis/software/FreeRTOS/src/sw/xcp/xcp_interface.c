@@ -36,16 +36,6 @@
 /*-------------------------------------------------------------------
  * Type definitions
  *-----------------------------------------------------------------*/
-typedef struct timing_value_t_ {
-	float irq_rate;
-	float control;
-	float xcp_event;
-} timing_value_t;
-
-typedef struct timing_t_ {
-	timing_value_t now;
-	timing_value_t max;
-} timing_t;
 
 /*-------------------------------------------------------------------
  * Variables
@@ -57,12 +47,7 @@ volatile uint8_t flag_connection_active = 0;
 
 static uint32_t xcp_timestamp = 0;
 
-static timing_t timing;
 
-#define TS__(name_, ts_start_, ts_end_) \
-	timing.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
-	if (timing.now.name_ > timing.max.name_) \
-	timing.max.name_ = timing.now.name_;
 
 /*-------------------------------------------------------------------
  * Local functions
@@ -113,7 +98,7 @@ static void xcp_eth_tx(void *arg_p)
 			xcp_msg_tx_cnt++;
 
 			if ((nwrote = write(sd, buf_xcp_tx, len_tcp_tx)) < 0) {
-				xil_printf("ERROR: TCP socket write failed\n");
+//				xil_printf("ERROR: TCP socket write failed\n");
 				break;
 			}
 		} else {
@@ -157,16 +142,6 @@ static void xcp_eth_rx(void *arg_p)
 	flag_connection_active = 0;
 	close(sd);
 	vTaskDelete(NULL);
-}
-
-static void timing_max_reset(void)
-{
-	static uint64_t ts_last_activation = 0;
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	if (bsp_timer_tsU64_delta_us(ts_last_activation, ts_now) >= (float)3e6) {
-		ts_last_activation = ts_now;
-		memset(&timing.max, 0, sizeof(timing.max));
-	}
 }
 
 /*-------------------------------------------------------------------

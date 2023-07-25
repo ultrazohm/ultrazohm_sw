@@ -5,22 +5,17 @@
  * Interface for control function
  */
 
-
 #include <stdint.h>
 
 #include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "global_data.h"
 #include "xcp/xcp_interface.h"
-
-
-
-
+#include "global_data.h"
+#include "bsp_timer/bsp_timer.h"
 
 #include "../globalData.h"
-
 #include "../include/uz_assertion_configuration.h"
 #include "../uz/uz_global_configuration.h"
 #include "../IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
@@ -35,10 +30,10 @@
 #include "../include/adc.h"
 #include "../include/isr.h"
 
-
 //====================================================================
 // Type definitions
 //====================================================================
+// TODO remove
 typedef struct {
 	uint8_t array_50_byte [50];
 	uint8_t array_90_byte [90];
@@ -50,10 +45,28 @@ typedef struct {
 	float sin_f;
 } control_dummy_t;
 
+typedef struct {
+	float duty_cycle_1;
+	float duty_cycle_2;
+	float duty_cycle_3;
+} duty_cycles_t;
+
+typedef struct timing_value_t_ {
+	float irq_rate;
+	float irq_time;
+	float task_fast;
+	float task_slow;
+	float config_update;
+} timing_value_t;
+
+typedef struct timing_t_ {
+	timing_value_t now;
+	timing_value_t max;
+} timing_t;
+
 //====================================================================
 // Configuration
 //====================================================================
-
 
 //====================================================================
 // Variables
@@ -82,26 +95,38 @@ DS_Data Global_Data = {
     }
 };
 
+volatile global_t global = {0};
 
-global_t global = {0};
+volatile static duty_cycles_t duty_cycles;
 
+volatile static timing_t timing_us;
+
+// TODO remove
 extern control_dummy_t control_dummy;
 control_dummy_t control_dummy = {0};
-
-
-#include "bsp_timer/bsp_timer.h"
 extern float fpga_irq_time_us;
 float fpga_irq_time_us = 0;
 extern float fpga_irq_freq_kHz;
 float fpga_irq_freq_kHz = 0;
 
-
-
-
-
 //====================================================================
 // Static functions
 //====================================================================
+#define TS__(name_, ts_start_, ts_end_) \
+	timing_us.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
+	if (timing_us.now.name_ > timing_us.max.name_) \
+	timing_us.max.name_ = timing_us.now.name_;
+
+static void timing_max_reset(void)
+{
+	static uint64_t ts_last_activation = 0;
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	if (bsp_timer_tsU64_delta_us(ts_last_activation, ts_now) >= (float)3e6) {
+		ts_last_activation = ts_now;
+		memset((void*)&timing_us.max, 0, sizeof(timing_us.max));
+	}
+}
+
 // Todo remove
 static void control_dummy_run(void)
 {
@@ -147,35 +172,84 @@ static void control_dummy_run(void)
 	}
 }
 
+
 static void task_fast(void)
 {
+	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+
     ADC_readCardALL(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
 	if (global.ctrl.ctrl_enable) {
-		control_dummy_run();
+		//control_dummy_run();
+
+		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
+		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
+		Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.duty_cycle_3;
+	} else {
+		Global_Data.rasv.halfBridge1DutyCycle = 0;
+		Global_Data.rasv.halfBridge2DutyCycle = 0;
+		Global_Data.rasv.halfBridge3DutyCycle = 0;
+		Global_Data.rasv.halfBridge4DutyCycle = 0;
+		Global_Data.rasv.halfBridge5DutyCycle = 0;
+		Global_Data.rasv.halfBridge6DutyCycle = 0;
+		Global_Data.rasv.halfBridge7DutyCycle = 0;
+		Global_Data.rasv.halfBridge8DutyCycle = 0;
+		Global_Data.rasv.halfBridge9DutyCycle = 0;
+		Global_Data.rasv.halfBridge10DutyCycle = 0;
+		Global_Data.rasv.halfBridge11DutyCycle = 0;
+		Global_Data.rasv.halfBridge12DutyCycle = 0;
 	}
+
+	// The function uz_PWM_SS_2L_set_duty_cycle() checks values and throws error! Catch this..
+	#define RANGE_CHECK(duty_cycle_, min_, max_) \
+	if ((duty_cycle_ < (float)min_) || (duty_cycle_ > (float)max_)) { \
+		duty_cycle_ = 0; \
+	}
+	RANGE_CHECK(Global_Data.rasv.halfBridge1DutyCycle, 0, 1);
+	RANGE_CHECK(Global_Data.rasv.halfBridge2DutyCycle, 0, 1);
+	RANGE_CHECK(Global_Data.rasv.halfBridge3DutyCycle, 0, 1);
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
+    // Currently not used
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
 
 	xcp_event_fast();
+
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	TS__(task_fast, ts_start, ts_now);
 }
 
 static void task_slow(void)
 {
+	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+
+	// 1 Second Task
+	// Todo Vielleicht wo anders platzieren..
+	static uint32_t div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= (uint32_t)1e3) {
+		div_cnt = 0;
+		timing_max_reset();
+	}
+
 	xcp_events_1ms();
+
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	TS__(task_slow, ts_start, ts_now);
 }
 
 static void configuration_update(void)
 {
+	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+
 	static bool pwm_enable_last = 0;
 	if (pwm_enable_last != global.ctrl.pwm_enable) {
 		if (global.ctrl.pwm_enable) {
@@ -199,6 +273,9 @@ static void configuration_update(void)
 		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
 								  Global_Data.av.pwm_frequency_hz);
 	}
+
+	uint64_t ts_now = bsp_timer_timestamp_u64_get();
+	TS__(config_update, ts_start, ts_now);
 }
 
 //====================================================================
@@ -206,12 +283,10 @@ static void configuration_update(void)
 //====================================================================
 void irq_fpga(void *data)
 {
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-
+	uint64_t ts_start = bsp_timer_timestamp_u64_get();
 	static uint64_t ts_last = 0;
-	fpga_irq_time_us = bsp_timer_tsU64_delta_us(ts_last, ts_now);
-	fpga_irq_freq_kHz = (1 / fpga_irq_time_us * (float)1e3);
-	ts_last = ts_now;
+	TS__(irq_rate, ts_last, ts_start);
+	ts_last = ts_start;
 
 	//---------------------
 	// Fast stuff
@@ -221,8 +296,8 @@ void irq_fpga(void *data)
 	// Slow stuff
 	static uint64_t ts_last_activation_1ms = 0;
 	const uint64_t TICKS_1MS = (BSP_TIMER_TICKS_PER_SECOND / 1000);
-	if ((ts_now - ts_last_activation_1ms) >= TICKS_1MS) {
-		ts_last_activation_1ms = ts_now;
+	if ((ts_start - ts_last_activation_1ms) >= TICKS_1MS) {
+		ts_last_activation_1ms = ts_start;
 		task_slow();
 	}
 
@@ -232,6 +307,9 @@ void irq_fpga(void *data)
 		global.config.config_update = 0;
 		configuration_update();
 	}
+
+	uint64_t ts_end = bsp_timer_timestamp_u64_get();
+	TS__(irq_time, ts_start, ts_end);
 }
 
 void basis_setup(void *p)
@@ -252,7 +330,8 @@ void basis_setup(void *p)
     Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
     Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
     Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-    PWM_3L_Initialize(&Global_Data); // three-level modulator
+    // Currently not used
+//    PWM_3L_Initialize(&Global_Data); // three-level modulator
     initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
     uz_axigpio_enable_datamover();
 
@@ -271,11 +350,7 @@ void basis_setup(void *p)
 		cnt++;
 		global.led.running = (cnt & 1);
 
-
-
 		bsp_led_run();
-
-
 
 		vTaskDelay(100 / portTICK_PERIOD_MS);
 	}

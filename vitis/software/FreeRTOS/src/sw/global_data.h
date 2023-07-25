@@ -37,4 +37,4 @@ typedef struct {
 // Global variables
 //====================================================================
 // Everyone can use this
-extern global_t global;
+extern volatile global_t global;

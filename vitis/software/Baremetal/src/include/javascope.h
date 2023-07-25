@@ -65,6 +65,7 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_error_type,
 	JSO_ENDMARKER
 };
 

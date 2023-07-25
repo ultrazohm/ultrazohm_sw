@@ -69,7 +69,7 @@
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
-
+void Reset_global_Data(DS_Data *data);
 void InitializeDataStructure(DS_Data* data);
 
 #endif /* main_H_ */

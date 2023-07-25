@@ -18,7 +18,7 @@
 
 
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 400
+#define DQN__CONTROL_FREQUENCY 200
 #define NUMBER_OF_INPUTS 5
 #define NUMBER_OF_OUTPUTS 5
 #define NUMBER_OF_HIDDEN_LAYER 3
@@ -70,8 +70,8 @@ DS_Data Global_Data = {
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
-};
+    },
+    .mrp = {.incrementalEncoder_speed_timeout_in_ms = 20}};
 
 enum init_chain
 {
@@ -95,7 +95,7 @@ struct uz_PMSM_t config_heidrive = {
     .Psi_PM_Vs = 0.0169f,
     .polePairs = 3.0f,
     .J_kg_m_squared = 0.0000148f,
-    .I_max_Ampere = 10.8f
+    .I_max_Ampere = 8.0f
 };
 static void dqn_step(void);
 static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN__CONTROL_FREQUENCY;
@@ -109,7 +109,7 @@ int main(void)
 
     // Position Controller linear axis
     struct uz_PI_Controller_config config_position = {
-        .Kp = 5.0f,
+        .Kp = 1.0f,
         .Ki = 0.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 500.0f,
@@ -119,10 +119,10 @@ int main(void)
 
     struct uz_SpeedControl_config SC_config = {
         .config_controller.Kp = 0.01f,
-        .config_controller.Ki = 7.0f,
+        .config_controller.Ki = 0.1f,
         .config_controller.samplingTime_sec = 0.00005f,
-        .config_controller.upper_limit = 15.0f,
-        .config_controller.lower_limit = -15.0f,
+        .config_controller.upper_limit = 1.0f,
+        .config_controller.lower_limit = -1.0f,
     };
 
     // Configuration of Set Point
@@ -228,7 +228,7 @@ int main(void)
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
-            Global_Data.mv.V_dc_volts = 12.0f;
+            Global_Data.mv.V_dc_volts = 48.0f;
 			initialization_chain = print_msg;
         	break;
 	    case print_msg:

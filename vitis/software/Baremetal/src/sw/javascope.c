@@ -28,6 +28,7 @@ extern float position_abs;
 extern float position_ref;
 extern float input_nn[5];
 extern float dqn_mutex_float;
+extern float error_type;
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -94,7 +95,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_mutex]   	= &dqn_mutex_float;
 	js_ch_observable[JSO_x_0_input]   	= &input_nn[0];
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
+	js_ch_observable[JSO_error_type] = &error_type;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

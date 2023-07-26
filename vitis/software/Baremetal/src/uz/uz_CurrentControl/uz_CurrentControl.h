@@ -7,6 +7,8 @@
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 #include <stdbool.h>
 
+
+
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
 enum uz_CurrentControl_decoupling_select {
 	no_decoupling=0, 

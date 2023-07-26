@@ -63,4 +63,6 @@ uz_3ph_alphabeta_t uz_subspace_resonant_control_step_alphabeta(uz_subspace_reson
  */
 void uz_subspace_resonant_control_reset(uz_subspace_resonant_control* self);
 
+void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, float gain1, float gain2);
+
 #endif // UZ_SUBSPACE_RESONANT_CONTROL_H

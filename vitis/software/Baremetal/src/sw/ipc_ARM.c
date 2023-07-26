@@ -194,15 +194,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-
+			data->rasv.gain_xy1 = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+			data->rasv.gain_xy2 = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+			data->rasv.gain_xy3 = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -210,27 +210,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.ctrl_xy1 = true;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.ctrl_xy1 = false;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.ctrl_xy2 = true;
 			break;
 
 		case (My_Button_4):
-
+			data->rasv.ctrl_xy2 = false;
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.ctrl_xy3 = true;
 			break;
 
 		case (My_Button_6):
-
+			data->rasv.ctrl_xy3 = false;
 			break;
 
 		case (My_Button_7):

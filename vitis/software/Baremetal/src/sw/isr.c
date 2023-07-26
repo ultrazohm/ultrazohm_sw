@@ -56,7 +56,7 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 // control
 #include "control/control.h"
 uz_9ph_abc_t ref_voltages = {0};
-enum controller_type selected_controller = PI_0;
+enum controller_type selected_controller = PI_R;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -109,6 +109,10 @@ void ISR_Control(void *data)
 	}
 
 
+	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY1, Global_Data.rasv.gain_xy1, Global_Data.rasv.gain_xy1);
+	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY2, Global_Data.rasv.gain_xy2, Global_Data.rasv.gain_xy2);
+	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY3, Global_Data.rasv.gain_xy3, Global_Data.rasv.gain_xy3);
+
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -146,7 +150,7 @@ void ISR_Control(void *data)
 		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
-		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
+		//reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

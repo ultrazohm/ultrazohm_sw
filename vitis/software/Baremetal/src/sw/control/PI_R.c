@@ -41,10 +41,21 @@ uz_subspace_resonant_control* init_PI_R_resonant_XY3(void){
 }
 
 uz_9ph_abc_t step_controllers_PI_R(DS_Data* Data, struct pointers_PI_R objects){
+	uz_3ph_alphabeta_t XY1_ref = zero_ref;
+	uz_3ph_alphabeta_t XY2_ref = zero_ref;
+	uz_3ph_alphabeta_t XY3_ref = zero_ref;
+
 	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(objects.dq, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, Data->av.omega_el);
-	uz_3ph_alphabeta_t XY1_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY1, zero_ref, Data->av.currents_XY1, Data->av.omega_el);
-	uz_3ph_alphabeta_t XY2_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY2, zero_ref, Data->av.currents_XY2, Data->av.omega_el);
-	uz_3ph_alphabeta_t XY3_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY3, zero_ref, Data->av.currents_XY3, Data->av.omega_el);
+	if(Data->rasv.ctrl_xy1){
+		XY1_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY1, zero_ref, Data->av.currents_XY1, Data->av.omega_el);
+	}
+	if(Data->rasv.ctrl_xy2){
+		XY2_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY2, zero_ref, Data->av.currents_XY2, Data->av.omega_el);
+	}
+	if(Data->rasv.ctrl_xy3){
+		XY3_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY3, zero_ref, Data->av.currents_XY3, Data->av.omega_el);
+	}
+	Data->av.debug_resonant_xy2 = XY2_ref;
 	uz_9ph_dq_t out_dq = {
 		.d = dq_ref.d,
 		.q = dq_ref.q,

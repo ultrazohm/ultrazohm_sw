@@ -1,5 +1,7 @@
 #include "PI_PI.h"
-static const uz_3ph_dq_t zero_ref = {0};;
+static const uz_3ph_dq_t zero_ref = {0};
+static const uz_3ph_alphabeta_t zero_ref_ab = {0};
+
 
 ///xy1///
 const struct uz_PI_Controller_config config_x1 = {
@@ -80,6 +82,10 @@ uz_CurrentControl_t* init_PI_PI_cc_xy3(void){
 }
 
 uz_9ph_abc_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects){
+	uz_3ph_alphabeta_t XY1_ref = zero_ref_ab;
+	uz_3ph_alphabeta_t XY2_ref = zero_ref_ab;
+	uz_3ph_alphabeta_t XY3_ref = zero_ref_ab;
+
 	// Park transform subsystems
 	subspace_park_transform(Data);
 
@@ -90,10 +96,15 @@ uz_9ph_abc_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects
 	uz_3ph_dq_t xy3_ref = uz_CurrentControl_sample(objects.xy3, zero_ref, Data->av.currents_xy3, Data->av.U_ZK, Data->av.omega_el);
 
 	// inverse Park transform subsystems
-	uz_3ph_alphabeta_t XY1_ref = uz_transformation_3ph_dq_to_alphabeta(xy1_ref, 3.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_3);
-	uz_3ph_alphabeta_t XY2_ref = uz_transformation_3ph_dq_to_alphabeta(xy2_ref, 5.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_5);
-	uz_3ph_alphabeta_t XY3_ref = uz_transformation_3ph_dq_to_alphabeta(xy3_ref, 7.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_7);
-
+	if(Data->rasv.ctrl_xy1){
+		XY1_ref = uz_transformation_3ph_dq_to_alphabeta(xy1_ref, 3.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_3);
+	}
+	if(Data->rasv.ctrl_xy2){
+		XY2_ref = uz_transformation_3ph_dq_to_alphabeta(xy2_ref, 5.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_5);
+	}
+	if(Data->rasv.ctrl_xy3){
+		XY3_ref = uz_transformation_3ph_dq_to_alphabeta(xy3_ref, 7.0f*Data->av.rotational_position.position_el_2pi - PHASE_PSI_PM_7);
+	}
 	// out
 	uz_9ph_dq_t out_dq = {
 		.d = dq_ref.d,

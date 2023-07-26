@@ -97,6 +97,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uZero] 		= &data->av.full_voltages_dq.zero;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
+	js_ch_observable[JSO_res_xy2_alpha]	= &data->av.debug_resonant_xy2.alpha;
+	js_ch_observable[JSO_res_xy2_beta]	= &data->av.debug_resonant_xy2.beta;
+
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

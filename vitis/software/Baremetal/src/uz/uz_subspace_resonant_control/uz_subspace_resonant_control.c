@@ -107,4 +107,10 @@ void uz_subspace_resonant_control_reset(uz_subspace_resonant_control* self){
     uz_resonantController_reset(self->resonant_1);
     uz_resonantController_reset(self->resonant_2);
 }
+
+void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, float gain1, float gain2){
+	uz_resonantController_set_gain(self->resonant_1, gain1);
+	uz_resonantController_set_gain(self->resonant_2, gain2);
+}
+
 #endif

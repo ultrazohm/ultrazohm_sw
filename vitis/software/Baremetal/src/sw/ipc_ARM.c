@@ -32,7 +32,7 @@ float i_d_ref = 0.0f;
 float i_q_ref = 0.0f;
 float i_X_ref = 0.0f;
 float i_Y_ref = 0.0f;
-
+extern float start_marker;
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -350,10 +350,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
+	 if (start_marker > 0.0f) {
+		js_status_BareToRTOS |= (1 << 12);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 12);
+	 }
 
 }

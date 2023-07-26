@@ -63,4 +63,21 @@ uz_3ph_alphabeta_t uz_subspace_resonant_control_step_alphabeta(uz_subspace_reson
  */
 void uz_subspace_resonant_control_reset(uz_subspace_resonant_control* self);
 
+/**
+ * @brief changes gain of both instances and writes new gains to config
+ *
+ * @param self pointer to instance
+ * @param gain1 new gain for resonant instance 1
+ * @param gain1 new gain for resonant instance 2
+ */
+void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, float gain1, float gain2);
+
+/**
+ * @brief returns actual config of instance
+ *
+ * @param self pointer to instance
+ * @return config
+ */
+struct uz_subspace_resonant_control_config uz_subspace_resonant_control_get_config(uz_subspace_resonant_control* self);
+
 #endif // UZ_SUBSPACE_RESONANT_CONTROL_H

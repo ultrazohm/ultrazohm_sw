@@ -27,6 +27,10 @@ Functions
 
 .. doxygenfunction:: uz_subspace_resonant_control_reset
 
+.. doxygenfunction:: uz_subspace_resonant_control_set_gains
+
+.. doxygenfunction:: uz_subspace_resonant_control_get_config
+
 Usage
 -----
 

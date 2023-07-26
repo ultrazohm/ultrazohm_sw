@@ -175,11 +175,18 @@ void network_thread(void *p)
 	can_frame_t can_frame_rx; //CAN interface
 #endif
 
-/*	// Enable
-	uz_platform_gposet(I2CLED_RING, UZP_GPO_ENABLE2PUSHPULLED);
+/*	// Enable (currently not required for I²C-based GPOs)
+	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD10GREEN, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD11RED, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD12YELLOW, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD13BLUE, UZP_GPO_ENABLE2PUSHPULLED);
 */
 	// Set
-	uz_platform_gposet(I2CLED_RING, UZP_GPO_ASSERT);
+	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ASSERT_QUEUED);
+	uint8_t mz_lscan = 0;
+	uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+	uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_DEASSERT_QUEUED);
 
 #if LWIP_DHCP==1
     dhcp_start(netif);
@@ -236,7 +243,38 @@ void network_thread(void *p)
 		}
 #endif
 
-		uz_platform_gposet(I2CLED_RING, UZP_GPO_TOGGLE_QUEUED);
+		uz_platform_gposet(I2CLED_FPRING, UZP_GPO_TOGGLE_QUEUED);
+
+		// Toggle LEDs on MZ sequentially
+		switch(mz_lscan)
+		{
+			default:
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD10GREEN,	UZP_GPO_ASSERT_QUEUED);
+				mz_lscan = 0;
+				break;
+			case 1:
+				uz_platform_gposet(I2CLED_MZD10GREEN,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 2:
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 3:
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 4:
+				uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 5:
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_ASSERT_QUEUED);
+				break;
+		}
+		mz_lscan++;
 
 		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 
@@ -248,17 +286,17 @@ void network_thread(void *p)
 void i2cio_thread()
 {
 /*	// Enable
-	uz_platform_gposet(I2CLED_1RDY, UZP_GPO_ENABLE2PUSHPULLED);
-	uz_platform_gposet(I2CLED_2RUN, UZP_GPO_ENABLE2PUSHPULLED);
-	uz_platform_gposet(I2CLED_3ERR, UZP_GPO_ENABLE2PUSHPULLED);
-	uz_platform_gposet(I2CLED_4USR, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP1RDY, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP2RUN, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP3ERR, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP4USR, UZP_GPO_ENABLE2PUSHPULLED);
 */
 	while(1) {
 		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
-		uz_platform_gposet(I2CLED_1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 
 		// Push all (I²C-)GPO changes to hardware
 		uz_platform_gpoupdate();

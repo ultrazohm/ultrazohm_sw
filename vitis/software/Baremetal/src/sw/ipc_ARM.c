@@ -194,15 +194,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			data->rasv.gain_xy1 = value;
 			break;
 
 		case (Set_Send_Field_4):
-			data->rasv.gain_xy2 = value;
 			break;
 
 		case (Set_Send_Field_5):
-			data->rasv.gain_xy3 = value;
 			break;
 
 		case (Set_Send_Field_6):

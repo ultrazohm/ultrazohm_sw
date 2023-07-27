@@ -62,9 +62,19 @@ enum JS_OberservableData {
 	JSO_Theta_mech,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
-	JSO_res_xy2_alpha,
-	JSO_res_xy2_beta,
+	JSO_ix1,
+	JSO_iy1,
+	JSO_ix2,
+	JSO_iy2,
+	JSO_ix3,
+	JSO_iy3,
 	JSO_lifecheck,
+	JSO_debug_x1,
+	JSO_debug_y1,
+	JSO_debug_x2,
+	JSO_debug_y2,
+	JSO_debug_x3,
+	JSO_debug_y3,
 	JSO_ENDMARKER
 };
 
@@ -144,9 +154,9 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	set_id,
 	set_iq,
-	gain_res_XY1,
-	gain_res_XY2,
-	gain_res_XY3,
+	none,
+	none,
+	none,
 	send_field_6,
 	SND_FLD_ENDMARKER
 
@@ -157,10 +167,10 @@ enum gui_button_mapping {
 	SND_LABELS_ZEROVALUE=0,
 	A,
 	A,
-	V/A,
-	V/A,
-	V/A,
-	A,
+	,
+	,
+	,
+	,
 	SND_LABELS_ENDMARKER
 
 

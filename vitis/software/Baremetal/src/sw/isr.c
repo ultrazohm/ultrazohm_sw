@@ -56,7 +56,7 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 // control
 #include "control/control.h"
 uz_9ph_abc_t ref_voltages = {0};
-enum controller_type selected_controller = PI_R;
+enum controller_type selected_controller = PI_PI;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -108,10 +108,6 @@ void ISR_Control(void *data)
 		uz_limit_exceed(&Global_Data);
 	}
 
-
-	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY1, Global_Data.rasv.gain_xy1, Global_Data.rasv.gain_xy1);
-	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY2, Global_Data.rasv.gain_xy2, Global_Data.rasv.gain_xy2);
-	uz_subspace_resonant_control_set_gains(Global_Data.objects.objects_PI_R.XY3, Global_Data.rasv.gain_xy3, Global_Data.rasv.gain_xy3);
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////

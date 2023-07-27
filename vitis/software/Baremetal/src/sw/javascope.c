@@ -95,13 +95,23 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uX3] 			= &data->av.full_voltages_dq.x3;
 	js_ch_observable[JSO_uY3] 			= &data->av.full_voltages_dq.y3;
 	js_ch_observable[JSO_uZero] 		= &data->av.full_voltages_dq.zero;
+	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
+	js_ch_observable[JSO_ix1] 			= &data->av.currents_xy1.d;
+	js_ch_observable[JSO_iy1] 			= &data->av.currents_xy1.q;
+	js_ch_observable[JSO_ix2] 			= &data->av.currents_xy2.d;
+	js_ch_observable[JSO_iy2] 			= &data->av.currents_xy2.q;
+	js_ch_observable[JSO_ix3] 			= &data->av.currents_xy3.d;
+	js_ch_observable[JSO_iy3] 			= &data->av.currents_xy3.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
-	js_ch_observable[JSO_res_xy2_alpha]	= &data->av.debug_resonant_xy2.alpha;
-	js_ch_observable[JSO_res_xy2_beta]	= &data->av.debug_resonant_xy2.beta;
-
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
+	js_ch_observable[JSO_debug_x1]   	= &data->av.debug_pi_xy1.d;
+	js_ch_observable[JSO_debug_y1]   	= &data->av.debug_pi_xy1.q;
+	js_ch_observable[JSO_debug_x2]   	= &data->av.debug_pi_xy2.d;
+	js_ch_observable[JSO_debug_y2]   	= &data->av.debug_pi_xy2.q;
+	js_ch_observable[JSO_debug_x3]   	= &data->av.debug_pi_xy3.d;
+	js_ch_observable[JSO_debug_y3]   	= &data->av.debug_pi_xy3.q;
+
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

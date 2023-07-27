@@ -2,18 +2,18 @@
 #include "control.h"
 
 // PI KP and KI
-#define PI_PI_KP_X1 1.0f
-#define PI_PI_KI_X1 1.0f
-#define PI_PI_KP_Y1 1.0f
-#define PI_PI_KI_Y1 1.0f
-#define PI_PI_KP_X2 1.0f
-#define PI_PI_KI_X2 1.0f
-#define PI_PI_KP_Y2 1.0f
-#define PI_PI_KI_Y2 1.0f
-#define PI_PI_KP_X3 1.0f
-#define PI_PI_KI_X3 1.0f
-#define PI_PI_KP_Y3 1.0f
-#define PI_PI_KI_Y3 1.0f
+#define PI_PI_KP_X1 4.8525f
+#define PI_PI_KI_X1 852.7500f
+#define PI_PI_KP_Y1 3.6353f
+#define PI_PI_KI_Y1 852.7500f
+#define PI_PI_KP_X2 5.0358f
+#define PI_PI_KI_X2 852.7500f
+#define PI_PI_KP_Y2 5.2915f
+#define PI_PI_KI_Y2 852.7500f
+#define PI_PI_KP_X3 4.8122f
+#define PI_PI_KI_X3 852.7500f
+#define PI_PI_KP_Y3 7.5422f
+#define PI_PI_KI_Y3 852.7500f
 
 uz_CurrentControl_t* init_PI_PI_cc_xy1(void);
 uz_CurrentControl_t* init_PI_PI_cc_xy2(void);

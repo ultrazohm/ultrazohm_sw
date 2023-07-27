@@ -30,11 +30,7 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f,
-		.gain_xy1 = 1.0f,
-		.gain_xy2 = 1.0f,
-		.gain_xy3 = 1.0f
-    },
+		.halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
 	.av.theta_el_offset = -0.038f,

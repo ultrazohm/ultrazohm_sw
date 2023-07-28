@@ -301,8 +301,6 @@ int main(void)
 //            uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x138, uz_convert_float_to_sfixed(pre_calc_val.psi_pm_over_psiB, 15));
             uz_axi_write_uint32(XPAR_MPC_PREDICTION_0_BASEADDR + 0x13C, (uint32_t)(dengine.polePairs));
             // cost_optim IP init
-            // CHANGE HERE TO uz_fixedpoint_writes !!!
-//            uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, 0.36f, i_max_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, 1.0f, i_max_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x114, Global_Data.av.lambda_d, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x118, Global_Data.av.lambda_q, cost_fp_def);

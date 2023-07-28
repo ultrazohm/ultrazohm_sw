@@ -27,6 +27,8 @@ extern uint32_t js_status_BareToRTOS;
 
 extern const base_val_t base_val;
 
+extern struct uz_fixedpoint_definition_t i_max_fp_def;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -204,7 +206,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-
+			data->av.i_max = value;
+			uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
 			break;
 
 		case (Set_Send_Field_5):

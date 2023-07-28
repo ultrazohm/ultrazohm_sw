@@ -83,7 +83,7 @@ extern DS_Data Global_Data;
 #define DC_VOLT_OFF_2		452.17f
 
 // software current limit
-#define MAX_PHASE_CURRENT_AMP  18.0f
+#define MAX_PHASE_CURRENT_AMP  20.0f
 #define MAX_DC_VOLT 590.0f
 
 
@@ -104,8 +104,8 @@ struct uz_fixedpoint_definition_t vsd_fixedpoint_definition = {
 // park transform output fixed point definition
 struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
 		.is_signed = true,
-		.integer_bits = 11,
-		.fractional_bits = 16
+		.integer_bits = 3,
+		.fractional_bits = 24
 };
 
 // delay comp output fixed point definition
@@ -283,7 +283,8 @@ void ISR_Control(void *data)
     // check current limit
 	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-		uz_assert(0);
+//		uz_assert(0);
+		ultrazohm_state_machine_set_stop(true);
 	}
 
 	// check DC Bus
@@ -354,28 +355,28 @@ void ISR_Control(void *data)
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
     	//    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, speed_ctrl_ref_currents, i_dq_actual, Global_Data.av.U_ZK_filt, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs);
-    	    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
-    	    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec_rad_ip);
-    	    	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
-    	    	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
-    	    	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
-
-    	    	input1.a = phase_ref_volts.a1;
-    	    	input1.b = phase_ref_volts.b1;
-    	    	input1.c = phase_ref_volts.c1;
-    	    	input2.a = phase_ref_volts.a2;
-    	    	input2.b = phase_ref_volts.b2;
-    	    	input2.c = phase_ref_volts.c2;
-
-    	    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.v_dc1);
-    	    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.v_dc2);
-
-    	    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
-    	    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
-    	    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
-    	    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
-    	    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
-    	    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
+//    	    	u_dq_ref = uz_FOC_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+//    	    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec_rad_ip);
+//    	    	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
+//    	    	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
+//    	    	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
+//
+//    	    	input1.a = phase_ref_volts.a1;
+//    	    	input1.b = phase_ref_volts.b1;
+//    	    	input1.c = phase_ref_volts.c1;
+//    	    	input2.a = phase_ref_volts.a2;
+//    	    	input2.b = phase_ref_volts.b2;
+//    	    	input2.c = phase_ref_volts.c2;
+//
+//    	    	output1 = uz_FOC_generate_DutyCycles(input1, Global_Data.av.v_dc1);
+//    	    	output2 = uz_FOC_generate_DutyCycles(input2, Global_Data.av.v_dc2);
+//
+//    	    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_U;
+//    	    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_V;
+//    	    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_W;
+//    	    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_U;
+//    	    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
+//    	    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

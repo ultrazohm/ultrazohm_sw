@@ -142,6 +142,7 @@ typedef struct _actualValues_ {
 	float vy_pu;
 	uint32_t ref_idx;
 	bool debug_ip_off;
+	float i_max;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

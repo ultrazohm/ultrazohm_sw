@@ -19,6 +19,22 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 
+// External Declares FOC
+extern float Kp_id;
+extern float Ki_id;
+extern float Kp_iq;
+extern float Ki_iq;
+extern float Kp_speed;
+extern float Ki_speed;
+extern float n_ref_rpm;
+extern struct uz_3ph_dq_t i_dq_ref_Amps;
+extern float M_ref_Nm;
+extern float theta_el_offset;
+
+// External Declares Wavegen
+extern bool enable_excitation;
+extern float excitation_amplitude;
+
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -186,27 +202,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+				n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+				//i_dq_ref_Amps.q = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+				//excitation_amplitude=value;
 			break;
 
 		case (Set_Send_Field_4):
-
+				//theta_el_offset=value;
 			break;
 
 		case (Set_Send_Field_5):
-
+				Kp_speed = value;
 			break;
 
 		case (Set_Send_Field_6):
-
+				Ki_speed = value;
 			break;
 
 		case (My_Button_1):
@@ -238,7 +254,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-
+				enable_excitation=!enable_excitation;
 			break;
 
 		case (Error_Reset):

@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -40,12 +41,46 @@ DS_Data Global_Data = {
     }
 };
 
+// Declare Pointer for FOC
+uz_SpeedControl_t* SC_instance;
+uz_SetPoint_t* SP_instance;
+uz_CurrentControl_t* CC_instance;
+
+// Declare Pointer for Chirp
+uz_wavegen_chirp* chirp_instance;
+
+// Declare Pointer for Offset Estimation
+uz_encoder_offset_estimation_t* encoder_offset_obj;
+
+//// Configuration of Brose PMSM
+//struct uz_PMSM_t config_PMSM = {
+//   .R_ph_Ohm = 0.01664f,
+//   .Ld_Henry = 0.00003f,
+//   .Lq_Henry = 0.00005f,
+//   .Psi_PM_Vs = 0.007f,
+//   .polePairs = 5.0f,
+//   .J_kg_m_squared = 0.00001773f,
+//   .I_max_Ampere = 40.0f
+//};//these parameters are only needed if linear decoupling is selected
+
+// Configuration of Hoerner PMSM
+struct uz_PMSM_t config_PMSM = {
+   .R_ph_Ohm = 0.249f,
+   .Ld_Henry = 0.00044f,
+   .Lq_Henry = 0.00245f,
+   .Psi_PM_Vs = 0.0194f,
+   .polePairs = 4.0f,
+   .J_kg_m_squared = 0.000084f,
+   .I_max_Ampere = 10.0f
+};//these parameters are only needed if linear decoupling is selected
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
+	init_foc,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -55,6 +90,70 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    // Configuration of Speed Control
+    struct uz_SpeedControl_config SC_config = {
+       .config_controller.Kp = 0.005f,
+       .config_controller.Ki = 0.01f,
+       .config_controller.samplingTime_sec = 0.0001f,
+       .config_controller.upper_limit = 2.0f,
+       .config_controller.lower_limit = -2.0f,
+    };
+
+    // Configuration of Set Point
+    struct uz_SetPoint_config SP_config = {
+       .config_PMSM = config_PMSM,
+       .control_type = FOC,
+       .motor_type = IPMSM,
+       .is_field_weakening_enabled = false,
+       .id_ref_Ampere = 0.0f,
+ 	   .relative_torque_tolerance = 0.1f
+     };
+
+    // Configuration of Current Control
+    struct uz_PI_Controller_config config_id = {
+       .Kp = 1.46f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+       .Ki = 830.0f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+       .samplingTime_sec = 0.0001f,
+ 	   .upper_limit = 15.0f,
+  	   .lower_limit = -15.0f
+    };
+    struct uz_PI_Controller_config config_iq = {
+       .Kp = 8.16f, // nach BO, 0.5f nach Nina
+       .Ki = 830.0f, // nach BO, 230.0f nach Nina
+       .samplingTime_sec = 0.0001f,
+  	   .upper_limit = 15.0f,
+	   .lower_limit = -15.0f
+    };
+    struct uz_CurrentControl_config CC_config = {
+       .decoupling_select = linear_decoupling,
+       .config_PMSM = config_PMSM,
+       .config_id = config_id,
+       .config_iq = config_iq,
+       .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+
+    // Configuration Wavegen Chirp
+    struct uz_wavegen_chirp_config config_chirp = {
+            .amplitude = 1.0f,
+            .start_frequency_Hz = 1.0f,
+            .end_frequency_Hz = 3000.0f,
+            .duration_sec = 4.0f,
+            .initial_delay_sec = 3.0f,
+            .offset = 0.0f
+    };
+
+    // Encoder offset estimation
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+        .ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+        .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
+        .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+        .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
+        .min_omega_el = 300.0f,                                                     // target electric rotor angular speed (USE OWN)
+        .setpoint_current = 3.0f 													// current setpoint to reach speed (USE OWN)
+    };
+
+    // Initialization Chain
     while (1)
     {
         switch (initialization_chain)
@@ -90,14 +189,23 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            initialization_chain = init_foc;
             break;
+        case init_foc:
+            SC_instance = uz_SpeedControl_init(SC_config);
+            SP_instance = uz_SetPoint_init(SP_config);
+            CC_instance = uz_CurrentControl_init(CC_config);
+           	chirp_instance = uz_wavegen_chirp_init(config_chirp);
+           	encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
+           	Global_Data.av.theta_offset = 0.904f;                                             // inital offset (USE OWN)
+          	initialization_chain = print_msg;
+           	break;
 	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

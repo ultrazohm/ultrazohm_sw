@@ -48,6 +48,6 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered = LPF1(	data->av.mechanicalRotorSpeed, &speed_lpf_mem_in, &speed_lpf_mem_out,
-			data->av.isr_samplerate_s, IncEncoderLPF_freq);
+			1.0f/data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }

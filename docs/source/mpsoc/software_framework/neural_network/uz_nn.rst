@@ -202,6 +202,44 @@ Reference
 
 .. doxygenfunction:: uz_nn_init
 
+.. doxygenfunction:: uz_nn_ff
+
+.. doxygenfunction:: uz_nn_backward_pass
+
+.. doxygenfunction:: uz_nn_backward_pass_mini_batch
+
+.. doxygenfunction:: uz_nn_gradient_descent
+
+.. doxygenfunction:: uz_nn_gradient_descent_mini_batch
+
+.. doxygenfunction:: uz_nn_mat_export
+
+.. doxygenfunction:: uz_nn_mse
+
+.. doxygenfunction:: uz_nn_mse_derv
+
 .. doxygenfunction:: uz_nn_get_output_data
+
+.. doxygenfunction:: uz_nn_get_output_from_each_layer
+
+.. doxygenfunction:: uz_nn_get_sumout_data
+
+.. doxygenfunction:: uz_nn_set_gradient_matrix
+
+.. doxygenfunction:: uz_nn_set_gradients_zero
+
+.. doxygenfunction:: uz_nn_get_bias_matrix
+
+.. doxygenfunction:: uz_nn_get_weight_matrix
+
+.. doxygenfunction:: uz_nn_get_delta_data
+
+.. doxygenfunction:: uz_nn_get_gradient_data
+
+.. doxygenfunction:: uz_nn_get_cachegradient_data
+
+.. doxygenfunction:: uz_nn_train_minibatch
+
+.. doxygenfunction:: calc_epsilon_greedy
 
 .. doxygendefine:: UZ_NN_MAX_LAYER

@@ -113,6 +113,13 @@ void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, fl
  * @param lernrate float, that determines the step size of the update
  */
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
+/**
+ * @brief Update the layer parameter with gradient descent
+ * 
+ * @param self 
+ * @param lernrate float, that determines the step size of the update
+ * @param minibatchsize float, that determines the mini batch size of the training parameter
+ */
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize);
 
 /**

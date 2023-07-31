@@ -91,17 +91,17 @@ void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row,
  * 
  * @param matrix Pointer to a uz_matrix_t instance, matrix
  * @param rowvector Pointer to a uz_matrix_t instance, rowvector 
- * @param row Row of element to extract, zerobased
+ * @param row Row of element to extract, zero based
  */
 
 void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row);
 
 /**
- * @brief Extract a row vector from a uz_matrix_t instance, and write it to rowvector 
+ * @brief Extract a column vector from a uz_matrix_t instance, and write it to columnvector 
  * 
  * @param matrix Pointer to a uz_matrix_t instance, matrix
  * @param columnvector Pointer to a uz_matrix_t instance, columnvector 
- * @param column Column of element to extract, zerobased
+ * @param column Column of element to extract, zero based
  */
 
 void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const columnvector, uint32_t column);
@@ -247,14 +247,14 @@ void uz_matrix_columnvec_matrix_product(uz_matrix_t const *const A, uz_matrix_t 
  * @brief Set a columnvector of length V to the elements of an matrix A with dimension V x V.
  * 
  * @param A Pointer to a uz_matrix_t instance 
- * @param vector Pointer to a uz_matrix_t instance, which is a columnvector 
+ * @param columnvector Pointer to a uz_matrix_t instance, which is a columnvector 
  */
 void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
 /**
  * @brief Set a rowvector of length V to the diagonal elements of an matrix A with dimension V x V.
  * 
  * @param A Pointer to a uz_matrix_t instance 
- * @param vector Pointer to a uz_matrix_t instance, which is a rowvector 
+ * @param rowvector Pointer to a uz_matrix_t instance, which is a rowvector 
  */
 void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
 /**

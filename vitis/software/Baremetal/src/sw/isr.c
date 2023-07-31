@@ -56,7 +56,13 @@ float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
 float action_current = 3.7f; // I_q fuer Agenten
-
+//float position_Kp = 0.5f;
+// limits and time setting
+float limit_error = 420.0f;
+float disable_control = 390.0f;
+int time_dqn = 10;
+int time_wait_zero = 10;
+int time_reset = 5;
 // position control
 float position_ref = 0.0f; // mm
 int pos_strich = 0;         // Striche 0-2000
@@ -176,7 +182,7 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	if (fabsf(position_abs) > 430.0f){
+    	if (fabsf(position_abs) > limit_error){
     		uz_assert(0);
     	}
     	// switch case for switching between dqn, pos_control and other states
@@ -185,7 +191,7 @@ void ISR_Control(void *data)
 				Global_Data.av.trigger_logging = 1.0f;
 				counter_for_reset++;
 				// get output from nn
-		    	if (fabsf(position_abs) > 390.0f){
+		    	if (fabsf(position_abs) > disable_control){
 		    		chain=limit_violation;
 		    	}
 		        if (dqn_mutex)
@@ -207,7 +213,7 @@ void ISR_Control(void *data)
 		            default: uz_assert(0);
 		            }
 		        }
-		        if (counter_for_reset>600000){
+		        if (counter_for_reset>time_dqn*(int)UZ_PWM_FREQUENCY){
 		        	chain=limit_violation;
 		        }
 				break;
@@ -225,7 +231,7 @@ void ISR_Control(void *data)
 				}
 				break;
 			case reset_angle:
-					if (counter_ip_core_res < 300000)
+					if (counter_ip_core_res < 50000)
 					{
 						counter_ip_core_res++;
 					}
@@ -239,7 +245,7 @@ void ISR_Control(void *data)
 					break;
 			case wait_at_zero_position:
 				if(fabsf(position_abs) < 1.0f){
-				if (counter_wait_pos<5000){
+				if (counter_wait_pos<50000){
 					counter_wait_pos++;
 					}
 				else{
@@ -256,7 +262,7 @@ void ISR_Control(void *data)
 			default:
 				break;
     	}
-    	if (fabsf(position_abs) < 430.0f)
+    	if (fabsf(position_abs) < limit_error)
     	{
     	//Field Oriented Control
 //    	Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
@@ -268,12 +274,13 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	// Set Duty Cycle B
     	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	// Set Duty Cycle C
         // change control parameters during runtime
-//        uz_CurrentControl_set_Kp_id(Global_Data.objects.CC_instance, Kp_id);
-//        uz_CurrentControl_set_Kp_iq(Global_Data.objects.CC_instance, Kp_iq);
-//        uz_CurrentControl_set_Ki_id(Global_Data.objects.CC_instance, Ki_id);
-//        uz_CurrentControl_set_Ki_iq(Global_Data.objects.CC_instance, Ki_iq);
-//        uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
-//        uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
+        uz_CurrentControl_set_Kp_id(Global_Data.objects.CC_instance, Kp_id);
+        uz_CurrentControl_set_Kp_iq(Global_Data.objects.CC_instance, Kp_iq);
+        uz_CurrentControl_set_Ki_id(Global_Data.objects.CC_instance, Ki_id);
+        uz_CurrentControl_set_Ki_iq(Global_Data.objects.CC_instance, Ki_iq);
+        uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
+        uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
+//        uz_SpeedControl_set_Kp(Global_Data.objects.PI_instance, position_Kp);
     	}
     	}
     	else

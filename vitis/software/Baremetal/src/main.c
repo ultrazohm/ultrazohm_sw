@@ -18,7 +18,7 @@
 
 
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 200
+#define DQN__CONTROL_FREQUENCY 400
 #define NUMBER_OF_INPUTS 5
 #define NUMBER_OF_OUTPUTS 5
 #define NUMBER_OF_HIDDEN_LAYER 3
@@ -71,7 +71,7 @@ DS_Data Global_Data = {
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
-    .mrp = {.incrementalEncoder_speed_timeout_in_ms = 20}};
+    .mrp = {.incrementalEncoder_speed_timeout_in_ms = 10}};
 
 enum init_chain
 {
@@ -109,7 +109,7 @@ int main(void)
 
     // Position Controller linear axis
     struct uz_PI_Controller_config config_position = {
-        .Kp = 1.0f,
+        .Kp = 0.5f,
         .Ki = 0.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 500.0f,
@@ -118,8 +118,8 @@ int main(void)
     // Configuration of Speed Control
 
     struct uz_SpeedControl_config SC_config = {
-        .config_controller.Kp = 0.01f,
-        .config_controller.Ki = 0.1f,
+        .config_controller.Kp = 0.0207f,
+        .config_controller.Ki = 0.207f,
         .config_controller.samplingTime_sec = 0.00005f,
         .config_controller.upper_limit = 1.0f,
         .config_controller.lower_limit = -1.0f,
@@ -138,16 +138,16 @@ int main(void)
     // Configuration of Current Control
 
     struct uz_PI_Controller_config config_id = {
-        .Kp = 3.0f,
-        .Ki = 600.0f,
+        .Kp = 5.65f,
+        .Ki = 2715.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 40.0f,
         .lower_limit = -40.0f
     };
 
     struct uz_PI_Controller_config config_iq = {
-        .Kp = 3.5f,
-        .Ki = 600.0f,
+        .Kp = 7.11f,
+        .Ki = 2715.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 40.0f,
         .lower_limit = -40.0f
@@ -229,6 +229,8 @@ int main(void)
             Global_Data.objects.uz_nn_instance = uz_nn_init(config_nn, NUMBER_OF_HIDDEN_LAYER);
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.mv.V_dc_volts = 48.0f;
+            // tune current control after init
+            //uz_CurrentControl_tune_magnitude_optimum(Global_Data.objects.CC_instance,0.00005f);
 			initialization_chain = print_msg;
         	break;
 	    case print_msg:

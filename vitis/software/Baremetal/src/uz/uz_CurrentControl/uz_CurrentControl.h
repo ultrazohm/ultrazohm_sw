@@ -131,4 +131,6 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
+
 #endif // UZ_CURRENTCONTROL_H

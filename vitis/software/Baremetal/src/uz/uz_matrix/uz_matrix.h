@@ -97,6 +97,15 @@ void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row,
 void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row);
 
 /**
+ * @brief Extract a row vector from a uz_matrix_t instance, and write it to rowvector 
+ * 
+ * @param matrix Pointer to a uz_matrix_t instance, matrix
+ * @param columnvector Pointer to a uz_matrix_t instance, columnvector 
+ * @param column Column of element to extract, zerobased
+ */
+
+void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const columnvector, uint32_t column);
+/**
  * @brief Calculates the "real" matrix multiplication C_out=A * B
  * 
  * @param A Pointer to a uz_matrix_t instance 

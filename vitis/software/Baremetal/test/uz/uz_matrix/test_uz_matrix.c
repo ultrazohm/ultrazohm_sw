@@ -261,4 +261,28 @@ void test_uz_matrix_get_row_vector_zero_based(void)
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data2,X_data,UZ_MATRIX_SIZE(X_data));
 }
 
+void test_uz_matrix_get_column_vector_zero_based(void)
+{
+    uint32_t rows = 3;
+    uint32_t columns = 4;
+    float A_data[12] = {9,17,12,2,4,0,3,6,8,2,21,30};
+    float X_data[3] = {17, 18, 19};
+    struct uz_matrix_t input_matrix = {0};
+    struct uz_matrix_t input_vec= {0};
+    uz_matrix_t *A = uz_matrix_init(&input_matrix, A_data, UZ_MATRIX_SIZE(A_data), rows, columns);
+    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), rows, 1);
+
+    uz_matrix_get_column_vector_zero_based(A,X,0);
+    float check_data0[3] = {9,4,8};
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data0,X_data,UZ_MATRIX_SIZE(X_data));
+    float check_data1[3] = {17,0,2};
+    uz_matrix_get_column_vector_zero_based(A,X,1);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data1,X_data,UZ_MATRIX_SIZE(X_data));
+    float check_data2[3] = {12,3,21};
+    uz_matrix_get_column_vector_zero_based(A,X,2);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data2,X_data,UZ_MATRIX_SIZE(X_data));
+    float check_data3[3] = {2,6,30};
+    uz_matrix_get_column_vector_zero_based(A,X,3);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(check_data3,X_data,UZ_MATRIX_SIZE(X_data));
+}
 #endif // TEST

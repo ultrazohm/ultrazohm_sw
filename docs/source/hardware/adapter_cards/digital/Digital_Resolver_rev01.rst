@@ -90,6 +90,11 @@ Pinout
 .. image:: Digital_Resolver_rev01/Pinout_Adapter_Card_Digital_Resolver_edited.png
   :height: 300
 
+.. csv-table:: Pinout Resolver D_Sub 9 
+   :file: Digital_Resolver_rev01/pinout_dsub.csv
+   :widths: 50 50
+   :header-rows: 1
+
 .. image:: Digital_Resolver_rev01/Pinout2_Adapter_Card_Digital_Resolver_edited.png
   :height: 700
 

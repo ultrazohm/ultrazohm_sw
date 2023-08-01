@@ -194,7 +194,7 @@ The following code is used in ``main.c`` (initialization) and ``isr.c`` (applica
   uz_pmsm_model9ph_dq_t *pmsm=NULL;
   struct uz_pmsm_model9ph_dq_config_t pmsm_config = {   // example config values
     .base_address=XPAR_UZ_PMSM_MODEL_0_BASEADDR,
-    .ip_core_frequency_Hz = 100000000.0f,
+    .ip_core_frequency_Hz = 100000000U,
     .polepairs = 3.0f,
     .r_1 = 31.3f,
     .inductance.d = 0.46f,

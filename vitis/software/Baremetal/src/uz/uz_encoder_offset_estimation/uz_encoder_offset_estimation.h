@@ -31,6 +31,18 @@ enum uz_encoder_offset_estimation_diagnose
 {
     encoderoffset_no_error = 0,
     encoderoffset_speed_not_reached,
+    encoderoffset_finished,
+    encoderoffset_lower_limit,
+    encoderoffset_upper_limit
+};
+
+/**
+ * @brief Feedback struct for user
+ * 
+ */
+struct uz_encoder_offset_estimation_status {
+    float progress;                                             /**< Progress of estimation from 0-1 */
+    enum uz_encoder_offset_estimation_diagnose diagnose;        /**< Diagnose and status */
 };
 
 /**
@@ -87,11 +99,11 @@ void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_
 void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* self);
 
 /**
- * @brief Get progress status in range 0..1
+ * @brief Get status
  * 
  * @param self Pointer to instance
- * @return progress normed to 1, meaning 0 is not started and 1 is finished
+ * @return status struct
  */
-float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self);
+struct uz_encoder_offset_estimation_status uz_encoder_offset_estimation_get_status(uz_encoder_offset_estimation_t* self);
 
 #endif // uz_encoder_offset_estimation_H

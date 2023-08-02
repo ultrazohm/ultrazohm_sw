@@ -25,6 +25,6 @@ enum controller_type {reset, PI_0, PI_PI, PI_R, PIR_PIR};
 // testbench data
 #define PHASE_PSI_PM_3 UZ_PIf
 #define PHASE_PSI_PM_5 UZ_PIf
-#define PHASE_PSI_PM_7 UZ_PIf/2.0f
+#define PHASE_PSI_PM_7 UZ_PIf
 
 void subspace_park_transform(DS_Data* Data);

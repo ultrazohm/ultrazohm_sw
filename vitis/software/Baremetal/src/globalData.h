@@ -31,11 +31,11 @@ struct pointers_PIR_PIR{
 	uz_CurrentControl_t* PI_dq;
 	uz_CurrentControl_t* PI_xy1;
 	uz_CurrentControl_t* PI_xy2;
-	uz_CurrentControl_t* PI_xy3;
 	uz_subspace_resonant_control* RES_dq;
 	uz_subspace_resonant_control* RES_xy1;
 	uz_subspace_resonant_control* RES_xy2;
 	uz_subspace_resonant_control* RES_xy3;
+	uz_subspace_resonant_control* RES_XY3;
 };
 
 // union allows to access the values as array and individual variables

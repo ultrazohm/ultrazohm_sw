@@ -143,6 +143,7 @@ typedef struct _actualValues_ {
 	uint32_t ref_idx;
 	bool debug_ip_off;
 	float i_max;
+	float torque;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

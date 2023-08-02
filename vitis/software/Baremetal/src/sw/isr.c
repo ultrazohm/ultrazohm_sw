@@ -81,7 +81,7 @@ extern DS_Data Global_Data;
 #define DC_VOLT_OFF_1		450.25f
 #define DC_VOLT_CONV_2		141.28f
 #define DC_VOLT_OFF_2		452.17f
-
+#define TORQUE_CONV			20.0f // 20Nm/V
 // software current limit
 #define MAX_PHASE_CURRENT_AMP  20.0f
 #define MAX_DC_VOLT 590.0f
@@ -279,6 +279,11 @@ void ISR_Control(void *data)
     Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
+    // convert ADC reading to torque
+    Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * TORQUE_CONV;
+
+    // write measured dc_link voltage to pu_voltages ip
+    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.v_dc1/base_val.VB, 15));
 
     // check current limit
 	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
@@ -289,7 +294,8 @@ void ISR_Control(void *data)
 
 	// check DC Bus
 	if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
-			uz_assert(0);
+//			uz_assert(0);
+			ultrazohm_state_machine_set_stop(true);
 	}
 
 	// read temperature values from inverters

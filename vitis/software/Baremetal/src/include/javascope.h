@@ -57,6 +57,7 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_id_ip,
 	JSO_iq_ip,
+	JSO_torque,
 	JSO_id_delay,
 	JSO_iq_delay,
 	JSO_ix_delay,

@@ -90,6 +90,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_id] 				= &data->av.i_d;
 	js_ch_observable[JSO_iq_ip] 				= &data->av.i_q_ip;
 	js_ch_observable[JSO_id_ip] 				= &data->av.i_d_ip;
+	js_ch_observable[JSO_torque]			= &data->av.torque;
 	js_ch_observable[JSO_id_delay]			= &data->av.i_d_delay;
 	js_ch_observable[JSO_iq_delay]			= &data->av.i_q_delay;
 	js_ch_observable[JSO_ix_delay]			= &data->av.i_x_delay;

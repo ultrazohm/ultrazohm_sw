@@ -34,7 +34,10 @@
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-
+#include <time.h>
+#include <stdlib.h>
+#define PHASE_CURRENT_SCALING 12.5f
+#define PHASE_VOLT_SCALING	12.0f
 // Declaration for inverter Faults
 float error_type = 0.0f;
 // Initialize the Interrupt structure
@@ -55,14 +58,15 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 3.7f; // I_q fuer Agenten
-//float position_Kp = 0.5f;
+float action_current = 3.6f; // I_q fuer Agenten
+float position_Kp = 0.5f;
 // limits and time setting
-float limit_error = 420.0f;
-float disable_control = 390.0f;
-int time_dqn = 10;
+float limit_error = 430.0f;
+float disable_control = 400.0f;
+
+int time_dqn = 15;
 int time_wait_zero = 10;
-int time_reset = 5;
+int time_reset = 10;
 // position control
 float position_ref = 0.0f; // mm
 int pos_strich = 0;         // Striche 0-2000
@@ -97,7 +101,8 @@ enum dqn_chain
     limit_violation,
 	return_to_zero_position,
 	reset_angle,
-	wait_at_zero_position
+	wait_at_zero_position,
+	get_to_start_postion
 };
 enum dqn_chain chain = dqn_active;
 void ISR_Control(void *data)
@@ -109,41 +114,20 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
-    // Read Measurement Data of Inverter Card
-    Global_Data.mv.v_abc_Volts.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
-    Global_Data.mv.v_abc_Volts.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
-    Global_Data.mv.v_abc_Volts.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
-    Global_Data.mv.V_dc_volts 	  = Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    Global_Data.mv.i_abc_Amps.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
-    Global_Data.mv.i_abc_Amps.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
-    Global_Data.mv.i_abc_Amps.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
-    Global_Data.mv.i_DC_Amps    = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
-    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
-    // Get Current State
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    // Enable Inverter Adapter Hardware
-    if (current_state == running_state || current_state == control_state) {
-        // enable inverter adapter hardware
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
-    }
-    else {
-     	// disable inverter adapter hardware
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
-    }
     // Pendulum and linear axis calculation
     Global_Data.av.theta_pendulum= Global_Data.av.theta_pendulum+theta_off_angle_pendulum;
     // calculate position
     globalposition = (int)Global_Data.av.position_pendulum;
     // count reference signals
-    if (pos_strich - globalposition > 1500)
+    if ((pos_strich - globalposition) > 1500)
     {
     	i_counter++;
     }
-    else if (pos_strich - globalposition < -1500)
+    else if ((pos_strich - globalposition) < -1500)
     {
     	i_counter--;
     }
-    position_abs = (i_counter + globalposition / (UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION * 4.0f)) * 5.0f;
+    position_abs = (float)(i_counter + (globalposition / (UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION * 4.0f))) * 5.0f;
     pos_strich = (int)Global_Data.av.position_pendulum;
     // calculate and transform observations for dqn
     Global_Data.obs.dqn_chart_position=position_abs/1.0e3f;
@@ -168,9 +152,30 @@ void ISR_Control(void *data)
         Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
     old_position=Global_Data.obs.dqn_chart_position;
-    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;// wegen funktionierender Refrenzspur muss jetzt offset hinzugerechnet werden
+    Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum- M_PI;// wegen funktionierender Referenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle=sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle=cos(Global_Data.obs.dqn_angle);
+    // Read Measurement Data of Inverter Card
+    Global_Data.mv.v_abc_Volts.a = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_SCALING;
+    Global_Data.mv.v_abc_Volts.b = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_SCALING;
+    Global_Data.mv.v_abc_Volts.c = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_SCALING;
+    Global_Data.mv.V_dc_volts 	  = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_SCALING;
+    Global_Data.mv.i_abc_Amps.a  = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_SCALING;
+    Global_Data.mv.i_abc_Amps.b  = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_SCALING;
+    Global_Data.mv.i_abc_Amps.c  = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_SCALING;
+    Global_Data.mv.i_DC_Amps    = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_SCALING;
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    // Get Current State
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    // Enable Inverter Adapter Hardware
+    if (current_state == running_state || current_state == control_state) {
+        // enable inverter adapter hardware
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    }
+    else {
+     	// disable inverter adapter hardware
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    }
     // calculate data pmsm for foc
     Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
     Global_Data.av.theta_mech = Global_Data.av.theta_elec * (1.0f/3.0f);
@@ -213,7 +218,7 @@ void ISR_Control(void *data)
 		            default: uz_assert(0);
 		            }
 		        }
-		        if (counter_for_reset>time_dqn*(int)UZ_PWM_FREQUENCY){
+		        if (counter_for_reset>(time_dqn*(int)UZ_PWM_FREQUENCY)){
 		        	chain=limit_violation;
 		        }
 				break;
@@ -223,7 +228,7 @@ void ISR_Control(void *data)
 				chain=return_to_zero_position;
 				break;
 			case return_to_zero_position:
-				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
+				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, 0.0f, position_abs, ext_clamping);
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
 				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
 				if(fabsf(position_abs) < 1.0f){
@@ -231,7 +236,7 @@ void ISR_Control(void *data)
 				}
 				break;
 			case reset_angle:
-					if (counter_ip_core_res < 50000)
+					if (counter_ip_core_res < (time_reset*(int)UZ_PWM_FREQUENCY))
 					{
 						counter_ip_core_res++;
 					}
@@ -245,14 +250,26 @@ void ISR_Control(void *data)
 					break;
 			case wait_at_zero_position:
 				if(fabsf(position_abs) < 1.0f){
-				if (counter_wait_pos<50000){
+				if (counter_wait_pos<(time_wait_zero*(int)UZ_PWM_FREQUENCY)){
 					counter_wait_pos++;
 					}
 				else{
 					Reset_obs_and_measurements();
-					chain=dqn_active;
+					chain=get_to_start_postion;
 					}
 				}
+				else{
+				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, 0.0f, position_abs, ext_clamping);
+				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
+				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
+				}
+				break;
+			case get_to_start_postion:
+				position_ref = 100.0f;
+				pos_delta = position_ref-position_abs;
+				if(fabsf(pos_delta) < 0.1f){
+					chain=dqn_active;
+					}
 				else{
 				Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
@@ -264,7 +281,7 @@ void ISR_Control(void *data)
     	}
     	if (fabsf(position_abs) < limit_error)
     	{
-    	//Field Oriented Control
+    	//Position Control, DQN has to be commented out
 //    	Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_ref, position_abs, ext_clamping);
 //    	Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, -Global_Data.rasv.n_ref_rpm );										// Calculate Reference Torque
 //    	Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);				// Calculate Reference Currents
@@ -274,22 +291,22 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	// Set Duty Cycle B
     	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	// Set Duty Cycle C
         // change control parameters during runtime
-        uz_CurrentControl_set_Kp_id(Global_Data.objects.CC_instance, Kp_id);
-        uz_CurrentControl_set_Kp_iq(Global_Data.objects.CC_instance, Kp_iq);
-        uz_CurrentControl_set_Ki_id(Global_Data.objects.CC_instance, Ki_id);
-        uz_CurrentControl_set_Ki_iq(Global_Data.objects.CC_instance, Ki_iq);
-        uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
-        uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
+//        uz_CurrentControl_set_Kp_id(Global_Data.objects.CC_instance, Kp_id);
+//        uz_CurrentControl_set_Kp_iq(Global_Data.objects.CC_instance, Kp_iq);
+//        uz_CurrentControl_set_Ki_id(Global_Data.objects.CC_instance, Ki_id);
+//        uz_CurrentControl_set_Ki_iq(Global_Data.objects.CC_instance, Ki_iq);
+//        uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
+//        uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
 //        uz_SpeedControl_set_Kp(Global_Data.objects.PI_instance, position_Kp);
     	}
     	}
     	else
     	{
+    	uz_SpeedControl_reset(Global_Data.objects.Speed_instance);
+    	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
 		Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
-		uz_SpeedControl_reset(Global_Data.objects.Speed_instance);
-		uz_CurrentControl_reset(Global_Data.objects.CC_instance);
     	}
     // Set duty cycles for two-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

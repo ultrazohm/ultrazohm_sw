@@ -24,7 +24,7 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_dqn_mutex,
-	JSO_x_0_input,
+	JSO_V_DC,
 	JSO_theta_mech,
 	JSO_d_ref,
 	JSO_q_ref,
@@ -164,10 +164,10 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	Reference speed,
 	Position,
+	K_p_position_controller,
 	K_p_speed controller,
 	K_i_speed controller,
-	K_p_iq controller,
-	K_i_iq controller,
+	,
 	SND_FLD_ENDMARKER
 
 

@@ -16,9 +16,8 @@
 // Includes from own files
 #include "main.h"
 
-
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 400
+#define DQN__CONTROL_FREQUENCY 200
 #define NUMBER_OF_INPUTS 5
 #define NUMBER_OF_OUTPUTS 5
 #define NUMBER_OF_HIDDEN_LAYER 3
@@ -95,7 +94,7 @@ struct uz_PMSM_t config_heidrive = {
     .Psi_PM_Vs = 0.0169f,
     .polePairs = 3.0f,
     .J_kg_m_squared = 0.0000148f,
-    .I_max_Ampere = 10.8f
+    .I_max_Ampere = 5.0f
 };
 static void dqn_step(void);
 static int dividingfactordqn=UZ_PWM_FREQUENCY/DQN__CONTROL_FREQUENCY;
@@ -112,8 +111,8 @@ int main(void)
         .Kp = 0.5f,
         .Ki = 0.0f,
         .samplingTime_sec = 0.00005f,
-        .upper_limit = 750.0f,
-        .lower_limit = -750.0f
+        .upper_limit = 1500.0f,
+        .lower_limit = -1500.0f
     };
     // Configuration of Speed Control
 

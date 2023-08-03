@@ -34,7 +34,6 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -93,7 +92,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_cos_angle]			= &data->obs.dqn_cos_angle;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_dqn_mutex]   	= &dqn_mutex_float;
-	js_ch_observable[JSO_x_0_input]   	= &input_nn[0];
+	js_ch_observable[JSO_V_DC]   	= &data->mv.V_dc_volts;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_error_type] = &error_type;
 

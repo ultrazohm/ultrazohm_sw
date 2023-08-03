@@ -73,26 +73,48 @@ void uz_PWM_duty_freq_detection(DS_Data* Data){
 }
 
 void uz_TempCard_Measurement(DS_Data* Data){
-	// start uz tempcard
 	uz_TempCard_IF_MeasureTemps_cyclic(Data->objects.uz_Tempcard);
+
+	// read slot
 	uz_temperaturecard_OneGroup channel_A_data = uz_TempCard_IF_get_channel(Data->objects.uz_Tempcard, 'a');
-	Data->av.winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
-	Data->av.winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
-	Data->av.winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);
-	Data->av.winding_temperature.a2 = channel_A_data.temperature[9]*(channel_A_data.Channels_Valid[9]==1);
-	Data->av.winding_temperature.b2 = channel_A_data.temperature[11]*(channel_A_data.Channels_Valid[11]==1);
-	Data->av.winding_temperature.c2 = channel_A_data.temperature[13]*(channel_A_data.Channels_Valid[13]==1);
-	Data->av.winding_temperature.a3 = channel_A_data.temperature[15]*(channel_A_data.Channels_Valid[15]==1);
-	Data->av.winding_temperature.b3 = channel_A_data.temperature[17]*(channel_A_data.Channels_Valid[17]==1);
-	Data->av.winding_temperature.c3 = channel_A_data.temperature[19]*(channel_A_data.Channels_Valid[19]==1);
-	Data->av.avg_winding_temperature =
-			(Data->av.winding_temperature.a1 + Data->av.winding_temperature.b1 + Data->av.winding_temperature.c1 +
-			Data->av.winding_temperature.a2 + Data->av.winding_temperature.b2 + Data->av.winding_temperature.c2 +
-			Data->av.winding_temperature.a3 + Data->av.winding_temperature.b3 + Data->av.winding_temperature.c3)/
+	Data->av.temperature_nut[0] = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
+	Data->av.temperature_nut[1] = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
+	Data->av.temperature_nut[2] = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);
+	Data->av.temperature_nut[3] = channel_A_data.temperature[9]*(channel_A_data.Channels_Valid[9]==1);
+	Data->av.temperature_nut[4] = channel_A_data.temperature[11]*(channel_A_data.Channels_Valid[11]==1);
+	Data->av.temperature_nut[5] = channel_A_data.temperature[13]*(channel_A_data.Channels_Valid[13]==1);
+	Data->av.temperature_nut[6] = channel_A_data.temperature[15]*(channel_A_data.Channels_Valid[15]==1);
+	Data->av.temperature_nut[7] = channel_A_data.temperature[17]*(channel_A_data.Channels_Valid[17]==1);
+	Data->av.temperature_nut[8] = channel_A_data.temperature[19]*(channel_A_data.Channels_Valid[19]==1);
+	Data->av.avg_temperature_nut =
+			(Data->av.temperature_nut[0] + Data->av.temperature_nut[1] + Data->av.temperature_nut[2] +
+			Data->av.temperature_nut[3] + Data->av.temperature_nut[4] + Data->av.temperature_nut[5] +
+			Data->av.temperature_nut[6] + Data->av.temperature_nut[7] + Data->av.temperature_nut[8])/
 			((channel_A_data.Channels_Valid[3]==1) + (channel_A_data.Channels_Valid[5]==1) + (channel_A_data.Channels_Valid[7]==1) +
 			(channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1) +
 			(channel_A_data.Channels_Valid[15]==1) + (channel_A_data.Channels_Valid[17]==1) + (channel_A_data.Channels_Valid[19]==1));
-	// end uz tempcard
+
+
+	// read w
+	uz_temperaturecard_OneGroup channel_C_data = uz_TempCard_IF_get_channel(Data->objects.uz_Tempcard, 'c');
+	Data->av.temperature_wickelkopf[0] = channel_C_data.temperature[3]*(channel_C_data.Channels_Valid[3]==1);
+	Data->av.temperature_wickelkopf[1] = channel_C_data.temperature[5]*(channel_C_data.Channels_Valid[5]==1);
+	Data->av.temperature_wickelkopf[2] = channel_C_data.temperature[7]*(channel_C_data.Channels_Valid[7]==1);
+	Data->av.temperature_wickelkopf[3] = channel_C_data.temperature[9]*(channel_C_data.Channels_Valid[9]==1);
+	Data->av.temperature_wickelkopf[4] = channel_C_data.temperature[11]*(channel_C_data.Channels_Valid[11]==1);
+	Data->av.temperature_wickelkopf[5] = channel_C_data.temperature[13]*(channel_C_data.Channels_Valid[13]==1);
+	Data->av.temperature_wickelkopf[6] = channel_C_data.temperature[15]*(channel_C_data.Channels_Valid[15]==1);
+	Data->av.temperature_wickelkopf[7] = channel_C_data.temperature[17]*(channel_C_data.Channels_Valid[17]==1);
+	Data->av.temperature_wickelkopf[8] = channel_C_data.temperature[19]*(channel_C_data.Channels_Valid[19]==1);
+	Data->av.avg_temperature_wickelkopf =
+			(Data->av.temperature_wickelkopf[0] + Data->av.temperature_wickelkopf[1] + Data->av.temperature_wickelkopf[2] +
+			Data->av.temperature_wickelkopf[3] + Data->av.temperature_wickelkopf[4] + Data->av.temperature_wickelkopf[5] +
+			Data->av.temperature_wickelkopf[6] + Data->av.temperature_wickelkopf[7] + Data->av.temperature_wickelkopf[8])/
+			((channel_C_data.Channels_Valid[3]==1) + (channel_C_data.Channels_Valid[5]==1) + (channel_C_data.Channels_Valid[7]==1) +
+			(channel_C_data.Channels_Valid[9]==1) + (channel_C_data.Channels_Valid[11]==1) + (channel_C_data.Channels_Valid[13]==1) +
+			(channel_C_data.Channels_Valid[15]==1) + (channel_C_data.Channels_Valid[17]==1) + (channel_C_data.Channels_Valid[19]==1));
+
+
 }
 
 void uz_set_DC_zero(DS_Data* Data){

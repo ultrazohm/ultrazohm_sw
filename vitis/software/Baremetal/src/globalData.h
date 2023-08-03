@@ -94,8 +94,10 @@ typedef struct _actualValues_ {
 	float theta_el_offset; //in rad
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	uz_9ph_abc_t winding_temperature;
-	float avg_winding_temperature;
+	float temperature_nut[9];
+	float temperature_wickelkopf[9];
+	float avg_temperature_nut;
+	float avg_temperature_wickelkopf;
 	float temperature_inv_1;
 	float temperature_inv_2;
 	float temperature_inv_3;

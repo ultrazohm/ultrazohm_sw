@@ -68,7 +68,7 @@ architecture Behavioral of SPI_MASTER is
     signal S_CLK_DIV       : std_logic_vector(C_CLK_DIV_WIDTH - 1 downto 0);
     signal S_DEL_COUNT     : integer range -1 to 255;
     signal S_DEL_CLK       : integer range -1 to 65535;
-    signal S_BIT_COUNT     : integer range -1 to DATA_WIDTH + 1;
+    signal S_BIT_COUNT     : integer range -1 to DATA_WIDTH;
     -- The bits from the SPI slave are clocked into the S_RX_BUFFER 
     signal S_RX_BUFFER     : std_logic_vector((CHANNELS * DATA_WIDTH) - 1 downto 0);
     -- After the transmission completed, the bits from the RX_BUFFER are copied to the RX_OUT_BUFFER
@@ -136,7 +136,7 @@ begin
                             BUSY <= '1';
                             S_SCLK <= S_CPOL;
                             S_DEL_COUNT <= TO_INTEGER(unsigned(S_PRE_DELAY));
-                            S_BIT_COUNT <= (DATA_WIDTH + 1);
+                            S_BIT_COUNT <= (DATA_WIDTH);
                             SS_OUT_N <= '0';
                         when others =>
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);
@@ -186,8 +186,10 @@ begin
                             BUSY <= '0';
                             S_DEL_COUNT <= TO_INTEGER(unsigned(POST_DELAY));
                             S_RX_OUT_BUFFER <= S_RX_BUFFER;
+							S_SCLK <= S_CPOL;
                         when others =>
                             S_DEL_COUNT <= (S_DEL_COUNT - 1);
+							S_SCLK <= S_CPOL;
                         end case;
                     
                     when others => curstate <= IDLE;

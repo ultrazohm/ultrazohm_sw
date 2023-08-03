@@ -114,7 +114,7 @@ void network_thread(void *p)
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
-    if ( XST_SUCCESS != uz_platform_macread(1, mac_ethernet_address) )
+    if ( XST_SUCCESS != uz_platform_macread_primary(mac_ethernet_address) )
         uz_printf("APU: Error fetching MAC address from EEPROM, using default\r\n");
 
 #if LWIP_IPV6==0

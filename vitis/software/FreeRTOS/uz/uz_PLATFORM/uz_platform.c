@@ -46,6 +46,7 @@ typedef struct uz_platform_ {
 	uz_platform_eeprom data;
 
 	uz_iic maceeprom[2];
+	uint8_t maceeprom_primary;
 
 	uz_iic gpioi2c;
 	uint16_t gpioi2c_outmirror;
@@ -152,12 +153,15 @@ uint32_t uz_platform_init() {
 	switch(uzp.data.hw_group) {
 		case UZP_HWGROUP_UZOHM3:
 			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+			uzp.maceeprom_primary = 1;
 			break;
 		case UZP_HWGROUP_UZOHM6:
 			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+			uzp.maceeprom_primary = 1;
 			break;
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
+			uzp.maceeprom_primary = 0;
 			break;
 		default:
 			uz_printf("APU: Platform not supported!\r\n");
@@ -340,7 +344,7 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 					XGpioPs_SetOutputEnablePin(&uzp.gpiops, pin, GPIOPS_OUTPUTENABLE_DISABLEOP);	// FIXME: Not thread-safe → Replace via uz_platform_gpiops.c?
 					break;
 				case UZP_GPO_ENABLE2PUSHPULLED:
-					XGpioPs_SetOutputEnablePin(&uzp.gpiops, pin, GPIOPS_OUTPUTENABLE_ENABLEOP);	// FIXME: Not thread-safe → Replace via uz_platform_gpiops.c?
+					XGpioPs_SetOutputEnablePin(&uzp.gpiops, pin, GPIOPS_OUTPUTENABLE_ENABLEOP);		// FIXME: Not thread-safe → Replace via uz_platform_gpiops.c?
 					break;
 #if UZ_PLATFORM_OPWARN
 				default:
@@ -376,6 +380,20 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	const uint8_t maceeprom_addrlength = 6;
 
 	return( uz_iic_read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
+#else
+	return(UZ_FAILURE);
+#endif
+}
+
+/**
+ * @brief Read primary six-byte MAC address from associated EEPROM
+ *
+ * @param addrbuf_p Pointer to (at least six-byte) buffer to be filled.
+ * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
+ */
+uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
+#if (UZ_PLATFORM_ENABLE==1)
+	return( uz_platform_macread(uzp.maceeprom_primary, addrbuf_p) );
 #else
 	return(UZ_FAILURE);
 #endif

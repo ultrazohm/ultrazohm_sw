@@ -46,5 +46,6 @@ uint32_t uz_platform_gpoupdate();
 uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op);
 
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
+uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
 
 #endif

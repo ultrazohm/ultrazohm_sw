@@ -20,6 +20,27 @@ However, the standard deviation of the advanced method is significantly lower.
    :widths: 50 50 50
    :header-rows: 1
 
+
+Functions
+---------
+
+.. doxygenenum:: uz_encoder_offset_estimation_diagnose
+
+.. doxygenstruct:: uz_encoder_offset_estimation_config
+  :members: 
+
+.. doxygenfunction:: uz_encoder_offset_estimation_init
+
+.. doxygenfunction:: uz_encoder_offset_estimation_step
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
+
+.. doxygenfunction:: uz_encoder_offset_estimation_set_setpoint_current
+
+.. doxygenfunction:: uz_encoder_offset_estimation_reset_states
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_status
+
 Workflow
 --------
 

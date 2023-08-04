@@ -29,6 +29,9 @@ Functions
 .. doxygenstruct:: uz_encoder_offset_estimation_config
   :members: 
 
+.. doxygenstruct:: uz_encoder_offset_estimation_status
+  :members: 
+
 .. doxygenfunction:: uz_encoder_offset_estimation_init
 
 .. doxygenfunction:: uz_encoder_offset_estimation_step

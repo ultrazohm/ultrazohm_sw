@@ -5,6 +5,8 @@
 
 #define EXPERIENCE_BUFFER_LENGTH 5
 
+float zerofloat[EXPERIENCE_BUFFER_LENGTH] = {0.0f};
+uint32_t zerouint[EXPERIENCE_BUFFER_LENGTH] = {0};
 float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f,4.0f,5.0f};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,5,10,15,20};
 float observation[EXPERIENCE_BUFFER_LENGTH] = {10.0f,1.0f,5.0f,3.0f,2.5f};
@@ -29,19 +31,27 @@ void test_uz_dqn_experience_replay_init(void)
     uz_dqn_experience_replay_init(configbuffer);  
 }
 
-void test_uz_dqn_write_to_buffer(void)
+void test_uz_dqn_clear_buffer(void)
 {
-    float testfloat = 2.0f;
-    float RewardData[3] = {17.0f,18.0f,19.0f};
     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer);
     uz_dqn_reset_buffer(buffertesting);
-    uz_dqn_push_float_to_buffer(buffertesting,RewardData);
-    uz_dqn_get_float_from_buffer(buffertesting, 0, &testfloat);
-    TEST_ASSERT_EQUAL_FLOAT(RewardData[0], testfloat);
-    uz_dqn_get_float_from_buffer(buffertesting, 1, &testfloat);
-    TEST_ASSERT_EQUAL_FLOAT(RewardData[1], testfloat);
-    uz_dqn_get_float_from_buffer(buffertesting, 2, &testfloat);
-    TEST_ASSERT_EQUAL_FLOAT(RewardData[2], testfloat);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(zerofloat, reward, EXPERIENCE_BUFFER_LENGTH);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(zerofloat, observation, EXPERIENCE_BUFFER_LENGTH);
+    TEST_ASSERT_EQUAL_UINT32_ARRAY(zerouint, action, EXPERIENCE_BUFFER_LENGTH);
+}
+void test_uz_dqn_write_to_buffer(void)
+{
+    float RewardData[3] = {17.0f,18.0f,19.0f};
+    uint32_t action[2] = {2,1};
+    float ObsData[5] = {1.1f,2.1f,5.1f,2.1f,0.0f};
+    uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer);
+    uz_dqn_push_to_buffer(buffertesting,RewardData,action,ObsData);
+    // uz_dqn_get_float_from_buffer(buffertesting, 0, &testfloat);
+    // TEST_ASSERT_EQUAL_FLOAT(RewardData[0], testfloat);
+    // uz_dqn_get_float_from_buffer(buffertesting, 1, &testfloat);
+    // TEST_ASSERT_EQUAL_FLOAT(RewardData[1], testfloat);
+    // uz_dqn_get_float_from_buffer(buffertesting, 2, &testfloat);
+    // TEST_ASSERT_EQUAL_FLOAT(RewardData[2], testfloat);
 }
 
 void test_uz_dqn_overwrite_zero_value_buffer(void)

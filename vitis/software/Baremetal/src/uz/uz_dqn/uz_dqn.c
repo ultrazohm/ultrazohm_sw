@@ -23,35 +23,35 @@ struct uz_dqn_experience_replay_t {
     bool is_ready;
 };
 
-// struct uz_dqn_t {
-//     bool is_ready;
-//     uz_nn_t* critic;
-//     uz_matrix_t observations;
-//     uz_nn_t *critic_target_net;
-//     struct uz_dqn_experience_replay_t experience_buffer;
-// };
-
-// static uint32_t instance_counter = 0U;
-// static uz_dqn_t instances[UZ_DQN_MAX_INSTANCES] = {0};
-
-// static uz_dqn_t* uz_dqn_allocation(void);
-// static uz_dqn_t* uz_dqn_allocation(void){
-//     uz_assert(instance_counter < UZ_DQN_MAX_INSTANCES);
-//     uz_dqn_t* self = &instances[instance_counter];
-//     uz_assert_false(self->is_ready);
-//     instance_counter++;
-//     self->is_ready = true;
-//     return (self);
-// }
-
-// uz_dqn_t* uz_dqn_init() {
-//     uz_dqn_t* self = uz_dqn_allocation();
-//     return (self);
-// }
+struct uz_dqn_t {
+    bool is_ready;
+    uz_nn_t* critic;
+    uz_matrix_t observations;
+    uz_nn_t *critic_target_net;
+    struct uz_dqn_experience_replay_t experience_buffer;
+};
 
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
 static uz_dqn_experience_replay_t* uz_dqn_experience_replay_allocation(void);
+static uint32_t instance_counter = 0U;
+static uz_dqn_t instances[UZ_DQN_MAX_INSTANCES] = {0};
+static uz_dqn_t* uz_dqn_allocation(void);
+
+static uz_dqn_t* uz_dqn_allocation(void){
+    uz_assert(instance_counter < UZ_DQN_MAX_INSTANCES);
+    uz_dqn_t* self = &instances[instance_counter];
+    uz_assert_false(self->is_ready);
+    instance_counter++;
+    self->is_ready = true;
+    return (self);
+}
+
+uz_dqn_t* uz_dqn_init() {
+    uz_dqn_t* self = uz_dqn_allocation();
+    return (self);
+}
+
 static uz_dqn_experience_replay_t* uz_dqn_experience_replay_allocation(void){
     uz_assert(instance_counterbuf < UZ_DQN_BUFFER_MAX_INSTANCES);
     uz_dqn_experience_replay_t* self = &instancesbuf[instance_counterbuf];
@@ -77,16 +77,28 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     resetFloatArray(self->reward,EXPERIENCE_BUFFER_LENGTH);
+    resetUintArray(self->action,EXPERIENCE_BUFFER_LENGTH);
+    resetFloatArray(self->observations,EXPERIENCE_BUFFER_LENGTH);
 }
 
-void uz_dqn_push_float_to_buffer(uz_dqn_experience_replay_t* self,float *data){
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata[],uint32_t actiondata[], float obsdata[]){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    if(self->head==(EXPERIENCE_BUFFER_LENGTH-1)){
-      self->head=0U;
-   }
-   self->reward[self->head] = *data;
-   self->head++;
+    // check first if counter is full, set counter to zero again and write then
+    // write reward data to buf
+    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
+        self->reward[i] = rewarddata[i];
+    }
+    //write action data to buf
+    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
+        self->action[i] = actiondata[i];
+    }
+    //write obs data to buf
+    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
+        self->observations[i] = obsdata[i];
+    }
+    //counter +1 for next write operation
+    self->head++;
 }
 
 void uz_dqn_get_float_from_buffer(uz_dqn_experience_replay_t* self, uint32_t index, float *feedback){
@@ -96,9 +108,15 @@ void uz_dqn_get_float_from_buffer(uz_dqn_experience_replay_t* self, uint32_t ind
 }
 
 // helpers
-void resetFloatArray(float *arr, int size) {
-    for (int i = 0; i < size; i++) {
+void resetFloatArray(float *arr, uint32_t size) {
+    for (uint32_t i = 0; i < size; i++) {
         arr[i] = 0.0f;
+    }
+}
+
+void resetUintArray(uint32_t *arr, uint32_t size) {
+    for (uint32_t i = 0; i < size; i++) {
+        arr[i] = 0;
     }
 }
 #endif

@@ -20,15 +20,9 @@ struct uz_dqn_experience_replay_config{
 
 uz_dqn_experience_replay_t* uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config);
 
-void uz_dqn_push_float_to_buffer(uz_dqn_experience_replay_t* self,float *data);
-void uz_dqn_get_float_from_buffer(uz_dqn_experience_replay_t* self, uint32_t index, float *feedback);
-
-// struct uz_dqn_experience_replay_t{
-//    struct uz_matrix_t observations_k;
-//    struct uz_matrix_t observations_k_plus_one; 
-//    uint32_t action_k; 
-//    float reward_k; 
-// };
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata[],uint32_t actiondata[], float obsdata[]);
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self, uint32_t index, float *feedback);
+void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 
 // #define SIZE_OF_BUFFER 1000000
 

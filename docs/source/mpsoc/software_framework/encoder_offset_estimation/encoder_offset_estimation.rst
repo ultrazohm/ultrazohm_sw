@@ -24,6 +24,8 @@ However, the standard deviation of the advanced method is significantly lower.
 Functions
 ---------
 
+.. doxygentypedef:: uz_encoder_offset_estimation_t
+
 .. doxygenenum:: uz_encoder_offset_estimation_diagnose
 
 .. doxygenstruct:: uz_encoder_offset_estimation_config

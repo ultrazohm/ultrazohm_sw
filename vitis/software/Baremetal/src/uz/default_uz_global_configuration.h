@@ -58,6 +58,9 @@
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
+#define UZ_DQN_MAX_INSTANCES                            0U
+#define UZ_DQN_BUFFER_MAX_INSTANCES                     0U
+
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -102,4 +105,6 @@
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
+    #define UZ_DQN_MAX_INSTANCES                            25U
+    #define UZ_DQN_BUFFER_MAX_INSTANCES                     5U
 #endif

@@ -51,6 +51,7 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
+	float deadtime_us;
 	float I_L1; 		// Grid side current in A
 	float I_L2; 		// Grid side current in A
 	float I_L3; 		// Grid side current in A

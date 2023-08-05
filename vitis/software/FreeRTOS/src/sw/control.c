@@ -18,6 +18,7 @@
 #include "../globalData.h"
 #include "../include/uz_assertion_configuration.h"
 #include "../uz/uz_global_configuration.h"
+#include "../IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_hw.h"
 #include "../IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "../include/uz_adcLtc2311_ip_core_init.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
@@ -91,7 +92,8 @@ DS_Data Global_Data = {
 		.halfBridge11DutyCycle = 0.0f,
 		.halfBridge12DutyCycle = 0.0f
     },
-    .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
+	.av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
+	.av.deadtime_us = UZ_DEADTIME_US,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
@@ -180,6 +182,16 @@ static void task_fast(void)
     ADC_readCardALL(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+	static bool pwm_enable_last = 1;
+	if (pwm_enable_last != global.ctrl.pwm_enable) {
+		if (global.ctrl.pwm_enable) {
+			uz_axigpio_enable_pwm_and_power_electronics();
+		} else {
+			uz_axigpio_disable_pwm_and_power_electronics();
+		}
+	}
+	pwm_enable_last = global.ctrl.pwm_enable;
+
 	if (global.ctrl.ctrl_enable) {
 		//control_dummy_run();
 
@@ -259,16 +271,6 @@ static void configuration_update(void)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
 
-	static bool pwm_enable_last = 0;
-	if (pwm_enable_last != global.ctrl.pwm_enable) {
-		if (global.ctrl.pwm_enable) {
-			uz_axigpio_enable_pwm_and_power_electronics();
-		} else {
-			uz_axigpio_disable_pwm_and_power_electronics();
-		}
-	}
-	pwm_enable_last = global.ctrl.pwm_enable;
-
 	if ((global.ctrl.ctrl_enable == 0)
 		&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
 		Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
@@ -277,10 +279,30 @@ static void configuration_update(void)
 								  Global_Data.av.pwm_frequency_hz);
 		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
 								  Global_Data.av.pwm_frequency_hz);
-		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
-								  Global_Data.av.pwm_frequency_hz);
-		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
-								  Global_Data.av.pwm_frequency_hz);
+	    // Currently not used
+//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
+//								  Global_Data.av.pwm_frequency_hz);
+//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
+//								  Global_Data.av.pwm_frequency_hz);
+	}
+
+	if ((global.ctrl.ctrl_enable == 0)
+		&& (global.config.deadtime_us >= 0 && global.config.deadtime_us <= 100)) {
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 0);
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 0);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 0);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 0);
+
+		Global_Data.av.deadtime_us = global.config.deadtime_us;
+		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, Global_Data.av.deadtime_us);
+		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, Global_Data.av.deadtime_us);
+//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, Global_Data.av.deadtime_us);
+//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, Global_Data.av.deadtime_us);
+
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 1);
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 1);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 1);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 1);
 	}
 
 	uint64_t ts_now = bsp_timer_timestamp_u64_get();
@@ -345,6 +367,9 @@ void basis_setup(void *p)
     initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
     uz_axigpio_enable_datamover();
 
+    // Set XCP stimuli variables to the currently active values.. so they are correctly viewed in CANape
+    global.config.PWM_freq_Hz = Global_Data.av.pwm_frequency_hz;
+    global.config.deadtime_us = Global_Data.av.deadtime_us;
 
 	bsp_led_init();
 

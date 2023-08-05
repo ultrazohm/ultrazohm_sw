@@ -25,6 +25,7 @@ typedef struct {
 typedef struct {
 	uint8_t config_update;
 	float PWM_freq_Hz;
+	float deadtime_us;
 } config_t;
 
 typedef struct {

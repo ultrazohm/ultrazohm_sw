@@ -49,6 +49,9 @@ typedef struct {
 	float duty_cycle_1;
 	float duty_cycle_2;
 	float duty_cycle_3;
+	float duty_cycle_4;
+	float duty_cycle_5;
+	float duty_cycle_6;
 } duty_cycles_t;
 
 typedef struct timing_value_t_ {
@@ -62,6 +65,7 @@ typedef struct timing_value_t_ {
 typedef struct timing_t_ {
 	timing_value_t now;
 	timing_value_t max;
+	float irq_freq_kHz;
 } timing_t;
 
 //====================================================================
@@ -104,10 +108,6 @@ volatile static timing_t timing_us;
 // TODO remove
 extern control_dummy_t control_dummy;
 control_dummy_t control_dummy = {0};
-extern float fpga_irq_time_us;
-float fpga_irq_time_us = 0;
-extern float fpga_irq_freq_kHz;
-float fpga_irq_freq_kHz = 0;
 
 //====================================================================
 // Static functions
@@ -183,9 +183,14 @@ static void task_fast(void)
 	if (global.ctrl.ctrl_enable) {
 		//control_dummy_run();
 
+
+
 		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
 		Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.duty_cycle_3;
+		Global_Data.rasv.halfBridge4DutyCycle = duty_cycles.duty_cycle_4;
+		Global_Data.rasv.halfBridge5DutyCycle = duty_cycles.duty_cycle_5;
+		Global_Data.rasv.halfBridge6DutyCycle = duty_cycles.duty_cycle_6;
 	} else {
 		Global_Data.rasv.halfBridge1DutyCycle = 0;
 		Global_Data.rasv.halfBridge2DutyCycle = 0;
@@ -209,11 +214,15 @@ static void task_fast(void)
 	RANGE_CHECK(Global_Data.rasv.halfBridge1DutyCycle, 0, 1);
 	RANGE_CHECK(Global_Data.rasv.halfBridge2DutyCycle, 0, 1);
 	RANGE_CHECK(Global_Data.rasv.halfBridge3DutyCycle, 0, 1);
+	RANGE_CHECK(Global_Data.rasv.halfBridge4DutyCycle, 0, 1);
+	RANGE_CHECK(Global_Data.rasv.halfBridge5DutyCycle, 0, 1);
+	RANGE_CHECK(Global_Data.rasv.halfBridge6DutyCycle, 0, 1);
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    // Currently not used
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Currently not used
     // Set duty cycles for three-level modulator
@@ -286,6 +295,7 @@ void irq_fpga(void *data)
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
 	static uint64_t ts_last = 0;
 	TS__(irq_rate, ts_last, ts_start);
+	timing_us.irq_freq_kHz = (1 / timing_us.now.irq_rate * (float)1e3);
 	ts_last = ts_start;
 
 	//---------------------

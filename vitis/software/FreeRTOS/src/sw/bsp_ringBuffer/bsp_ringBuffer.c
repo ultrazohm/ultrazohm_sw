@@ -90,7 +90,8 @@ uint32_t bsp_ringBuffer_write(rbt_t rbt, uint8_t * data, uint32_t num_bytes)
 	ringBuffer_t *rb_p = &rb[rbt];
 
 	if (rb_p->fill_level >= RING_BUFFER_NUM_ELEMENTS) {
-		xil_printf("%s(): full\n", __func__);
+		// If error print is used the firmware becomes unresponsive due to blocking UART-tx
+//		xil_printf("%s(): full\n", __func__);
 		return 0;
 	}
 

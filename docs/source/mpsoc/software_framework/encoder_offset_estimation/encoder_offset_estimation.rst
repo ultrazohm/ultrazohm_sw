@@ -21,31 +21,6 @@ However, the standard deviation of the advanced method is significantly lower.
    :header-rows: 1
 
 
-Functions
----------
-
-.. doxygentypedef:: uz_encoder_offset_estimation_t
-
-.. doxygenenum:: uz_encoder_offset_estimation_diagnose
-
-.. doxygenstruct:: uz_encoder_offset_estimation_config
-  :members: 
-
-.. doxygenstruct:: uz_encoder_offset_estimation_status
-  :members: 
-
-.. doxygenfunction:: uz_encoder_offset_estimation_init
-
-.. doxygenfunction:: uz_encoder_offset_estimation_step
-
-.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
-
-.. doxygenfunction:: uz_encoder_offset_estimation_set_setpoint_current
-
-.. doxygenfunction:: uz_encoder_offset_estimation_reset_states
-
-.. doxygenfunction:: uz_encoder_offset_estimation_get_status
-
 Workflow
 --------
 
@@ -56,6 +31,12 @@ Using this code, 40 points will be measured around the given initial offset angl
 The final offset angle is saved in the specified ``uz_encoder_offset_estimation_t`` object.
 With ``uz_encoder_offset_estimation_get_status``, the progress is output, as well as the diagnose of the process.
 It is recommended to observe the output of this function in the GUI slowdata.
+The numeric values for the different diagnose enums are shown in the table below.
+
+.. csv-table:: Numeric expression of diagnose values
+   :file: enum.csv
+   :widths: 50 50 50
+   :header-rows: 1
 
 Example Code
 ------------
@@ -139,3 +120,28 @@ After finishing the offset estimation, the ``diagnose`` will also indicate this.
 If the resulting angle equals the lowest or highest tested angle, a specific feedback will given and the process should be redone with a different range.
 Furthermore, even if a voltage measurement is available on the test-bench setup, the results are more reliable when the controller reference voltage is used for calculation.
 Therefore it is not recommended to use a measured voltage.
+
+Functions
+---------
+
+.. doxygentypedef:: uz_encoder_offset_estimation_t
+
+.. doxygenenum:: uz_encoder_offset_estimation_diagnose
+
+.. doxygenstruct:: uz_encoder_offset_estimation_config
+  :members: 
+
+.. doxygenstruct:: uz_encoder_offset_estimation_status
+  :members: 
+
+.. doxygenfunction:: uz_encoder_offset_estimation_init
+
+.. doxygenfunction:: uz_encoder_offset_estimation_step
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
+
+.. doxygenfunction:: uz_encoder_offset_estimation_set_setpoint_current
+
+.. doxygenfunction:: uz_encoder_offset_estimation_reset_states
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_status

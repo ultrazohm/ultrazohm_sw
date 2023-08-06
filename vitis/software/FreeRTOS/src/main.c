@@ -232,7 +232,7 @@ void network_thread(void *p)
 int main_thread()
 {
 #if LWIP_DHCP==1
-	int mscnt = 0;
+	int dhcp_wait_time_ms = 0;
 #endif
 
 	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
@@ -258,28 +258,21 @@ int main_thread()
 
 #if LWIP_DHCP==1
     while (1) {
+		lifecheck_mainThread++;
+		if(lifecheck_mainThread > 2500){
+			lifecheck_mainThread =0;
+		}
 
-	lifecheck_mainThread++;
-	if(lifecheck_mainThread > 2500){
-		lifecheck_mainThread =0;
-	}
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 
-	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
 		if (server_netif.ip_addr.addr) {
 			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
-			sys_thread_new("xcp-if", xcp_interface, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
 			break;
 		}
-		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=1000) { // define timeout time here
+
+		dhcp_wait_time_ms += DHCP_FINE_TIMER_MSECS;
+		if (dhcp_wait_time_ms >= 1000) {
 			uz_printf("APU: DHCP request timed out\r\n");
 			/* The 169.254.0.0/16 IP address range are link-local addresses. It will be active if
 			 * no DHCP server is in the network (e.g. UZ Board is directly connected to PC).
@@ -287,23 +280,19 @@ int main_thread()
 			IP4_ADDR(&(server_netif.ip_addr),  169, 254, 1, 1);
 			IP4_ADDR(&(server_netif.netmask), 255, 255, 0,  0);
 			IP4_ADDR(&(server_netif.gw),  169, 254, 0, 1);
-			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
-			/* print all application headers */
-			uz_printf("\r\n");
-			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
-			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
-			sys_thread_new("xcp-if", xcp_interface, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
 			break;
 		}
 	}
+
+	print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
+
+	sys_thread_new("echod", application_thread, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
+	sys_thread_new("xcp-if", xcp_interface, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 #endif
 
     vTaskDelete(NULL);

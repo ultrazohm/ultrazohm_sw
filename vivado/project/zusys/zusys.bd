@@ -52,7 +52,8 @@
             "uz_interlockDeadtime_3": "",
             "vio_Gates_2L": "",
             "xlconcat_0": "",
-            "xlconstant_0": ""
+            "xlconstant_0": "",
+            "ila_0": ""
           }
         },
         "D2_adapter": {
@@ -1334,6 +1335,12 @@
           }
         },
         "interface_nets": {
+          "S00_AXI_4": {
+            "interface_ports": [
+              "S00_AXI2",
+              "A2_adapter/S00_AXI"
+            ]
+          },
           "S00_AXI_2": {
             "interface_ports": [
               "S00_AXI1",
@@ -1344,12 +1351,6 @@
             "interface_ports": [
               "S00_AXI",
               "A3_adapter/S00_AXI"
-            ]
-          },
-          "S00_AXI_4": {
-            "interface_ports": [
-              "S00_AXI2",
-              "A2_adapter/S00_AXI"
             ]
           }
         },
@@ -1798,6 +1799,24 @@
                         "value": "14"
                       }
                     }
+                  },
+                  "ila_0": {
+                    "vlnv": "xilinx.com:ip:ila:6.2",
+                    "xci_name": "zusys_ila_0_4",
+                    "parameters": {
+                      "C_DATA_DEPTH": {
+                        "value": "65536"
+                      },
+                      "C_ENABLE_ILA_AXI_MON": {
+                        "value": "false"
+                      },
+                      "C_MONITOR_TYPE": {
+                        "value": "Native"
+                      },
+                      "C_NUM_OF_PROBES": {
+                        "value": "2"
+                      }
+                    }
                   }
                 },
                 "interface_nets": {
@@ -1819,28 +1838,28 @@
                       "uz_interlockDeadtime_0/AXI4"
                     ]
                   },
-                  "AXI4_interlock_1_1": {
-                    "interface_ports": [
-                      "AXI4_interlock_1",
-                      "uz_interlockDeadtime_1/AXI4"
-                    ]
-                  },
                   "AXI4_Lite_PWM_1_1": {
                     "interface_ports": [
                       "AXI4_Lite_PWM_1",
                       "PWM_and_SS_control_V_1/AXI4_Lite"
                     ]
                   },
-                  "AXI4_interlock_2_1": {
+                  "AXI4_interlock_1_1": {
                     "interface_ports": [
-                      "AXI4_interlock_2",
-                      "uz_interlockDeadtime_2/AXI4"
+                      "AXI4_interlock_1",
+                      "uz_interlockDeadtime_1/AXI4"
                     ]
                   },
                   "AXI4_Lite_PWM_0_1": {
                     "interface_ports": [
                       "AXI4_Lite_PWM_0",
                       "PWM_and_SS_control_V_0/AXI4_Lite"
+                    ]
+                  },
+                  "AXI4_interlock_2_1": {
+                    "interface_ports": [
+                      "AXI4_interlock_2",
+                      "uz_interlockDeadtime_2/AXI4"
                     ]
                   },
                   "AXI4_interlock_3_1": {
@@ -1875,13 +1894,15 @@
                   "InterLock_Module_0_S0_OUT": {
                     "ports": [
                       "uz_interlockDeadtime_0/s0_out",
-                      "xlconcat_0/In0"
+                      "xlconcat_0/In0",
+                      "ila_0/probe0"
                     ]
                   },
                   "InterLock_Module_0_S1_OUT": {
                     "ports": [
                       "uz_interlockDeadtime_0/s1_out",
-                      "xlconcat_0/In1"
+                      "xlconcat_0/In1",
+                      "ila_0/probe1"
                     ]
                   },
                   "InterLock_Module_0_S2_OUT": {
@@ -2285,35 +2306,18 @@
                       "uz_interlockDeadtime_2/IPCORE_CLK",
                       "uz_interlockDeadtime_3/AXI4_ACLK",
                       "uz_interlockDeadtime_3/IPCORE_CLK",
-                      "vio_Gates_2L/clk"
+                      "vio_Gates_2L/clk",
+                      "ila_0/clk"
                     ]
                   }
                 }
               }
             },
             "interface_nets": {
-              "AXI4_Lite1_1": {
+              "AXI_interlock_1_1": {
                 "interface_ports": [
-                  "AXI4_Lite_PWM_1",
-                  "Gates/AXI4_Lite_PWM_1"
-                ]
-              },
-              "AXI_interlock_2_1": {
-                "interface_ports": [
-                  "AXI4_interlock_2",
-                  "Gates/AXI4_interlock_2"
-                ]
-              },
-              "AXI_interlock_3_1": {
-                "interface_ports": [
-                  "AXI4_interlock_3",
-                  "Gates/AXI4_interlock_3"
-                ]
-              },
-              "smartconnect_0_M07_AXI": {
-                "interface_ports": [
-                  "AXI4_interlock_0",
-                  "Gates/AXI4_interlock_0"
+                  "AXI4_interlock_1",
+                  "Gates/AXI4_interlock_1"
                 ]
               },
               "AXI4_Lite_PWM_2_1": {
@@ -2328,16 +2332,34 @@
                   "Gates/AXI4_Lite_PWM_3"
                 ]
               },
-              "AXI_interlock_1_1": {
-                "interface_ports": [
-                  "AXI4_interlock_1",
-                  "Gates/AXI4_interlock_1"
-                ]
-              },
               "smartconnect_0_M08_AXI": {
                 "interface_ports": [
                   "AXI4_Lite_PWM_0",
                   "Gates/AXI4_Lite_PWM_0"
+                ]
+              },
+              "smartconnect_0_M07_AXI": {
+                "interface_ports": [
+                  "AXI4_interlock_0",
+                  "Gates/AXI4_interlock_0"
+                ]
+              },
+              "AXI_interlock_3_1": {
+                "interface_ports": [
+                  "AXI4_interlock_3",
+                  "Gates/AXI4_interlock_3"
+                ]
+              },
+              "AXI4_Lite1_1": {
+                "interface_ports": [
+                  "AXI4_Lite_PWM_1",
+                  "Gates/AXI4_Lite_PWM_1"
+                ]
+              },
+              "AXI_interlock_2_1": {
+                "interface_ports": [
+                  "AXI4_interlock_2",
+                  "Gates/AXI4_interlock_2"
                 ]
               }
             },
@@ -3163,18 +3185,6 @@
           }
         },
         "interface_nets": {
-          "AXI_interlock_1_1": {
-            "interface_ports": [
-              "AXI4_interlock_1",
-              "D1_adapter/AXI4_interlock_1"
-            ]
-          },
-          "AXI4_Lite1_1": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_1",
-              "D1_adapter/AXI4_Lite_PWM_1"
-            ]
-          },
           "AXI4_Lite_1": {
             "interface_ports": [
               "AXI4_Lite_PWM_0",
@@ -3193,16 +3203,16 @@
               "D1_adapter/AXI4_Lite_PWM_2"
             ]
           },
-          "AXI4_Lite_2": {
-            "interface_ports": [
-              "AXI4_Lite3",
-              "D5_adapter/AXI4_Lite"
-            ]
-          },
           "AXI4_Lite_PWM_3_1": {
             "interface_ports": [
               "AXI4_Lite_PWM_3",
               "D1_adapter/AXI4_Lite_PWM_3"
+            ]
+          },
+          "AXI4_Lite_2": {
+            "interface_ports": [
+              "AXI4_Lite3",
+              "D5_adapter/AXI4_Lite"
             ]
           },
           "S00_AXI_5": {
@@ -3221,6 +3231,18 @@
             "interface_ports": [
               "AXI4_interlock_3",
               "D1_adapter/AXI4_interlock_3"
+            ]
+          },
+          "AXI_interlock_1_1": {
+            "interface_ports": [
+              "AXI4_interlock_1",
+              "D1_adapter/AXI4_interlock_1"
+            ]
+          },
+          "AXI4_Lite1_1": {
+            "interface_ports": [
+              "AXI4_Lite_PWM_1",
+              "D1_adapter/AXI4_Lite_PWM_1"
             ]
           }
         },
@@ -3881,16 +3903,16 @@
               }
             },
             "interface_nets": {
-              "smartconnect_0_M11_AXI": {
-                "interface_ports": [
-                  "S_AXI",
-                  "Trigger_f_cc/S_AXI"
-                ]
-              },
               "AXI4_Lite_1": {
                 "interface_ports": [
                   "AXI4_Lite",
                   "mux_axi_ip_1/AXI4_Lite"
+                ]
+              },
+              "smartconnect_0_M11_AXI": {
+                "interface_ports": [
+                  "S_AXI",
+                  "Trigger_f_cc/S_AXI"
                 ]
               }
             },
@@ -5056,66 +5078,6 @@
               "smartconnect_0/M07_AXI"
             ]
           },
-          "smartconnect_1_M01_AXI": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_3",
-              "smartconnect_1/M01_AXI"
-            ]
-          },
-          "Conn3": {
-            "interface_ports": [
-              "S00_AXI",
-              "smartconnect_0/S00_AXI"
-            ]
-          },
-          "smartconnect_0_M14_AXI": {
-            "interface_ports": [
-              "smartconnect_0/M14_AXI",
-              "smartconnect_1/S00_AXI"
-            ]
-          },
-          "Conn8": {
-            "interface_ports": [
-              "M09_AXI",
-              "smartconnect_0/M09_AXI"
-            ]
-          },
-          "Conn11": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_1",
-              "smartconnect_0/M03_AXI"
-            ]
-          },
-          "Conn7": {
-            "interface_ports": [
-              "AXI4_Lite_PWM_0",
-              "smartconnect_0/M08_AXI"
-            ]
-          },
-          "smartconnect_1_M02_AXI": {
-            "interface_ports": [
-              "AXI4_interlock_1",
-              "smartconnect_1/M02_AXI"
-            ]
-          },
-          "Conn6": {
-            "interface_ports": [
-              "M01_AXI",
-              "smartconnect_0/M01_AXI"
-            ]
-          },
-          "smartconnect_1_M03_AXI": {
-            "interface_ports": [
-              "AXI4_interlock_2",
-              "smartconnect_1/M03_AXI"
-            ]
-          },
-          "Conn4": {
-            "interface_ports": [
-              "M00_AXI1",
-              "smartconnect_0/M00_AXI"
-            ]
-          },
           "Conn5": {
             "interface_ports": [
               "M02_AXI",
@@ -5126,6 +5088,12 @@
             "interface_ports": [
               "M10_AXI",
               "smartconnect_0/M10_AXI"
+            ]
+          },
+          "Conn1": {
+            "interface_ports": [
+              "M00_AXI",
+              "DataMover/M00_AXI"
             ]
           },
           "smartconnect_1_M00_AXI": {
@@ -5140,34 +5108,22 @@
               "smartconnect_0/M04_AXI"
             ]
           },
-          "Conn1": {
-            "interface_ports": [
-              "M00_AXI",
-              "DataMover/M00_AXI"
-            ]
-          },
           "Conn12": {
             "interface_ports": [
               "M12_AXI",
               "smartconnect_0/M12_AXI"
             ]
           },
-          "smartconnect_0_M13_AXI": {
+          "S_AXI_1": {
             "interface_ports": [
-              "axi_timebase_wdt_0/S_AXI",
-              "smartconnect_0/M13_AXI"
+              "Interrupt/S_AXI",
+              "smartconnect_0/M11_AXI"
             ]
           },
           "smartconnect_0_M06_AXI": {
             "interface_ports": [
               "smartconnect_0/M06_AXI",
               "uz_enable/S_AXI"
-            ]
-          },
-          "S_AXI_1": {
-            "interface_ports": [
-              "Interrupt/S_AXI",
-              "smartconnect_0/M11_AXI"
             ]
           },
           "smartconnect_0_M05_AXI": {
@@ -5180,6 +5136,72 @@
             "interface_ports": [
               "AXI4_interlock_3",
               "smartconnect_1/M04_AXI"
+            ]
+          },
+          "smartconnect_0_M13_AXI": {
+            "interface_ports": [
+              "axi_timebase_wdt_0/S_AXI",
+              "smartconnect_0/M13_AXI"
+            ]
+          },
+          "smartconnect_1_M01_AXI": {
+            "interface_ports": [
+              "AXI4_Lite_PWM_3",
+              "smartconnect_1/M01_AXI"
+            ]
+          },
+          "Conn3": {
+            "interface_ports": [
+              "S00_AXI",
+              "smartconnect_0/S00_AXI"
+            ]
+          },
+          "Conn8": {
+            "interface_ports": [
+              "M09_AXI",
+              "smartconnect_0/M09_AXI"
+            ]
+          },
+          "smartconnect_0_M14_AXI": {
+            "interface_ports": [
+              "smartconnect_0/M14_AXI",
+              "smartconnect_1/S00_AXI"
+            ]
+          },
+          "Conn11": {
+            "interface_ports": [
+              "AXI4_Lite_PWM_1",
+              "smartconnect_0/M03_AXI"
+            ]
+          },
+          "smartconnect_1_M03_AXI": {
+            "interface_ports": [
+              "AXI4_interlock_2",
+              "smartconnect_1/M03_AXI"
+            ]
+          },
+          "Conn4": {
+            "interface_ports": [
+              "M00_AXI1",
+              "smartconnect_0/M00_AXI"
+            ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "AXI4_interlock_1",
+              "smartconnect_1/M02_AXI"
+            ]
+          },
+          "Conn7": {
+            "interface_ports": [
+              "AXI4_Lite_PWM_0",
+              "smartconnect_0/M08_AXI"
+            ]
+          },
+          "Conn6": {
+            "interface_ports": [
+              "M01_AXI",
+              "smartconnect_0/M01_AXI"
             ]
           }
         },
@@ -7839,7 +7861,7 @@
           "PSU__LPD_SLCR__CSUPMU__FREQMHZ": {
             "value": "100"
           },
-          "PSU__MAXIGP2__DATA_WIDTH": {
+          "PSU__MAXIGP0__DATA_WIDTH": {
             "value": "128"
           },
           "PSU__M_AXI_GP0_SUPPORTS_NARROW_BURST": {
@@ -7850,9 +7872,6 @@
           },
           "PSU__M_AXI_GP2_SUPPORTS_NARROW_BURST": {
             "value": "1"
-          },
-          "PSU__M_AXI_GP2__FREQMHZ": {
-            "value": "100.0"
           },
           "PSU__NAND__PERIPHERAL__ENABLE": {
             "value": "0"
@@ -8263,13 +8282,13 @@
             "value": "1"
           },
           "PSU__USE__M_AXI_GP0": {
-            "value": "0"
+            "value": "1"
           },
           "PSU__USE__M_AXI_GP1": {
             "value": "0"
           },
           "PSU__USE__M_AXI_GP2": {
-            "value": "1"
+            "value": "0"
           },
           "PSU__USE__PROC_EVENT_BUS": {
             "value": "0"
@@ -8403,12 +8422,12 @@
             }
           },
           "interface_ports": {
-            "M_AXI_HPM0_LPD": {
+            "M_AXI_HPM0_FPD": {
               "mode": "Master",
               "address_space_ref": "Data",
               "base_address": {
-                "minimum": "0x80000000",
-                "maximum": "0x9FFFFFFF"
+                "minimum": "0xA0000000",
+                "maximum": "0xAFFFFFFF"
               },
               "master_id": "0",
               "parameters": {
@@ -8453,40 +8472,16 @@
           "uz_system/AXI4_interlock_2"
         ]
       },
-      "S00_AXI_2": {
-        "interface_ports": [
-          "uz_analog_adapter/S00_AXI1",
-          "uz_system/M00_AXI1"
-        ]
-      },
       "AXI4_Lite_2": {
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite3",
           "uz_system/M09_AXI"
         ]
       },
-      "AXI4_Lite_1": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite_PWM_0",
-          "uz_system/AXI4_Lite_PWM_0"
-        ]
-      },
       "S00_AXI_4": {
         "interface_ports": [
           "uz_analog_adapter/S00_AXI2",
           "uz_system/M01_AXI"
-        ]
-      },
-      "uz_system_M00_AXI": {
-        "interface_ports": [
-          "uz_system/M00_AXI",
-          "zynq_ultra_ps_e_0/S_AXI_LPD"
-        ]
-      },
-      "zynq_ultra_ps_e_0_M_AXI_HPM0_LPD": {
-        "interface_ports": [
-          "uz_system/S00_AXI",
-          "zynq_ultra_ps_e_0/M_AXI_HPM0_LPD"
         ]
       },
       "uz_system_AXI4_interlock_3": {
@@ -8499,18 +8494,6 @@
         "interface_ports": [
           "uz_digital_adapter/AXI4_interlock_1",
           "uz_system/AXI4_interlock_1"
-        ]
-      },
-      "S00_AXI_1": {
-        "interface_ports": [
-          "uz_system/M10_AXI",
-          "uz_user/S00_AXI"
-        ]
-      },
-      "AXI4_Lite_PWM_2_1": {
-        "interface_ports": [
-          "uz_digital_adapter/AXI4_Lite_PWM_2",
-          "uz_system/AXI4_Lite_PWM_2"
         ]
       },
       "S00_AXI_3": {
@@ -8531,6 +8514,18 @@
           "uz_system/AXI4_interlock_0"
         ]
       },
+      "S00_AXI_1": {
+        "interface_ports": [
+          "uz_system/M10_AXI",
+          "uz_user/S00_AXI"
+        ]
+      },
+      "AXI4_Lite_PWM_2_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_2",
+          "uz_system/AXI4_Lite_PWM_2"
+        ]
+      },
       "uz_system_AXI4_Lite_PWM_3": {
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite_PWM_3",
@@ -8541,6 +8536,30 @@
         "interface_ports": [
           "uz_digital_adapter/AXI4_Lite",
           "uz_system/M12_AXI"
+        ]
+      },
+      "S00_AXI_2": {
+        "interface_ports": [
+          "uz_analog_adapter/S00_AXI1",
+          "uz_system/M00_AXI1"
+        ]
+      },
+      "uz_system_M00_AXI": {
+        "interface_ports": [
+          "uz_system/M00_AXI",
+          "zynq_ultra_ps_e_0/S_AXI_LPD"
+        ]
+      },
+      "AXI4_Lite_1": {
+        "interface_ports": [
+          "uz_digital_adapter/AXI4_Lite_PWM_0",
+          "uz_system/AXI4_Lite_PWM_0"
+        ]
+      },
+      "S00_AXI_6": {
+        "interface_ports": [
+          "uz_system/S00_AXI",
+          "zynq_ultra_ps_e_0/M_AXI_HPM0_FPD"
         ]
       }
     },
@@ -8769,8 +8788,8 @@
           "uz_digital_adapter/clk",
           "uz_system/clk",
           "uz_user/aclk",
-          "zynq_ultra_ps_e_0/maxihpm0_lpd_aclk",
-          "zynq_ultra_ps_e_0/saxi_lpd_aclk"
+          "zynq_ultra_ps_e_0/saxi_lpd_aclk",
+          "zynq_ultra_ps_e_0/maxihpm0_fpd_aclk"
         ]
       },
       "zynq_ultra_ps_e_0_pl_clk3": {
@@ -8844,97 +8863,97 @@
             "segments": {
               "SEG_A1_ADC_LTC2311_S00_AXI_reg": {
                 "address_block": "/uz_analog_adapter/A1_adapter/A1_ADC_LTC2311/S00_AXI/S00_AXI_reg",
-                "offset": "0x0080000000",
+                "offset": "0x00A0000000",
                 "range": "64K"
               },
               "SEG_A2_ADC_LTC2311_S00_AXI_reg": {
                 "address_block": "/uz_analog_adapter/A2_adapter/A2_ADC_LTC2311/S00_AXI/S00_AXI_reg",
-                "offset": "0x0080010000",
+                "offset": "0x00A0010000",
                 "range": "64K"
               },
               "SEG_A3_ADC_LTC2311_S00_AXI_reg": {
                 "address_block": "/uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI/S00_AXI_reg",
-                "offset": "0x0080020000",
+                "offset": "0x00A0020000",
                 "range": "64K"
               },
               "SEG_IncreEncoder_V24_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0/AXI4_Lite/reg0",
-                "offset": "0x0080070000",
+                "offset": "0x00A00C0000",
                 "range": "64K"
               },
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",
-                "offset": "0x0080060000",
+                "offset": "0x00A00B0000",
                 "range": "64K"
               },
               "SEG_PWM_and_SS_control_V_0_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0",
-                "offset": "0x0080030000",
+                "offset": "0x00A0030000",
                 "range": "64K"
               },
               "SEG_PWM_and_SS_control_V_1_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0",
-                "offset": "0x0080040000",
+                "offset": "0x00A0040000",
                 "range": "64K"
               },
               "SEG_PWM_and_SS_control_V_2_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2/AXI4_Lite/reg0",
-                "offset": "0x00800E0000",
+                "offset": "0x00A0050000",
                 "range": "64K"
               },
               "SEG_PWM_and_SS_control_V_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3/AXI4_Lite/reg0",
-                "offset": "0x00800F0000",
+                "offset": "0x00A0060000",
                 "range": "64K"
               },
               "SEG_Trigger_f_cc_Reg": {
                 "address_block": "/uz_system/Interrupt/Trigger_f_cc/S_AXI/Reg",
-                "offset": "0x0080080000",
+                "offset": "0x00A00D0000",
                 "range": "64K"
               },
               "SEG_axi_gpio_2_Reg": {
                 "address_block": "/uz_system/uz_enable/axi_gpio_2/S_AXI/Reg",
-                "offset": "0x00800A0000",
+                "offset": "0x00A0110000",
                 "range": "64K"
               },
               "SEG_axi_timebase_wdt_0_Reg": {
                 "address_block": "/uz_system/axi_timebase_wdt_0/S_AXI/Reg",
-                "offset": "0x00800D0000",
+                "offset": "0x00A00F0000",
                 "range": "64K"
               },
               "SEG_mux_axi_ip_1_reg0": {
                 "address_block": "/uz_system/Interrupt/mux_axi_ip_1/AXI4_Lite/reg0",
-                "offset": "0x0080090000",
+                "offset": "0x00A00E0000",
                 "range": "64K"
               },
               "SEG_timer_uptime_64bit_Reg": {
                 "address_block": "/uz_system/timer_uptime_64bit/S_AXI/Reg",
-                "offset": "0x00800B0000",
+                "offset": "0x00A0100000",
                 "range": "64K"
               },
               "SEG_uz_axi_testIP_0_reg0": {
                 "address_block": "/uz_user/uz_axi_testIP_0/AXI4/reg0",
-                "offset": "0x00800C0000",
+                "offset": "0x00A0120000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_0/AXI4/reg0",
-                "offset": "0x0080050000",
+                "offset": "0x00A0070000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_1_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_1/AXI4/reg0",
-                "offset": "0x0080100000",
+                "offset": "0x00A0080000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_2_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_2/AXI4/reg0",
-                "offset": "0x0080110000",
+                "offset": "0x00A0090000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4/reg0",
-                "offset": "0x0080120000",
+                "offset": "0x00A00A0000",
                 "range": "64K"
               }
             }

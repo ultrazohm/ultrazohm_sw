@@ -2,5 +2,5 @@ Int Value, Meaning, enum
 0,No specific diagnose message active.,encoderoffset_no_error
 1,The min_omega_el could not be reached with the given setpoint_current and the statemachine is stuck.,encoderoffset_speed_not_reached
 2,The process is finished and the resulting offset angle is saved in ptr_offset_angle.,encoderoffset_finished
-3,The process is finished and the resulting offset angle quals the smallest angle tested. Check that all inputs are correct or redo measurement with different range.,encoderoffset_lower_limit
+3,The process is finished and the resulting offset angle equals the smallest angle tested. Check that all inputs are correct or redo measurement with different range.,encoderoffset_lower_limit
 4,The process is finished and the resulting offset angle equals the largest angle tested. Check that all inputs are correct or redo measurement with different range.,encoderoffset_upper_limit

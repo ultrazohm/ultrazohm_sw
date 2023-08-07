@@ -35,11 +35,11 @@ Usage
 -----
 
 During initialization, many of the parameters, such as the limits, the harmonic order, sampling time and anti-windup gain are shared for both controllers.
-However the user can set different gains for both controllers.
-The control is stepped with the step function, which is available for either dq- or :math:`\alpha\beta`-setpoints.
+However, the user can set different gains for both controllers.
+The control is executed with the step function, which is available for either dq- or :math:`\alpha\beta`-setpoints.
 
 .. note::
-   Be advised that not only the UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES of this module must be enough, but there also have to be enough UZ_RESONANT_CONTROLLER_MAX_INSTANCES, as two resonant controllers are initalized for each subsystem control object.
+   Be advised that not only the UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES of this module must be high enough, but there also have to be enough UZ_RESONANT_CONTROLLER_MAX_INSTANCES, as two resonant controllers are initalized for each subsystem control object.
 
 Example
 -------

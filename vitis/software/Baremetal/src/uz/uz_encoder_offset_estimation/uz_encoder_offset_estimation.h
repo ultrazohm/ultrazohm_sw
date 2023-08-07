@@ -32,7 +32,7 @@ enum uz_encoder_offset_estimation_diagnose
     encoderoffset_no_error = 0,         /**< Equals 0: No specific diagnose message active. */
     encoderoffset_speed_not_reached,    /**< Equals 1: The min_omega_el could not be reached with the given setpoint_current and the statemachine is stuck. */
     encoderoffset_finished,             /**< Equals 2: The process is finished and the resulting offset angle is saved in ptr_offset_angle. */
-    encoderoffset_lower_limit,          /**< Equals 3: The process is finished and the resulting offset angle quals the smallest angle tested. Check that all inputs are correct or redo measurement with different range. */
+    encoderoffset_lower_limit,          /**< Equals 3: The process is finished and the resulting offset angle equals the smallest angle tested. Check that all inputs are correct or redo measurement with different range. */
     encoderoffset_upper_limit           /**< Equals 4: The process is finished and the resulting offset angle equals the largest angle tested. Check that all inputs are correct or redo measurement with different range. */
 };
 

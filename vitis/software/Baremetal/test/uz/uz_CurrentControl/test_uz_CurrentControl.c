@@ -15,7 +15,6 @@ uz_3ph_dq_t i_actual_Ampere = {0};
 uz_3ph_dq_t i_reference_Ampere = {0};
 float omega_el_rad_per_sec = 0.0f;
 float V_dc_volts = 0.0f;
-
 void setUp(void)
 {
     config.config_id.Kp = 6.75f;
@@ -288,5 +287,15 @@ void test_uz_CurrentControl_sample_output_PI_Controller_limit_deactivated(void){
 		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
 	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
     }
+}
+
+void test_uz_CurrentControl_max_modulation_index_negative(void){
+    config.max_modulation_index = -5.2f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
+}
+
+void test_uz_CurrentControl_max_modulation_index_zero(void){
+    config.max_modulation_index = 0.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
 }
 #endif // TEST

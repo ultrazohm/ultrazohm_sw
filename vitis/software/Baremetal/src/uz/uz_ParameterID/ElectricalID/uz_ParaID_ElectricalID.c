@@ -102,7 +102,7 @@ uz_ParaID_Controller_Parameters_output_t* uz_ElectricalID_get_FOC_output(uz_Para
 uz_ParaID_ElectricalID_output_t* uz_ElectricalID_get_output(uz_ParaID_ElectricalID_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.ElectricalID_output);
+	return(&self->output.ElectricalID_state_output);
 }
 
 #endif

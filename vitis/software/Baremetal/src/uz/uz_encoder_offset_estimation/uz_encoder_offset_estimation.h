@@ -9,11 +9,10 @@
 
 #define OFFSET_STEP_RAD 0.01f                       // set stepsize to step through thetas
 #define OFFSET_RANGE_RAD 0.2f                       // set range to measure around inital theta (start at init_theta-OFFSET_RANGE_RAD and end at init_theta+OFFSET_RANGE_RAD), should be integer multiple of OFFSET_STEP_RAD
-#define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f     // a delay between the rotations (positive, negative and next theta's positive can be set)
-#define OFFSET_ACCELLERATE_TIME_SEC 3.0f            // the time to let the motor accellerate with the given q-current
+
 
 /**
- * @brief Configuration struct for the PMSM model IP-Core driver
+ * @brief Configuration struct for the encoder offset estimation instance
  * 
  */
 struct uz_encoder_offset_estimation_config {
@@ -26,16 +25,28 @@ struct uz_encoder_offset_estimation_config {
 };
 
 /**
- * @brief enum with error/status messages
+ * @brief enum with error/status messages. See Table under Workflow for numeric expressions.
  */
 enum uz_encoder_offset_estimation_diagnose
 {
-    encoderoffset_no_error = 0,
-    encoderoffset_speed_not_reached,
+    encoderoffset_no_error = 0,         /**< Equals 0: No specific diagnose message active. */
+    encoderoffset_speed_not_reached,    /**< Equals 1: The min_omega_el could not be reached with the given setpoint_current and the statemachine is stuck. */
+    encoderoffset_finished,             /**< Equals 2: The process is finished and the resulting offset angle is saved in ptr_offset_angle. */
+    encoderoffset_lower_limit,          /**< Equals 3: The process is finished and the resulting offset angle equals the smallest angle tested. Check that all inputs are correct or redo measurement with different range. */
+    encoderoffset_upper_limit           /**< Equals 4: The process is finished and the resulting offset angle equals the largest angle tested. Check that all inputs are correct or redo measurement with different range. */
 };
 
 /**
- * @brief Object definition for generating a PI-Controller
+ * @brief Feedback struct for user
+ * 
+ */
+struct uz_encoder_offset_estimation_status {
+    float progress;                                             /**< Progress of estimation from 0-1 */
+    enum uz_encoder_offset_estimation_diagnose diagnose;        /**< Diagnose and status */
+};
+
+/**
+ * @brief Object definition for generating encoder offset estimation instance
  *
  */
 typedef struct uz_encoder_offset_estimation_t uz_encoder_offset_estimation_t;
@@ -88,11 +99,11 @@ void uz_encoder_offset_estimation_set_min_omega_el(uz_encoder_offset_estimation_
 void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* self);
 
 /**
- * @brief Get progress status in range 0..1
+ * @brief Get status
  * 
  * @param self Pointer to instance
- * @return progress normed to 1, meaning 0 is not started and 1 is finished
+ * @return status struct
  */
-float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self);
+struct uz_encoder_offset_estimation_status uz_encoder_offset_estimation_get_status(uz_encoder_offset_estimation_t* self);
 
 #endif // uz_encoder_offset_estimation_H

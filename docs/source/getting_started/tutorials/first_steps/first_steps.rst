@@ -79,8 +79,8 @@ Initial steps
    * After you copied the contents of ``default_uz_global_configuration.h`` into the new file, no changes except the ``UZ_HARDWARE_VERSION`` have to be made. Adjust this number to the version number of *your* UltraZohm.
 
 #. Build the workspace again. No error should pop up anymore.
-#. Flash the UltraZohm by either pressing the debug or the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations ...*. Vitis will remember the last selection, which means, that for a future flashing operation, the last debug config is already preselected. 
-#. Use for the debug/run selection the ``Debug_FreeRTOS_Baremetal_FPGA`` configuration.
+#. Flash the UltraZohm by either pressing the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations ...*. Vitis will remember the last selection, which means, that for a future flashing operation, the last debug config is already preselected. 
+#. Use for the debug/run selection the ``Run_UltraZohm`` configuration.
 
    ..  _debug_config:
    ..  figure:: ./img/debug_config.png

@@ -19,20 +19,15 @@
  * Validation result: All passed
  */
 
-#include "../../uz_global_configuration.h"
 #include "../uz_ParameterID_data.h"
 
 #ifndef RTW_HEADER_OnlineID_h_
 #define RTW_HEADER_OnlineID_h_
-#include "../rtwtypes.h"
-#include <math.h>
-#include <string.h>
 #ifndef OnlineID_COMMON_INCLUDES_
 #define OnlineID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                                 /* OnlineID_COMMON_INCLUDES_ */
-
-/* Model Code Variants */
+#include <stddef.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -77,15 +72,12 @@ typedef struct {
   real32_T omega_register_neu[5];      /* '<Root>/OnlineID' */
   real32_T id_register_alt[50];        /* '<Root>/OnlineID' */
   real32_T id_register_neu[10];        /* '<Root>/OnlineID' */
-  real32_T d_y[50];
-  real32_T e_y[50];
-  real32_T c_y[50];
-  real32_T d_y_m[50];
-  real32_T g_y[10];
-  real32_T h_y[10];
+  real32_T y[50];
+  real32_T b_y[50];
+  real32_T d_y[10];
+  real32_T e_y[10];
+  real32_T c_y[5];
   real32_T f_y[5];
-  real32_T i_y[5];
-  real32_T e_y_c[5];
   real32_T breakback;                  /* '<Root>/OnlineID' */
   real32_T i_d_R_online;               /* '<Root>/OnlineID' */
   real32_T omega_sum;                  /* '<Root>/OnlineID' */
@@ -115,14 +107,13 @@ typedef struct {
   real32_T Ld_old_outside;             /* '<Root>/OnlineID' */
   real32_T Lq_old_outside;             /* '<Root>/OnlineID' */
   real32_T PsiPm_old_outside;          /* '<Root>/OnlineID' */
-  int32_T k;
   uint32_T counter;                    /* '<Root>/OnlineID' */
   uint32_T counter_time;               /* '<Root>/OnlineID' */
   uint16_T counter_ausserhalb;         /* '<Root>/OnlineID' */
   uint16_T counter_innerhalb;          /* '<Root>/OnlineID' */
-  uint8_T is_active_c5_OnlineID;       /* '<Root>/OnlineID' */
   uint8_T is_c5_OnlineID;              /* '<Root>/OnlineID' */
   uint8_T is_OnlineIDSuperState;       /* '<Root>/OnlineID' */
+  uint8_T is_active_c5_OnlineID;       /* '<Root>/OnlineID' */
   boolean_T omega_const;               /* '<Root>/OnlineID' */
   boolean_T iq_const;                  /* '<Root>/OnlineID' */
   boolean_T id_const;                  /* '<Root>/OnlineID' */
@@ -143,7 +134,7 @@ typedef struct {
 
 /* External outputs (root outports fed by signals with default storage) */
 typedef struct {
-  uz_ParaID_OnlineID_output_t OnlineID_output;/* '<Root>/OnlineID_output' */
+  uz_ParaID_OnlineID_output_t OnlineID_state_output;/* '<Root>/OnlineID_state_output' */
   boolean_T enteredOnlineID;           /* '<Root>/enteredOnlineID' */
 } ExtY_OnlineID_t;
 
@@ -170,17 +161,18 @@ extern void OnlineID_step(RT_MODEL_OnlineID_t *const rtOnlineID_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/OnlineID')    - opens subsystem uz_ParameterID/OnlineID
- * hilite_system('uz_ParameterID/OnlineID/Kp') - opens and selects block Kp
+ * hilite_system('OnlineID_ref/OnlineID')    - opens subsystem OnlineID_ref/OnlineID
+ * hilite_system('OnlineID_ref/OnlineID/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/OnlineID'
+ * '<Root>' : 'OnlineID_ref'
+ * '<S1>'   : 'OnlineID_ref/OnlineID'
  */
 
 /*-
  * Requirements for '<Root>': OnlineID
+
  */
 #endif                                 /* RTW_HEADER_OnlineID_h_ */
 

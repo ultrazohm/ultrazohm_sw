@@ -9,7 +9,7 @@ Description
 
 This state includes an automated identification process for different friction/torque parameters. 
 It is based on [[#Gebhardt_ProjectReport1]_] and has been modified to fit into the ParameterID library of the UltraZohm.
-The breakaway torque :math:`M_{break}`, coloumb torque :math:`M_{coul}` and viscous friction torque :math:`d_{fric}` will be identified. 
+The breakaway torque :math:`M_{break}`, coloumb torque :math:`M_{coul}`, and viscous friction torque :math:`d_{fric}` will be identified. 
 This state requires some sort of speed control. 
 
 .. tikz:: Schematic overview of the FrictionID
@@ -19,9 +19,9 @@ This state requires some sort of speed control.
   \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
   \node(PID) {\Large{\textbf{FrictionID}}};
   \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
-  \node[block,fill=yellow!20,name=state1, below = 0.5cm of entry,drop shadow,align=center] {Determine $M_{break}$\\by contionously\\increasing the torque \\\textbf{310/311/312}};
+  \node[block,fill=yellow!20,name=state1, below = 0.5cm of entry,drop shadow,align=center] {Determine $M_\mathrm {break}$\\by contionously\\increasing the torque \\\textbf{310/311/312}};
   \node[block,fill=yellow!20,name=state2, below = 0.5cm of state1,drop shadow,align=center] {Reset integrators\\Switch to SpeedControl\\ \textbf{320}};
-  \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Identify $M_{coul}, d_{fric}$\\by cycling through\\different speeds\\ \textbf{330/331/332}};
+  \node[block,fill=yellow!20,name=state3, below = 0.5cm of state2,drop shadow,align=center] {Identify $M_\mathrm {coul}, d_\mathrm {fric}$\\by cycling through\\different speeds\\ \textbf{330/331/332}};
   \node[block,fill=yellow!20,name=state4, below = 0.5cm of state3,drop shadow,align=center] {Reset integrators \\Transmit friction curve\\\textbf{340}};
   \node[block,fill=yellow!20,name=state5, below = 0.5cm of state4,drop shadow,align=center] {Wait for transmisstion\\to finish \\\textbf{341}};
   \node[block,fill=green!20,name=exit, below = 0.5cm of state5,drop shadow,align=center] {Exit of state};
@@ -73,6 +73,14 @@ FrictionID functions
 
 .. doxygenfunction:: uz_FrictionID_init
 .. doxygenfunction:: uz_FrictionID_step
+.. doxygenfunction:: uz_FrictionID_set_Config
+.. doxygenfunction:: uz_FrictionID_set_ActualValues
+.. doxygenfunction:: uz_FrictionID_set_GlobalConfig
+.. doxygenfunction:: uz_FrictionID_set_ControlFlags
+.. doxygenfunction:: uz_FrictionID_get_enteredFrictionID
+.. doxygenfunction:: uz_FrictionID_get_finishedFrictionID
+.. doxygenfunction:: uz_FrictionID_get_FOC_output
+.. doxygenfunction:: uz_FrictionID_get_output
 
 Sources
 -------

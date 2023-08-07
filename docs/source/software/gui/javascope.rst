@@ -265,8 +265,11 @@ Customize the Control tab in the GUI
 """"""""""""""""""""""""""""""""""""
 
 For better usability and presentations, one might want to customize the slow data variables to be shown in the ``receive_field_x`` section as well as the description and physical units of ``send_field_x`` and ``receive_field_x`` entries in the control tab of the GUI.
-All those can be customized in the ``javascope.h`` file. Towards the end of this file, you will notice a commented-out section that begins with ``/* Visualization Config for GUI */``. The text below is parsed by the GUI at startup 
-and configures some text and the slow data to be displayed in the ``receive_field`` section. As shown below, one can simply change the text strings to adopt the GUI for the user application.
+All those can be customized in the ``javascope.h`` file.
+Towards the end of this file, you will notice a commented-out section that begins with ``/* Visualization Config for GUI */``.
+The text below is parsed by the GUI at startup and configures some text and the slow data to be displayed in the ``receive_field`` section.
+As shown below, one can simply change the text strings to adopt the GUI for the user application.
+The eight individual buttons can be labeled in the same way.
 
   ..  _javascope_customcontrol:
 

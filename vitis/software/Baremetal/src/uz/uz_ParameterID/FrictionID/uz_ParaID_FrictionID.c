@@ -100,6 +100,6 @@ uz_ParaID_Controller_Parameters_output_t* uz_FrictionID_get_FOC_output(uz_ParaID
 uz_ParaID_FrictionID_output_t* uz_FrictionID_get_output(uz_ParaID_FrictionID_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.FrictionID_output);
+	return(&self->output.FrictionID_state_output);
 }
 #endif

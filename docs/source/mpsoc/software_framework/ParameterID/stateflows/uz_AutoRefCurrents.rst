@@ -8,9 +8,9 @@ Description
 ===========
 
 This state is not an identification state. It merely assists the :ref:`uz_OnlineID` state.
-It gives out reference currents of a circular determined current map to quickly cycle through different operating points and therefore identify flux map values over a wide operating point.
-It has an input for the speed, so that only the appropriate q-current to the rotation direction is set. This prevents the DC-source from having to deal with feed back. 
-It already is embedded in the :ref:`uz_ParaID_OnlineID_object`.
+It gives reference currents of a circular determined current map to quickly cycle through different operating points and identify flux map values over a wide operating range.
+It has an input for the speed so that only the appropriate q-current to the rotation direction is set. This prevents the DC source from having to deal with feedback. 
+It is already embedded in the :ref:`uz_ParaID_OnlineID_object`.
 
 
 Necessary measurement values
@@ -48,4 +48,10 @@ AutoRefCurrents functions
 
 .. doxygenfunction:: uz_AutoRefCurrents_init
 .. doxygenfunction:: uz_AutoRefCurrents_step
+.. doxygenfunction:: uz_AutoRefCurrents_set_Config
+.. doxygenfunction:: uz_AutoRefCurrents_set_ActualValues
+.. doxygenfunction:: uz_AutoRefCurrents_set_GlobalConfig
+.. doxygenfunction:: uz_AutoRefCurrents_set_ControlFlags
+.. doxygenfunction:: uz_AutoRefCurrents_get_output
+
 

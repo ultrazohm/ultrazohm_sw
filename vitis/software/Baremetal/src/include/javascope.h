@@ -192,6 +192,20 @@ enum gui_button_mapping {
 	V,
 	RCV_LABELS_ENDMARKER
 
+// Physical unit label (printed text) for the MyButtons top to bottom
+// Do not change the first (zero) and last (end) entries.
+
+MYBUTTONS_LABELS_ZEROVALUE=0,
+MyButton1,
+MyButton2,
+MyButton3,
+MyButton4,
+MyButton5,
+MyButton6,
+MyButton7,
+MyButton8,
+MYBUTTONS_LABELS_ENDMARKER
+
 
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
@@ -201,14 +215,14 @@ enum gui_button_mapping {
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_polePairs,
+	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_speed,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 
-int JavaScope_initalize(DS_Data* data);
+int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

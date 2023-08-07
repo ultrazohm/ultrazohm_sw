@@ -23,15 +23,12 @@
 
 #ifndef RTW_HEADER_FluxMapID_h_
 #define RTW_HEADER_FluxMapID_h_
-#include "../rtwtypes.h"
-#include <math.h>
-#include <string.h>
 #ifndef FluxMapID_COMMON_INCLUDES_
 #define FluxMapID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
 #endif                                 /* FluxMapID_COMMON_INCLUDES_ */
 
-/* Model Code Variants */
+#include <stddef.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -87,9 +84,9 @@ typedef struct {
   uint32_T one_sec_transition_counter; /* '<Root>/FluxMapID' */
   uint32_T collection_transition_counter;/* '<Root>/FluxMapID' */
   uint32_T counter_time;               /* '<Root>/FluxMapID' */
-  uint8_T is_active_c16_FluxMapID;     /* '<Root>/FluxMapID' */
   uint8_T is_c16_FluxMapID;            /* '<Root>/FluxMapID' */
   uint8_T is_AMMstate;                 /* '<Root>/FluxMapID' */
+  uint8_T is_active_c16_FluxMapID;     /* '<Root>/FluxMapID' */
 } DW_FluxMapID_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -105,7 +102,7 @@ typedef struct {
   boolean_T finishedFluxMapID;         /* '<Root>/finishedFluxMapID' */
   boolean_T enteredFluxMapID;          /* '<Root>/enteredFluxMapID' */
   uz_ParaID_Controller_Parameters_output_t FluxMapID_FOC_output;/* '<Root>/FluxMapID_FOC_output' */
-  uz_ParaID_FluxMapID_output_t FluxMapID_output;/* '<Root>/FluxMapID_output' */
+  uz_ParaID_FluxMapID_output_t FluxMapID_state_output;/* '<Root>/FluxMapID_state_output' */
 } ExtY_FluxMapID_t;
 
 /* Real-time Model Data Structure */
@@ -131,17 +128,18 @@ extern void FluxMapID_step(RT_MODEL_FluxMapID_t *const rtFluxMapID_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID/FluxMapID')    - opens subsystem uz_ParameterID/FluxMapID
- * hilite_system('uz_ParameterID/FluxMapID/Kp') - opens and selects block Kp
+ * hilite_system('FluxMapID_ref/FluxMapID')    - opens subsystem FluxMapID_ref/FluxMapID
+ * hilite_system('FluxMapID_ref/FluxMapID/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID'
- * '<S1>'   : 'uz_ParameterID/FluxMapID'
+ * '<Root>' : 'FluxMapID_ref'
+ * '<S1>'   : 'FluxMapID_ref/FluxMapID'
  */
 
 /*-
  * Requirements for '<Root>': FluxMapID
+
  */
 #endif                                 /* RTW_HEADER_FluxMapID_h_ */
 

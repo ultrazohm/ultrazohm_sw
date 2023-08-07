@@ -8,11 +8,11 @@
 
 clc
 clear
-addpath('subsystem_references','simscape_references','function_references'); 
+
 
 %Busses needed for connections---------------------------------------------
 load('Busses.mat');
-%load('Busses_6ph.mat');
+addpath("Subsystems/");
 
 % Simulation parameters----------------------------------------------------
 d_f_hardware= 200000;               % [Hz] simluation freq of hardware
@@ -31,10 +31,11 @@ d_i_min=-d_i_max;                   % [A] limit of SpeedCont. PI-controller
 d_I_n =8;                           % [A] rated current
 d_V_n = 24;                         % [V] rated voltage
 d_n_n = 3200;                       % [1/min] rated speed
+d_M_n = 0.29;                       % [Nm] rated torque
 d_R_ph_ph = 0.089*2;                % [Ohm] Stator phase to phase resistance
 d_L_ph_ph = 0.0003*2;               % [H] connection inductivity phase-phase
 d_R_ph = d_R_ph_ph/2;               % [Ohm] Stator phase resitance
-d_L_0  = 0.00010;                         % zero-sequence inductivity
+d_L_0  = 0;                         % zero-sequence inductivity
 d_L_ph = d_L_ph_ph/2;               % [H] Phase to phase inductivity
 d_L_d = 0.00031;                    % [H] d-Axes inductivity  
 d_L_q = 0.00033;                    % [H] q-Axes inductivity
@@ -43,13 +44,15 @@ d_J_m = 0.0000165;                  % [kgm^2]inertia
 d_psi_pm = 0.0075;                  % [V*s] Permanent-Flux 
 
 
-d_Kp_id=0.369;                      % [V/A] d-current controller P-Gain
-d_Kp_iq=0.369;                      % [V/A] q-current controller P-Gain
-d_Kp_n=0.198;                       % [As/rad] speed controller P-Gain
-d_Ki_id=162.47;                     % [V/A] d-current controller I-Gain
-d_Ki_iq=162.47;                     % [V/A] q-current controller I-Gain
-d_Ki_n=1.982;                       % [As/rad] speed controller I-Gain
-
+d_Kp_id=2.1;                      % [V/A] d-current controller P-Gain
+d_Kp_iq=2.1;                      % [V/A] q-current controller P-Gain
+d_Kp_n=0.9867;                       % [As/rad] speed controller P-Gain
+d_Ki_id=661.15;                     % [V/A] d-current controller I-Gain
+d_Ki_iq=661.15;                     % [V/A] q-current controller I-Gain
+d_Ki_n=65.778;                       % [As/rad] speed controller I-Gain
+d_Tn_n=0.1;
+d_Tn_iq = 0.1;
+d_Tn_id = 0.1;
 % Encoder------------------------------------------------------------------
 % Kübler TYP 5802
 d_incEncoder = 5000;                % Number of increments

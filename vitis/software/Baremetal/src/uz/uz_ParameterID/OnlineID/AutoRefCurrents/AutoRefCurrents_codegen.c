@@ -22,6 +22,7 @@
 #include "AutoRefCurrents_codegen.h"
 #include "../../../uz_global_configuration.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#include <math.h>
 
 /* Named constants for Chart: '<Root>/AutoRefCurrents' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
@@ -38,15 +39,9 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
     rtAutoRefCurrents_M->inputs;
   ExtY_AutoRefCurrents_t *rtAutoRefCurrents_Y = (ExtY_AutoRefCurrents_t *)
     rtAutoRefCurrents_M->outputs;
-  real32_T idcount_tmp;
-  real32_T tmp;
 
   /* Chart: '<Root>/AutoRefCurrents' incorporates:
-   *  Inport: '<Root>/ActualValues'
-   *  Inport: '<Root>/AutoRefCurrentsConfig'
-   *  Inport: '<Root>/ControlFlags'
-   *  Inport: '<Root>/GlobalConfig'
-   *  Outport: '<Root>/AutoRefCurrents_output'
+   *  Outport: '<Root>/AutoRefCurrents_state_output'
    */
   /* Gateway: AutoRefCurrents */
   /* During: AutoRefCurrents */
@@ -67,16 +62,15 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
     /* '<S1>:32:2'  AutoRefCurrentsConfig.Reset == 1 ||.... */
     /* '<S1>:32:3' GlobalConfig.Reset==1; */
     /* . */
-    /* . */
     if ((!rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS) ||
         rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset ||
         rtAutoRefCurrents_U->GlobalConfig_out.Reset) {
       /* Transition: '<S1>:32' */
-      /* '<S1>:32:4' AutoRefCurrents_output.i_dq_ref.d=single(0); */
-      rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
+      /* '<S1>:32:4' AutoRefCurrents_state_output.i_dq_ref.d=single(0); */
+      rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d = 0.0F;
 
-      /* '<S1>:32:5' AutoRefCurrents_output.i_dq_ref.q=single(0) */
-      rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
+      /* '<S1>:32:5' AutoRefCurrents_state_output.i_dq_ref.q=single(0) */
+      rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q = 0.0F;
 
       /* Exit Internal 'superstate': '<S1>:20' */
       rtAutoRefCurrents_DW->is_superstate = IN_NO_ACTIVE_CHILD;
@@ -90,6 +84,9 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
       /* '<S1>:23:1' sf_internal_predicateOutput = counter==(2.0/GlobalConfig.sampleTimeISR); */
       if (2.0F / rtAutoRefCurrents_U->GlobalConfig_out.sampleTimeISR ==
           rtAutoRefCurrents_DW->counter) {
+        real32_T idcount_tmp;
+        real32_T tmp;
+
         /* Transition: '<S1>:23' */
         rtAutoRefCurrents_DW->is_superstate = IN_stepstate;
 
@@ -108,35 +105,36 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
             (rtAutoRefCurrents_U->AutoRefCurrentsConfig.max_current);
         }
 
-        /* '<S1>:26:9' if((AutoRefCurrents_output.i_dq_ref.d*AutoRefCurrents_output.i_dq_ref.d+(imax*iqcount/AutoRefCurrentsConfig.iq_points)^2)^0.5<abs(imax)) */
+        /* '<S1>:26:9' if((AutoRefCurrents_state_output.i_dq_ref.d*AutoRefCurrents_state_output.i_dq_ref.d+(imax*iqcount/AutoRefCurrentsConfig.iq_points)^2)^0.5<abs(imax)) */
         idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount
           / rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
-        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d *
-                  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d +
+        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d *
+                  rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d +
                   idcount_tmp * idcount_tmp) < fabsf(rtAutoRefCurrents_DW->imax))
         {
-          /* '<S1>:26:10' AutoRefCurrents_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
-          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = idcount_tmp;
+          /* '<S1>:26:10' AutoRefCurrents_state_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q =
+            idcount_tmp;
         } else {
           /* '<S1>:26:11' else */
           /* '<S1>:26:12' iqcount=single(1); */
           rtAutoRefCurrents_DW->iqcount = 1.0F;
 
-          /* '<S1>:26:13' AutoRefCurrents_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
-          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q =
-            rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->iqcount /
+          /* '<S1>:26:13' AutoRefCurrents_state_output.i_dq_ref.q=imax*iqcount/AutoRefCurrentsConfig.iq_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q =
+            rtAutoRefCurrents_DW->imax /
             rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points;
         }
 
-        /* '<S1>:26:15' if((AutoRefCurrents_output.i_dq_ref.q*AutoRefCurrents_output.i_dq_ref.q+(imax*idcount/AutoRefCurrentsConfig.id_points)^2)^0.5<abs(imax)) */
+        /* '<S1>:26:15' if((AutoRefCurrents_state_output.i_dq_ref.q*AutoRefCurrents_state_output.i_dq_ref.q+(imax*idcount/AutoRefCurrentsConfig.id_points)^2)^0.5<abs(imax)) */
         idcount_tmp = rtAutoRefCurrents_DW->imax * rtAutoRefCurrents_DW->idcount
           / rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         tmp = fabsf(rtAutoRefCurrents_DW->imax);
-        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q *
-                  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q +
+        if (sqrtf(rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q *
+                  rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q +
                   idcount_tmp * idcount_tmp) < tmp) {
-          /* '<S1>:26:16' AutoRefCurrents_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
-          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = -tmp *
+          /* '<S1>:26:16' AutoRefCurrents_state_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d = -tmp *
             rtAutoRefCurrents_DW->idcount /
             rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         } else {
@@ -145,8 +143,8 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
           rtAutoRefCurrents_DW->idcount =
             -rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points / 3.0F;
 
-          /* '<S1>:26:19' AutoRefCurrents_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
-          rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = -fabsf
+          /* '<S1>:26:19' AutoRefCurrents_state_output.i_dq_ref.d=-1*abs(imax)*idcount/AutoRefCurrentsConfig.id_points; */
+          rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d = -fabsf
             (rtAutoRefCurrents_DW->imax) * rtAutoRefCurrents_DW->idcount /
             rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points;
         }
@@ -195,13 +193,13 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
     /* '<S1>:31:3'  GlobalConfig.Reset==0 && GlobalConfig.ACCEPT==1&& .... */
     /* '<S1>:31:4' ControlFlags.finished_all_Offline_states==1; */
     /* . */
-    /* . */
-    /* . */
   } else if (rtAutoRefCurrents_U->AutoRefCurrentsConfig.enableCRS &&
              (!rtAutoRefCurrents_U->AutoRefCurrentsConfig.Reset) &&
              (!rtAutoRefCurrents_U->GlobalConfig_out.Reset) &&
              rtAutoRefCurrents_U->GlobalConfig_out.ACCEPT &&
              rtAutoRefCurrents_U->ControlFlags.finished_all_Offline_states) {
+    real32_T idcount_tmp;
+
     /* Transition: '<S1>:31' */
     rtAutoRefCurrents_DW->is_c10_AutoRefCurrents = IN_superstate;
 
@@ -217,11 +215,11 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
     idcount_tmp = -rtAutoRefCurrents_U->AutoRefCurrentsConfig.id_points / 3.0F;
     rtAutoRefCurrents_DW->idcount = idcount_tmp;
 
-    /* '<S1>:20:7' AutoRefCurrents_output.i_dq_ref.d=single(0); */
-    rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
+    /* '<S1>:20:7' AutoRefCurrents_state_output.i_dq_ref.d=single(0); */
+    rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d = 0.0F;
 
-    /* '<S1>:20:8' AutoRefCurrents_output.i_dq_ref.q=single(0); */
-    rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
+    /* '<S1>:20:8' AutoRefCurrents_state_output.i_dq_ref.q=single(0); */
+    rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q = 0.0F;
 
     /* '<S1>:20:9' imax=single(0); */
     rtAutoRefCurrents_DW->imax = 0.0F;
@@ -232,14 +230,12 @@ void AutoRefCurrents_step(RT_MODEL_AutoRefCurrents_t *const rtAutoRefCurrents_M)
 
     /* Entry 'countstate': '<S1>:22' */
     /* '<S1>:22:3' if(iqcount<AutoRefCurrentsConfig.iq_points) */
-    if (rtAutoRefCurrents_DW->iqcount <
-        rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points) {
+    if (rtAutoRefCurrents_U->AutoRefCurrentsConfig.iq_points > 0.0F) {
       /* '<S1>:22:4' iqcount=iqcount+1; */
-      rtAutoRefCurrents_DW->iqcount++;
+      rtAutoRefCurrents_DW->iqcount = 1.0F;
     } else {
       /* '<S1>:22:5' else */
       /* '<S1>:22:6' iqcount=single(0); */
-      rtAutoRefCurrents_DW->iqcount = 0.0F;
     }
 
     /* '<S1>:22:8' if(idcount<AutoRefCurrentsConfig.id_points) */
@@ -265,11 +261,11 @@ void AutoRefCurrents_initialize(RT_MODEL_AutoRefCurrents_t *const
     rtAutoRefCurrents_M->outputs;
 
   /* SystemInitialize for Chart: '<Root>/AutoRefCurrents' incorporates:
-   *  Outport: '<Root>/AutoRefCurrents_output'
+   *  Outport: '<Root>/AutoRefCurrents_state_output'
    */
-  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.d = 0.0F;
-  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.q = 0.0F;
-  rtAutoRefCurrents_Y->AutoRefCurrents_output.i_dq_ref.zero = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.d = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.q = 0.0F;
+  rtAutoRefCurrents_Y->AutoRefCurrents_state_output.i_dq_ref.zero = 0.0F;
 }
 
 /*

@@ -169,6 +169,28 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_to_dq(uz_6ph_alphabeta_t i
     return (result);
 }
 
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(uz_6ph_alphabeta_t input, float theta_el_rad)
+{
+    uz_3ph_alphabeta_t intermediate_three_phase_ab={
+        .alpha=input.alpha,
+        .beta=input.beta,
+        .gamma=0.0f};
+    uz_3ph_alphabeta_t intermediate_three_phase_XY={
+        .alpha=input.x,
+        .beta=input.y,
+        .gamma=0.0f};
+    uz_3ph_dq_t intermediate_dq=uz_transformation_3ph_alphabeta_to_dq(intermediate_three_phase_ab,theta_el_rad);
+    uz_3ph_dq_t intermediate_xy=uz_transformation_3ph_alphabeta_to_dq(intermediate_three_phase_XY,-theta_el_rad);
+    uz_6ph_dq_t result={
+        .d=intermediate_dq.d,
+        .q=intermediate_dq.q,
+        .x=intermediate_xy.d,
+        .y=intermediate_xy.q,
+        .z1=input.z1,
+        .z2=input.z2};
+    return (result);
+}
+
  uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_dq_to_alphabeta(uz_6ph_dq_t input, float theta_el_rad){    
     uz_3ph_dq_t dq_3phase={
         .d=input.d,
@@ -185,13 +207,45 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_to_dq(uz_6ph_alphabeta_t i
     return (result);
 }
 
+uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(uz_6ph_dq_t input, float theta_el_rad){    
+    uz_3ph_dq_t dq_3phase={
+        .d=input.d,
+        .q=input.q,
+        .zero=0.0f}; 
+        uz_3ph_dq_t xy_3phase={
+        .d=input.x,
+        .q=input.y,
+        .zero=0.0f}; 
+    uz_3ph_alphabeta_t intermediate_ab=uz_transformation_3ph_dq_to_alphabeta(dq_3phase,theta_el_rad);
+    uz_3ph_alphabeta_t intermediate_XY=uz_transformation_3ph_dq_to_alphabeta(xy_3phase,-theta_el_rad);
+    uz_6ph_alphabeta_t result={
+        .alpha=intermediate_ab.alpha,
+        .beta=intermediate_ab.beta,
+        .x=intermediate_XY.alpha,
+        .y=intermediate_XY.beta,
+        .z1=input.z1,
+        .z2=input.z2};
+    return (result);
+}
+
+
 uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq(uz_6ph_abc_t input, float theta_el_rad){
     uz_6ph_alphabeta_t intermediate=uz_transformation_asym30deg_6ph_abc_to_alphabeta(input);
     return (uz_transformation_asym30deg_6ph_alphabeta_to_dq(intermediate,theta_el_rad));
 }
 
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq_xy(uz_6ph_abc_t input, float theta_el_rad){
+    uz_6ph_alphabeta_t intermediate=uz_transformation_asym30deg_6ph_abc_to_alphabeta(input);
+    return (uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(intermediate,theta_el_rad));
+}
+
 uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_to_abc(uz_6ph_dq_t input, float theta_el_rad){
     uz_6ph_alphabeta_t intermediate=uz_transformation_asym30deg_6ph_dq_to_alphabeta(input,theta_el_rad);
+    return (uz_transformation_asym30deg_6ph_alphabeta_to_abc(intermediate));
+}
+
+uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_xy_to_abc(uz_6ph_dq_t input, float theta_el_rad){
+    uz_6ph_alphabeta_t intermediate=uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(input,theta_el_rad);
     return (uz_transformation_asym30deg_6ph_alphabeta_to_abc(intermediate));
 }
 

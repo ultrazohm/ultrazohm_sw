@@ -98,6 +98,7 @@ DS_Data Global_Data = {
 volatile global_t global = {0};
 
 volatile static duty_cycles_t duty_cycles;
+volatile static uint8_t state_control;
 
 volatile static timing_t timing_us;
 
@@ -181,12 +182,16 @@ static void task_fast(void)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
 	if (global.ctrl.ctrl_enable) {
+		state_control = 1;
+
 		//control_dummy_run();
 
 		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
 		Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.duty_cycle_3;
 	} else {
+		state_control = 0;
+
 		Global_Data.rasv.halfBridge1DutyCycle = 0;
 		Global_Data.rasv.halfBridge2DutyCycle = 0;
 		Global_Data.rasv.halfBridge3DutyCycle = 0;

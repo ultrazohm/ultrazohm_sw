@@ -88,6 +88,7 @@ typedef struct {
   uz_3ph_dq_t i_dq_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
   real32_T n_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
   real32_T M_ref; /**< Not needed for ID-states. Can be used to transmit reference speed to a control algorithm. */
+  uint16_T motor_type;
   real32_T voltage_measurement_C;
   real32_T voltage_measurement_Rp;
   real32_T voltage_measurement_Rs;

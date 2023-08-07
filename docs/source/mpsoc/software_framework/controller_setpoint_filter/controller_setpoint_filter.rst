@@ -4,19 +4,6 @@
 Controller SetPoint Filter
 ==========================
 
-IIR filter set-point
-====================
-
-.. doxygenstruct:: uz_dq_setpoint_filter_config
-  :members:
-
-.. doxygentypedef:: uz_dq_setpoint_filter
-
-.. doxygenfunction:: uz_uz_dq_setpoint_filter_init
-
-.. doxygenfunction:: uz_signals_IIR_Filter_dq_setpoint
-
-
 Description
 -----------
 
@@ -63,3 +50,16 @@ Example configuration
      controller_out = uz_CurrentControl_sample(cc_instance, uz_signals_IIR_Filter_dq_setpoint(obj_2, Global_Data.rasv.i_ref_dq), Global_Data.av.i_actual_dq, Global_Data.av.V_dc, Global_Data.av.omega_el);
      //...
   }
+
+  
+IIR filter set-point
+====================
+
+.. doxygenstruct:: uz_dq_setpoint_filter_config
+  :members:
+
+.. doxygentypedef:: uz_dq_setpoint_filter
+
+.. doxygenfunction:: uz_uz_dq_setpoint_filter_init
+
+.. doxygenfunction:: uz_signals_IIR_Filter_dq_setpoint

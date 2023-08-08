@@ -18,9 +18,8 @@ struct uz_dqn_experience_replay_config{
 };
 
 uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, size_t length);
-
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]);
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]);
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,uint32_t *actiondata, uz_matrix_t *obsdata);
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,uint32_t *actiondata, uz_matrix_t *obsdata);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 
 // #define SIZE_OF_BUFFER 1000000

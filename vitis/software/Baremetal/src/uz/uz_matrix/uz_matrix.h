@@ -114,7 +114,7 @@ void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_m
  */
 
 void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind);
-
+void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_matrix_t *const destination_rowvec, uint32_t rowind);
 void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
 /**
  * @brief Calculates the "real" matrix multiplication C_out=A * B, sets C not to zero and sums it up

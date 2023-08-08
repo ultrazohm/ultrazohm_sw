@@ -17,9 +17,10 @@ Description
 Usage
 =====
 
-.. warning:: Pay attention to the dependency on the hardware revision of the UltraZohm:
-   * ``UZ_HARDWARE_VERSION`` is ``3``: **nothing to configure**, works out of the box.
-   * ``UZ_HARDWARE_VERSION`` is ``4`` and higher: set ``UZ_USE_EXTERNAL_STOP_ON_V4`` to ``1U`` as shown below.
+.. warning:: Pay attention to the dependency on the hardware revision of the UltraZohm
+
+* ``UZ_HARDWARE_VERSION`` is ``3``: **nothing to configure**, works out of the box.
+* ``UZ_HARDWARE_VERSION`` is ``4`` and higher: set ``UZ_USE_EXTERNAL_STOP_ON_V4`` to ``1U`` as shown below.
 
 .. code-block:: c
   :emphasize-lines: 2,6

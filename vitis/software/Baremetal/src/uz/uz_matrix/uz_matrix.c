@@ -458,6 +458,17 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
     }
 
 }
+void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind)
+{    
+    uz_assert_not_NULL(source_rowvec);
+    uz_assert_not_NULL(destination_matrix);
+    uz_assert(rowind);
+    uz_assert(source_rowvec->length_of_data == destination_matrix->columns);
+    uz_assert(source_rowvec->rows == 1);
+    for(uint32_t i=0U;i<source_rowvec->length_of_data;i++){
+        destination_matrix->data[rowind*source_rowvec->length_of_data+i]=source_rowvec->data[i];
+    }
+}
 
 void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
 // does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab

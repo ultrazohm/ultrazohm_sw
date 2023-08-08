@@ -224,6 +224,21 @@ void test_uz_matrix_copy_matrix(void){
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(A_data, B_data, UZ_MATRIX_SIZE(A_data));
 }
 
+void test_uz_matrix_copy_row_to_matrix(void){
+    uint32_t rows = 3;
+    uint32_t columns = 5;
+    float A_data[15] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0};
+    float B_data[5] = {11,12,13,14,15};
+    float C_data[15] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    struct uz_matrix_t input_matrix = {0};
+    struct uz_matrix_t copy_matrix = {0};
+    uz_matrix_t *A = uz_matrix_init(&input_matrix, A_data, UZ_MATRIX_SIZE(A_data), rows, columns);
+    uz_matrix_t *B = uz_matrix_init(&copy_matrix, B_data, UZ_MATRIX_SIZE(B_data), 1, columns);
+
+    uz_matrix_copy_row_to_matrix(B,A,2);
+    float D_data[5] = {11,12,13,14,15};
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(A_data, C_data, UZ_MATRIX_SIZE(A_data));
+}
 void test_uz_matrix_copy_matrix_fail_assertion_length(void)
 {
     uint32_t rows = 3;

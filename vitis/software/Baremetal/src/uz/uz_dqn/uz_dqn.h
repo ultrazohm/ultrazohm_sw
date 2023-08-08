@@ -17,31 +17,9 @@ struct uz_dqn_experience_replay_config{
     int32_t *const actions;
 };
 
-uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length);
+uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length, uint32_t headind);
 void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata);
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
-
-// #define SIZE_OF_BUFFER 1000000
-
-// uint32_t index=0U;
-// struct uz_dqn_experience_replay_t buffer[SIZE_OF_BUFFER]={0};
-
-// void dqn_push_to_buffer(struct uz_dqn_experience_replay_t sample)
-// {
-//    if(index==(SIZE_OF_BUFFER-1)){
-//       index=0U;
-//    }
-//    buffer[index] = sample;
-//    index++;
-// }
-
-// void dqn_get_random_samples(){
-//    indexes[64]=randi(64);
-//    buffer[indexes];
-//    buffer_ptr=[&buffer[index(1),&buffer[index(2)]];
-// }
-
-
 
 #endif // UZ_DQN_H

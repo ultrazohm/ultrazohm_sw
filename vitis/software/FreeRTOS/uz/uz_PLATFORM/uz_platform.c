@@ -1,7 +1,7 @@
 #include "../uz_HAL.h"
 
 #include "uz_platform.h"
-#include "uz_platform_eeprom.h"
+#include "../../../shared/uz_platform_eeprom.h"
 #include "../uz_IIC/uz_iic.h"
 #include "uz_platform_gpiops.h"
 
@@ -10,7 +10,7 @@
 //// Bus instance ID (currently fixed to 0 and bound to PS I²C *1*)
 #define UZ_PLATFORM_I2CBUS_INSTID	(0U)
 //// Slave addresses (currently fixed, but code ready for dynamic assignment)
-/// NB: UZ_PLATFORM_I2CADDR_EEPROM is defined in uz_platform_eeprom.h
+/// NB: UZ_PLATFORM_I2CADDR_EEPROM is defined in ../../../shared/uz_platform_eeprom.h
 // 16-bit I/O expander (PCA....)
 #define UZ_PLATFORM_I2CADDR_GPIO	(0x20)
 // EEPROMs with MAC addresses for Ethernet

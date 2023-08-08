@@ -171,6 +171,7 @@ int main(void)
             Global_Data.rasv.n_ref_rpm = 0.0f;
             Global_Data.rasv.t_delay_controller = 2.0f;
             Global_Data.rasv.t_measurement = 2.0f;
+            Global_Data.rasv.t_set_current = 2.0f;
 
         	initialization_chain = init_ip_cores;
 			break;

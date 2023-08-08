@@ -150,6 +150,7 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_rpm;
 	float t_delay_controller;		// Delay time for controller
 	float t_measurement;			// Measurements time in s
+	float t_set_current;  			// Delay to set the current
 
 } referenceAndSetValues;
 

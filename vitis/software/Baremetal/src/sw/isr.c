@@ -60,12 +60,19 @@ float unfiltered_signal = 0.0f;
 
 bool state_LMG_measure = false;
 bool state_controller_delay = false;
+bool state_slow_current_set = false;
 bool state_set_next_point = true;
 bool state_stop_current_angle = false;
 float n_delay_controller = 0.0f;
 float n_measurements = 0.0f;
+float n_slow_current = 0.0f;
+static float counter_slow_current = 0.0f;
 static float counter_n_delay_controller = 0.0f;
 static float counter_n_measurements = 0.0f;
+static float id_last = 0.0f;
+static float iq_last = 0.0f;
+static float id_soll = 0.0f;
+static float iq_soll = 0.0f;
 //static float counter_meshpoints = 0.0f;
 
 // automatic measurement
@@ -182,6 +189,7 @@ void ISR_Control(void *data)
 
     n_delay_controller = Global_Data.rasv.t_delay_controller * UZ_PWM_FREQUENCY;
     n_measurements = Global_Data.rasv.t_measurement * UZ_PWM_FREQUENCY;
+    n_slow_current = Global_Data.rasv.t_set_current * UZ_PWM_FREQUENCY;
 
     // Set kp and ki for current control (only for the first initialization or for modifying)
 //    uz_CurrentControl_set_Kp_id(Global_Data.objects.CurrentControl_instance, Global_Data.av.kp_d);
@@ -253,15 +261,15 @@ void ISR_Control(void *data)
 
 		        break;
 			case 2U: // Detect initial Angle
-		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
-		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
-
-		       	output.DutyCycle_A = 0.1f;
-		       	output.DutyCycle_B = 0.0f;
-		       	output.DutyCycle_C = 0.0f;
-
-		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+//		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+//		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+//		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
+//
+//		       	output.DutyCycle_A = 0.1f;
+//		       	output.DutyCycle_B = 0.0f;
+//		       	output.DutyCycle_C = 0.0f;
+//
+//		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
 
 		        break;
 
@@ -285,8 +293,10 @@ void ISR_Control(void *data)
 					}
 
 					if(state_stop_current_angle == false){
-						Global_Data.rasv.i_d_ref = ieff[counter_current] * cos(angle[counter_angle] * M_PI / 180.0f);
-						Global_Data.rasv.i_q_ref = ieff[counter_current] * sin(angle[counter_angle] * M_PI / 180.0f);
+						id_last = id_soll;
+						iq_last = iq_soll;
+						id_soll = ieff[counter_current] * cos(angle[counter_angle] * M_PI / 180.0f);
+						iq_soll = ieff[counter_current] * sin(angle[counter_angle] * M_PI / 180.0f);
 						counter_angle = counter_angle + 1U;
 						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 					}
@@ -295,6 +305,17 @@ void ISR_Control(void *data)
 					counter_n_measurements = 0.0f;
 
 					state_set_next_point = false;
+					state_slow_current_set = true;
+				}
+
+				if(state_slow_current_set && (counter_slow_current <= n_slow_current)){
+					counter_slow_current = counter_slow_current + 1.0f;
+
+					Global_Data.rasv.i_d_ref = id_last + (id_soll - id_last)/n_slow_current * counter_slow_current;
+					Global_Data.rasv.i_q_ref = iq_last + (iq_soll - iq_last)/n_slow_current * counter_slow_current;
+				}else{
+					counter_slow_current = 0.0f;
+					state_slow_current_set = false;
 					state_controller_delay = true;
 				}
 

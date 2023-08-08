@@ -10,18 +10,17 @@ typedef struct uz_dqn_t uz_dqn_t;
 typedef struct uz_dqn_experience_replay_t  uz_dqn_experience_replay_t;
 
 struct uz_dqn_experience_replay_config{
-    uint32_t length_of_observations;
-    uint32_t length_of_reward;
-    uint32_t length_of_actions;
+    uint32_t columns_of_observations;
+    uint32_t length_of_buffer;
     float *const reward;
     float *const observations;
     uint32_t *const actions;
 };
 
-uz_dqn_experience_replay_t* uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config);
+uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, size_t length);
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata[],uint32_t actiondata[], float obsdata[]);
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self, uint32_t index, float *feedback);
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]);
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 
 // #define SIZE_OF_BUFFER 1000000

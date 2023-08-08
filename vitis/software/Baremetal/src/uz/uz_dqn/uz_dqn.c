@@ -8,17 +8,15 @@
 #include "uz_dqn.h"
 #include "../uz_nn/uz_nn.h"
 #include "../uz_matrix/uz_matrix.h"
-
-#define EXPERIENCE_BUFFER_LENGTH 5
-
+#define EXPERIENCE_BUFFER_LENGTH 3
 struct uz_dqn_experience_replay_t {
     float *reward;
     uint32_t *action;
-    float *observations;
+    uz_matrix_t *observations;
     struct uz_matrix_t observations_matrix;
     size_t head;
     size_t tail;
-    size_t max;
+    size_t length;
     bool is_full;
     bool is_ready;
 };
@@ -61,15 +59,15 @@ static uz_dqn_experience_replay_t* uz_dqn_experience_replay_allocation(void){
     return (self);
 }
 
-uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config) {
+uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, size_t length){
     uz_assert_not_NULL(buf_config.reward);
     uz_assert_not_NULL(buf_config.actions);
     uz_assert_not_NULL(buf_config.observations);
     uz_dqn_experience_replay_t *self = uz_dqn_experience_replay_allocation();
+    self->length = length;
     self->reward = buf_config.reward;
     self->action = buf_config.actions;
-    self->observations = buf_config.observations;
-    //self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_observations,buf_config.length_of_observations,1);
+    self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
     return (self);
 }
 
@@ -78,33 +76,45 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert(self->is_ready);
     resetFloatArray(self->reward,EXPERIENCE_BUFFER_LENGTH);
     resetUintArray(self->action,EXPERIENCE_BUFFER_LENGTH);
-    resetFloatArray(self->observations,EXPERIENCE_BUFFER_LENGTH);
+    uz_matrix_set_zero(self->observations);
 }
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata[],uint32_t actiondata[], float obsdata[]){
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    // check first if counter is full, set counter to zero again and write then
-    // write reward data to buf
+    self->reward[self->head]= rewarddata;
+    // Aktionen in Buffer schreiben
+    self->action[self->head] = actiondata;
+    //Observationen in Buffer schreiben
+    uint32_t index = self->head*EXPERIENCE_BUFFER_LENGTH;  
     for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
-        self->reward[i] = rewarddata[i];
-    }
-    //write action data to buf
-    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
-        self->action[i] = actiondata[i];
-    }
-    //write obs data to buf
-    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
-        self->observations[i] = obsdata[i];
+    self->observations->data[index+i] = obsdata[i];
     }
     //counter +1 for next write operation
     self->head++;
+    // check first if counter is full, set counter to zero again and write then
+    if(self->head==(EXPERIENCE_BUFFER_LENGTH)){
+      self->head=0U;
+    }
+}
+
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actiondata, float obsdata[]){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    // calculate indizes
+    // write reward data to buf
+    rewarddata = *self->reward;
+    //write action data to buf
+    actiondata = *self->action;
+    //write obs data to buf
+    for (int i = 0; i < EXPERIENCE_BUFFER_LENGTH; i++) {
+       obsdata[i] = self->observations->data[i];
+    }
 }
 
 void uz_dqn_get_float_from_buffer(uz_dqn_experience_replay_t* self, uint32_t index, float *feedback){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->reward[index] = *feedback; 
 }
 
 // helpers

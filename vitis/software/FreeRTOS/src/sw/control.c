@@ -104,6 +104,7 @@ DS_Data Global_Data = {
 volatile global_t global = {0};
 
 volatile static duty_cycles_t duty_cycles;
+volatile static uint8_t state_control;
 
 volatile static timing_t timing_us;
 
@@ -193,6 +194,8 @@ static void task_fast(void)
 	pwm_enable_last = global.ctrl.pwm_enable;
 
 	if (global.ctrl.ctrl_enable) {
+		state_control = 1;
+
 		//control_dummy_run();
 
 
@@ -204,6 +207,8 @@ static void task_fast(void)
 		Global_Data.rasv.halfBridge5DutyCycle = duty_cycles.duty_cycle_5;
 		Global_Data.rasv.halfBridge6DutyCycle = duty_cycles.duty_cycle_6;
 	} else {
+		state_control = 0;
+
 		Global_Data.rasv.halfBridge1DutyCycle = 0;
 		Global_Data.rasv.halfBridge2DutyCycle = 0;
 		Global_Data.rasv.halfBridge3DutyCycle = 0;

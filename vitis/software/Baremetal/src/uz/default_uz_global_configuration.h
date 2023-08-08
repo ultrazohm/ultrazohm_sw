@@ -9,7 +9,7 @@
 #define UZ_USE_EXTERNAL_STOP_ON_V4 0U
 
 #if (UZ_HARDWARE_VERSION != 4U) && (UZ_USE_EXTERNAL_STOP_ON_V4 == 1U)
-#error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must only be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
+#error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
 /** ISR trigger source

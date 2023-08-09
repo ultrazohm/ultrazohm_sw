@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define UZ_PLATFORM_I2CADDR_EEPROM		(0x53)
-#define UZ_PLATFORM_EEPROM_INFOOFFSET	(0U)
+#define UZ_PLATFORM_I2CADDR_EEPROM		(0x5B)
+#define UZ_PLATFORM_EEPROM_INFOOFFSET	(0x78)
 
 enum uz_platform_eeprom_group {
 	UZP_HWGROUP_ADCARD =	000,

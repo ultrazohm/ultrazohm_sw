@@ -131,7 +131,7 @@ uint32_t uz_platform_init() {
 
 	int status;
 	// Fetch platform data
-	status = uz_iic_read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
+	status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
 	if ( XST_SUCCESS != status ) {
 		uz_printf("APU: Error reading platform EEPROM!\r\n");
 		return(UZ_FAILURE);
@@ -379,7 +379,7 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	const uint8_t maceeprom_addroffset = 0xFA;
 	const uint8_t maceeprom_addrlength = 6;
 
-	return( uz_iic_read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
+	return( uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
 #else
 	return(UZ_FAILURE);
 #endif

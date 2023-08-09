@@ -147,15 +147,21 @@ void uz_encoder_offset_estimation_reset_states(uz_encoder_offset_estimation_t* s
     self->meas_array_counter = 0U;
 }
 
-float uz_encoder_offset_estimation_get_progress_status(uz_encoder_offset_estimation_t* self){
+struct uz_encoder_offset_estimation_status uz_encoder_offset_estimation_get_status(uz_encoder_offset_estimation_t* self){
     uz_assert_not_NULL(self);
-    float progress = 0.0f;
+    struct uz_encoder_offset_estimation_status status = {0};
+
+    // progress
     if(self->encoderoffset_current_state_hl == encoderoffset_hl_finished){
-        progress = 1.0f;
+        status.progress = 1.0f;
     }else{
-        progress = ((float)(self->meas_array_counter))/((float)(OFFSET_ARRAYSIZE));
+        status.progress = ((float)(self->meas_array_counter))/((float)(OFFSET_ARRAYSIZE));
     }
-    return progress;
+
+    // diagnose
+    status.diagnose = self->diagnose;
+
+    return status;
 }
 
 uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* self){
@@ -191,6 +197,13 @@ uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* se
             } else{
                 *self->ptr_offset_angle = uz_encoder_offset_estimation_find_best_theta(self->meas_array); // calculate best theta
                 self->encoderoffset_current_state_hl = encoderoffset_hl_finished;                         // if all points are measured, set finished
+                if(*self->ptr_offset_angle == self->meas_array[0].theta_offset){
+                    self->diagnose = encoderoffset_lower_limit;                                           // set theta at lower limit
+                }else if(*self->ptr_offset_angle == self->meas_array[OFFSET_ARRAYSIZE-1U].theta_offset){
+                    self->diagnose = encoderoffset_upper_limit;                                           // set theta at upper limit
+                }else{
+                    self->diagnose = encoderoffset_finished;                                              // set diagnose finished
+                }
             }
             break;
         }

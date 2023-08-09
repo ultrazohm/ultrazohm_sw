@@ -25,6 +25,7 @@
 struct uz_nn_t
 {
     bool is_ready;
+    bool is_trainable;
     uint32_t number_of_layer;
     uint32_t number_of_inputs;
     uint32_t number_of_outputs;
@@ -46,20 +47,42 @@ static uz_nn_t *uz_nn_allocation(void)
     return (self);
 }
 
-uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer)
+uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer, bool is_trainable)
 {
     uz_assert(number_of_layer < UZ_NN_MAX_LAYER);
     uz_assert(number_of_layer > 1U);
     uz_nn_t *self = uz_nn_allocation();
+    self->is_trainable = is_trainable;
     self->number_of_layer = number_of_layer;
     self->number_of_inputs = config[0U].number_of_inputs;
     self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
+    if (self->is_trainable == true)
+    {
+    for (uint32_t i = 0U; i < number_of_layer; i++)
+    {
+        self->layer[i] = uz_nn_layer_init_trainable(config[i]);
+    }
+    }
+    else
+    {
     for (uint32_t i = 0U; i < number_of_layer; i++)
     {
         self->layer[i] = uz_nn_layer_init(config[i]);
     }
+    }
     return (self);
 }
+
+void uz_nn_copy(uz_nn_t* source, uz_nn_t* destination){
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    // durch die layer loopen
+    for (size_t i = 0; i < source->number_of_layer; i++)
+    {
+        uz_nn_layer_copy(source->layer[i],destination->layer[i]);
+    }
+}
+
 void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const input,uz_matrix_t const*const refout, uz_matrix_t const*const rowvec,uz_matrix_t const*const ref,float const learnrate,uint32_t minibatchsize, uint32_t numberofepochs)
 {
     uz_assert_not_NULL(self);

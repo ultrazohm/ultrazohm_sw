@@ -246,7 +246,7 @@ void test_uz_nn_mse_negative(void)
 
 void test_uz_nn_set_gradients_zero(void)
 {
-    uz_nn_t *testzero = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t *testzero = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER,true);
     // GD ausführen damit Gradientenmatrizen nicht null sind
     float lernrate = 0.5f;
     uz_nn_gradient_descent(testzero,lernrate);
@@ -261,7 +261,7 @@ void test_uz_nn_set_gradients_zero(void)
 
 void test_uz_nn_set_gradient_matrix(void)
 {
-    uz_nn_t *testsetgrad = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t *testsetgrad = uz_nn_init(config2, NUMBER_OF_HIDDEN_LAYER,true);
     float f1[UZ_MATRIX_SIZE(g_32)]={1.0f,2.0f,3.0f,4.0,5.0f,60.0f,70.0f,80.0f,90.0f,100.0f,1000.0f};
     float t1[UZ_MATRIX_SIZE(g_32)]={1.0f,2.0f,3.0f,4.0,5.0f,60.0f,70.0f,80.0f,90.0f,100.0f,1000.0f};
     struct uz_matrix_t gradmax={0};

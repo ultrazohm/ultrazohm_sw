@@ -11,7 +11,7 @@
  * 
  */
 typedef struct uz_nn_layer_t uz_nn_layer_t;
-
+typedef struct uz_nn_layer_nt_t uz_nn_layer_nt_t;
 
 /**
  * @brief Enum for passing the type of the activation function to the init function of the layer
@@ -64,13 +64,15 @@ struct uz_nn_layer_config{
  * @return uz_nn_layer_t* 
  */
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
-
+uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config);
 /**
  * @brief Calculates one forward pass of a network layer with the given input value (column vector)
  * 
  * @param self 
  * @param input Column vector of inputs (rows==1 !)
  */
+void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer);
+
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 
 /**

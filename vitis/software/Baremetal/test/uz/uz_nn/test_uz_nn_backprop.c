@@ -189,7 +189,7 @@ void tearDown(void)
 void test_uz_nn_train_checkgradients(void)
 {
     // Make one backprop step with MSE as Loss function and check gradients
-    uz_nn_t *nn1 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t *nn1 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix,x,2,1,NUMBER_OF_INPUTS);
     struct uz_matrix_t refmatrix={0};
@@ -237,7 +237,7 @@ void test_uz_nn_train_checkgradients(void)
 void test_uz_nn_train_check_mse_param(void)
 {
     // Train for NUMBER_OF_EPOCHS and check MSE in comparison to matlab
-    uz_nn_t *test2 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t *test2 = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix,x,2,1,NUMBER_OF_INPUTS);
     struct uz_matrix_t refmatrix={0};

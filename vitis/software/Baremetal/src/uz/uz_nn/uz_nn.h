@@ -22,7 +22,7 @@ typedef struct uz_nn_t uz_nn_t;
  * @param number_of_layer Number of layers including hidden layer and output layer (but not input layer)
  * @return uz_nn_t* 
  */
-uz_nn_t* uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer);
+uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer, bool is_trainable);
 
 /**
  * @brief Calculates one forward pass of the neural network.
@@ -30,6 +30,7 @@ uz_nn_t* uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
  * @param self Pointer to neural network instance
  * @param input Input matrix of dimension 1 x Inputs
  */
+void uz_nn_copy(uz_nn_t* source, uz_nn_t* destination);
 
 void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
 

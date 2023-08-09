@@ -191,7 +191,7 @@ void tearDown(void)
 void test_uz_nn_train_minibatch_function(void)
 {
     //init some instances for mb train function
-    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
     struct uz_matrix_t refmatrix={0};
     uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
     struct uz_matrix_t input_matrix={0};
@@ -214,7 +214,7 @@ void test_uz_nn_train_minibatch_function(void)
 
 void test_uz_nn_matlab(void)
   {
-      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
       struct uz_matrix_t refmatrix={0};
       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
       struct uz_matrix_t x_matrix={0};
@@ -243,7 +243,7 @@ void test_uz_nn_matlab(void)
 
  void test_uz_nn_matlab_mini_batch(void)
   {
-      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
       struct uz_matrix_t refmatrix={0};
       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
       struct uz_matrix_t input_matrix={0};

@@ -179,7 +179,7 @@ void tearDown(void)
 
 void test_uz_nn_schroder_gradients(void)
 {
-uz_nn_t* gradientnet = uz_nn_init(config,NUMBER_OF_HIDDEN_LAYER);
+uz_nn_t* gradientnet = uz_nn_init(config,NUMBER_OF_HIDDEN_LAYER,true);
     // uz_nn_t* testlooper = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
     // testing around with derivatemat declaration
     struct uz_matrix_t x_matrix={0};
@@ -222,7 +222,7 @@ void test_uz_nn_schroeder(void)
     float avgtheta = 0.0f;
     float avgbias = 0.0f;
     //init nn
-    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+    uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
     for (size_t i = 0; i < 13; i++)
     {
     struct uz_matrix_t x_matrix={0};

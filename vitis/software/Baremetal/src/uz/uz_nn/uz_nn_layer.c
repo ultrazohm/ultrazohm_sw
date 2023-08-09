@@ -68,6 +68,56 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert_not_NULL(layer_config.bias);
     uz_assert_not_NULL(layer_config.output);
     uz_assert_not_NULL(layer_config.sumout);
+    uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);;
+    uz_nn_layer_t *self = uz_nn_layer_allocation();
+    self->number_of_neurons = layer_config.number_of_neurons;
+    self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
+    self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
+    self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
+    self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
+    self->delta = NULL;
+    self->error = NULL;
+    self->temporarybackprop = NULL;
+    self->gradients = NULL;
+    self->cachegradients = NULL;
+    switch (layer_config.activation_function)
+    {
+    case activation_linear:
+        self->activation_function = &uz_nn_activation_function_linear;
+        self->activation_function_derivative = &uz_nn_activation_function_linear_derivative;
+        break;
+    case activation_ReLU:
+        self->activation_function = &uz_nn_activation_function_relu;
+        self->activation_function_derivative = &uz_nn_activation_function_relu_derivative;
+        break;
+    case activation_sigmoid:
+        self->activation_function = &uz_nn_activation_function_sigmoid_logistic;
+        self->activation_function_derivative = &uz_nn_activation_function_sigmoid_logistic_derivative;
+        break;
+    case activation_sigmoid2:
+        self->activation_function = &uz_nn_activation_function_sigmoid2_logistic;
+        self->activation_function_derivative = &uz_nn_activation_function_sigmoid2_logistic_derivative;
+        break;
+    case activation_tanh:
+        self->activation_function = &uz_nn_activation_function_tanh;
+        self->activation_function_derivative = &uz_nn_activation_function_tanh_derivative;
+        break;
+    default:
+        uz_assert(0);
+        break;
+    }
+    return (self);
+}
+
+uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config)
+{
+    uz_assert_not_NULL(layer_config.weights);
+    uz_assert_not_NULL(layer_config.bias);
+    uz_assert_not_NULL(layer_config.output);
+    uz_assert_not_NULL(layer_config.sumout);
     uz_assert_not_NULL(layer_config.delta);
     uz_assert_not_NULL(layer_config.error);
     uz_assert_not_NULL(layer_config.temporarybackprop);
@@ -119,6 +169,14 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
         break;
     }
     return (self);
+}
+
+void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer)
+{
+    uz_assert_not_NULL(sourcelayer);
+    uz_assert_not_NULL(destinationlayer);
+    uz_matrix_copy(sourcelayer->weights,destinationlayer->weights);
+    uz_matrix_copy(sourcelayer->bias,destinationlayer->bias);
 }
 
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)

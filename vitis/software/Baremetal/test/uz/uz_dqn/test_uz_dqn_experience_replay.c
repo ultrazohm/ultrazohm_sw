@@ -2,6 +2,9 @@
 
 #include "unity.h"
 #include "uz_dqn.h"
+#include "uz_nn.h"
+#include "uz_nn_layer.h"
+#include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
 
 #define EXPERIENCE_BUFFER_LENGTH 3
@@ -82,7 +85,7 @@ void test_uz_dqn_write_to_buffer(void)
 
 }
 
-void test_overwrite_values_to_buffer(void){
+void test_uz_dqn_overwrite_values_to_buffer(void){
     // float data
     float rew[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
     int32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,-1};

@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
-#include "../uz_nn/uz_nn.h"
-#include "../uz_matrix/uz_matrix.h"
 
 struct uz_dqn_experience_replay_t {
     float *reward;
@@ -66,14 +64,19 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 }
 
 
-// uz_dqn_t *uz_dqn_init() {
-//     // uz_assert_not_NULL(buf_config.observations);
-//     uz_dqn_t *self = uz_dqn_allocation();
-//     self->critic = uz_nn_init(config_target, number_of_layer, true);
-//     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
-//     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
-//     return (self);
-// }
+uz_dqn_t *uz_dqn_init(struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
+struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER],
+uint32_t number_of_layer,
+ struct uz_dqn_experience_replay_config buffer_config,
+uint32_t length_of_buffer, uint32_t headind)
+{
+// asserts
+    uz_dqn_t *self = uz_dqn_allocation();
+    self->critic = uz_nn_init(config_critic, number_of_layer, true);
+    self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
+    self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
+    return (self);
+}
 
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);

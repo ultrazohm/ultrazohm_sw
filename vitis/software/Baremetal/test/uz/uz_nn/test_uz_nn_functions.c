@@ -26,10 +26,6 @@ float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float s_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float s_3[NUMBER_OF_OUTPUTS] = {0};
 
-//derivate matrix activation, Dimension = Sumout x Sumout 50x50=2500 z.B.
-// float d_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-// float d_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
-// float d_3[NUMBER_OF_OUTPUTS * NUMBER_OF_OUTPUTS] = {0};
 //deltas
 float delta_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float delta_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};

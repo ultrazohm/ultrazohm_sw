@@ -5,9 +5,11 @@
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include "uz_nn.h"
+#include "uz_nn_layer.h"
 
 typedef struct uz_dqn_t uz_dqn_t;
-typedef struct uz_dqn_experience_replay_t  uz_dqn_experience_replay_t;
+typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;
 
 struct uz_dqn_experience_replay_config{
     uint32_t columns_of_observations;
@@ -21,5 +23,6 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata);
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
+
 
 #endif // UZ_DQN_H

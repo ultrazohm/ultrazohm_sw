@@ -90,7 +90,7 @@ void test_overwrite_values_to_buffer(void){
 
     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer,EXPERIENCE_BUFFER_LENGTH,EXPERIENCE_BUFFER_LENGTH);
     float RewardData4 = -777.7f;
-    uint32_t action4 = 777;
+    int32_t action4 = 777;
     float ObsData[5] = {7.0f,7.0f,7.0f,7.0f,7.0f};
     struct uz_matrix_t obs_matrix = {0};
     uz_matrix_t *obs = uz_matrix_init(&obs_matrix, ObsData, UZ_MATRIX_SIZE(ObsData), 1, 5);

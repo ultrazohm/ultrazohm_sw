@@ -22,10 +22,9 @@ struct uz_dqn_experience_replay_t {
 
 struct uz_dqn_t {
     bool is_ready;
-    uz_nn_t* critic;
-    uz_matrix_t observations;
+    uz_nn_t *critic;
     uz_nn_t *critic_target_net;
-    struct uz_dqn_experience_replay_t experience_buffer;
+    uz_dqn_experience_replay_t *experience_buffer;
 };
 
 static uint32_t instance_counterbuf = 0U;
@@ -41,11 +40,6 @@ static uz_dqn_t* uz_dqn_allocation(void){
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
-    return (self);
-}
-
-uz_dqn_t* uz_dqn_init() {
-    uz_dqn_t* self = uz_dqn_allocation();
     return (self);
 }
 
@@ -67,7 +61,18 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     self->reward = buf_config.reward;
     self->action = buf_config.actions;
     self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
-    self->head = headind;
+    self->head = headind; // vorübergehend, für test, dass auf beliebigen index nach init zugegriffen werden kann, kann man später noch entfernenS
+    return (self);
+}
+
+
+uz_dqn_t *uz_dqn_init() {
+    // uz_assert_not_NULL(buf_config.observations);
+    uz_dqn_t *self = uz_dqn_allocation();
+    // , uint32_t length_of_buffer, uint32_t headind
+    //self->critic = uz_nn_init();
+    // self->critic_target_net = uz_nn_init(config_target, number_of_layer);
+    // self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
     return (self);
 }
 
@@ -82,8 +87,11 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
 
 void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata){
     uz_assert_not_NULL(self);
+    uz_assert_not_NULL(rewarddata);
+    uz_assert_not_NULL(actiondata);
+    uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
-    // check first if counter is full, set counter to zero again and write then
+    // check first if counter is full, set counter to zero again and write then, set is_full true
     if(self->head==(self->length)){
       self->is_full = true;
       self->head=0U;
@@ -96,13 +104,13 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,in
 
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
+    uz_assert_not_NULL(rewarddata);
+    uz_assert_not_NULL(actiondata);
+    uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
-    // calculate indizes
-    // write reward data to buf
+    uz_assert(index<self->length); // assert, wenn index größer als die länge des buffers
     *rewarddata = self->reward[index];
-    // //write action data to buf
     *actiondata = self->action[index];
-    // //write obs data to buf
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
 }
 

@@ -66,15 +66,14 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 }
 
 
-uz_dqn_t *uz_dqn_init() {
-    // uz_assert_not_NULL(buf_config.observations);
-    uz_dqn_t *self = uz_dqn_allocation();
-    // , uint32_t length_of_buffer, uint32_t headind
-    //self->critic = uz_nn_init();
-    // self->critic_target_net = uz_nn_init(config_target, number_of_layer);
-    // self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
-    return (self);
-}
+// uz_dqn_t *uz_dqn_init() {
+//     // uz_assert_not_NULL(buf_config.observations);
+//     uz_dqn_t *self = uz_dqn_allocation();
+//     self->critic = uz_nn_init(config_target, number_of_layer, true);
+//     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
+//     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
+//     return (self);
+// }
 
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);

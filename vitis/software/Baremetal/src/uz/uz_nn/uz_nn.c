@@ -87,6 +87,7 @@ void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const in
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     for (uint32_t i = 0; i < numberofepochs; i++)
     {
     for(uint32_t j=0; j<minibatchsize;j++){
@@ -120,6 +121,7 @@ void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     for (uint32_t i = 0; i < (self->number_of_layer); i++)
     {
         uz_nn_update_layer_param(self->layer[i], learnrate);
@@ -130,6 +132,7 @@ void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uin
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     for (uint32_t i = 0; i < (self->number_of_layer); i++)
     {
         uz_nn_update_layer_param_mini_batch(self->layer[i], learnrate, minibatchsize);
@@ -165,6 +168,7 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
     {
@@ -181,6 +185,7 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_m
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
     {
@@ -213,6 +218,7 @@ void uz_nn_set_gradients_zero(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     for (uint32_t i = 0; i < (self->number_of_layer); i++)
     {
         uz_nn_set_gradient_in_layer_zero(self->layer[i]);
@@ -223,6 +229,7 @@ void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix,
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
     uz_nn_set_gradient_in_layer(self->layer[layer - 1], gradientmatrix);
 }
 

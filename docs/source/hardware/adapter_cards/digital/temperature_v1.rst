@@ -1,8 +1,8 @@
 .. _temperature_card_v1:
 
-==========================
+===================
 Temperature Card V1 
-==========================
+===================
 
 Detailed Description
 -----------------------
@@ -54,7 +54,7 @@ IP-Core
 -----------------------
 The temperature card is provided with an IP-core, which handles the configuration and triggers a periodical measurement.
 For this purpose the core contains a memory-mapped-interface, which stores the channel configurations and a freely configurable trigger-generator.
-To get the temperature card working, its neccessary to connect the IP-core via smart connects to the PS and map the IP-core Pins to the dedicated digital Slot, further the IP-Core is designed to work with an 100MHz clock. 
+To get the temperature card working, its necessary to connect the IP-core via smart connects to the PS and map the IP-core Pins to the dedicated digital Slot, further the IP-Core is designed to work with an 100MHz clock. 
 The documentation for the IP-Core can be found under :ref:`temperature_card_IPcore_v1`.
 
 Wiring
@@ -66,8 +66,8 @@ Since there exists many possible configuration for the temperature card, its pos
 
 This area is dedicated to implement RC-lowpass filter (C left, R middle) for use with thermocouples or the placement of the Rsense needed for RTD's.
 Further it is possible to enable Rsense-Sharing with 0R-Resistor or solder bridges (R right).
-For most usecases this Filter-and-Wiring-Area should be enough, so that 9 RTD's in 2-Wire-mode can be implemented directly without the need of extra wiring.
-If more RTD's are needed, the user could extend the amount of sensors by chainig up to 18 RTD's on one LTC (see `LTC_Application_Note <https://www.analog.com/media/en/reference-design-documentation/design-notes/DN1035f.pdf>`_ ), but this requires special wiring which is up to the user.
+For most use cases this Filter-and-Wiring-Area should be enough, so that 9 RTD's in 2-Wire-mode can be implemented directly without the need of extra wiring.
+If more RTD's are needed, the user could extend the amount of sensors by chaining up to 18 RTD's on one LTC (see `LTC_Application_Note <https://www.analog.com/media/en/reference-design-documentation/design-notes/DN1035f.pdf>`_ ), but this requires special wiring which is up to the user.
 
 References
 -----------------------

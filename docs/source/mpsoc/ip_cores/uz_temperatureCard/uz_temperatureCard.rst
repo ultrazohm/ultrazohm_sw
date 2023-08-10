@@ -30,7 +30,7 @@ IP-Core
 -------
 The temperature card is provided with an IP-core, which handles the configuration and triggers a periodical measurement.
 For this purpose the core contains a memory-mapped-interface, which stores the channel configurations and a freely configurable trigger-generator.
-To get the temperature card working, its neccessary to connect the IP-core via smart connects to the PS and map the IP-core Pins to the dedicated digital Slot, further the IP-Core is designed to work with an 100MHz clock.
+To get the temperature card working, its necessary to connect the IP-core via smart connects to the PS and map the IP-core Pins to the dedicated digital Slot, further the IP-Core is designed to work with an 100MHz clock.
 
 It's crucial to use the Pins as shown in the picture below, otherwise the mapping won't fit with the created CPLD-File!
 
@@ -38,7 +38,7 @@ It's crucial to use the Pins as shown in the picture below, otherwise the mappin
 
    To simplify the usage of the IP-Core and to reduce possible errors, a tcl script was created, that places all necessary connections automatically.
    Only the hardware ports have to be assigned manually, according to the used digital adapter card slot.
-   To use this, open the Vivado block design and run the following commands seperately in the TCL-console.
+   To use this, open the Vivado block design and run the following commands separately in the TCL-console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "cd $work_directory"
    "source ../../ip_cores/Temperature_Card_Interfrace_V1/temp_card_interface.tcl"
@@ -48,9 +48,9 @@ It's crucial to use the Pins as shown in the picture below, otherwise the mappin
 .. image:: IP_Core_TempCard.png
    :height: 400
 
-The I/O for the IP-Core and the Temperaturecard is based on the old constrain-files.
+The I/O for the IP-Core and the temperature card is based on the old constrain-files.
 
-To generate the needed channel configuration, it's neccessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_.
+To generate the needed channel configuration, it's necessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_.
 For easier use of the card, there exists an UZ-Driver, which is located inside the Folder ``IP_Cores``.
 The library contains functions to provide a simple way to configure and read the Temperature Card.
 
@@ -96,9 +96,9 @@ The Channels can be addressed by values from 0-59 and all needed address calcula
 An easy way to get the configuration-words for each channel is given with fixed defines.
 Inside the ``uz_temperaturecard.h`` the defines from Analog Devices are present.
 With those defines, simply use bitwise-or to create the configuration-word for different kind of sensors.
-It is neccessary to read the Datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_ carefully, especially page 16 to 54 for understandig how the LTC2983 needs to be configured.
+It is necessary to read the datasheet of the `LTC2983 <https://www.analog.com/en/products/ltc2983.html>`_ carefully, especially page 16 to 54 for understanding how the LTC2983 needs to be configured.
 
-To start using the Temperature Card with the provided IP-Core and UZ-Driver, an initialisation is needed.
+To start using the Temperature Card with the provided IP-Core and UZ-Driver, an initialization is needed.
 The following is an example to read the internal PT100 of channel A.
 
 .. code-block:: c

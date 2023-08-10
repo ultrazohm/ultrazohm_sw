@@ -38,6 +38,7 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         0U
@@ -58,7 +59,10 @@
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       0U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
->>>>>>> develop
+#define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
+#define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
+#define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
+#define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -85,6 +89,7 @@
     #define UZ_IIR_FILTER_MAX_INSTANCES                     20U
     #define UZ_INVERTER_3PH_MAX_INSTANCES                   20U
     #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         20U
+	#define UZ_PARAMETERID_MAX_INSTANCES					100U
     #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         20U
     #define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES               20U
     #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               20U
@@ -103,5 +108,8 @@
     #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
     #define UZ_AXI_GPIO_MAX_INSTANCES                       10U
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
->>>>>>> develop
+    #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
+    #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
+    #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
+    #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
 #endif

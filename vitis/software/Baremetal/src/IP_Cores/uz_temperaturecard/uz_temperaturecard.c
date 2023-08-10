@@ -6,7 +6,7 @@ struct uz_temperaturecard_t {
     uint32_t 				    base_address;
 	uint32_t 				    ip_clk_frequency_Hz;
 	bool 						is_ready;
-	uint32_t 					Sample_Freq;
+	uint32_t 					Sample_Freq_Hz;
 	uint32_t 					Stepcounter;
 	uz_temperaturecard_OneGroup	Channel_A;
 	uz_temperaturecard_OneGroup	Channel_B;
@@ -32,7 +32,7 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
     // Store settings
     self-> base_address         = config.base_address;
     self-> ip_clk_frequency_Hz  = config.ip_clk_frequency_Hz;
-    self-> Sample_Freq          = config.Sample_Freq;
+    self-> Sample_Freq_Hz       = config.Sample_Freq_Hz;
     self-> Stepcounter 			= 0;
 
     for(int i = 0; i < CHANNEL_COUNT; i++){
@@ -45,7 +45,7 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
     }
 
     //Write settings
-    uz_TempCard_IF_hw_writeCounterReg(self->base_address,(uint32_t)((1.0f/((float)self->Sample_Freq))/(1.0f/(float)self->ip_clk_frequency_Hz)));
+    uz_TempCard_IF_hw_writeCounterReg(self->base_address,(uint32_t)((1.0f/((float)self->Sample_Freq_Hz))/(1.0f/(float)self->ip_clk_frequency_Hz)));
     for(int i = 0; i < CHANNEL_COUNT; i++){
         //Select Channel_A
         uz_TempCard_IF_hw_writeReg(self->base_address + TempCard_IF_Config_A_0 + (i * 0x4), self->Channel_A.Configdata[i]);

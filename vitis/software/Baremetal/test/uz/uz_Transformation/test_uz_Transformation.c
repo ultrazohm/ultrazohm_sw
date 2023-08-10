@@ -195,7 +195,7 @@ void test_uz_6ph_abc_to_dq_xy_transformation_output(void){
     uz_3ph_dq_t dq_calc = uz_transformation_3ph_alphabeta_to_dq(alphabeta_multiphase_test, theta_el);
     uz_3ph_dq_t xy_calc = uz_transformation_3ph_alphabeta_to_dq(XY_multiphase_test, -theta_el);
 
-    uz_6ph_dq_t output = uz_transformation_asym30deg_6ph_abc_to_dq_xy(sixphase_abc, theta_el);
+    uz_6ph_dq_t output = uz_transformation_asym30deg_6ph_abc_to_dq_xy(sixphase_abc, theta_el, -theta_el);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, dq_calc.d, output.d);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, dq_calc.q, output.q);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, xy_calc.d, output.x);
@@ -262,7 +262,7 @@ void test_uz_6ph_dq_xy_to_abc_transformation_output(void){
 
     uz_6ph_abc_t abc_vgl = uz_transformation_asym30deg_6ph_alphabeta_to_abc(sixphase_alphabeta);
 
-    uz_6ph_abc_t output = uz_transformation_asym30deg_6ph_dq_xy_to_abc(sixphase_dq, theta_el);
+    uz_6ph_abc_t output = uz_transformation_asym30deg_6ph_dq_xy_to_abc(sixphase_dq, theta_el, -theta_el);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.a1, output.a1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.b1, output.b1);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, abc_vgl.c1, output.c1);

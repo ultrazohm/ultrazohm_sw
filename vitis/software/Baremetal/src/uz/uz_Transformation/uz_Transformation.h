@@ -203,10 +203,11 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_to_dq(uz_6ph_alphabeta_t i
  * @brief Calculates the dq and rotated xy components from the alpha/beta and X/Y components. Leaves z1/z2 untouched. xy is transformed with -theta_el
  * 
  * @param input uz_6ph_alphabeta_t
- * @param theta_el_rad electrical rotor angle in rad
+ * @param theta_el_rad_dq electrical rotor angle in rad for dq-transformation
+ * @param theta_el_rad_xy electrical rotor angle in rad for xy-transformation
  * @return uz_6ph_dq_t Outputs the calculated stationary and rotating reference frame values
  */
-uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(uz_6ph_alphabeta_t input, float theta_el_rad);
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(uz_6ph_alphabeta_t input, float theta_el_rad_dq, float theta_el_rad_xy);
 
 /**
  * @brief Calculates the alpha and beta components from the dq values and leaves the additional systems untouched
@@ -221,10 +222,11 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(uz_6ph_alphabe
  * @brief Calculates the alpha/beta and X/Y components from the dq and rotated xy values and leaves z1/z2 untouched. xy is transformed with -theta_el.
  * 
  * @param input uz_6ph_dq_t struct
- * @param theta_el_rad electrical rotor angle in rad
+ * @param theta_el_rad_dq electrical rotor angle in rad for dq-transformation
+ * @param theta_el_rad_xy electrical rotor angle in rad for xy-transformation
  * @return uz_6ph_alphabeta_t Outputs the calculated stationary reference frame values
  */
-uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(uz_6ph_dq_t input, float theta_el_rad);
+uz_6ph_alphabeta_t uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(uz_6ph_dq_t input, float theta_el_rad_dq, float theta_el_rad_xy);
 
 /**
  * @brief Calculates the stationary reference frame values from the phase values using the VSD transformation. Afterwards calculates the dq components from alpha and beta only while leaving the additional stationary reference frame components untouched.
@@ -239,10 +241,11 @@ uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq(uz_6ph_abc_t input, float 
  * @brief Calculates the stationary reference frame values from the phase values using the VSD transformation. Afterwards calculates the dq and rotated xy components. Leaves the z1/z2 values untouched. xy is transformed with -theta_el.
  * 
  * @param input uz_6ph_abc_t struct
- * @param theta_el_rad electrical rotor angle in rad
+ * @param theta_el_rad_dq electrical rotor angle in rad for dq-transformation
+ * @param theta_el_rad_xy electrical rotor angle in rad for xy-transformation
  * @return uz_6ph_dq_t Outputs the calculated stationary and rotating reference frame values
  */
-uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq_xy(uz_6ph_abc_t input, float theta_el_rad);
+uz_6ph_dq_t uz_transformation_asym30deg_6ph_abc_to_dq_xy(uz_6ph_abc_t input, float theta_el_rad_dq, float theta_el_rad_xy);
 
 /**
  * @brief Calculates the alpha beta components from the dq components. Uses the stationary reference frame values to calculate the the abc values with the inverse VSD transformation.
@@ -257,10 +260,11 @@ uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_to_abc(uz_6ph_dq_t input, float 
  * @brief Calculates the alpha/beta and XY components from the dq and rotated xy components. Uses the stationary reference frame values to calculate the the abc values with the inverse VSD transformation. xy is transformed with -theta_el.
  * 
  * @param input uz_6ph_dq_t struct 
- * @param theta_el_rad electrical rotor angle in rad
+ * @param theta_el_rad_dq electrical rotor angle in rad for dq-transformation
+ * @param theta_el_rad_xy electrical rotor angle in rad for xy-transformation
  * @return uz_6ph_abc_t Outputs the calculated abc-phases
  */
-uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_xy_to_abc(uz_6ph_dq_t input, float theta_el_rad);
+uz_6ph_abc_t uz_transformation_asym30deg_6ph_dq_xy_to_abc(uz_6ph_dq_t input, float theta_el_rad_dq, float theta_el_rad_xy);
 
 /**
  * @brief Calculates the stationary reference frame values from abc-phases using the ninephase VSD Transformation

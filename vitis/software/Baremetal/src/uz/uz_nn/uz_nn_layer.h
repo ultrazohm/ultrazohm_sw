@@ -72,7 +72,7 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
  * @param input Column vector of inputs (rows==1 !)
  */
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer);
-
+void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float *const smoothfact);
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
 
 /**

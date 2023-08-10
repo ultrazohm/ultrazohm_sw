@@ -179,6 +179,16 @@ void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const des
     uz_matrix_copy(sourcelayer->bias,destinationlayer->bias);
 }
 
+void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float *const smoothfact)
+{
+    uz_assert_not_NULL(sourcelayer);
+    uz_assert_not_NULL(destinationlayer);
+    uz_assert_not_NULL(smoothfact);
+    uz_matrix_update_smooth(sourcelayer->weights,destinationlayer->weights,smoothfact);
+    uz_matrix_update_smooth(sourcelayer->bias,destinationlayer->bias,smoothfact);
+}
+
+
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input)
 {
     uz_assert_not_NULL(self);
@@ -229,16 +239,16 @@ void uz_nn_layer_calc_gradients_mini_batch(uz_nn_layer_t *const self, uz_matrix_
 
 void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 {
-uz_matrix_multiply_by_scalar(self->cachegradients,lernrate);
-uz_matrix_multiply_by_scalar(self->cachegradients,-1.0f);
-uz_matrix_transpose(self->weights);
-uz_matrix_add(self->cachegradients,self->weights);
-uz_matrix_transpose(self->weights);
-uz_matrix_multiply_by_scalar(self->delta,lernrate);
-uz_matrix_multiply_by_scalar(self->delta,-1.0f);
-uz_matrix_transpose(self->delta);
-uz_matrix_add(self->delta,self->bias);
-uz_matrix_transpose(self->delta);
+    uz_matrix_multiply_by_scalar(self->cachegradients,lernrate);
+    uz_matrix_multiply_by_scalar(self->cachegradients,-1.0f);
+    uz_matrix_transpose(self->weights);
+    uz_matrix_add(self->cachegradients,self->weights);
+    uz_matrix_transpose(self->weights);
+    uz_matrix_multiply_by_scalar(self->delta,lernrate);
+    uz_matrix_multiply_by_scalar(self->delta,-1.0f);
+    uz_matrix_transpose(self->delta);
+    uz_matrix_add(self->delta,self->bias);
+    uz_matrix_transpose(self->delta);
 }
 
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize)

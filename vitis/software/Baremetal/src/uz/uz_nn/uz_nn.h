@@ -2,6 +2,12 @@
 #define UZ_NN_H
 #include "uz_nn_layer.h"
 
+
+enum target_update{
+    smoothing,
+    periodic,
+    periodic_smoothing
+};
 /**
  * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
  * 
@@ -31,6 +37,8 @@ uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
  * @param input Input matrix of dimension 1 x Inputs
  */
 void uz_nn_copy(uz_nn_t* source, uz_nn_t* destination);
+void uz_nn_copy_smoothing(uz_nn_t* source, uz_nn_t* destination, float *targetsmoothfact);
+void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update method, float *targetsmoothfact, uint32_t TargetUpdateFrequency, uint32_t *external_counter);
 
 void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
 

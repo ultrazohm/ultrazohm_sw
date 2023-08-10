@@ -83,6 +83,42 @@ void uz_nn_copy(uz_nn_t* source, uz_nn_t* destination){
     }
 }
 
+void uz_nn_copy_smoothing(uz_nn_t* source, uz_nn_t* destination, float *targetsmoothfact){
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    // durch die layer loopen
+    for (size_t i = 0; i < source->number_of_layer; i++)
+    {
+        uz_nn_layer_copy_smooth(source->layer[i],destination->layer[i],targetsmoothfact);
+    }
+}
+
+void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update method, float *targetsmoothfact, uint32_t TargetUpdateFrequency, uint32_t *external_counter){
+    uz_assert_not_NULL(critic);
+    uz_assert_not_NULL(target);
+    switch (method)
+    {
+    case smoothing:
+        uz_assert_not_NULL(targetsmoothfact);
+        uz_nn_copy_smoothing(critic,target,targetsmoothfact);
+        break;
+    case periodic:
+        if (*external_counter % TargetUpdateFrequency == 0) {
+            uz_nn_copy(critic,target);
+        }
+        break;
+    case periodic_smoothing:
+        uz_assert_not_NULL(targetsmoothfact);
+        if (*external_counter % TargetUpdateFrequency == 0) {
+            uz_nn_copy_smoothing(critic,target,targetsmoothfact);
+        }
+        break;
+    default:
+        uz_assert(0);
+        break;
+    }
+}
+
 void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const input,uz_matrix_t const*const refout, uz_matrix_t const*const rowvec,uz_matrix_t const*const ref,float const learnrate,uint32_t minibatchsize, uint32_t numberofepochs)
 {
     uz_assert_not_NULL(self);

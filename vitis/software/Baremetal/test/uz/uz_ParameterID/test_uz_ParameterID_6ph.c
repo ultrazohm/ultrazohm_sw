@@ -55,6 +55,7 @@
 #include "uz_PWM_SS_2L.h" 
 #include "mock_uz_AXI.h" 
 #include "uz_space_vector_modulation.h"
+#include "uz_spwm.h"
 
 
 #include "uz_resonant_controller.h"

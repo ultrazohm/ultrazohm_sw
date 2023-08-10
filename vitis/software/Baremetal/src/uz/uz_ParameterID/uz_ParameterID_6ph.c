@@ -240,12 +240,11 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
 		V_abc_Volts.c2 = -V_abc_Volts.a2;
-		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
+		output_DutyCycle = uz_spwm_abc_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
 	// during normal operation give out calculated dutycycles from setpoints
 	} else if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true || Data->ParaID_Control_Selection == Current_Control) {		
-		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
-		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
+		output_DutyCycle = uz_spwm_dq_6ph(v_dq_Volts, Data->ActualValues.V_DC, Data->ActualValues.theta_el);
 	
 	// anything else, set zero
 	} else {
@@ -269,7 +268,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	return (output_DutyCycle);
 }
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data) {
 	uz_6ph_dq_t out = {0};
 	uz_3ph_dq_t v_dq_Volts = {0};
 	uz_assert_not_NULL(Data);
@@ -480,7 +479,8 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	if(Data->Controller_Parameters.activeState==166U){
 		Data->ElectricalID_Offset_Estimation.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
 		Data->ElectricalID_Offset_Estimation.finished_flag = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
-		Data->ElectricalID_Offset_Estimation.progress = uz_encoder_offset_estimation_get_progress_status(Data->encoder_offset_estimation);
+		struct uz_encoder_offset_estimation_status enc_off_status = uz_encoder_offset_estimation_get_status(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.progress = enc_off_status.progress;
 	}
 
 	//Step the function

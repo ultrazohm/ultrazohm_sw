@@ -116,6 +116,16 @@ void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata, 
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
 }
 
+float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty){
+    // check, ob penalty nötig
+    float z = 0.0f;
+    if (penalty == true)
+    {
+        z = -1000.0f;
+    }
+    float r = - 2.0f * samplerate * (100.0f * theta + position + 0.25f * pow(velocity,2.0f)) + z;
+    return r;
+}
 // helpers
 void resetFloatArray(float *arr, uint32_t size) {
     for (uint32_t i = 0; i < size; i++) {

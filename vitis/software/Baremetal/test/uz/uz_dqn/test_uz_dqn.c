@@ -9,7 +9,7 @@
 #include <stdlib.h>
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 3
-#define NUMBEROFOBS 5
+#define NUMBEROFOBS 2
 // nn
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1
@@ -98,7 +98,7 @@ float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten la
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
 int32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,5,50};
-float observation[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f,12.5f,12.75f,12.85f,12.95f,100.0f,200.0f,300.0f,400.0f,500.0f};
+float observation[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f};
 
 //config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -238,6 +238,27 @@ void test_uz_dqn_init(void)
     // easy random number
     int32_t r = rand() % EXPERIENCE_BUFFER_LENGTH+1; 
     //TEST_ASSERT_EQUAL_INT32(5,r);
+}
+
+void test_calc_reward_with_penalty(void)
+{
+    float ts = 0.05f;
+    float theta = 0.08f;
+    float position = 0.8f;
+    float velocity = 12.0f;
+    bool pen = false;
+    float reward = calculate_reward_pendulum(ts, theta, position, velocity, pen);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, -4.48f, reward);
+}
+void test_calc_reward_without_penalty(void)
+{
+    float ts = 0.1f;
+    float theta = 0.98f;
+    float position = 0.2f;
+    float velocity = 2.0f;
+    bool pen = true;
+    float reward = calculate_reward_pendulum(ts, theta, position, velocity, pen);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, -1019.84f, reward);
 }
 
 #endif // TEST

@@ -113,7 +113,7 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     float psi_pms[PARAMETERID6PH_ELECTRICAL_N_ORDER][3];                  // array holding psi pms
     uz_ParaID_ElectricalID_fft_in_t output;     // output struct for ParaID
     // calculate FFT
-    FFTRecordedVoltage(induced_voltage, ISR_sampletime, 100e-6, frequencies, amplitudes, angles);
+    FFTRecordedVoltage(induced_voltage, ISR_sampletime, 100.0e-6f, frequencies, amplitudes, angles);
     // find fft peaks for psi_pm orders
     uz_find_fft_peak_indices(order, PARAMETERID6PH_ELECTRICAL_N_ORDER, amplitudes, 5001U, indices_real);
     // calculate psi_pms

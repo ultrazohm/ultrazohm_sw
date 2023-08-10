@@ -345,7 +345,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if first (dq) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x1)){
-			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
 			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
@@ -355,7 +355,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if second (xy) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x2)){
-			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_2, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}else{
 			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}   
@@ -363,7 +363,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if third (zero) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x4)){
-			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
 			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
@@ -454,13 +454,10 @@ void uz_ParameterID_6ph_init_controllers(uz_ParameterID_Data_t* Data, struct uz_
 	Data->speed_instance = uz_SpeedControl_init(speed_config);
 }
 
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_IIR_Filter_config config){
-	Data->filter_1 = uz_signals_IIR_Filter_init(config);
-	Data->filter_2 = uz_signals_IIR_Filter_init(config);
-	Data->filter_3 = uz_signals_IIR_Filter_init(config);
-	Data->filter_4 = uz_signals_IIR_Filter_init(config);
-	Data->filter_5 = uz_signals_IIR_Filter_init(config);
-	Data->filter_6 = uz_signals_IIR_Filter_init(config);
+void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config){
+	Data->filter_1 = uz_uz_dq_setpoint_filter_init(config);
+	Data->filter_2 = uz_uz_dq_setpoint_filter_init(config);
+	Data->filter_3 = uz_uz_dq_setpoint_filter_init(config);
 }
   
 
@@ -697,9 +694,6 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->filter_1 = NULL;
 	Data->filter_2 = NULL;
 	Data->filter_3 = NULL;
-	Data->filter_4 = NULL;
-	Data->filter_5 = NULL;
-	Data->filter_6 = NULL;
 }
 
 // Temp

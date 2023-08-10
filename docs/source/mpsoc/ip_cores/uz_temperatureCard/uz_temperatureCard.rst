@@ -7,7 +7,7 @@ Temperature Card IP-Core V1
 Detailed Description
 --------------------
 This IP-Core is designed for the LTC2983 temperature measurement system.
-With the ability to measure different sensor types and build-in data preparation this card extends the functionality of the Ultrazohm.
+With the ability to measure different sensor types and built-in data preparation, this card extends the functionality of the UltraZohm.
 The total amount of 60-Channels (40 on the frontpanel, 20 internal) could be wired directly on the card or in the plug for different kind of sensors.
 The documentation for the Temperature Card can be found under :ref:`temperature_card_v1`.
 
@@ -89,7 +89,7 @@ Operation
 
 How the driver could be used
 ----------------------------
-This library provide an easy way to use the UZ_Temperature_Card.
+This library provides an easy way to use the UZ_Temperature_Card.
 The Channels can be addressed by values from 0-59 and all needed address calculation will be performed internally.
 (Software Channel 0-19 equals Hardware Channel_A 0-19, Software Channel 20-39 equals Hardware Channel_B 0-19 and Software Channel 40-59 equals Hardware Channel_C 0-19).
 
@@ -187,9 +187,13 @@ To get the temperature value, a direct access to the Global_Data is needed.
    };
 
 
-Example
--------
-In this example the temperaturecard is used to read six winding temperatures from an electric machine which uses PT100 sensors.
+Examples
+--------
+Following, some example applications and respective configurations, hardware- and software-wise are presented.
+
+PT100
+-----
+In this example the temperature card is used to read six winding temperatures from an electric machine which uses PT100 sensors.
 Since the mean value is of interest and non-valid values (e.g. due to EMI) should not make the average unusable, a specific averaging function is used.
 
 .. code-block:: c
@@ -235,6 +239,58 @@ Since the mean value is of interest and non-valid values (e.g. due to EMI) shoul
    channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
    average = uz_TempCard_IF_average_temperature_for_valid(channel_A_data, 0U, 13U);
 
+
+Type K Thermocouple
+-------------------
+This example shows how to read Type K thermocouples using the temperature card in addition with an external connector box, designed for Type K thermocouples.
+
+PCB assembly variant
+********************
+The figure below shows the temperature adapter board ``Rev03`` with assembly variant ``All_Thermocouple``.
+The main characteristics of this assembly variant are highlighted. 
+In this variant, channel groups ``A`` to ``C`` are equipped for single-ended thermocouple measurement at ``Ch05`` to ``Ch20`` and each channel group has 
+an own cold junction compensation (CJC), using a ``PT100`` sensor, located in the external connector box. Together with a necessary sense resistor, 
+the CJC is connected to ``Ch1`` to ``Ch4`` of the LTC2983 of each channel group.
+
+.. _all_thermocouple_pcb:
+
+.. figure:: TypeK_Variant.png
+   :width: 800
+   :align: center
+
+   uz_d_temperaturecard_ltc2983, Rev03, assembly variant: All_Thermocouple
+
+External connector box
+**********************
+The external box shown below consists of mainly two components.
+ * The ``uz_per_thermocoupler_connector`` PCB
+ * The housing: ``Fischer Elektronik AKG 165 038 100 SA`` (with customized cutouts, see CAD data in the PCB repo of ``uz_per_thermocoupler_connector``)
+
+.. _external_box_front:
+
+.. figure:: typek_box_front.png
+   :width: 800
+   :align: center
+
+   Front view of the external box.
+
+The numbers above the TypeK connectors refer to the array entry number in the variable ``float temperature[20]`` in ``struct uz_temperaturecard_OneGroup``, that 
+holds the results of the 20 measurement channels of each channel group. Since ``Ch1`` to ``Ch4`` (respectively array entry 0 to 3) are used for the cold junction compensation 
+measurement, ``Ch5`` (array index 04) is the first channel number to be used for TypeK sensors.
+
+.. _external_box_back:
+
+.. figure:: typek_box_back.png
+   :width: 800
+   :align: center
+
+   Rear view of the external box  
+
+.. warning::For connecting the box to the temperature adapter board, only use Samtec cable ``MMSD-15-xxx-x-xx.xx-D-K-LDX``
+
+Software driver configuration
+*****************************
+C-code of the correct configuration.
 
 Designed by 
 -----------------------

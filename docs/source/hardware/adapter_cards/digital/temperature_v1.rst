@@ -7,7 +7,7 @@ Temperature Card V1
 Detailed Description
 -----------------------
 Extends the UltraZohm with a temperature measurement ability. This digital adapter card is based on the LTC2983 temperature measurement system.
-With the ability to measure different sensor types and build-in data preparation this card extends the functionality of the Ultrazohm.
+With the ability to measure different sensor types and built-in data preparation, this card extends the functionality of the UltraZohm.
 The total amount of 60-Channels (40 on the frontpanel, 20 internal) could be wired directly on the card or in the plug for different kind of sensors.
 
 .. image:: temperature_v1/Overview_tempcard.png

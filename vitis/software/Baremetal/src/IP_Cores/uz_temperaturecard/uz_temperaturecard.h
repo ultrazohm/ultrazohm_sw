@@ -276,11 +276,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //Defines for the lib
 /** Needed to calculate the Temperature */
-#define TEMP_CONVERSION_FACTOR      (float)0.000976563                         // 1/1024
+#define TEMP_CONVERSION_FACTOR      0.000976563f                         // 1/1024
 /** Temperature Channel for one LTC2983 */
-#define CHANNEL_COUNT     			    20                                 
+#define CHANNEL_COUNT     			    20U                                 
 /** Number of LTC2983 */
-#define GROUP_COUNT                 3                                   
+#define GROUP_COUNT                 3U                                   
 /** calculated Number of Temperature Channels */
 #define CHANNEL_TOTAL               CHANNEL_COUNT * GROUP_COUNT         
 /** Readback to check if IP-Core is available */

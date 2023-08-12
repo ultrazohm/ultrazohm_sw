@@ -1,0 +1,122 @@
+%implements "chartSource" "C"
+%function ChartConfig(block, system) void
+  %createrecord chartConfiguration { ...
+          executeAtInitialization  0 ...
+  }
+  %return chartConfiguration
+%endfunction
+%function ChartDataMap(block, system) void
+  %createrecord ChartDataElements {\
+    NumChartData   14 \
+    ChartDataDefaults {\
+      RecordType   "ChartData"\
+      Dimensions   []\
+      IsTestPoint  0\
+    }\
+    ChartData {\
+      Name         "is_c17_TwoMassID_ref"\
+      Description  "StateActiveChild"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "is_TwoMassID"\
+      Description  "StateActiveChild"\
+      SFName       ""\
+      Path         "TwoMassID"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "counter"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "counter"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "mean_count"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "mean_count"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "nextstate"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "nextstate"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "prbs_array"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "prbs_array"\
+      SrcLocation  ""\
+      Dimensions   [2048]\
+    }\
+    ChartData {\
+      Name         "prbs_count"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "prbs_count"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "iq_array"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "iq_array"\
+      SrcLocation  ""\
+      Dimensions   [1024]\
+    }\
+    ChartData {\
+      Name         "omega_array"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "omega_array"\
+      SrcLocation  ""\
+      Dimensions   [1024]\
+    }\
+    ChartData {\
+      Name         "measArray2"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "measArray2"\
+      SrcLocation  ""\
+      Dimensions   [2048]\
+    }\
+    ChartData {\
+      Name         "measArray1"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "measArray1"\
+      SrcLocation  ""\
+      Dimensions   [1024]\
+    }\
+    ChartData {\
+      Name         "J"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "J"\
+      SrcLocation  ""\
+      Dimensions   [2048,2]\
+    }\
+    ChartData {\
+      Name         "one_sec_transition_counter"\
+      Description  "ChartLocal"\
+      SFName       ""\
+      Path         "one_sec_transition_counter"\
+      SrcLocation  ""\
+    }\
+    ChartData {\
+      Name         "is_active_c17_TwoMassID_ref"\
+      Description  "StateIsActive"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  ""\
+    }\
+  }
+  %return ChartDataElements
+%endfunction

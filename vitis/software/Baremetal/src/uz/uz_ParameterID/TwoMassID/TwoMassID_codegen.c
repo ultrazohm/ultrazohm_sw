@@ -24,6 +24,9 @@
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <string.h>
 #include <math.h>
+#include "../lib/rt_nonfinite.h"
+#include "../lib/eye_6olvtp5i.h"
+
 
 /* Named constants for Chart: '<Root>/TwoMassID' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
@@ -32,7 +35,6 @@
 #define IN_TMS_calculate_state         ((uint8_T)3U)
 #define IN_TwoMassID                   ((uint8_T)1U)
 #define IN_Waiting                     ((uint8_T)2U)
-#define NumBitsPerChar                 8U
 
 static void TwoMassIDWelch_Init(DW_TwoMassIDWelch_TwoMassID_t *localDW);
 static void TwoMassIDWelch(const real32_T rtu_In2[2046],
@@ -55,226 +57,14 @@ static real32_T rt_powf_snf_m(real32_T u0, real32_T u1, DW_TwoMassID_t
   *rtTwoMassID_DW);
 static real32_T rt_hypotf_snf_m(real32_T u0, real32_T u1, DW_TwoMassID_t
   *rtTwoMassID_DW);
-static real32_T mean(const real32_T x[50], DW_TwoMassID_t *rtTwoMassID_DW);
-static void eye(real_T b_I[4]);
-static void inv(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
-                *rtTwoMassID_DW);
+static real32_T mean_SP4bG1Eh_e(const real32_T x[50], DW_TwoMassID_t
+  *rtTwoMassID_DW);
+static void inv_5o5JDhHO_i(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
+  *rtTwoMassID_DW);
 static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
                      real32_T d_start, uint16_T b_fmin, uint16_T b_fmax,
                      boolean_T UseLevMar, real32_T uu[5], DW_TwoMassID_t
                      *rtTwoMassID_DW);
-static real_T rtGetInf(void);
-static real32_T rtGetInfF(void);
-static real_T rtGetMinusInf(void);
-static real32_T rtGetMinusInfF(void);
-static real_T rtGetNaN(void);
-static real32_T rtGetNaNF(void);
-
-#define NOT_USING_NONFINITE_LITERALS   1
-
-extern real_T rtInf;
-extern real_T rtMinusInf;
-extern real_T rtNaN;
-extern real32_T rtInfF;
-extern real32_T rtMinusInfF;
-extern real32_T rtNaNF;
-static void rt_InitInfAndNaN(size_t realSize);
-static boolean_T rtIsInf(real_T value);
-static boolean_T rtIsInfF(real32_T value);
-static boolean_T rtIsNaN(real_T value);
-static boolean_T rtIsNaNF(real32_T value);
-typedef struct {
-  struct {
-    uint32_T wordH;
-    uint32_T wordL;
-  } words;
-} BigEndianIEEEDouble;
-
-typedef struct {
-  struct {
-    uint32_T wordL;
-    uint32_T wordH;
-  } words;
-} LittleEndianIEEEDouble;
-
-typedef struct {
-  union {
-    real32_T wordLreal;
-    uint32_T wordLuint;
-  } wordL;
-} IEEESingle;
-
-real_T rtInf;
-real_T rtMinusInf;
-real_T rtNaN;
-real32_T rtInfF;
-real32_T rtMinusInfF;
-real32_T rtNaNF;
-
-/*
- * Initialize rtInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T inf = 0.0;
-  if (bitsPerReal == 32U) {
-    inf = rtGetInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0x7FF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    inf = tmpVal.fltVal;
-  }
-
-  return inf;
-}
-
-/*
- * Initialize rtInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetInfF(void)
-{
-  IEEESingle infF;
-  infF.wordL.wordLuint = 0x7F800000U;
-  return infF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtMinusInf needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetMinusInf(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T minf = 0.0;
-  if (bitsPerReal == 32U) {
-    minf = rtGetMinusInfF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF00000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    minf = tmpVal.fltVal;
-  }
-
-  return minf;
-}
-
-/*
- * Initialize rtMinusInfF needed by the generated code.
- * Inf is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetMinusInfF(void)
-{
-  IEEESingle minfF;
-  minfF.wordL.wordLuint = 0xFF800000U;
-  return minfF.wordL.wordLreal;
-}
-
-/*
- * Initialize rtNaN needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real_T rtGetNaN(void)
-{
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  real_T nan = 0.0;
-  if (bitsPerReal == 32U) {
-    nan = rtGetNaNF();
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.bitVal.words.wordH = 0xFFF80000U;
-    tmpVal.bitVal.words.wordL = 0x00000000U;
-    nan = tmpVal.fltVal;
-  }
-
-  return nan;
-}
-
-/*
- * Initialize rtNaNF needed by the generated code.
- * NaN is initialized as non-signaling. Assumes IEEE.
- */
-static real32_T rtGetNaNF(void)
-{
-  IEEESingle nanF = { { 0.0F } };
-
-  nanF.wordL.wordLuint = 0xFFC00000U;
-  return nanF.wordL.wordLreal;
-}
-
-/*
- * Initialize the rtInf, rtMinusInf, and rtNaN needed by the
- * generated code. NaN is initialized as non-signaling. Assumes IEEE.
- */
-static void rt_InitInfAndNaN(size_t realSize)
-{
-  (void) (realSize);
-  rtNaN = rtGetNaN();
-  rtNaNF = rtGetNaNF();
-  rtInf = rtGetInf();
-  rtInfF = rtGetInfF();
-  rtMinusInf = rtGetMinusInf();
-  rtMinusInfF = rtGetMinusInfF();
-}
-
-/* Test if value is infinite */
-static boolean_T rtIsInf(real_T value)
-{
-  return (boolean_T)((value==rtInf || value==rtMinusInf) ? 1U : 0U);
-}
-
-/* Test if single-precision value is infinite */
-static boolean_T rtIsInfF(real32_T value)
-{
-  return (boolean_T)(((value)==rtInfF || (value)==rtMinusInfF) ? 1U : 0U);
-}
-
-/* Test if value is not a number */
-static boolean_T rtIsNaN(real_T value)
-{
-  boolean_T result = (boolean_T) 0;
-  size_t bitsPerReal = sizeof(real_T) * (NumBitsPerChar);
-  if (bitsPerReal == 32U) {
-    result = rtIsNaNF((real32_T)value);
-  } else {
-    union {
-      LittleEndianIEEEDouble bitVal;
-      real_T fltVal;
-    } tmpVal;
-
-    tmpVal.fltVal = value;
-    result = (boolean_T)((tmpVal.bitVal.words.wordH & 0x7FF00000) == 0x7FF00000 &&
-                         ( (tmpVal.bitVal.words.wordH & 0x000FFFFF) != 0 ||
-                          (tmpVal.bitVal.words.wordL != 0) ));
-  }
-
-  return result;
-}
-
-/* Test if single-precision value is not a number */
-static boolean_T rtIsNaNF(real32_T value)
-{
-  IEEESingle tmp;
-  tmp.wordL.wordLreal = value;
-  return (boolean_T)( (tmp.wordL.wordLuint & 0x7F800000) == 0x7F800000 &&
-                     (tmp.wordL.wordLuint & 0x007FFFFF) != 0 );
-}
-
 static void SystemCore_setup(dsp_simulink_SpectrumEstimato_t *obj)
 {
   int32_T i;
@@ -7503,7 +7293,8 @@ static real32_T rt_hypotf_snf_m(real32_T u0, real32_T u1, DW_TwoMassID_t
 }
 
 /* Function for Chart: '<Root>/TwoMassID' */
-static real32_T mean(const real32_T x[50], DW_TwoMassID_t *rtTwoMassID_DW)
+static real32_T mean_SP4bG1Eh_e(const real32_T x[50], DW_TwoMassID_t
+  *rtTwoMassID_DW)
 {
   rtTwoMassID_DW->b_x = x[0];
   for (rtTwoMassID_DW->k = 0; rtTwoMassID_DW->k < 49; rtTwoMassID_DW->k++) {
@@ -7514,17 +7305,8 @@ static real32_T mean(const real32_T x[50], DW_TwoMassID_t *rtTwoMassID_DW)
 }
 
 /* Function for Chart: '<Root>/TwoMassID' */
-static void eye(real_T b_I[4])
-{
-  b_I[1] = 0.0;
-  b_I[2] = 0.0;
-  b_I[0] = 1.0;
-  b_I[3] = 1.0;
-}
-
-/* Function for Chart: '<Root>/TwoMassID' */
-static void inv(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
-                *rtTwoMassID_DW)
+static void inv_5o5JDhHO_i(const real32_T x[4], real32_T y[4], DW_TwoMassID_t
+  *rtTwoMassID_DW)
 {
   if (fabsf(x[1]) > fabsf(x[0])) {
     rtTwoMassID_DW->r = x[0] / x[1];
@@ -8137,11 +7919,11 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
         /* '<S1>:647:157' Ustep(1:50); */
         /* '<S1>:647:158' Ustep(51:100); */
         /* '<S1>:647:159' Jac(1)=mean(Ustep(1:50)); */
-        rtTwoMassID_DW->Jac_idx_0 = mean(&rtTwoMassID_DW->Ustep[0],
+        rtTwoMassID_DW->Jac_idx_0 = mean_SP4bG1Eh_e(&rtTwoMassID_DW->Ustep[0],
           rtTwoMassID_DW);
 
         /* '<S1>:647:160' Jac(2)=mean(Ustep(51:100)); */
-        rtTwoMassID_DW->Jac_idx_1 = mean(&rtTwoMassID_DW->Ustep[50],
+        rtTwoMassID_DW->Jac_idx_1 = mean_SP4bG1Eh_e(&rtTwoMassID_DW->Ustep[50],
           rtTwoMassID_DW);
 
         /* '<S1>:647:161' d1=fehler0; */
@@ -8153,7 +7935,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
 
           /* t(d1,d1)           % Fehlerquadrat berechnen */
           /* '<S1>:647:166' H=single(eye(2,2)); */
-          eye(rtTwoMassID_DW->dv1);
+          eye_6olvtp5i(rtTwoMassID_DW->dv1);
           rtTwoMassID_DW->H[0] = (real32_T)rtTwoMassID_DW->dv1[0];
           rtTwoMassID_DW->H[1] = (real32_T)rtTwoMassID_DW->dv1[1];
           rtTwoMassID_DW->H[2] = (real32_T)rtTwoMassID_DW->dv1[2];
@@ -8213,7 +7995,7 @@ static void Min_LbMq(const real32_T Mag_G[1024], const real32_T f_G[1024],
       /* coursor(itt,6)= det(H_0); */
       /* Neue Paramterschaetzung berechnen */
       /* '<S1>:647:211' dp = single(-inv(H)*(Jac')*d1(:)); */
-      inv(rtTwoMassID_DW->H, rtTwoMassID_DW->fv, rtTwoMassID_DW);
+      inv_5o5JDhHO_i(rtTwoMassID_DW->H, rtTwoMassID_DW->fv, rtTwoMassID_DW);
       rtTwoMassID_DW->c_est_start_idx_0 = (-rtTwoMassID_DW->fv[0] *
         rtTwoMassID_DW->Jac_idx_0 + -rtTwoMassID_DW->fv[2] *
         rtTwoMassID_DW->Jac_idx_1) * rtTwoMassID_DW->fehler0;
@@ -9127,6 +8909,15 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_id_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_iq_out = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.Ki_n_out = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_xy_ref.d = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_xy_ref.q = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_xy_ref.zero = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.d = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.q = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.zero = 0.0F;
+  rtTwoMassID_Y->TwoMassID_FOC_output.resonant_subsystem = 0U;
+  rtTwoMassID_Y->TwoMassID_FOC_output.PI_subsystem = 0U;
+  rtTwoMassID_Y->TwoMassID_FOC_output.setpoint_filter = 0U;
 
   /* SystemInitialize for Outport: '<Root>/TwoMassID_state_output' */
   rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;
@@ -9147,5 +8938,4 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
  *
  * [EOF]
  */
-
 #endif

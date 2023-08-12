@@ -25,9 +25,14 @@
 #ifndef TwoMassID_COMMON_INCLUDES_
 #define TwoMassID_COMMON_INCLUDES_
 #include "../rtwtypes.h"
+#include "../lib/rtGetNaN.h"
+#include "../lib/rt_nonfinite.h"
+#include "../lib/rtGetInf.h"
 #endif                                 /* TwoMassID_COMMON_INCLUDES_ */
 
 #include <stddef.h>
+
+
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -111,6 +116,7 @@ struct tag_MVWU0C6TwghbPF0nrErUCF
 typedef struct tag_MVWU0C6TwghbPF0nrErUCF comm_PNSequence_0_TwoMassID_t;
 
 #endif                               /* typedef_comm_PNSequence_0_TwoMassID_t */
+
 
 /* Block signals and states (default storage) for system '<S1>/TwoMassID.Welch' */
 typedef struct {

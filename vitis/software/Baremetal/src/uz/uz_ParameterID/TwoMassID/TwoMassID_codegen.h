@@ -24,7 +24,7 @@
 #define RTW_HEADER_TwoMassID_h_
 #ifndef TwoMassID_COMMON_INCLUDES_
 #define TwoMassID_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #include "../lib/rtGetNaN.h"
 #include "../lib/rt_nonfinite.h"
 #include "../lib/rtGetInf.h"

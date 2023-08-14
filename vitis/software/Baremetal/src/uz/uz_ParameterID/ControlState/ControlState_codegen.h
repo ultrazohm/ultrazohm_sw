@@ -23,11 +23,11 @@
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #include <string.h>
 #ifndef ControlState_COMMON_INCLUDES_
 #define ControlState_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                                 /* ControlState_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */

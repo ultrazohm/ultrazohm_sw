@@ -25,7 +25,7 @@
 #include "../uz_ResonantController/uz_resonant_controller.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
-#include "rtwtypes.h"
+#include "lib/rtwtypes.h"
 #include <stdbool.h>
 
 

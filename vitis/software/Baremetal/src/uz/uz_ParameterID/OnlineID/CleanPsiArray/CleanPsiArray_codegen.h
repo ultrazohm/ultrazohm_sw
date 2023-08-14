@@ -23,12 +23,12 @@
 
 #ifndef RTW_HEADER_CleanPsiArray_h_
 #define RTW_HEADER_CleanPsiArray_h_
-#include "../../rtwtypes.h"
+#include "../../lib/rtwtypes.h"
 #include <math.h>
 #include <string.h>
 #ifndef CleanPsiArray_COMMON_INCLUDES_
 #define CleanPsiArray_COMMON_INCLUDES_
-#include "../../rtwtypes.h"
+#include "../../lib/rtwtypes.h"
 #endif                                 /* CleanPsiArray_COMMON_INCLUDES_ */
 
 /* Model Code Variants */

@@ -120,7 +120,6 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         {
         // schlechte zufallszahlengenerierung, aber für den start reichts
         //ind = rand() % self->length+1;
-        uz_matrix_get_column_vector_zero_based(obs,obsvec,i);
         uint32_t index = indizes[i];
         uz_dqn_get_from_buffer(self,reward,action,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);

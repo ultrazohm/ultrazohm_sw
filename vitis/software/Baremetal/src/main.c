@@ -50,6 +50,15 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
+
+//struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+//    .ptr_measured_rotor_angle = &Global_Data.av.theta_el_omega_el_D5_2.position,// pointer to the measured electric rotor angle (raw, not offset corrected)
+//    .ptr_offset_angle = &Global_Data.av.theta_offset_d2,                        // pointer to global variable holding the offset angle
+//    .ptr_actual_omega_el = &Global_Data.av.theta_el_omega_el_D5_2.velocity,     // pointer to actual electric rotor angular speed
+//    .ptr_actual_u_q_V = &Global_Data.av.v_q_d2,                                 // pointer to q-setpoint voltage
+//    .min_omega_el = 435.0f,                                                     // target electric rotor angular speed (USE OWN)
+//    .setpoint_current = 4.0f};                                                  // current setpoint to reach speed (USE OWN)
+
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -76,6 +85,9 @@ int main(void)
             Global_Data.objects.setpoint_ctrl_d1 = setpoint_ctrl_d1_init();
             Global_Data.objects.speed_ctrl_d1 = speed_ctrl_d1_init();
 			Global_Data.objects.current_ctrl_d2 = current_ctrl_d2_init();
+//			Global_Data.av.theta_offset_d1 = 0.3959959f; //0.3953958 0.3950959 0.3951959
+//			Global_Data.av.theta_offset_d2 = 0.3964f;
+//			Global_Data.objects.encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

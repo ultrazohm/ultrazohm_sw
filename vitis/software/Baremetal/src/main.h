@@ -54,7 +54,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 //----------------------------------------------------
 // FUNCTIONS

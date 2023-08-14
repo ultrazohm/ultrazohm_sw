@@ -11,6 +11,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -90,6 +91,13 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_D2_status;
 	float mean_temp_inv_d1;
 	float mean_temp_inv_d2;
+	float theta_offset_d1;
+	float theta_offset_d2;
+	float v_dummy;
+	struct uz_encoder_offset_estimation_status enc_off_status;
+	float enc_off_prog;
+	enum uz_encoder_offset_estimation_diagnose enc_off_stat;
+	float enc_off_est_status;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -129,6 +137,7 @@ typedef struct{
 	uz_SetPoint_t* setpoint_ctrl_d1;
 	uz_SpeedControl_t* speed_ctrl_d1;
 	uz_CurrentControl_t* current_ctrl_d2;
+	uz_encoder_offset_estimation_t* encoder_offset_obj;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -107,6 +107,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_prog]					= &data->av.enc_off_prog;
+	js_slowDataArray[JSSD_FLOAT_stat]					= &data->av.enc_off_est_status;
+	js_slowDataArray[JSSD_FLOAT_theta_offset_d2]		= &data->av.theta_offset_d2;
 
 	return Status;
 }

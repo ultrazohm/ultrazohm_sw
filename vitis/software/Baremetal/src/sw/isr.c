@@ -33,6 +33,7 @@
 #include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 #define		RAD_PER_S_2_RPM		30.0f/UZ_PIf
 #define 	CURRENT_2_SI_AMPERE	12.5f
@@ -49,6 +50,7 @@ XTmrCtr Timer_Interrupt;
 // Global variable structure
 extern DS_Data Global_Data;
 
+
 struct uz_3ph_abc_t i_abc_d1 = {0.0f};
 struct uz_3ph_abc_t i_abc_d2 = {0.0f};
 struct uz_3ph_dq_t i_dq_d1 = {0.0f};
@@ -59,6 +61,8 @@ struct uz_3ph_dq_t v_dq_ref_d1 = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_d2 = {0.0f};
 struct uz_DutyCycle_t dutycyc_d1 = {0.0f};
 struct uz_DutyCycle_t dutycyc_d2 = {0.0f};
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -115,13 +119,17 @@ void ISR_Control(void *data)
     // check for current limit
     if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
    		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
-    	uz_assert(NULL);
+    	ultrazohm_state_machine_set_stop(true);
+//    	uz_assert(NULL);
     }
 
-    // claculate mean temp values over all measured temps of each inverter
+    // calculate mean temp values over all measured temps of each inverter
     Global_Data.av.mean_temp_inv_d1 = (Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_D1_status.ChipTempDegreesCelsius_L3) * 0.1667;
     Global_Data.av.mean_temp_inv_d2 = (Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_D2_status.ChipTempDegreesCelsius_L3) * 0.1667;
 
+//    Global_Data.av.enc_off_status = uz_encoder_offset_estimation_get_status(Global_Data.objects.encoder_offset_obj);
+//    Global_Data.av.enc_off_prog = Global_Data.av.enc_off_status.progress;
+//    Global_Data.av.enc_off_est_status = (float)(Global_Data.av.enc_off_status.diagnose);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -154,6 +162,7 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
+
         // Start: Control algorithm - only if ultrazohm is in control state
     	// park transformation of measured currents
     	i_dq_d1 = uz_transformation_3ph_abc_to_dq(i_abc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
@@ -165,6 +174,13 @@ void ISR_Control(void *data)
     	// calculate reference torque from speed ctrl of d1
     	Global_Data.rasv.M_ref_d1 = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.n_ref_d1);
     	// calculate current setpoint for speed control of d1
+//    	if(!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_obj)){         // if not finished
+//    		i_dq_ref_d2 = uz_encoder_offset_estimation_step(Global_Data.objects.encoder_offset_obj);//receive current controller setpoint current from stepping function
+//    	}else{
+//    		i_dq_ref_d2.d = 0.0f;
+//    		i_dq_ref_d2.q = 0.0f;
+//    	}
+//    	uz_resolverIP_setZeroPosition(Global_Data.objects.uz_d_resolver_D5_2, Global_Data.av.theta_offset_d2);
     	i_dq_ref_d1 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_d1, Global_Data.av.theta_mech_omega_mech_D5_1.velocity, Global_Data.rasv.M_ref_d1, Global_Data.av.v_dc_d1, i_dq_d1);
     	// get reference currents from Global_Data
 //    	i_dq_ref_d1 = Global_Data.rasv.i_dq_ref_d1;
@@ -174,6 +190,8 @@ void ISR_Control(void *data)
     	v_dq_ref_d2 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_d2, i_dq_ref_d2, i_dq_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.velocity);
     	Global_Data.av.v_d_d1 = v_dq_ref_d1.d;
     	Global_Data.av.v_q_d1 = v_dq_ref_d1.q;
+    	Global_Data.av.v_d_d2 = v_dq_ref_d2.d;
+    	Global_Data.av.v_q_d2 = v_dq_ref_d2.q;
     	// calculate duty cycles from reference dq voltages
     	dutycyc_d1 = uz_Space_Vector_Modulation(v_dq_ref_d1, Global_Data.av.v_dc_d1, Global_Data.av.theta_el_omega_el_D5_1.position);
     	dutycyc_d2 = uz_Space_Vector_Modulation(v_dq_ref_d2, Global_Data.av.v_dc_d2, Global_Data.av.theta_el_omega_el_D5_2.position);

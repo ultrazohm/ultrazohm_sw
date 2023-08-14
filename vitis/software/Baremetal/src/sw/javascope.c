@@ -39,13 +39,14 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 #include "../uz/uz_ParameterID/uz_ParameterID.h"
 #include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 float para_state = 0.0f;
 float FluxMapCounter = 0.0f;
 float ArrayCounter = 0.0f;
-
+extern uz_temperaturecard_OneGroup channel_A_data;
 
 float values_milli[4];
 float index_array;
@@ -98,6 +99,26 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
+	js_ch_observable[JSO_Ch1_A_TypeK]	= &channel_A_data.temperature[0];
+	js_ch_observable[JSO_Ch2_A_TypeK]	= &channel_A_data.temperature[1];
+	js_ch_observable[JSO_Ch3_A_TypeK]	= &channel_A_data.temperature[2];
+	js_ch_observable[JSO_Ch4_A_TypeK]	= &channel_A_data.temperature[3];
+	js_ch_observable[JSO_Ch5_A_TypeK]	= &channel_A_data.temperature[4];
+	js_ch_observable[JSO_Ch6_A_TypeK]	= &channel_A_data.temperature[5];
+	js_ch_observable[JSO_Ch7_A_TypeK]	= &channel_A_data.temperature[6];
+	js_ch_observable[JSO_Ch8_A_TypeK]	= &channel_A_data.temperature[7];
+	js_ch_observable[JSO_Ch9_A_TypeK]	= &channel_A_data.temperature[8];
+	js_ch_observable[JSO_Ch10_A_TypeK]	= &channel_A_data.temperature[9];
+	js_ch_observable[JSO_Ch11_A_TypeK]	= &channel_A_data.temperature[10];
+	js_ch_observable[JSO_Ch12_A_TypeK]	= &channel_A_data.temperature[11];
+	js_ch_observable[JSO_Ch13_A_TypeK]	= &channel_A_data.temperature[12];
+	js_ch_observable[JSO_Ch14_A_TypeK]	= &channel_A_data.temperature[13];
+	js_ch_observable[JSO_Ch15_A_TypeK]	= &channel_A_data.temperature[14];
+	js_ch_observable[JSO_Ch16_A_TypeK]	= &channel_A_data.temperature[15];
+	js_ch_observable[JSO_Ch17_A_TypeK]	= &channel_A_data.temperature[16];
+	js_ch_observable[JSO_Ch18_A_TypeK]	= &channel_A_data.temperature[17];
+	js_ch_observable[JSO_Ch19_A_TypeK]	= &channel_A_data.temperature[18];
+	js_ch_observable[JSO_Ch20_A_TypeK]	= &channel_A_data.temperature[19];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

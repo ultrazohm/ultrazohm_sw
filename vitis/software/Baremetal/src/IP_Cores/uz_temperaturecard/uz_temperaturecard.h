@@ -166,6 +166,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // -- Sense Resistor --
 // sense resistor - value
 #define SENSE_RESISTOR_VALUE 0
+#define SENSE_RESISTOR_VALUE_1k (uint32_t) 0x3E8 << 10
 //-----------------------------------------------------------------------------------------------------------
 // -- Thermistor --
 // thermistor - rsense channel

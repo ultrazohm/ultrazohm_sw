@@ -79,15 +79,40 @@ struct uz_temperaturecard_config_t t_config = {
     .ip_clk_frequency_Hz = 100000000,
     .Sample_Freq = 100,
     .Configdata_A = {0},
-	.Configdata_A[4-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[6-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[8-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[10-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[12-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[14-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-	.Configdata_A[2-1] = 0xE80FA000,//(SENSOR_TYPE__SENSE_RESISTOR) + (SENSE_RESISTOR_VALUE),
+	.Configdata_A[1-1] = 0,
+	.Configdata_A[2-1] = SENSOR_TYPE__SENSE_RESISTOR | SENSE_RESISTOR_VALUE_1k,
+	//.Configdata_A[2-1] = 0xE80FA000,//1k sense resistor
+	.Configdata_A[3-1] = 0,
+	.Configdata_A[4-1] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+	//.Configdata_A[4-1] = 0b01100000100001010100000000000000, //PT100, 2-wire, no rotation, sharing, 100µA excitation, european, rsense channel is Ch2
+	.Configdata_A[5-1] = SENSOR_TYPE__TYPE_K_THERMOCOUPLE | TC_COLD_JUNCTION_CH__4 | TC_SINGLE_ENDED | TC_OPEN_CKT_DETECT__YES | TC_OPEN_CKT_DETECT_CURRENT__10UA,
+	//.Configdata_A[5-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[6-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[7-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[8-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[9-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[10-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[11-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[12-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[13-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[14-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[15-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[16-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[17-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[18-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[19-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+	.Configdata_A[20-1] = 0b00010001001100000000000000000000, //Type-K, CJC at Ch4, single-ended, open circuit detection on, detection current 10µA
+
+//	.Configdata_A[4-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+//	.Configdata_A[6-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+//	.Configdata_A[8-1]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+//	.Configdata_A[10-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+//	.Configdata_A[12-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+//	.Configdata_A[14-1] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
+
 	.Configdata_B = {0},
-	.Configdata_C = {0}};
+	.Configdata_C = {0}
+	};
 
 int main(void)
 {

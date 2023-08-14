@@ -32,7 +32,6 @@ void uz_ADC_currents(DS_Data* Data){
 	Data->av.currents_abc.a1 = (Data->aa.A1.me.ADC_A3 * 12.129f) + 0.10f;
 	Data->av.currents_abc.b1 = (Data->aa.A1.me.ADC_A2 * 11.338f) + 0.12f;
 	Data->av.currents_abc.c1 = (Data->aa.A1.me.ADC_A1 * 12.051f) - 0.07f;
-	Data->av.i_ZK1 = Data->aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
 	Data->av.currents_abc.a2 = (Data->aa.A2.me.ADC_A3 * 12.038f) - 0.03f;
 	Data->av.currents_abc.b2 = (Data->aa.A2.me.ADC_A2 * 12.115f) + 0.00f;
 	Data->av.currents_abc.c2 = (Data->aa.A2.me.ADC_A1 * 12.038f) - 0.00f;
@@ -58,6 +57,12 @@ void uz_ADC_voltages(DS_Data* Data){
 	Data->av.voltages_abc.b3 = (Data->aa.A3.me.ADC_B7 * 100.885f) + 469.95f;
 	Data->av.voltages_abc.c3 = (Data->aa.A3.me.ADC_B6 *  99.800f) + 463.05f;
 	Data->av.U_ZK = (Data->av.U_ZK1+Data->av.U_ZK2+Data->av.U_ZK3)/3.0f;
+}
+
+void uz_ADC_torque(DS_Data* Data){
+	// Range: +-50Nm @ +-5V
+	// ADC 16bit=0xFFFF=65.535
+	Data->av.torque_Nm = Data->aa.A1.me.ADC_B5 * 10.0f;
 }
 
 void uz_PWM_duty_freq_detection(DS_Data* Data){

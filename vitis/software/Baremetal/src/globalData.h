@@ -63,7 +63,6 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float U_ZK3; 	// DC-Link voltage 3 in V
 	float U_ZK; 	// Medium DC-Link voltage n V
-	float i_ZK1; 		// DC-Link voltage in V
 	float i_ZK2; 	// DC-Link voltage 2 in V
 	float i_ZK3; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -91,6 +90,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
 	float omega_el;
+	float torque_Nm;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

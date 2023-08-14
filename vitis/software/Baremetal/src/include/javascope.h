@@ -97,7 +97,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_dc_inv1,
 	JSSD_FLOAT_u_dc_inv2,
 	JSSD_FLOAT_u_dc_inv3,
-	JSSD_FLOAT_i_dc_inv1,
 	JSSD_FLOAT_i_dc_inv2,
 	JSSD_FLOAT_i_dc_inv3,
 	JSSD_ENDMARKER

@@ -1,0 +1,85 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"1.14946",
+   "Default View_TopLeft":"1562,993",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS
+#  -string -flagsOSRD
+preplace port S00_AXI -pg 1 -lvl 0 -x -40 -y 430 -defaultsOSRD
+preplace port AXI4_Lite -pg 1 -lvl 0 -x -40 -y 70 -defaultsOSRD
+preplace port AXI4_Lite1 -pg 1 -lvl 0 -x -40 -y 410 -defaultsOSRD
+preplace port AXI4_Lite2 -pg 1 -lvl 0 -x -40 -y 750 -defaultsOSRD
+preplace port S00_AXI1 -pg 1 -lvl 0 -x -40 -y 670 -defaultsOSRD
+preplace port s00_axi_aclk -pg 1 -lvl 0 -x -40 -y 20 -defaultsOSRD
+preplace port s00_axi_aresetn -pg 1 -lvl 0 -x -40 -y 40 -defaultsOSRD
+preplace port AXI4_Lite_ACLK -pg 1 -lvl 0 -x -40 -y 280 -defaultsOSRD
+preplace port AXI4_Lite_ARESETN -pg 1 -lvl 0 -x -40 -y 390 -defaultsOSRD
+preplace portBus Enable_Gate -pg 1 -lvl 0 -x -40 -y 790 -defaultsOSRD
+preplace portBus Carrier_triangular_max_min -pg 1 -lvl 6 -x 2360 -y 1300 -defaultsOSRD
+preplace portBus Gate_Signals_2L -pg 1 -lvl 6 -x 2360 -y 1190 -defaultsOSRD
+preplace portBus Carrier_triangular_min -pg 1 -lvl 6 -x 2360 -y 1080 -defaultsOSRD
+preplace portBus Carrier_triangular_max -pg 1 -lvl 6 -x 2360 -y 1060 -defaultsOSRD
+preplace portBus Gate_Signals_2L1 -pg 1 -lvl 6 -x 2360 -y 1430 -defaultsOSRD
+preplace inst ila_GateSignal -pg 1 -lvl 5 -x 2250 -y 770 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 1 -x 140 -y 130 -defaultsOSRD
+preplace inst util_vector_logic_0 -pg 1 -lvl 4 -x 1720 -y 1040 -defaultsOSRD
+preplace inst Counter_f_sw_V2_ip_0 -pg 1 -lvl 4 -x 1720 -y 510 -defaultsOSRD
+preplace inst xlconcat_0 -pg 1 -lvl 5 -x 2250 -y 1190 -defaultsOSRD
+preplace inst vio_Gates_2L -pg 1 -lvl 1 -x 140 -y 280 -defaultsOSRD
+preplace inst uz_interlockDeadtime_0 -pg 1 -lvl 3 -x 1270 -y 230 -defaultsOSRD
+preplace inst PWM_and_SS_control_V_1 -pg 1 -lvl 2 -x 810 -y 280 -defaultsOSRD
+preplace inst PWM_and_SS_control_V_0 -pg 1 -lvl 2 -x 810 -y 940 -defaultsOSRD
+preplace inst uz_interlockDeadtime_1 -pg 1 -lvl 3 -x 1270 -y 930 -defaultsOSRD
+preplace inst xlconcat_1 -pg 1 -lvl 5 -x 2250 -y 1430 -defaultsOSRD
+preplace netloc xlconstant_0_dout 1 1 1 330 130n
+preplace netloc InterLock_Module_0_S0_OUT 1 3 2 1520 280 2080
+preplace netloc InterLock_Module_0_S1_OUT 1 3 2 1510 310 2030
+preplace netloc InterLock_Module_0_S2_OUT 1 3 2 1500 290 2040
+preplace netloc InterLock_Module_0_S3_OUT 1 3 2 1480 670 1970
+preplace netloc InterLock_Module_0_S4_OUT 1 3 2 1470 720 1960
+preplace netloc InterLock_Module_0_S5_OUT 1 3 2 1490 300 1990
+preplace netloc xlslice_Enable_Inverter_Dout 1 0 5 -10J 740 NJ 740 NJ 740 NJ 740 2060J
+preplace netloc zynq_ultra_ps_e_0_pl_clk1 1 0 5 -10 400 320 80 1020 420 1530 350 2090J
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_0 1 1 4 340 20 NJ 20 NJ 20 2160
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_1 1 1 4 310 680 NJ 680 NJ 680 1980J
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_2 1 1 4 280 490 NJ 490 1450J 320 2110J
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_3 1 1 4 260 690 NJ 690 NJ 690 2000J
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_4 1 1 4 250 700 NJ 700 NJ 700 2020J
+preplace netloc FCS_SPMSM_Np1_i_V46_ip_0_ss_5 1 1 4 240 710 NJ 710 NJ 710 1960J
+preplace netloc PWM_and_SS_control_V_0_SS0_OUT 1 2 3 1080 40 NJ 40 2150J
+preplace netloc PWM_and_SS_control_V_0_SS1_OUT 1 2 3 1090 50 NJ 50 2130J
+preplace netloc PWM_and_SS_control_V_0_SS2_OUT 1 2 3 1040 30 NJ 30 2140J
+preplace netloc PWM_and_SS_control_V_0_SS3_OUT 1 2 3 1060 60 NJ 60 2120J
+preplace netloc PWM_and_SS_control_V_0_SS4_OUT 1 2 3 1070 70 NJ 70 2100J
+preplace netloc PWM_and_SS_control_V_0_SS5_OUT 1 2 3 1090 390 1420J 330 2070J
+preplace netloc PWM_and_SS_control_V_0_Triangular_Max 1 2 4 1050 430 1440 950 1950 1070 2340J
+preplace netloc PWM_and_SS_control_V_0_Triangular_Min 1 2 4 1040 440 1420 960 1940 1080 NJ
+preplace netloc AXI4_Lite_ARESETN_1 1 0 4 NJ 390 290 70 1030 460 1540
+preplace netloc xlconcat_0_dout 1 5 1 NJ 1190
+preplace netloc Counter_f_sw_V2_ip_0_switchNumb 1 4 1 2010 510n
+preplace netloc util_vector_logic_0_Res 1 4 2 2090 1300 NJ
+preplace netloc PWM_and_SS_control_V_1_PWM_enb_out 1 2 3 1070J 400 1460J 340 2050
+preplace netloc PWM_and_SS_control_V_1_count_out 1 1 2 350 500 1010
+preplace netloc PWM_and_SS_control_V_0_SS0_OUT1 1 2 1 1010 840n
+preplace netloc PWM_and_SS_control_V_0_SS1_OUT1 1 2 1 1000 860n
+preplace netloc PWM_and_SS_control_V_0_SS2_OUT1 1 2 1 990 880n
+preplace netloc PWM_and_SS_control_V_0_SS3_OUT1 1 2 1 980 900n
+preplace netloc PWM_and_SS_control_V_0_SS4_OUT1 1 2 1 970 920n
+preplace netloc PWM_and_SS_control_V_0_SS5_OUT1 1 2 1 960 940n
+preplace netloc xlconcat_1_dout 1 5 1 N 1430
+preplace netloc uz_interlockDeadtime_1_s0_out 1 3 2 1500 910 1930J
+preplace netloc uz_interlockDeadtime_1_s1_out 1 3 2 1430 920 1920J
+preplace netloc uz_interlockDeadtime_1_s2_out 1 3 2 1410 930 1910J
+preplace netloc uz_interlockDeadtime_1_s3_out 1 3 2 1400J 940 1900
+preplace netloc uz_interlockDeadtime_1_s4_out 1 3 2 1400J 1110 1880
+preplace netloc uz_interlockDeadtime_1_s5_out 1 3 2 NJ 970 1890
+preplace netloc S00_AXI_1 1 0 3 -20J 60 NJ 60 1050J
+preplace netloc Conn1 1 0 4 NJ 410 300J 480 1080J 410 NJ
+preplace netloc AXI4_Lite_1 1 0 2 NJ 70 240
+preplace netloc AXI4_Lite2_1 1 0 2 NJ 750 270
+preplace netloc S00_AXI1_1 1 0 3 NJ 670 NJ 670 1080
+levelinfo -pg 1 -40 140 810 1270 1720 2250 2360
+pagesize -pg 1 -db -bbox -sgen -230 -170 2620 1630
+"
+}
+

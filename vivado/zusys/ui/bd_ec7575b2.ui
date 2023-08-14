@@ -1,0 +1,171 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"0.744762",
+   "Default View_TopLeft":"1262,929",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS
+#  -string -flagsOSRD
+preplace port Dig_09_Ch5 -pg 1 -lvl 0 -x 0 -y 20 -defaultsOSRD
+preplace port Dig_10_Ch5 -pg 1 -lvl 0 -x 0 -y 100 -defaultsOSRD
+preplace port Dig_11_Ch5 -pg 1 -lvl 0 -x 0 -y 120 -defaultsOSRD
+preplace port Dig_16_Ch5 -pg 1 -lvl 0 -x 0 -y 160 -defaultsOSRD
+preplace port Dig_18_Ch5 -pg 1 -lvl 0 -x 0 -y 200 -defaultsOSRD
+preplace port Dig_20_Ch5 -pg 1 -lvl 0 -x 0 -y 240 -defaultsOSRD
+preplace port Dig_21_Ch5 -pg 1 -lvl 0 -x 0 -y 260 -defaultsOSRD
+preplace port Dig_22_Ch5 -pg 1 -lvl 0 -x 0 -y 280 -defaultsOSRD
+preplace port Dig_23_Ch5 -pg 1 -lvl 0 -x 0 -y 300 -defaultsOSRD
+preplace port Dig_24_Ch5 -pg 1 -lvl 0 -x 0 -y 320 -defaultsOSRD
+preplace port Dig_15_Ch5 -pg 1 -lvl 0 -x 0 -y 140 -defaultsOSRD
+preplace port Dig_17_Ch5 -pg 1 -lvl 0 -x 0 -y 180 -defaultsOSRD
+preplace port Dig_19_Ch5 -pg 1 -lvl 0 -x 0 -y 220 -defaultsOSRD
+preplace port Dig_13_Ch5 -pg 1 -lvl 0 -x 0 -y 40 -defaultsOSRD
+preplace port Dig_14_Ch5 -pg 1 -lvl 0 -x 0 -y 60 -defaultsOSRD
+preplace port Dig_12_Ch5 -pg 1 -lvl 0 -x 0 -y 80 -defaultsOSRD
+preplace portBus D1_OUT_29 -pg 1 -lvl 9 -x 3350 -y 2410 -defaultsOSRD
+preplace portBus D1_OUT_28 -pg 1 -lvl 9 -x 3350 -y 2510 -defaultsOSRD
+preplace portBus D1_OUT_27 -pg 1 -lvl 9 -x 3350 -y 2490 -defaultsOSRD
+preplace portBus D1_OUT_30 -pg 1 -lvl 9 -x 3350 -y 2650 -defaultsOSRD
+preplace portBus D2_OUT_28 -pg 1 -lvl 9 -x 3350 -y 2550 -defaultsOSRD
+preplace portBus D2_OUT_27 -pg 1 -lvl 9 -x 3350 -y 2530 -defaultsOSRD
+preplace portBus D2_OUT_29 -pg 1 -lvl 9 -x 3350 -y 2430 -defaultsOSRD
+preplace portBus D2_OUT_30 -pg 1 -lvl 9 -x 3350 -y 2670 -defaultsOSRD
+preplace portBus D2_OUT -pg 1 -lvl 9 -x 3350 -y 1670 -defaultsOSRD
+preplace portBus A2_IN -pg 1 -lvl 0 -x 0 -y 660 -defaultsOSRD
+preplace portBus A3_IN -pg 1 -lvl 0 -x 0 -y 2080 -defaultsOSRD
+preplace portBus A1_IN -pg 1 -lvl 0 -x 0 -y 440 -defaultsOSRD
+preplace portBus D3_OUT_28 -pg 1 -lvl 9 -x 3350 -y 2590 -defaultsOSRD
+preplace portBus D3_OUT_29 -pg 1 -lvl 9 -x 3350 -y 2450 -defaultsOSRD
+preplace portBus D3_OUT_30 -pg 1 -lvl 9 -x 3350 -y 2690 -defaultsOSRD
+preplace portBus D3_OUT -pg 1 -lvl 9 -x 3350 -y 2370 -defaultsOSRD
+preplace portBus D3_OUT_27 -pg 1 -lvl 9 -x 3350 -y 2570 -defaultsOSRD
+preplace portBus D4_OUT_30 -pg 1 -lvl 9 -x 3350 -y 2710 -defaultsOSRD
+preplace portBus D4_OUT -pg 1 -lvl 9 -x 3350 -y 1270 -defaultsOSRD
+preplace portBus D4_OUT_28 -pg 1 -lvl 9 -x 3350 -y 2630 -defaultsOSRD
+preplace portBus D4_OUT_27 -pg 1 -lvl 9 -x 3350 -y 2610 -defaultsOSRD
+preplace portBus D4_OUT_29 -pg 1 -lvl 9 -x 3350 -y 2470 -defaultsOSRD
+preplace portBus D1_OUT -pg 1 -lvl 9 -x 3350 -y 1120 -defaultsOSRD
+preplace portBus A3_OUT_CLK -pg 1 -lvl 9 -x 3350 -y 2310 -defaultsOSRD
+preplace portBus A2_OUT_CLK -pg 1 -lvl 9 -x 3350 -y 720 -defaultsOSRD
+preplace portBus A2_OUT_CNV_0 -pg 1 -lvl 9 -x 3350 -y 680 -defaultsOSRD
+preplace portBus A2_OUT_CNV_1 -pg 1 -lvl 9 -x 3350 -y 700 -defaultsOSRD
+preplace portBus A3_OUT_CNV_0 -pg 1 -lvl 9 -x 3350 -y 2270 -defaultsOSRD
+preplace portBus A3_OUT_CNV_1 -pg 1 -lvl 9 -x 3350 -y 2290 -defaultsOSRD
+preplace portBus A1_OUT_CNV_1 -pg 1 -lvl 9 -x 3350 -y 480 -defaultsOSRD
+preplace portBus A1_OUT_CNV_0 -pg 1 -lvl 9 -x 3350 -y 460 -defaultsOSRD
+preplace portBus A1_OUT_CLK -pg 1 -lvl 9 -x 3350 -y 500 -defaultsOSRD
+preplace inst proc_sys_reset_25MHz -pg 1 -lvl 5 -x 2170 -y 900 -defaultsOSRD
+preplace inst proc_sys_reset_10MHz -pg 1 -lvl 4 -x 1560 -y 1570 -defaultsOSRD
+preplace inst proc_sys_reset_50MHz -pg 1 -lvl 4 -x 1560 -y 560 -defaultsOSRD
+preplace inst proc_sys_reset_100MHz -pg 1 -lvl 1 -x 210 -y 920 -defaultsOSRD
+preplace inst xlslice_Enable_Inverter_Bit0 -pg 1 -lvl 4 -x 1560 -y 1430 -defaultsOSRD
+preplace inst xlslice_Enable_Gate_Bit1 -pg 1 -lvl 6 -x 2610 -y 2670 -defaultsOSRD
+preplace inst Gates -pg 1 -lvl 5 -x 2170 -y 1130 -defaultsOSRD
+preplace inst DataMover -pg 1 -lvl 2 -x 560 -y 1060 -defaultsOSRD
+preplace inst xlslice_Enable_AXI2TCM_Bit4 -pg 1 -lvl 1 -x 210 -y 1080 -defaultsOSRD
+preplace inst vio_D34_test -pg 1 -lvl 6 -x 2610 -y 2370 -defaultsOSRD
+preplace inst Enable_Gates_CPLD_High -pg 1 -lvl 6 -x 2610 -y 2470 -defaultsOSRD
+preplace inst Enable_Gates_CPLD_Low -pg 1 -lvl 6 -x 2610 -y 2570 -defaultsOSRD
+preplace inst axi_gpio_2 -pg 1 -lvl 5 -x 2170 -y 2430 -defaultsOSRD
+preplace inst clk_wiz_0 -pg 1 -lvl 3 -x 1020 -y 1260 -defaultsOSRD
+preplace inst ila_Encoder -pg 1 -lvl 6 -x 2610 -y 130 -defaultsOSRD
+preplace inst smartconnect_0 -pg 1 -lvl 4 -x 1560 -y 1160 -defaultsOSRD
+preplace inst zynq_ultra_ps_e_0 -pg 1 -lvl 3 -x 1020 -y 1090 -defaultsOSRD
+preplace inst Gates_3L -pg 1 -lvl 5 -x 2170 -y 1700 -defaultsOSRD
+preplace inst IncreEncoder_V24_ip_0 -pg 1 -lvl 5 -x 2170 -y 120 -defaultsOSRD
+preplace inst Interrupt -pg 1 -lvl 5 -x 2170 -y 1440 -defaultsOSRD
+preplace inst timer_uptime_64bit -pg 1 -lvl 5 -x 2170 -y 1870 -defaultsOSRD
+preplace inst uz_axi_testIP_0 -pg 1 -lvl 6 -x 2610 -y 2200 -defaultsOSRD
+preplace inst adc_debug -pg 1 -lvl 6 -x 2610 -y 420 -defaultsOSRD
+preplace inst A1_ADC_LTC2311 -pg 1 -lvl 5 -x 2170 -y 440 -defaultsOSRD
+preplace inst A2_ADC_LTC2311 -pg 1 -lvl 5 -x 2170 -y 660 -defaultsOSRD
+preplace inst A3_ADC_LTC2311 -pg 1 -lvl 5 -x 2170 -y 2080 -defaultsOSRD
+preplace inst smartconnect_1 -pg 1 -lvl 5 -x 2170 -y 2290 -defaultsOSRD
+preplace inst ila_puconv -pg 1 -lvl 8 -x 3230 -y -190 -defaultsOSRD
+preplace inst xlslice_0 -pg 1 -lvl 6 -x 2610 -y -340 -defaultsOSRD
+preplace inst xlslice_1 -pg 1 -lvl 6 -x 2610 -y -240 -defaultsOSRD
+preplace inst xlslice_2 -pg 1 -lvl 6 -x 2610 -y -140 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 6 -x 2610 -y 620 -defaultsOSRD
+preplace inst uz_pu_con_ip_0 -pg 1 -lvl 7 -x 2920 -y -370 -defaultsOSRD
+preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 6 380 1170 700J 1000 1320 1700 1890 320 2480 -20 2730
+preplace netloc zynq_ultra_ps_e_0_pl_resetn0 1 0 5 30 1250 NJ 1250 700 1340 1370 880 NJ
+preplace netloc zynq_ultra_ps_e_0_pl_clk3 1 3 2 1340 180 1940
+preplace netloc zynq_ultra_ps_e_0_pl_clk2 1 3 2 1380 1680 1920J
+preplace netloc axi_gpio_2_gpio_io_o 1 0 6 40 1430 NJ 1430 NJ 1430 1340 1670 1800J 1610 2450
+preplace netloc xlslice_Enable_Gate_Dout 1 6 3 NJ 2670 NJ 2670 3320
+preplace netloc xlslice_Enable_Inverter_Dout 1 4 1 1940 1160n
+preplace netloc Interrupt_muxed 1 4 2 1950 280 2420
+preplace netloc proc_sys_reset_50MHz_peripheral_aresetn 1 4 1 1740 80n
+preplace netloc xlconcat_0_dout 1 2 7 720 1690 NJ 1690 1900J 1280 2500 1270 NJ 1270 NJ 1270 NJ
+preplace netloc A_1 1 0 6 NJ 40 NJ 40 NJ 40 NJ 40 1760 -20 2380J
+preplace netloc B_1 1 0 6 NJ 60 NJ 60 NJ 60 NJ 60 1910 260 2390J
+preplace netloc I_1 1 0 6 NJ 80 NJ 80 NJ 80 NJ 80 1730 270 2400J
+preplace netloc proc_sys_reset_10MHz_peripheral_aresetn 1 4 1 1790 1140n
+preplace netloc clk_wiz_0_clk_25MHz 1 3 2 1350 860 NJ
+preplace netloc IncreEncoder_ip_0_theta_el 1 5 1 2380 90n
+preplace netloc Current_Valid_0_Dout 1 1 5 400 300 NJ 300 NJ 300 NJ 300 2410
+preplace netloc Enable_Gates_CPLD_Low_dout 1 6 3 NJ 2570 NJ 2570 3330
+preplace netloc Enable_Gates_CPLD_High_dout 1 6 3 NJ 2470 NJ 2470 3320
+preplace netloc xlslice_Enable_AXI2TCM_Bit4_Dout 1 1 1 NJ 1080
+preplace netloc vio_D2_test_probe_out0 1 6 3 NJ 2370 NJ 2370 N
+preplace netloc A2_IN_1 1 0 5 NJ 660 NJ 660 NJ 660 NJ 660 NJ
+preplace netloc Gates_3L_Gate_Signals_3L 1 5 4 NJ 1670 NJ 1670 NJ 1670 NJ
+preplace netloc IncreEncoder_V24_ip_0_omega 1 5 1 2360 70n
+preplace netloc IncreEncoder_V24_ip_0_position 1 5 1 2370 110n
+preplace netloc IncreEncoder_V24_ip_0_OverSamplFactor 1 5 1 2410 170n
+preplace netloc Gates_dout_0 1 5 4 N 1120 NJ 1120 NJ 1120 NJ
+preplace netloc Gates_Carrier_triangular_max_min 1 4 2 1980 1250 2390
+preplace netloc Gates_Carrier_triangular_min1 1 4 2 1960 1000 2430
+preplace netloc Gates_Carrier_triangular_max1 1 4 2 1970 1270 2360
+preplace netloc Gates_3L_Interrupt_Start_Center 1 4 2 1960 1590 2390
+preplace netloc Gates_3L_Interrupt_Start 1 4 2 1970 1600 2360
+preplace netloc Gates_3L_Interrupt_Center 1 4 2 1980 1580 2410
+preplace netloc zynq_ultra_ps_e_0_pl_clk1 1 0 8 20 1020 390 1180 710 1180 1330 1370 1910 790 2460 -40 2740 80 3100
+preplace netloc ADC_LTC2311_1_RAW_VALUE 1 1 5 420 310 NJ 310 NJ 310 NJ 310 2390
+preplace netloc ADC_LTC2311_1_SS_N 1 5 4 2440J 290 NJ 290 NJ 290 3320
+preplace netloc A1_IN_1 1 0 5 NJ 440 NJ 440 NJ 440 NJ 440 NJ
+preplace netloc ADC_LTC2311_0_RAW_VALUE 1 1 5 410 780 NJ 780 NJ 780 NJ 780 2380
+preplace netloc ADC_LTC2311_0_SCLK_DIFF 1 5 4 NJ 720 NJ 720 NJ 720 NJ
+preplace netloc ADC_LTC2311_0_SS_N 1 5 4 NJ 700 NJ 700 NJ 700 3320
+preplace netloc A3_IN_1 1 0 5 NJ 2080 NJ 2080 NJ 2080 NJ 2080 NJ
+preplace netloc ADC_LTC2311_2_SCLK_DIFF 1 5 4 2490J 2090 NJ 2090 NJ 2090 3330
+preplace netloc ADC_LTC2311_2_RAW_VALUE 1 1 5 420 1360 NJ 1360 NJ 1360 1930J 1290 2430
+preplace netloc ADC_LTC2311_2_SS_N 1 5 4 2500J 2100 NJ 2100 NJ 2100 3320
+preplace netloc A1_ADC_LTC2311_SCLK_DIFF 1 5 4 2430J 280 NJ 280 NJ 280 3330J
+preplace netloc A1_ADC_LTC2311_SAMPLE_COUNTER 1 5 1 2450 430n
+preplace netloc A1_ADC_LTC2311_SI_VALUE 1 5 1 2470 -340n
+preplace netloc A1_ADC_LTC2311_SI_VALID 1 5 3 2490 -30 2780 60 3070
+preplace netloc pu_valid_1 1 5 3 2500 -10 2720J 70 3140
+preplace netloc xlslice_0_Dout 1 6 1 2720 -680n
+preplace netloc xlslice_1_Dout 1 6 1 2750 -660n
+preplace netloc xlslice_2_Dout 1 6 1 2760 -640n
+preplace netloc uz_pu_con_ip_0_out0 1 7 1 3140 -690n
+preplace netloc uz_pu_con_ip_0_out1 1 7 1 3130 -670n
+preplace netloc uz_pu_con_ip_0_out2 1 7 1 3120 -650n
+preplace netloc uz_pu_con_ip_0_out3 1 7 1 3110 -630n
+preplace netloc uz_pu_con_ip_0_out4 1 7 1 3090 -610n
+preplace netloc uz_pu_con_ip_0_out5 1 7 1 3080 -590n
+preplace netloc uz_pu_con_ip_0_out6 1 7 1 3070 -570n
+preplace netloc uz_pu_con_ip_0_out7 1 7 1 3060 -550n
+preplace netloc xlconstant_0_dout 1 6 1 2770 -620n
+preplace netloc smartconnect_0_M05_AXI 1 4 1 1820 1120n
+preplace netloc smartconnect_1_M00_AXI 1 5 1 2500 2160n
+preplace netloc smartconnect_0_M10_AXI 1 4 1 1760 1220n
+preplace netloc AXI2TCM_0_M00_AXI 1 2 1 N 1060
+preplace netloc AXI4_Lite1_1 1 4 1 1870 1080n
+preplace netloc smartconnect_0_M06_AXI 1 4 1 1780 1140n
+preplace netloc zynq_ultra_ps_e_0_M_AXI_HPM0_LPD 1 3 1 1360 1070n
+preplace netloc smartconnect_0_M11_AXI 1 4 1 1830 1240n
+preplace netloc smartconnect_0_M01_AXI 1 4 1 1880 620n
+preplace netloc smartconnect_0_M07_AXI 1 4 1 1860 1060n
+preplace netloc smartconnect_0_M12_AXI 1 4 1 1810 1260n
+preplace netloc smartconnect_0_M09_AXI 1 4 1 1770 40n
+preplace netloc smartconnect_0_M02_AXI 1 4 1 1840 1060n
+preplace netloc smartconnect_0_M08_AXI 1 4 1 1880 1080n
+preplace netloc AXI4_Lite_1 1 4 1 1850 1100n
+preplace netloc smartconnect_0_M00_AXI 1 4 1 1840 400n
+preplace netloc smartconnect_0_M13_AXI 1 4 3 1750 -740 NJ -740 NJ
+levelinfo -pg 1 0 210 560 1020 1560 2170 2610 2920 3230 3350
+pagesize -pg 1 -db -bbox -sgen -130 -800 3540 2730
+"
+}
+0

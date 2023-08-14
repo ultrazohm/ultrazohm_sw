@@ -9,7 +9,7 @@
  *
  * @param config uz_PMSM_t_config struct
  * @param i_actual_Ampere uz_dq_t struct with the measured d- and q-currents in ampere
- * @param omega_el_rad_per_sec electrical rotational speed in 1/rad
+ * @param omega_el_rad_per_sec electrical rotational speed in rad/s
  * @return uz_dq_t outputs latest values
  */
 uz_3ph_dq_t uz_CurrentControl_linear_decoupling(uz_PMSM_t config, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec);

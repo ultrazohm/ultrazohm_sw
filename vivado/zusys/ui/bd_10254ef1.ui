@@ -1,0 +1,49 @@
+{
+   "ActiveEmotionalView":"Default View",
+   "Default View_ScaleFactor":"0.780583",
+   "Default View_TopLeft":"-165,24",
+   "ExpandedHierarchyInLayout":"",
+   "guistr":"# # String gsaved with Nlview 7.0r6  2020-01-29 bk=1.5227 VDI=41 GEI=36 GUI=JA:9.0 non-TLS
+#  -string -flagsOSRD
+preplace port S_AXI -pg 1 -lvl 0 -x -40 -y 50 -defaultsOSRD
+preplace port AXI4_Lite -pg 1 -lvl 0 -x -40 -y 280 -defaultsOSRD
+preplace port clk -pg 1 -lvl 0 -x -40 -y 300 -defaultsOSRD
+preplace port IPCORE_RESETN -pg 1 -lvl 0 -x -40 -y 320 -defaultsOSRD
+preplace port trigger_converesions -pg 1 -lvl 4 -x 1240 -y 940 -defaultsOSRD
+preplace portBus Interrupt0 -pg 1 -lvl 0 -x -40 -y 220 -defaultsOSRD
+preplace portBus Interrupt1 -pg 1 -lvl 0 -x -40 -y 440 -defaultsOSRD
+preplace portBus Interrupt2 -pg 1 -lvl 0 -x -40 -y 460 -defaultsOSRD
+preplace portBus Interrupt3 -pg 1 -lvl 0 -x -40 -y 480 -defaultsOSRD
+preplace portBus Interrupt4 -pg 1 -lvl 0 -x -40 -y 500 -defaultsOSRD
+preplace portBus Interrupt5 -pg 1 -lvl 0 -x -40 -y 520 -defaultsOSRD
+preplace portBus Interrupt_vector -pg 1 -lvl 4 -x 1240 -y 330 -defaultsOSRD
+preplace inst Concat_interrupts -pg 1 -lvl 3 -x 1120 -y 510 -defaultsOSRD
+preplace inst Trigger_f_cc -pg 1 -lvl 2 -x 820 -y 100 -defaultsOSRD
+preplace inst ila_0 -pg 1 -lvl 3 -x 1120 -y 780 -defaultsOSRD
+preplace inst adc_delay -pg 1 -lvl 1 -x 510 -y 920 -defaultsOSRD
+preplace inst delay_trigger_0 -pg 1 -lvl 2 -x 820 -y 920 -defaultsOSRD
+preplace inst vio_interrupt -pg 1 -lvl 2 -x 820 -y 580 -defaultsOSRD
+preplace inst mux_axi_ip_1 -pg 1 -lvl 1 -x 510 -y 330 -defaultsOSRD
+preplace netloc Trigger_f_cc_interrupt 1 2 1 990 130n
+preplace netloc Gates_Carrier_triangular_max_min 1 0 3 NJ 220 NJ 220 1010
+preplace netloc Gates_Carrier_triangular_min1 1 0 3 -10J 460 NJ 460 1020
+preplace netloc Gates_Carrier_triangular_max1 1 0 3 -20J 450 NJ 450 1000
+preplace netloc Gates_3L_Interrupt_Start_Center 1 0 3 NJ 480 NJ 480 980
+preplace netloc Gates_3L_Interrupt_Start 1 0 3 NJ 500 NJ 500 960
+preplace netloc Gates_3L_Interrupt_Center 1 0 3 NJ 520 NJ 520 950
+preplace netloc zynq_ultra_ps_e_0_pl_clk1 1 0 3 0 470 690 680 NJ
+preplace netloc proc_sys_reset_1_peripheral_aresetn 1 0 2 10 150 NJ
+preplace netloc delay_trigger_0_a_out 1 2 2 980 940 NJ
+preplace netloc adc_delay_probe_out0 1 1 1 NJ 920
+preplace netloc vio_0_probe_out0 1 2 1 NJ 580
+preplace netloc mux_axi_ip_1_interrupt_out_adc 1 1 2 670 840 N
+preplace netloc mux_axi_ip_1_select_out 1 1 2 NJ 350 970
+preplace netloc Concat_interrupts_dout 1 0 4 20 440 680J 380 NJ 380 1210
+preplace netloc mux_axi_ip_1_interrupt_out_isr 1 1 3 NJ 330 NJ 330 N
+preplace netloc smartconnect_0_M11_AXI 1 0 2 NJ 50 NJ
+preplace netloc AXI4_Lite_1 1 0 1 N 280
+levelinfo -pg 1 -40 510 820 1120 1240
+pagesize -pg 1 -db -bbox -sgen -210 -20 1430 1000
+"
+}
+

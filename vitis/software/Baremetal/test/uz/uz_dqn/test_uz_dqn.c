@@ -2,6 +2,7 @@
 
 #include "unity.h"
 #include "uz_dqn.h"
+#include "uz_dqn.c"
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
@@ -250,6 +251,17 @@ void test_calc_reward_with_penalty(void)
     float reward = calculate_reward_pendulum(ts, theta, position, velocity, pen);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, -4.48f, reward);
 }
+
+void test_dqn_copy_nn(void){
+    uz_dqn_t* dqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_nn_copy(dqn->critic,dqn->critic_target_net);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_2,tw_2,UZ_MATRIX_SIZE(cw_2));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_3,tw_3,UZ_MATRIX_SIZE(cw_3));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_1,tb_1,UZ_MATRIX_SIZE(cb_1));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_2,tb_2,UZ_MATRIX_SIZE(cb_2));
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_3,tb_3,UZ_MATRIX_SIZE(cb_3));
+}
 void test_calc_reward_without_penalty(void)
 {
     float ts = 0.1f;
@@ -261,4 +273,11 @@ void test_calc_reward_without_penalty(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, -1019.84f, reward);
 }
 
+void test_uz_dqn_1_step(void)
+{
+    uz_dqn_t* testdqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    
+    int32_t r = rand() % EXPERIENCE_BUFFER_LENGTH+1; 
+
+}
 #endif // TEST

@@ -27,5 +27,5 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,in
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
-
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, int32_t *action, uz_matrix_t *obs,uint32_t minibatchsize,uint32_t *indizes);
 #endif // UZ_DQN_H

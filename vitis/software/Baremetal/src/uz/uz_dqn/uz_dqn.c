@@ -104,6 +104,55 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,in
     self->head++;
 }
 
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize, uint32_t *indizes)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(reward);
+    uz_assert_not_NULL(action);
+    uz_assert_not_NULL(obs);
+    uz_assert_not_NULL(indizes);
+    //uz_assert(minibatchsize=1);
+    uz_assert(self->is_ready);
+    float vecobs[5] = {0.0f};
+    struct uz_matrix_t obsvec_matrix = {0};
+    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, UZ_MATRIX_SIZE(vecobs), 1, 5);
+    for (uint32_t i = 0; i < minibatchsize; i++)
+        {
+        // schlechte zufallszahlengenerierung, aber für den start reichts
+        //ind = rand() % self->length+1;
+        uz_matrix_get_column_vector_zero_based(obs,obsvec,i);
+        uint32_t index = indizes[i];
+        uz_dqn_get_from_buffer(self,reward,action,obsvec,index);
+        uz_matrix_copy_row_to_matrix(obsvec,obs,i);
+        reward++;
+        action++;
+        // obs++;
+    }
+}
+
+// float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, obs, obs+1, bool terminal){
+//     // berechne y_j
+//     float y_j = 0.0f;
+//     if(terminal==true)
+//     {
+//         y_j = &reward;
+//     }
+//     else{
+//         // berechne max_aQ(psi,a',theta)
+//         // sollte man sowohl die Aktion, als auch den index speichern? 
+//         // im nn object ist ja grad iwas enthalten nur nicht, der Aktionswert,
+//         // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
+//         // float action und uint action zu speichern, dass man beides hat
+//         // und evtl obs+1 und action(obs+1)
+//         uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+// 		uint32_t action = uz_matrix_get_max_index(output_nn); // index
+        
+//         y_j = &reward + gamma * uz_matrix_get_max_value(output_nn);
+//     }
+//     float loss = (float)pow((y_j - uz_matrix_get_max_value(output_nn))2.0f);
+//     return loss;
+// }
+
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
@@ -123,7 +172,7 @@ float calculate_reward_pendulum (float samplerate, float theta, float position, 
     {
         z = -1000.0f;
     }
-    float r = - 2.0f * samplerate * (100.0f * theta + position + 0.25f * pow(velocity,2.0f)) + z;
+    float r = -2.0f * samplerate * (100.0f * theta + position + 0.25f * (float)pow(velocity,2.0f)) + z;
     return r;
 }
 // helpers

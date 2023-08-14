@@ -9,6 +9,7 @@
 
 #define EXPERIENCE_BUFFER_LENGTH 3
 #define NUMBEROFOBS 5
+#define MINIBATCHSIZE 2
 
 float zerofloat [EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 int32_t zerouint [EXPERIENCE_BUFFER_LENGTH] = {0};
@@ -16,7 +17,7 @@ float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
 int32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,5,50};
 float observation[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f,12.5f,12.75f,12.85f,12.95f,100.0f,200.0f,300.0f,400.0f,500.0f};
 
-float reward_set[EXPERIENCE_BUFFER_LENGTH] = { 7.7f,-27.7f,300.0f};
+float reward_set[EXPERIENCE_BUFFER_LENGTH] = {7.7f,-27.7f,300.0f};
 int32_t action_set[EXPERIENCE_BUFFER_LENGTH] = {1,0,-1};
 float observation_set[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {1.1f,2.1f,5.1f,2.1f,0.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
 
@@ -85,7 +86,7 @@ void test_uz_dqn_write_to_buffer(void)
 
 }
 
-void test_uz_dqn_overwrite_values_to_buffer(void){
+void test_uz_dqn_overwrite_first_values(void){
     // float data
     float rew[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
     int32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,-1};
@@ -103,4 +104,30 @@ void test_uz_dqn_overwrite_values_to_buffer(void){
     TEST_ASSERT_EQUAL_UINT32_ARRAY(act, action, EXPERIENCE_BUFFER_LENGTH);
 }
 
+
+void test_uz_dqn_get_minibatch_from_buffer(void){
+    // float data
+    float rew2[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
+    int32_t act2[EXPERIENCE_BUFFER_LENGTH] = {777,0,-1};
+    float obbs2[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,2.0f,2.1f,5.1f,2.1f,13.0f,2.0f,-1.0f,5.1f,2.1f,3.0f};
+    struct uz_dqn_experience_replay_config confbuf = {
+        .length_of_buffer = UZ_MATRIX_SIZE(rew2),
+        .columns_of_observations = NUMBEROFOBS,
+        .reward = rew2,
+        .observations = obbs2,
+        .actions = act2
+    };
+    uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(confbuf,EXPERIENCE_BUFFER_LENGTH,0);
+    uint32_t testindizes[MINIBATCHSIZE] = {2,1};
+    uint32_t* ind = testindizes;
+    float getbackrew[MINIBATCHSIZE]= {0.0f};
+    float* r = getbackrew;
+    int32_t getbackact[MINIBATCHSIZE] = {0};
+    int32_t* a = getbackact;
+    float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
+    struct uz_matrix_t getbackobs_matrix = {0};
+    uz_matrix_t *getbackobs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
+    uz_dqn_get_minibatch_from_buffer(buffertesting,r,a,getbackobs,MINIBATCHSIZE,ind);
+    uint32_t check[MINIBATCHSIZE] = {0,0};
+}
 #endif // TEST

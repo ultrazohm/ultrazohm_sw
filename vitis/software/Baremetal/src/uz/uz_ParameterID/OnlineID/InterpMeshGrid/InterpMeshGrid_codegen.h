@@ -28,7 +28,7 @@
 #include <string.h>
 #ifndef InterpMeshGrid_COMMON_INCLUDES_
 #define InterpMeshGrid_COMMON_INCLUDES_
-#include "../../rtwtypes.h"
+#include "../../lib/rtwtypes.h"
 #endif                                 /* InterpMeshGrid_COMMON_INCLUDES_ */
 
 /* Model Code Variants */

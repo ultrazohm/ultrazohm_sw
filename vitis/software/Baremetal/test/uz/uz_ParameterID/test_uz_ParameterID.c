@@ -33,6 +33,11 @@
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
 #include "uz_space_vector_modulation.h"
+#include "rt_nonfinite.h"
+#include "eye_6olvtp5i.h"
+#include "rtGetNaN.h"
+#include "rt_nonfinite.h"
+#include "rtGetInf.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};

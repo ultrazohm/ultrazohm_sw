@@ -12,6 +12,8 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -115,6 +117,11 @@ typedef struct _actualValues_ {
 
 	float testsignal;
 
+	struct uz_resolver_pl_interface_outputs_t resolver_d4_1;
+
+	float theta_m_resolver;
+	float theta_el_resolver;
+	float n_rpm_resolver;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -152,6 +159,8 @@ typedef struct _referenceAndSetValues_ {
 	float t_measurement;			// Measurements time in s
 	float t_set_current;  			// Delay to set the current
 
+	float debug_duty_cyc;
+
 } referenceAndSetValues;
 
 typedef struct{
@@ -176,6 +185,8 @@ typedef struct{
 	uz_IIR_Filter_t* iir_u_w;
 
 	uz_axi_gpio_t* Output_instance;
+	uz_resolverIP_t* resolver_d4_1;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d4_1;
 
 }object_pointers_t;
 

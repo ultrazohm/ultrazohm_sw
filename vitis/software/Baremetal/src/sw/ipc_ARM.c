@@ -188,7 +188,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			data->rasv.n_ref_rpm = value;
+			data->rasv.debug_duty_cyc = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -196,59 +196,49 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			data->rasv.i_d_ref = value;
+
 			break;
 
 		case (Set_Send_Field_4):
-			data->rasv.i_q_ref = value;
+
 			break;
 
 		case (Set_Send_Field_5):
-//			data->av.kp_d = value;
+
 			break;
 
 		case (Set_Send_Field_6):
-//			data->av.ki_d = value;
+
 			break;
 
 		case (My_Button_1):
-			// All STOP Tristate
-			Global_Data.rasv.state_of_statemachine = 0U;
-			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.halfBridge1DutyCycle = data->rasv.debug_duty_cyc;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_2):
-	    	 // Manual Control (Current, Speed)
-	    	 // All Off: id = 0, iq = 0, n = 0
-	    	 Global_Data.rasv.state_of_statemachine = 1U;
-			 Global_Data.rasv.i_d_ref = 0.0f;
-			 Global_Data.rasv.i_q_ref = 0.0f;
-			 Global_Data.rasv.n_ref_rpm = 0.0f;
-	    	 ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = data->rasv.debug_duty_cyc;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_3):
-	    	 // Manual Control (Current, Speed)
-	    	 Global_Data.rasv.state_of_statemachine = 1U;
-	    	 ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = data->rasv.debug_duty_cyc;
 			break;
 
 		case (My_Button_4):
-			// Detect angle offset
-			Global_Data.rasv.state_of_statemachine = 2U;
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.0f;
+			data->rasv.halfBridge2DutyCycle = 0.0f;
+			data->rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_5):
-			// Torque Current Angle
-			Global_Data.rasv.state_of_statemachine = 3U;
-			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_6):
-			// Efficiency Map
-			Global_Data.rasv.state_of_statemachine = 4U;
-			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_7):
@@ -304,49 +294,49 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	 if (Global_Data.rasv.state_of_statemachine == 0U) {
-		js_status_BareToRTOS |= (1 << 4);
-	 } else {
+//	 if (Global_Data.rasv.state_of_statemachine == 0U) {
+//		js_status_BareToRTOS |= (1 << 4);
+//	 } else {
 		js_status_BareToRTOS &= ~(1 << 4);
-	 }
+//	 }
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);
-	if (Global_Data.rasv.state_of_statemachine == 1U){
-		js_status_BareToRTOS |= 1 << 5;
-	} else {
+//	if (Global_Data.rasv.state_of_statemachine == 1U){
+//		js_status_BareToRTOS |= 1 << 5;
+//	} else {
 		js_status_BareToRTOS &= ~(1 << 5);
-	}
+//	}
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
-	if (Global_Data.rasv.state_of_statemachine == 1U){
-		js_status_BareToRTOS |= 1 << 6;
-	} else {
+//	if (Global_Data.rasv.state_of_statemachine == 1U){
+//		js_status_BareToRTOS |= 1 << 6;
+//	} else {
 		js_status_BareToRTOS &= ~(1 << 6);
-	}
+//	}
 
 	/* Bit 7 - My_Button_4 */
-	if (Global_Data.rasv.state_of_statemachine == 2U){
-		js_status_BareToRTOS |= 1 << 7;
-	} else {
+//	if (Global_Data.rasv.state_of_statemachine == 2U){
+//		js_status_BareToRTOS |= 1 << 7;
+//	} else {
 		js_status_BareToRTOS &= ~(1 << 7);
-	}
+//	}
 
 	/* Bit 8 - My_Button_5 */
-	if (Global_Data.rasv.state_of_statemachine == 3U){
-		js_status_BareToRTOS |= 1 << 8;
-	} else {
+//	if (Global_Data.rasv.state_of_statemachine == 3U){
+//		js_status_BareToRTOS |= 1 << 8;
+//	} else {
 		js_status_BareToRTOS &= ~(1 << 8);
-	}
+//	}
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
-	if (Global_Data.rasv.state_of_statemachine == 4U){
-		js_status_BareToRTOS |= 1 << 9;
-	} else {
+//	if (Global_Data.rasv.state_of_statemachine == 4U){
+//		js_status_BareToRTOS |= 1 << 9;
+//	} else {
 		js_status_BareToRTOS &= ~(1 << 9);
-	}
+//	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

@@ -78,6 +78,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_theta_el_resolver,
+	JSSD_FLOAT_U_ZK,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_Rs_Offline,
@@ -93,7 +95,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
-	JSSD_FLOAT_U_ZK,
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
@@ -171,12 +172,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	set_Speed,
-	set_Torque,
-	set_I_d,
-	set_I_q,
-	kp_d,
-	ki_d,
+	duty_cyc_value,
+	-,
+	-,
+	-,
+	-,
+	-,
 	SND_FLD_ENDMARKER
 
 
@@ -184,12 +185,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
-	A,
-	A,
-	--,
-	--,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
 	SND_LABELS_ENDMARKER
 
 
@@ -202,7 +203,7 @@ enum gui_button_mapping {
 	i_d,
 	i_q,
 	U_ZK,
-	receive_field_6,
+	theta_el,
 	RCV_FLD_ENDMARKER
 
 
@@ -215,21 +216,21 @@ enum gui_button_mapping {
 	A,
 	A,
 	V,
-	V,
+	rad,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
 // Do not change the first (zero) and last (end) entries.
 
 MYBUTTONS_LABELS_ZEROVALUE=0,
-All OFF,
- Zero Current,
-Manual Control,
- Angle Offset ,
- Current Angle,
-Efficiency Map,
-MyButton7,
-MyButton8,
+	duty_a,
+	duty_b,
+	duty_c,
+ 	duty_off,
+ 	btn5,
+	btn6,
+	btn7,
+	btn8,
 MYBUTTONS_LABELS_ENDMARKER
 
 // Slow Data values that are displayed in the receive_fields top to bottom
@@ -242,7 +243,7 @@ MYBUTTONS_LABELS_ENDMARKER
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_U_ZK,
-	JSSD_FLOAT_Ld,
+	JSSD_FLOAT_theta_el_resolver,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

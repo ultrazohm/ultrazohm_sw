@@ -38,7 +38,7 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 
-int JavaScope_initialize(DS_Data* data)
+int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -58,7 +58,7 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Speed_rpm]				= &data->av.n_rpm_resolver;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
@@ -76,8 +76,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_iq_ref] 				= &data->rasv.i_q_ref;
 	js_ch_observable[JSO_id_ref] 				= &data->rasv.i_d_ref;
-	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_el_resolver;
+	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_m_resolver;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
 	js_ch_observable[JSO_ud_ref]				= &data->rasv.U_d_ref;
@@ -105,6 +105,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_U_ZK]					= &(data->av.U_ZK);
+	js_slowDataArray[JSSD_FLOAT_theta_el_resolver]		= &(data->av.theta_el_resolver);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

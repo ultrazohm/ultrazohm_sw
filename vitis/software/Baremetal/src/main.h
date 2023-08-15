@@ -62,6 +62,7 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
 
+#include "include/resolver.h"
 
 //----------------------------------------------------
 // FUNCTIONS

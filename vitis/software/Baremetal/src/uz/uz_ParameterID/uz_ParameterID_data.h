@@ -440,7 +440,9 @@ typedef struct uz_ParameterID_Data_t {
 	enum uz_ParaID_Control_selection ParaID_Control_Selection;/**< ParaID_Control_Selection \n
 													0 = No_Control \n
 													1 = Current_Control \n
-													2 = Speed_Control*/
+													2 = Speed_Control\n
+                          3 = Torque_Control*/
+  bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
   // controller instances
   uz_SetPoint_t* setpoint_instance; /**< instance of setpoint module */
   uz_SpeedControl_t* speed_instance; /**< instance of speed control */

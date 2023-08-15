@@ -487,7 +487,6 @@ void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_m
 {    
     uz_assert_not_NULL(source_matrix);
     uz_assert_not_NULL(destination_rowvec);
-    uz_assert(rowind);
     uz_assert(destination_rowvec->columns == destination_rowvec->length_of_data);
     uz_assert(destination_rowvec->rows == 1);
     for(uint32_t i=0U;i<destination_rowvec->length_of_data;i++){

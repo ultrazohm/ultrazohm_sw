@@ -76,21 +76,21 @@ int main(void)
             initialization_chain = init_CurrentControl_rsm;
             break;
         case init_CurrentControl_rsm:
-            struct uz_PMSM_t config_RSM = {
-                .Ld_Henry = 20.45e-03f,
-                .Lq_Henry = 1.48e-03f,
-                .Psi_PM_Vs = 0.0f};
+            struct uz_PMSM_t config_PMSM = {
+                .Ld_Henry = 3.00e-03f,
+                .Lq_Henry = 5.00e-03f,
+                .Psi_PM_Vs = 0.081f};
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 8.0f,
-                .Ki = 6.0f,
+                .Kp = 1.0f,
+                .Ki = 0.0f,
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 22.0f, // 20
-                .Ki = 6.5f,  // 5
+                .Kp = 1.0f, // 20
+                .Ki = 0.0f,  // 5
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
@@ -104,8 +104,8 @@ int main(void)
             };
 
             struct uz_CurrentControl_config config_CurrentControl = {
-                .decoupling_select = linear_decoupling,//no_decoupling, //linear_decoupling,
-                .config_PMSM = config_RSM,
+                .decoupling_select = no_decoupling,//no_decoupling, //linear_decoupling,
+                .config_PMSM = config_PMSM,
                 .config_id = config_id,
                 .config_iq = config_iq,
 				.max_modulation_index = 1.0f / sqrt(3.0f)};
@@ -151,8 +151,8 @@ int main(void)
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
-            Global_Data.av.polepairs = 2.0f;
+//            Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+            Global_Data.av.polepairs = 4.0f;
             Global_Data.av.kp_d = 0.0f; //40.0f;
 			Global_Data.av.ki_d = 0.0f; //35.0f;
             Global_Data.av.kp_q = 0.0f; //40.0f;

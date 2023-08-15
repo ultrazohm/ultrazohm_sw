@@ -11,7 +11,7 @@ struct uz_resolverIP_config_t resolver_config={
         .resolution = 16,
         .freq_clockin = CRYSTAL_FREQUENCY,
         .pole_pairs_machine = 4.0f,
-        .pole_pairs_resolver = 1.0f,
+        .pole_pairs_resolver = 4.0f,
         .zero_position_mechanical = 0.0f,
         .mode_after_init = POSITION_VELOCITY_MODE
      };
@@ -26,7 +26,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d4_1 = {
                .ip_clk_frequency_Hz = 100000000,
                .machine_polepairs = 4,
                .position_intmax = 65535,
-               .resolver_polepairs = 1,
+               .resolver_polepairs = 4,
                .theta_m_offset_rad = -0.0f
 };
 

@@ -81,6 +81,7 @@ void ISR_Control(void *data)
     uz_TempCard_Measurement(&Global_Data);
     uz_ADC_currents(&Global_Data);
     uz_ADC_voltages(&Global_Data);
+    uz_ADC_torque(&Global_Data);
     uz_calc_phase_voltage(&Global_Data, NEUTRAL_CFG);
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);

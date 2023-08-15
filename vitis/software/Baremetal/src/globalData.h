@@ -114,6 +114,7 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
 	float omega_el;
+	float torque_Nm;
 	uz_3ph_dq_t debug_pi_xy1;
 	uz_3ph_dq_t debug_pi_xy2;
 	uz_3ph_dq_t debug_pi_xy3;

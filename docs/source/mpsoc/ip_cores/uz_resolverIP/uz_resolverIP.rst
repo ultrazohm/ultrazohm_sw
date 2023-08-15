@@ -124,7 +124,7 @@ An example conversion triggered by sample_trigger with the IPCore in ``POSITION_
 
 Note that the conversion is triggered by a 1 tick long HIGH on sample_trigger. The next tick, AD2S1210_n_sample is pulled LOW for a defined time and the busy indicator is HIGH. Valid_m goes LOW. After a defined time, the data is available for SPI read out. SPI communication starts with AD2S1210_n_fsync going LOW and data being clocked out of the AD2S1210 on SPI_MISO with SPI_CLK. As soon as all data is transmitted, the new value is made available on position_out_m or velocity_out_m and valid_m goes HIGH.
 
-In ``POSITION_AND_VELOCITY_MODE``, the ResolverIP interface can also read out both position and velocity with one SPI interaction. An example conversion is shown below in figure :numref:`pic_Conversion`. Note that AD2S1210_n_sample goes to zero only once. This means that position and velocity values are both sampled by the AD2S1210 at the moment of tiggering via sample_trigger. Then both velocity and position registers of the AD2S1210 are read out with two 16 bit transmissions. Between the two transmissions the AD2S1210 pin A1 is switched to make velocity register entries available via the SPI Interface. Valid_m only goes high after both values are transmitted. 
+In ``POSITION_VELOCITY_MODE``, the ResolverIP interface can also read out both position and velocity with one SPI interaction. An example conversion is shown below in figure :numref:`pic_Conversion`. Note that AD2S1210_n_sample goes to zero only once. This means that position and velocity values are both sampled by the AD2S1210 at the moment of tiggering via sample_trigger. Then both velocity and position registers of the AD2S1210 are read out with two 16 bit transmissions. Between the two transmissions the AD2S1210 pin A1 is switched to make velocity register entries available via the SPI Interface. Valid_m only goes high after both values are transmitted. 
 
 .. _pic_Conversion:
 
@@ -132,13 +132,13 @@ In ``POSITION_AND_VELOCITY_MODE``, the ResolverIP interface can also read out bo
    :width: 600
    :align: center
 
-   Conversion in POSITION_AND_VELOCITY_MODE
+   Conversion in POSITION_VELOCITY_MODE
 
 .. _vitis_setup:
 
 .. warning:: 
   If you plan to only use the PL output ports of the resolverIP, then you have to set 
-  the ``mode_after_init`` in your config struct to e.g. ``POSITION_AND_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP Core will not update speed and position values.
+  the ``mode_after_init`` in your config struct to e.g. ``POSITION_VELOCITY_MODE``. Do not set it to ``CONFIG_MODE``, since then the IP Core will not update speed and position values.
 
 Vitis Setup
 ***********

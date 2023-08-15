@@ -213,13 +213,5 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
  */
 
 void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const input,uz_matrix_t const*const refout, uz_matrix_t const*const rowvec,uz_matrix_t const*const ref,float const learnrate,uint32_t minibatchsize, uint32_t numberofepochs);
-/**
- * @brief Calculates epsilon-greedy exploration value for epsilon-greedy exploration for Deep Q-Networks.
- * 
- * @param epsilon_start Float start value for epsilon, <1.0f
- * @param epsilon_min Float minimum value
- * @param epsilon_decay Float decay rate of epsilon_greedy
- * @return float
- */
-float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay);
+
 #endif // UZ_NN_H

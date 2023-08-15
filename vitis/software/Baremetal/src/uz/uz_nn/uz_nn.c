@@ -375,19 +375,4 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
     return self->number_of_outputs;
 }
 
-float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay)
-{
-uz_assert(epsilon_start<1.0f);
-uz_assert(epsilon_decay<1.0f);
-uz_assert(epsilon_start>0.0f);
-uz_assert(epsilon_decay>0.0f);
-uz_assert(epsilon_start>=epsilon_min);
-float epsilon = epsilon_start;
-epsilon = epsilon*(1.0f-epsilon_decay);
-if (epsilon < epsilon_min)
-{
-epsilon = epsilon_min;
-}
-return epsilon;
-}
 #endif

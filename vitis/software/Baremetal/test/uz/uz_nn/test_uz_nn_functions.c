@@ -11,15 +11,12 @@
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 #include <time.h>
 
-#define NUMBER_OF_EPSGREEDYSTEPS 1000
 #define NUMBER_OF_INPUTS 1
 #define NUMBER_OF_OUTPUTS 1
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 10
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 10
-float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
-#include "functions_weights/epsmat.csv"
-};
+
 // stuff for training and update
 // sumout
 float s_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
@@ -271,40 +268,4 @@ void test_uz_nn_set_gradient_matrix(void)
     }
 }
 
-void test_calc_epsilon_greedy_assert_start_greater_min(void)
-{
-float epsilon_start = 0.3f;
-float epsilon_min = 0.5f;
-float epsilon_decay = 0.09f;
-TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
-}
-
-void test_calc_epsilon_greedy_assert_decay(void)
-{
-float epsilon_start = 0.8f;
-float epsilon_min = 0.2f;
-float epsilon_decay = 1.5f;
-TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
-}
-
-void test_calc_epsilon_assert_negative(void)
-{
-float epsilon_start = 1.5f;
-float epsilon_min = 0.2f;
-float epsilon_decay = -1.5f;
-TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay))
-}
-
-void test_calc_epsilon_greedy_check_values(void)
-{
-float epsilon_start = 0.9f;
-float epsilon_min = 0.05f;
-float epsilon_decay = 0.002f;
-// Test if epsilon_min is calculated right
-for(uint32_t i=0U;i<NUMBER_OF_EPSGREEDYSTEPS;i++){
-            float epsilon = calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay);
-                        epsilon_start = epsilon;
-            TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
-}
-}
 #endif // TEST

@@ -9,6 +9,7 @@
 
 struct uz_dqn_experience_replay_t {
     float *reward;
+    float *qvalues;
     int32_t *action;
     uz_matrix_t *observations;
     struct uz_matrix_t observations_matrix;
@@ -57,6 +58,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     uz_dqn_experience_replay_t *self = uz_dqn_experience_replay_allocation();
     self->length = length;
     self->reward = buf_config.reward;
+    self->qvalues = buf_config.qvalues;
     self->action = buf_config.actions;
     self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
     self->head = headind; // vorübergehend, für test, dass auf beliebigen index nach init zugegriffen werden kann, kann man später noch entfernenS
@@ -83,14 +85,16 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert(self->is_ready);
     self->head = 0U;
     resetFloatArray(self->reward,self->length);
+    resetFloatArray(self->qvalues,self->length);
     resetintArray(self->action,self->length);
     uz_matrix_set_zero(self->observations);
 }
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,int32_t *actiondata, uz_matrix_t *obsdata){
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,int32_t *actiondata, uz_matrix_t *obsdata){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
     uz_assert_not_NULL(actiondata);
+    uz_assert_not_NULL(qdata);
     uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
     // check first if counter is full, set counter to zero again and write then, set is_full true
@@ -100,11 +104,12 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,in
     }
     self->reward[self->head]= *rewarddata;
     self->action[self->head] = *actiondata;
+    self->qvalues[self->head] = *qdata;
     uz_matrix_copy_row_to_matrix(obsdata,self->observations,self->head);
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -121,10 +126,11 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         // schlechte zufallszahlengenerierung, aber für den start reichts
         //ind = rand() % self->length+1;
         uint32_t index = indizes[i];
-        uz_dqn_get_from_buffer(self,reward,action,obsvec,index);
+        uz_dqn_get_from_buffer(self,reward,qvalue,action,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
         reward++;
         action++;
+        qvalue++;
     }
 }
 
@@ -151,7 +157,7 @@ float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_
     return loss;
 }
 
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
     uz_assert_not_NULL(actiondata);
@@ -159,6 +165,7 @@ void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata, 
     uz_assert(self->is_ready);
     uz_assert(index<self->length); // assert, wenn index größer als die länge des buffers
     *rewarddata = self->reward[index];
+    *QValue = self->qvalues[index];
     *actiondata = self->action[index];
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
 }
@@ -173,6 +180,23 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     float r = -2.0f * samplerate * (100.0f * theta + position + 0.25f * (float)pow(velocity,2.0f)) + z;
     return r;
 }
+
+float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay)
+{
+uz_assert(epsilon_start<1.0f);
+uz_assert(epsilon_decay<1.0f);
+uz_assert(epsilon_start>0.0f);
+uz_assert(epsilon_decay>0.0f);
+uz_assert(epsilon_start>=epsilon_min);
+float epsilon = epsilon_start;
+epsilon = epsilon*(1.0f-epsilon_decay);
+if (epsilon < epsilon_min)
+{
+epsilon = epsilon_min;
+}
+return epsilon;
+}
+
 // helpers
 void resetFloatArray(float *arr, uint32_t size) {
     for (uint32_t i = 0; i < size; i++) {

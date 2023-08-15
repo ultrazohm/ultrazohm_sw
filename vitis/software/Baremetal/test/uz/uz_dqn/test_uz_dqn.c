@@ -1,6 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "test_assert_with_exception.h"
 #include "uz_dqn.h"
 #include "uz_dqn.c"
 #include "uz_nn.h"
@@ -8,10 +9,16 @@
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
 #include <stdlib.h>
+//eps greedy test
+#define NUMBER_OF_EPSGREEDYSTEPS 1000
+float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
+#include "epsmat.csv"
+};
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 10
 #define MINIBATCHSIZE 5
 #define NUMBER_OF_EPOCHS 200
+#define TARGET_UPDATE_FREQUENCY 10
 // nn
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1
@@ -331,28 +338,13 @@ void test_uz_dqn_1_step(void)
 }
 void test_uz_dqn_train_episodes(void)
 {
+    enum target_update periodic;
     // Zuerst alles definieren und anlegen
     uz_dqn_t* testdqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     // random indizes for sample from buffer
-    uint32_t r[MINIBATCHSIZE] = {1,1,1}; 
+    uint32_t r[MINIBATCHSIZE] = {1,2,4,5,0}; 
     uint32_t *indizes = r;
-    struct uz_matrix_t input_matrix={0};
-    uz_matrix_t* input=uz_matrix_init(&input_matrix, x_array,UZ_MATRIX_SIZE(x_array),MINIBATCHSIZE,NUMBER_OF_INPUTS);
-    float X_data[NUMBER_OF_INPUTS] = {0.0f};
-    struct uz_matrix_t input_vec= {0};
-    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
-    for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
-    {
-    uint32_t mb_size = uz_matrix_get_number_of_rows(input);
-    for(uint32_t j=0; j<mb_size;j++){
-    uz_matrix_get_row_vector_zero_based(input,X,j);
-    uz_nn_ff(testdqn->critic,X);
-    uz_matrix_t* outputdqn=uz_nn_get_output_data(testdqn->critic);
-    uint32_t action = uz_matrix_get_max_value(outputdqn);
-    float reward = calculate_reward_pendulum(0.01f, 0.1f, 0.05f, 0.3f, false);
-    uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,X);
-    // jetzt sind zwei werte im buffer, sample minibatch mit zwei gleichen werten aus buffer
-    // arrays anlegen
+    // arrays anlegen für extrahieren aus dem Buffer
     float getbackrew[MINIBATCHSIZE]= {0.0f};
     float* rew = getbackrew;
     int32_t getbackact[MINIBATCHSIZE] = {0};
@@ -360,16 +352,73 @@ void test_uz_dqn_train_episodes(void)
     float getbackobbs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
+    struct uz_matrix_t input_matrix={0};
+    uz_matrix_t* input=uz_matrix_init(&input_matrix, x_array,UZ_MATRIX_SIZE(x_array),MINIBATCHSIZE,NUMBER_OF_INPUTS);
+    float X_data[NUMBER_OF_INPUTS] = {0.0f};
+    struct uz_matrix_t input_vec= {0};
+    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
+    for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+    {
+    for(uint32_t j=0; j<MINIBATCHSIZE;j++){
+    uz_matrix_get_row_vector_zero_based(input,X,j);
+    uz_nn_ff(testdqn->critic,X);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(testdqn->critic);
+    uint32_t action = uz_matrix_get_max_value(outputdqn);
+    float reward = calculate_reward_pendulum(0.01f, 0.1f, 0.05f, 0.3f, false);
+    uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,X);
+    // jetzt sind zwei werte im buffer, sample minibatch mit zwei gleichen werten aus buffer
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
     float gamma = 0.98f;
     float loss = calculate_loss_dqn(testdqn, &reward, &gamma, outputdqn, outputdqn, terminal);
-    uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);    
+    uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  
+    printf("loss nach Episode  %d ist = %.8f \n",(int)i, (double)loss);  
     }
     float lernrate = 0.001f;
-    uz_nn_gradient_descent_mini_batch(testdqn->critic,lernrate,mb_size);
+    uz_nn_gradient_descent_mini_batch(testdqn->critic,lernrate,MINIBATCHSIZE);
     uz_nn_set_gradients_zero(testdqn->critic);
+    // Targetupdate 
+    if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
+    uz_nn_copy(testdqn->critic,testdqn->critic_target_net);
+    }
+    // uz_nn_target_update(testdqn->critic,testdqn->critic_target_net, periodic , 0.05f, TARGET_UPDATE_FREQUENCY, uint32_t *external_counter);
     }
 }
 
+void test_calc_epsilon_greedy_assert_start_greater_min(void)
+{
+float epsilon_start = 0.3f;
+float epsilon_min = 0.5f;
+float epsilon_decay = 0.09f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
+}
+
+void test_calc_epsilon_greedy_assert_decay(void)
+{
+float epsilon_start = 0.8f;
+float epsilon_min = 0.2f;
+float epsilon_decay = 1.5f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
+}
+
+void test_calc_epsilon_assert_negative(void)
+{
+float epsilon_start = 1.5f;
+float epsilon_min = 0.2f;
+float epsilon_decay = -1.5f;
+TEST_ASSERT_FAIL_ASSERT(calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay));
+}
+
+void test_calc_epsilon_greedy_check_values(void)
+{
+float epsilon_start = 0.9f;
+float epsilon_min = 0.05f;
+float epsilon_decay = 0.002f;
+// Test if epsilon_min is calculated right
+for(uint32_t i=0U;i<NUMBER_OF_EPSGREEDYSTEPS;i++){
+float epsilon = calc_epsilon_greedy(epsilon_start, epsilon_min, epsilon_decay);
+epsilon_start = epsilon;
+TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
+}
+}
 #endif // TEST

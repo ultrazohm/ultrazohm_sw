@@ -58,34 +58,50 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float I_U; 			// Machine side current in A
+	float I_V; 			// Machine side current in A
+	float I_W; 			// Machine side current in A
+	float U_U; 			// Machine side voltage in V
+	float U_V; 			// Machine side voltage in V
+	float U_W; 			// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
+	float U_ZK2; 		// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
+	float mechanicalRotorSpeed_1; 		// in rpm
+	float mechanicalRotorSpeed_2; 		// in rpm
+	float mechanicalRotorSpeed_3; 		// in rpm
+	float mechanicalRotorSpeed_filtered_1; // in rpm
+	float mechanicalRotorSpeed_filtered_2; // in rpm
+	float mechanicalRotorSpeed_filtered_3; // in rpm
+	float mechanicalPosition; 			// in m
 	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
+	float mechanicalTorqueSensitive; 	// in Nm
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float omega_el;
+	float I_d_1;
+	float I_d_2;
+	float I_q_1;
+	float I_q_2;
+	float U_d_1;
+	float U_d_2;
+	float U_q_1;
+	float U_q_2;
+	float theta_elec_1;
+	float theta_elec_2;
+	float theta_elec_3;
+	float theta_mech_1;
+	float theta_mech_2;
+	float theta_offset_1; //in rad/s
+	float theta_offset_2;
+	float omega_el_1;
+	float omega_el_2;
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
+	float electricalRotorSpeed_1;
+	float electricalRotorSpeed_2;
+	float electricalRotorSpeed_3;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -114,6 +130,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

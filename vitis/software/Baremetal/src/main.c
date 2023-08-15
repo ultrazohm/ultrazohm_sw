@@ -41,30 +41,21 @@ DS_Data Global_Data = {
     }
 };
 
-// Declare Pointer for FOC
-uz_SpeedControl_t* SC_instance;
-uz_SetPoint_t* SP_instance;
-uz_CurrentControl_t* CC_instance;
+// Declare Pointer for FOC of PMSM 1
+uz_SpeedControl_t* SC_instance_1;
+uz_SetPoint_t* SP_instance_1;
+uz_CurrentControl_t* CC_instance_1;
+uz_encoder_offset_estimation_t* encoder_offset_obj_1;
+uz_wavegen_chirp* chirp_instance_1;
 
-// Declare Pointer for Chirp
-uz_wavegen_chirp* chirp_instance;
+// Declare Pointer for FOC of PMSM 2
+uz_SpeedControl_t* SC_instance_2;
+uz_SetPoint_t* SP_instance_2;
+uz_CurrentControl_t* CC_instance_2;
+uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 
-// Declare Pointer for Offset Estimation
-uz_encoder_offset_estimation_t* encoder_offset_obj;
-
-//// Configuration of Brose PMSM
-//struct uz_PMSM_t config_PMSM = {
-//   .R_ph_Ohm = 0.01664f,
-//   .Ld_Henry = 0.00003f,
-//   .Lq_Henry = 0.00005f,
-//   .Psi_PM_Vs = 0.007f,
-//   .polePairs = 5.0f,
-//   .J_kg_m_squared = 0.00001773f,
-//   .I_max_Ampere = 40.0f
-//};//these parameters are only needed if linear decoupling is selected
-
-// Configuration of Hoerner PMSM
-struct uz_PMSM_t config_PMSM = {
+// Configuration of PMSM 1 (Hoerner PMSM)
+struct uz_PMSM_t config_PMSM_1 = {
    .R_ph_Ohm = 0.249f,
    .Ld_Henry = 0.00044f,
    .Lq_Henry = 0.00245f,
@@ -72,6 +63,17 @@ struct uz_PMSM_t config_PMSM = {
    .polePairs = 4.0f,
    .J_kg_m_squared = 0.000084f,
    .I_max_Ampere = 10.0f
+};//these parameters are only needed if linear decoupling is selected
+
+// Configuration of PMSM 2 (Brose PMSM)
+struct uz_PMSM_t config_PMSM_2 = {
+   .R_ph_Ohm = 0.01664f,
+   .Ld_Henry = 0.00003f,
+   .Lq_Henry = 0.00005f,
+   .Psi_PM_Vs = 0.007f,
+   .polePairs = 5.0f,
+   .J_kg_m_squared = 0.00001773f,
+   .I_max_Ampere = 20.0f
 };//these parameters are only needed if linear decoupling is selected
 
 enum init_chain
@@ -91,67 +93,114 @@ int main(void)
 {
     int status = UZ_SUCCESS;
 
+    //--------- Configs for PMSM 1 (Pruefling) ---------//
     // Configuration of Speed Control
-    struct uz_SpeedControl_config SC_config = {
-       .config_controller.Kp = 0.005f,
-       .config_controller.Ki = 0.01f,
+    struct uz_SpeedControl_config SC_config_1 = {
+       .config_controller.Kp = 0.02f, //0.001f
+       .config_controller.Ki = 0.5f,  //0.05f
        .config_controller.samplingTime_sec = 0.0001f,
        .config_controller.upper_limit = 2.0f,
        .config_controller.lower_limit = -2.0f,
     };
-
     // Configuration of Set Point
-    struct uz_SetPoint_config SP_config = {
-       .config_PMSM = config_PMSM,
+    struct uz_SetPoint_config SP_config_1 = {
+       .config_PMSM = config_PMSM_1,
        .control_type = FOC,
        .motor_type = IPMSM,
        .is_field_weakening_enabled = false,
        .id_ref_Ampere = 0.0f,
  	   .relative_torque_tolerance = 0.1f
      };
-
     // Configuration of Current Control
-    struct uz_PI_Controller_config config_id = {
-       .Kp = 1.46f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-       .Ki = 830.0f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+    struct uz_PI_Controller_config config_id_1 = {
+       .Kp = 2.2f, // nach BO
+       .Ki = 1245.0f, //nach BO
        .samplingTime_sec = 0.0001f,
  	   .upper_limit = 15.0f,
   	   .lower_limit = -15.0f
     };
-    struct uz_PI_Controller_config config_iq = {
-       .Kp = 8.16f, // nach BO, 0.5f nach Nina
-       .Ki = 830.0f, // nach BO, 230.0f nach Nina
+    struct uz_PI_Controller_config config_iq_1 = {
+       .Kp = 12.25f, // nach BO
+       .Ki = 1245.0f, // nach BO
        .samplingTime_sec = 0.0001f,
   	   .upper_limit = 15.0f,
 	   .lower_limit = -15.0f
     };
-    struct uz_CurrentControl_config CC_config = {
+    struct uz_CurrentControl_config CC_config_1 = {
        .decoupling_select = linear_decoupling,
-       .config_PMSM = config_PMSM,
-       .config_id = config_id,
-       .config_iq = config_iq,
+       .config_PMSM = config_PMSM_1,
+       .config_id = config_id_1,
+       .config_iq = config_iq_1,
        .max_modulation_index = 1.0f / sqrtf(3.0f)
     };
-
-    // Configuration Wavegen Chirp
-    struct uz_wavegen_chirp_config config_chirp = {
-            .amplitude = 1.0f,
-            .start_frequency_Hz = 1.0f,
-            .end_frequency_Hz = 3000.0f,
-            .duration_sec = 4.0f,
-            .initial_delay_sec = 3.0f,
-            .offset = 0.0f
-    };
-
     // Encoder offset estimation
-    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
-        .ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
-        .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
-        .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
-        .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
-        .min_omega_el = 300.0f,                                                     // target electric rotor angular speed (USE OWN)
-        .setpoint_current = 3.0f 													// current setpoint to reach speed (USE OWN)
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg_1 = { 	// config struct
+      .ptr_measured_rotor_angle = &Global_Data.av.theta_elec_1,             // pointer to the measured electric rotor angle (raw, not offset corrected)
+      .ptr_offset_angle = &Global_Data.av.theta_offset_1,                   // pointer to global variable holding the offset angle
+      .ptr_actual_omega_el = &Global_Data.av.omega_el_1,                    // pointer to actual electric rotor angular speed
+      .ptr_actual_u_q_V = &Global_Data.av.U_q_1,                              // pointer to q-setpoint voltage
+      .min_omega_el = 300.0f,                                               // target electric rotor angular speed (USE OWN)
+      .setpoint_current = 3.0f 												// current setpoint to reach speed (USE OWN)
     };
+    // Configuration Wavegen Chirp
+    struct uz_wavegen_chirp_config config_chirp_1 = {
+      .amplitude = 1.0f,
+      .start_frequency_Hz = 1.0f,
+      .end_frequency_Hz = 3000.0f,
+      .duration_sec = 4.0f,
+      .initial_delay_sec = 3.0f,
+      .offset = 0.0f
+    };
+
+    //--------- Configs for PMSM 2 (Last) ---------//
+    // Configuration of Speed Control
+    struct uz_SpeedControl_config SC_config_2 = {
+       .config_controller.Kp = 0.01f,
+       .config_controller.Ki = 1.0f,
+       .config_controller.samplingTime_sec = 0.0001f,
+       .config_controller.upper_limit = 2.0f,
+       .config_controller.lower_limit = -2.0f,
+    };
+    // Configuration of Set Point
+    struct uz_SetPoint_config SP_config_2 = {
+       .config_PMSM = config_PMSM_2,
+       .control_type = FOC,
+       .motor_type = IPMSM,
+       .is_field_weakening_enabled = false,
+       .id_ref_Ampere = 0.0f,
+       .relative_torque_tolerance = 0.1f
+     };
+     // Configuration of Current Control
+     struct uz_PI_Controller_config config_id_2 = {
+        .Kp = 0.15f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+        .Ki = 83.2f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+        .samplingTime_sec = 0.0001f,
+        .upper_limit = 15.0f,
+        .lower_limit = -15.0f
+      };
+      struct uz_PI_Controller_config config_iq_2 = {
+        .Kp = 0.25f, // nach BO, 0.5f nach Nina
+        .Ki = 83.2f, // nach BO, 230.0f nach Nina
+        .samplingTime_sec = 0.0001f,
+        .upper_limit = 15.0f,
+	    .lower_limit = -15.0f
+      };
+      struct uz_CurrentControl_config CC_config_2 = {
+        .decoupling_select = linear_decoupling,
+        .config_PMSM = config_PMSM_2,
+        .config_id = config_id_2,
+        .config_iq = config_iq_2,
+        .max_modulation_index = 1.0f / sqrtf(3.0f)
+      };
+      // Encoder offset estimation
+      struct uz_encoder_offset_estimation_config encoder_offset_cfg_2 = {  	 // config struct
+        .ptr_measured_rotor_angle = &Global_Data.av.theta_elec_2,            // pointer to the measured electric rotor angle (raw, not offset corrected)
+        .ptr_offset_angle = &Global_Data.av.theta_offset_2,                  // pointer to global variable holding the offset angle
+        .ptr_actual_omega_el = &Global_Data.av.omega_el_2,                   // pointer to actual electric rotor angular speed
+        .ptr_actual_u_q_V = &Global_Data.av.U_q_2,                             // pointer to q-setpoint voltage
+        .min_omega_el = 300.0f,                                              // target electric rotor angular speed (USE OWN)
+        .setpoint_current = 3.0f 											 // current setpoint to reach speed (USE OWN)
+      };
 
     // Initialization Chain
     while (1)
@@ -188,17 +237,25 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            initialize_incremental_encoder_ipcore_on_D5_1(UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_1_MOTOR_POLE_PAIR_NUMBER);
+            initialize_incremental_encoder_ipcore_on_D5_2(UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_2_MOTOR_POLE_PAIR_NUMBER);
+            initialize_incremental_encoder_ipcore_on_D5_3(UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_3_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
             initialization_chain = init_foc;
             break;
         case init_foc:
-            SC_instance = uz_SpeedControl_init(SC_config);
-            SP_instance = uz_SetPoint_init(SP_config);
-            CC_instance = uz_CurrentControl_init(CC_config);
-           	chirp_instance = uz_wavegen_chirp_init(config_chirp);
-           	encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);     // init function
-           	Global_Data.av.theta_offset = 0.904f;                                             // inital offset (USE OWN)
+            SC_instance_1 = uz_SpeedControl_init(SC_config_1);
+            SP_instance_1 = uz_SetPoint_init(SP_config_1);
+            CC_instance_1 = uz_CurrentControl_init(CC_config_1);
+            SC_instance_2 = uz_SpeedControl_init(SC_config_2);
+            SP_instance_2 = uz_SetPoint_init(SP_config_2);
+            CC_instance_2 = uz_CurrentControl_init(CC_config_2);
+           	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
+           	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
+           	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
+           	Global_Data.av.theta_offset_1 = 0.904f;
+           	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;
            	break;
 	    case print_msg:

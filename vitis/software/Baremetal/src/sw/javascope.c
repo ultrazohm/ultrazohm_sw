@@ -34,14 +34,25 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-//Extern
-extern float n_ref_rpm;
-extern float theta_el_rad;
-extern float theta_el_offset;
-extern struct uz_3ph_dq_t i_dq_ref_Amps;
-extern struct uz_3ph_dq_t i_dq_Amps;
-extern struct uz_3ph_abc_t i_abc_Amps;
-extern struct uz_3ph_dq_t v_dq_ref_Volts;
+//Data of PMSM 1
+extern float n_ref_rpm_1;
+extern float theta_el_rad_1;
+extern float theta_el_offset_1;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
+extern struct uz_3ph_dq_t i_dq_Amps_1;
+extern struct uz_3ph_abc_t i_abc_Amps_1;
+extern struct uz_3ph_dq_t v_dq_ref_Volts_1;
+extern struct uz_3ph_abc_t v_abc_Volts_1;
+
+//Data of PMSM 2
+extern float n_ref_rpm_2;
+extern float theta_el_rad_2;
+extern float theta_el_offset_2;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
+extern struct uz_3ph_dq_t i_dq_Amps_2;
+extern struct uz_3ph_abc_t i_abc_Amps_2;
+extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
+extern struct uz_3ph_abc_t v_abc_Volts_2;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -67,28 +78,51 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm_filtered] = &data->av.mechanicalRotorSpeed_filtered;
-	js_ch_observable[JSO_Speed_rpm] 	= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]	= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &i_abc_Amps.a;
-	js_ch_observable[JSO_ib] 			= &i_abc_Amps.b;
-	js_ch_observable[JSO_ic] 			= &i_abc_Amps.c;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &i_dq_Amps.q;
-	js_ch_observable[JSO_id] 			= &i_dq_Amps.d;
-	js_ch_observable[JSO_uq_ref]		= &v_dq_ref_Volts.q;
-	js_ch_observable[JSO_ud_ref]		= &v_dq_ref_Volts.d;
-	js_ch_observable[JSO_iq_ref] 		= &i_dq_ref_Amps.q;
-	js_ch_observable[JSO_id_ref] 		= &i_dq_ref_Amps.d;
-	js_ch_observable[JSO_n_ref]			= &n_ref_rpm;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_Theta_el_cor] 	= &theta_el_rad;
-	js_ch_observable[JSO_Theta_el_off] 	= &theta_el_offset;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
-	js_ch_observable[JSO_uq]			= &data->av.U_q;
+	js_ch_observable[JSO_Speed_rpm_filtered_1] = &data->av.mechanicalRotorSpeed_filtered_1;
+	js_ch_observable[JSO_Speed_rpm_filtered_2] = &data->av.mechanicalRotorSpeed_filtered_2;
+	js_ch_observable[JSO_Speed_rpm_filtered_3] = &data->av.mechanicalRotorSpeed_filtered_3;
+	js_ch_observable[JSO_Speed_rpm_1] 	= &data->av.mechanicalRotorSpeed_1;
+	js_ch_observable[JSO_Speed_rpm_2] 	= &data->av.mechanicalRotorSpeed_2;
+	js_ch_observable[JSO_Speed_rpm_3] 	= &data->av.mechanicalRotorSpeed_3;
+	js_ch_observable[JSO_el_Speed_rpm_1]	= &data->av.electricalRotorSpeed_1;
+	js_ch_observable[JSO_el_Speed_rpm_2]	= &data->av.electricalRotorSpeed_2;
+	js_ch_observable[JSO_el_Speed_rpm_3]	= &data->av.electricalRotorSpeed_3;
+	js_ch_observable[JSO_ia_1] 			= &i_abc_Amps_1.a;
+	js_ch_observable[JSO_ib_1] 			= &i_abc_Amps_1.b;
+	js_ch_observable[JSO_ic_1] 			= &i_abc_Amps_1.c;
+	js_ch_observable[JSO_ia_2] 			= &i_abc_Amps_2.a;
+	js_ch_observable[JSO_ib_2] 			= &i_abc_Amps_2.b;
+	js_ch_observable[JSO_ic_2] 			= &i_abc_Amps_2.c;
+	js_ch_observable[JSO_ua_1] 			= &v_abc_Volts_1.a;
+	js_ch_observable[JSO_ub_1] 			= &v_abc_Volts_1.b;
+	js_ch_observable[JSO_uc_1] 			= &v_abc_Volts_1.c;
+	js_ch_observable[JSO_ua_2] 			= &v_abc_Volts_2.a;
+	js_ch_observable[JSO_ub_2] 			= &v_abc_Volts_2.b;
+	js_ch_observable[JSO_uc_2] 			= &v_abc_Volts_2.c;
+	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
+	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
+	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
+	js_ch_observable[JSO_id_2] 			= &i_dq_Amps_2.d;
+	js_ch_observable[JSO_uq_ref_1]		= &v_dq_ref_Volts_1.q;
+	js_ch_observable[JSO_ud_ref_1]		= &v_dq_ref_Volts_1.d;
+	js_ch_observable[JSO_uq_ref_2]		= &v_dq_ref_Volts_2.q;
+	js_ch_observable[JSO_ud_ref_2]		= &v_dq_ref_Volts_2.d;
+	js_ch_observable[JSO_iq_ref_1] 		= &i_dq_ref_Amps_1.q;
+	js_ch_observable[JSO_id_ref_1] 		= &i_dq_ref_Amps_1.d;
+	js_ch_observable[JSO_iq_ref_2] 		= &i_dq_ref_Amps_2.q;
+	js_ch_observable[JSO_id_ref_2] 		= &i_dq_ref_Amps_2.d;
+	js_ch_observable[JSO_n_ref_1]		= &n_ref_rpm_1;
+	js_ch_observable[JSO_n_ref_2]		= &n_ref_rpm_2;
+	js_ch_observable[JSO_Theta_el_1] 	= &data->av.theta_elec_1;
+	js_ch_observable[JSO_Theta_el_2] 	= &data->av.theta_elec_2;
+	js_ch_observable[JSO_Theta_el_3] 	= &data->av.theta_elec_3;
+	js_ch_observable[JSO_Theta_el_cor_1]= &theta_el_rad_1;
+	js_ch_observable[JSO_Theta_el_cor_2]= &theta_el_rad_2;
+	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_1;
+	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_2;
+	js_ch_observable[JSO_Theta_mech_1] 	= &data->av.theta_mech_1;
+	js_ch_observable[JSO_ud_1]			= &data->av.U_d_1;
+	js_ch_observable[JSO_uq_1]			= &data->av.U_q_1;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -99,22 +133,28 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &i_dq_Amps.d;
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &i_dq_Amps.q;
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
+	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &i_dq_Amps_1.d;
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &i_dq_Amps_1.q;
+	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_1);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_TempH1]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
-	js_slowDataArray[JSSD_FLOAT_TempL1]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempH2]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempL2]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L2);
-	js_slowDataArray[JSSD_FLOAT_TempH3]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H3);
-	js_slowDataArray[JSSD_FLOAT_TempL3]   				= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
+	js_slowDataArray[JSSD_FLOAT_TempH1_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_TempL1_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempH2_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempL2_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L2);
+	js_slowDataArray[JSSD_FLOAT_TempH3_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H3);
+	js_slowDataArray[JSSD_FLOAT_TempL3_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
+	js_slowDataArray[JSSD_FLOAT_TempH1_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1);
+	js_slowDataArray[JSSD_FLOAT_TempL1_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempH2_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H2);
+	js_slowDataArray[JSSD_FLOAT_TempL2_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L2);
+	js_slowDataArray[JSSD_FLOAT_TempH3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H3);
+	js_slowDataArray[JSSD_FLOAT_TempL3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
 
 	return Status;
 }

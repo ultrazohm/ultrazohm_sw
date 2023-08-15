@@ -306,7 +306,7 @@ void test_uz_dqn_1_step(void)
     uz_nn_ff(testdqn->critic,input);
     uz_matrix_t* outputdqn=uz_nn_get_output_data(testdqn->critic);
     uint32_t action = uz_matrix_get_max_value(outputdqn);
-    float reward = calculate_reward_pendulum(0.01f, 0.9f, 0.05f, 0.3, true);
+    float reward = calculate_reward_pendulum(0.01f, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
@@ -327,4 +327,6 @@ void test_uz_dqn_1_step(void)
     float lernrate = 0.0001f;
     uz_nn_gradient_descent(testdqn->critic,lernrate);
 }
+
+
 #endif // TEST

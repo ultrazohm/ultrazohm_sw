@@ -252,7 +252,7 @@ void test_calc_reward_with_penalty(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, -4.48f, reward);
 }
 
-void test_dqn_copy_nn(void){
+void test_uz_dqn_copy_nn(void){
     uz_dqn_t* dqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     uz_nn_copy(dqn->critic,dqn->critic_target_net);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
@@ -272,7 +272,31 @@ void test_calc_reward_without_penalty(void)
     float reward = calculate_reward_pendulum(ts, theta, position, velocity, pen);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, -1019.84f, reward);
 }
+ void test_uz_dqn_calc_loss_terminal(void)
+ {
+    uz_dqn_t* dqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    float reward = 2.0f;
+    float gamma = 0.98f;
+    float outputtnndata[5] = {1.1f,2.1f,5.1f,2.1f,0.0f};
+    struct uz_matrix_t output_matrix = {0};
+    uz_matrix_t *output_nn = uz_matrix_init(&output_matrix, outputtnndata, UZ_MATRIX_SIZE(outputtnndata), 1, 5);
+    bool terminal = false;
+    float loss = calculate_loss_dqn(dqn, &reward, &gamma, output_nn, output_nn, terminal);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 3.6024f, loss);
+ }
 
+  void test_uz_dqn_calc_loss_non_terminal(void)
+ {
+    uz_dqn_t* dqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    float reward = 2.0f;
+    float gamma = 0.98f;
+    float outputtnndata[5] = {1.1f,2.1f,5.1f,2.1f,0.0f};
+    struct uz_matrix_t output_matrix = {0};
+    uz_matrix_t *output_nn = uz_matrix_init(&output_matrix, outputtnndata, UZ_MATRIX_SIZE(outputtnndata), 1, 5);
+    bool terminal = true;
+    float loss = calculate_loss_dqn(dqn, &reward, &gamma, output_nn, output_nn, terminal);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 9.61f, loss);
+ }
 void test_uz_dqn_1_step(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 

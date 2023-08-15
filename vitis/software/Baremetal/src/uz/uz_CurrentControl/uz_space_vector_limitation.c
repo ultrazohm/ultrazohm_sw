@@ -77,7 +77,7 @@ uz_6ph_dq_t uz_6ph_Space_Vector_Limitation(uz_6ph_dq_t v_input_Volts, float V_dc
 	uz_6ph_dq_t v_output_Volts = {0};
 	float V_SV_max = V_dc_volts * max_modulation_index;
 	float V_SV_max_squared = V_SV_max * V_SV_max;
-	//because of geometric sum, if both subspaces are in the limit, max voltage per limitation equals V_SV_max * sqrt(2)
+	//because of geometric sum, if both subspaces are in the limit, max voltage per limitation equals V_SV_max / sqrt(2)
 	float V_SV_max_xy = V_SV_max * ONE_DIVIDED_BY_SQRT_TWO;
 	float V_SV_max_xy_squared = V_SV_max_xy * V_SV_max_xy;
 	float V_SV_abs_xy = sqrtf(v_input_Volts.x * v_input_Volts.x + v_input_Volts.y * v_input_Volts.y);
@@ -86,15 +86,14 @@ uz_6ph_dq_t uz_6ph_Space_Vector_Limitation(uz_6ph_dq_t v_input_Volts, float V_dc
 
 	//Limit xy first, with priority to the y-axis
 	if (V_SV_abs_xy > V_SV_max_xy){
-		if ( (fabsf(v_input_Volts.y) ) > (0.95f * V_SV_max) ) {
+		if ( (fabsf(v_input_Volts.y) ) > (0.95f * V_SV_max_xy) ) {
 			v_output_Volts.y = uz_signals_get_sign_of_value(v_input_Volts.y) * 0.95f * V_SV_max_xy;
-			v_output_Volts.x = uz_signals_get_sign_of_value(v_input_Volts.x) * sqrtf((V_SV_max_xy_squared) - (v_output_Volts.y * v_output_Volts.y));
-			ext_clamping_xy = true;
+			v_output_Volts.x = uz_signals_get_sign_of_value(v_input_Volts.x) * sqrtf((V_SV_max_xy_squared) - (v_output_Volts.y * v_output_Volts.y));			
 		} else {
 			v_output_Volts.y = v_input_Volts.y;
 			v_output_Volts.x = uz_signals_get_sign_of_value(v_input_Volts.x) * sqrtf((V_SV_max_xy_squared) - (v_output_Volts.y * v_output_Volts.y));
-			ext_clamping_xy = true;
 		}
+		ext_clamping_xy = true;
 	} else {
 		v_output_Volts.x = v_input_Volts.x;
 		v_output_Volts.y = v_input_Volts.y;	

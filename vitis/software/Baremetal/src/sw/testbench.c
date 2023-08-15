@@ -60,9 +60,9 @@ void uz_ADC_voltages(DS_Data* Data){
 }
 
 void uz_ADC_torque(DS_Data* Data){
-	// Range: +-50Nm @ +-5V
-	// ADC 16bit=0xFFFF=65.535
-	Data->av.torque_Nm = Data->aa.A1.me.ADC_B5 * 10.0f;
+	// short range: +-50Nm @ +-5V -> 10 Nm/V
+	// long range: +-200Nm @ +-5V -> 40 Nm/V
+	Data->av.torque_Nm = -1.0f*Data->aa.A1.me.ADC_B5 * 40.0f;
 }
 
 void uz_PWM_duty_freq_detection(DS_Data* Data){

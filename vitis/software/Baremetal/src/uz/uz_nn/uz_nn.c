@@ -93,7 +93,7 @@ void uz_nn_copy_smoothing(uz_nn_t* source, uz_nn_t* destination, float *targetsm
     }
 }
 
-void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update method, float *targetsmoothfact, uint32_t TargetUpdateFrequency, uint32_t *external_counter){
+void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update method, float *targetsmoothfact){
     uz_assert_not_NULL(critic);
     uz_assert_not_NULL(target);
     switch (method)
@@ -103,15 +103,11 @@ void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update me
         uz_nn_copy_smoothing(critic,target,targetsmoothfact);
         break;
     case periodic:
-        if (*external_counter % TargetUpdateFrequency == 0) {
             uz_nn_copy(critic,target);
-        }
         break;
     case periodic_smoothing:
         uz_assert_not_NULL(targetsmoothfact);
-        if (*external_counter % TargetUpdateFrequency == 0) {
-            uz_nn_copy_smoothing(critic,target,targetsmoothfact);
-        }
+        uz_nn_copy_smoothing(critic,target,targetsmoothfact);
         break;
     default:
         uz_assert(0);

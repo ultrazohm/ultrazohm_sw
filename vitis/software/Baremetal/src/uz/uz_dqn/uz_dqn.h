@@ -31,6 +31,7 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
 float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_t *obs, uz_matrix_t *obsplus1, bool terminal);
 void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
+
 /**
  * @brief Calculates epsilon-greedy exploration value for epsilon-greedy exploration for Deep Q-Networks.
  * 

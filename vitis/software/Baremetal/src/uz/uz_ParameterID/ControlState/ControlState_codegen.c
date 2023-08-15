@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 5.75
+ * Model version                  : 5.76
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Mon Aug 14 15:09:05 2023
+ * C/C++ source code generated on : Tue Aug 15 09:07:39 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warning (1), Errors (2)
+ * Validation result: Passed (12), Warning (1), Error (0)
  */
 
 #include "ControlState_codegen.h"

@@ -11,6 +11,7 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 3
 #define NUMBEROFOBS 2
+#define MINIBATCHSIZE 2
 // nn
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1
@@ -236,9 +237,6 @@ void tearDown(void)
 void test_uz_dqn_init(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
-    // easy random number
-    int32_t r = rand() % EXPERIENCE_BUFFER_LENGTH+1; 
-    //TEST_ASSERT_EQUAL_INT32(5,r);
 }
 
 void test_calc_reward_with_penalty(void)
@@ -300,8 +298,33 @@ void test_calc_reward_without_penalty(void)
 void test_uz_dqn_1_step(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
-    
-    int32_t r = rand() % EXPERIENCE_BUFFER_LENGTH+1; 
-
+    // random indizes for sample from buffer
+    uint32_t r[MINIBATCHSIZE] = {1,1,1}; 
+    uint32_t *indizes = r;
+    struct uz_matrix_t x_matrix={0};
+    uz_matrix_t* input=uz_matrix_init(&x_matrix,cx,2,1,NUMBER_OF_INPUTS);
+    uz_nn_ff(testdqn->critic,input);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(testdqn->critic);
+    uint32_t action = uz_matrix_get_max_value(outputdqn);
+    float reward = calculate_reward_pendulum(0.01f, 0.9f, 0.05f, 0.3, true);
+    uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
+    uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
+    uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&action,input);
+    // jetzt sind zwei werte im buffer, sample minibatch mit zwei gleichen werten aus buffer
+    // arrays anlegen
+    float getbackrew[MINIBATCHSIZE]= {0.0f};
+    float* rew = getbackrew;
+    int32_t getbackact[MINIBATCHSIZE] = {0};
+    int32_t* act = getbackact;
+    float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
+    struct uz_matrix_t getbackobs_matrix = {0};
+    uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,act,obs,MINIBATCHSIZE,indizes);
+    bool terminal = false;
+    float gamma = 0.98f;
+    float loss = calculate_loss_dqn(testdqn, &reward, &gamma, outputdqn, outputdqn, terminal);
+    uz_nn_backward_pass(testdqn->critic,&loss,input);
+    float lernrate = 0.0001f;
+    uz_nn_gradient_descent(testdqn->critic,lernrate);
 }
 #endif // TEST

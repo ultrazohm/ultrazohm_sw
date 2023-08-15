@@ -297,6 +297,7 @@ if (file2 != NULL)
 }
 
 }
+
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);

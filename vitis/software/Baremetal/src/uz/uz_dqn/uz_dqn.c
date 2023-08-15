@@ -125,7 +125,6 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
         reward++;
         action++;
-        // obs++;
     }
 }
 

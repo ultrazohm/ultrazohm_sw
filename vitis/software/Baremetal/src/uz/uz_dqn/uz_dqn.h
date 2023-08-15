@@ -19,7 +19,7 @@ struct uz_dqn_experience_replay_config{
     int32_t *const actions;
 };
 
-uz_dqn_t *uz_dqn_init(struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
+uz_dqn_t *uz_dqn_init(float *lernrate, float *discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
 struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER],
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,

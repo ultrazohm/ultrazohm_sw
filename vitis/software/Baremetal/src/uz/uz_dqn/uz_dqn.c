@@ -24,6 +24,8 @@ struct uz_dqn_t {
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
     uz_dqn_experience_replay_t *experience_buffer;
+    float *discount_factor;
+    float *lernrate;
 };
 
 static uint32_t instance_counterbuf = 0U;
@@ -66,17 +68,20 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 }
 
 
-uz_dqn_t *uz_dqn_init(struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
+uz_dqn_t *uz_dqn_init(float *lernrate, float *discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
 struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER],
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,
 uint32_t length_of_buffer, uint32_t headind)
 {
-// asserts
+    uz_assert_not_NULL(lernrate);
+    uz_assert_not_NULL(discount_factor);
     uz_dqn_t *self = uz_dqn_allocation();
     self->critic = uz_nn_init(config_critic, number_of_layer, true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
+    self->discount_factor = discount_factor;
+    self->lernrate = lernrate;
     return (self);
 }
 

@@ -104,7 +104,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,in
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize, uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -113,9 +113,9 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uz_assert_not_NULL(indizes);
     //uz_assert(minibatchsize=1);
     uz_assert(self->is_ready);
-    float vecobs[minibatchsize];
+    float vecobs[numberofobs];
     struct uz_matrix_t obsvec_matrix = {0};
-    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, UZ_MATRIX_SIZE(vecobs),1, minibatchsize);
+    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, UZ_MATRIX_SIZE(vecobs),1, numberofobs);
     for (uint32_t i = 0; i < minibatchsize; i++)
         {
         // schlechte zufallszahlengenerierung, aber für den start reichts

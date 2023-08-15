@@ -128,7 +128,7 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *getbackobs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
-    uz_dqn_get_minibatch_from_buffer(buffertesting,r,a,getbackobs,MINIBATCHSIZE,ind);
+    uz_dqn_get_minibatch_from_buffer(buffertesting,r,a,getbackobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
     float testrew[MINIBATCHSIZE] = {300.0f,-777.7f};
     float testobs[NUMBEROFOBS*MINIBATCHSIZE] = {2.0f,-1.0f,5.1f,2.1f,3.0f,7.0f,7.0f,7.0f,7.0f,7.0f};
     int32_t testact[MINIBATCHSIZE] = {-1,777};

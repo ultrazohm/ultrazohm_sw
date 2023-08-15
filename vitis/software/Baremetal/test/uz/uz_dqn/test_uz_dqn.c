@@ -319,7 +319,7 @@ void test_uz_dqn_1_step(void)
     float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,act,obs,MINIBATCHSIZE,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,act,obs,MINIBATCHSIZE,NUMBEROFOBS,indizes);
     bool terminal = false;
     float gamma = 0.98f;
     float loss = calculate_loss_dqn(testdqn, &reward, &gamma, outputdqn, outputdqn, terminal);

@@ -59,8 +59,8 @@ This function is already included in the :ref:`uz_CurrentControl`.
 
 .. _limit_flowchart:
 
-.. tikz:: space vector limitation flow chart
-  :align: left
+.. tikz:: space vector limitation flow chart for dq-axis
+  :align: center
 
   \usetikzlibrary{shapes,arrows, patterns,calc};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_{abs} > V_{max}$};
@@ -120,11 +120,17 @@ A maximum stator voltage according to
   V_\mathrm{max} = V_{DC} \cdot m_{max}\,,
 
 can be realized. 
+The geometric sum of the :math:`xy`-subspace for each timestep is calculated by
+
+.. math::
+
+  V_\mathrm{abs}^{xy} = \boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k)\,.
+
 Since the subspaces after the VSD-transformation are orthogonal to each other, the individual subspace are constrained according to
 
 .. math::
 
-  	\|\boldsymbol{v}^{dq}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\\
+  	\|\boldsymbol{v}^{dq}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\\\,,
 		\|\boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\,.
 
 This leads to a max voltage of 
@@ -137,6 +143,34 @@ However, in a realistic operation scenario, the voltages of the :math:`xy`-subsp
 Therefore, both subspace have a different max voltage limit.
 Subsequently, the :math:`xy`-subspace is limited to the above condition. 
 Herein the y-axis is prioritized over the x-axis and a saftey margin of 5% implemented.
+
+.. tikz:: space vector limitation flow chart for xy-axis
+  :align: center
+  :xscale: 70
+
+  \usetikzlibrary{shapes,arrows, patterns,calc};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_{abs}^{xy} > V_{lim}^{xy}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(5,0)$)(End5){$v_{x,lim} = v_x$ \\\\ $v_{y,lim} = v_y$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_{max}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_{SV,max}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_{max}^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_{max}^2 - v_{y,lim}^2}$};
+  \draw[-latex](Eval1.south) -- (Eval3right.north);
+  \path ([xshift=5mm]Eval1.south) -- ([xshift=5mm]Eval3right.north) node[midway,font=\Large] () {Yes};
+  \draw[-latex](Eval1.east) -- (End5.west);
+  \path ([yshift=5mm]Eval1.east) -- ([yshift=5mm]End5.west) node[midway,font=\Large] () {No};
+  \draw[-latex](Eval3right.west) -| (End3.north);
+  \draw[-latex](Eval3right.east) -| (End4.north);
+  \node[font=\Large] at($(Eval3right.west)+(-1,0.3)$){Yes};
+  \node[font=\Large] at($(Eval3right.east)+(1,0.3)$){No};
+  \draw[-latex]($(Eval1.north)+(-0.5,1)$) -- ($(Eval1.north)+(-0.5,0)$) ;
+  \draw(End3.south) -- ($(End3.south)+(0,-1)$);
+  \draw(End4.south) -- ($(End4.south)+(0,-1)$);
+  \node [circle,fill,inner sep=1pt] at ($(End3.south)+(0,-1)$){};
+  \node [circle,fill,inner sep=1pt] at ($(End4.south)+(0,-1)$){};
+  \draw(End5.north) |- ($(Eval1.north)+(0.5,1)$);
+  \draw[-latex]($(Eval1.north)+(0.5,1)$) -- ($(Eval1.north)+(0.5,0)$);
+  \draw[] ($(End4.south)+(0,-1)$) -| ($(Eval1.north)+(-10,1)$) -- ($(Eval1.north)+(-0.5,1)$) ;
+
 The resulting limited voltages are then fed back to the :math:`dq`-limitation.
 Herein, the max voltage of the :math:`dq`-subspace is limited according to
 
@@ -144,8 +178,7 @@ Herein, the max voltage of the :math:`dq`-subspace is limited according to
 
   	V_\mathrm{lim}^{dq} = \sqrt{V_\mathrm{max}^2 - (V_\mathrm{ref}^{xy})^2}\,.
 
-Then the flowchart in  :numref:`limit_flowchart` is used again. 
-The only change is that :math:`V_\mathrm{max}` is replaced with :math:`V_\mathrm{lim}^{dq}`.
+Then the flowchart in  :numref:`limit_flowchart` is used again, with :math:`V_\mathrm{max}` being replaced by :math:`V_\mathrm{lim}^{dq}`.
 
 
 Sources

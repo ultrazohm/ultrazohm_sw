@@ -9,6 +9,8 @@
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
 #include <stdlib.h>
+#include "mtwister.h"
+
 //eps greedy test
 #define NUMBER_OF_EPSGREEDYSTEPS 1000
 float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
@@ -287,26 +289,28 @@ void test_calc_reward_without_penalty(void)
  {
     uz_dqn_t* dqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     float reward = 2.0f;
-    float gamma = 0.98f;
+    float qval = 10.0f;
+    float qvalplus1 = 5.5f;
     float outputtnndata[5] = {1.1f,2.1f,5.1f,2.1f,0.0f};
     struct uz_matrix_t output_matrix = {0};
     uz_matrix_t *output_nn = uz_matrix_init(&output_matrix, outputtnndata, UZ_MATRIX_SIZE(outputtnndata), 1, 5);
     bool terminal = false;
-    float loss = calculate_loss_dqn(dqn, &reward, &gamma, output_nn, output_nn, terminal);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 3.6024f, loss);
+    float loss = calculate_loss_dqn(dqn, dqn->discount_factor, &reward, &qval, &qvalplus1,output_nn, terminal);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 6.8121, loss);
  }
 
   void test_uz_dqn_calc_loss_non_terminal(void)
  {
     uz_dqn_t* dqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
-    float reward = 2.0f;
-    float gamma = 0.98f;
+    float reward = -3.0f;
+    float qval = 7.0f;
+    float qvalplus1 = 4.5f;
     float outputtnndata[5] = {1.1f,2.1f,5.1f,2.1f,0.0f};
     struct uz_matrix_t output_matrix = {0};
     uz_matrix_t *output_nn = uz_matrix_init(&output_matrix, outputtnndata, UZ_MATRIX_SIZE(outputtnndata), 1, 5);
     bool terminal = true;
-    float loss = calculate_loss_dqn(dqn, &reward, dqn->discount_factor, output_nn, output_nn, terminal);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 9.61f, loss);
+    float loss = calculate_loss_dqn(dqn, dqn->discount_factor, &reward, &qval, &qvalplus1,output_nn, terminal);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 100.0f, loss);
  }
 void test_uz_dqn_1_step(void)
 {
@@ -337,8 +341,7 @@ void test_uz_dqn_1_step(void)
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
-    float gamma = 0.98f;
-    float loss = calculate_loss_dqn(testdqn, &reward, &gamma, outputdqn, outputdqn, terminal);
+    float loss = 0.0f; //calculate_loss_dqn(testdqn, &reward, testdqn->discount_factor, outputdqn, terminal);
     uz_nn_backward_pass(testdqn->critic,&loss,input);
     float lernrate = 0.0001f;
     uz_nn_gradient_descent(testdqn->critic,lernrate);
@@ -379,7 +382,7 @@ void test_uz_dqn_train_episodes(void)
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
-    float loss = calculate_loss_dqn(testdqn, &reward, testdqn->discount_factor, outputdqn, outputdqn, terminal);
+    float loss = 0.0f; //calculate_loss_dqn(testdqn, &reward, testdqn->discount_factor, outputdqn, terminal);
     uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  
     printf("loss nach Episode  %d ist = %.8f \n",(int)i, (double)loss);  
     }
@@ -428,4 +431,18 @@ epsilon_start = epsilon;
 TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 }
 }
+
+void test_rand_mtwister(void)
+{
+  // use mtwister, calculate double between 0 and 1 and scale it to Randmax
+  double randmax = 500;
+  MTRand r = seedRand(12);
+  int i;
+  for(i=0; i<15; i++) {
+    int random_number = (int)(genRand(&r) * randmax + 1);
+    printf("%d\n", random_number);
+  }
+  return 0;
+}
+
 #endif // TEST

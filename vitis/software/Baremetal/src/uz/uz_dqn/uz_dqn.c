@@ -85,6 +85,12 @@ uint32_t length_of_buffer, uint32_t headind)
     return (self);
 }
 
+void uz_dqn_pendulum_sample_data(uz_dqn_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    //calc action for first step
+}
+
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -139,7 +145,30 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     }
 }
 
-float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_t *obs, uz_matrix_t *obsplus1, bool terminal){
+float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal){
+    // berechne y_j
+    float y_j = 0.0f;
+    if(terminal==true)
+    {
+        y_j = *reward;
+    }
+    else{
+        // berechne max_aQ(psi,a',theta)
+        // sollte man sowohl die Aktion, als auch den index speichern? 
+        // im nn object ist ja grad iwas enthalten nur nicht, der Aktionswert,
+        // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
+        // float action und uint action zu speichern, dass man beides hat
+        // und evtl obs+1 und action(obs+1)
+        // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+		// uint32_t action = uz_matrix_get_max_index(obs); // index
+        y_j = *reward + (*self->discount_factor * *qvalplus1);
+    }
+    // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+    float loss = (float)pow((y_j - *qval),2.0f);
+    return loss;
+}
+
+float calculate_loss_dqn_derivate(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_t *obs, uz_matrix_t *obsplus1, bool terminal){
     // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
@@ -158,10 +187,9 @@ float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_
         y_j = *reward + *gamma * uz_matrix_get_max_value(obsplus1);
     }
     uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-    float loss = (float)pow((y_j - uz_matrix_get_max_value(obs)),2.0f);
+    float loss = -2.0f*(y_j - uz_matrix_get_max_value(obs));
     return loss;
 }
-
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
@@ -173,6 +201,21 @@ void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,f
     *QValue = self->qvalues[index];
     *actiondata = self->action[index];
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
+}
+void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t* self,uz_matrix_t *obsdata, uint32_t index){
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(obsdata);
+    uz_assert(self->is_ready);
+    uz_assert(index<self->length); // assert, wenn index größer als die länge des buffers
+    uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
+}
+
+void uz_dqn_get_q_value_from_buffer(uz_dqn_experience_replay_t* self,float *QValue, uint32_t index){
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(QValue);
+    uz_assert(self->is_ready);
+    uz_assert(index<self->length); // assert, wenn index größer als die länge des buffers
+    *QValue = self->qvalues[index];
 }
 
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty){

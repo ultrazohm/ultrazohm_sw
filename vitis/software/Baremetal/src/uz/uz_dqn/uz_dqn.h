@@ -29,7 +29,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
-float calculate_loss_dqn(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_t *obs, uz_matrix_t *obsplus1, bool terminal);
+float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal);
 void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
 
 /**

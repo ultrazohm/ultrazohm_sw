@@ -111,7 +111,8 @@ Limits the input voltages according to the following scheme.
 
     This only applies for a six-phase machine, where the :math:`\alpha\beta`-system is transformed 
     with :math:`\vartheta_{el}` into the :math:`dq` system and the :math:`XY`-system is transformed with :math:`-\vartheta_{el}` into the :math:`xy`-system.
-    Furthermore, the basis for the :math:`\alpha\beta`- and :math:`XY`-systems is the :ref:`uz_transformation` .
+    The basis for the :math:`\alpha\beta`- and :math:`XY`-systems is the :ref:`uz_transformation`.
+    Furthermore, this approach is only valid, if the two neutral points of the 6ph-PMSM are disconnected from each other (2N-configuration).
 
 A maximum stator voltage according to 
 
@@ -124,13 +125,13 @@ The geometric sum of the :math:`xy`-subspace for each timestep is calculated by
 
 .. math::
 
-  V_\mathrm{abs}^{xy} = \boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k)\,.
+  V_\mathrm{abs}^{xy} = \|\boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k)\|_2\,.
 
 Since the subspaces after the VSD-transformation are orthogonal to each other, the individual subspace are constrained according to
 
 .. math::
 
-  	\|\boldsymbol{v}^{dq}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\\\,,
+  	\|\boldsymbol{v}^{dq}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\,,\\
 		\|\boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\,.
 
 This leads to a max voltage of 
@@ -142,7 +143,7 @@ This leads to a max voltage of
 However, in a realistic operation scenario, the voltages of the :math:`xy`-subspace is considerably lower.
 Therefore, both subspace have a different max voltage limit.
 Subsequently, the :math:`xy`-subspace is limited to the above condition. 
-Herein the y-axis is prioritized over the x-axis and a saftey margin of 5% implemented.
+Herein the :math:`y`-axis is prioritized over the :math:`x`-axis and a saftey margin of 5% is implemented.
 
 .. tikz:: space vector limitation flow chart for xy-axis
   :align: center
@@ -166,13 +167,12 @@ Herein the y-axis is prioritized over the x-axis and a saftey margin of 5% imple
   \draw(End3.south) -- ($(End3.south)+(0,-1)$);
   \draw(End4.south) -- ($(End4.south)+(0,-1)$);
   \node [circle,fill,inner sep=1pt] at ($(End3.south)+(0,-1)$){};
-  \node [circle,fill,inner sep=1pt] at ($(End4.south)+(0,-1)$){};
   \draw(End5.north) |- ($(Eval1.north)+(0.5,1)$);
   \draw[-latex]($(Eval1.north)+(0.5,1)$) -- ($(Eval1.north)+(0.5,0)$);
   \draw[] ($(End4.south)+(0,-1)$) -| ($(Eval1.north)+(-10,1)$) -- ($(Eval1.north)+(-0.5,1)$) ;
 
 The resulting limited voltages are then fed back to the :math:`dq`-limitation.
-Herein, the max voltage of the :math:`dq`-subspace is limited according to
+Herein, to ensure, that the full utilization of the maximum stator voltages can be achieved, the max voltage of the :math:`dq`-subspace is limited according to
 
 .. math::
 

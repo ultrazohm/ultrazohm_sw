@@ -8,22 +8,6 @@
 
 
 /**
- * @brief Struct for fault indices for the nine phase Open-Phase-Fault-Detection
- */
-typedef struct uz_9phFD_indices{
-    float R1;    	/**< Fault index for phase 1 (a1) */
-    float R2;     	/**< Fault index for phase 2 (b1)*/
-    float R3;       /**< Fault index for phase 3 (c1)*/
-    float R4;       /**< Fault index for phase 4 (a2)*/
-    float R5;       /**< Fault index for phase 5 (b2)*/
-    float R6;       /**< Fault index for phase 6 (c2)*/
-    float R7;       /**< Fault index for phase 7 (a3)*/
-    float R8;       /**< Fault index for phase 8 (b3)*/
-    float R9;       /**< Fault index for phase 9 (c3)*/
-}uz_9phFD_indices;
-
-
-/**
  * @brief Struct definition for uz_VSD_9ph_FD_t
  *
  */
@@ -66,14 +50,14 @@ uz_VSD_9ph_FD_t *uz_VSD_9ph_FD_init(struct uz_VSD_9ph_FD_config config);
  * @param omega_el_rad_per_sec omega_el in rad per seconds
  * @return uz_9phFD_indices fault indices for the nine phases filtered and evaluated 
  */
-uz_9phFD_indices uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec);
+uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec);
 
 /**
  * @brief Function to calculate the fault indices (unfiltered) for 6-phase open-phase-fault detection (used by uz_vsd_opf_9ph_faultdetection_step)
  * @param vsdcurrents uz_9ph_alphabeta_t struct, vsd currents of 6-phase system
  * @return uz_9phFD_indices fault indices for the nine phases
  */
-uz_9phFD_indices uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t vsdcurrents);
+uz_9ph_abc_t uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t vsdcurrents);
 
 
 #endif //UZ_VSD_9ph_FD_H

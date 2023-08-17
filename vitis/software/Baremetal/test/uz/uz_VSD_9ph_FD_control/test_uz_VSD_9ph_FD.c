@@ -10,21 +10,21 @@
 
 void test_uz_vsd_opf_9ph_fault_indices_calculation(void)
 {
-    uz_9phFD_indices indices = {0};
+    uz_9ph_abc_t indices = {0};
     uz_9ph_alphabeta_t currents = {0};
     float tol = 0.16f;
 
     indices = uz_vsd_opf_9ph_fault_indices_calculation(currents);
 
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R1);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R2);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R3);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R4);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R5);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R6);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R7);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R8);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.R9);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.a1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.b1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.c1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.a2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.b2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.c2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.a3);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.b3);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, indices.c3);
 
     currents.alpha = 1.0f;
     currents.beta = 2.0f;
@@ -38,15 +38,15 @@ void test_uz_vsd_opf_9ph_fault_indices_calculation(void)
 
     indices = uz_vsd_opf_9ph_fault_indices_calculation(currents);
 
-    TEST_ASSERT_FLOAT_WITHIN(tol,-15.0000f, indices.R1);
-    TEST_ASSERT_FLOAT_WITHIN(tol,  0.9654f, indices.R2);
-    TEST_ASSERT_FLOAT_WITHIN(tol, -2.1004f, indices.R3);
-    TEST_ASSERT_FLOAT_WITHIN(tol, -6.0761f, indices.R4);
-    TEST_ASSERT_FLOAT_WITHIN(tol,  2.7019f, indices.R5);
-    TEST_ASSERT_FLOAT_WITHIN(tol,  3.1127f, indices.R6);
-    TEST_ASSERT_FLOAT_WITHIN(tol,  5.5419f, indices.R7);
-    TEST_ASSERT_FLOAT_WITHIN(tol*3.0f, 75.5776f, indices.R8);
-    TEST_ASSERT_FLOAT_WITHIN(tol, -1.0160f, indices.R9);
+    TEST_ASSERT_FLOAT_WITHIN(tol,-15.0000f, indices.a1);
+    TEST_ASSERT_FLOAT_WITHIN(tol,  0.9654f, indices.b1);
+    TEST_ASSERT_FLOAT_WITHIN(tol, -2.1004f, indices.c1);
+    TEST_ASSERT_FLOAT_WITHIN(tol, -6.0761f, indices.a2);
+    TEST_ASSERT_FLOAT_WITHIN(tol,  2.7019f, indices.b2);
+    TEST_ASSERT_FLOAT_WITHIN(tol,  3.1127f, indices.c2);
+    TEST_ASSERT_FLOAT_WITHIN(tol,  5.5419f, indices.a3);
+    TEST_ASSERT_FLOAT_WITHIN(tol*3.0f, 75.5776f, indices.b3);
+    TEST_ASSERT_FLOAT_WITHIN(tol, -1.0160f, indices.c3);
 }
 
 /*

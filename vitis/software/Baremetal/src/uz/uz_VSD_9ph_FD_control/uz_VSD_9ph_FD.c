@@ -1,6 +1,6 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
-* Copyright 2022 Josef Knoblach
+* Copyright 2023 Valentin Hoppe
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ static uint32_t instance_VSD_9ph_FD_counter = 0U;
 static uz_VSD_9ph_FD_t instances_VSD_9ph_FD[UZ_9PH_OPEN_PHASE_FAULT_DETECTION] = { 0 };
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void);
-static uz_9phFD_indices uz_vsd_fd_hysteresis_filter(uz_9phFD_indices input, float lowerlimit, float upperlimit);
-static uz_9phFD_indices uz_vsd_fd_evaluation(uz_9phFD_indices input, float threshold);
+static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit);
+static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold);
 static inline float uz_vsd_opf_9ph_fault_index_general(float VSD_line[9], uz_9ph_alphabeta_t currents);
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void){
@@ -94,8 +94,8 @@ uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_init(struct uz_VSD_9ph_FD_config config){
     return(self);
 }
 
-uz_9phFD_indices uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
-	uz_9phFD_indices indices = {0};
+uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
+	uz_9ph_abc_t indices = {0};
 
 	// calculate fault indices
 	indices = uz_vsd_opf_9ph_fault_indices_calculation(vsdcurrents);
@@ -122,15 +122,20 @@ uz_9phFD_indices uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_
 	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R4, new_filterLength);
 	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R5, new_filterLength);
 	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R6, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R7, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R8, new_filterLength);
+	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R9, new_filterLength);
 
 	// moving average filter
-	indices.R1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R1, indices.R1);
-	indices.R2 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R2, indices.R2);
-	indices.R3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R3, indices.R3);
-	indices.R4 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R4, indices.R4);
-	indices.R5 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R5, indices.R5);
-	indices.R6 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R6, indices.R6);
-
+	indices.a1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R1, indices.a1);
+	indices.b1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R2, indices.b1);
+	indices.c1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R3, indices.c1);
+	indices.a2 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R4, indices.a2);
+	indices.b2 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R5, indices.b2);
+	indices.c2 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R6, indices.c2);
+	indices.a3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R7, indices.a3);
+	indices.b3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R8, indices.b3);
+	indices.c3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R9, indices.c3);
 
 	// evaluation of fault indices
 	return uz_vsd_fd_evaluation(indices, VSD_FD->threshold);
@@ -144,45 +149,45 @@ static float uz_divide(float num, float denom){
 	return result;
 }
 
-uz_9phFD_indices uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t input){
-	uz_9phFD_indices output = {
-		.R1 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[0][0], input),
-		.R2 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[1][0], input),
-	 	.R3 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[2][0], input),
-		.R4 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[3][0], input),
-		.R5 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[4][0], input),
-		.R6 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[5][0], input),
-		.R7 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[6][0], input),
-		.R8 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[7][0], input),
-		.R9 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[8][0], input)};
+uz_9ph_abc_t uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t input){
+	uz_9ph_abc_t output = {
+		.a1 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[0][0], input),
+		.b1 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[1][0], input),
+	 	.c1 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[2][0], input),
+		.a2 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[3][0], input),
+		.b2 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[4][0], input),
+		.c2 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[5][0], input),
+		.a3 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[6][0], input),
+		.b3 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[7][0], input),
+		.c3 = uz_vsd_opf_9ph_fault_index_general(&inv_vsd_mat_asym_9ph[8][0], input)};
 	return output;
 }
 
-static uz_9phFD_indices uz_vsd_fd_hysteresis_filter(uz_9phFD_indices input, float lowerlimit, float upperlimit){
-	input.R1 = uz_signals_hysteresisband_filter(input.R1, upperlimit, lowerlimit);
-	input.R2 = uz_signals_hysteresisband_filter(input.R2, upperlimit, lowerlimit);
-	input.R3 = uz_signals_hysteresisband_filter(input.R3, upperlimit, lowerlimit);
-	input.R4 = uz_signals_hysteresisband_filter(input.R4, upperlimit, lowerlimit);
-	input.R5 = uz_signals_hysteresisband_filter(input.R5, upperlimit, lowerlimit);
-	input.R6 = uz_signals_hysteresisband_filter(input.R6, upperlimit, lowerlimit);
-	input.R7 = uz_signals_hysteresisband_filter(input.R7, upperlimit, lowerlimit);
-	input.R8 = uz_signals_hysteresisband_filter(input.R8, upperlimit, lowerlimit);
-	input.R9 = uz_signals_hysteresisband_filter(input.R9, upperlimit, lowerlimit);
+static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit){
+	input.a1 = uz_signals_hysteresisband_filter(input.a1, upperlimit, lowerlimit);
+	input.b1 = uz_signals_hysteresisband_filter(input.b1, upperlimit, lowerlimit);
+	input.c1 = uz_signals_hysteresisband_filter(input.c1, upperlimit, lowerlimit);
+	input.a2 = uz_signals_hysteresisband_filter(input.a2, upperlimit, lowerlimit);
+	input.b2 = uz_signals_hysteresisband_filter(input.b2, upperlimit, lowerlimit);
+	input.c2 = uz_signals_hysteresisband_filter(input.c2, upperlimit, lowerlimit);
+	input.a3 = uz_signals_hysteresisband_filter(input.a3, upperlimit, lowerlimit);
+	input.b3 = uz_signals_hysteresisband_filter(input.b3, upperlimit, lowerlimit);
+	input.c3 = uz_signals_hysteresisband_filter(input.c3, upperlimit, lowerlimit);
 
 	return input;
 }
 
 
-static uz_9phFD_indices uz_vsd_fd_evaluation(uz_9phFD_indices input, float threshold){
-	input.R1 = uz_signals_threshold_Evaluation(input.R1, threshold);
-	input.R2 = uz_signals_threshold_Evaluation(input.R2, threshold);
-	input.R3 = uz_signals_threshold_Evaluation(input.R3, threshold);
-	input.R4 = uz_signals_threshold_Evaluation(input.R4, threshold);
-	input.R5 = uz_signals_threshold_Evaluation(input.R5, threshold);
-	input.R6 = uz_signals_threshold_Evaluation(input.R6, threshold);
-	input.R7 = uz_signals_threshold_Evaluation(input.R7, threshold);
-	input.R8 = uz_signals_threshold_Evaluation(input.R8, threshold);
-	input.R9 = uz_signals_threshold_Evaluation(input.R9, threshold);
+static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold){
+	input.a1 = uz_signals_threshold_Evaluation(input.a1, threshold);
+	input.b1 = uz_signals_threshold_Evaluation(input.b1, threshold);
+	input.c1 = uz_signals_threshold_Evaluation(input.c1, threshold);
+	input.a2 = uz_signals_threshold_Evaluation(input.a2, threshold);
+	input.b2 = uz_signals_threshold_Evaluation(input.b2, threshold);
+	input.c2 = uz_signals_threshold_Evaluation(input.c2, threshold);
+	input.a3 = uz_signals_threshold_Evaluation(input.a3, threshold);
+	input.b3 = uz_signals_threshold_Evaluation(input.b3, threshold);
+	input.c3 = uz_signals_threshold_Evaluation(input.c3, threshold);
 	return input;
 }
 

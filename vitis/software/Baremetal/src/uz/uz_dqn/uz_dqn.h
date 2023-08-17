@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "uz_nn.h"
+#include "mtwister.h"
 
 typedef struct uz_dqn_t uz_dqn_t;
 typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;
@@ -30,7 +31,9 @@ void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,f
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
 float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal);
+float calculate_derv_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal);
 void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
+uint32_t uz_dqn_get_action(uz_dqn_t* self,float *epsilon_start,float *epsilon_min,float *epsilon_decay);
 /**
  * @brief Calculates epsilon-greedy exploration value for epsilon-greedy exploration for Deep Q-Networks.
  * 

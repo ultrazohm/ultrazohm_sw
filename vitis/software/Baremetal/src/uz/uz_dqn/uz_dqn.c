@@ -85,11 +85,24 @@ uint32_t length_of_buffer, uint32_t headind)
     return (self);
 }
 
-void uz_dqn_pendulum_sample_data(uz_dqn_t* self){
+uint32_t uz_dqn_get_action(uz_dqn_t* self,float *epsilon_start,float *epsilon_min,float *epsilon_decay){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    //calc action for first step
+    uint32_t action;
+    //calc epsilon
+    float epsilon = calc_epsilon_greedy(*epsilon_start, *epsilon_min, *epsilon_decay);
+    //generate random number
+    MTRand seed = seedRand(12);
+    float n = (float)genRand(&seed);
+    if (n < epsilon){
+    // rand action
+    }
+    else{
+    // max Q(S) action
+    }
+    return action;
 }
+
 
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);
@@ -148,7 +161,12 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
 }
 
 float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal){
-    // berechne y_j
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(gamma); 
+    uz_assert_not_NULL(reward);
+    uz_assert_not_NULL(qval);
+    uz_assert_not_NULL(qvalplus1);
+    uz_assert_not_NULL(obs);    // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
     {
@@ -170,7 +188,13 @@ float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval
     return loss;
 }
 
-float calculate_loss_dqn_derivate(uz_dqn_t* self, float *reward, float *gamma, uz_matrix_t *obs, uz_matrix_t *obsplus1, bool terminal){
+float calculate_derv_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal){
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(gamma); 
+    uz_assert_not_NULL(reward);
+    uz_assert_not_NULL(qval);
+    uz_assert_not_NULL(qvalplus1);
+    uz_assert_not_NULL(obs);
     // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
@@ -184,12 +208,12 @@ float calculate_loss_dqn_derivate(uz_dqn_t* self, float *reward, float *gamma, u
         // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
         // float action und uint action zu speichern, dass man beides hat
         // und evtl obs+1 und action(obs+1)
-        uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-		uint32_t action = uz_matrix_get_max_index(obs); // index
-        y_j = *reward + *gamma * uz_matrix_get_max_value(obsplus1);
+        // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+		// uint32_t action = uz_matrix_get_max_index(obs); // index
+        y_j = *reward + (*self->discount_factor * *qvalplus1);
     }
-    uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-    float loss = -2.0f*(y_j - uz_matrix_get_max_value(obs));
+    // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+    float loss = -2.0f*(y_j - *qval);
     return loss;
 }
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){

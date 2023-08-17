@@ -316,7 +316,7 @@ void test_uz_dqn_1_step(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     // random indizes for sample from buffer
-    uint32_t r[MINIBATCHSIZE] = {1,1,1,1,1}; 
+    uint32_t r[MINIBATCHSIZE] = {1,0,1,0,1}; 
     uint32_t *indizes = r;
     struct uz_matrix_t x_matrix={0};
     uz_matrix_t* input=uz_matrix_init(&x_matrix,cx,2,1,NUMBER_OF_INPUTS);
@@ -386,11 +386,10 @@ void test_uz_dqn_train_episodes(void)
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
-    float loss = 0.0f; //calculate_loss_dqn(testdqn, &reward, testdqn->discount_factor, outputdqn, terminal);
+    float loss = calculate_derv_loss_dqn(testdqn, testdqn->discount_factor,rew,qval,qvalplus1,obs,terminal);
     uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  
     printf("loss nach Episode  %d ist = %.8f \n",(int)i, (double)loss);  
     }
-
     uz_nn_gradient_descent_mini_batch(testdqn->critic,*testdqn->lernrate,MINIBATCHSIZE);
     uz_nn_set_gradients_zero(testdqn->critic);
     // Targetupdate 
@@ -439,11 +438,11 @@ TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 void test_rand_mtwister(void)
 {
   // use mtwister, calculate double between 0 and 1 and scale it to Randmax
-  double randmax = 500;
+  //double randmax = 500;
   MTRand r = seedRand(12);
   int i;
   for(i=0; i<15; i++) {
-    int random_number = (int)(genRand(&r) * randmax + 1);
+    int random_number = (int)(genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
     printf("%d\n", random_number);
   }
   return 0;

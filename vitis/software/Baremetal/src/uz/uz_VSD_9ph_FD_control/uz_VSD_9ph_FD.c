@@ -94,6 +94,11 @@ uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_init(struct uz_VSD_9ph_FD_config config){
     return(self);
 }
 
+int uz_vsd_opf_9ph_get_n_fault(uz_9ph_abc_t indices){
+	float sum = indices.a1 + indices.b1 + indices.c1 + indices.a2 + indices.b2 + indices.c2 + indices.a3 + indices.b3 + indices.c3; 
+	return (int)sum;
+}
+
 uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
 	uz_9ph_abc_t indices = {0};
 

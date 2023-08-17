@@ -59,6 +59,7 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
  */
 uz_9ph_abc_t uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t vsdcurrents);
 
+int uz_vsd_opf_9ph_get_n_fault(uz_9ph_abc_t indices);
 
 #endif //UZ_VSD_9ph_FD_H
 

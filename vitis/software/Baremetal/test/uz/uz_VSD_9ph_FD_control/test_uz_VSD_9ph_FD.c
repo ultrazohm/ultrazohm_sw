@@ -49,6 +49,20 @@ void test_uz_vsd_opf_9ph_fault_indices_calculation(void)
     TEST_ASSERT_FLOAT_WITHIN(tol, -1.0160f, indices.c3);
 }
 
+void test_get_n_index(void){
+    uz_9ph_abc_t indices = {
+            .a1 = 1.0f,
+            .b1 = 0.0f,
+            .c1 = 1.0f,
+            .a2 = 1.0f,
+            .b2 = 0.0f,
+            .c2 = 0.0f,
+            .a3 = 1.0f,
+            .b3 = 0.0f,
+            .c3 = 0.0f};
+    TEST_ASSERT_EQUAL(4, uz_vsd_opf_9ph_get_n_fault(indices));
+}
+
 /*
 void test_uz_vsd_opf_6ph_no_fault(void)
 {

@@ -20,6 +20,7 @@ However, the standard deviation of the advanced method is significantly lower.
    :widths: 50 50 50
    :header-rows: 1
 
+
 Workflow
 --------
 
@@ -28,6 +29,14 @@ The basic method for that is recommended, meaning a space vector is applied to t
 Afterward, the code shown below can be implemented.
 Using this code, 40 points will be measured around the given initial offset angle.
 The final offset angle is saved in the specified ``uz_encoder_offset_estimation_t`` object.
+With ``uz_encoder_offset_estimation_get_status``, the progress is output, as well as the diagnose of the process.
+It is recommended to observe the output of this function in the GUI slowdata.
+The numeric values for the different diagnose enums are shown in the table below.
+
+.. csv-table:: Numeric expression of diagnose values
+   :file: enum.csv
+   :widths: 50 50 50
+   :header-rows: 1
 
 Example Code
 ------------
@@ -63,11 +72,13 @@ It is important to use the global data struct at least for the measured theta el
     uz_3ph_dq_t ref_voltage_3ph;
     float theta_el = 0.0f;
     extern uz_encoder_offset_estimation_t* encoder_offset_obj;
+    struct uz_encoder_offset_estimation_status status;
     ..
     //in loop
     Global_Data.av.U_q = cc_3ph_out.q;                                              // write controller output ref voltage to global data
     theta_el = Global_Data.av.theta_elec - Global_Data.av.theta_offset;             // calculate resulting theta
-    actual_i_dq = uz_transformation_3ph_abc_to_dq(abc_current, theta_el);           // transform measured abc currents to dq with corrected angle                           
+    actual_i_dq = uz_transformation_3ph_abc_to_dq(abc_current, theta_el);           // transform measured abc currents to dq with corrected angle   
+    status = uz_encoder_offset_estimation_get_status(encoder_offset_obj);           // get encode offset status and progress                        
 
     if (current_state==control_state)                                               // in control state
     {
@@ -103,7 +114,34 @@ Known Problems
 --------------
 
 The function will stop if the rotor does not move or reach the necessary speed in time.
-The variable ``diagnose`` inside the object pointer will indicate this error with the status ``encoderoffset_speed_not_reached``.
+The variable ``diagnose`` inside the status struct will indicate this error with the status ``encoderoffset_speed_not_reached``.
 To fix this, increase the setpoint current in the config struct.
+After finishing the offset estimation, the ``diagnose`` will also indicate this.
+If the resulting angle equals the lowest or highest tested angle, a specific feedback will given and the process should be redone with a different range.
 Furthermore, even if a voltage measurement is available on the test-bench setup, the results are more reliable when the controller reference voltage is used for calculation.
 Therefore it is not recommended to use a measured voltage.
+
+Functions
+---------
+
+.. doxygentypedef:: uz_encoder_offset_estimation_t
+
+.. doxygenenum:: uz_encoder_offset_estimation_diagnose
+
+.. doxygenstruct:: uz_encoder_offset_estimation_config
+  :members: 
+
+.. doxygenstruct:: uz_encoder_offset_estimation_status
+  :members: 
+
+.. doxygenfunction:: uz_encoder_offset_estimation_init
+
+.. doxygenfunction:: uz_encoder_offset_estimation_step
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_finished
+
+.. doxygenfunction:: uz_encoder_offset_estimation_set_setpoint_current
+
+.. doxygenfunction:: uz_encoder_offset_estimation_reset_states
+
+.. doxygenfunction:: uz_encoder_offset_estimation_get_status

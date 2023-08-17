@@ -11,12 +11,34 @@
 #include "uz_Transformation.h"
 #include "uz_HAL.h"
 
+
+float ptr = 0.0f;
+
+struct uz_encoder_offset_estimation_config config;
+
 void setUp(void)
 {
+    config.ptr_measured_rotor_angle = &ptr;
+    config.ptr_offset_angle = &ptr;
+    config.ptr_actual_omega_el = &ptr;
+    config.ptr_actual_u_q_V = &ptr;
+    config.setpoint_current = 1.0f;
+    config.min_omega_el = 100.0f;
 }
 
 void tearDown(void)
 {
+}
+
+   
+
+void test_uz_encoder_offset_estimation_init(void){
+    uz_encoder_offset_estimation_t* obj = uz_encoder_offset_estimation_init(config);
+    TEST_ASSERT_NOT_NULL(obj);
+
+    struct uz_encoder_offset_estimation_status status = uz_encoder_offset_estimation_get_status(obj);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, status.progress);
+    TEST_ASSERT_EQUAL(0, status.diagnose);
 }
 
 void test_uz_encoder_offset_estimation_find_best_theta(void)
@@ -53,5 +75,6 @@ void test_uz_encoder_offset_estimation_find_best_theta(void)
     float best_theta = uz_encoder_offset_estimation_find_best_theta(array);
     TEST_ASSERT_EQUAL_FLOAT(4.0f, best_theta);
 }
+
 
 #endif // TEST

@@ -10,7 +10,7 @@
 struct uz_dqn_experience_replay_t {
     float *reward;
     float *qvalues;
-    int32_t *action;
+    uint32_t *action;
     uz_matrix_t *observations;
     struct uz_matrix_t observations_matrix;
     uint32_t head;
@@ -85,7 +85,7 @@ uint32_t length_of_buffer, uint32_t headind)
     return (self);
 }
 
-uint32_t uz_dqn_get_action(uz_dqn_t* self,float *epsilon_start,float *epsilon_min,float *epsilon_decay){
+uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_start,float *epsilon_min,float *epsilon_decay){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uint32_t action;
@@ -95,10 +95,11 @@ uint32_t uz_dqn_get_action(uz_dqn_t* self,float *epsilon_start,float *epsilon_mi
     MTRand seed = seedRand(12);
     float n = (float)genRand(&seed);
     if (n < epsilon){
-    // rand action
+    action = (uint32_t)(genRand(&seed) * 5);
     }
     else{
-    // max Q(S) action
+    uz_nn_ff(self->critic,input);
+    action = uz_matrix_get_max_index(uz_nn_get_output_data(self->critic));
     }
     return action;
 }
@@ -114,10 +115,10 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_matrix_set_zero(self->observations);
 }
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,int32_t *actiondata, uz_matrix_t *obsdata){
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,uint32_t *actionindex, uz_matrix_t *obsdata){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
-    uz_assert_not_NULL(actiondata);
+    uz_assert_not_NULL(actionindex);
     uz_assert_not_NULL(qdata);
     uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
@@ -127,17 +128,17 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
       self->head=0U;
     }
     self->reward[self->head]= *rewarddata;
-    self->action[self->head] = *actiondata;
+    self->action[self->head] = *actionindex;
     self->qvalues[self->head] = *qdata;
     uz_matrix_copy_row_to_matrix(obsdata,self->observations,self->head);
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, uint32_t *actionindex, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
-    uz_assert_not_NULL(action);
+    uz_assert_not_NULL(actionindex);
     uz_assert_not_NULL(obs);
     uz_assert_not_NULL(indizes);
     //uz_assert(minibatchsize=1);
@@ -150,11 +151,11 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         // schlechte zufallszahlengenerierung, aber für den start reichts
         //ind = rand() % self->length+1;
         uint32_t index = indizes[i];
-        uz_dqn_get_from_buffer(self,reward,qvalue,action,obsvec,index);
+        uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
         uz_dqn_get_q_value_from_buffer(self,qvalueplus1,index+1);
         reward++;
-        action++;
+        actionindex++;
         qvalue++;
         qvalueplus1++;
     }
@@ -216,7 +217,7 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float 
     float loss = -2.0f*(y_j - *qval);
     return loss;
 }
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, int32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, uint32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
     uz_assert_not_NULL(actiondata);

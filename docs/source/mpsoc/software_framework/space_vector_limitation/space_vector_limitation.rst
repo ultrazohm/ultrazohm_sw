@@ -51,11 +51,12 @@ Limitation for dq-axis
 Limits the input voltages according to the following flowchart. 
 Further information can be found in [#Quang]_ . 
 This function is already included in the :ref:`uz_CurrentControl`.
+With the max modulation index :math:`m_\mathrm{max}` the following voltages can be calculated.
 
 .. math::
 
-  V_{max} &= V_{DC} \cdot m_{max} \\
-  V_{abs} &= \sqrt{v_d^2 + v_q^2}
+  V_\mathrm{max} &= V_\mathrm{DC} \cdot m_\mathrm{max} \\
+  V_\mathrm{abs} &= \sqrt{v_d^2 + v_q^2}
 
 .. _limit_flowchart:
 
@@ -63,7 +64,7 @@ This function is already included in the :ref:`uz_CurrentControl`.
   :align: center
 
   \usetikzlibrary{shapes,arrows, patterns,calc};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_{abs} > V_{max}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_\mathrm{abs} > V_\mathrm{max}$};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(7,0)$)(End5){$v_{d,lim} = v_d$ \\\\ $v_{q,lim} = v_q$};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.south)+(0,-3)$)(Eval2){$sign(\omega_{el}) == sign(i_q)$};
   \draw[-latex](Eval1.east) -- (End5.west);
@@ -72,18 +73,18 @@ This function is already included in the :ref:`uz_CurrentControl`.
   \draw[-latex]($(Eval1.north)+(0.5,1)$) -- ($(Eval1.north)+(0.5,0)$);
   \draw[-latex](Eval1.south) -- (Eval2.north);
   \node[font=\Large] at($(Eval1.south)+(0.5,-1)$){Yes};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval2.west)+(-7,-3)$)(Eval3left){$|v_d| > 0.95 \cdot V_{SV,max}$};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval2.east)+(7,-3)$)(Eval3right){$|v_q| > 0.95 \cdot V_{SV,max}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval2.west)+(-7,-3)$)(Eval3left){$|v_d| > 0.95 \cdot V_\mathrm{max}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval2.east)+(7,-3)$)(Eval3right){$|v_q| > 0.95 \cdot V_\mathrm{max}$};
   \draw[-latex](Eval2.east) -| (Eval3right.north);
   \draw[-latex](Eval2.west) -| (Eval3left.north);
   \node[font=\Large] at($(Eval2.west)+(-2,0.3)$){Yes};
   \node[font=\Large] at($(Eval2.west)+(-2,-0.3)$){motor mode};
   \node[font=\Large] at($(Eval2.east)+(2,0.3)$){No};
   \node[font=\Large] at($(Eval2.east)+(2,-0.3)$){generator mode};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.west)+(-2.2,-3)$)(End1){$v_{d,lim} = 0.95 \cdot sign(v_d) \cdot V_{SV,max}$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.east)+(2.2,-3)$)(End2){$v_{d,lim} = v_d$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_{SV,max}^2 - v_{d,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{q,lim} = 0.95 \cdot sign(v_q) \cdot V_{SV,max}$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_{SV,max}^2 - v_{q,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{q,lim} = v_q$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_{SV,max}^2 - v_{q,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.west)+(-2.2,-3)$)(End1){$v_{d,lim} = 0.95 \cdot sign(v_d) \cdot V_\mathrm{max}$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_\mathrm{max}^2 - v_{d,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3left.east)+(2.2,-3)$)(End2){$v_{d,lim} = v_d$ \\\\ $v_{q,lim} = sign(v_q)\cdot \sqrt{V_\mathrm{max}^2 - v_{d,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{q,lim} = 0.95 \cdot sign(v_q) \cdot V_\mathrm{max}$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_\mathrm{max}^2 - v_{q,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{q,lim} = v_q$ \\\\ $v_{d,lim} = sign(v_d)\cdot \sqrt{V_\mathrm{max}^2 - v_{q,lim}^2}$};
   \draw[-latex](Eval3left.west) -| (End1.north);
   \draw[-latex](Eval3left.east) -| (End2.north);
   \draw[-latex](Eval3right.west) -| (End3.north);
@@ -114,35 +115,19 @@ Limits the input voltages according to the following scheme.
     The basis for the :math:`\alpha\beta`- and :math:`XY`-systems is the :ref:`uz_transformation`.
     Furthermore, this approach is only valid, if the two neutral points of the 6ph-PMSM are disconnected from each other (2N-configuration).
 
-A maximum stator voltage according to 
+With the max modulation index :math:`m_\mathrm{max}` the maximum stator voltage according to 
 
 .. math::
 
-  V_\mathrm{max} = V_{DC} \cdot m_{max}\,,
+  V_\mathrm{max} = V_\mathrm{DC} \cdot m_\mathrm{max}\,,
 
 can be realized. 
-The geometric sum of the :math:`xy`-subspace for each timestep is calculated by
-
-.. math::
-
-  V_\mathrm{abs}^{xy} = \|\boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k)\|_2\,.
-
-Since the subspaces after the VSD-transformation are orthogonal to each other, the individual subspace are constrained according to
-
-.. math::
-
-  	\|\boldsymbol{v}^{dq}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\,,\\
-		\|\boldsymbol{v}^{xy}_{\mathrm{s,ref}}(k) \|_2 &\leq V_\mathrm{lim}\,.
-
-This leads to a max voltage of 
+The :math:`xy`-subspace is limited to 
 
 .. math::
 
   	V_\mathrm{lim}^{xy} = \frac{V_\mathrm{max}}{\sqrt{2}} = \frac{V_\mathrm{dc} \cdot m_{max}}{\sqrt{2}}\,.
 
-However, in a realistic operation scenario, the voltages of the :math:`xy`-subspace is considerably lower.
-Therefore, both subspace have a different max voltage limit.
-Subsequently, the :math:`xy`-subspace is limited to the above condition. 
 Herein the :math:`y`-axis is prioritized over the :math:`x`-axis and a saftey margin of 5% is implemented.
 
 .. tikz:: space vector limitation flow chart for xy-axis
@@ -150,11 +135,11 @@ Herein the :math:`y`-axis is prioritized over the :math:`x`-axis and a saftey ma
   :xscale: 70
 
   \usetikzlibrary{shapes,arrows, patterns,calc};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_{abs}^{xy} > V_{lim}^{xy}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_\mathrm{abs}^{xy} > V_\mathrm{lim}^{xy}$};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(5,0)$)(End5){$v_{x,lim} = v_x$ \\\\ $v_{y,lim} = v_y$};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_{max}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_{SV,max}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_{max}^2 - v_{y,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_{max}^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_\mathrm{max}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_\mathrm{max}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_\mathrm{max}^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_\mathrm{max}^2 - v_{y,lim}^2}$};
   \draw[-latex](Eval1.south) -- (Eval3right.north);
   \path ([xshift=5mm]Eval1.south) -- ([xshift=5mm]Eval3right.north) node[midway,font=\Large] () {Yes};
   \draw[-latex](Eval1.east) -- (End5.west);

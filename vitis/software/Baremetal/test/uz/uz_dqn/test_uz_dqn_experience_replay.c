@@ -134,24 +134,28 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     };
     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(confbuf,EXPERIENCE_BUFFER_LENGTH,0);
     // test assert wenn testindex 0, muss noch behoben werden
-    uint32_t testindizes[MINIBATCHSIZE] = {2,0};
+    uint32_t testindizes[MINIBATCHSIZE] = {1,0};
     uint32_t* ind = testindizes;
     float getbackrew[MINIBATCHSIZE]= {0.0f};
     float* r = getbackrew;
     float getbackqval[MINIBATCHSIZE]= {0.0f};
     float* q = getbackqval;
+    float getbackqvalplus1[MINIBATCHSIZE]= {0.0f};
+    float* qplus1 = getbackqvalplus1;
     int32_t getbackact[MINIBATCHSIZE] = {0};
     int32_t* a = getbackact;
     float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *getbackobs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
-    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,a,getbackobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
-    float testrew[MINIBATCHSIZE] = {300.0f,-777.7f};
-    float testqval[MINIBATCHSIZE] = {7.99f,543.3f};
-    float testobs[NUMBEROFOBS*MINIBATCHSIZE] = {2.0f,-1.0f,5.1f,2.1f,3.0f,7.0f,7.0f,7.0f,7.0f,7.0f};
-    int32_t testact[MINIBATCHSIZE] = {-1,777};
+    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,qplus1,a,getbackobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
+    float testrew[MINIBATCHSIZE] = {-27.7f,-777.7f};
+    float testqval[MINIBATCHSIZE] = {6.4f,543.3f};
+    float testqvalplus1[MINIBATCHSIZE] = {7.99f,6.4f};
+    float testobs[NUMBEROFOBS*MINIBATCHSIZE] = {2.0f,2.1f,5.1f,2.1f,13.0f,7.0f,7.0f,7.0f,7.0f,7.0f};
+    int32_t testact[MINIBATCHSIZE] = {0,777};
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testrew, getbackrew, MINIBATCHSIZE);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testqval, getbackqval, MINIBATCHSIZE);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(testqvalplus1, getbackqvalplus1, MINIBATCHSIZE);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testobs, getbackobbs, MINIBATCHSIZE*NUMBEROFOBS);
     TEST_ASSERT_EQUAL_INT32_ARRAY(testact, getbackact, MINIBATCHSIZE);
 }

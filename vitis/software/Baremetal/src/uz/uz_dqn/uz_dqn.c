@@ -120,7 +120,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, int32_t *action, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -139,9 +139,11 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         uint32_t index = indizes[i];
         uz_dqn_get_from_buffer(self,reward,qvalue,action,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
+        uz_dqn_get_q_value_from_buffer(self,qvalueplus1,index+1);
         reward++;
         action++;
         qvalue++;
+        qvalueplus1++;
     }
 }
 

@@ -93,8 +93,12 @@ typedef struct {
   real32_T voltage_measurement_Rp; /**< Voltage measurement: parallel resistor to capacitor*/
   real32_T voltage_measurement_Rs; /**< Voltage measurement: series resistor to capacitor*/
   uz_3ph_dq_t i_xy_ref; /**< Not needed for ID-states. Can be used to transmit reference currents to a control algorithm. */
-  uint16_T resonant_subsystem; /**< active resonant control in certain subsystem (bit 0: dq, bit 1: xy, bit 2: zero) */
-  uint16_T PI_subsystem; /**< active PI control in certain subsystem (bit 0: dq, bit 1: xy, bit 2: zero) */
+  boolean_T PI_dq; /**< select PI-control in dq */
+  boolean_T PI_xy; /**< select PI-control in xy */
+  boolean_T PI_zero; /**< select PI-control in zero */
+  boolean_T resonant_dq; /**< select resonant-control in dq */
+  boolean_T resonant_xy; /**< select resonant-control in xy */
+  boolean_T resonant_zero; /**< select resonant-control in zero */
   boolean_T controllers_updated; /**< controller configs updated */
   boolean_T setpoint_filter; /**< filter setpoints */
 } uz_ParaID_GlobalConfig_t;
@@ -136,10 +140,16 @@ typedef struct {
   real32_T Ki_n_out; /**<Ki_n for FOC control. Can be ignored, if another control algorithm is used */
   uz_3ph_dq_t i_xy_ref; /**< reference currents for current controller */
   uz_3ph_dq_t i_zero_ref; /**< reference currents for current controller */
-  uint16_T resonant_subsystem; /**< active resonant control in certain subsystem (bit 0: dq, bit 1: xy, bit 2: zero) */
-  uint16_T PI_subsystem; /**< active PI control in certain subsystem (bit 0: dq, bit 1: xy, bit 2: zero) */
-  uint16_T setpoint_filter; /**< active setpoint filtering in certain subsystem (bit 0: dq, bit 1: xy, bit 2: zero) */
-} uz_ParaID_Controller_Parameters_output_t;
+  boolean_T PI_dq; /**< select PI-control in dq */
+  boolean_T PI_xy; /**< select PI-control in xy */
+  boolean_T PI_zero; /**< select PI-control in zero */
+  boolean_T resonant_dq; /**< select resonant-control in dq */
+  boolean_T resonant_xy; /**< select resonant-control in xy */
+  boolean_T resonant_zero; /**< select resonant-control in zero */
+  boolean_T filter_dq; /**< select setpoint filtering in dq */
+  boolean_T filter_xy; /**< select setpoint filtering in xy */
+  boolean_T filter_zero; /**< select setpoint filtering in zero */
+  } uz_ParaID_Controller_Parameters_output_t;
 
 //----------------------------------------//
 //----------------------------------------//
@@ -223,7 +233,9 @@ typedef struct {
   boolean_T start_FM_ID; /**< flag to enable the automatic current control */
   boolean_T identR; /**< flag to enable online identification */
   real32_T identRAmp; /**< amplitude of the d-current injection signal for online identification of Rs in Amps */
-  uint16_T selected_subsystem; /**< selected subsystem to identify (1: dq, 2: xy, 3: zero) */
+  boolean_T select_dq; /**< selected dq system for identification */
+  boolean_T select_xy; /**< selected xy system for identification */
+  boolean_T select_zero; /**< selected zero system for identification */
   real32_T lower_meas_temp; /**< lower threshold for measurement */
   real32_T upper_meas_temp; /**< upper threshold for measurement */
 } uz_ParaID_FluxMapIDConfig_t; 

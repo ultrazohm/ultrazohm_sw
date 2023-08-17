@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 5.76
+ * Model version                  : 5.80
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Tue Aug 15 09:07:39 2023
+ * C/C++ source code generated on : Thu Aug 17 17:44:10 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -838,9 +838,13 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.i_xy_ref.d = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_xy_ref.q = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_xy_ref.zero = 0.0F;
-  rtControlState_Y->GlobalConfig_out.resonant_subsystem = 0U;
-  rtControlState_Y->GlobalConfig_out.PI_subsystem = 0U;
   rtControlState_Y->GlobalConfig_out.controllers_updated = false;
+  rtControlState_Y->GlobalConfig_out.PI_dq = false;
+  rtControlState_Y->GlobalConfig_out.PI_xy = false;
+  rtControlState_Y->GlobalConfig_out.PI_zero = false;
+  rtControlState_Y->GlobalConfig_out.resonant_dq = false;
+  rtControlState_Y->GlobalConfig_out.resonant_xy = false;
+  rtControlState_Y->GlobalConfig_out.resonant_zero = false;
   rtControlState_Y->GlobalConfig_out.setpoint_filter = false;
   rtControlState_Y->ControlFlags.startFrictionID = false;
   rtControlState_Y->ControlFlags.startElectricalID = false;

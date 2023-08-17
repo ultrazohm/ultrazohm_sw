@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 5.76
+ * Model version                  : 5.80
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Tue Aug 15 09:07:39 2023
+ * C/C++ source code generated on : Thu Aug 17 17:44:10 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -59,7 +59,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_ControlState_t RT_MODEL_ControlState_t;
-
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {

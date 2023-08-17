@@ -7,17 +7,18 @@
  *
  * Code generated for Simulink model 'TwoMassID'.
  *
- * Model version                  : 2.371
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Dec 22 12:41:11 2021
+ * Model version                  : 5.45
+ * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+ * C/C++ source code generated on : Thu Aug 17 18:09:53 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (10), Warnings (3), Error (0)
  */
+
 #include "../uz_ParameterID_data.h"
 
 #ifndef RTW_HEADER_TwoMassID_h_
@@ -31,8 +32,6 @@
 #endif                                 /* TwoMassID_COMMON_INCLUDES_ */
 
 #include <stddef.h>
-
-
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -63,6 +62,7 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_TwoMassID_t RT_MODEL_TwoMassID_t;
+
 
 #ifndef struct_tag_ZpaURosCCuIauE184fQrdB
 #define struct_tag_ZpaURosCCuIauE184fQrdB
@@ -116,7 +116,6 @@ struct tag_MVWU0C6TwghbPF0nrErUCF
 typedef struct tag_MVWU0C6TwghbPF0nrErUCF comm_PNSequence_0_TwoMassID_t;
 
 #endif                               /* typedef_comm_PNSequence_0_TwoMassID_t */
-
 
 /* Block signals and states (default storage) for system '<S1>/TwoMassID.Welch' */
 typedef struct {

@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'TwoMassID'.
  *
- * Model version                  : 2.371
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Dec 22 12:41:11 2021
+ * Model version                  : 5.45
+ * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+ * C/C++ source code generated on : Thu Aug 17 18:09:53 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (9), Warnings (3), Error (0)
+ * Validation result: Passed (10), Warnings (3), Error (0)
  */
 
 #include "TwoMassID_codegen.h"
@@ -26,7 +26,6 @@
 #include <math.h>
 #include "../lib/rt_nonfinite.h"
 #include "../lib/eye_6olvtp5i.h"
-
 
 /* Named constants for Chart: '<Root>/TwoMassID' */
 #define IN_NO_ACTIVE_CHILD             ((uint8_T)0U)
@@ -8915,9 +8914,15 @@ void TwoMassID_initialize(RT_MODEL_TwoMassID_t *const rtTwoMassID_M)
   rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.d = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.q = 0.0F;
   rtTwoMassID_Y->TwoMassID_FOC_output.i_zero_ref.zero = 0.0F;
-  rtTwoMassID_Y->TwoMassID_FOC_output.resonant_subsystem = 0U;
-  rtTwoMassID_Y->TwoMassID_FOC_output.PI_subsystem = 0U;
-  rtTwoMassID_Y->TwoMassID_FOC_output.setpoint_filter = 0U;
+  rtTwoMassID_Y->TwoMassID_FOC_output.PI_dq = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.PI_xy = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.PI_zero = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.resonant_dq = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.resonant_xy = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.resonant_zero = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.filter_dq = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.filter_xy = false;
+  rtTwoMassID_Y->TwoMassID_FOC_output.filter_zero = false;
 
   /* SystemInitialize for Outport: '<Root>/TwoMassID_state_output' */
   rtTwoMassID_Y->TwoMassID_state_output.PRBS_out = 0.0F;

@@ -443,25 +443,6 @@ typedef struct uz_ParameterID_Data_t {
 													2 = Speed_Control\n
                           3 = Torque_Control*/
   bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
-  // controller instances
-  uz_SetPoint_t* setpoint_instance; /**< instance of setpoint module */
-  uz_SpeedControl_t* speed_instance; /**< instance of speed control */
-  uz_CurrentControl_t* cc_instance_1; /**< first current control instance */
-  uz_CurrentControl_t* cc_instance_2; /**< second current control instance */
-  uz_resonantController_t* resonant_instance_1; /**< first current control instance */
-  uz_resonantController_t* resonant_instance_2; /**< second current control instance */
-  uz_encoder_offset_estimation_t* encoder_offset_estimation; /**< encoder offset estimation instance */
-  // controller parameters
-  struct uz_CurrentControl_config config_cc_dq; /**< config for current control in dq */
-  struct uz_CurrentControl_config config_cc_xy; /**< config for current control in xy */
-  struct uz_CurrentControl_config config_cc_zero; /**< config for current control in zero */
-  struct uz_resonantController_config config_res_dq; /**< config for resonant in dq */
-  struct uz_resonantController_config config_res_xy; /**< config for resonant in xy */
-  struct uz_resonantController_config config_res_zero; /**< config for resonant in zero */
-  // filter instances
-  uz_dq_setpoint_filter* filter_1; /**< config for filter in dq */
-  uz_dq_setpoint_filter* filter_2; /**< config for filter in xy */
-  uz_dq_setpoint_filter* filter_3; /**< config for filter in zero */
 } uz_ParameterID_Data_t;
 
 #endif

@@ -1,4 +1,4 @@
-#include "../include/fault_control.h"
+#include "../include/init_fault_control.h"
 
 // config for moving average filter
 const struct uz_movingAverageFilter_config movAvF_config = {

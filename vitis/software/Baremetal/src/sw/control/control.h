@@ -20,7 +20,7 @@ enum controller_type {reset, PI_0, PI_PI, PI_R, PIR_PIR};
 #include "PI_PI.h"
 #include "PI_R.h"
 #include "PIR_PIR.h"
-
+#include "fault_control.h"
 
 // testbench data
 #define PHASE_PSI_PM_3 UZ_PIf

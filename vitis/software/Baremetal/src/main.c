@@ -96,6 +96,9 @@ int main(void)
 			Global_Data.objects.objects_PIR_PIR.RES_XY3 = Global_Data.objects.objects_PI_R.XY3;
 			// fault tolerant
 			Global_Data.objects.fault_detection = init_uz_VSD_9ph_FD();
+			Global_Data.objects.objects_fault_control.xy1 = Global_Data.objects.objects_PI_PI.xy1;
+			Global_Data.objects.objects_fault_control.xy2 = Global_Data.objects.objects_PI_PI.xy2;
+			Global_Data.objects.objects_fault_control.xy3 = Global_Data.objects.objects_PI_PI.xy3;
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

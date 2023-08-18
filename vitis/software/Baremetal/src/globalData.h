@@ -22,6 +22,7 @@ struct pointers_PI_PI{
 	uz_CurrentControl_t* xy2;
 	uz_CurrentControl_t* xy3;
 };
+
 struct pointers_PI_R{
 	uz_CurrentControl_t* dq;
 	uz_subspace_resonant_control* XY1;
@@ -38,6 +39,12 @@ struct pointers_PIR_PIR{
 	uz_subspace_resonant_control* RES_xy2;
 	uz_subspace_resonant_control* RES_xy3;
 	uz_subspace_resonant_control* RES_XY3;
+};
+
+struct pointers_fault_control{
+	uz_CurrentControl_t* xy1;
+	uz_CurrentControl_t* xy2;
+	uz_CurrentControl_t* xy3;
 };
 
 // union allows to access the values as array and individual variables
@@ -163,6 +170,7 @@ typedef struct{
 	struct pointers_PI_PI objects_PI_PI;
 	struct pointers_PI_R objects_PI_R;
 	struct pointers_PIR_PIR objects_PIR_PIR;
+	struct pointers_fault_control objects_fault_control;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

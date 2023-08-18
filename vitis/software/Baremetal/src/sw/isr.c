@@ -47,11 +47,21 @@ extern DS_Data Global_Data;
 #define MAX_DC_VOLT 400.0f
 #define MAX_SPEED_RPM 1000.0f
 #define MAX_TEMP_DEG 90.0f
-#define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
+#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
 
 // modulation
 #include "../uz/uz_spwm/uz_spwm.h"
 struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
+
+// control
+#include "control/control.h"
+uz_9ph_abc_t ref_voltages = {0};
+enum controller_type selected_controller = PI_R;
+
+// fault control
+uz_9ph_abc_t indices = {0};
+uz_9ph_alphabeta_t ref_voltages_fault = {0};
+struct uz_9ph_MLMT_kparameter k_param = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -81,7 +91,7 @@ void ISR_Control(void *data)
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);
     Global_Data.av.full_voltages_dq = uz_transformation_9ph_abc_to_dq(Global_Data.av.voltages_abc, Global_Data.av.rotational_position.position_el_2pi);
-	Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.voltages_abc);
+    Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.voltages_abc);
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Limits///////////////////////////////////
@@ -109,12 +119,62 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
+	derate_dq_setpoints(&Global_Data, k_param.derating, indices);
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	// controller here
+    	////////////////////////////////////////////////////////////////////////////
+    	///////////////////////////////////Normal Control///////////////////////////
+    	////////////////////////////////////////////////////////////////////////////
+    	switch(selected_controller){
+			case PI_0:
+				ref_voltages = step_controllers_PI_0(&Global_Data, Global_Data.objects.cc_instance_dq);
+				break;
+			case PI_PI:
+				ref_voltages = step_controllers_PI_PI(&Global_Data, Global_Data.objects.objects_PI_PI);
+				break;
+			case PI_R:
+				ref_voltages = step_controllers_PI_R(&Global_Data, Global_Data.objects.objects_PI_R);
+				break;
+			case PIR_PIR:
+				ref_voltages = step_controllers_PIR_PIR(&Global_Data, Global_Data.objects.objects_PIR_PIR);
+				break;
+			default:
+			case reset:
+				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+				reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
+				reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+				break;
+    	}
+
+    	////////////////////////////////////////////////////////////////////////////
+    	///////////////////////////////////Fault control////////////////////////////
+    	////////////////////////////////////////////////////////////////////////////
+    	indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+    	if(uz_vsd_opf_9ph_get_n_fault(indices)){
+    		k_param = uz_get_k_parameter_9ph_ML(indices);
+    		fault_control_set_tristate(&Global_Data, indices);
+    		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
+    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, indices);
+    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
+    	}
+    	////////////////////////////////////////////////////////////////////////////
+    	///////////////////////////////////Output///////////////////////////////////
+    	////////////////////////////////////////////////////////////////////////////
+		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
+		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 
     }else{
+    	// reset controllers
+		uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
+		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
+		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
+		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
+		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

@@ -57,6 +57,7 @@
 
 #include "include/pwm_init.h"
 #include "sw/control/control.h"
+#include "include/init_fault_control.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -21,3 +21,4 @@ void uz_set_DC_zero(DS_Data* Data);
 void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config);
 void uz_limit_exceed(DS_Data* Data);
 void uz_resolver_read_and_adapt_direction(DS_Data* Data);
+void uz_ADC_torque(DS_Data* Data);

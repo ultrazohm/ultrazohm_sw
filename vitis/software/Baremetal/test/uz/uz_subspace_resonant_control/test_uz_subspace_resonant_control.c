@@ -62,6 +62,11 @@ void test_uz_subspace_resonant_control_init_and_step(void)
     uz_3ph_alphabeta_t out_ab = uz_subspace_resonant_control_step_alphabeta(obj, ref_ab, actual_ab, omega_el);
     TEST_ASSERT_FLOAT_WITHIN(0.01f - 1e-06f, 0.01f + 1e-06f, out_ab.alpha);
     TEST_ASSERT_FLOAT_WITHIN(0.01f - 1e-06f, 0.01f + 1e-06f, out_ab.beta);
+
+    uz_subspace_resonant_control_set_gains(obj, 111.0f, 222.0f);
+    struct uz_subspace_resonant_control_config config_out = uz_subspace_resonant_control_get_config(obj);
+    TEST_ASSERT_EQUAL_FLOAT(config_out.gain_1, 111.0f);
+    TEST_ASSERT_EQUAL_FLOAT(config_out.gain_2, 222.0f);
 }
 
 

@@ -80,6 +80,7 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t rotational_position;
 	uz_9ph_abc_t currents_abc;
 	uz_9ph_abc_t voltages_abc;
+	uz_9ph_alphabeta_t currents_alphabeta;
 	uz_9ph_dq_t full_currents_dq;
 	uz_9ph_dq_t full_voltages_dq;
 	uz_3ph_dq_t currents_dq;

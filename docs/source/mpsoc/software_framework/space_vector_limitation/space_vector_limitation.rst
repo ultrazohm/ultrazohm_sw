@@ -130,6 +130,12 @@ The :math:`xy`-subspace is limited to
 
 Herein the :math:`y`-axis is prioritized over the :math:`x`-axis and a saftey margin of 5% is implemented.
 
+With the absolute value of the :math:`xy` voltages being 
+
+.. math::
+
+  	V_\mathrm{abs}^{xy} = \sqrt{v_d^2 + v_y^2}\,.
+
 .. tikz:: space vector limitation flow chart for xy-axis
   :align: center
   :xscale: 70
@@ -137,9 +143,9 @@ Herein the :math:`y`-axis is prioritized over the :math:`x`-axis and a saftey ma
   \usetikzlibrary{shapes,arrows, patterns,calc};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_\mathrm{abs}^{xy} > V_\mathrm{lim}^{xy}$};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(5,0)$)(End5){$v_{x,lim} = v_x$ \\\\ $v_{y,lim} = v_y$};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_\mathrm{max}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_\mathrm{max}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_\mathrm{max}^2 - v_{y,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{V_\mathrm{max}^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_\mathrm{lim}^{xy}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_\mathrm{lim}^{xy}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,lim}^2}$};
   \draw[-latex](Eval1.south) -- (Eval3right.north);
   \path ([xshift=5mm]Eval1.south) -- ([xshift=5mm]Eval3right.north) node[midway,font=\Large] () {Yes};
   \draw[-latex](Eval1.east) -- (End5.west);
@@ -161,7 +167,16 @@ Herein, to ensure, that the full utilization of the maximum stator voltages can 
 
 .. math::
 
-  	V_\mathrm{lim}^{dq} = \sqrt{V_\mathrm{max}^2 - (V_\mathrm{ref}^{xy})^2}\,.
+  	V_\mathrm{lim}^{dq} = \sqrt{V_\mathrm{max}^2 - (V_\mathrm{out}^{xy})^2}\,,
+
+with
+
+.. math::
+
+  	V_\mathrm{out}^{xy} = \sqrt{(v_\mathrm{out}^x)^2 + (v_\mathrm{out}^y)^2}\,,
+
+being the limited voltages of the :math:`xy`-axis which will be output.
+
 
 Then the flowchart in  :numref:`limit_flowchart` is used again, with :math:`V_\mathrm{max}` being replaced by :math:`V_\mathrm{lim}^{dq}`.
 

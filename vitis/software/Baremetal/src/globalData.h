@@ -13,6 +13,8 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+#include "uz/uz_VSD_9ph_FD_control/uz_VSD_9ph_FD.h"
+
 
 struct pointers_PI_PI{
 	uz_CurrentControl_t* dq;
@@ -104,6 +106,7 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t rotational_position;
 	uz_9ph_abc_t currents_abc;
 	uz_9ph_abc_t voltages_abc;
+	uz_9ph_alphabeta_t currents_alphabeta;
 	uz_9ph_dq_t full_currents_dq;
 	uz_9ph_dq_t full_voltages_dq;
 	uz_3ph_dq_t currents_dq;
@@ -155,6 +158,7 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
+	uz_VSD_9ph_FD_t* fault_detection;
 	uz_CurrentControl_t* cc_instance_dq;
 	struct pointers_PI_PI objects_PI_PI;
 	struct pointers_PI_R objects_PI_R;

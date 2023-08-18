@@ -27,8 +27,8 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
-#define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  20U
+#define UZ_CURRENTCONTROL_MAX_INSTANCES                 10U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
@@ -48,13 +48,16 @@
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               0U
 #define UZ_SETPOINT_MAX_INSTANCES                       1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
-#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            0U
-#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            0U
+#define UZ_RESONANT_CONTROLLER_MAX_INSTANCES            20U
+#define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            10U
 #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               3U
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
-#define UZ_AXI_GPIO_MAX_INSTANCES 0U
+#define UZ_AXI_GPIO_MAX_INSTANCES 						0U
 #define UZ_TEMPERATURE_CARD_MAX_INSTANCES				1U
+#define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES		10U
+#define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES		1U
+#define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES			10U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -94,5 +97,6 @@
     #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
     #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
+	#define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES		10U
 #define UZ_AXI_GPIO_MAX_INSTANCES 10U
 #endif

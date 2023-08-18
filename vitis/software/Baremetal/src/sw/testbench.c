@@ -62,7 +62,8 @@ void uz_ADC_voltages(DS_Data* Data){
 void uz_ADC_torque(DS_Data* Data){
 	// short range: +-50Nm @ +-5V -> 10 Nm/V
 	// long range: +-200Nm @ +-5V -> 40 Nm/V
-	Data->av.torque_Nm = -1.0f*Data->aa.A1.me.ADC_B5 * 40.0f;
+	Data->av.torque_Nm_raw = -1.0f*Data->aa.A1.me.ADC_B5 * 40.0f;
+	Data->av.torque_Nm_filtered = uz_signals_IIR_Filter_sample(Data->objects.torque_filter, Data->av.torque_Nm_raw);
 }
 
 void uz_PWM_duty_freq_detection(DS_Data* Data){

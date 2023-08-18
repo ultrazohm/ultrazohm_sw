@@ -57,6 +57,8 @@
 
 #include "include/pwm_init.h"
 
+#include "include/init_torque_filter.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

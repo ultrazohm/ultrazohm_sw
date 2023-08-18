@@ -13,6 +13,7 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+#include "uz/uz_signals/uz_signals.h"
 
 
 // union allows to access the values as array and individual variables
@@ -91,7 +92,8 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
 	float omega_el;
-	float torque_Nm;
+	float torque_Nm_raw;
+	float torque_Nm_filtered;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -126,6 +128,7 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
+	uz_IIR_Filter_t* torque_filter;
 	uz_CurrentControl_t* cc_instance_dq;
 }object_pointers_t;
 

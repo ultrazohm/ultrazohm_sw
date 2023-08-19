@@ -3,6 +3,7 @@
 # Add
 - Add M_AXI_HPM0_FPD (replaces M_AXI_HPM0_LPD)
 - ILA for PWM1 measurement
+- ILA for control bits
 
 # Change
 - Use AXI2TCM_done signal as FPGA IRQ source

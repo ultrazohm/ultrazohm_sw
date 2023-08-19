@@ -64,6 +64,7 @@ typedef struct timing_value_t_ {
 	float task_fast;
 	float task_slow;
 	float task_1ms;
+	float task_10ms;
 	float config_update;
 } timing_value_t;
 
@@ -73,12 +74,20 @@ typedef struct timing_t_ {
 	float irq_freq_kHz;
 } timing_t;
 
+typedef struct sanity_t_ {
+	uint32_t cnt_activation_irq_1ms;
+	uint32_t cnt_activation_task_fast;
+	uint32_t cnt_activation_task_1ms;
+	uint32_t cnt_activation_task_10ms;
+} sanity_t;
+
 //====================================================================
 // Configuration
 //====================================================================
 #define BACKGROUND_TASK_STACK_SIZE		1024
 // Must be task with highest priority!
-#define BACKGROUND_TASK_STACK_PRIO		7
+#define BACKGROUND_TASK_PRIO_1MS		7
+#define BACKGROUND_TASK_PRIO_10MS		(BACKGROUND_TASK_PRIO_1MS - 1)
 
 #define ACTIVATION_QUEUE_LEN			1
 #define ACTIVATION_QUEUE_ITEM_SIZE		1
@@ -116,8 +125,10 @@ volatile global_t global = {0};
 volatile static duty_cycles_t duty_cycles;
 
 volatile static timing_t timing_us;
+volatile static sanity_t sanity;
 
-QueueHandle_t queue_task_1ms;
+static QueueHandle_t queue_task_1ms;
+static QueueHandle_t queue_task_10ms;
 
 // TODO remove
 extern control_dummy_t control_dummy;
@@ -279,10 +290,14 @@ static void task_slow(void)
 	TS__(task_slow, ts_start, ts_now);
 }
 
-volatile static int cnt_task_1ms;
-void task_1ms(void)
+static void task_1ms(void)
 {
-	cnt_task_1ms++;
+
+}
+
+static void task_10ms(void)
+{
+
 }
 
 /*
@@ -290,7 +305,7 @@ void task_1ms(void)
  * only by fast_ctrl.
  * It runs with highest FreeRTOS priority. Fast-ctrl runs in irq.
  */
-void task_background_1ms(void *p)
+static void task_background_1ms(void *p)
 {
 	while (1) {
 		/*
@@ -302,9 +317,34 @@ void task_background_1ms(void *p)
 		xQueueReceive(queue_task_1ms, buf, portMAX_DELAY);
 
 		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+		sanity.cnt_activation_task_1ms++;
 		task_1ms();
 		uint64_t ts_now = bsp_timer_timestamp_u64_get();
 		TS__(task_1ms, ts_start, ts_now);
+	}
+}
+
+/*
+ * This task runs with high priority in the background. It will be interrupted
+ * only by fast_ctrl and task_1ms.
+ * It runs with second highest FreeRTOS priority. Fast-ctrl runs in irq.
+ */
+static void task_background_10ms(void *p)
+{
+	while (1) {
+		/*
+		 * Implement simple activation of this task with a queue.
+		 * Read blocking from queue. An interrupt will write to the queue
+		 * each tick and thus activate this task.
+		 */
+		uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+		xQueueReceive(queue_task_10ms, buf, portMAX_DELAY);
+
+		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+		sanity.cnt_activation_task_10ms++;
+		task_10ms();
+		uint64_t ts_now = bsp_timer_timestamp_u64_get();
+		TS__(task_10ms, ts_start, ts_now);
 	}
 }
 
@@ -353,19 +393,22 @@ static void configuration_update(void)
 //====================================================================
 // Global functions
 //====================================================================
-// Runs with 1 kHz
-volatile static int cnt_irq_act;
 void timer_irq_callback__(void)
 {
+	// Timer irq runs with 1 kHz
+	sanity.cnt_activation_irq_1ms++;
+
 	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
 	xQueueSendFromISR(queue_task_1ms, buf, NULL);
-cnt_irq_act++;
 	static int div_cnt = 0;
 	div_cnt++;
 	if (div_cnt >= 10) {
 		div_cnt = 0;
-
+		xQueueSendFromISR(queue_task_10ms, buf, NULL);
 	}
+
+	// Call scheduler for a task switch
+	portYIELD_FROM_ISR(pdTRUE);
 }
 
 void irq_fpga(void *data)
@@ -378,6 +421,7 @@ void irq_fpga(void *data)
 
 	//---------------------
 	// Fast stuff
+	sanity.cnt_activation_task_fast++;
 	task_fast();
 
 	//---------------------
@@ -434,7 +478,10 @@ void basis_setup(void *p)
 
 	queue_task_1ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
 	xTaskCreate(task_background_1ms, "backgr1ms", BACKGROUND_TASK_STACK_SIZE,
-			NULL, BACKGROUND_TASK_STACK_PRIO, NULL);
+			NULL, BACKGROUND_TASK_PRIO_1MS, NULL);
+	queue_task_10ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
+	xTaskCreate(task_background_10ms, "backgr10ms", BACKGROUND_TASK_STACK_SIZE,
+			NULL, BACKGROUND_TASK_PRIO_10MS, NULL);
 
 	xil_printf("APU: basis init done\n", __func__);
 

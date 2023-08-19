@@ -159,7 +159,7 @@ void xcp_event_fast(void)
 
 // This function shall be called each 1 ms
 // All xcp events, but the fast are derived from this function
-void xcp_events_1ms(void)
+void xcp_events_1ms_and_slower(void)
 {
 	XcpEvent(XCP_EVENT_1MS);
 

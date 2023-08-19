@@ -61,7 +61,7 @@ static void my_print_ip(ip_addr_t *ip)
 
 static void xcp_interface_init(void)
 {
-	xil_printf("%s() \n", __func__);
+	//xil_printf("%s() \n", __func__);
 
 //	queue_tx = xQueueGenericCreate(10, BUF_SIZE_XCP_TX, 0);
 
@@ -78,8 +78,8 @@ static void xcp_eth_tx(void *arg_p)
 	int sd = * (int *) arg_p;
 	int nwrote;
 
-	xil_printf("%s() start\n", __func__);
-	vTaskDelay(1);
+//	xil_printf("%s() start\n", __func__);
+//	vTaskDelay(1);
 
 	uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
 	while (flag_connection_active) {
@@ -106,7 +106,9 @@ static void xcp_eth_tx(void *arg_p)
 		}
 	}
 
-	xil_printf("%s(): delete\n", __func__);
+	xil_printf("XCP connection closed\n");
+
+//	xil_printf("%s(): delete\n", __func__);
 	close(sd);
 	vTaskDelete(NULL);
 }
@@ -116,14 +118,14 @@ static void xcp_eth_rx(void *arg_p)
 	int sd = * (int *) arg_p;
 	int n;
 
-	xil_printf("%s() start\n", __func__);
+//	xil_printf("%s() start\n", __func__);
 
 	uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 	while (1) {
 
 		// Will block here until new data is available
 		if ((n = read(sd, buf_xcp_rx, BUF_SIZE_XCP_RX)) < 0) {
-			xil_printf("ERROR: TCP socket read failed\n");
+			//xil_printf("ERROR: TCP socket read failed\n");
 			break;
 		}
 
@@ -138,7 +140,7 @@ static void xcp_eth_rx(void *arg_p)
 		bsp_ringBuffer_write(rbt_rx, buf_xcp_rx, n);
 	}
 
-	xil_printf("%s(): delete\n", __func__);
+//	xil_printf("%s(): delete\n", __func__);
 	flag_connection_active = 0;
 	close(sd);
 	vTaskDelete(NULL);
@@ -226,11 +228,11 @@ void xcp_interface(void *p)
 	}
 	lwip_listen(sock, 0);
 
+	xil_printf("%s() waiting for xcp master connection\n", __func__);
 	while (1) {
 		int new_sd;
 		int size = sizeof(remote);
 
-		xil_printf("%s() waiting for xcp master connection\n", __func__);
 		if ((new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 			xil_printf("xcp master connected from: ");
 			my_print_ip((ip_addr_t*) &remote.sin_addr);

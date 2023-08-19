@@ -6,10 +6,13 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "../main.h"
 
 #include "xcp/xcp_interface.h"
 #include "global_data.h"
@@ -60,6 +63,7 @@ typedef struct timing_value_t_ {
 	float irq_time;
 	float task_fast;
 	float task_slow;
+	float task_1ms;
 	float config_update;
 } timing_value_t;
 
@@ -72,6 +76,12 @@ typedef struct timing_t_ {
 //====================================================================
 // Configuration
 //====================================================================
+#define BACKGROUND_TASK_STACK_SIZE		1024
+// Must be task with highest priority!
+#define BACKGROUND_TASK_STACK_PRIO		7
+
+#define ACTIVATION_QUEUE_LEN			1
+#define ACTIVATION_QUEUE_ITEM_SIZE		1
 
 //====================================================================
 // Variables
@@ -106,6 +116,8 @@ volatile global_t global = {0};
 volatile static duty_cycles_t duty_cycles;
 
 volatile static timing_t timing_us;
+
+QueueHandle_t queue_task_1ms;
 
 // TODO remove
 extern control_dummy_t control_dummy;
@@ -267,6 +279,35 @@ static void task_slow(void)
 	TS__(task_slow, ts_start, ts_now);
 }
 
+volatile static int cnt_task_1ms;
+void task_1ms(void)
+{
+	cnt_task_1ms++;
+}
+
+/*
+ * This task runs with high priority in the background. It will be interrupted
+ * only by fast_ctrl.
+ * It runs with highest FreeRTOS priority. Fast-ctrl runs in irq.
+ */
+void task_background_1ms(void *p)
+{
+	while (1) {
+		/*
+		 * Implement simple activation of this task with a queue.
+		 * Read blocking from queue. An interrupt will write to the queue
+		 * each tick and thus activate this task.
+		 */
+		uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+		xQueueReceive(queue_task_1ms, buf, portMAX_DELAY);
+
+		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+		task_1ms();
+		uint64_t ts_now = bsp_timer_timestamp_u64_get();
+		TS__(task_1ms, ts_start, ts_now);
+	}
+}
+
 static void configuration_update(void)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
@@ -312,6 +353,21 @@ static void configuration_update(void)
 //====================================================================
 // Global functions
 //====================================================================
+// Runs with 1 kHz
+volatile static int cnt_irq_act;
+void timer_irq_callback__(void)
+{
+	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+	xQueueSendFromISR(queue_task_1ms, buf, NULL);
+cnt_irq_act++;
+	static int div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= 10) {
+		div_cnt = 0;
+
+	}
+}
+
 void irq_fpga(void *data)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
@@ -374,6 +430,11 @@ void basis_setup(void *p)
     global.config.deadtime_us = Global_Data.av.deadtime_us;
 
 	bsp_led_init();
+
+
+	queue_task_1ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
+	xTaskCreate(task_background_1ms, "backgr1ms", BACKGROUND_TASK_STACK_SIZE,
+			NULL, BACKGROUND_TASK_STACK_PRIO, NULL);
 
 	xil_printf("APU: basis init done\n", __func__);
 

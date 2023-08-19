@@ -71,7 +71,6 @@ typedef struct timing_value_t_ {
 typedef struct timing_t_ {
 	timing_value_t now;
 	timing_value_t max;
-	float irq_freq_kHz;
 } timing_t;
 
 typedef struct sanity_t_ {
@@ -79,6 +78,7 @@ typedef struct sanity_t_ {
 	uint32_t cnt_activation_task_fast;
 	uint32_t cnt_activation_task_1ms;
 	uint32_t cnt_activation_task_10ms;
+	float irq_freq_kHz;
 } sanity_t;
 
 //====================================================================
@@ -121,7 +121,6 @@ DS_Data Global_Data = {
 };
 
 volatile global_t global = {0};
-
 volatile static duty_cycles_t duty_cycles;
 
 volatile static timing_t timing_us;
@@ -197,7 +196,6 @@ static void control_dummy_run(void)
 	}
 }
 
-
 static void task_fast(void)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
@@ -217,8 +215,6 @@ static void task_fast(void)
 
 	if (global.ctrl.ctrl_enable) {
 		//control_dummy_run();
-
-
 
 		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
@@ -292,12 +288,29 @@ static void task_slow(void)
 
 static void task_1ms(void)
 {
+	Xil_ExceptionDisable();
+	// todo: copy values from task_1ms output to task_fast input
+	// task_1ms.in.value_1 = fast_ctrl.out.value_1
+	// task_1ms.in.value_2 = fast_ctrl.out.value_2
+	// task_1ms.in.value_3 = fast_ctrl.out.value_3
+	Xil_ExceptionEnable();
 
+	// step_1ms(&task_1ms.in, &task_1ms.out);
+
+	Xil_ExceptionDisable();
+	// todo: copy values from task_1ms output to task_fast input
+	// fast_ctrl.in.value_1 = task_1ms.out.value_1
+	// fast_ctrl.in.value_2 = task_1ms.out.value_2
+	// fast_ctrl.in.value_3 = task_1ms.out.value_3
+	Xil_ExceptionEnable();
 }
 
 static void task_10ms(void)
 {
+	// step_10ms(&task_10ms.in, &task_10ms.out);
 
+	// control_buttons()
+	// control_leds()
 }
 
 /*
@@ -400,6 +413,7 @@ void timer_irq_callback__(void)
 
 	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
 	xQueueSendFromISR(queue_task_1ms, buf, NULL);
+
 	static int div_cnt = 0;
 	div_cnt++;
 	if (div_cnt >= 10) {
@@ -416,7 +430,7 @@ void irq_fpga(void *data)
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
 	static uint64_t ts_last = 0;
 	TS__(irq_rate, ts_last, ts_start);
-	timing_us.irq_freq_kHz = (1 / timing_us.now.irq_rate * (float)1e3);
+	sanity.irq_freq_kHz = (1 / timing_us.now.irq_rate * (float)1e3);
 	ts_last = ts_start;
 
 	//---------------------

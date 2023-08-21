@@ -9,14 +9,14 @@ On this page, a description of a nine-phase PMSM CIL model will be given, using 
 Vivado
 ======
 
-The structure iof the nine-phase PMSM CIL model is similar to the :ref:`uz_6ph_cil_example`.
-Therefore the basics and details are omitted here.
+The structure of the nine-phase PMSM CIL model is similar to the :ref:`uz_6ph_cil_example`.
+Therefore the basics are omitted here.
 To simplify the usage of the CIL and to reduce possible errors, a tcl script was created, that places all necessary IP-Cores automatically and connects them.
 To use it, open the Vivado project and on the top level of the block design, run the following commands seperately:
 
-"cd [ get_property DIRECTORY [current_project] ]" 
+``cd [ get_property DIRECTORY [current_project] ]``
 
-"source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/ninephase_cil.tcl"
+``source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/ninephase_cil.tcl``
 
 A hierarchy with all CIL-IP-Cores is created and can be moved to the ``uz_user`` hierarchy.
 Connect the ports ``AXI``, ``aresetn`` and ``aclk`` as follows inside of ``uz_user``.
@@ -37,20 +37,29 @@ To initialize all IP-Cores, the files ``hw_init/ninephase_CIL.c`` and ``include/
 
 .. code-block:: c
   :caption: ``ninephase_CIL.h`` (R5)
+
+    #pragma once
     #include "../uz/uz_global_configuration.h"
     #include "../IP_Cores/uz_pmsm_model_9ph_dq/uz_pmsm_model9ph_dq.h"
     #include "../IP_Cores/uz_pmsm9ph_transformation/uz_pmsm9ph_transformation.h"
     #include "../IP_Cores/uz_inverter_3ph/uz_inverter_3ph.h"
-    uz_inverter_3ph_t* init_CIL_inv1(void);
-    uz_inverter_3ph_t* init_CIL_inv2(void);
-    uz_inverter_3ph_t* init_CIL_inv3(void);
-    uz_pmsm9ph_transformation_t* init_CIL_trafo(void);
-    uz_pmsm_model9ph_dq_t* init_CIL_pmsm(void);
+
+    struct CIL_objects{
+        uz_inverter_3ph_t* inv1;
+        uz_inverter_3ph_t* inv2;
+        uz_inverter_3ph_t* inv3;
+        uz_pmsm9ph_transformation_t* transformation;
+        uz_pmsm_model9ph_dq_t* pmsm;
+    };
+
+    struct CIL_objects init_all_objects_CIL(void);
+
 
 .. code-block:: c
   :caption: ``ninephase_CIL.c`` (R5)
 
-    #include "../include/ninephase_CIL.c"
+    #include "../include/ninephase_CIL.h"
+
     uz_inverter_3ph_t* init_CIL_inv1(void){
         struct uz_inverter_3ph_config_t cil_inverter1_config = {
             .base_address = 0,
@@ -112,4 +121,15 @@ To initialize all IP-Cores, the files ``hw_init/ninephase_CIL.c`` and ``include/
             .switch_pspl = false
         };
         return uz_pmsm_model9ph_dq_init(pmsm_config);
+    }
+
+    struct CIL_objects init_all_objects_CIL(void){
+        struct CIL_objects out = {
+            .inv1 = init_CIL_inv1(),
+            .inv2 = init_CIL_inv1(),
+            .inv3 = init_CIL_inv1(),
+            .transformation = init_CIL_trafo(),
+            .pmsm = init_CIL_pmsm()
+        };
+        return out;
     }

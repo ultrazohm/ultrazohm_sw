@@ -12,7 +12,7 @@
 #define LOWER_MASK		0x7fffffff
 #define TEMPERING_MASK_B	0x9d2c5680
 #define TEMPERING_MASK_C	0xefc60000
-
+#include <math.h>
 #include "mtwister.h"
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {
@@ -77,3 +77,34 @@ double genRand(MTRand* rand) {
 float genRand_float(MTRand* rand) {
 return((float)genRandLong(rand) / (unsigned long)0xffffffff);
 }
+/** 
+ * Box Muller Transformation, für die Normalverteilung * 
+*/
+// double random_normal(double mean, double std) { /* Box-Muller. */
+//     static double cached = 0.0;
+//     double x, y, r, res;
+
+//     if (cached == 0.0) {
+//         do {
+//             x = 2.0 * rand() / RAND_MAX - 1;
+//             y = 2.0 * rand() / RAND_MAX - 1;
+//             r = x * x + y * y;
+//         } while (r == 0.0 || r > 1.0);
+
+//         double d = sqrt(-2.0 * log(r) / r);
+
+//         double n1 = x * d;
+//         double n2 = y * d;
+
+//         res = n1 * std + mean;
+//         cached = n2;
+//     }
+//     else {
+//         res = cached * std + mean;
+//         cached = 0.0;
+//     }
+
+//     return res;
+// }
+
+

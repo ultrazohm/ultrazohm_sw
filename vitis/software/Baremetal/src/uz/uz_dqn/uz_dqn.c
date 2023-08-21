@@ -24,8 +24,8 @@ struct uz_dqn_t {
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
     uz_dqn_experience_replay_t *experience_buffer;
-    float *discount_factor;
-    float *lernrate;
+    float discount_factor;
+    float lernrate;
 };
 
 static uint32_t instance_counterbuf = 0U;
@@ -68,14 +68,12 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 }
 
 
-uz_dqn_t *uz_dqn_init(float *lernrate, float *discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
+uz_dqn_t *uz_dqn_init(float lernrate, float discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
 struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER],
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,
 uint32_t length_of_buffer, uint32_t headind)
 {
-    uz_assert_not_NULL(lernrate);
-    uz_assert_not_NULL(discount_factor);
     uz_dqn_t *self = uz_dqn_allocation();
     self->critic = uz_nn_init(config_critic, number_of_layer, true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
@@ -179,17 +177,13 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     }
 }
 
-float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal){
+float calculate_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(gamma); 
-    uz_assert_not_NULL(reward);
-    uz_assert_not_NULL(qval);
-    uz_assert_not_NULL(qvalplus1);
-    uz_assert_not_NULL(obs);    // berechne y_j
+    // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
     {
-        y_j = *reward;
+        y_j = reward;
     }
     else{
         // berechne max_aQ(psi,a',theta)
@@ -200,25 +194,20 @@ float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval
         // und evtl obs+1 und action(obs+1)
         // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
 		// uint32_t action = uz_matrix_get_max_index(obs); // index
-        y_j = *reward + (*self->discount_factor * *qvalplus1);
+        y_j = reward + (self->discount_factor * qvalplus1);
     }
     // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-    float loss = (float)pow((y_j - *qval),2.0f);
+    float loss = ((y_j - qval) * (y_j - qval));
     return loss;
 }
 
-float calculate_derv_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval, float * qvalplus1,  uz_matrix_t *obs, bool terminal){
+float calculate_derv_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(gamma); 
-    uz_assert_not_NULL(reward);
-    uz_assert_not_NULL(qval);
-    uz_assert_not_NULL(qvalplus1);
-    uz_assert_not_NULL(obs);
     // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
     {
-        y_j = *reward;
+        y_j = reward;
     }
     else{
         // berechne max_aQ(psi,a',theta)
@@ -229,10 +218,10 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float 
         // und evtl obs+1 und action(obs+1)
         // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
 		// uint32_t action = uz_matrix_get_max_index(obs); // index
-        y_j = *reward + (*self->discount_factor * *qvalplus1);
+        y_j = reward + (self->discount_factor * qvalplus1);
     }
     // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-    float loss = -2.0f*(y_j - *qval);
+    float loss = -2.0f*(y_j - qval);
     return loss;
 }
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, uint32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){

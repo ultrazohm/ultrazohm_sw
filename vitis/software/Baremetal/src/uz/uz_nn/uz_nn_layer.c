@@ -209,11 +209,6 @@ void uz_nn_layer_init_He(uz_matrix_t *parameter){
     }
 }
 
-uz_nn_layer_init_nn_He(uz_matrix_t *param){
-    uz_assert_not_NULL(param);
-    
-}
-
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer)
 {
     uz_assert_not_NULL(sourcelayer);

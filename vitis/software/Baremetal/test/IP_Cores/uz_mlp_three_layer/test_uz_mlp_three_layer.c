@@ -9,6 +9,7 @@
 #include "uz_mlp_three_layer.h"
 #include "mock_uz_mlp_three_layer_hw.h"
 #include "uz_matrix.h"
+#include "../uz_dqn/mtwister.h"
 
 void setUp(void)
 {

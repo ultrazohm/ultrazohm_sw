@@ -142,10 +142,10 @@ With the absolute value of the :math:`xy` voltages being
 
   \usetikzlibrary{shapes,arrows, patterns,calc};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$V_\mathrm{abs}^{xy} > V_\mathrm{lim}^{xy}$};
-  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(5,0)$)(End5){$v_{x,lim} = v_x$ \\\\ $v_{y,lim} = v_y$};
+  \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(5,0)$)(End5){$v_{x,out} = v_x$ \\\\ $v_{y,out} = v_y$};
   \node[draw, rectangle, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(-2.5,-5)$)(Eval3right){$|v_y| > 0.95 \cdot V_\mathrm{lim}^{xy}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,lim} = 0.95 \cdot sign(v_y) \cdot V_\mathrm{lim}^{xy}$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,lim}^2}$};
-  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,lim} = v_y$ \\\\ $v_{x,lim} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,lim}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.west)+(-2.2,-3)$)(End3){$v_{y,out} = 0.95 \cdot sign(v_y) \cdot V_\mathrm{lim}^{xy}$ \\\\ $v_{x,out} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,out}^2}$};
+  \node[draw, rectangle, align = center,rounded corners=6pt, minimum width=5cm,minimum height = 2.6cm, font=\Large] at ($(Eval3right.east)+(2.2,-3)$)(End4){$v_{y,out} = v_y$ \\\\ $v_{x,out} = sign(v_x)\cdot \sqrt{(V_\mathrm{lim}^{xy})^2 - v_{y,out}^2}$};
   \draw[-latex](Eval1.south) -- (Eval3right.north);
   \path ([xshift=5mm]Eval1.south) -- ([xshift=5mm]Eval3right.north) node[midway,font=\Large] () {Yes};
   \draw[-latex](Eval1.east) -- (End5.west);

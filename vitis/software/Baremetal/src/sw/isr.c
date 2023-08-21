@@ -44,6 +44,7 @@ extern DS_Data Global_Data;
 extern uz_SpeedControl_t* SC_instance_1;
 extern uz_SetPoint_t* SP_instance_1;
 extern uz_CurrentControl_t* CC_instance_1;
+extern uz_resonantController_t* R_controller_instance_1;
 extern struct uz_PMSM_t config_PMSM_1;
 // Inverter Measurement
 struct uz_3ph_abc_t v_abc_Volts_1 	= {0};
@@ -69,6 +70,7 @@ float Ki_speed_1 					= 0.01f;
 //float Ki_id = 230.0f;
 //float Kp_iq = 0.5f;
 //float Ki_iq = 230.0f;
+float Resonant_gain					= 0.0f;
 // Encoder Offset Estimation
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 // Wavegen Chirp
@@ -101,7 +103,7 @@ float theta_el_rad_2 				= 0.0f;
 float theta_el_offset_2 			= 1.4f;
 struct uz_DutyCycle_t output_2 		= {0};
 // Controller Settings
-float Kp_speed_2 					= 0.01f;
+float Kp_speed_2 					= 0.1f;
 float Ki_speed_2 					= 1.0f;
 //float Kp_id = 0.3f;
 //float Ki_id = 230.0f;
@@ -214,10 +216,11 @@ void ISR_Control(void *data)
 //    	}
 // =============================================== //
 
-    // Field Oriented Control of PMSM 1
+   // Field Oriented Control of PMSM 1 and resonant controller
    // M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
     v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    output = uz_resonantController_step(R_controller_instance_1, 0.0f, i_dq_Amps_1, omega_el_rad_per_sec_1);
     output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
     Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
     Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
@@ -238,6 +241,7 @@ void ISR_Control(void *data)
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
     	uz_SpeedControl_reset(SC_instance_1);
     	uz_CurrentControl_reset(CC_instance_1);
+    	uz_resonantController_reset(R_controller_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
     }
@@ -252,8 +256,9 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 
     // Change Variables during Runtime
-      uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);
-      uz_SpeedControl_set_Ki(SC_instance_2, Ki_speed_2);
+    uz_resonantController_set_gain(R_controller_instance_1, Resonant_gain);
+    uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);
+    uz_SpeedControl_set_Ki(SC_instance_2, Ki_speed_2);
 //    uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);
 //    uz_CurrentControl_set_Kp_iq(CC_instance, Kp_iq);
 //    uz_CurrentControl_set_Ki_id(CC_instance, Ki_id);

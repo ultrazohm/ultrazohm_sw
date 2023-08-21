@@ -47,6 +47,7 @@ uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
+uz_resonantController_t* R_controller_instance_1;
 
 // Declare Pointer for FOC of PMSM 2
 uz_SpeedControl_t* SC_instance_2;
@@ -113,15 +114,15 @@ int main(void)
      };
     // Configuration of Current Control
     struct uz_PI_Controller_config config_id_1 = {
-       .Kp = 2.2f, // nach BO
-       .Ki = 1245.0f, //nach BO
+       .Kp = 1.47f, // nach BO
+       .Ki = 830.0f, //nach BO
        .samplingTime_sec = 0.0001f,
  	   .upper_limit = 15.0f,
   	   .lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_1 = {
-       .Kp = 12.25f, // nach BO
-       .Ki = 1245.0f, // nach BO
+       .Kp = 8.17f, // nach BO
+       .Ki = 830.0f, // nach BO
        .samplingTime_sec = 0.0001f,
   	   .upper_limit = 15.0f,
 	   .lower_limit = -15.0f
@@ -152,6 +153,19 @@ int main(void)
       .offset = 0.0f
     };
 
+    // Resonant Controller
+    struct uz_resonantController_config config_R = {
+          .sampling_time = 0.0001f,
+          .gain = 52.5f,
+          .harmonic_order = 5.0f,
+          .fundamental_frequency = 10.0f,
+          .lower_limit = -4.0f,
+          .upper_limit = 4.0f,
+          .antiwindup_gain = 10.0f,
+          .in_reference_value = 0.0f,
+          .in_measured_value = 0.0f,
+      };
+
     //--------- Configs for PMSM 2 (Last) ---------//
     // Configuration of Speed Control
     struct uz_SpeedControl_config SC_config_2 = {
@@ -172,15 +186,15 @@ int main(void)
      };
      // Configuration of Current Control
      struct uz_PI_Controller_config config_id_2 = {
-        .Kp = 0.15f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-        .Ki = 83.2f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+        .Kp = 0.1f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+        .Ki = 55.5f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
         .lower_limit = -15.0f
       };
       struct uz_PI_Controller_config config_iq_2 = {
-        .Kp = 0.25f, // nach BO, 0.5f nach Nina
-        .Ki = 83.2f, // nach BO, 230.0f nach Nina
+        .Kp = 0.17f, // nach BO, 0.5f nach Nina
+        .Ki = 55.5f, // nach BO, 230.0f nach Nina
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
 	    .lower_limit = -15.0f
@@ -254,6 +268,7 @@ int main(void)
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
+           	R_controller_instance= uz_resonantController_init(config_R);
            	Global_Data.av.theta_offset_1 = 0.904f;
            	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;

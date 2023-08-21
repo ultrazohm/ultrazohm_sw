@@ -28,6 +28,7 @@ float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 3
 
 //dqn
+#define DQN_FREQUENCY 100
 float discountfact = 0.98f;
 float lernrate = 0.005f;
 // target 
@@ -266,8 +267,17 @@ void test_calc_reward_with_penalty(void)
 }
 
 void test_uz_dqn_copy_nn(void){
+    // uz_dqn_t* dqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    // uz_nn_copy(dqn->critic,dqn->critic_target_net);
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_2,tw_2,UZ_MATRIX_SIZE(cw_2));
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_3,tw_3,UZ_MATRIX_SIZE(cw_3));
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_1,tb_1,UZ_MATRIX_SIZE(cb_1));
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_2,tb_2,UZ_MATRIX_SIZE(cb_2));
+    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_3,tb_3,UZ_MATRIX_SIZE(cb_3));
     uz_dqn_t* dqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
-    uz_nn_copy(dqn->critic,dqn->critic_target_net);
+    float targsmoothfact = 0.05f;
+    uz_nn_target_update(dqn->critic,dqn->critic_target_net,periodic,&targsmoothfact);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_2,tw_2,UZ_MATRIX_SIZE(cw_2));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_3,tw_3,UZ_MATRIX_SIZE(cw_3));
@@ -382,7 +392,7 @@ void test_uz_dqn_train_episodes(void)
     uz_matrix_t* outputdqn=uz_nn_get_output_data(testdqn->critic);
     float qvalue = uz_matrix_get_max_value(outputdqn);
     uint32_t action = uz_matrix_get_max_index(outputdqn);
-    float reward = calculate_reward_pendulum(0.01f, 0.1f, 0.05f, 0.3f, false);
+    float reward = calculate_reward_pendulum(1/DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
@@ -438,12 +448,17 @@ TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 void test_rand_mtwister(void)
 {
   // use mtwister, calculate double between 0 and 1 and scale it to Randmax
-  //double randmax = 500;
-  MTRand r = seedRand(12);
+  //double randmax = 500; seedRand(0) 
+  MTRand r = seedRand(1);
   int i;
   for(i=0; i<15; i++) {
-    int random_number = (int)(genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
-    printf("%d\n", random_number);
+    // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
+    uint32_t randuint = (uint32_t)(genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
+    float randfloat = (genRand_float(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
+    double randdouble = (genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
+    printf("%d\n", randuint);
+    printf("%f\n", (double)randfloat);
+    printf("%f\n", randdouble);
   }
   return 0;
 }

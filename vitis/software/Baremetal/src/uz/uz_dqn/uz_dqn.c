@@ -104,6 +104,24 @@ uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_sta
     return action;
 }
 
+//pseudocode set current
+
+// void uz_dqn_set_current(uz_dqn_t* self, uint32_t action, void *data, float action_current)
+// uz_assert_not_NULL(self);
+// uz_assert(self->is_ready);	            
+// switch (action){
+//     case 0: data->rasv.dq_reference_current.q =action_current;
+//     break;
+//     case 1:	Global_Data.rasv.dq_reference_current.q=action_current/2.0f;
+//     break;
+//     case 2: Global_Data.rasv.dq_reference_current.q=0.0f;
+//     break;
+//     case 3:	Global_Data.rasv.dq_reference_current.q=-action_current/2.0f;
+//     break;
+//     case 4: Global_Data.rasv.dq_reference_current.q=-action_current;
+//     break;
+//     default: uz_assert(0);
+// }
 
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);
@@ -145,7 +163,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uz_assert(self->is_ready);
     float vecobs[numberofobs];
     struct uz_matrix_t obsvec_matrix = {0};
-    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, UZ_MATRIX_SIZE(vecobs),1, numberofobs);
+    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, numberofobs,1, numberofobs);
     for (uint32_t i = 0; i < minibatchsize; i++)
         {
         // schlechte zufallszahlengenerierung, aber für den start reichts
@@ -176,7 +194,7 @@ float calculate_loss_dqn(uz_dqn_t* self, float *gamma,float *reward, float *qval
     else{
         // berechne max_aQ(psi,a',theta)
         // sollte man sowohl die Aktion, als auch den index speichern? 
-        // im nn object ist ja grad iwas enthalten nur nicht, der Aktionswert,
+        // im nn object ist nur der index, nicht der Aktionswert,
         // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
         // float action und uint action zu speichern, dass man beides hat
         // und evtl obs+1 und action(obs+1)

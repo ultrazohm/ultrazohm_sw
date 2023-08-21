@@ -7,6 +7,7 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
+#include "../uz_dqn/mtwister.h"
 #include <time.h>
 
 

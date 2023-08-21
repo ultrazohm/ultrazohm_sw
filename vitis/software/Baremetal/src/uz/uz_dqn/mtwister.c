@@ -74,3 +74,6 @@ unsigned long genRandLong(MTRand* rand) {
 double genRand(MTRand* rand) {
   return((double)genRandLong(rand) / (unsigned long)0xffffffff);
 }
+float genRand_float(MTRand* rand) {
+return((float)genRandLong(rand) / (unsigned long)0xffffffff);
+}

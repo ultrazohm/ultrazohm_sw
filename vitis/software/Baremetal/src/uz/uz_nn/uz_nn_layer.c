@@ -18,6 +18,7 @@
 #if UZ_NN_LAYER_MAX_INSTANCES > 0U
 #include "uz_nn_layer.h"
 #include "../uz_HAL.h"
+#include "../uz_dqn/mtwister.h"
 #include <stdbool.h>
 #include <stdio.h>
 struct uz_nn_layer_t
@@ -169,6 +170,48 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
         break;
     }
     return (self);
+}
+
+// void uz_nn_layer_param_init(uz_nn_layer_t *const layer){
+//     switch (layer_config.activation_function)
+//     {
+//     case (activation_linear||activation_sigmoid||activation_tanh||activation_sigmoid2):
+//         uz_nn_layer_init_Glorot(layer->bias);
+//         uz_nn_layer_init_Glorot(layer->weights);
+//         break;
+//     case activation_ReLU:
+//         uz_nn_layer_init_nn_He(layer->bias);
+//         uz_nn_layer_init_nn_He(layer->weights);
+//         break;
+//     case activation_SeLU:
+//         uz_nn_layer_init_nn_LeCun(layer->bias);
+//         uz_nn_layer_init_nn_LeCun(layer->weights);
+//         break;
+
+//     default:
+//         break;
+//     }
+// }
+
+void uz_nn_layer_init_Glorot(uz_matrix_t *parameter){
+    uz_assert_not_NULL(parameter);
+    MTRand r = seedRand(1);
+    for(uint32_t i=0U;i<parameter->length_of_data;i++){
+        parameter->data[i]=(genRand_float(&r));
+    }
+}
+
+void uz_nn_layer_init_He(uz_matrix_t *parameter){
+    uz_assert_not_NULL(parameter);
+    MTRand r = seedRand(1);
+    for(uint32_t i=0U;i<parameter->length_of_data;i++){
+        parameter->data[i]=(genRand_float(&r));
+    }
+}
+
+uz_nn_layer_init_nn_He(uz_matrix_t *param){
+    uz_assert_not_NULL(param);
+    
 }
 
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer)

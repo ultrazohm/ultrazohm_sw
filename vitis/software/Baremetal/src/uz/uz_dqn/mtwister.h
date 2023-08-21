@@ -12,5 +12,5 @@ typedef struct tagMTRand {
 MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand* rand);
 double genRand(MTRand* rand);
-
+float genRand_float(MTRand* rand);
 #endif /* #ifndef __MTWISTER_H */

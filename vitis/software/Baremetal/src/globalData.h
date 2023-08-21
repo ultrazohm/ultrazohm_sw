@@ -144,6 +144,10 @@ typedef struct _actualValues_ {
 	bool debug_ip_off;
 	float i_max;
 	float torque;
+	bool f_sw_measure_flag;
+	float f_f_sw_measure_flag;
+	bool measure_flag;
+	float f_measure_flag;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -159,6 +163,8 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	bool req_measure_flag;
+	float f_req_measure_flag;
 } referenceAndSetValues;
 
 typedef struct{

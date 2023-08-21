@@ -72,6 +72,7 @@ struct uz_DutyCycle_t output2 = {0};
 
 uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
 
+
 // Global variable structure
 extern DS_Data Global_Data;
 
@@ -403,10 +404,25 @@ void ISR_Control(void *data)
 
     if(passed_time_sec >= sw_cnt_avg_time_sec) {
         	switchNumb = uz_axi_read_uint32(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
-        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);	// reset counter = true
         	isr_cnt = 0;
         	Global_Data.av.f_sw_avg_Hz = switchNumb * 0.041667f / passed_time_sec; // 0.041667 = 1/(12*2); 12 switches and each transition is counted (*2)
-        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, false);
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, false); // reset counter false
+        	Global_Data.av.f_sw_measure_flag = !Global_Data.av.f_sw_measure_flag; //toggle every time f_sw is measured
+        	Global_Data.av.f_f_sw_measure_flag = (float)Global_Data.av.f_sw_measure_flag;
+        	// control the measuring flag
+        	if (Global_Data.rasv.req_measure_flag == true && Global_Data.av.f_sw_measure_flag == false) {
+        	Global_Data.av.measure_flag = true;
+        	Global_Data.av.f_measure_flag = 1.0f;
+        	}
+        	if (Global_Data.av.f_sw_measure_flag == true && Global_Data.av.measure_flag == true) {
+        		Global_Data.rasv.req_measure_flag = false;
+        		Global_Data.rasv.f_req_measure_flag = 0.0f;
+        		Global_Data.av.measure_flag = false;
+        		Global_Data.av.f_measure_flag = 0.0f;
+        	}
+
+
         }
 
         isr_cnt++;

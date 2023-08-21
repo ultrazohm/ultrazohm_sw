@@ -304,6 +304,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //									data->rasv.halfBridge4DutyCycle = 1.0f;
 //									data->rasv.halfBridge5DutyCycle = 1.0f;
 //									data->rasv.halfBridge6DutyCycle = 1.0f;
+		data->rasv.req_measure_flag = true;
+		data->rasv.f_req_measure_flag = 1.0f;
 			break;
 
 		case (Error_Reset):

@@ -68,6 +68,9 @@ enum JS_OberservableData {
 	JSO_el_Speed_rpm,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
+	JSO_req_meas_flag,
+	JSO_meas_flag,
+	JSO_f_sw_flag,
 	JSO_lifecheck,
 	JSO_ENDMARKER
 };

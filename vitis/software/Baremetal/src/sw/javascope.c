@@ -102,6 +102,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_f_sw_flag]		= &data->av.f_f_sw_measure_flag;
+	js_ch_observable[JSO_req_meas_flag]	= &data->rasv.f_req_measure_flag;
+	js_ch_observable[JSO_meas_flag]		= &data->av.f_measure_flag;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

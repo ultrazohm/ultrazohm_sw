@@ -97,6 +97,7 @@ enum JS_SlowData {
 		JSSD_FLOAT_ISR_Period_us,
 		JSSD_FLOAT_FreqReadback,
 		JSSD_FLOAT_Milliseconds,
+		JSSD_FLOAT_Ch5_TypeK,
 		JSSD_FLOAT_ADCconvFactorReadback,
 		JSSD_FLOAT_Error_Code,
 		JSSD_FLOAT_Rs_Offline,

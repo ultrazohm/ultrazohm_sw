@@ -177,7 +177,7 @@ void ISR_Control(void *data)
 
 	// read temperatures from windings
 	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
+	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'A');
 	winding_temperature.a1 = channel_A_data.temperature[5-1]*(channel_A_data.Channels_Valid[5-1]==1);
 	winding_temperature.b1 = channel_A_data.temperature[6-1]*(channel_A_data.Channels_Valid[6-1]==1);
 	winding_temperature.c1 = channel_A_data.temperature[7-1]*(channel_A_data.Channels_Valid[7-1]==1);

@@ -27,7 +27,7 @@ enum rng_type{
 
 struct uz_random_number_config{
     uint32_t seed;
-    float randnumber;
+    enum rng_type gen;
 };
 uz_random_number_t *init_random_number(struct uz_random_number_config cfg);
 float uz_random_box_mueller(MTRand* seed,float mean, float std);

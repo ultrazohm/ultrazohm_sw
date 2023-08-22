@@ -24,6 +24,7 @@ struct uz_dqn_t {
     bool is_ready;
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
+    //uz_random_number_t *random;
     uz_dqn_experience_replay_t *experience_buffer;
     float discount_factor;
     float lernrate;

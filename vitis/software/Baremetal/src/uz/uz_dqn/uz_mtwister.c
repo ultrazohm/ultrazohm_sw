@@ -22,6 +22,7 @@
 struct uz_random_number_t{
     bool is_ready;
     uint32_t seed;
+    enum rng_type generator;
 };
 
 static uint32_t instance_counterrand = 0U;
@@ -42,6 +43,15 @@ uz_random_number_t *init_random_number(struct uz_random_number_config cfg) {
 
     uz_random_number_t *self = uz_dqn_random_allocation();
     self->seed = cfg.seed;
+    self->generator = cfg.gen;
+    switch (self->generator)
+    {
+    case Mersenne_Twister:
+      // do something
+      break;
+    default:
+      break;
+    }
     return (self);
 }
 

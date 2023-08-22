@@ -6,10 +6,13 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "xil_printf.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "../main.h"
 
 #include "xcp/xcp_interface.h"
 #include "global_data.h"
@@ -56,22 +59,37 @@ typedef struct {
 } duty_cycles_t;
 
 typedef struct timing_value_t_ {
-	float irq_rate;
-	float irq_time;
+	float fast_irq_rate;
+	float fast_irq_time;
 	float task_fast;
-	float task_slow;
+	float task_1ms;
+	float task_10ms;
 	float config_update;
 } timing_value_t;
 
 typedef struct timing_t_ {
 	timing_value_t now;
 	timing_value_t max;
-	float irq_freq_kHz;
 } timing_t;
+
+typedef struct sanity_t_ {
+	uint32_t cnt_activation_irq_1ms;
+	uint32_t cnt_activation_task_fast;
+	uint32_t cnt_activation_task_1ms;
+	uint32_t cnt_activation_task_10ms;
+	float irq_freq_kHz;
+} sanity_t;
 
 //====================================================================
 // Configuration
 //====================================================================
+#define BACKGROUND_TASK_STACK_SIZE		1024
+// Must be task with highest priority!
+#define BACKGROUND_TASK_PRIO_1MS		7
+#define BACKGROUND_TASK_PRIO_10MS		(BACKGROUND_TASK_PRIO_1MS - 1)
+
+#define ACTIVATION_QUEUE_LEN			1
+#define ACTIVATION_QUEUE_ITEM_SIZE		1
 
 //====================================================================
 // Variables
@@ -102,10 +120,13 @@ DS_Data Global_Data = {
 };
 
 volatile global_t global = {0};
-
 volatile static duty_cycles_t duty_cycles;
 
 volatile static timing_t timing_us;
+volatile static sanity_t sanity;
+
+static QueueHandle_t queue_task_1ms;
+static QueueHandle_t queue_task_10ms;
 
 // TODO remove
 extern control_dummy_t control_dummy;
@@ -118,16 +139,6 @@ control_dummy_t control_dummy = {0};
 	timing_us.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
 	if (timing_us.now.name_ > timing_us.max.name_) \
 	timing_us.max.name_ = timing_us.now.name_;
-
-static void timing_max_reset(void)
-{
-	static uint64_t ts_last_activation = 0;
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	if (bsp_timer_tsU64_delta_us(ts_last_activation, ts_now) >= (float)3e6) {
-		ts_last_activation = ts_now;
-		memset((void*)&timing_us.max, 0, sizeof(timing_us.max));
-	}
-}
 
 // Todo remove
 static void control_dummy_run(void)
@@ -174,7 +185,6 @@ static void control_dummy_run(void)
 	}
 }
 
-
 static void task_fast(void)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
@@ -194,8 +204,6 @@ static void task_fast(void)
 
 	if (global.ctrl.ctrl_enable) {
 		//control_dummy_run();
-
-
 
 		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
@@ -242,29 +250,97 @@ static void task_fast(void)
 //                        Global_Data.rasv.halfBridge2DutyCycle,
 //                        Global_Data.rasv.halfBridge3DutyCycle);
 
-	xcp_event_fast();
-
 	uint64_t ts_now = bsp_timer_timestamp_u64_get();
 	TS__(task_fast, ts_start, ts_now);
 }
 
-static void task_slow(void)
+static void task_1ms(void)
 {
-	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+	Xil_ExceptionDisable();
+	// todo: copy values from task_1ms output to task_fast input
+	// task_1ms.in.value_1 = fast_ctrl.out.value_1
+	// task_1ms.in.value_2 = fast_ctrl.out.value_2
+	// task_1ms.in.value_3 = fast_ctrl.out.value_3
+	Xil_ExceptionEnable();
 
-	// 1 Second Task
-	// Todo Vielleicht wo anders platzieren..
-	static uint32_t div_cnt = 0;
+	// step_1ms(&task_1ms.in, &task_1ms.out);
+
+	Xil_ExceptionDisable();
+	// todo: copy values from task_1ms output to task_fast input
+	// fast_ctrl.in.value_1 = task_1ms.out.value_1
+	// fast_ctrl.in.value_2 = task_1ms.out.value_2
+	// fast_ctrl.in.value_3 = task_1ms.out.value_3
+	Xil_ExceptionEnable();
+}
+
+static void task_10ms(void)
+{
+	// Todo Hat task_10ms() austausch mit ctrl_fast() oder ctrl_1ms()?
+	// step_10ms(&task_10ms.in, &task_10ms.out);
+
+	// Todo: other background stuff could also be done here
+	// control_buttons()
+	// control_leds()
+
+	// Each 3 seconds
+	static int div_cnt = 0;
 	div_cnt++;
-	if (div_cnt >= (uint32_t)1e3) {
+	if (div_cnt >= (3000 / 10)) {
 		div_cnt = 0;
-		timing_max_reset();
+
+		Xil_ExceptionDisable();
+		// Reset values to have the max values of the last 3 seconds
+		memset((void *)&timing_us.max, 0, sizeof(timing_us.max));
+		Xil_ExceptionEnable();
 	}
+}
 
-	xcp_events_1ms();
+/*
+ * This task runs with high priority in the background. It will be interrupted
+ * only by fast_ctrl.
+ * It runs with highest FreeRTOS priority. Fast-ctrl runs in irq.
+ */
+static void task_background_1ms(void *p)
+{
+	while (1) {
+		/*
+		 * Implement simple activation of this task with a queue.
+		 * Read blocking from queue. An interrupt will write to the queue
+		 * each tick and thus activate this task.
+		 */
+		uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+		xQueueReceive(queue_task_1ms, buf, portMAX_DELAY);
 
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	TS__(task_slow, ts_start, ts_now);
+		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+		sanity.cnt_activation_task_1ms++;
+		task_1ms();
+		uint64_t ts_now = bsp_timer_timestamp_u64_get();
+		TS__(task_1ms, ts_start, ts_now);
+	}
+}
+
+/*
+ * This task runs with high priority in the background. It will be interrupted
+ * only by fast_ctrl and task_1ms.
+ * It runs with second highest FreeRTOS priority. Fast-ctrl runs in irq.
+ */
+static void task_background_10ms(void *p)
+{
+	while (1) {
+		/*
+		 * Implement simple activation of this task with a queue.
+		 * Read blocking from queue. An interrupt will write to the queue
+		 * each tick and thus activate this task.
+		 */
+		uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+		xQueueReceive(queue_task_10ms, buf, portMAX_DELAY);
+
+		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+		sanity.cnt_activation_task_10ms++;
+		task_10ms();
+		uint64_t ts_now = bsp_timer_timestamp_u64_get();
+		TS__(task_10ms, ts_start, ts_now);
+	}
 }
 
 static void configuration_update(void)
@@ -312,25 +388,46 @@ static void configuration_update(void)
 //====================================================================
 // Global functions
 //====================================================================
+void timer_irq_callback__(void)
+{
+	// Timer irq runs with 1 kHz
+	sanity.cnt_activation_irq_1ms++;
+
+	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+	xQueueSendFromISR(queue_task_1ms, buf, NULL);
+
+	static int div_cnt = 0;
+	div_cnt++;
+	if (div_cnt >= 10) {
+		div_cnt = 0;
+		xQueueSendFromISR(queue_task_10ms, buf, NULL);
+	}
+
+	// Call scheduler for a task switch
+	portYIELD_FROM_ISR(pdTRUE);
+}
+
 void irq_fpga(void *data)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
 	static uint64_t ts_last = 0;
-	TS__(irq_rate, ts_last, ts_start);
-	timing_us.irq_freq_kHz = (1 / timing_us.now.irq_rate * (float)1e3);
+	TS__(fast_irq_rate, ts_last, ts_start);
+	sanity.irq_freq_kHz = (1 / timing_us.now.fast_irq_rate * (float)1e3);
 	ts_last = ts_start;
 
 	//---------------------
 	// Fast stuff
+	sanity.cnt_activation_task_fast++;
 	task_fast();
 
 	//---------------------
-	// Slow stuff
+	// XCP events
+	xcp_event_fast();
 	static uint64_t ts_last_activation_1ms = 0;
 	const uint64_t TICKS_1MS = (BSP_TIMER_TICKS_PER_SECOND / 1000);
 	if ((ts_start - ts_last_activation_1ms) >= TICKS_1MS) {
 		ts_last_activation_1ms = ts_start;
-		task_slow();
+		xcp_events_1ms_and_slower();
 	}
 
 	//---------------------
@@ -341,7 +438,7 @@ void irq_fpga(void *data)
 	}
 
 	uint64_t ts_end = bsp_timer_timestamp_u64_get();
-	TS__(irq_time, ts_start, ts_end);
+	TS__(fast_irq_time, ts_start, ts_end);
 }
 
 void basis_setup(void *p)
@@ -374,6 +471,14 @@ void basis_setup(void *p)
     global.config.deadtime_us = Global_Data.av.deadtime_us;
 
 	bsp_led_init();
+
+
+	queue_task_1ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
+	xTaskCreate(task_background_1ms, "backgr1ms", BACKGROUND_TASK_STACK_SIZE,
+			NULL, BACKGROUND_TASK_PRIO_1MS, NULL);
+	queue_task_10ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
+	xTaskCreate(task_background_10ms, "backgr10ms", BACKGROUND_TASK_STACK_SIZE,
+			NULL, BACKGROUND_TASK_PRIO_10MS, NULL);
 
 	xil_printf("APU: basis init done\n", __func__);
 

@@ -131,7 +131,7 @@ static void xcp_eth_rx(void *arg_p)
 
 		// No bytes means socket was closed by counterpart
 		if (n <= 0) {
-			xil_printf("%s(): Socket closed by counterpart\n", __func__);
+			//xil_printf("%s(): Socket closed by counterpart\n", __func__);
 			continue;
 		}
 
@@ -149,14 +149,6 @@ static void xcp_eth_rx(void *arg_p)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-/*
- * Implement to override the default handler
- */
-void timer_irq_callback__(void)
-{
-	return;
-}
-
 void xcp_event_fast(void)
 {
 	// Timestamp used for all xcp events
@@ -167,7 +159,7 @@ void xcp_event_fast(void)
 
 // This function shall be called each 1 ms
 // All xcp events, but the fast are derived from this function
-void xcp_events_1ms(void)
+void xcp_events_1ms_and_slower(void)
 {
 	XcpEvent(XCP_EVENT_1MS);
 

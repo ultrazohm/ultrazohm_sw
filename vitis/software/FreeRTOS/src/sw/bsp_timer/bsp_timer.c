@@ -45,7 +45,7 @@ static XTtcPs TtcPsInst[NUM_TTC_PS_DEVICES];    /* Number of available timer cou
 
 static TmrCntrSetup SettingsTable[NUM_TTC_PS_DEVICES] = {
     [TTC_TICK_DEVICE_ID]{
-        .OutputHz = 100000,
+        .OutputHz = 1000,
         .Interval = 0,
         .Prescaler = 0,
         .Options = (XTTCPS_OPTION_INTERVAL_MODE | XTTCPS_OPTION_WAVE_DISABLE)

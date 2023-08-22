@@ -11,6 +11,6 @@
 void xcp_interface(void *p);
 
 void xcp_event_fast(void);
-void xcp_events_1ms(void);
+void xcp_events_1ms_and_slower(void);
 
 #endif /* XCP_INTERFACE_H_ */

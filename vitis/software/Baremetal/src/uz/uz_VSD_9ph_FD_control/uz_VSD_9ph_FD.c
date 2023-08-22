@@ -61,7 +61,7 @@ static uz_VSD_9ph_FD_t instances_VSD_9ph_FD[UZ_9PH_OPEN_PHASE_FAULT_DETECTION] =
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void);
 static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit);
-static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold);
+static uz_9ph_abc_t uz_vsd_fd_9ph_evaluation(uz_9ph_abc_t input, float threshold);
 static inline float uz_vsd_opf_9ph_fault_index_general(const float VSD_line[9], uz_9ph_alphabeta_t currents);
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void){
@@ -143,7 +143,8 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 	indices.c3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R9, indices.c3);
 
 	// evaluation of fault indices
-	return uz_vsd_fd_evaluation(indices, VSD_FD->threshold);
+	indices = uz_vsd_fd_9ph_evaluation(indices, VSD_FD->threshold);
+	return indices;
 }
 
 static float uz_divide(float num, float denom){
@@ -169,31 +170,32 @@ uz_9ph_abc_t uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t input){
 }
 
 static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit){
-	input.a1 = uz_signals_hysteresisband_filter(input.a1, upperlimit, lowerlimit);
-	input.b1 = uz_signals_hysteresisband_filter(input.b1, upperlimit, lowerlimit);
-	input.c1 = uz_signals_hysteresisband_filter(input.c1, upperlimit, lowerlimit);
-	input.a2 = uz_signals_hysteresisband_filter(input.a2, upperlimit, lowerlimit);
-	input.b2 = uz_signals_hysteresisband_filter(input.b2, upperlimit, lowerlimit);
-	input.c2 = uz_signals_hysteresisband_filter(input.c2, upperlimit, lowerlimit);
-	input.a3 = uz_signals_hysteresisband_filter(input.a3, upperlimit, lowerlimit);
-	input.b3 = uz_signals_hysteresisband_filter(input.b3, upperlimit, lowerlimit);
-	input.c3 = uz_signals_hysteresisband_filter(input.c3, upperlimit, lowerlimit);
-
-	return input;
+	uz_9ph_abc_t output = {
+		.a1 = uz_signals_hysteresisband_filter(input.a1, upperlimit, lowerlimit),
+		.b1 = uz_signals_hysteresisband_filter(input.b1, upperlimit, lowerlimit),
+		.c1 = uz_signals_hysteresisband_filter(input.c1, upperlimit, lowerlimit),
+		.a2 = uz_signals_hysteresisband_filter(input.a2, upperlimit, lowerlimit),
+		.b2 = uz_signals_hysteresisband_filter(input.b2, upperlimit, lowerlimit),
+		.c2 = uz_signals_hysteresisband_filter(input.c2, upperlimit, lowerlimit),
+		.a3 = uz_signals_hysteresisband_filter(input.a3, upperlimit, lowerlimit),
+		.b3 = uz_signals_hysteresisband_filter(input.b3, upperlimit, lowerlimit),
+		.c3 = uz_signals_hysteresisband_filter(input.c3, upperlimit, lowerlimit)};
+	return output;
 }
 
 
-static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold){
-	input.a1 = uz_signals_threshold_Evaluation(input.a1, threshold);
-	input.b1 = uz_signals_threshold_Evaluation(input.b1, threshold);
-	input.c1 = uz_signals_threshold_Evaluation(input.c1, threshold);
-	input.a2 = uz_signals_threshold_Evaluation(input.a2, threshold);
-	input.b2 = uz_signals_threshold_Evaluation(input.b2, threshold);
-	input.c2 = uz_signals_threshold_Evaluation(input.c2, threshold);
-	input.a3 = uz_signals_threshold_Evaluation(input.a3, threshold);
-	input.b3 = uz_signals_threshold_Evaluation(input.b3, threshold);
-	input.c3 = uz_signals_threshold_Evaluation(input.c3, threshold);
-	return input;
+static uz_9ph_abc_t uz_vsd_fd_9ph_evaluation(uz_9ph_abc_t input, float threshold){
+	uz_9ph_abc_t output = {
+		.a1 = uz_signals_threshold_Evaluation(input.a1, threshold),
+		.b1 = uz_signals_threshold_Evaluation(input.b1, threshold),
+		.c1 = uz_signals_threshold_Evaluation(input.c1, threshold),
+		.a2 = uz_signals_threshold_Evaluation(input.a2, threshold),
+		.b2 = uz_signals_threshold_Evaluation(input.b2, threshold),
+		.c2 = uz_signals_threshold_Evaluation(input.c2, threshold),
+		.a3 = uz_signals_threshold_Evaluation(input.a3, threshold),
+		.b3 = uz_signals_threshold_Evaluation(input.b3, threshold),
+		.c3 = uz_signals_threshold_Evaluation(input.c3, threshold)};
+	return output;
 }
 
 static inline float uz_vsd_opf_9ph_fault_index_general(const float VSD_line[9], uz_9ph_alphabeta_t currents){

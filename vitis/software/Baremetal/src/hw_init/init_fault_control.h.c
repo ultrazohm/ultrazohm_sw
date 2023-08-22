@@ -2,54 +2,55 @@
 
 // config for moving average filter
 const struct uz_movingAverageFilter_config movAvF_config = {
-  .filterLength = 300U
+  .filterLength = 1U
 };
 
+#define ARRAYSIZE 100
 
 // circular Buffers for 6 moving average filters
-float dataR1 [500] = {0};
+float dataR1 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R1 = {
-.length = UZ_ARRAY_SIZE(dataR1),
+.length = ARRAYSIZE,
 .data = &dataR1[0]
 };
-float dataR2 [500] = {0};
+float dataR2 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R2 = {
-.length = UZ_ARRAY_SIZE(dataR2),
+.length = ARRAYSIZE,
 .data = &dataR2[0]
 };
-float dataR3 [500] = {0};
+float dataR3 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R3 = {
-.length = UZ_ARRAY_SIZE(dataR3),
+.length = ARRAYSIZE,
 .data = &dataR3[0]
 };
-float dataR4 [500] = {0};
+float dataR4 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R4 = {
-.length = UZ_ARRAY_SIZE(dataR4),
+.length = ARRAYSIZE,
 .data = &dataR4[0]
 };
-float dataR5 [500] = {0};
+float dataR5 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R5 = {
-.length = UZ_ARRAY_SIZE(dataR5),
+.length = ARRAYSIZE,
 .data = &dataR5[0]
 };
-float dataR6 [500] = {0};
+float dataR6 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R6 = {
-.length = UZ_ARRAY_SIZE(dataR6),
+.length = ARRAYSIZE,
 .data = &dataR6[0]
 };
-float dataR7 [500] = {0};
+float dataR7 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R7 = {
-.length = UZ_ARRAY_SIZE(dataR7),
+.length = ARRAYSIZE,
 .data = &dataR7[0]
 };
-float dataR8 [500] = {0};
+float dataR8 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R8 = {
-.length = UZ_ARRAY_SIZE(dataR8),
+.length = ARRAYSIZE,
 .data = &dataR8[0]
 };
-float dataR9 [500] = {0};
+float dataR9 [ARRAYSIZE] = {0};
 uz_array_float_t circularBuffer_R9 = {
-.length = UZ_ARRAY_SIZE(dataR9),
+.length = ARRAYSIZE,
 .data = &dataR9[0]
 };
 
@@ -68,7 +69,7 @@ uz_VSD_9ph_FD_t* init_uz_VSD_9ph_FD(void){
 		.upperlimit = 1.1f,
 		.lowerlimit = 0.9f,
 		.threshold = 0.4f,//what SDKLFJSDLFJSDÖO
-		.mov_average_filter_length = 0.0f,//sdfksdlkfds
+		.mov_average_filter_length = ARRAYSIZE,
 		.sample_frequency_Hz = UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE,
 		.percent_of_el_period = 0.4f,
 		.movingAverageFilter_R1 = movAvFilter_R1,

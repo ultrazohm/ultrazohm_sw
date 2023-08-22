@@ -61,9 +61,8 @@ uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers
 	return out_ab;
 }
 
-uz_9ph_alphabeta_t reduce_controller_freedom_degrees(uz_9ph_alphabeta_t ref, uz_9ph_abc_t indices){
-	uz_9ph_alphabeta_t out = ref;
-	int n_OPF = uz_vsd_opf_9ph_get_n_fault(indices);
+uz_9ph_alphabeta_t reduce_controller_freedom_degrees(uz_9ph_alphabeta_t ref, int n_OPF){
+	uz_9ph_alphabeta_t out = {0};
 	switch(n_OPF){
 	case 6:
 		out.x1 = 0.0f;
@@ -107,8 +106,7 @@ void reset_controllers_fault_control_and_tristate(struct pointers_fault_control 
 	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17 , false, false, false);
 }
 
-void derate_dq_setpoints(DS_Data* Data, float derating, uz_9ph_abc_t indices){
-	int n_OPF = uz_vsd_opf_9ph_get_n_fault(indices);
+void derate_dq_setpoints(DS_Data* Data, float derating, int n_OPF){
 	if(n_OPF){
 		Data->rasv.dq_setpoints.d = Data->rasv.dq_setpoints.d*derating;
 		Data->rasv.dq_setpoints.q = Data->rasv.dq_setpoints.q*derating;

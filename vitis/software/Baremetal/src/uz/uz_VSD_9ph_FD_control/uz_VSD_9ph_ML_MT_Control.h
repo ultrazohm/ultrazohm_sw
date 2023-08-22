@@ -1,5 +1,5 @@
-#ifndef UZ_VSD_9ph_ML_MT_CONTROL_H
-#define UZ_VSD_9ph_ML_MT_CONTROL_H
+#ifndef UZ_VSD_9PH_ML_MT_CONTROL_H
+#define UZ_VSD_9PH_ML_MT_CONTROL_H
 
 #include "uz_VSD_9ph_FD.h"
 

@@ -60,8 +60,9 @@ enum controller_type selected_controller = PI_R;
 
 // fault control
 uz_9ph_abc_t indices = {0};
+int n_OPF = 0;
 uz_9ph_alphabeta_t ref_voltages_fault = {0};
-struct uz_9ph_MLMT_kparameter k_param = {0};
+uz_9ph_MLMT_kparameter k_param = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -115,11 +116,14 @@ void ISR_Control(void *data)
 		uz_limit_exceed(&Global_Data);
 	}
 
-
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-	derate_dq_setpoints(&Global_Data, k_param.derating, indices);
+
+	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
+	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
+	derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -154,12 +158,12 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-    	indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
-    	if(uz_vsd_opf_9ph_get_n_fault(indices)){
+    	if(	n_OPF){
     		k_param = uz_get_k_parameter_9ph_ML(indices);
     		fault_control_set_tristate(&Global_Data, indices);
+    		k_param.k_X1b = 10.0f;
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
-    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, indices);
+    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, n_OPF);
     		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
     	}
     	////////////////////////////////////////////////////////////////////////////
@@ -174,7 +178,7 @@ void ISR_Control(void *data)
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
-		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+//		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

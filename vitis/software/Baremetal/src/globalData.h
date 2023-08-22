@@ -128,6 +128,9 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t debug_pi_xy1;
 	uz_3ph_dq_t debug_pi_xy2;
 	uz_3ph_dq_t debug_pi_xy3;
+	uz_9ph_abc_t fault_single_indices;
+	int fault_n_OPF;
+	int fault_combined_index;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

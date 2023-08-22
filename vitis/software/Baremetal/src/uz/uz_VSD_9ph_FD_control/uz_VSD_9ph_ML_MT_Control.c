@@ -78,9 +78,10 @@ static uint16_t search_array_row_index(uint16_t OPF_index, const float table[][1
 static uz_9ph_MLMT_kparameter return_k_param_set(uint16_t row, const float table[][15]);
 
 uz_9ph_MLMT_kparameter uz_get_k_parameter_9ph_ML(uz_9ph_abc_t input_faultindices){
-        uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
-        uint16_t row = search_array_row_index(OPF_index, n1_ml, N_ROWS);
-        return return_k_param_set(row, n1_ml);;
+        //uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
+        //uint16_t row = search_array_row_index(OPF_index, n1_ml, N_ROWS);
+        uz_9ph_MLMT_kparameter out = {0};
+        return out;//return_k_param_set(row, n1_ml);;
 }
 
 

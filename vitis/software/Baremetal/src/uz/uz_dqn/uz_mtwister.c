@@ -12,8 +12,9 @@
 #define LOWER_MASK		0x7fffffff
 #define TEMPERING_MASK_B	0x9d2c5680
 #define TEMPERING_MASK_C	0xefc60000
+#include "uz_mtwister.h"
 #include <math.h>
-#include "mtwister.h"
+#include <stdlib.h>
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {
   /* set initial seeds to mt[STATE_VECTOR_LENGTH] using the generator
@@ -77,5 +78,72 @@ double genRand(MTRand* rand) {
 float genRand_float(MTRand* rand) {
 return((float)genRandLong(rand) / (unsigned long)0xffffffff);
 }
+// #define _USE_MATH_DEFINES
 
+// const float two_pi = 2*M_PI;
 
+// void basic_box_muller(float *retval);
+// void polar_box_muller(float *retval);
+// int main (int nargs, char **args) {
+// 	if (nargs < 2) {
+// 		fprintf (stdout, "Usage: %s <num_samples>\n", args[0]);
+// 		exit(0);
+// 	}
+// 	int n = atoi(args[1]);
+// 	FILE *basic_file = fopen ("basic_data.txt", "w");
+// 	FILE *polar_file = fopen ("polar_data.txt", "w");
+// 	int i;
+// 	float buf[2];
+// 	for (i = 0; i < n/2; ++i) {
+// 		basic_box_muller (buf);
+// 		fprintf (basic_file, "%f\n%f\n", buf[0], buf[1]);
+// 		polar_box_muller (buf);
+// 		fprintf (polar_file, "%f\n%f\n", buf[0], buf[1]);
+// 	}
+// 	fclose (basic_file); fclose (polar_file);
+// }
+
+// void basic_box_muller(float *retval) {
+// 	float u1 = (float) rand() / RAND_MAX;
+// 	float u2 = (float) rand() / RAND_MAX;
+// 	float factor = sqrt ( -2 * log (u1) );
+// 	float trig_arg = two_pi * u2;
+// 	retval[0] = factor * cos (trig_arg);
+// 	retval[1] = factor * sin (trig_arg);
+// }
+
+// void polar_box_muller(MTRand* rand,float *retval, uint32_t range) {
+// 	float u, v, s;
+// 	do {
+// 		u = genRand_float(rand) / range * 2.0f - 1;
+// 		v = genRand_float(rand) / range * 2.0f - 1;
+// 		s = u*u + v*v;
+// 	} while (s >= 1 || s == 0);
+// 	float factor = sqrt ( -2 * log(s) / s );
+// 	retval[0] = u * factor;
+// 	retval[1] = v * factor;
+// }
+
+float uz_random_box_mueller(MTRand* seed,float mean, float std){
+    static float cached = 0.0f;
+    float x, y, r, res;
+
+    if (cached == 0.0f) {
+        do {
+            x = (2.0f * genRand_float(seed)) - 1.0f;
+            y = (2.0f * genRand_float(seed)) - 1.0f;
+            r = x * x + y * y;
+        } while (r == 0.0 || r > 1.0);
+
+        float d = sqrt(-2.0f * log(r) / r);
+        float n1 = x * d;
+        float n2 = y * d;
+        res = n1 * std + mean;
+        cached = n2;
+    }
+    else {
+        res = cached * std + mean;
+        cached = 0.0f;
+    }
+return res;
+}

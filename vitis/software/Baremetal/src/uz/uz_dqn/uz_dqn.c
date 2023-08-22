@@ -14,6 +14,7 @@ struct uz_dqn_experience_replay_t {
     uz_matrix_t *observations;
     struct uz_matrix_t observations_matrix;
     uint32_t head;
+    uint32_t fullbuf;
     uint32_t length;
     bool is_full;
     bool is_ready;
@@ -64,6 +65,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     self->action = buf_config.actions;
     self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
     self->head = headind; // vorübergehend, für test, dass auf beliebigen index nach init zugegriffen werden kann, kann man später noch entfernenS
+    self->fullbuf = 0;
     return (self);
 }
 

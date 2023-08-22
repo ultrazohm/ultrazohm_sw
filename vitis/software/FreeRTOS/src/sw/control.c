@@ -34,6 +34,8 @@
 #include "../include/adc.h"
 #include "../include/isr.h"
 
+#include "FOC_CodeGen/FOC_fastCTRL_ert_rtw/FOC_fastCTRL.h"
+
 //====================================================================
 // Type definitions
 //====================================================================
@@ -128,9 +130,18 @@ volatile static sanity_t sanity;
 static QueueHandle_t queue_task_1ms;
 static QueueHandle_t queue_task_10ms;
 
+volatile static uint8_t state_control;
+
 // TODO remove
 extern control_dummy_t control_dummy;
 control_dummy_t control_dummy = {0};
+
+static RT_MODEL_FOC_fastCTRL_T FOC_fastCTRL_M_;
+static RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_MPtr = &FOC_fastCTRL_M_;/* Real-time model */
+static B_FOC_fastCTRL_T FOC_fastCTRL_B;/* Observable signals */
+static DW_FOC_fastCTRL_T FOC_fastCTRL_DW;/* Observable states */
+static ExtU_FOC_fastCTRL_T FOC_fastCTRL_U;/* External inputs */
+static ExtY_FOC_fastCTRL_T FOC_fastCTRL_Y;/* External outputs */
 
 //====================================================================
 // Static functions
@@ -185,6 +196,9 @@ static void control_dummy_run(void)
 	}
 }
 
+
+
+
 static void task_fast(void)
 {
 	uint64_t ts_start = bsp_timer_timestamp_u64_get();
@@ -203,7 +217,9 @@ static void task_fast(void)
 	pwm_enable_last = global.ctrl.pwm_enable;
 
 	if (global.ctrl.ctrl_enable) {
-		//control_dummy_run();
+		state_control = 1;
+
+		FOC_fastCTRL_step(FOC_fastCTRL_MPtr);
 
 		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
@@ -212,6 +228,8 @@ static void task_fast(void)
 		Global_Data.rasv.halfBridge5DutyCycle = duty_cycles.duty_cycle_5;
 		Global_Data.rasv.halfBridge6DutyCycle = duty_cycles.duty_cycle_6;
 	} else {
+		state_control = 0;
+
 		Global_Data.rasv.halfBridge1DutyCycle = 0;
 		Global_Data.rasv.halfBridge2DutyCycle = 0;
 		Global_Data.rasv.halfBridge3DutyCycle = 0;
@@ -443,6 +461,13 @@ void irq_fpga(void *data)
 
 void basis_setup(void *p)
 {
+	FOC_fastCTRL_MPtr->blockIO = &FOC_fastCTRL_B;
+	FOC_fastCTRL_MPtr->dwork = &FOC_fastCTRL_DW;
+	FOC_fastCTRL_MPtr->inputs = &FOC_fastCTRL_U;
+	FOC_fastCTRL_MPtr->outputs = &FOC_fastCTRL_Y;
+	FOC_fastCTRL_initialize(FOC_fastCTRL_MPtr);
+
+
 	uz_assert_configuration();
 	Initialize_AXI_GPIO();
 	uz_adcLtc2311_ip_core_init();

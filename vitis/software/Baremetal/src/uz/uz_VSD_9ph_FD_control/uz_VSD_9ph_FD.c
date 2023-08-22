@@ -62,7 +62,7 @@ static uz_VSD_9ph_FD_t instances_VSD_9ph_FD[UZ_9PH_OPEN_PHASE_FAULT_DETECTION] =
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void);
 static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit);
 static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold);
-static inline float uz_vsd_opf_9ph_fault_index_general(float VSD_line[9], uz_9ph_alphabeta_t currents);
+static inline float uz_vsd_opf_9ph_fault_index_general(const float VSD_line[9], uz_9ph_alphabeta_t currents);
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void){
  	uz_assert(instance_VSD_9ph_FD_counter < UZ_9PH_OPEN_PHASE_FAULT_DETECTION);
@@ -196,7 +196,7 @@ static uz_9ph_abc_t uz_vsd_fd_evaluation(uz_9ph_abc_t input, float threshold){
 	return input;
 }
 
-static inline float uz_vsd_opf_9ph_fault_index_general(float VSD_line[9], uz_9ph_alphabeta_t currents){
+static inline float uz_vsd_opf_9ph_fault_index_general(const float VSD_line[9], uz_9ph_alphabeta_t currents){
 	float numinator = -VSD_line[2]*currents.x1 - VSD_line[3]*currents.y1 - VSD_line[4]*currents.x2 - VSD_line[5]*currents.y2 - VSD_line[6]*currents.x3 - VSD_line[7]*currents.y3 - VSD_line[8]*currents.zero;
 	float denominator = VSD_line[0]*currents.alpha +  VSD_line[1]*currents.beta;
 	return uz_divide(numinator, denominator);

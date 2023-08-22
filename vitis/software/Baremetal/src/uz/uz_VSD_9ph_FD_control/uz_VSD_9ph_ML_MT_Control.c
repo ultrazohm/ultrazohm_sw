@@ -16,6 +16,7 @@
 
 
 #include "uz_VSD_9ph_ML_MT_Control.h"
+#include "../uz_HAL.h"
 
 #define N_ROWS 48U
 
@@ -70,20 +71,109 @@ static const float n1_ml[N_ROWS][15] = {
     {448.000000f, 1.000280f, 0.661430f, 0.000000f, 0.000000f, -0.000000f, 0.000000f, 0.247923f, 0.442987f, 0.437559f, -0.253959f, 0.245024f, -0.424597f, 0.432538f, 0.243342f}
 };
 
+static const float n3_ml[N_ROWS][15] = {
+        {1.000000f, 0.580487f, 0.650383f, 0.000000f, -0.000000f, 0.000000f, -0.000000f, -0.563828f, -0.090869f, 0.066413f, -0.161825f, -0.436172f, 0.090869f, 0.140413f, 0.074231f},
+        {2.000000f, 0.749576f, 0.605745f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, -0.317948f, 0.125933f, -0.297501f, 0.687573f, -0.030960f, -0.022167f, 0.078408f, -0.252517f},
+        {4.000000f, 1.353680f, 0.572716f, 0.000000f, -0.000000f, 0.000000f, 0.000000f, -0.421425f, -0.507021f, 0.048005f, -0.051991f, -0.628343f, -0.575153f, 0.076739f, -0.427197f},
+        {8.000000f, 0.612862f, 0.588063f, -0.000000f, -0.000000f, -0.000000f, 0.000000f, 0.004591f, -0.047281f, -0.574417f, -0.180321f, 0.139199f, 0.237807f, -0.414713f, 0.014814f},
+        {16.000000f, 0.873814f, 0.612832f, 0.000000f, 0.000000f, 0.000000f, -0.000000f, 0.317089f, -0.321551f, -0.040271f, 0.342206f, 0.059653f, -0.477586f, -0.471831f, 0.311248f},
+        {32.000000f, 0.780760f, 0.514301f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, -0.216490f, -0.458146f, -0.232026f, -0.396161f, -0.059603f, 0.466433f, -0.249480f, -0.172807f},
+        {64.000000f, 0.716570f, 0.593993f, -0.000000f, -0.000000f, 0.000000f, 0.000000f, 0.582336f, 0.107866f, 0.094636f, -0.054028f, 0.001455f, -0.031134f, 0.189593f, 0.563052f},
+        {128.000000f, 0.638855f, 0.680706f, -0.000000f, 0.000000f, 0.000000f, 0.000000f, -0.008324f, 0.014333f, 0.598685f, 0.008612f, 0.383603f, -0.259760f, 0.089751f, -0.239586f},
+        {256.000000f, 0.790954f, 0.581719f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, 0.052909f, 0.023212f, 0.081491f, -0.455451f, 0.164316f, -0.737025f, -0.021608f, -0.053535f},
+        {7.000000f, 1.640283f, 0.464176f, 0.000000f, -0.000000f, 0.000000f, 0.000000f, -0.497519f, -0.284499f, 0.115170f, 0.024677f, -0.502481f, 0.284499f, 0.115169f, -0.975323f},
+        {56.000000f, 1.202776f, 0.512739f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, 0.281308f, -0.689289f, -0.502473f, -0.077066f, 0.205499f, 0.454639f, -0.371169f, -0.058408f},
+        {448.000000f, 1.043286f, 0.602895f, 0.000000f, 0.000000f, -0.000000f, -0.000000f, 0.375833f, 0.479625f, 0.471953f, -0.296049f, 0.279192f, -0.369826f, 0.304568f, 0.232657f},
+        {3.000000f, 1.330163f, 0.500962f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, -0.214544f, 0.127642f, 0.231779f, 0.383455f, -0.785456f, -0.127642f, 0.231779f, -0.616544f},
+        {5.000000f, 1.311504f, 0.513933f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, -0.526997f, -0.208478f, -0.040255f, 0.831571f, -0.473003f, 0.208478f, -0.040255f, -0.168429f},
+        {6.000000f, 1.196946f, 0.532311f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, -0.804356f, 0.051446f, 0.051586f, 0.476922f, -0.195643f, -0.051447f, 0.051586f, -0.523078f},
+        {9.000000f, 1.993321f, 0.372927f, -0.000000f, -0.000000f, 0.000000f, -0.000000f, -0.974404f, -0.182133f, -0.766987f, -0.226390f, -0.025596f, 0.182133f, -0.580547f, -0.017383f},
+        {10.000000f, 1.421373f, 0.575547f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, 0.129004f, 0.018414f, -0.805490f, 0.172599f, 0.063981f, -0.041046f, -0.116720f, -0.840468f},
+        {12.000000f, 1.591094f, 0.447018f, -0.000000f, 0.000000f, 0.000000f, -0.000000f, 0.056451f, -0.061208f, -0.172389f, 0.127848f, 0.226220f, -0.052182f, -0.912938f, -0.806687f},
+        {17.000000f, 1.696138f, 0.417190f, -0.000000f, 0.000000f, 0.000000f, 0.000000f, -0.138523f, 0.005970f, -0.092461f, 0.303465f, -0.861477f, -0.005970f, -0.726025f, 0.554060f},
+        {18.000000f, 2.125811f, 0.352713f, 0.000000f, -0.000000f, -0.000000f, -0.000000f, 0.030141f, -0.066831f, -0.870551f, 0.897915f, -0.226839f, 0.554297f, -0.406765f, 0.179354f},
+        {20.000000f, 1.458574f, 0.483856f, -0.000000f, 0.000000f, -0.000000f, -0.000000f, 0.388530f, -0.364964f, 0.126677f, 0.843281f, -0.558236f, 0.105737f, -0.352693f, -0.007054f},
+        {24.000000f, 1.267652f, 0.483082f, -0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.174375f, -0.455827f, -0.380985f, 0.103384f, 0.257245f, 0.727644f, -0.524520f, 0.053550f},
+        {33.000000f, 1.044535f, 0.570236f, 0.000000f, -0.000000f, 0.000000f, -0.000000f, -0.660431f, -0.424282f, 0.007842f, -0.345580f, -0.339569f, 0.424282f, -0.023802f, 0.113910f},
+        {34.000000f, 1.888967f, 0.426929f, -0.000000f, 0.000000f, -0.000000f, -0.000000f, -0.187487f, 0.026153f, -0.445672f, 0.224486f, -0.232564f, 1.239243f, -0.110839f, -0.044937f},
+        {36.000000f, 2.510498f, 0.423891f, 0.000000f, 0.000000f, 0.000000f, 0.000000f, -0.654930f, -1.357363f, -0.007070f, 0.303831f, -0.353051f, 0.148711f, -0.002462f, 0.001648f},
+        {40.000000f, 1.322683f, 0.468462f, -0.000000f, 0.000000f, -0.000000f, -0.000000f, -0.038590f, -0.516154f, -0.688397f, -0.173035f, -0.115464f, 0.458096f, -0.555247f, 0.139515f},
+        {48.000000f, 1.358323f, 0.474531f, 0.000000f, -0.000000f, 0.000000f, -0.000000f, 0.373871f, -0.739884f, -0.557116f, -0.017093f, 0.204459f, 0.481280f, -0.263685f, -0.132212f},
+        {65.000000f, 3.408499f, 0.389697f, -0.000000f, 0.000000f, 0.000000f, -0.000000f, 0.007102f, 0.938431f, -0.093515f, -0.399632f, -1.007101f, -0.938430f, 0.625983f, -0.269417f},
+        {66.000000f, 1.740199f, 0.487331f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, 0.116135f, 0.098540f, 0.014830f, 1.117325f, 0.006650f, -0.008930f, 0.663070f, 0.169061f},
+        {68.000000f, 3.612962f, 0.315602f, 0.000000f, 0.000000f, -0.000000f, -0.000000f, -0.475574f, 0.031065f, 1.183855f, 1.089288f, 0.080375f, -0.230076f, 0.834673f, 0.204187f},
+        {72.000000f, 2.648047f, 0.342734f, -0.000000f, -0.000000f, -0.000000f, -0.000000f, 0.653031f, 0.379440f, -0.425038f, -0.733726f, 0.922421f, -0.146819f, 0.465009f, 0.519578f},
+        {80.000000f, 1.431927f, 0.592403f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, 0.736792f, -0.069420f, -0.342181f, -0.012461f, -0.424341f, -0.375666f, 0.118838f, 0.657031f},
+        {96.000000f, 1.654718f, 0.429258f, 0.000000f, -0.000000f, -0.000000f, -0.000000f, 0.338857f, 0.031993f, -0.064151f, -0.001299f, 0.228915f, 0.795530f, 0.517171f, 0.762901f},
+        {129.000000f, 2.172827f, 0.402557f, 0.000000f, -0.000000f, 0.000000f, 0.000000f, -0.788910f, -0.161050f, 1.056387f, -0.134553f, -0.211090f, 0.161050f, 0.308112f, -0.474366f},
+        {130.000000f, 1.948256f, 0.495268f, 0.000000f, -0.000000f, -0.000000f, -0.000000f, 0.225609f, -0.206996f, 0.275623f, 0.259377f, -0.002574f, -0.007589f, 0.981743f, -0.864513f},
+        {132.000000f, 1.290363f, 0.482119f, -0.000000f, -0.000000f, -0.000000f, 0.000000f, -0.298690f, -0.485357f, 0.762691f, 0.214393f, 0.026516f, -0.364672f, 0.342481f, -0.294841f},
+        {136.000000f, 1.730372f, 0.414890f, -0.000000f, 0.000000f, -0.000000f, 0.000000f, 0.227245f, 0.251600f, 0.188518f, -0.152716f, 1.175169f, -0.057033f, -0.288826f, -0.298114f},
+        {144.000000f, 1.973306f, 0.389728f, -0.000000f, 0.000000f, 0.000000f, -0.000000f, 0.795902f, -0.643730f, 0.780080f, -0.187047f, 0.335896f, -0.172379f, -0.348567f, 0.133819f},
+        {160.000000f, 1.252881f, 0.487643f, 0.000000f, 0.000000f, -0.000000f, -0.000000f, 0.034894f, -0.706686f, 0.443621f, -0.458581f, 0.415749f, 0.047125f, 0.277339f, 0.305248f},
+        {192.000000f, 1.087802f, 0.544129f, -0.000000f, 0.000000f, 0.000000f, 0.000000f, 0.447531f, 0.393734f, 0.385381f, -0.282731f, 0.390015f, -0.424306f, 0.285762f, 0.300382f},
+        {257.000000f, 1.068349f, 0.603940f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, -0.572205f, 0.473852f, 0.201091f, -0.169310f, -0.427795f, -0.473852f, -0.023538f, 0.197974f},
+        {258.000000f, 2.893467f, 0.323553f, -0.000000f, 0.000000f, 0.000000f, 0.000000f, -0.114034f, 1.053242f, -0.194271f, 0.814944f, 0.430692f, -0.750615f, 0.565902f, -0.010334f},
+        {260.000000f, 1.570252f, 0.433476f, 0.000000f, 0.000000f, -0.000000f, -0.000000f, -0.216669f, 0.159025f, 0.115681f, -0.003707f, -0.159876f, -1.086300f, -0.244271f, -0.468344f},
+        {264.000000f, 1.284028f, 0.580250f, -0.000000f, -0.000000f, 0.000000f, 0.000000f, 0.049802f, 0.059505f, -0.423875f, -0.692616f, 0.396504f, -0.578047f, -0.326498f, -0.143755f},
+        {272.000000f, 2.335291f, 0.511724f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, -0.040977f, -0.073088f, -0.431984f, 0.264885f, 0.191826f, -1.043139f, -0.700759f, 0.674904f},
+        {288.000000f, 1.944668f, 0.374429f, -0.000000f, -0.000000f, -0.000000f, -0.000000f, -0.009688f, -0.060176f, -0.048756f, -1.072343f, 0.176895f, -0.049056f, -0.091629f, 0.864038f},
+        {320.000000f, 1.039931f, 0.576748f, 0.000000f, 0.000000f, -0.000000f, -0.000000f, 0.260809f, 0.447849f, 0.331089f, -0.346129f, 0.343672f, -0.342345f, 0.474613f, 0.285216f},
+        {384.000000f, 1.266520f, 0.503495f, 0.000000f, -0.000000f, -0.000000f, 0.000000f, 0.131348f, 0.552036f, 0.250195f, 0.017569f, 0.348999f, -0.605223f, 0.627177f, 0.013138f}
+};
 
+static const float n1_mt[N_ROWS][15];
+static const float n3_mt[N_ROWS][15];
 
-static uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices);
 static uint16_t single_fault_index_to_OPF_index(float index, uint8_t position);
 static uint16_t search_array_row_index(uint16_t OPF_index, const float table[][15], uint16_t n_rows);
-static uz_9ph_MLMT_kparameter return_k_param_set(uint16_t row, const float table[][15]);
+static uz_9ph_MLMT_kparameter_t return_k_param_set(uint16_t row, const float table[][15]);
 
-uz_9ph_MLMT_kparameter uz_get_k_parameter_9ph_ML(uz_9ph_abc_t input_faultindices){
-        //uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
-        //uint16_t row = search_array_row_index(OPF_index, n1_ml, N_ROWS);
-        uz_9ph_MLMT_kparameter out = {0};
-        return out;//return_k_param_set(row, n1_ml);;
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph(uz_9ph_abc_t input_faultindices, ML_MT_optimization optimization, int neutral){
+        uz_assert(neutral==1 || neutral==3);
+        uz_9ph_MLMT_kparameter_t out = {0};
+        switch(optimization){
+                case ML:
+                if(neutral == 1)
+                        uz_get_k_parameter_9ph_ML_N1(input_faultindices);
+                else if(neutral == 3)
+                        uz_get_k_parameter_9ph_ML_N3(input_faultindices);
+                break;
+                case MT:
+                if(neutral == 1)
+                        uz_get_k_parameter_9ph_MT_N1(input_faultindices);
+                else if(neutral == 3)
+                        uz_get_k_parameter_9ph_MT_N3(input_faultindices);
+                default: break;
+        }
+        uz_assert(out.derating > 0.0f); //there is no case with derating 0, so if this happens there is a problem and case could not be found
+        return out;
 }
 
+
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N1(uz_9ph_abc_t input_faultindices){
+        uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
+        uint16_t row = search_array_row_index(OPF_index, n1_ml, N_ROWS);
+        return return_k_param_set(row, n1_ml);;
+}
+
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N3(uz_9ph_abc_t input_faultindices){
+        uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
+        uint16_t row = search_array_row_index(OPF_index, n3_ml, N_ROWS);
+        return return_k_param_set(row, n1_ml);;
+}
+
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N1(uz_9ph_abc_t input_faultindices){
+        uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
+        uint16_t row = search_array_row_index(OPF_index, n1_mt, N_ROWS);
+        return return_k_param_set(row, n1_ml);;
+}
+
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N3(uz_9ph_abc_t input_faultindices){
+        uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
+        uint16_t row = search_array_row_index(OPF_index, n3_mt, N_ROWS);
+        return return_k_param_set(row, n1_ml);;
+}
 
 static uint16_t single_fault_index_to_OPF_index(float index, uint8_t position){
         // if output == 1.0f, brackets will be true, shift result according to position afterwards
@@ -91,16 +181,16 @@ static uint16_t single_fault_index_to_OPF_index(float index, uint8_t position){
         return output;
 }
 
-static uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices){
+uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices){
         uint16_t output = single_fault_index_to_OPF_index(input_faultindices.a1, 0U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b1, 1U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c1, 2U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.a2, 3U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b2, 4U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c2, 5U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.a3, 6U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b3, 7U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c3, 8U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b1, 1U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c1, 2U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.a2, 3U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b2, 4U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c2, 5U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.a3, 6U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b3, 7U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c3, 8U);
         return output;
 }
 
@@ -116,8 +206,8 @@ static uint16_t search_array_row_index(uint16_t OPF_index, const float table[][1
         return row;
 }
 
-static uz_9ph_MLMT_kparameter return_k_param_set(uint16_t row, const float table[][15]){
-        uz_9ph_MLMT_kparameter output = {
+static uz_9ph_MLMT_kparameter_t return_k_param_set(uint16_t row, const float table[][15]){
+        uz_9ph_MLMT_kparameter_t output = {
                 .derating = table[row][2U],
                 .k_X1a = table[row][3U],
                 .k_X1b = table[row][4U],

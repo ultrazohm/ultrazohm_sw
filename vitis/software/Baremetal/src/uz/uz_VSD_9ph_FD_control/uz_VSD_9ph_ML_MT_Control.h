@@ -2,17 +2,14 @@
 #define UZ_VSD_9PH_ML_MT_CONTROL_H
 
 #include "uz_VSD_9ph_FD.h"
+#include "../uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
 
-/*
-header-file for the parameter of ML- and MT-Control strategy for
-open phase faults in asymmetric dual three-phase machines
-*/
 
 /**
  * @brief Struct for k-parameter for calculating controller reference values in 9ph VSD-control during open phase faults
  *
  */
-struct uz_9ph_MLMT_kparameter{
+typedef struct{
     float k_X1a;  
     float k_X1b;
     float k_Y1a;  
@@ -26,27 +23,52 @@ struct uz_9ph_MLMT_kparameter{
     float k_Y3a;  
     float k_Y3b; 
     float derating;
-};
-
-/**
- * @brief typedef for k parameter struct
- *
- */
-typedef struct uz_9ph_MLMT_kparameter uz_9ph_MLMT_kparameter;
+}uz_9ph_MLMT_kparameter_t;
 
 
 /**
- * @brief returns the k-parameters for a specified fault-scenario, neutral point configuration and optimization strategy
- * @param FD_indices uz_9phFD_indices fault indices of the 6 phases
- * @param neutral_point_configuration enum neutral-point configuration (N1 -> single neutral point, N2-> two separate neutral points for phases a1b1c1 and a2b2c2)
- * @param ML_MT_optimization enum (MT -> Maximum Torque (MT) optimization, ML -> Minimum Loss (MT) optimization)
- * @return uz_9ph_MLMT_kparameter struct with kparameters and derating factor
+ * @brief returns the k-parameters for a specified fault-scenario, neutral configuration and optimizations strategy
+ * @param input_faultindices fault indices for all nine phases
+ * @param optimization optimization strategiy (ML or MT)
+ * @param neutral neutral configuration (1 or 3)
+ * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
  */
-//uz_9ph_MLMT_kparameter uz_get_k_parameter(uz_9phFD_indices FD_indices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization);
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph(uz_9ph_abc_t input_faultindices, ML_MT_optimization optimization, int neutral);
 
-uz_9ph_MLMT_kparameter uz_get_k_parameter_9ph_ML(uz_9ph_abc_t input_faultindices);
+/**
+ * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Maximum Torque" (MT) and 1N neutral config
+ * @param input_faultindices fault indices for all nine phases
+ * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
+ */
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N1(uz_9ph_abc_t input_faultindices);
 
+/**
+ * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Maximum Torque" (MT) and 3N neutral config
+ * @param input_faultindices fault indices for all nine phases
+ * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
+ */
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N3(uz_9ph_abc_t input_faultindices);
 
+/**
+ * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Minimum Loss" (ML) and 1N neutral config
+ * @param input_faultindices fault indices for all nine phases
+ * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
+ */
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N1(uz_9ph_abc_t input_faultindices);
+
+/**
+ * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Minimum Loss" (ML) and 3N neutral config
+ * @param input_faultindices fault indices for all nine phases
+ * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
+ */
+uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N3(uz_9ph_abc_t input_faultindices);
+
+/**
+ * @brief returns the the combined OPF index, meaning the indices of all phases are combined as integer (order: a1=bit0, b1=bit1, c1=bit2, a2=bit3, ..., c3=bit8)
+ * @param input_faultindices fault indices for all nine phases
+ * @return combined binary coded fault index
+ */
+uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices);
 
 #endif // UZ_VSD_9ph_ML_MT_CONTROL_H
 

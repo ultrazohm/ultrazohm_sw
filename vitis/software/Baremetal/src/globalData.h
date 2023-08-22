@@ -126,18 +126,14 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t currents_xy2;
 	uz_3ph_dq_t currents_xy3;
 	float omega_el;
-<<<<<<< HEAD
-	float torque_Nm;
+	float torque_Nm_raw;
+	float torque_Nm_filtered;
 	uz_3ph_dq_t debug_pi_xy1;
 	uz_3ph_dq_t debug_pi_xy2;
 	uz_3ph_dq_t debug_pi_xy3;
 	uz_9ph_abc_t fault_single_indices;
 	int fault_n_OPF;
 	int fault_combined_index;
-=======
-	float torque_Nm_raw;
-	float torque_Nm_filtered;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -175,11 +171,8 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement3;
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
-<<<<<<< HEAD
-	uz_VSD_9ph_FD_t* fault_detection;
-=======
 	uz_IIR_Filter_t* torque_filter;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
+	uz_VSD_9ph_FD_t* fault_detection;
 	uz_CurrentControl_t* cc_instance_dq;
 	struct pointers_PI_PI objects_PI_PI;
 	struct pointers_PI_R objects_PI_R;

@@ -62,7 +62,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_DQN_MAX_INSTANCES                            0U
 #define UZ_DQN_BUFFER_MAX_INSTANCES                     0U
-
+#define UZ_DQN_RAND_MAX_INSTANCES                       0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -111,4 +111,5 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_DQN_MAX_INSTANCES                            25U
     #define UZ_DQN_BUFFER_MAX_INSTANCES                     50U
+    #define UZ_DQN_RAND_MAX_INSTANCES                       50U
 #endif

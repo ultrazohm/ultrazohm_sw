@@ -6,7 +6,7 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
-#include "mtwister.h"
+#include "uz_mtwister.h"
 
 #define EXPERIENCE_BUFFER_LENGTH 3
 #define NUMBEROFOBS 5

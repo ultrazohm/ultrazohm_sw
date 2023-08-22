@@ -9,7 +9,7 @@
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
 #include <stdlib.h>
-#include "mtwister.h"
+#include "uz_mtwister.h"
 
 //eps greedy test
 #define NUMBER_OF_EPSGREEDYSTEPS 1000
@@ -439,22 +439,5 @@ TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 }
 }
 
-void test_rand_mtwister(void)
-{
-  // use mtwister, calculate double between 0 and 1 and scale it to Randmax
-  //double randmax = 500; seedRand(0) 
-  MTRand r = seedRand(1);
-  int i;
-  for(i=0; i<15; i++) {
-    // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
-    uint32_t randuint = (uint32_t)(genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
-    float randfloat = (genRand_float(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
-    double randdouble = (genRand(&r) * EXPERIENCE_BUFFER_LENGTH + 1);
-    printf("%d\n", randuint);
-    printf("%f\n", (double)randfloat);
-    printf("%f\n", randdouble);
-  }
-  return 0;
-}
 
 #endif // TEST

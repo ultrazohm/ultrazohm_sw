@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "uz_nn.h"
-#include "mtwister.h"
+#include "uz_mtwister.h"
 
 typedef struct uz_dqn_t uz_dqn_t;
 typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;

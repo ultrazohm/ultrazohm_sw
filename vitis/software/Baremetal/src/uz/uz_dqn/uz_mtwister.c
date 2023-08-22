@@ -7,6 +7,8 @@
  *
  * http://www.sultanik.com/Mersenne_twister
  */
+#include "../uz_global_configuration.h"
+#if UZ_DQN_RAND_MAX_INSTANCES > 0U
 
 #define UPPER_MASK		0x80000000
 #define LOWER_MASK		0x7fffffff
@@ -16,6 +18,32 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+struct uz_random_number_t{
+    bool is_ready;
+    uint32_t seed;
+};
+
+static uint32_t instance_counterrand = 0U;
+static uz_random_number_t instancesrand[UZ_DQN_RAND_MAX_INSTANCES] = {0};
+static uz_random_number_t* uz_dqn_random_allocation(void);
+
+static uz_random_number_t* uz_dqn_random_allocation(void){
+    uz_assert(instance_counterrand < UZ_DQN_RAND_MAX_INSTANCES);
+    uz_random_number_t* self = &instancesrand[instance_counterrand];
+    uz_assert_false(self->is_ready);
+    instance_counterrand++;
+    self->is_ready = true;
+    return (self);
+}
+
+// Function to initialize a random_number instance with a given config
+uz_random_number_t *init_random_number(struct uz_random_number_config cfg) {
+
+    uz_random_number_t *self = uz_dqn_random_allocation();
+    self->seed = cfg.seed;
+    return (self);
+}
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {
   /* set initial seeds to mt[STATE_VECTOR_LENGTH] using the generator
@@ -70,60 +98,13 @@ unsigned long genRandLong(MTRand* rand) {
   return y;
 }
 
-/**
- * Generates a pseudo-randomly generated double in the range [0..1].
- */
+
 double genRand(MTRand* rand) {
   return((double)genRandLong(rand) / (unsigned long)0xffffffff);
 }
 float genRand_float(MTRand* rand) {
-return((float)genRandLong(rand) / (unsigned long)0xffffffff);
+return((float)genRandLong(rand) / (float)0xffffffff);
 }
-// #define _USE_MATH_DEFINES
-
-// const float two_pi = 2*M_PI;
-
-// void basic_box_muller(float *retval);
-// void polar_box_muller(float *retval);
-// int main (int nargs, char **args) {
-// 	if (nargs < 2) {
-// 		fprintf (stdout, "Usage: %s <num_samples>\n", args[0]);
-// 		exit(0);
-// 	}
-// 	int n = atoi(args[1]);
-// 	FILE *basic_file = fopen ("basic_data.txt", "w");
-// 	FILE *polar_file = fopen ("polar_data.txt", "w");
-// 	int i;
-// 	float buf[2];
-// 	for (i = 0; i < n/2; ++i) {
-// 		basic_box_muller (buf);
-// 		fprintf (basic_file, "%f\n%f\n", buf[0], buf[1]);
-// 		polar_box_muller (buf);
-// 		fprintf (polar_file, "%f\n%f\n", buf[0], buf[1]);
-// 	}
-// 	fclose (basic_file); fclose (polar_file);
-// }
-
-// void basic_box_muller(float *retval) {
-// 	float u1 = (float) rand() / RAND_MAX;
-// 	float u2 = (float) rand() / RAND_MAX;
-// 	float factor = sqrt ( -2 * log (u1) );
-// 	float trig_arg = two_pi * u2;
-// 	retval[0] = factor * cos (trig_arg);
-// 	retval[1] = factor * sin (trig_arg);
-// }
-
-// void polar_box_muller(MTRand* rand,float *retval, uint32_t range) {
-// 	float u, v, s;
-// 	do {
-// 		u = genRand_float(rand) / range * 2.0f - 1;
-// 		v = genRand_float(rand) / range * 2.0f - 1;
-// 		s = u*u + v*v;
-// 	} while (s >= 1 || s == 0);
-// 	float factor = sqrt ( -2 * log(s) / s );
-// 	retval[0] = u * factor;
-// 	retval[1] = v * factor;
-// }
 
 float uz_random_box_mueller(MTRand* seed,float mean, float std){
     static float cached = 0.0f;
@@ -134,9 +115,9 @@ float uz_random_box_mueller(MTRand* seed,float mean, float std){
             x = (2.0f * genRand_float(seed)) - 1.0f;
             y = (2.0f * genRand_float(seed)) - 1.0f;
             r = x * x + y * y;
-        } while (r == 0.0 || r > 1.0);
+        } while (r == 0.0f || r > 1.0f);
 
-        float d = sqrt(-2.0f * log(r) / r);
+        float d = sqrtf(-2.0f * logf(r) / r);
         float n1 = x * d;
         float n2 = y * d;
         res = n1 * std + mean;
@@ -154,10 +135,10 @@ void export_histogram(float *array,uint32_t size){
 FILE* file1 = fopen("test/uz/uz_dqn/matlab/randboxmueller.csv", "w");
 if (file1 != NULL)
 {
-
-for (int i = 0; i < size; i++) {
-        fprintf(file1, "%d,%.4f\n", i, array[i]);
+for (u_int32_t i = 0; i < size; i++) {
+        fprintf(file1, "%d,%.4f\n", i, (double)array[i]);
+}
+}
 }
 
-}
-}
+#endif // UZ_MTWISTER_H

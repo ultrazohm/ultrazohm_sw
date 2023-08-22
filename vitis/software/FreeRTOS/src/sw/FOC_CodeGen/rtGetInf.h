@@ -3,13 +3,13 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * File: rtGetNaN.h
+ * File: rtGetInf.h
  *
- * Code generated for Simulink model 'FOC_fastCTRL'.
+ * Code generated for Simulink model 'FOC_slowCTRL'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:14:27 2023
+ * C/C++ source code generated on : Tue Aug 22 14:12:46 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -17,14 +17,16 @@
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_rtGetNaN_h_
-#define RTW_HEADER_rtGetNaN_h_
+#ifndef RTW_HEADER_rtGetInf_h_
+#define RTW_HEADER_rtGetInf_h_
 #include "rtwtypes.h"
 
-extern real_T rtGetNaN(void);
-extern real32_T rtGetNaNF(void);
+extern real_T rtGetInf(void);
+extern real32_T rtGetInfF(void);
+extern real_T rtGetMinusInf(void);
+extern real32_T rtGetMinusInfF(void);
 
-#endif                                 /* RTW_HEADER_rtGetNaN_h_ */
+#endif                                 /* RTW_HEADER_rtGetInf_h_ */
 
 /*
  * File trailer for generated code.

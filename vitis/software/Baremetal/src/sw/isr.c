@@ -62,7 +62,7 @@ enum controller_type selected_controller = PI_R;
 uz_9ph_abc_t indices = {0};
 int n_OPF = 0;
 uz_9ph_alphabeta_t ref_voltages_fault = {0};
-uz_9ph_MLMT_kparameter k_param = {0};
+uz_9ph_MLMT_kparameter_t k_param = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -159,7 +159,7 @@ void ISR_Control(void *data)
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
     	if(	n_OPF){
-    		k_param = uz_get_k_parameter_9ph_ML(indices);
+    		k_param = uz_get_k_parameter_9ph_ML_N1(indices);
     		fault_control_set_tristate(&Global_Data, indices);
     		k_param.k_X1b = 10.0f;
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);

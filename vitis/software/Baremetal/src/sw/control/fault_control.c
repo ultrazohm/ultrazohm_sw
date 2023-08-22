@@ -22,7 +22,7 @@ void fault_control_set_tristate(DS_Data* Data, uz_9ph_abc_t indices){
 }
 
 
-uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers_fault_control objects, uz_9ph_MLMT_kparameter k_param){
+uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers_fault_control objects, uz_9ph_MLMT_kparameter_t k_param){
 	uz_3ph_alphabeta_t alphabeta_setpoint = uz_transformation_3ph_dq_to_alphabeta(Data->rasv.dq_setpoints, Data->av.rotational_position.position_el_2pi);
 	uz_3ph_alphabeta_t XY1_ref = {
 		.alpha = k_param.k_X1a * alphabeta_setpoint.alpha + k_param.k_X1b * alphabeta_setpoint.beta,

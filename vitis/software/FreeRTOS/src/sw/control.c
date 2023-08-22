@@ -34,7 +34,8 @@
 #include "../include/adc.h"
 #include "../include/isr.h"
 
-#include "FOC_CodeGen/FOC_fastCTRL_ert_rtw/FOC_fastCTRL.h"
+#include "FOC_CodeGen/FOC_fastCTRL.h"
+#include "FOC_CodeGen/FOC_slowCTRL.h"
 
 //====================================================================
 // Type definitions
@@ -82,6 +83,41 @@ typedef struct sanity_t_ {
 	float irq_freq_kHz;
 } sanity_t;
 
+typedef struct {
+	struct {
+		real_T U_DCV;                        /* '<Root>/U_DC [V]' */
+		real_T I_phA[6];                     /* '<Root>/I_ph [A]' */
+		real_T I_dq_RefA[2];                 /* '<Root>/I_dq_Ref [A]' */
+		real_T phi_elrad;                    /* '<Root>/phi_el [rad]' */
+		real_T FOC_Mode;                     /* '<Root>/FOC_Mode' */
+		real_T FOC_Enable_i;                 /* '<Root>/FOC_Enable' */
+	} fcf_in;
+	struct {
+		real_T DutyCycles01[6];              /* '<Root>/DutyCycles [0..1]' */
+		real_T I_dq_ActA[4];                 /* '<Root>/I_dq_Act [A]' */
+		real_T ModInd[2];                    /* '<Root>/ModInd' */
+		real_T w_elrads;                     /* '<Root>/w_el [rad//s]' */
+		real_T FOC_Error;                    /* '<Root>/FOC_Error' */
+		real_T I_dq_Ref_outA[2];             /* '<Root>/I_dq_Ref_out [A]' */
+	} fcf_out;
+	struct {
+		  real_T U_DCV;                        /* '<Root>/U_DC [V]' */
+		  real_T ModInd[2];                    /* '<Root>/ModInd' */
+		  real_T w_elrads;                     /* '<Root>/w_el [rad//s]' */
+		  real_T MotTempdegC;                  /* '<Root>/MotTemp [degC]' */
+		  real_T InvTempdegC;                  /* '<Root>/InvTemp [degC]' */
+		  real_T I_dq_ActA[4];                 /* '<Root>/I_dq_Act [A]' */
+		  real_T ExtTorqReqNm;                 /* '<Root>/ExtTorqReq [Nm]' */
+		  real_T SpeedCtrl_Enable;             /* '<Root>/SpeedCtrl_Enable' */
+		  real_T ExtTorqLimNm[2];              /* '<Root>/ExtTorqLim [Nm]' */
+		  real_T ExtSpeedReqrpm;               /* '<Root>/ExtSpeedReq [rpm]' */
+	} scf_in;
+	struct {
+		  real_T I_dq_RefA[2];                 /* '<Root>/I_dq_Ref [A]' */
+		  real_T TorqueEstNm;                  /* '<Root>/TorqueEst [Nm]' */
+		  real_T TorqueRefDeratedNm;           /* '<Root>/TorqueRefDerated [Nm]' */
+	} scf_out;
+} ctrl_data_t;
 //====================================================================
 // Configuration
 //====================================================================
@@ -142,6 +178,15 @@ static B_FOC_fastCTRL_T FOC_fastCTRL_B;/* Observable signals */
 static DW_FOC_fastCTRL_T FOC_fastCTRL_DW;/* Observable states */
 static ExtU_FOC_fastCTRL_T FOC_fastCTRL_U;/* External inputs */
 static ExtY_FOC_fastCTRL_T FOC_fastCTRL_Y;/* External outputs */
+
+static RT_MODEL_FOC_slowCTRL_T FOC_slowCTRL_M_;
+static RT_MODEL_FOC_slowCTRL_T *const FOC_slowCTRL_MPtr = &FOC_slowCTRL_M_;/* Real-time model */
+static B_FOC_slowCTRL_T FOC_slowCTRL_B;/* Observable signals */
+static DW_FOC_slowCTRL_T FOC_slowCTRL_DW;/* Observable states */
+static ExtU_FOC_slowCTRL_T FOC_slowCTRL_U;/* External inputs */
+static ExtY_FOC_slowCTRL_T FOC_slowCTRL_Y;/* External outputs */
+
+volatile static ctrl_data_t ctrl_data;
 
 //====================================================================
 // Static functions
@@ -219,9 +264,41 @@ static void task_fast(void)
 	if (global.ctrl.ctrl_enable) {
 		state_control = 1;
 
+		FOC_fastCTRL_MPtr->inputs->U_DCV = ctrl_data.fcf_in.U_DCV;
+		FOC_fastCTRL_MPtr->inputs->I_phA[0] = ctrl_data.fcf_in.I_phA[0];
+		FOC_fastCTRL_MPtr->inputs->I_phA[1] = ctrl_data.fcf_in.I_phA[1];
+		FOC_fastCTRL_MPtr->inputs->I_phA[2] = ctrl_data.fcf_in.I_phA[2];
+		FOC_fastCTRL_MPtr->inputs->I_phA[3] = ctrl_data.fcf_in.I_phA[3];
+		FOC_fastCTRL_MPtr->inputs->I_phA[4] = ctrl_data.fcf_in.I_phA[4];
+		FOC_fastCTRL_MPtr->inputs->I_phA[5] = ctrl_data.fcf_in.I_phA[5];
+		FOC_fastCTRL_MPtr->inputs->I_dq_RefA[0] = ctrl_data.fcf_in.I_dq_RefA[0];
+		FOC_fastCTRL_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
+		FOC_fastCTRL_MPtr->inputs->phi_elrad = ctrl_data.fcf_in.phi_elrad;
+		FOC_fastCTRL_MPtr->inputs->FOC_Mode = ctrl_data.fcf_in.FOC_Mode;
+		FOC_fastCTRL_MPtr->inputs->FOC_Enable_i = ctrl_data.fcf_in.FOC_Enable_i;
+
 		FOC_fastCTRL_step(FOC_fastCTRL_MPtr);
 
-		Global_Data.rasv.halfBridge1DutyCycle = duty_cycles.duty_cycle_1;
+		ctrl_data.fcf_out.DutyCycles01[0] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[0];
+		ctrl_data.fcf_out.DutyCycles01[1] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[1];
+		ctrl_data.fcf_out.DutyCycles01[2] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[2];
+		ctrl_data.fcf_out.DutyCycles01[3] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[3];
+		ctrl_data.fcf_out.DutyCycles01[4] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[4];
+		ctrl_data.fcf_out.DutyCycles01[5] = FOC_fastCTRL_MPtr->outputs->DutyCycles01[5];
+		ctrl_data.fcf_out.I_dq_ActA[0] = FOC_fastCTRL_MPtr->outputs->I_dq_ActA[0];
+		ctrl_data.fcf_out.I_dq_ActA[1] = FOC_fastCTRL_MPtr->outputs->I_dq_ActA[1];
+		ctrl_data.fcf_out.I_dq_ActA[2] = FOC_fastCTRL_MPtr->outputs->I_dq_ActA[2];
+		ctrl_data.fcf_out.I_dq_ActA[3] = FOC_fastCTRL_MPtr->outputs->I_dq_ActA[3];
+		ctrl_data.fcf_out.ModInd[0] = FOC_fastCTRL_MPtr->outputs->ModInd[0];
+		ctrl_data.fcf_out.ModInd[1] = FOC_fastCTRL_MPtr->outputs->ModInd[1];
+		ctrl_data.fcf_out.w_elrads = FOC_fastCTRL_MPtr->outputs->w_elrads;
+		ctrl_data.fcf_out.FOC_Error = FOC_fastCTRL_MPtr->outputs->FOC_Error;
+		ctrl_data.fcf_out.I_dq_Ref_outA[0] = FOC_fastCTRL_MPtr->outputs->I_dq_Ref_outA[0];
+		ctrl_data.fcf_out.I_dq_Ref_outA[1] = FOC_fastCTRL_MPtr->outputs->I_dq_Ref_outA[1];
+
+
+
+		Global_Data.rasv.halfBridge1DutyCycle = FOC_fastCTRL_MPtr->outputs->DutyCycles01[0];
 		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
 		Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.duty_cycle_3;
 		Global_Data.rasv.halfBridge4DutyCycle = duty_cycles.duty_cycle_4;
@@ -281,7 +358,28 @@ static void task_1ms(void)
 	// task_1ms.in.value_3 = fast_ctrl.out.value_3
 	Xil_ExceptionEnable();
 
-	// step_1ms(&task_1ms.in, &task_1ms.out);
+	FOC_slowCTRL_MPtr->inputs->U_DCV = ctrl_data.scf_in.U_DCV;
+	FOC_slowCTRL_MPtr->inputs->ModInd[0] = ctrl_data.scf_in.ModInd[0];
+	FOC_slowCTRL_MPtr->inputs->ModInd[1] = ctrl_data.scf_in.ModInd[1];
+	FOC_slowCTRL_MPtr->inputs->w_elrads = ctrl_data.scf_in.w_elrads;
+	FOC_slowCTRL_MPtr->inputs->MotTempdegC = ctrl_data.scf_in.MotTempdegC;
+	FOC_slowCTRL_MPtr->inputs->InvTempdegC = ctrl_data.scf_in.InvTempdegC;
+	FOC_slowCTRL_MPtr->inputs->I_dq_ActA[0] = ctrl_data.scf_in.I_dq_ActA[0];
+	FOC_slowCTRL_MPtr->inputs->I_dq_ActA[1] = ctrl_data.scf_in.I_dq_ActA[1];
+	FOC_slowCTRL_MPtr->inputs->I_dq_ActA[2] = ctrl_data.scf_in.I_dq_ActA[2];
+	FOC_slowCTRL_MPtr->inputs->I_dq_ActA[3] = ctrl_data.scf_in.I_dq_ActA[3];
+	FOC_slowCTRL_MPtr->inputs->ExtTorqReqNm = ctrl_data.scf_in.ExtTorqReqNm;
+	FOC_slowCTRL_MPtr->inputs->SpeedCtrl_Enable = ctrl_data.scf_in.SpeedCtrl_Enable;
+	FOC_slowCTRL_MPtr->inputs->ExtTorqLimNm[0] = ctrl_data.scf_in.ExtTorqLimNm[0];
+	FOC_slowCTRL_MPtr->inputs->ExtTorqLimNm[1] = ctrl_data.scf_in.ExtTorqLimNm[1];
+	FOC_slowCTRL_MPtr->inputs->ExtSpeedReqrpm = ctrl_data.scf_in.ExtSpeedReqrpm;
+
+	FOC_slowCTRL_step(FOC_slowCTRL_MPtr);
+
+	ctrl_data.scf_out.I_dq_RefA[0] = FOC_slowCTRL_MPtr->outputs->I_dq_RefA[0];
+	ctrl_data.scf_out.I_dq_RefA[1] = FOC_slowCTRL_MPtr->outputs->I_dq_RefA[1];
+	ctrl_data.scf_out.TorqueEstNm = FOC_slowCTRL_MPtr->outputs->TorqueEstNm;
+	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_slowCTRL_MPtr->outputs->TorqueRefDeratedNm;
 
 	Xil_ExceptionDisable();
 	// todo: copy values from task_1ms output to task_fast input
@@ -466,6 +564,12 @@ void basis_setup(void *p)
 	FOC_fastCTRL_MPtr->inputs = &FOC_fastCTRL_U;
 	FOC_fastCTRL_MPtr->outputs = &FOC_fastCTRL_Y;
 	FOC_fastCTRL_initialize(FOC_fastCTRL_MPtr);
+
+	FOC_slowCTRL_MPtr->blockIO = &FOC_slowCTRL_B;
+	FOC_slowCTRL_MPtr->dwork = &FOC_slowCTRL_DW;
+	FOC_slowCTRL_MPtr->inputs = &FOC_slowCTRL_U;
+	FOC_slowCTRL_MPtr->outputs = &FOC_slowCTRL_Y;
+	FOC_slowCTRL_initialize(FOC_slowCTRL_MPtr);
 
 
 	uz_assert_configuration();

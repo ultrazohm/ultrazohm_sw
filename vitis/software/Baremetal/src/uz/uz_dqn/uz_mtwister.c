@@ -15,6 +15,7 @@
 #include "uz_mtwister.h"
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {
   /* set initial seeds to mt[STATE_VECTOR_LENGTH] using the generator
@@ -146,4 +147,17 @@ float uz_random_box_mueller(MTRand* seed,float mean, float std){
         cached = 0.0f;
     }
 return res;
+}
+
+void export_histogram(float *array,uint32_t size){
+
+FILE* file1 = fopen("test/uz/uz_dqn/matlab/randboxmueller.csv", "w");
+if (file1 != NULL)
+{
+
+for (int i = 0; i < size; i++) {
+        fprintf(file1, "%d,%.4f\n", i, array[i]);
+}
+
+}
 }

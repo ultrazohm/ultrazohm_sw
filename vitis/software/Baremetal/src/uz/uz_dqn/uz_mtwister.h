@@ -9,5 +9,5 @@
 
 float uz_random_box_mueller(MTRand* seed,float mean, float std);
 void polar_box_muller(float *retval, uint32_t range);
-
+void export_histogram(float *array,uint32_t size);
 #endif // UZ_DQN_H

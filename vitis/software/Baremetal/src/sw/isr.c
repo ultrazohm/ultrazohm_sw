@@ -59,8 +59,6 @@ uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = PI_R;
 
 // fault control
-uz_9ph_abc_t indices = {0};
-int n_OPF = 0;
 uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
@@ -159,13 +157,14 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-    	if(	n_OPF){
-    		k_param = uz_get_k_parameter_9ph_ML_N1(indices);
-    		fault_control_set_tristate(&Global_Data, indices);
-    		k_param.k_X1b = 10.0f;
+    	if(Global_Data.av.fault_n_OPF){
+    		k_param = uz_get_k_parameter_9ph_ML_N1(Global_Data.av.fault_single_indices);
+    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
-    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, n_OPF);
+    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
     		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
+    	}else{
+			reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
     	}
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////
@@ -179,7 +178,7 @@ void ISR_Control(void *data)
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
-//		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

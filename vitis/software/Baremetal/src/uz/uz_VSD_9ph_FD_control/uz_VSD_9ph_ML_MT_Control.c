@@ -183,14 +183,14 @@ static uint16_t single_fault_index_to_OPF_index(float index, uint8_t position){
 
 uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices){
         uint16_t output = single_fault_index_to_OPF_index(input_faultindices.a1, 0U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b1, 1U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c1, 2U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.a2, 3U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b2, 4U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c2, 5U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.a3, 6U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.b3, 7U);
-        output = output | single_fault_index_to_OPF_index(input_faultindices.c3, 8U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b1, 1U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c1, 2U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.a2, 3U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b2, 4U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c2, 5U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.a3, 6U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.b3, 7U);
+        output =| single_fault_index_to_OPF_index(input_faultindices.c3, 8U);
         return output;
 }
 

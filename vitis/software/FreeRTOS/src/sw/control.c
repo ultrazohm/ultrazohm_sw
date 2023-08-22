@@ -222,6 +222,15 @@ static void task_fast(void)
 	if (global.ctrl.ctrl_enable) {
 		state_control = 1;
 
+		// TODO Set ADC inputs according to hardware setup
+		ctrl_data.fcf_in.U_DCV = Global_Data.aa.A2.me.ADC_A1;
+		ctrl_data.fcf_in.I_phA[0] = Global_Data.aa.A1.me.ADC_A1;
+		ctrl_data.fcf_in.I_phA[1] = Global_Data.aa.A1.me.ADC_A2;
+		ctrl_data.fcf_in.I_phA[2] = Global_Data.aa.A1.me.ADC_A3;
+		ctrl_data.fcf_in.I_phA[3] = Global_Data.aa.A1.me.ADC_A4;
+		ctrl_data.fcf_in.I_phA[4] = Global_Data.aa.A1.me.ADC_B5;
+		ctrl_data.fcf_in.I_phA[5] = Global_Data.aa.A1.me.ADC_B6;
+
 		FOC_fastCTRL_MPtr->inputs->U_DCV = ctrl_data.fcf_in.U_DCV;
 		FOC_fastCTRL_MPtr->inputs->I_phA[0] = ctrl_data.fcf_in.I_phA[0];
 		FOC_fastCTRL_MPtr->inputs->I_phA[1] = ctrl_data.fcf_in.I_phA[1];
@@ -254,14 +263,12 @@ static void task_fast(void)
 		ctrl_data.fcf_out.I_dq_Ref_outA[0] = FOC_fastCTRL_MPtr->outputs->I_dq_Ref_outA[0];
 		ctrl_data.fcf_out.I_dq_Ref_outA[1] = FOC_fastCTRL_MPtr->outputs->I_dq_Ref_outA[1];
 
-
-
-		Global_Data.rasv.halfBridge1DutyCycle = FOC_fastCTRL_MPtr->outputs->DutyCycles01[0];
-		Global_Data.rasv.halfBridge2DutyCycle = duty_cycles.duty_cycle_2;
-		Global_Data.rasv.halfBridge3DutyCycle = duty_cycles.duty_cycle_3;
-		Global_Data.rasv.halfBridge4DutyCycle = duty_cycles.duty_cycle_4;
-		Global_Data.rasv.halfBridge5DutyCycle = duty_cycles.duty_cycle_5;
-		Global_Data.rasv.halfBridge6DutyCycle = duty_cycles.duty_cycle_6;
+		Global_Data.rasv.halfBridge1DutyCycle = ctrl_data.fcf_out.DutyCycles01[0];
+		Global_Data.rasv.halfBridge2DutyCycle = ctrl_data.fcf_out.DutyCycles01[1];
+		Global_Data.rasv.halfBridge3DutyCycle = ctrl_data.fcf_out.DutyCycles01[2];
+		Global_Data.rasv.halfBridge4DutyCycle = ctrl_data.fcf_out.DutyCycles01[3];
+		Global_Data.rasv.halfBridge5DutyCycle = ctrl_data.fcf_out.DutyCycles01[4];
+		Global_Data.rasv.halfBridge6DutyCycle = ctrl_data.fcf_out.DutyCycles01[5];
 	} else {
 		state_control = 0;
 
@@ -310,10 +317,14 @@ static void task_fast(void)
 static void task_1ms(void)
 {
 	Xil_ExceptionDisable();
-	// todo: copy values from task_1ms output to task_fast input
-	// task_1ms.in.value_1 = fast_ctrl.out.value_1
-	// task_1ms.in.value_2 = fast_ctrl.out.value_2
-	// task_1ms.in.value_3 = fast_ctrl.out.value_3
+
+	// TODO Set ADC inputs according to hardware setup
+	ctrl_data.scf_in.U_DCV = Global_Data.aa.A2.me.ADC_A1;
+
+	ctrl_data.scf_in.ModInd[0] = ctrl_data.fcf_out.ModInd[0];
+	ctrl_data.scf_in.ModInd[1] = ctrl_data.fcf_out.ModInd[1];
+	ctrl_data.scf_in.w_elrads = ctrl_data.fcf_out.w_elrads;
+
 	Xil_ExceptionEnable();
 
 	FOC_slowCTRL_MPtr->inputs->U_DCV = ctrl_data.scf_in.U_DCV;
@@ -340,15 +351,22 @@ static void task_1ms(void)
 	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_slowCTRL_MPtr->outputs->TorqueRefDeratedNm;
 
 	Xil_ExceptionDisable();
-	// todo: copy values from task_1ms output to task_fast input
-	// fast_ctrl.in.value_1 = task_1ms.out.value_1
-	// fast_ctrl.in.value_2 = task_1ms.out.value_2
-	// fast_ctrl.in.value_3 = task_1ms.out.value_3
+
+    ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
+    ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];
+
 	Xil_ExceptionEnable();
 }
 
 static void task_10ms(void)
 {
+
+	Xil_ExceptionDisable();
+
+	ctrl_data.smf_in.FastCtrl_Error = ctrl_data.fcf_out.FOC_Error;
+
+	Xil_ExceptionEnable();
+
 	FOC_Statemachine_MPtr->inputs->StateReq = ctrl_data.smf_in.StateReq;
 	FOC_Statemachine_MPtr->inputs->TorqueReq = ctrl_data.smf_in.TorqueReq;
 	FOC_Statemachine_MPtr->inputs->SpeedReq = ctrl_data.smf_in.SpeedReq;
@@ -362,6 +380,12 @@ static void task_10ms(void)
 	ctrl_data.smf_out.FOC_Enable_PWM = FOC_Statemachine_MPtr->outputs->FOC_Enable_PWM;
 	ctrl_data.smf_out.global_reset_errors = FOC_Statemachine_MPtr->outputs->global_reset_errors;
 	ctrl_data.smf_out.SPEED_CTRL_Enable = FOC_Statemachine_MPtr->outputs->SPEED_CTRL_Enable;
+
+	Xil_ExceptionDisable();
+
+    ctrl_data.fcf_in.FOC_Mode = ctrl_data.smf_out.FOC_Mode;
+
+	Xil_ExceptionEnable();
 
 	// Todo: other background stuff could also be done here
 	// control_buttons()

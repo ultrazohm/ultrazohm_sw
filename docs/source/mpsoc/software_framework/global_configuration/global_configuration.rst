@@ -24,6 +24,7 @@ The configuration is used for:
 - :ref:`static_memory_allocation`
 -  Set the hardware version specific settings (e.g., ``UZ_HARDWARE_VERSION`` for different front panels).
 - Configure the interrupt source (:ref:`r5_interrupts`)
+- Configure the use of an external stop button, depending on the hardware revision (:ref:`external_stop`)
 
 To change the default global configuration, make the changes to the local ``uz_global_configuration.h``, and make sure that all :ref:`unit_tests` work locally.
 Then, copy the content of ``uz_global_configuration.h`` to ``default_uz_global_configuration.h`` and commit the change.

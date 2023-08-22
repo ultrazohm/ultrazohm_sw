@@ -36,6 +36,7 @@
 
 #include "FOC_CodeGen/FOC_fastCTRL.h"
 #include "FOC_CodeGen/FOC_slowCTRL.h"
+#include "FOC_CodeGen/FOC_Statemachine.h"
 
 //====================================================================
 // Type definitions
@@ -105,6 +106,20 @@ typedef struct {
 		  real_T TorqueEstNm;                  /* '<Root>/TorqueEst [Nm]' */
 		  real_T TorqueRefDeratedNm;           /* '<Root>/TorqueRefDerated [Nm]' */
 	} scf_out;
+	struct {
+		  real_T StateReq;                     /* '<Root>/StateReq' */
+		  real_T TorqueReq;                    /* '<Root>/TorqueReq' */
+		  real_T SpeedReq;                     /* '<Root>/SpeedReq' */
+		  boolean_T FastCtrl_Error;            /* '<Root>/error' */
+	} smf_in;
+	struct {
+		  real_T State;                        /* '<Root>/State' */
+		  real_T FOC_Mode;                     /* '<Root>/FOC_Mode' */
+		  real_T StateFOC;                     /* '<Root>/StateFOC' */
+		  real_T FOC_Enable_PWM;               /* '<Root>/FOC_Enable_PWM' */
+		  real_T global_reset_errors;          /* '<Root>/global_reset_errors' */
+		  real_T SPEED_CTRL_Enable;            /* '<Root>/SPEED_CTRL_Enable' */
+	} smf_out;
 } ctrl_data_t;
 //====================================================================
 // Configuration
@@ -169,6 +184,13 @@ static B_FOC_slowCTRL_T FOC_slowCTRL_B;/* Observable signals */
 static DW_FOC_slowCTRL_T FOC_slowCTRL_DW;/* Observable states */
 static ExtU_FOC_slowCTRL_T FOC_slowCTRL_U;/* External inputs */
 static ExtY_FOC_slowCTRL_T FOC_slowCTRL_Y;/* External outputs */
+
+static RT_MODEL_FOC_Statemachine_T FOC_Statemachine_M_;
+static RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_MPtr =
+  &FOC_Statemachine_M_;                /* Real-time model */
+static DW_FOC_Statemachine_T FOC_Statemachine_DW;/* Observable states */
+static ExtU_FOC_Statemachine_T FOC_Statemachine_U;/* External inputs */
+static ExtY_FOC_Statemachine_T FOC_Statemachine_Y;/* External outputs */
 
 volatile static ctrl_data_t ctrl_data;
 
@@ -327,8 +349,19 @@ static void task_1ms(void)
 
 static void task_10ms(void)
 {
-	// Todo Hat task_10ms() austausch mit ctrl_fast() oder ctrl_1ms()?
-	// step_10ms(&task_10ms.in, &task_10ms.out);
+	FOC_Statemachine_MPtr->inputs->StateReq = ctrl_data.smf_in.StateReq;
+	FOC_Statemachine_MPtr->inputs->TorqueReq = ctrl_data.smf_in.TorqueReq;
+	FOC_Statemachine_MPtr->inputs->SpeedReq = ctrl_data.smf_in.SpeedReq;
+	FOC_Statemachine_MPtr->inputs->FastCtrl_Error = ctrl_data.smf_in.FastCtrl_Error;
+
+	FOC_Statemachine_step(FOC_Statemachine_MPtr);
+
+	ctrl_data.smf_out.State = FOC_Statemachine_MPtr->outputs->State;
+	ctrl_data.smf_out.FOC_Mode = FOC_Statemachine_MPtr->outputs->FOC_Mode;
+	ctrl_data.smf_out.StateFOC = FOC_Statemachine_MPtr->outputs->StateFOC;
+	ctrl_data.smf_out.FOC_Enable_PWM = FOC_Statemachine_MPtr->outputs->FOC_Enable_PWM;
+	ctrl_data.smf_out.global_reset_errors = FOC_Statemachine_MPtr->outputs->global_reset_errors;
+	ctrl_data.smf_out.SPEED_CTRL_Enable = FOC_Statemachine_MPtr->outputs->SPEED_CTRL_Enable;
 
 	// Todo: other background stuff could also be done here
 	// control_buttons()
@@ -507,6 +540,10 @@ void basis_setup(void *p)
 	FOC_slowCTRL_MPtr->outputs = &FOC_slowCTRL_Y;
 	FOC_slowCTRL_initialize(FOC_slowCTRL_MPtr);
 
+	FOC_Statemachine_MPtr->dwork = &FOC_Statemachine_DW;
+	FOC_Statemachine_MPtr->inputs = &FOC_Statemachine_U;
+	FOC_Statemachine_MPtr->outputs = &FOC_Statemachine_Y;
+	FOC_Statemachine_initialize(FOC_Statemachine_MPtr);
 
 	uz_assert_configuration();
 	Initialize_AXI_GPIO();

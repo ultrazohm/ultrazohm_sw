@@ -43,7 +43,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  10.0f
+#define MAX_PHASE_CURRENT_AMP  5.0f
 #define MAX_DC_VOLT 400.0f
 #define MAX_SPEED_RPM 1000.0f
 #define MAX_TEMP_DEG 90.0f
@@ -61,6 +61,8 @@ enum controller_type selected_controller = PI_R;
 // fault control
 uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
+
+float global_derate;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -91,7 +93,7 @@ void ISR_Control(void *data)
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);
     Global_Data.av.full_voltages_dq = uz_transformation_9ph_abc_to_dq(Global_Data.av.voltages_abc, Global_Data.av.rotational_position.position_el_2pi);
-    Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.voltages_abc);
+    Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.currents_abc);
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Limits///////////////////////////////////
@@ -122,8 +124,6 @@ void ISR_Control(void *data)
 	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
 	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
-	derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
-
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -159,12 +159,14 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	if(Global_Data.av.fault_n_OPF){
     		k_param = uz_get_k_parameter_9ph_ML_N1(Global_Data.av.fault_single_indices);
+			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
     		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
     		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
     		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
     	}else{
 			reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
     	}
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////

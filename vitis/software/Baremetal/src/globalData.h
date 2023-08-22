@@ -149,6 +149,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	uz_3ph_dq_t dq_setpoints_user_input;
 	uz_3ph_dq_t dq_setpoints;
 	bool ctrl_xy1;
 	bool ctrl_xy2;

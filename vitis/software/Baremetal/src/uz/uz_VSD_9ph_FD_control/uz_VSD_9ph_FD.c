@@ -99,15 +99,19 @@ int uz_vsd_opf_9ph_get_n_fault(uz_9ph_abc_t indices){
 	return (int)sum;
 }
 
+float index_a1_raw;
+float index_a1_filtered;
+float index_a1_th;
+
 uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
 	uz_9ph_abc_t indices = {0};
 
 	// calculate fault indices
 	indices = uz_vsd_opf_9ph_fault_indices_calculation(vsdcurrents);
-
+	index_a1_raw = indices.a1;
 	// filter with hysteresis filter
 	indices = uz_vsd_fd_hysteresis_filter(indices, VSD_FD->lowerlimit, VSD_FD->upperlimit);
-
+	index_a1_th = indices.a1;
 	// set filterlength of moving average filter according to current omega_el
 	uint32_t new_filterLength = 1;
 	if (omega_el_rad_per_sec != 0){
@@ -116,8 +120,8 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 
 	if(new_filterLength > VSD_FD->mov_average_filter_length){
 		new_filterLength = VSD_FD->mov_average_filter_length;
-	}else if(new_filterLength < 1){
-		new_filterLength = 1;
+	}else if(new_filterLength < 10){
+		new_filterLength = 10;
 	}
 
 
@@ -141,7 +145,7 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 	indices.a3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R7, indices.a3);
 	indices.b3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R8, indices.b3);
 	indices.c3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R9, indices.c3);
-
+	index_a1_filtered = indices.a1;
 	// evaluation of fault indices
 	indices = uz_vsd_fd_9ph_evaluation(indices, VSD_FD->threshold);
 	return indices;

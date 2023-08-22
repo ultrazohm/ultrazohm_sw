@@ -68,7 +68,7 @@ uz_VSD_9ph_FD_t* init_uz_VSD_9ph_FD(void){
 	struct uz_VSD_9ph_FD_config fault_detection_cfg = {
 		.upperlimit = 1.1f,
 		.lowerlimit = 0.9f,
-		.threshold = 0.4f,//what SDKLFJSDLFJSDÖO
+		.threshold = 0.4f,
 		.mov_average_filter_length = ARRAYSIZE,
 		.sample_frequency_Hz = UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE,
 		.percent_of_el_period = 0.4f,

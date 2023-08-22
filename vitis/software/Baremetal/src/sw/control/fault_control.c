@@ -107,8 +107,8 @@ void reset_controllers_fault_control_and_tristate(struct pointers_fault_control 
 }
 
 void derate_dq_setpoints(DS_Data* Data, float derating, int n_OPF){
-	if(n_OPF){
-		Data->rasv.dq_setpoints.d = Data->rasv.dq_setpoints.d*derating;
-		Data->rasv.dq_setpoints.q = Data->rasv.dq_setpoints.q*derating;
+	if(n_OPF > 0){
+		Data->rasv.dq_setpoints.d = derating * Data->rasv.dq_setpoints_user_input.d;
+		Data->rasv.dq_setpoints.q = derating * Data->rasv.dq_setpoints_user_input.q;
 	}
 }

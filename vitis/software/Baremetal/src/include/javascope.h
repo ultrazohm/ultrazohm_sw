@@ -75,6 +75,11 @@ enum JS_OberservableData {
 	JSO_debug_y2,
 	JSO_debug_x3,
 	JSO_debug_y3,
+	JSO_OPF_index,
+	JSO_index_a1_filtered,
+	JSO_index_a1_th,
+	JSO_index_a1_raw,
+	JSO_derate,
 	JSO_ENDMARKER
 };
 

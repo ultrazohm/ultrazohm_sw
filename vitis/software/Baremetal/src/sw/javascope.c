@@ -35,6 +35,13 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+float OPF_index_float;
+
+extern float index_a1_filtered;
+extern float index_a1_raw;
+extern float global_derate;
+extern float index_a1_th;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -111,6 +118,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_debug_y2]   	= &data->av.debug_pi_xy2.q;
 	js_ch_observable[JSO_debug_x3]   	= &data->av.debug_pi_xy3.d;
 	js_ch_observable[JSO_debug_y3]   	= &data->av.debug_pi_xy3.q;
+	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
+	js_ch_observable[JSO_index_a1_filtered] =  &index_a1_filtered;
+	js_ch_observable[JSO_index_a1_th] =  &index_a1_th;
+	js_ch_observable[JSO_index_a1_raw] =  &index_a1_raw;
+	js_ch_observable[JSO_derate] =  &global_derate;
 
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
@@ -149,6 +161,8 @@ void JavaScope_update(DS_Data* data){
 
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+
+	OPF_index_float = (float) data->av.fault_combined_index;
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

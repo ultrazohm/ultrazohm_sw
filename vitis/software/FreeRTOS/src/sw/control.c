@@ -40,18 +40,6 @@
 //====================================================================
 // Type definitions
 //====================================================================
-// TODO remove
-typedef struct {
-	uint8_t array_50_byte [50];
-	uint8_t array_90_byte [90];
-	uint8_t array_100_byte [100];
-
-	uint8_t saw_u8;
-	int8_t sin_u8;
-	int8_t cos_u8;
-	float sin_f;
-} control_dummy_t;
-
 typedef struct {
 	float duty_cycle_1;
 	float duty_cycle_2;
@@ -168,10 +156,6 @@ static QueueHandle_t queue_task_10ms;
 
 volatile static uint8_t state_control;
 
-// TODO remove
-extern control_dummy_t control_dummy;
-control_dummy_t control_dummy = {0};
-
 static RT_MODEL_FOC_fastCTRL_T FOC_fastCTRL_M_;
 static RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_MPtr = &FOC_fastCTRL_M_;/* Real-time model */
 static B_FOC_fastCTRL_T FOC_fastCTRL_B;/* Observable signals */
@@ -195,54 +179,6 @@ volatile static ctrl_data_t ctrl_data;
 	timing_us.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
 	if (timing_us.now.name_ > timing_us.max.name_) \
 	timing_us.max.name_ = timing_us.now.name_;
-
-// Todo remove
-static void control_dummy_run(void)
-{
-	static bool init_once = 1;
-	if (init_once) {
-		init_once = 0;
-
-		for (int i = 0; i < 50; i++) {
-			control_dummy.array_50_byte[i] = i;
-		}
-		for (int i = 0; i < 90; i++) {
-			control_dummy.array_90_byte[i] = i;
-		}
-		for (int i = 0; i < 100; i++) {
-			control_dummy.array_100_byte[i] = i;
-		}
-	}
-
-	for (int i = 0; i < 50; i++) {
-		control_dummy.array_50_byte[i]++;
-	}
-	for (int i = 0; i < 90; i++) {
-		control_dummy.array_90_byte[i]++;
-	}
-	for (int i = 0; i < 100; i++) {
-		control_dummy.array_100_byte[i]++;
-	}
-
-	// Get sine wave with about 1 Hz
-	// Div_factor = call-rate / 255
-	static int div_cnt = 0;
-	div_cnt++;
-	if (div_cnt >= 39) {
-		div_cnt = 0;
-
-		static uint8_t cnt_sin = 0;
-		cnt_sin++;
-		control_dummy.saw_u8 = cnt_sin;
-		float angle = (M_PI * 2 * cnt_sin / UINT8_MAX);
-		control_dummy.sin_f = sinf(angle);
-		control_dummy.sin_u8 = sinf(angle) * INT8_MAX;
-		control_dummy.cos_u8 = cosf(angle) * INT8_MAX;
-	}
-}
-
-
-
 
 static void task_fast(void)
 {

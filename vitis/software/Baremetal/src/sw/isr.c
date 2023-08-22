@@ -74,8 +74,9 @@ void ISR_Control(void *data)
     // actual values reading functions
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);
-    uz_ADC_currents(&Global_Data);
-    uz_ADC_voltages(&Global_Data);
+    Global_Data.av.currents_abc = uz_ADC_phase_currents(&Global_Data.aa);
+    Global_Data.av.voltages_abc = uz_ADC_phase_voltages(&Global_Data.aa);
+    uz_ADC_dc_values(&Global_Data);
     uz_ADC_torque(&Global_Data);
     uz_calc_phase_voltage(&Global_Data, NEUTRAL_CFG);
     // transformations

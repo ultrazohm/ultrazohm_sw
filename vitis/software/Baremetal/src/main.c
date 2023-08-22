@@ -71,6 +71,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.torque_filter = init_torque_filter();
             initialization_chain = init_ip_cores;
             // controllers
 			// PI_0

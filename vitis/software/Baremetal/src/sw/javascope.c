@@ -123,7 +123,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.full_currents_dq.d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.full_currents_dq.q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.rotational_position.n_mech_rpm);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.torque_Nm);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.torque_Nm_filtered);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

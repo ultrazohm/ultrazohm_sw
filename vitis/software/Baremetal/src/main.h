@@ -56,6 +56,9 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
+#include "include/init_torque_filter.h"
+
+
 #include "sw/control/control.h"
 #include "include/init_fault_control.h"
 

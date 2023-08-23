@@ -22,6 +22,7 @@ struct uz_mtwister_t{
     bool is_ready;
     uint32_t seed;
     MTRand seedRand;
+    int limit; // if needed
     float mean;
     float std;
     enum rng_type distribution;

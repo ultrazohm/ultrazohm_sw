@@ -40,6 +40,7 @@ uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg) {
     self->distribution = cfg.distribution;
     self->mean = 0.0f;
     self->std = 0.5f;
+    self->limit = 1;
     return (self);
 }
 

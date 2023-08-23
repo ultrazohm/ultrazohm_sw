@@ -133,6 +133,7 @@ extern const ConstP_FOC_fastCTRL_T FOC_fastCTRL_ConstP;
  * these signals and export their symbols.
  *
  */
+#if 0
 extern real_T Phi_AngleEst_AutoSwitch; /* '<S5>/Selectphicalc3' */
 extern real_T FOC_AngleEst_w_el;       /* '<S13>/Switch_speed' */
 extern real_T Phi_est;                 /* '<S10>/Sum1' */
@@ -307,6 +308,7 @@ extern real_T FOC_phi_offset;          /* Variable: FOC_phi_offset
 extern real_T Factor_OmegaRot;         /* Variable: Factor_OmegaRot
                                         * Referenced by: '<S26>/Gain5'
                                         */
+#endif
 
 /* Model entry point functions */
 extern void FOC_fastCTRL_initialize(RT_MODEL_FOC_fastCTRL_T *const

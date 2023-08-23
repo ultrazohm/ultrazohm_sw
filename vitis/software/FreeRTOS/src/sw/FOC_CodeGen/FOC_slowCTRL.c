@@ -26,158 +26,158 @@
 
 /* Exported block signals */
 real_T Udc_scf;                        /* '<S1>/Switch1' */
-real_T Test_Torqu_Request;             /* '<S8>/Switch' */
-real_T Torq_Ref_PGAIN;                 /* '<S9>/FOC_TORQ_REDUC_PGAIN' */
-real_T Id_Ref_raw;                     /* '<S5>/Multiport Switch' */
-real_T Iq_Ref_raw;                     /* '<S6>/Multiport Switch' */
-real_T Torq_Ref_PSM;                   /* '<S9>/Gain' */
-real_T Torq_Ref_IqDiff;                /* '<S9>/FOC_IQ_DIFF_REDUC_GAIN' */
-real_T M_est;                          /* '<S4>/TorqEst_Nm' */
-real_T FOC_MotTemp_PSM;                /* '<S8>/Gain1' */
+static real_T Test_Torqu_Request;             /* '<S8>/Switch' */
+static real_T Torq_Ref_PGAIN;                 /* '<S9>/FOC_TORQ_REDUC_PGAIN' */
+static real_T Id_Ref_raw;                     /* '<S5>/Multiport Switch' */
+static real_T Iq_Ref_raw;                     /* '<S6>/Multiport Switch' */
+static real_T Torq_Ref_PSM;                   /* '<S9>/Gain' */
+static real_T Torq_Ref_IqDiff;                /* '<S9>/FOC_IQ_DIFF_REDUC_GAIN' */
+static real_T M_est;                          /* '<S4>/TorqEst_Nm' */
+static real_T FOC_MotTemp_PSM;                /* '<S8>/Gain1' */
 boolean_T Temp_Derating_aktiv;         /* '<S25>/Compare' */
 
 /* Exported block parameters */
-real_T FOC_ENABLE_Idq_Ref = 1.0;       /* Variable: FOC_ENABLE_Idq_Ref
+static real_T FOC_ENABLE_Idq_Ref = 1.0;       /* Variable: FOC_ENABLE_Idq_Ref
                                         * Referenced by: '<S2>/FOC_ENABLE_Idq_Ref'
                                         */
-real_T FOC_IQ_DIFF_REDUC_GAIN = 0.002; /* Variable: FOC_IQ_DIFF_REDUC_GAIN
+static real_T FOC_IQ_DIFF_REDUC_GAIN = 0.002; /* Variable: FOC_IQ_DIFF_REDUC_GAIN
                                         * Referenced by: '<S9>/FOC_IQ_DIFF_REDUC_GAIN'
                                         */
-real_T FOC_LIMIT_I_PHASE_PEAK_MAX = 197.989899;/* Variable: FOC_LIMIT_I_PHASE_PEAK_MAX
+static real_T FOC_LIMIT_I_PHASE_PEAK_MAX = 197.989899;/* Variable: FOC_LIMIT_I_PHASE_PEAK_MAX
                                                 * Referenced by: '<S15>/Constant'
                                                 */
-real_T FOC_LIMIT_Idq_Ref_SlewRate_Down = -1000.0;
+static real_T FOC_LIMIT_Idq_Ref_SlewRate_Down = -1000.0;
                                     /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Down
                                      * Referenced by:
                                      *   '<S11>/Constant7'
                                      *   '<S17>/Constant7'
                                      */
-real_T FOC_LIMIT_Idq_Ref_SlewRate_Up = 1000.0;
+static real_T FOC_LIMIT_Idq_Ref_SlewRate_Up = 1000.0;
                                       /* Variable: FOC_LIMIT_Idq_Ref_SlewRate_Up
                                        * Referenced by:
                                        *   '<S11>/Constant6'
                                        *   '<S17>/Constant6'
                                        */
-real_T FOC_LIMIT_Motor_Torque_MAX = 205.0;/* Variable: FOC_LIMIT_Motor_Torque_MAX
+static real_T FOC_LIMIT_Motor_Torque_MAX = 205.0;/* Variable: FOC_LIMIT_Motor_Torque_MAX
                                            * Referenced by: '<S8>/Maximum_Torque_Maschine'
                                            */
-real_T FOC_LIMIT_Torque_Derating_Temp = 120.0;
+static real_T FOC_LIMIT_Torque_Derating_Temp = 120.0;
                                      /* Variable: FOC_LIMIT_Torque_Derating_Temp
                                       * Referenced by: '<S26>/Constant'
                                       */
-real_T FOC_LIMIT_Torque_Ref_MAX = 110.0;/* Variable: FOC_LIMIT_Torque_Ref_MAX
+static real_T FOC_LIMIT_Torque_Ref_MAX = 110.0;/* Variable: FOC_LIMIT_Torque_Ref_MAX
                                          * Referenced by: '<S1>/TORQUE_REQ_LIMIT'
                                          */
-real_T FOC_LIMIT_Torque_Ref_MIN = -110.0;/* Variable: FOC_LIMIT_Torque_Ref_MIN
+static real_T FOC_LIMIT_Torque_Ref_MIN = -110.0;/* Variable: FOC_LIMIT_Torque_Ref_MIN
                                           * Referenced by: '<S1>/TORQUE_REQ_LIMIT'
                                           */
-real_T FOC_LIMIT_Torque_Ref_SlewRate_Down = -100.0;
+static real_T FOC_LIMIT_Torque_Ref_SlewRate_Down = -100.0;
                                  /* Variable: FOC_LIMIT_Torque_Ref_SlewRate_Down
                                   * Referenced by: '<S7>/Constant7'
                                   */
-real_T FOC_LIMIT_Torque_Ref_SlewRate_Up = 100.0;
+static real_T FOC_LIMIT_Torque_Ref_SlewRate_Up = 100.0;
                                    /* Variable: FOC_LIMIT_Torque_Ref_SlewRate_Up
                                     * Referenced by: '<S7>/Constant6'
                                     */
-real_T FOC_LIMIT_n_Ref_SlewRate_Down = -500.0;
+static real_T FOC_LIMIT_n_Ref_SlewRate_Down = -500.0;
                                       /* Variable: FOC_LIMIT_n_Ref_SlewRate_Down
                                        * Referenced by: '<S27>/Constant7'
                                        */
-real_T FOC_LIMIT_n_Ref_SlewRate_InitVal = 0.0;
+static real_T FOC_LIMIT_n_Ref_SlewRate_InitVal = 0.0;
                                    /* Variable: FOC_LIMIT_n_Ref_SlewRate_InitVal
                                     * Referenced by: '<S29>/Delay Input2'
                                     */
-real_T FOC_LIMIT_n_Ref_SlewRate_Up = 500.0;/* Variable: FOC_LIMIT_n_Ref_SlewRate_Up
+static real_T FOC_LIMIT_n_Ref_SlewRate_Up = 500.0;/* Variable: FOC_LIMIT_n_Ref_SlewRate_Up
                                             * Referenced by: '<S27>/Constant6'
                                             */
-real_T FOC_MANUAL_Id_Ref = 0.0;        /* Variable: FOC_MANUAL_Id_Ref
+static real_T FOC_MANUAL_Id_Ref = 0.0;        /* Variable: FOC_MANUAL_Id_Ref
                                         * Referenced by: '<S5>/Constant5'
                                         */
-real_T FOC_MANUAL_Iq_Ref = 0.0;        /* Variable: FOC_MANUAL_Iq_Ref
+static real_T FOC_MANUAL_Iq_Ref = 0.0;        /* Variable: FOC_MANUAL_Iq_Ref
                                         * Referenced by: '<S6>/Constant3'
                                         */
-real_T FOC_MANUAL_Torque_Request = 0.0;/* Variable: FOC_MANUAL_Torque_Request
+static real_T FOC_MANUAL_Torque_Request = 0.0;/* Variable: FOC_MANUAL_Torque_Request
                                         * Referenced by: '<S1>/Constant'
                                         */
-real_T FOC_MANUAL_U_DC = 0.0;          /* Variable: FOC_MANUAL_U_DC
+static real_T FOC_MANUAL_U_DC = 0.0;          /* Variable: FOC_MANUAL_U_DC
                                         * Referenced by: '<S1>/Udc2'
                                         */
-real_T FOC_SELECT_ExtTrqReq = 1.0;     /* Variable: FOC_SELECT_ExtTrqReq
+static real_T FOC_SELECT_ExtTrqReq = 1.0;     /* Variable: FOC_SELECT_ExtTrqReq
                                         * Referenced by: '<S1>/Constant2'
                                         */
-real_T FOC_SELECT_Id_Ref = 4.0;        /* Variable: FOC_SELECT_Id_Ref
+static real_T FOC_SELECT_Id_Ref = 4.0;        /* Variable: FOC_SELECT_Id_Ref
                                         * Referenced by: '<S5>/Constant3'
                                         */
-real_T FOC_SELECT_Idq_Ref_Ramp = 1.0;  /* Variable: FOC_SELECT_Idq_Ref_Ramp
+static real_T FOC_SELECT_Idq_Ref_Ramp = 1.0;  /* Variable: FOC_SELECT_Idq_Ref_Ramp
                                         * Referenced by:
                                         *   '<S11>/Constant5'
                                         *   '<S17>/Constant5'
                                         */
-real_T FOC_SELECT_Iq_Ref = 4.0;        /* Variable: FOC_SELECT_Iq_Ref
+static real_T FOC_SELECT_Iq_Ref = 4.0;        /* Variable: FOC_SELECT_Iq_Ref
                                         * Referenced by: '<S6>/Constant5'
                                         */
-real_T FOC_SELECT_Temp_Derating = 0.0; /* Variable: FOC_SELECT_Temp_Derating
+static real_T FOC_SELECT_Temp_Derating = 0.0; /* Variable: FOC_SELECT_Temp_Derating
                                         * Referenced by: '<S2>/Temp_Derating_Selector'
                                         */
-real_T FOC_SELECT_TorqEstMdl = 1.0;    /* Variable: FOC_SELECT_TorqEstMdl
+static real_T FOC_SELECT_TorqEstMdl = 1.0;    /* Variable: FOC_SELECT_TorqEstMdl
                                         * Referenced by: '<S4>/Constant4'
                                         */
-real_T FOC_SELECT_Torque_Ref_Ramp = 1.0;/* Variable: FOC_SELECT_Torque_Ref_Ramp
+static real_T FOC_SELECT_Torque_Ref_Ramp = 1.0;/* Variable: FOC_SELECT_Torque_Ref_Ramp
                                          * Referenced by: '<S7>/0: ohne Drehmomentrampe 1: mit Drehmomentrampe'
                                          */
-real_T FOC_SELECT_U_DC_INPUT = 1.0;    /* Variable: FOC_SELECT_U_DC_INPUT
+static real_T FOC_SELECT_U_DC_INPUT = 1.0;    /* Variable: FOC_SELECT_U_DC_INPUT
                                         * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
                                         */
-real_T FOC_SELECT_n_Ref_Ramp = 1.0;    /* Variable: FOC_SELECT_n_Ref_Ramp
+static real_T FOC_SELECT_n_Ref_Ramp = 1.0;    /* Variable: FOC_SELECT_n_Ref_Ramp
                                         * Referenced by: '<S27>/Constant5'
                                         */
-real_T FOC_TORQ_REDUC_GAIN = 0.04;     /* Variable: FOC_TORQ_REDUC_GAIN
+static real_T FOC_TORQ_REDUC_GAIN = 0.04;     /* Variable: FOC_TORQ_REDUC_GAIN
                                         * Referenced by: '<S9>/FOC_TORQ_REDUC_GAIN'
                                         */
-real_T FOC_TORQ_REDUC_PGAIN = 0.15;    /* Variable: FOC_TORQ_REDUC_PGAIN
+static real_T FOC_TORQ_REDUC_PGAIN = 0.15;    /* Variable: FOC_TORQ_REDUC_PGAIN
                                         * Referenced by: '<S9>/FOC_TORQ_REDUC_PGAIN'
                                         */
-real_T FOC_TORQ_REDUC_START = 1.2;     /* Variable: FOC_TORQ_REDUC_START
+static real_T FOC_TORQ_REDUC_START = 1.2;     /* Variable: FOC_TORQ_REDUC_START
                                         * Referenced by: '<S9>/FOC_TORQ_REDUC_START'
                                         */
-real_T FOC_Torque_Derating_Temp_Gain = 0.1;
+static real_T FOC_Torque_Derating_Temp_Gain = 0.1;
                                       /* Variable: FOC_Torque_Derating_Temp_Gain
                                        * Referenced by: '<S23>/Constant1'
                                        */
-real_T FOC_z_P = 4.0;                  /* Variable: FOC_z_P
+static real_T FOC_z_P = 4.0;                  /* Variable: FOC_z_P
                                         * Referenced by:
                                         *   '<S3>/RPM => w_el'
                                         *   '<S31>/3*Z_p//2'
                                         *   '<S14>/Gain'
                                         */
-real_T SPEED_CTRL_K_AWU = 1.0;         /* Variable: SPEED_CTRL_K_AWU
+static real_T SPEED_CTRL_K_AWU = 1.0;         /* Variable: SPEED_CTRL_K_AWU
                                         * Referenced by: '<S3>/Gain1'
                                         */
-real_T SPEED_CTRL_LIMIT_n_Ref_MAX = 7000.0;/* Variable: SPEED_CTRL_LIMIT_n_Ref_MAX
+static real_T SPEED_CTRL_LIMIT_n_Ref_MAX = 7000.0;/* Variable: SPEED_CTRL_LIMIT_n_Ref_MAX
                                             * Referenced by: '<S3>/limit T2'
                                             */
-real_T SPEED_CTRL_LIMIT_n_Ref_MIN = 0.0;/* Variable: SPEED_CTRL_LIMIT_n_Ref_MIN
+static real_T SPEED_CTRL_LIMIT_n_Ref_MIN = 0.0;/* Variable: SPEED_CTRL_LIMIT_n_Ref_MIN
                                          * Referenced by: '<S3>/limit T2'
                                          */
-real_T SPEED_CTRL_MANUAL_n_RPM = 0.0;  /* Variable: SPEED_CTRL_MANUAL_n_RPM
+static real_T SPEED_CTRL_MANUAL_n_RPM = 0.0;  /* Variable: SPEED_CTRL_MANUAL_n_RPM
                                         * Referenced by: '<S3>/OmegaRot2'
                                         */
-real_T SPEED_CTRL_SELECT_TorqLimit = 1.0;/* Variable: SPEED_CTRL_SELECT_TorqLimit
+static real_T SPEED_CTRL_SELECT_TorqLimit = 1.0;/* Variable: SPEED_CTRL_SELECT_TorqLimit
                                           * Referenced by: '<S3>/OmegaRot3'
                                           */
-real_T SPEED_CTRL_SELECT_n_Ref = 1.0;  /* Variable: SPEED_CTRL_SELECT_n_Ref
+static real_T SPEED_CTRL_SELECT_n_Ref = 1.0;  /* Variable: SPEED_CTRL_SELECT_n_Ref
                                         * Referenced by: '<S3>/OmegaRot1'
                                         */
-real_T SPEED_CTRL_TORQLIMNEG = -205.0; /* Variable: SPEED_CTRL_TORQLIMNEG
+static real_T SPEED_CTRL_TORQLIMNEG = -205.0; /* Variable: SPEED_CTRL_TORQLIMNEG
                                         * Referenced by: '<S3>/Constant5'
                                         */
-real_T SPEED_CTRL_TORQLIMPOS = 205.0;  /* Variable: SPEED_CTRL_TORQLIMPOS
+static real_T SPEED_CTRL_TORQLIMPOS = 205.0;  /* Variable: SPEED_CTRL_TORQLIMPOS
                                         * Referenced by: '<S3>/Constant4'
                                         */
-real_T SPEED_CTRL_T_N = 0.5;           /* Variable: SPEED_CTRL_T_N
+static real_T SPEED_CTRL_T_N = 0.5;           /* Variable: SPEED_CTRL_T_N
                                         * Referenced by: '<S3>/Constant'
                                         */
-real_T SPEED_CTRL_V_R = 2.0;           /* Variable: SPEED_CTRL_V_R
+static real_T SPEED_CTRL_V_R = 2.0;           /* Variable: SPEED_CTRL_V_R
                                         * Referenced by: '<S3>/Constant14'
                                         */
 real_T look1_binlxpw(real_T u0, const real_T bp0[], const real_T table[],

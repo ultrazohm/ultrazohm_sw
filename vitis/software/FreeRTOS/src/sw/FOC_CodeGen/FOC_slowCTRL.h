@@ -126,6 +126,7 @@ extern const ConstP_FOC_slowCTRL_T FOC_slowCTRL_ConstP;
  * these signals and export their symbols.
  *
  */
+#if 0
 extern real_T Udc_scf;                 /* '<S1>/Switch1' */
 extern real_T Test_Torqu_Request;      /* '<S8>/Switch' */
 extern real_T Torq_Ref_PGAIN;          /* '<S9>/FOC_TORQ_REDUC_PGAIN' */
@@ -288,6 +289,7 @@ extern real_T SPEED_CTRL_T_N;          /* Variable: SPEED_CTRL_T_N
 extern real_T SPEED_CTRL_V_R;          /* Variable: SPEED_CTRL_V_R
                                         * Referenced by: '<S3>/Constant14'
                                         */
+#endif
 
 /* Model entry point functions */
 extern void FOC_slowCTRL_initialize(RT_MODEL_FOC_slowCTRL_T *const

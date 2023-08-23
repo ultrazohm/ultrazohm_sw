@@ -26,151 +26,151 @@
 #include "rt_defines.h"
 
 /* Exported block signals */
-real_T Phi_AngleEst_AutoSwitch;        /* '<S5>/Selectphicalc3' */
-real_T FOC_AngleEst_w_el;              /* '<S13>/Switch_speed' */
-real_T Phi_est;                        /* '<S10>/Sum1' */
-real_T Phi_Observer;                   /* '<S26>/Sum7' */
-real_T Phi_el_I_Transformation;        /* '<S28>/Switch2' */
-real_T Phi_el_U_Transformation;        /* '<S29>/Switch2' */
-real_T FOC_U_DC;                       /* '<S1>/Switch1' */
-real_T Phi_est_error_I_Trafo;          /* '<S5>/phi_est_error2' */
-real_T Phi_est_error;                  /* '<S5>/phi_est_error' */
-real_T FOC_AngleEst_Psi_PM_alpha;      /* '<S3>/Gain3' */
-real_T FOC_AngleEst_Psi_PM_beta;       /* '<S3>/Gain4' */
-real_T w_el;                           /* '<S5>/dummy_gain' */
-real_T Phi_Measured_Raw;               /* '<S5>/dummy_gain3' */
+static real_T Phi_AngleEst_AutoSwitch;        /* '<S5>/Selectphicalc3' */
+static real_T FOC_AngleEst_w_el;              /* '<S13>/Switch_speed' */
+static real_T Phi_est;                        /* '<S10>/Sum1' */
+static real_T Phi_Observer;                   /* '<S26>/Sum7' */
+static real_T Phi_el_I_Transformation;        /* '<S28>/Switch2' */
+static real_T Phi_el_U_Transformation;        /* '<S29>/Switch2' */
+static real_T FOC_U_DC;                       /* '<S1>/Switch1' */
+static real_T Phi_est_error_I_Trafo;          /* '<S5>/phi_est_error2' */
+static real_T Phi_est_error;                  /* '<S5>/phi_est_error' */
+static real_T FOC_AngleEst_Psi_PM_alpha;      /* '<S3>/Gain3' */
+static real_T FOC_AngleEst_Psi_PM_beta;       /* '<S3>/Gain4' */
+static real_T w_el;                           /* '<S5>/dummy_gain' */
+static real_T Phi_Measured_Raw;               /* '<S5>/dummy_gain3' */
 
 /* Exported block parameters */
-real_T FOC_6ph_AngleShift = 0.0;       /* Variable: FOC_6ph_AngleShift
+static real_T FOC_6ph_AngleShift = 0.0;       /* Variable: FOC_6ph_AngleShift
                                         * Referenced by:
                                         *   '<S5>/FOC_6ph_AngleShift'
                                         *   '<S6>/FOC_6ph_AngleShift'
                                         *   '<S7>/FOC_6ph_AngleShift'
                                         */
-real_T FOC_AKS_Mode = 1.0;             /* Variable: FOC_AKS_Mode
+static real_T FOC_AKS_Mode = 1.0;             /* Variable: FOC_AKS_Mode
                                         * Referenced by: '<S2>/FOC_AKS_Mode'
                                         */
-real_T FOC_AngleEst_AutoSwitch_wel_off = 785.0;
+static real_T FOC_AngleEst_AutoSwitch_wel_off = 785.0;
                                     /* Variable: FOC_AngleEst_AutoSwitch_wel_off
                                      * Referenced by: '<S5>/AutoSwitchHysteresis'
                                      */
-real_T FOC_AngleEst_AutoSwitch_wel_on = 942.0;
+static real_T FOC_AngleEst_AutoSwitch_wel_on = 942.0;
                                      /* Variable: FOC_AngleEst_AutoSwitch_wel_on
                                       * Referenced by: '<S5>/AutoSwitchHysteresis'
                                       */
-real_T FOC_AngleEst_Delay1 = 1.0;      /* Variable: FOC_AngleEst_Delay1
+static real_T FOC_AngleEst_Delay1 = 1.0;      /* Variable: FOC_AngleEst_Delay1
                                         * Referenced by: '<S14>/FOC_AngleEst_Delay1'
                                         */
-real_T FOC_AngleEst_Delay2 = 0.0;      /* Variable: FOC_AngleEst_Delay2
+static real_T FOC_AngleEst_Delay2 = 0.0;      /* Variable: FOC_AngleEst_Delay2
                                         * Referenced by: '<S14>/FOC_AngleEst_Delay2'
                                         */
-real_T FOC_AngleEst_Komp_KP = 500.0;   /* Variable: FOC_AngleEst_Komp_KP
+static real_T FOC_AngleEst_Komp_KP = 500.0;   /* Variable: FOC_AngleEst_Komp_KP
                                         * Referenced by: '<S3>/komp_kp'
                                         */
-real_T FOC_AngleEst_Lq = 0.0008;       /* Variable: FOC_AngleEst_Lq
+static real_T FOC_AngleEst_Lq = 0.0008;       /* Variable: FOC_AngleEst_Lq
                                         * Referenced by: '<S3>/FOC_AngleEst_Lq'
                                         */
-real_T FOC_AngleEst_Psi_InitVal = 0.0; /* Variable: FOC_AngleEst_Psi_InitVal
+static real_T FOC_AngleEst_Psi_InitVal = 0.0; /* Variable: FOC_AngleEst_Psi_InitVal
                                         * Referenced by: '<S15>/Unit Delay'
                                         */
-real_T FOC_AngleEst_Rs = 0.066;        /* Variable: FOC_AngleEst_Rs
+static real_T FOC_AngleEst_Rs = 0.066;        /* Variable: FOC_AngleEst_Rs
                                         * Referenced by: '<S3>/FOC_AngleEst_Rs'
                                         */
-real_T FOC_AngleEst_w_el_filtered_Tau = 0.0005;
+static real_T FOC_AngleEst_w_el_filtered_Tau = 0.0005;
                                      /* Variable: FOC_AngleEst_w_el_filtered_Tau
                                       * Referenced by: '<S12>/Tau'
                                       */
-real_T FOC_AngleObs_w_InitVal = 0.0;   /* Variable: FOC_AngleObs_w_InitVal
+static real_T FOC_AngleObs_w_InitVal = 0.0;   /* Variable: FOC_AngleObs_w_InitVal
                                         * Referenced by: '<S33>/Unit Delay1'
                                         */
-real_T FOC_AngleObserver_D = 1.0;      /* Variable: FOC_AngleObserver_D
+static real_T FOC_AngleObserver_D = 1.0;      /* Variable: FOC_AngleObserver_D
                                         * Referenced by: '<S26>/Constant1'
                                         */
-real_T FOC_AngleObserver_w0 = 200.0;   /* Variable: FOC_AngleObserver_w0
+static real_T FOC_AngleObserver_w0 = 200.0;   /* Variable: FOC_AngleObserver_w0
                                         * Referenced by: '<S26>/Constant'
                                         */
-real_T FOC_Enable = 1.0;               /* Variable: FOC_Enable
+static real_T FOC_Enable = 1.0;               /* Variable: FOC_Enable
                                         * Referenced by: '<S1>/Enable'
                                         */
-real_T FOC_IntegDamp = 0.995;          /* Variable: FOC_IntegDamp
+static real_T FOC_IntegDamp = 0.995;          /* Variable: FOC_IntegDamp
                                         * Referenced by:
                                         *   '<S41>/FOC_IntegDamp'
                                         *   '<S45>/FOC_IntegDamp'
                                         */
-real_T FOC_KI = 1000.0;                /* Variable: FOC_KI
+static real_T FOC_KI = 1000.0;                /* Variable: FOC_KI
                                         * Referenced by:
                                         *   '<S41>/FOC_KI'
                                         *   '<S45>/FOC_KI'
                                         */
-real_T FOC_KP = 1.0;                   /* Variable: FOC_KP
+static real_T FOC_KP = 1.0;                   /* Variable: FOC_KP
                                         * Referenced by:
                                         *   '<S41>/FOC_KP1'
                                         *   '<S45>/FOC_KP1'
                                         */
-real_T FOC_MANUAL_U_DC = 0.0;          /* Variable: FOC_MANUAL_U_DC
+static real_T FOC_MANUAL_U_DC = 0.0;          /* Variable: FOC_MANUAL_U_DC
                                         * Referenced by: '<S1>/Udc1'
                                         */
-real_T FOC_MaxModInd = 1.1;            /* Variable: FOC_MaxModInd
+static real_T FOC_MaxModInd = 1.1;            /* Variable: FOC_MaxModInd
                                         * Referenced by:
                                         *   '<S40>/FOC_MaxModInd'
                                         *   '<S44>/FOC_MaxModInd'
                                         */
-real_T FOC_OmegaObs3 = 0.0;            /* Variable: FOC_OmegaObs3
+static real_T FOC_OmegaObs3 = 0.0;            /* Variable: FOC_OmegaObs3
                                         * Referenced by: '<S26>/Gain4'
                                         */
-real_T FOC_PhiSensorTdead = 0.0;       /* Variable: FOC_PhiSensorTdead
+static real_T FOC_PhiSensorTdead = 0.0;       /* Variable: FOC_PhiSensorTdead
                                         * Referenced by: '<S26>/Constant2'
                                         */
-real_T FOC_PhiSensorTdead_AngleEst = 5.0E-6;/* Variable: FOC_PhiSensorTdead_AngleEst
+static real_T FOC_PhiSensorTdead_AngleEst = 5.0E-6;/* Variable: FOC_PhiSensorTdead_AngleEst
                                              * Referenced by: '<S26>/Constant3'
                                              */
-real_T FOC_SELECT_AngleAdaption2PolePairs = 0.0;
+static real_T FOC_SELECT_AngleAdaption2PolePairs = 0.0;
                                  /* Variable: FOC_SELECT_AngleAdaption2PolePairs
                                   * Referenced by: '<S5>/Constant2'
                                   */
-real_T FOC_SELECT_AngleAdaptionRange = 0.0;
+static real_T FOC_SELECT_AngleAdaptionRange = 0.0;
                                       /* Variable: FOC_SELECT_AngleAdaptionRange
                                        * Referenced by: '<S5>/Constant4'
                                        */
-real_T FOC_SELECT_AngleEst = 0.0;      /* Variable: FOC_SELECT_AngleEst
+static real_T FOC_SELECT_AngleEst = 0.0;      /* Variable: FOC_SELECT_AngleEst
                                         * Referenced by: '<S5>/Constant1'
                                         */
-real_T FOC_SELECT_AngleEst_AutoSwitch = 0.0;
+static real_T FOC_SELECT_AngleEst_AutoSwitch = 0.0;
                                      /* Variable: FOC_SELECT_AngleEst_AutoSwitch
                                       * Referenced by: '<S5>/Constant5'
                                       */
-real_T FOC_SELECT_AngleEst_w_el_filtered = 1.0;
+static real_T FOC_SELECT_AngleEst_w_el_filtered = 1.0;
                                   /* Variable: FOC_SELECT_AngleEst_w_el_filtered
                                    * Referenced by: '<S3>/useFilteredCorrection'
                                    */
-real_T FOC_SELECT_InvertAngle = 1.0;   /* Variable: FOC_SELECT_InvertAngle
+static real_T FOC_SELECT_InvertAngle = 1.0;   /* Variable: FOC_SELECT_InvertAngle
                                         * Referenced by: '<S5>/FOC_Invert_Encoder'
                                         */
-real_T FOC_SELECT_Modulation = 1.0;    /* Variable: FOC_SELECT_Modulation
+static real_T FOC_SELECT_Modulation = 1.0;    /* Variable: FOC_SELECT_Modulation
                                         * Referenced by: '<S8>/Enable_SuperSinMod'
                                         */
-real_T FOC_SELECT_U_DC_INPUT = 1.0;    /* Variable: FOC_SELECT_U_DC_INPUT
+static real_T FOC_SELECT_U_DC_INPUT = 1.0;    /* Variable: FOC_SELECT_U_DC_INPUT
                                         * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
                                         */
-real_T FOC_SELECT_phi = 2.0;           /* Variable: FOC_SELECT_phi
+static real_T FOC_SELECT_phi = 2.0;           /* Variable: FOC_SELECT_phi
                                         * Referenced by: '<S5>/Constant3'
                                         */
-real_T FOC_Uf_U_max = 0.0;             /* Variable: FOC_Uf_U_max
+static real_T FOC_Uf_U_max = 0.0;             /* Variable: FOC_Uf_U_max
                                         * Referenced by: '<S49>/Saturation1'
                                         */
-real_T FOC_Uf_U_min = 0.0;             /* Variable: FOC_Uf_U_min
+static real_T FOC_Uf_U_min = 0.0;             /* Variable: FOC_Uf_U_min
                                         * Referenced by: '<S49>/Saturation1'
                                         */
-real_T FOC_Uf_Ud = 0.0;                /* Variable: FOC_Uf_Ud
+static real_T FOC_Uf_Ud = 0.0;                /* Variable: FOC_Uf_Ud
                                         * Referenced by: '<S7>/Uf_Ud'
                                         */
-real_T FOC_Uf_f_el = 0.0;              /* Variable: FOC_Uf_f_el
+static real_T FOC_Uf_f_el = 0.0;              /* Variable: FOC_Uf_f_el
                                         * Referenced by: '<S7>/Uf_w_el'
                                         */
-real_T FOC_Uf_m = 0.0;                 /* Variable: FOC_Uf_m
+static real_T FOC_Uf_m = 0.0;                 /* Variable: FOC_Uf_m
                                         * Referenced by: '<S49>/Gain'
                                         */
-real_T FOC_f_fastCTRL = 10000.0;       /* Variable: FOC_f_fastCTRL
+static real_T FOC_f_fastCTRL = 10000.0;       /* Variable: FOC_f_fastCTRL
                                         * Referenced by:
                                         *   '<S5>/FOC_T_fast'
                                         *   '<S12>/FOC_f_fast'
@@ -184,13 +184,13 @@ real_T FOC_f_fastCTRL = 10000.0;       /* Variable: FOC_f_fastCTRL
                                         *   '<S41>/FOC_T_fast'
                                         *   '<S45>/FOC_T_fast'
                                         */
-real_T FOC_output_trafo_delay = 1.5;   /* Variable: FOC_output_trafo_delay
+static real_T FOC_output_trafo_delay = 1.5;   /* Variable: FOC_output_trafo_delay
                                         * Referenced by: '<S5>/FOC_output_trafo_delay'
                                         */
-real_T FOC_phi_offset = 1.794;         /* Variable: FOC_phi_offset
+static real_T FOC_phi_offset = 1.794;         /* Variable: FOC_phi_offset
                                         * Referenced by: '<S5>/Constant'
                                         */
-real_T Factor_OmegaRot = 1.0;          /* Variable: Factor_OmegaRot
+static real_T Factor_OmegaRot = 1.0;          /* Variable: Factor_OmegaRot
                                         * Referenced by: '<S26>/Gain5'
                                         */
 real_T rt_atan2d_snf(real_T u0, real_T u1)

@@ -154,25 +154,25 @@ uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph(uz_9ph_abc_t input_faultindices,
 uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N1(uz_9ph_abc_t input_faultindices){
         uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
         uint16_t row = search_array_row_index(OPF_index, n1_ml, N_ROWS);
-        return return_k_param_set(row, n1_ml);;
+        return return_k_param_set(row, n1_ml);
 }
 
 uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N3(uz_9ph_abc_t input_faultindices){
         uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
         uint16_t row = search_array_row_index(OPF_index, n3_ml, N_ROWS);
-        return return_k_param_set(row, n1_ml);;
+        return return_k_param_set(row, n1_ml);
 }
 
 uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N1(uz_9ph_abc_t input_faultindices){
         uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
         uint16_t row = search_array_row_index(OPF_index, n1_mt, N_ROWS);
-        return return_k_param_set(row, n1_ml);;
+        return return_k_param_set(row, n1_ml);
 }
 
 uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N3(uz_9ph_abc_t input_faultindices){
         uint16_t OPF_index = fault_indices_to_OPF_index(input_faultindices);
         uint16_t row = search_array_row_index(OPF_index, n3_mt, N_ROWS);
-        return return_k_param_set(row, n1_ml);;
+        return return_k_param_set(row, n1_ml);
 }
 
 static uint16_t single_fault_index_to_OPF_index(float index, uint8_t position){

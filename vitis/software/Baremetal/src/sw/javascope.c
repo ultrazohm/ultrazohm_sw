@@ -91,6 +91,26 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_cnt_1]					= &data->av.cnt[1];
+	js_slowDataArray[JSSD_FLOAT_cnt_2]					= &data->av.cnt[2];
+	js_slowDataArray[JSSD_FLOAT_cnt_3]					= &data->av.cnt[3];
+	js_slowDataArray[JSSD_FLOAT_cnt_4]					= &data->av.cnt[4];
+	js_slowDataArray[JSSD_FLOAT_cnt_5]					= &data->av.cnt[5];
+	js_slowDataArray[JSSD_FLOAT_cnt_6]					= &data->av.cnt[6];
+	js_slowDataArray[JSSD_FLOAT_cnt_7]					= &data->av.cnt[7];
+	js_slowDataArray[JSSD_FLOAT_cnt_8]					= &data->av.cnt[8];
+	js_slowDataArray[JSSD_FLOAT_cnt_9]					= &data->av.cnt[9];
+	js_slowDataArray[JSSD_FLOAT_cnt_10]					= &data->av.cnt[10];
+	js_slowDataArray[JSSD_FLOAT_cnt_11]					= &data->av.cnt[11];
+	js_slowDataArray[JSSD_FLOAT_cnt_12]					= &data->av.cnt[12];
+	js_slowDataArray[JSSD_FLOAT_cnt_13]					= &data->av.cnt[13];
+	js_slowDataArray[JSSD_FLOAT_cnt_14]					= &data->av.cnt[14];
+	js_slowDataArray[JSSD_FLOAT_cnt_15]					= &data->av.cnt[15];
+	js_slowDataArray[JSSD_FLOAT_cnt_16]					= &data->av.cnt[16];
+	js_slowDataArray[JSSD_FLOAT_cnt_17]					= &data->av.cnt[17];
+	js_slowDataArray[JSSD_FLOAT_cnt_18]					= &data->av.cnt[18];
+	js_slowDataArray[JSSD_FLOAT_cnt_19]					= &data->av.cnt[19];
+	js_slowDataArray[JSSD_FLOAT_cnt_20]					= &data->av.cnt[20];
 
 	return Status;
 }

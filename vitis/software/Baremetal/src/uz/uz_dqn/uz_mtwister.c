@@ -36,6 +36,7 @@ static uz_mtwister_t* uz_mtwister_allocation(void){
 uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg) {
     uz_mtwister_t *self = uz_mtwister_allocation();
     self->seed = cfg.seed;
+    self->seedRand = seedRand(self->seed);
     self->distribution = cfg.distribution;
     self->mean = 0.0f;
     self->std = 0.5f;
@@ -45,19 +46,19 @@ uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg) {
 
 float uz_generate_random_number(uz_mtwister_t *self){
   uz_assert_not_NULL(self);
-  float rand = 0.0f;
+  float randomsample = 0.0f;
   switch (self->distribution)
   {
   case uniform_distribution:
-    rand = genRand_float(self->seed);
+    randomsample = genRand_float(&self->seedRand);
     break;
   case normal_distribution:
-    rand = uz_random_box_mueller(self->seed,self->mean,self->std);
+    randomsample = uz_random_box_mueller(&self->seedRand,self->mean,self->std);
     break;
   default:
     break;
   }
-  return rand;
+  return randomsample;
 }
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {

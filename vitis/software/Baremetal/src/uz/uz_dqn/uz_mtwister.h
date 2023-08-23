@@ -9,6 +9,10 @@
 #define STATE_VECTOR_M      397 /* changes to STATE_VECTOR_LENGTH also require changes to this */
 
 typedef struct uz_mtwister_t uz_mtwister_t;
+typedef struct tagMTRand {
+  unsigned long mt[STATE_VECTOR_LENGTH];
+  int index;
+} MTRand;
 // Enum to define random number generator types
 enum rng_type{
     uniform_distribution,
@@ -17,14 +21,12 @@ enum rng_type{
 struct uz_mtwister_t{
     bool is_ready;
     uint32_t seed;
+    MTRand seedRand;
     float mean;
     float std;
     enum rng_type distribution;
 };
-typedef struct tagMTRand {
-  unsigned long mt[STATE_VECTOR_LENGTH];
-  int index;
-} MTRand;
+
 
 MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand* rand);

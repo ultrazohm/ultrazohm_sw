@@ -193,12 +193,14 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
     {
     case (activation_linear||activation_sigmoid||activation_tanh||activation_sigmoid2):
         // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
-        self->std = 1.0f/(float)((layer->number_of_neurons+layer_config.length_of_output)/ 2.0f);
+        self->std = sqrtf(2.0f/(float)((layer->number_of_neurons+layer_config.length_of_output)));
         self->mean = 0.0f;
         uz_nn_layer_init_Glorot(layer->bias,self);
         uz_nn_layer_init_Glorot(layer->weights,self);
         break;
     case activation_ReLU:
+        self->std =  sqrtf(2.0f/(float)((layer->number_of_neurons)));
+        self->mean = 0.0f;
         // float fanin = (float)(layer->number_of_neurons);
         uz_nn_layer_init_He(layer->bias,self);
         uz_nn_layer_init_He(layer->weights,self);

@@ -61,6 +61,7 @@
 
 #include "sw/control/control.h"
 #include "include/init_fault_control.h"
+#include "include/init_CIL.h""
 
 //----------------------------------------------------
 // FUNCTIONS

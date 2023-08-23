@@ -55,7 +55,7 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 
 // control
 #include "control/control.h"
-uz_9ph_abc_t ref_voltages = {0};
+volatile uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = PI_R;
 
 // fault control
@@ -63,6 +63,10 @@ uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
 float global_derate;
+
+// CIL
+#include "../include/CIL.h"
+enum target target_platform = CIL;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -80,15 +84,24 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Actual value/////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-    // read speed and angle
-    uz_resolver_read_and_adapt_direction(&Global_Data);
-    // actual values reading functions
+	switch(target_platform){
+		case CIL:
+			uz_CIL_read_direction(Global_Data.objects.CIL_objects, &Global_Data);
+			uz_CIL_misc(Global_Data.objects.CIL_objects, &Global_Data);
+			Global_Data.av.currents_abc = uz_CIL_phase_currents(Global_Data.objects.CIL_objects);
+			break;
+		case testbench:
+			uz_resolver_read_and_adapt_direction(&Global_Data);
+			Global_Data.av.currents_abc = uz_ADC_phase_currents(&Global_Data.aa);
+			uz_ADC_dc_values(&Global_Data);
+			uz_ADC_torque(&Global_Data);
+			break;
+		default:break;
+	}
+
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);
-    Global_Data.av.currents_abc = uz_ADC_phase_currents(&Global_Data.aa);
     Global_Data.av.voltages_abc = uz_ADC_phase_voltages(&Global_Data.aa);
-    uz_ADC_dc_values(&Global_Data);
-    uz_ADC_torque(&Global_Data);
     uz_calc_phase_voltage(&Global_Data, NEUTRAL_CFG);
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);
@@ -99,6 +112,7 @@ void ISR_Control(void *data)
 ///////////////////////////////////Limits///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 	// check current limit
+    if(target_platform != CIL){
 	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
@@ -115,7 +129,7 @@ void ISR_Control(void *data)
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
 		uz_limit_exceed(&Global_Data);
-	}
+	}}
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////

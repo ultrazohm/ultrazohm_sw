@@ -29,7 +29,7 @@ typedef struct uz_nn_t uz_nn_t;
  * @return uz_nn_t* 
  */
 uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer, bool is_trainable);
-
+uz_nn_t *uz_nn_init_with_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer,uz_mtwister_t *twister, bool is_trainable);
 /**
  * @brief Calculates one forward pass of the neural network.
  * 

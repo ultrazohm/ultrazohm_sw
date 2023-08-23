@@ -17,6 +17,7 @@
 #include "../uz_global_configuration.h"
 #if UZ_NN_LAYER_MAX_INSTANCES > 0U
 #include "uz_nn_layer.h"
+#include "../uz_dqn/uz_mtwister.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -171,39 +172,41 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     return (self);
 }
 
-// void uz_nn_layer_init_Glorot(uz_matrix_t *parameter, MTRand *seed, float fanavg){
-//     uz_assert_not_NULL(parameter);
-//     float mean = 0.0f;
-//     float std = sqrtf(1/fanavg);
-//     for(uint32_t i=0U;i<parameter->length_of_data;i++){
-//         parameter->data[i]= uz_random_box_mueller(seed,mean,std);
-//     }
-// }
+void uz_nn_layer_init_Glorot(uz_matrix_t *parameter,uz_mtwister_t *self){
+    uz_assert_not_NULL(parameter);
+    uz_assert_not_NULL(self);
+    for(uint32_t i=0U;i<parameter->length_of_data;i++){
+        parameter->data[i]= uz_generate_random_number(self);
+    }
+}
 
-// void uz_nn_layer_init_He(uz_matrix_t *parameter){
-//     uz_assert_not_NULL(parameter);
-//     MTRand r = seedRand(1);
-//     for(uint32_t i=0U;i<parameter->length_of_data;i++){
-//         parameter->data[i]=(genRand_float(&r));
-//     }
-// }
-// void uz_nn_layer_param_init(uz_nn_layer_t *const layer){
-//     switch (layer_config.activation_function)
-//     {
-//     case (activation_linear||activation_sigmoid||activation_tanh||activation_sigmoid2):
-//         // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
-//         uz_nn_layer_init_Glorot(layer->bias,seed,fanavg);
-//         uz_nn_layer_init_Glorot(layer->weights,seed,fanavg);
-//         break;
-//     case activation_ReLU:
-//         // float fanin = (float)(layer->number_of_neurons);
-//         uz_nn_layer_init_nn_He(layer->bias);
-//         uz_nn_layer_init_nn_He(layer->weights);
-//         break;
-//     default:
-//         break;
-//     }
-// }
+void uz_nn_layer_init_He(uz_matrix_t *parameter,uz_mtwister_t *self){
+    uz_assert_not_NULL(parameter);
+    uz_assert_not_NULL(self);
+    for(uint32_t i=0U;i<parameter->length_of_data;i++){
+        parameter->data[i]= uz_generate_random_number(self);
+    }
+}
+
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, struct uz_nn_layer_config layer_config){
+    switch ((layer_config.activation_function))
+    {
+    case (activation_linear||activation_sigmoid||activation_tanh||activation_sigmoid2):
+        // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
+        self->std = 1.0f/(float)((layer->number_of_neurons+layer_config.length_of_output)/ 2.0f);
+        self->mean = 0.0f;
+        uz_nn_layer_init_Glorot(layer->bias,self);
+        uz_nn_layer_init_Glorot(layer->weights,self);
+        break;
+    case activation_ReLU:
+        // float fanin = (float)(layer->number_of_neurons);
+        uz_nn_layer_init_He(layer->bias,self);
+        uz_nn_layer_init_He(layer->weights,self);
+        break;
+    default:
+        break;
+    }
+}
 
 
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer)

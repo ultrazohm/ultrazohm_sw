@@ -8,8 +8,19 @@
 #define STATE_VECTOR_LENGTH 624
 #define STATE_VECTOR_M      397 /* changes to STATE_VECTOR_LENGTH also require changes to this */
 
-typedef struct uz_random_number_t uz_random_number_t;
-
+typedef struct uz_mtwister_t uz_mtwister_t;
+// Enum to define random number generator types
+enum rng_type{
+    uniform_distribution,
+    normal_distribution
+};
+struct uz_mtwister_t{
+    bool is_ready;
+    uint32_t seed;
+    float mean;
+    float std;
+    enum rng_type distribution;
+};
 typedef struct tagMTRand {
   unsigned long mt[STATE_VECTOR_LENGTH];
   int index;
@@ -19,17 +30,14 @@ MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand* rand);
 double genRand(MTRand* rand);
 float genRand_float(MTRand* rand);
-// Enum to define random number generator types
-enum rng_type{
-    Mersenne_Twister,
-    multiFibonacci
-};
 
-struct uz_random_number_config{
+
+struct uz_mtwister_config{
     uint32_t seed;
-    enum rng_type gen;
+    enum rng_type distribution;
 };
-uz_random_number_t *init_random_number(struct uz_random_number_config cfg);
+uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg);
+float uz_generate_random_number(uz_mtwister_t *self);
 float uz_random_box_mueller(MTRand* seed,float mean, float std);
 void polar_box_muller(float *retval, uint32_t range);
 void export_histogram(float *array,uint32_t size);

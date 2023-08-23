@@ -19,19 +19,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct uz_random_number_t{
-    bool is_ready;
-    uint32_t seed;
-    enum rng_type generator;
-};
-
 static uint32_t instance_counterrand = 0U;
-static uz_random_number_t instancesrand[UZ_DQN_RAND_MAX_INSTANCES] = {0};
-static uz_random_number_t* uz_dqn_random_allocation(void);
+static uz_mtwister_t instancesrand[UZ_DQN_RAND_MAX_INSTANCES] = {0};
+static uz_mtwister_t* uz_mtwister_allocation(void);
 
-static uz_random_number_t* uz_dqn_random_allocation(void){
+static uz_mtwister_t* uz_mtwister_allocation(void){
     uz_assert(instance_counterrand < UZ_DQN_RAND_MAX_INSTANCES);
-    uz_random_number_t* self = &instancesrand[instance_counterrand];
+    uz_mtwister_t* self = &instancesrand[instance_counterrand];
     uz_assert_false(self->is_ready);
     instance_counterrand++;
     self->is_ready = true;
@@ -39,20 +33,31 @@ static uz_random_number_t* uz_dqn_random_allocation(void){
 }
 
 // Function to initialize a random_number instance with a given config
-uz_random_number_t *init_random_number(struct uz_random_number_config cfg) {
-
-    uz_random_number_t *self = uz_dqn_random_allocation();
+uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg) {
+    uz_mtwister_t *self = uz_mtwister_allocation();
     self->seed = cfg.seed;
-    self->generator = cfg.gen;
-    switch (self->generator)
-    {
-    case Mersenne_Twister:
-      // do something
-      break;
-    default:
-      break;
-    }
+    self->distribution = cfg.distribution;
+    self->mean = 0.0f;
+    self->std = 0.5f;
     return (self);
+}
+
+
+float uz_generate_random_number(uz_mtwister_t *self){
+  uz_assert_not_NULL(self);
+  float rand = 0.0f;
+  switch (self->distribution)
+  {
+  case uniform_distribution:
+    rand = genRand_float(self->seed);
+    break;
+  case normal_distribution:
+    rand = uz_random_box_mueller(self->seed,self->mean,self->std);
+    break;
+  default:
+    break;
+  }
+  return rand;
 }
 
 inline static void m_seedRand(MTRand* rand, unsigned long seed) {

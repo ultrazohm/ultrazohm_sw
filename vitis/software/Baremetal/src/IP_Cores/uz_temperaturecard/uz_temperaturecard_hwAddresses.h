@@ -18,8 +18,8 @@
 // Control-register
 #define  TempCard_IF_Controlreg         0x000  	// controlregister for the temperature card interface IP | Bit 0 enable | Bit 1 reset (must be set to 1)
 #define  TempCard_IF_Counterreg         0x004  	// counterregister for the automatic measurement trigger
-//#define  empty_reg          			0x008  	//
-//#define  empty_reg          			0x00C  	//
+#define  TempCard_IF_GlobalConfig       0x008  	// Channel C (23 downto 16) | Channel B (15 downto 8) | Channel A (7 downto 0)
+#define  TempCard_IF_MuxConfig			0x00C  	// Channel C (23 downto 16) | Channel B (15 downto 8) | Channel A (7 downto 0)
 //#define  empty_reg          			0x010  	//
 //#define  empty_reg          			0x014  	//
 #define  TempCard_IF_internal_error     0x018  	// Register to read internal IP-Core errors

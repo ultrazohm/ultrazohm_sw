@@ -124,10 +124,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_dc_inv3]				= &(data->av.U_ZK3);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv2]				= &(data->av.i_ZK2);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv3]				= &(data->av.i_ZK3);
-	js_slowDataArray[JSSD_FLOAT_temperature_avg_nut]   = &(data->av.avg_temperature_nut);
-	js_slowDataArray[JSSD_FLOAT_temperature_avg_wk]    = &(data->av.avg_temperature_wickelkopf);
-	js_slowDataArray[JSSD_FLOAT_temperature_fpga]   = &(data->av.temperature_fpga);
-
+	js_slowDataArray[JSSD_FLOAT_temperature_avg_nut]   	= &(data->av.avg_temperature_nut);
+	js_slowDataArray[JSSD_FLOAT_temperature_avg_wk]    	= &(data->av.avg_temperature_wickelkopf);
+	js_slowDataArray[JSSD_FLOAT_temperature_fpga]   	= &(data->av.temperature_fpga);
+	js_slowDataArray[JSSD_FLOAT_error_OC]   			= &(data->av.errors.error_OC);
+	js_slowDataArray[JSSD_FLOAT_error_OV]   			= &(data->av.errors.error_OV);
+	js_slowDataArray[JSSD_FLOAT_error_speed]   			= &(data->av.errors.error_speed);
+	js_slowDataArray[JSSD_FLOAT_error_OT_inv]   		= &(data->av.errors.error_OT_inv);
 	return Status;
 }
 

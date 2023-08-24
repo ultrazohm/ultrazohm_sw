@@ -114,7 +114,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``send_fields``
 
-   a. Six values are available that can be used as references or setpoints for the user application.
+   a. Twenty values are available that can be used as references or setpoints for the user application.
 
    b. After typing in a value, press ``set`` for sending it to the R5. In ``ipc_ARM.c`` one can choose further usage of the value inside the application.
 
@@ -279,7 +279,7 @@ The eight individual buttons can be labeled in the same way.
       Correlation of ``javascope.h`` and text entries in the GUI
 
 The selection of which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
-the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the six ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 6 from top to bottom.
+the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the twenty ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 20 from top to bottom.
 The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text field of the GUI and should not be changed.
 
   ..  _javascope_selectslowdata:

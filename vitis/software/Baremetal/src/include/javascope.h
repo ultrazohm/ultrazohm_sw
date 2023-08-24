@@ -114,7 +114,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_error_OC,
 	JSSD_FLOAT_error_OV,
 	JSSD_FLOAT_error_speed,
-	JSSD_FLOAT_error_OT,
+	JSSD_FLOAT_error_OT_inv,
 	JSSD_ENDMARKER
 };
 

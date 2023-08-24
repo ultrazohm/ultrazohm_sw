@@ -82,7 +82,7 @@ void ISR_Control(void *data)
     // transformations
     uz_transformations(Global_Data.av.currents_abc, &Global_Data.av.full_currents_dq, &Global_Data.av.currents_dq, &Global_Data.av.currents_XY1, &Global_Data.av.currents_XY2, &Global_Data.av.currents_XY3, Global_Data.av.rotational_position.position_el_2pi);
     Global_Data.av.full_voltages_dq = uz_transformation_9ph_abc_to_dq(Global_Data.av.voltages_abc, Global_Data.av.rotational_position.position_el_2pi);
-	Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.voltages_abc);
+	Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.currents_abc);
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Limits///////////////////////////////////

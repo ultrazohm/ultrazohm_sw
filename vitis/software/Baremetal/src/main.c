@@ -41,6 +41,7 @@ DS_Data Global_Data = {
     }
 };
 
+uz_sysmon_ps_t * sysmon_instance = NULL;
 
 enum init_chain
 {
@@ -102,6 +103,8 @@ int main(void)
 		    //init resolver
 		    Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
 		    Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
+		    // init system monitoring
+		    sysmon_instance = uz_sysmon_ps_init(XPAR_XSYSMONPSU_0_DEVICE_ID);
             initialization_chain = print_msg;
             break;
 	    case print_msg:
@@ -119,6 +122,7 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            Global_Data.av.temperature_fpga = uz_sysmon_ps_read_temperature_degree_celsius(sysmon_instance);
             break;
         default:
             break;

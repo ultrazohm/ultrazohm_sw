@@ -59,6 +59,8 @@
 
 #include "include/init_torque_filter.h"
 
+#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

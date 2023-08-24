@@ -29,15 +29,15 @@ void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* 
 
 uz_9ph_abc_t uz_ADC_phase_currents(AnalogAdapters* aa){
 	uz_9ph_abc_t out = {
-			.a1 = (aa->A1.me.ADC_A3 * 12.129f) + 0.10f,
-			.b1 = (aa->A1.me.ADC_A2 * 11.338f) + 0.12f,
-			.c1 = (aa->A1.me.ADC_A1 * 12.051f) - 0.07f,
-			.a2 = (aa->A2.me.ADC_A3 * 12.038f) - 0.03f,
-			.b2 = (aa->A2.me.ADC_A2 * 12.115f) + 0.00f,
-			.c2 = (aa->A2.me.ADC_A1 * 12.038f) - 0.00f,
-			.a3 = (aa->A3.me.ADC_A3 * 12.115f) + 0.02f,
-			.b3 = (aa->A3.me.ADC_A2 * 11.923f) - 0.02f,
-			.c3 = (aa->A3.me.ADC_A1 * 11.603f) + 0.12f};
+		.a1 = (aa->A1.me.ADC_A3 * 12.129f) + 0.10f,
+		.b1 = (aa->A1.me.ADC_A2 * 11.338f) + 0.12f,
+		.c1 = (aa->A1.me.ADC_A1 * 12.051f) - 0.07f,
+		.a2 = (aa->A2.me.ADC_A3 * 12.038f) - 0.03f,
+		.b2 = (aa->A2.me.ADC_A2 * 12.115f) + 0.00f,
+		.c2 = (aa->A2.me.ADC_A1 * 12.038f) - 0.00f,
+		.a3 = (aa->A3.me.ADC_A3 * 12.115f) + 0.02f,
+		.b3 = (aa->A3.me.ADC_A2 * 11.923f) - 0.02f,
+		.c3 = (aa->A3.me.ADC_A1 * 11.603f) + 0.12f};
 	return out;
 }
 
@@ -52,15 +52,15 @@ void uz_ADC_dc_values(DS_Data* Data){
 
 uz_9ph_abc_t uz_ADC_phase_voltages(AnalogAdapters* aa){
 	uz_9ph_abc_t out = {
-			.a1 = (aa->A1.me.ADC_B8 * 101.172f) + 471.60f,
-			.b1 = (aa->A1.me.ADC_B7 * 102.587f) + 474.84f,
-			.c1 = (aa->A1.me.ADC_B6 * 100.885f) + 468.39f,
-			.a2 = (aa->A2.me.ADC_B8 * 100.444f) + 466.19f,
-			.b2 = (aa->A2.me.ADC_B7 * 100.401f) + 467.20f,
-			.c2 = (aa->A2.me.ADC_B6 * 100.444f) + 467.00f,
-			.a3 = (aa->A3.me.ADC_B8 * 100.339f) + 468.32f,
-			.b3 = (aa->A3.me.ADC_B7 * 100.885f) + 469.95f,
-			.c3 = (aa->A3.me.ADC_B6 *  99.800f) + 463.05f};
+		.a1 = (aa->A1.me.ADC_B8 * 101.172f) + 471.60f,
+		.b1 = (aa->A1.me.ADC_B7 * 102.587f) + 474.84f,
+		.c1 = (aa->A1.me.ADC_B6 * 100.885f) + 468.39f,
+		.a2 = (aa->A2.me.ADC_B8 * 100.444f) + 466.19f,
+		.b2 = (aa->A2.me.ADC_B7 * 100.401f) + 467.20f,
+		.c2 = (aa->A2.me.ADC_B6 * 100.444f) + 467.00f,
+		.a3 = (aa->A3.me.ADC_B8 * 100.339f) + 468.32f,
+		.b3 = (aa->A3.me.ADC_B7 * 100.885f) + 469.95f,
+		.c3 = (aa->A3.me.ADC_B6 *  99.800f) + 463.05f};
 	return out;
 }
 
@@ -177,7 +177,8 @@ void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config){
 }
 
 void uz_limit_exceed(DS_Data* Data){
-	ultrazohm_state_machine_set_enable_control(false);
+	ultrazohm_state_machine_set_stop(true);
+	ultrazohm_state_machine_set_enable_system(true);
 	Data->rasv.halfBridge1DutyCycle = 0.5f;
 	Data->rasv.halfBridge2DutyCycle = 0.5f;
 	Data->rasv.halfBridge3DutyCycle = 0.5f;

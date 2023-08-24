@@ -15,6 +15,13 @@
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 #include "uz/uz_signals/uz_signals.h"
 
+struct error_struct{
+	float error_OC;
+	float error_OV;
+	float error_OT_inv;
+	float error_speed;
+};
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -69,7 +76,6 @@ typedef struct _actualValues_ {
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float theta_el_offset; //in rad
-	float temperature;
 	uint32_t  heartbeatframe_content;
 	float temperature_nut[9];
 	float temperature_wickelkopf[9];
@@ -78,6 +84,7 @@ typedef struct _actualValues_ {
 	float temperature_inv_1;
 	float temperature_inv_2;
 	float temperature_inv_3;
+	float temperature_fpga;
 	struct uz_resolver_pl_interface_outputs_t rotational_position;
 	uz_9ph_abc_t currents_abc;
 	uz_9ph_abc_t voltages_abc;
@@ -94,6 +101,7 @@ typedef struct _actualValues_ {
 	float omega_el;
 	float torque_Nm_raw;
 	float torque_Nm_filtered;
+	struct error_struct errors;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

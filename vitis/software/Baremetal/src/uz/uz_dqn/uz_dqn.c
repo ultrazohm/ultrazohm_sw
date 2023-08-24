@@ -85,6 +85,15 @@ uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_sta
     return action;
 }
 
+void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty)
+{
+    uz_nn_ff(self->critic,self->inputnn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
+    float qvalue = uz_matrix_get_max_value(outputdqn);
+    uint32_t action = uz_matrix_get_max_index(outputdqn);
+    float reward = calculate_reward_dqn(samplerate,self->inputnn,penalty);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,self->inputnn);
+}
 //pseudocode set current
 
 // void uz_dqn_set_current(uz_dqn_t* self, uint32_t action, void *data, float action_current)
@@ -227,6 +236,19 @@ void uz_dqn_get_q_value_from_buffer(uz_dqn_experience_replay_t* self,float *QVal
     uz_assert(self->is_ready);
     uz_assert(index<self->length); // assert, wenn index größer als die länge des buffers
     *QValue = self->qvalues[index];
+}
+float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool penalty)
+{
+    //hardcoded defines for the reward
+    float pos_max = 0.35f;
+    // check, ob penalty nötig
+    float z = 0.0f;
+    if (penalty == true)
+    {
+        z = -1000.0f;
+    }
+    float r = -2.0f * samplerate * (100.0f * asinf(fabsf(observations->data[0])/(2.0f * M_PI)) + fabsf(observations->data[3]/pos_max)  + (0.25f * (observations->data[4] *observations->data[4]))) + z;
+    return r;
 }
 
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty){

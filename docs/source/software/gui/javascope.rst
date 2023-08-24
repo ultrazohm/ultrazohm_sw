@@ -173,8 +173,8 @@ The logging panel is used to setup the data logger of the GUI.
 #. The button ``Log FastData`` enables or disables the logging of the fast data (the selection in the :ref:`javascope_setup_scope` panel). 
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
 #. The button ``Log SlowData`` enables or disables the logging of the slow data.
-   The slow data values, which are logged, are the values displayed in the ``receive fields``. 
-   Only values not equal to ``JSSD_FLOAT_ZEROVALUE`` are logged.
+   The slow data values, which are logged, are the values displayed in the 20 ``receive fields``. 
+   However, to reduce the file size, only values not equal to ``JSSD_FLOAT_ZEROVALUE`` are logged.
    For customizing them see :ref:`javascope_customizing`.
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
 #. With the ``set n-th log value`` the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged). 

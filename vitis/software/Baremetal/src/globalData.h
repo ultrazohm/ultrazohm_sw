@@ -148,6 +148,10 @@ typedef struct _actualValues_ {
 	float f_f_sw_measure_flag;
 	bool measure_flag;
 	float f_measure_flag;
+	bool start_trade_off_measurement;
+	float f_start_trade_off_measurement;
+	float pause_timer_sec;
+	float pause_time_sec;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -165,6 +169,14 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	bool req_measure_flag;
 	float f_req_measure_flag;
+	float lambda_u_start;
+	float lambda_u_stop;
+	float lambda_u_step;
+	float lambda_u_now;
+	uint32_t cnt_lambda_u;
+	float f_cnt_lambda_u;
+	uint32_t cnt_lambda_u_end;
+	float f_cnt_lambda_u_end;
 } referenceAndSetValues;
 
 typedef struct{

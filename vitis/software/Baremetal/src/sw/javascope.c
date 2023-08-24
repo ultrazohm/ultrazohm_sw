@@ -36,7 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float f_mod_wait_cnt;
 
 int JavaScope_initalize(DS_Data* data)
 {
@@ -70,26 +70,26 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_vq_pu]				= &data->av.vq_pu;
 	js_ch_observable[JSO_vx_pu]				= &data->av.vx_pu;
 	js_ch_observable[JSO_vy_pu]				= &data->av.vy_pu;
-	js_ch_observable[JSO_i_a1_ip] 				= &data->av.i_a1_pu;
-	js_ch_observable[JSO_i_b1_ip] 				= &data->av.i_b1_pu;
-	js_ch_observable[JSO_i_c1_ip] 				= &data->av.i_c1_pu;
-	js_ch_observable[JSO_i_a2_ip] 				= &data->av.i_a2_pu;
-	js_ch_observable[JSO_i_b2_ip] 				= &data->av.i_b2_pu;
-	js_ch_observable[JSO_i_c2_ip] 				= &data->av.i_c2_pu;
+	js_ch_observable[JSO_i_a1_ip] 			= &data->av.i_a1_pu;
+	js_ch_observable[JSO_i_b1_ip] 			= &data->av.i_b1_pu;
+	js_ch_observable[JSO_i_c1_ip] 			= &data->av.i_c1_pu;
+	js_ch_observable[JSO_i_a2_ip] 			= &data->av.i_a2_pu;
+	js_ch_observable[JSO_i_b2_ip] 			= &data->av.i_b2_pu;
+	js_ch_observable[JSO_i_c2_ip] 			= &data->av.i_c2_pu;
 	js_ch_observable[JSO_i_alpha]			= &data->av.i_alpha;
 	js_ch_observable[JSO_i_beta]			= &data->av.i_beta;
 	js_ch_observable[JSO_i_X]				= &data->av.i_x;
 	js_ch_observable[JSO_i_Y]				= &data->av.i_y;
-	js_ch_observable[JSO_i_alpha_ip]			= &data->av.i_alpha_ip;
+	js_ch_observable[JSO_i_alpha_ip]		= &data->av.i_alpha_ip;
 	js_ch_observable[JSO_i_beta_ip]			= &data->av.i_beta_ip;
-	js_ch_observable[JSO_i_X_ip]				= &data->av.i_X_ip;
-	js_ch_observable[JSO_i_Y_ip]				= &data->av.i_Y_ip;
+	js_ch_observable[JSO_i_X_ip]			= &data->av.i_X_ip;
+	js_ch_observable[JSO_i_Y_ip]			= &data->av.i_Y_ip;
 	js_ch_observable[JSO_i_dc1]				= &data->av.i_dc1;
 	js_ch_observable[JSO_i_dc2]				= &data->av.i_dc2;
 	js_ch_observable[JSO_iq] 				= &data->av.i_q;
 	js_ch_observable[JSO_id] 				= &data->av.i_d;
-	js_ch_observable[JSO_iq_ip] 				= &data->av.i_q_ip;
-	js_ch_observable[JSO_id_ip] 				= &data->av.i_d_ip;
+	js_ch_observable[JSO_iq_ip] 			= &data->av.i_q_ip;
+	js_ch_observable[JSO_id_ip] 			= &data->av.i_d_ip;
 	js_ch_observable[JSO_torque]			= &data->av.torque;
 	js_ch_observable[JSO_id_delay]			= &data->av.i_d_delay;
 	js_ch_observable[JSO_iq_delay]			= &data->av.i_q_delay;
@@ -99,12 +99,17 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] 		= &data->av.theta_mech_rad_ip;
 	js_ch_observable[JSO_v_d]				= &data->av.v_d;
 	js_ch_observable[JSO_v_q]				= &data->av.v_q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_f_sw_flag]		= &data->av.f_f_sw_measure_flag;
-	js_ch_observable[JSO_req_meas_flag]	= &data->rasv.f_req_measure_flag;
-	js_ch_observable[JSO_meas_flag]		= &data->av.f_measure_flag;
+	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
+	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
+	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
+	js_ch_observable[JSO_f_sw_avg_Hz]		= &data->av.f_sw_avg_Hz;
+	js_ch_observable[JSO_f_sw_flag]			= &data->av.f_f_sw_measure_flag;
+	js_ch_observable[JSO_req_meas_flag]		= &data->rasv.f_req_measure_flag;
+	js_ch_observable[JSO_meas_flag]			= &data->av.f_measure_flag;
+	js_ch_observable[JSO_pause_timer_sec]	= &data->av.pause_timer_sec;
+	js_ch_observable[JSO_f_cnt]				= &data->rasv.f_cnt_lambda_u;
+	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
+	js_ch_observable[JSO_lambda_u]			= &data->av.lambda_u;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -116,6 +121,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
 	js_slowDataArray[JSSD_FLOAT_f_sw_Hz]				= &(data->av.f_sw_avg_Hz);
+	js_slowDataArray[JSSD_FLOAT_pause_timer_sec]		= &(data->av.pause_timer_sec);
+	js_slowDataArray[JSSD_FLOAT_cnt_lambda_u]			= &(data->rasv.f_cnt_lambda_u);
+	js_slowDataArray[JSSD_FLOAT_end_cnt_lambda_u]		= &(data->rasv.f_cnt_lambda_u_end);
+	js_slowDataArray[JSSD_FLOAT_f_mod_cnt]				= &f_mod_wait_cnt;
+	js_slowDataArray[JSSD_FLOAT_lambda_u]				= &(data->av.lambda_u);
 	js_slowDataArray[JSSD_FLOAT_speed_RPM] 		       	= &(data->av.mechanicalRotorSpeedRPM_ip);
 	js_slowDataArray[JSSD_FLOAT_invTemp1]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_invTemp2]				= &(data->av.temperature_inv_2);

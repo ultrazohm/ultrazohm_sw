@@ -304,8 +304,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //									data->rasv.halfBridge4DutyCycle = 1.0f;
 //									data->rasv.halfBridge5DutyCycle = 1.0f;
 //									data->rasv.halfBridge6DutyCycle = 1.0f;
-		data->rasv.req_measure_flag = true;
-		data->rasv.f_req_measure_flag = 1.0f;
+		data->av.start_trade_off_measurement = true;
+		data->av.f_start_trade_off_measurement = 1.0f;
 			break;
 
 		case (Error_Reset):
@@ -381,10 +381,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 11);
 
 	/* Bit 12 - trigger ext. logging */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 12);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 12);
-	// }
+	 if (data->av.measure_flag == true) {
+		js_status_BareToRTOS |= (1 << 12);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 12);
+	 }
 
 }

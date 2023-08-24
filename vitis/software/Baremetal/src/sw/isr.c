@@ -88,6 +88,8 @@ extern DS_Data Global_Data;
 #define MAX_DC_VOLT 590.0f
 
 
+
+
 // pu output fixed point definition
 struct uz_fixedpoint_definition_t fixedpoint_definition = {
 		.is_signed = true,
@@ -180,10 +182,16 @@ const pre_calc_val_t pre_calc_val={
 };
 
 float sw_cnt_avg_time_sec = 0.0f;
-uint32_t isr_cnt = 0;
-uint32_t switchNumb = 0;
+uint32_t isr_cnt = 0U;
+uint32_T wait_cnt = 0U;
+uint32_t mod_wait_cnt = 0U;
+float f_mod_wait_cnt = 0.0f;
+uint32_t switchNumb = 0U;
 float passed_time_sec = 0.0f;
+float pause_timer_sec = 0.0f;
 float f_sw_avg_Hz = 0.0f;
+
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -391,17 +399,33 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
 
+    // state machine for automated trade-off curve measurement
+    if(Global_Data.av.pause_timer_sec >= Global_Data.av.pause_time_sec) {
+    	wait_cnt = 0U;
+    	mod_wait_cnt++;
+    	if(mod_wait_cnt > 2U) {
+    		mod_wait_cnt=0U;
+    	}
+
+    }
+
+
     // count switching actions of 2L-sixphase inverter
     if(Global_Data.av.mechanicalRotorSpeedRADpS_ip > 1.0f) {
     sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.mechanicalRotorSpeedRPM_ip / 60.0f * dengine.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
-
-
-
-
     } else  {
     	sw_cnt_avg_time_sec = 1.0f;
     }
 
+    // assign pause time between automated measurements
+    Global_Data.av.pause_time_sec = 3.0f*sw_cnt_avg_time_sec;
+
+
+    if(Global_Data.av.start_trade_off_measurement == true && Global_Data.av.measure_flag == false) {
+    	Global_Data.rasv.req_measure_flag = true;
+    }
+
+    // calculate average switching frequency and control the measure flag
     if(passed_time_sec >= sw_cnt_avg_time_sec) {
         	switchNumb = uz_axi_read_uint32(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
         	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);	// reset counter = true
@@ -411,22 +435,43 @@ void ISR_Control(void *data)
         	Global_Data.av.f_sw_measure_flag = !Global_Data.av.f_sw_measure_flag; //toggle every time f_sw is measured
         	Global_Data.av.f_f_sw_measure_flag = (float)Global_Data.av.f_sw_measure_flag;
         	// control the measuring flag
-        	if (Global_Data.rasv.req_measure_flag == true && Global_Data.av.f_sw_measure_flag == false) {
+        	if (Global_Data.rasv.req_measure_flag == true && Global_Data.av.f_sw_measure_flag == false && mod_wait_cnt == 2) {
         	Global_Data.av.measure_flag = true;
         	Global_Data.av.f_measure_flag = 1.0f;
+        	mod_wait_cnt=0U;
         	}
         	if (Global_Data.av.f_sw_measure_flag == true && Global_Data.av.measure_flag == true) {
+        		// clear the measure and req_measure flags
         		Global_Data.rasv.req_measure_flag = false;
         		Global_Data.rasv.f_req_measure_flag = 0.0f;
         		Global_Data.av.measure_flag = false;
         		Global_Data.av.f_measure_flag = 0.0f;
+        		// increase measuring point counter
+        		Global_Data.rasv.cnt_lambda_u++;
+        		Global_Data.rasv.f_cnt_lambda_u = (float)Global_Data.rasv.cnt_lambda_u;
+        		// set next lamda_u
+        		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_now + Global_Data.rasv.lambda_u_step;
+        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+        		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
         	}
-
-
         }
 
+    f_mod_wait_cnt = (float)mod_wait_cnt;
+
+    if(Global_Data.rasv.cnt_lambda_u > Global_Data.rasv.cnt_lambda_u_end) {
+    	Global_Data.av.start_trade_off_measurement = false;
+    	Global_Data.rasv.cnt_lambda_u = 1U;
+    	Global_Data.rasv.f_cnt_lambda_u = 1.0f;
+		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
+		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    }
+
         isr_cnt++;
+        wait_cnt++;
+
         passed_time_sec = isr_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
+        Global_Data.av.pause_timer_sec = wait_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
 
     // Set duty cycles for three-level modulator
 //    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

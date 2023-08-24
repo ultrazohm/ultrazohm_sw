@@ -188,7 +188,16 @@ int main(void)
             Global_Data.av.lambda_y = 1.0f;
             Global_Data.av.lambda_u = 0.000f;
 
-
+            // parameters for automated trade-off curve measurements
+            Global_Data.rasv.lambda_u_start = 0.000;
+            Global_Data.rasv.lambda_u_stop = 0.01;
+            Global_Data.rasv.lambda_u_step = 0.001;
+            Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
+            Global_Data.rasv.cnt_lambda_u_end = (uint32_t)(ceilf((Global_Data.rasv.lambda_u_stop - Global_Data.rasv.lambda_u_start) / Global_Data.rasv.lambda_u_step))+1U;
+            Global_Data.rasv.f_cnt_lambda_u_end = (float)Global_Data.rasv.cnt_lambda_u_end;
+            Global_Data.rasv.cnt_lambda_u = 1U;
+            Global_Data.rasv.f_cnt_lambda_u = 1.0f;
+            Global_Data.av.pause_time_sec = 1.0f;
 
             initialization_chain = init_ip_cores;
             break;

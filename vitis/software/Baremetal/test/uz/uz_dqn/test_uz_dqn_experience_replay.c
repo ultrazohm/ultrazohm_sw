@@ -146,14 +146,12 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     float* r = getbackrew;
     float getbackqval[MINIBATCHSIZE]= {0.0f};
     float* q = getbackqval;
-    float getbackqvalplus1[MINIBATCHSIZE]= {0.0f};
-    float* qplus1 = getbackqvalplus1;
     uint32_t getbackact[MINIBATCHSIZE] = {0};
     uint32_t* a = getbackact;
     float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *getbackobs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
-    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,qplus1,a,getbackobs,buffertesting->vectorforobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
+    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,a,getbackobs,buffertesting->vectorforobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
     float testrew[MINIBATCHSIZE] = {-27.7f,-777.7f};
     float testqval[MINIBATCHSIZE] = {6.4f,543.3f};
     float testqvalplus1[MINIBATCHSIZE] = {7.99f,6.4f};
@@ -161,7 +159,6 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     uint32_t testact[MINIBATCHSIZE] = {0,777};
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testrew, getbackrew, MINIBATCHSIZE);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testqval, getbackqval, MINIBATCHSIZE);
-    TEST_ASSERT_EQUAL_FLOAT_ARRAY(testqvalplus1, getbackqvalplus1, MINIBATCHSIZE);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(testobs, getbackobbs, MINIBATCHSIZE*NUMBEROFOBS);
     TEST_ASSERT_EQUAL_INT32_ARRAY(testact, getbackact, MINIBATCHSIZE);
 }

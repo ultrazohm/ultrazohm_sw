@@ -338,7 +338,7 @@ void test_uz_dqn_1_step(void)
     float getbackobbs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
     float loss = calculate_loss_dqn(testdqn, testdqn->discount_factor, reward, *qval, *qvalplus1, terminal);
     uz_nn_backward_pass(testdqn->critic,&loss,input);
@@ -381,7 +381,7 @@ void test_uz_dqn_train_episodes(void)
     uint32_t action = uz_matrix_get_max_index(outputdqn);
     float reward = calculate_reward_pendulum(1/DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
     float loss = calculate_derv_loss_dqn(testdqn, testdqn->discount_factor,*rew,*qval,*qvalplus1,terminal);
     uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  

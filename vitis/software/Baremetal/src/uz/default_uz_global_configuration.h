@@ -12,6 +12,7 @@
 #error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
+
 /** ISR trigger source
  *
  * chose here which of the above interrupt trigger you want to use:
@@ -35,7 +36,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  20U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  25U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 10U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
@@ -67,6 +68,8 @@
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES		1U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES			10U
 #define UZ_9PH_OPEN_PHASE_FAULT_DETECTION				1U
+#define UZ_SYSMON_PS_MAX_INSTANCES						1U
+#define UZ_RESONANT_CONTROL_MAX_INSTANCES	10U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

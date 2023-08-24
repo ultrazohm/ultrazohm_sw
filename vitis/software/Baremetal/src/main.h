@@ -58,6 +58,8 @@
 #include "include/pwm_init.h"
 #include "include/init_torque_filter.h"
 
+#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
+
 
 #include "sw/control/control.h"
 #include "include/init_fault_control.h"

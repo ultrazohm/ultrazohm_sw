@@ -80,6 +80,7 @@ enum JS_OberservableData {
 	JSO_index_a1_th,
 	JSO_index_a1_raw,
 	JSO_derate,
+	JSO_OC,
 	JSO_ENDMARKER
 };
 
@@ -94,20 +95,12 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_Rs_Offline,
-	JSSD_FLOAT_Ld_Offline,
-	JSSD_FLOAT_Lq_Offline,
-	JSSD_FLOAT_PsiPM_Offline,
-	JSSD_FLOAT_J,
-	JSSD_FLOAT_polePairs,
-	JSSD_FLOAT_activeState,
 	JSSD_FLOAT_u_d,
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
-	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_temperature_inv1,
 	JSSD_FLOAT_temperature_inv2,
 	JSSD_FLOAT_temperature_inv3,
@@ -116,6 +109,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_dc_inv3,
 	JSSD_FLOAT_i_dc_inv2,
 	JSSD_FLOAT_i_dc_inv3,
+	JSSD_FLOAT_error_OC,
+	JSSD_FLOAT_error_OV,
+	JSSD_FLOAT_error_speed,
+	JSSD_FLOAT_error_OT,
 	JSSD_ENDMARKER
 };
 

@@ -45,6 +45,7 @@ typedef struct uz_VSD_9ph_FD_t{
     uint32_t mov_average_filter_length;    /**< mov_average_filter_length maximal length of moving average filter */
     float sample_frequency_Hz;          /**< sample_frequency_Hz sample frequency in Hz */
     float percent_of_el_period;         /**< percent_of_el_period desired filter length in percent of an electric period */
+    uint32_t cnt;
 	uz_movingAverageFilter_t* movingAverageFilter_R1; /**< moving average filter for fault index R1*/
     uz_movingAverageFilter_t* movingAverageFilter_R2; /**< moving average filter for fault index R2*/
     uz_movingAverageFilter_t* movingAverageFilter_R3; /**< moving average filter for fault index R3*/
@@ -91,6 +92,7 @@ uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_init(struct uz_VSD_9ph_FD_config config){
 	self->movingAverageFilter_R7 = config.movingAverageFilter_R7;
 	self->movingAverageFilter_R8 = config.movingAverageFilter_R8;
 	self->movingAverageFilter_R9 = config.movingAverageFilter_R9;
+	self->cnt = 0;
     return(self);
 }
 
@@ -124,16 +126,27 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 		new_filterLength = 10;
 	}
 
+	switch(VSD_FD->cnt){
+	case 0:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R1, new_filterLength); VSD_FD->cnt++; break;
+	case 1:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R2, new_filterLength); VSD_FD->cnt++; break;
+	case 2:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R3, new_filterLength); VSD_FD->cnt++; break;
+	case 3:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R4, new_filterLength); VSD_FD->cnt++; break;
+	case 4:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R5, new_filterLength); VSD_FD->cnt++; break;
+	case 5:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R6, new_filterLength); VSD_FD->cnt++; break;
+	case 6:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R7, new_filterLength); VSD_FD->cnt++; break;
+	case 7:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R8, new_filterLength); VSD_FD->cnt++; break;
+	case 8:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R9, new_filterLength); VSD_FD->cnt=0; break;
+	default: VSD_FD->cnt = 0; break;
+	}
 
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R1, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R2, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R3, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R4, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R5, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R6, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R7, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R8, new_filterLength);
-	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R9, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R2, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R3, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R4, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R5, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R6, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R7, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R8, new_filterLength);
+//	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter_R9, new_filterLength);
 
 	// moving average filter
 	indices.a1 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter_R1, indices.a1);

@@ -43,7 +43,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  5.0f
+#define MAX_PHASE_CURRENT_AMP  10.0f
 #define MAX_DC_VOLT 400.0f
 #define MAX_SPEED_RPM 1000.0f
 #define MAX_TEMP_DEG 90.0f
@@ -55,18 +55,20 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 
 // control
 #include "control/control.h"
-volatile uz_9ph_abc_t ref_voltages = {0};
+uz_9ph_abc_t ref_voltages = {0};
 enum controller_type selected_controller = PI_R;
 
 // fault control
-uz_9ph_alphabeta_t ref_voltages_fault = {0};
+volatile uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
 float global_derate;
 
 // CIL
 #include "../include/CIL.h"
-enum target target_platform = CIL;
+enum target target_platform = testbench;
+float CIL_speed_rpm = 462.0f;
+uz_9ph_abc_t set_phase_fault = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -88,7 +90,8 @@ void ISR_Control(void *data)
 		case CIL:
 			uz_CIL_read_direction(Global_Data.objects.CIL_objects, &Global_Data);
 			uz_CIL_misc(Global_Data.objects.CIL_objects, &Global_Data);
-			Global_Data.av.currents_abc = uz_CIL_phase_currents(Global_Data.objects.CIL_objects);
+			Global_Data.av.currents_abc = uz_CIL_phase_currents(Global_Data.objects.CIL_objects, set_phase_fault);
+			uz_pmsm_model9ph_dq_set_inputs_general(Global_Data.objects.CIL_objects.pmsm, CIL_speed_rpm, 0.0f);
 			break;
 		case testbench:
 			uz_resolver_read_and_adapt_direction(&Global_Data);
@@ -116,18 +119,22 @@ void ISR_Control(void *data)
 	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
+		Global_Data.av.errors.overcurrent++;
 		uz_limit_exceed(&Global_Data);
 	}
 	// check DC Bus
 	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
+		Global_Data.av.errors.overvoltage++;
 		uz_limit_exceed(&Global_Data);
 	}
 	// check Speed
 	if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
+		Global_Data.av.errors.speed++;
 		uz_limit_exceed(&Global_Data);
 	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
+		Global_Data.av.errors.overtemperature++;
 		uz_limit_exceed(&Global_Data);
 	}}
 
@@ -135,9 +142,9 @@ void ISR_Control(void *data)
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
-	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
-	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
+//	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+//	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
+//	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -171,17 +178,17 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-    	if(Global_Data.av.fault_n_OPF){
-    		k_param = uz_get_k_parameter_9ph_ML_N1(Global_Data.av.fault_single_indices);
-			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
-    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
-    		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
-    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
-    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
-    	}else{
-			reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
-			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
-    	}
+//    	if(Global_Data.av.fault_n_OPF){
+//    		k_param = uz_get_k_parameter_9ph_ML_N1(Global_Data.av.fault_single_indices);
+//			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
+//    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
+//    		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
+//    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
+//    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
+//    	}else{
+//			reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+//			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
+//    	}
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////
     	////////////////////////////////////////////////////////////////////////////

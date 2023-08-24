@@ -1,7 +1,25 @@
 #include "../include/CIL.h"
 
-uz_9ph_abc_t uz_CIL_phase_currents(struct CIL_objects objects){
+uz_9ph_abc_t uz_CIL_phase_currents(struct CIL_objects objects, uz_9ph_abc_t set_zero){
 	uz_9ph_abc_t out = uz_pmsm9ph_transformation_get_currents(objects.transformation);
+	if(set_zero.a1 == 1.0f)
+		out.a1 = 0.0f;
+	if(set_zero.b1 == 1.0f)
+		out.b1 = 0.0f;
+	if(set_zero.c1 == 1.0f)
+		out.c1 = 0.0f;
+	if(set_zero.a2 == 1.0f)
+		out.a2 = 0.0f;
+	if(set_zero.b2 == 1.0f)
+		out.b2 = 0.0f;
+	if(set_zero.c2 == 1.0f)
+		out.c2 = 0.0f;
+	if(set_zero.a3 == 1.0f)
+		out.a3 = 0.0f;
+	if(set_zero.b3 == 1.0f)
+		out.b3 = 0.0f;
+	if(set_zero.c3 == 1.0f)
+		out.c3 = 0.0f;
 	return out;
 }
 

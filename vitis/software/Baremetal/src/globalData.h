@@ -17,7 +17,12 @@
 #include "uz/uz_VSD_9ph_FD_control/uz_VSD_9ph_FD.h"
 #include "include/init_CIL.h"
 
-
+struct error_count{
+	float overcurrent;
+	float overvoltage;
+	float speed;
+	float overtemperature;
+};
 
 struct pointers_PI_PI{
 	uz_CurrentControl_t* dq;
@@ -49,6 +54,7 @@ struct pointers_fault_control{
 	uz_CurrentControl_t* xy2;
 	uz_CurrentControl_t* xy3;
 };
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -104,6 +110,7 @@ typedef struct _actualValues_ {
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float theta_el_offset; //in rad
+	struct error_count errors;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float temperature_nut[9];

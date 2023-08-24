@@ -123,6 +123,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_index_a1_th] =  &index_a1_th;
 	js_ch_observable[JSO_index_a1_raw] =  &index_a1_raw;
 	js_ch_observable[JSO_derate] =  &global_derate;
+	js_ch_observable[JSO_OC] =  &data->av.errors.overcurrent;
 
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
@@ -148,6 +149,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_dc_inv3]				= &(data->av.U_ZK3);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv2]				= &(data->av.i_ZK2);
 	js_slowDataArray[JSSD_FLOAT_i_dc_inv3]				= &(data->av.i_ZK3);
+	js_slowDataArray[JSSD_FLOAT_error_OC]			= &(data->av.errors.overcurrent);
+	js_slowDataArray[JSSD_FLOAT_error_OV]			= &(data->av.errors.overvoltage);
+	js_slowDataArray[JSSD_FLOAT_error_speed]		= &(data->av.errors.speed);
+	js_slowDataArray[JSSD_FLOAT_error_OT]			= &(data->av.errors.overtemperature);
 	return Status;
 }
 

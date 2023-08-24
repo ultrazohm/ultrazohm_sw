@@ -102,7 +102,7 @@ float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
 float qvalues[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
 int32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,5,50};
 float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f};
-
+float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {2.0f,1.5f,5.0f,2.5f,5.8f,6.0f,5.0f,7.0f,5.0f,50.0f};
 // config random
 struct uz_mtwister_config cfg = {
@@ -232,6 +232,7 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .reward = reward,
         .qvalues = qvalues,
         .observations = observation,
+        .obsvec = vecobs,
         .actions = action
 };
 void setUp(void)
@@ -337,7 +338,7 @@ void test_uz_dqn_1_step(void)
     float getbackobbs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
     float loss = calculate_loss_dqn(testdqn, testdqn->discount_factor, reward, *qval, *qvalplus1, terminal);
     uz_nn_backward_pass(testdqn->critic,&loss,input);
@@ -380,7 +381,7 @@ void test_uz_dqn_train_episodes(void)
     uint32_t action = uz_matrix_get_max_index(outputdqn);
     float reward = calculate_reward_pendulum(1/DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,qvalplus1,act,obs,testdqn->experience_buffer->vectorforobs,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     bool terminal = false;
     float loss = calculate_derv_loss_dqn(testdqn, testdqn->discount_factor,*rew,*qval,*qvalplus1,terminal);
     uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  

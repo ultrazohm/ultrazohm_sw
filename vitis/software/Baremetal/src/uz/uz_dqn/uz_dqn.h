@@ -10,12 +10,37 @@
 
 typedef struct uz_dqn_t uz_dqn_t;
 typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;
+struct uz_dqn_experience_replay_t {
+    float *reward;
+    float *qvalues;
+    uint32_t *action;
+    uz_matrix_t *observations;
+    uz_matrix_t *vectorforobs;
+    struct uz_matrix_t observations_matrix;
+    struct uz_matrix_t vecobs_matrix;
+    uint32_t head;
+    uint32_t fullbuf;
+    uint32_t length;
+    bool is_full;
+    bool is_ready;
+};
+
+struct uz_dqn_t {
+    bool is_ready;
+    uz_nn_t *critic;
+    uz_nn_t *critic_target_net;
+    uz_mtwister_t *randinstance;
+    uz_dqn_experience_replay_t *experience_buffer;
+    float discount_factor;
+    float lernrate;
+};
 
 struct uz_dqn_experience_replay_config{
     uint32_t columns_of_observations;
     uint32_t length_of_buffer;
     float *const reward;
     float *const observations;
+    float *const obsvec;
     float *const qvalues;
     uint32_t *const actions;
 };
@@ -34,7 +59,7 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
 float calculate_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal);
 float calculate_derv_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal);
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, uint32_t *actionindex, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
 uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_start,float *epsilon_min,float *epsilon_decay);
 /**
  * @brief Calculates epsilon-greedy exploration value for epsilon-greedy exploration for Deep Q-Networks.

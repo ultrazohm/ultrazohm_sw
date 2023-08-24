@@ -24,12 +24,15 @@ uint32_t action_set[EXPERIENCE_BUFFER_LENGTH] = {1,0,-1};
 float q_value_set[EXPERIENCE_BUFFER_LENGTH] = {5.3f,6.4f,7.99f};
 float observation_set[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {1.1f,2.1f,5.1f,2.1f,0.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
 
+float vecobs[NUMBEROFOBS] = {0.0f};
+
 struct uz_dqn_experience_replay_config configbuffer = {
         .length_of_buffer = UZ_MATRIX_SIZE(reward),
         .columns_of_observations = NUMBEROFOBS,
         .reward = reward,
         .qvalues =q_value,
         .observations = observation,
+        .obsvec = vecobs,
         .actions = action
 };
 void setUp(void)
@@ -125,12 +128,14 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     uint32_t act2[EXPERIENCE_BUFFER_LENGTH] = {777,0,-1};
     float qval2[EXPERIENCE_BUFFER_LENGTH] = {543.3f,6.4f,7.99f};
     float obbs2[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,2.0f,2.1f,5.1f,2.1f,13.0f,2.0f,-1.0f,5.1f,2.1f,3.0f};
+    float vecobs[NUMBEROFOBS] = {0.0f};
     struct uz_dqn_experience_replay_config confbuf = {
         .length_of_buffer = UZ_MATRIX_SIZE(rew2),
         .columns_of_observations = NUMBEROFOBS,
         .reward = rew2,
-        .qvalues =qval2,
+        .qvalues = qval2,
         .observations = obbs2,
+        .obsvec = vecobs,
         .actions = act2
     };
     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(confbuf,EXPERIENCE_BUFFER_LENGTH,0);
@@ -148,7 +153,7 @@ void test_uz_dqn_get_minibatch_from_buffer(void){
     float getbackobbs[NUMBEROFOBS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *getbackobs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBEROFOBS);
-    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,qplus1,a,getbackobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
+    uz_dqn_get_minibatch_from_buffer(buffertesting,r,q,qplus1,a,getbackobs,buffertesting->vectorforobs,MINIBATCHSIZE,NUMBEROFOBS,ind);
     float testrew[MINIBATCHSIZE] = {-27.7f,-777.7f};
     float testqval[MINIBATCHSIZE] = {6.4f,543.3f};
     float testqvalplus1[MINIBATCHSIZE] = {7.99f,6.4f};

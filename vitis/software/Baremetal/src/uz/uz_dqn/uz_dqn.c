@@ -7,28 +7,6 @@
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
 
-struct uz_dqn_experience_replay_t {
-    float *reward;
-    float *qvalues;
-    uint32_t *action;
-    uz_matrix_t *observations;
-    struct uz_matrix_t observations_matrix;
-    uint32_t head;
-    uint32_t fullbuf;
-    uint32_t length;
-    bool is_full;
-    bool is_ready;
-};
-
-struct uz_dqn_t {
-    bool is_ready;
-    uz_nn_t *critic;
-    uz_nn_t *critic_target_net;
-    uz_mtwister_t *randinstance;
-    uz_dqn_experience_replay_t *experience_buffer;
-    float discount_factor;
-    float lernrate;
-};
 
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
@@ -64,6 +42,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     self->reward = buf_config.reward;
     self->qvalues = buf_config.qvalues;
     self->action = buf_config.actions;
+    self->vectorforobs= uz_matrix_init(&self->vecobs_matrix,buf_config.obsvec,buf_config.columns_of_observations,1,buf_config.columns_of_observations);
     self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
     self->head = headind; // vorübergehend, für test, dass auf beliebigen index nach init zugegriffen werden kann, kann man später noch entfernenS
     self->fullbuf = 0;
@@ -154,7 +133,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, uint32_t *actionindex, uz_matrix_t *obs, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue,float *qvalueplus1, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -163,9 +142,6 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uz_assert_not_NULL(indizes);
     //uz_assert(minibatchsize=1);
     uz_assert(self->is_ready);
-    float vecobs[numberofobs];
-    struct uz_matrix_t obsvec_matrix = {0};
-    uz_matrix_t *obsvec = uz_matrix_init(&obsvec_matrix, vecobs, numberofobs,1, numberofobs);
     for (uint32_t i = 0; i < minibatchsize; i++)
         {
         // schlechte zufallszahlengenerierung, aber für den start reichts

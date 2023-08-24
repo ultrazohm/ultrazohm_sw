@@ -44,7 +44,7 @@ extern DS_Data Global_Data;
 extern uz_SpeedControl_t* SC_instance_1;
 extern uz_SetPoint_t* SP_instance_1;
 extern uz_CurrentControl_t* CC_instance_1;
-extern uz_resonantController_t* R_controller_instance_1;
+extern uz_subspace_resonant_control* RC_instance_1;
 extern struct uz_PMSM_t config_PMSM_1;
 // Inverter Measurement
 struct uz_3ph_abc_t v_abc_Volts_1 	= {0};
@@ -53,6 +53,9 @@ struct uz_3ph_dq_t v_dq_ref_Volts_1 = {0};
 struct uz_3ph_abc_t i_abc_Amps_1 	= {0};
 struct uz_3ph_dq_t i_dq_Amps_1 		= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_1 	= {0};
+struct uz_3ph_dq_t dq_resonant_ref_1= {0};
+struct uz_3ph_dq_t dq_resonant_1	= {0};
+struct uz_3ph_dq_t output_sum_1		= {0};
 float v_DC_Volts_1 					= 24.0f;
 float i_DC_Amps_1 					= 0.0f;
 // FOC Variables
@@ -64,13 +67,14 @@ float theta_el_rad_1 				= 0.0f;
 float theta_el_offset_1 			= 1.1f;
 struct uz_DutyCycle_t output_1 		= {0};
 // Controller Settings
-float Kp_speed_1 					= 0.005f;
-float Ki_speed_1 					= 0.01f;
+float Kp_speed_1 					= 0.01f;
+float Ki_speed_1 					= 1.0f;
 //float Kp_id = 0.3f;
 //float Ki_id = 230.0f;
 //float Kp_iq = 0.5f;
 //float Ki_iq = 230.0f;
-float Resonant_gain					= 0.0f;
+float Resonant_1_gain_1				= 300.0f;
+float Resonant_1_gain_2				= 300.0f;
 // Encoder Offset Estimation
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 // Wavegen Chirp
@@ -84,6 +88,7 @@ float sampling_time = 1.0f/30.0e3f;
 extern uz_SpeedControl_t* SC_instance_2;
 extern uz_SetPoint_t* SP_instance_2;
 extern uz_CurrentControl_t* CC_instance_2;
+extern uz_subspace_resonant_control* RC_instance_2;
 extern struct uz_PMSM_t config_PMSM_2;
 // Inverter Measurement
 struct uz_3ph_abc_t v_abc_Volts_2 	= {0};
@@ -92,7 +97,10 @@ struct uz_3ph_dq_t v_dq_ref_Volts_2 = {0};
 struct uz_3ph_abc_t i_abc_Amps_2 	= {0};
 struct uz_3ph_dq_t i_dq_Amps_2 		= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_2 	= {0};
-float v_DC_Volts_2 					= 12.0f;
+struct uz_3ph_dq_t dq_resonant_ref_2= {0};
+struct uz_3ph_dq_t dq_resonant_2	= {0};
+struct uz_3ph_dq_t output_sum_2		= {0};
+float v_DC_Volts_2 					= 24.0f;
 float i_DC_Amps_2 					= 0.0f;
 // FOC Variables
 float n_ref_rpm_2 					= 0.0f;
@@ -109,11 +117,15 @@ float Ki_speed_2 					= 1.0f;
 //float Ki_id = 230.0f;
 //float Kp_iq = 0.5f;
 //float Ki_iq = 230.0f;
+float Resonant_2_gain_1				= 10.0f;
+float Resonant_2_gain_2				= 10.0f;
 // Encoder Offset Estimation
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 
 // Other Declares
 float error_type = 0.0f;
+int counter = 1;
+int resonant = 0;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -217,31 +229,55 @@ void ISR_Control(void *data)
 // =============================================== //
 
    // Field Oriented Control of PMSM 1 and resonant controller
-   // M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
+    M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
     v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-    output = uz_resonantController_step(R_controller_instance_1, 0.0f, i_dq_Amps_1, omega_el_rad_per_sec_1);
+
+    if (resonant == 1)
+    {
+    dq_resonant_1 = uz_subspace_resonant_control_step_dq(RC_instance_1, dq_resonant_ref_1, i_dq_Amps_1, omega_el_rad_per_sec_1);
+    output_sum_1.d = v_dq_ref_Volts_1.d + dq_resonant_1.d;
+    output_sum_1.q = v_dq_ref_Volts_1.q + dq_resonant_1.q;
+    output_1 = uz_Space_Vector_Modulation(output_sum_1, v_DC_Volts_1, theta_el_rad_1);
+    }
+    else
+    {
     output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-    Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+    }
+	Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
     Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
     Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
    	// Field Oriented Control of PMSM 2
-    M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
-    i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
-   	v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-   	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+//    if (counter == 10)
+//    	{
+//    	M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
+//    	counter = 1;
+//    	}
+//    else
+//    	{
+//    	counter++;
+//    	}
+//    i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
+//   	v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+//   	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+////    dq_resonant_2 = uz_subspace_resonant_control_step_dq(RC_instance_2, dq_resonant_ref_2, i_dq_Amps_2, omega_el_rad_per_sec_2/5.0f*4.0f);
+////   	output_sum_2.d = v_dq_ref_Volts_2.d + dq_resonant_2.d;
+////   	output_sum_2.q = v_dq_ref_Volts_2.q + dq_resonant_2.q;
+////   	output_2 = uz_Space_Vector_Modulation(output_sum_2, v_DC_Volts_2, theta_el_rad_2);
+//   	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
    	Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
    	Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
    	Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
     }
     else
     {
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+//    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
     	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
     	uz_SpeedControl_reset(SC_instance_1);
     	uz_CurrentControl_reset(CC_instance_1);
-    	uz_resonantController_reset(R_controller_instance_1);
+    	uz_subspace_resonant_control_reset(RC_instance_1);
+    	uz_subspace_resonant_control_reset(RC_instance_2);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
     }
@@ -256,7 +292,10 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 
     // Change Variables during Runtime
-    uz_resonantController_set_gain(R_controller_instance_1, Resonant_gain);
+    uz_subspace_resonant_control_set_gains(RC_instance_1, Resonant_1_gain_1, Resonant_1_gain_2);
+    uz_subspace_resonant_control_set_gains(RC_instance_2, Resonant_2_gain_1, Resonant_2_gain_2);
+//    uz_SpeedControl_set_Kp(SC_instance_1, Kp_speed_1);
+//    uz_SpeedControl_set_Ki(SC_instance_1, Ki_speed_1);
     uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);
     uz_SpeedControl_set_Ki(SC_instance_2, Ki_speed_2);
 //    uz_CurrentControl_set_Kp_id(CC_instance, Kp_id);

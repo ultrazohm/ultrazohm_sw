@@ -70,6 +70,9 @@
 // Include for Encoder Estimation
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
+// Resonant Controller
+#include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

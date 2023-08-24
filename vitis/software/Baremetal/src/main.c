@@ -47,13 +47,14 @@ uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
-uz_resonantController_t* R_controller_instance_1;
+uz_subspace_resonant_control* RC_instance_1;
 
 // Declare Pointer for FOC of PMSM 2
 uz_SpeedControl_t* SC_instance_2;
 uz_SetPoint_t* SP_instance_2;
 uz_CurrentControl_t* CC_instance_2;
 uz_encoder_offset_estimation_t* encoder_offset_obj_2;
+uz_subspace_resonant_control* RC_instance_2;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
 struct uz_PMSM_t config_PMSM_1 = {
@@ -97,8 +98,8 @@ int main(void)
     //--------- Configs for PMSM 1 (Pruefling) ---------//
     // Configuration of Speed Control
     struct uz_SpeedControl_config SC_config_1 = {
-       .config_controller.Kp = 0.02f, //0.001f
-       .config_controller.Ki = 0.5f,  //0.05f
+       .config_controller.Kp = 0.01f, //0.001f
+       .config_controller.Ki = 1.0f,  //0.05f
        .config_controller.samplingTime_sec = 0.0001f,
        .config_controller.upper_limit = 2.0f,
        .config_controller.lower_limit = -2.0f,
@@ -152,28 +153,25 @@ int main(void)
       .initial_delay_sec = 3.0f,
       .offset = 0.0f
     };
-
     // Resonant Controller
-    struct uz_resonantController_config config_R = {
-          .sampling_time = 0.0001f,
-          .gain = 52.5f,
-          .harmonic_order = 5.0f,
-          .fundamental_frequency = 10.0f,
-          .lower_limit = -4.0f,
-          .upper_limit = 4.0f,
+    struct uz_subspace_resonant_control_config RC_config_1 = {
           .antiwindup_gain = 10.0f,
-          .in_reference_value = 0.0f,
-          .in_measured_value = 0.0f,
-      };
+          .gain_1 = 200.0f,
+          .gain_2 = 200.0f,
+          .harmonic_order = 6.0f,
+          .lower_limit = -10.0f,
+          .upper_limit = 10.0f,
+          .sampling_time = 0.0001f
+    };
 
     //--------- Configs for PMSM 2 (Last) ---------//
     // Configuration of Speed Control
     struct uz_SpeedControl_config SC_config_2 = {
-       .config_controller.Kp = 0.01f,
+       .config_controller.Kp = 0.1f,
        .config_controller.Ki = 1.0f,
        .config_controller.samplingTime_sec = 0.0001f,
-       .config_controller.upper_limit = 2.0f,
-       .config_controller.lower_limit = -2.0f,
+       .config_controller.upper_limit = 10.0f,
+       .config_controller.lower_limit = -10.0f,
     };
     // Configuration of Set Point
     struct uz_SetPoint_config SP_config_2 = {
@@ -214,6 +212,16 @@ int main(void)
         .ptr_actual_u_q_V = &Global_Data.av.U_q_2,                             // pointer to q-setpoint voltage
         .min_omega_el = 300.0f,                                              // target electric rotor angular speed (USE OWN)
         .setpoint_current = 3.0f 											 // current setpoint to reach speed (USE OWN)
+      };
+      // Resonant Controller
+      struct uz_subspace_resonant_control_config RC_config_2 = {
+        .antiwindup_gain = 10.0f,
+        .gain_1 = 10.0f,
+        .gain_2 = 10.0f,
+        .harmonic_order = 6.0f,
+        .lower_limit = -5.0f,
+        .upper_limit = 5.0f,
+        .sampling_time = 0.0001f
       };
 
     // Initialization Chain
@@ -268,7 +276,8 @@ int main(void)
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
-           	R_controller_instance= uz_resonantController_init(config_R);
+           	RC_instance_1 = uz_subspace_resonant_control_init(RC_config_1);
+           	RC_instance_2 = uz_subspace_resonant_control_init(RC_config_2);
            	Global_Data.av.theta_offset_1 = 0.904f;
            	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;

@@ -30,6 +30,8 @@ extern float n_ref_rpm_1;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 extern float M_ref_Nm_1;
 extern float theta_el_offset_1;
+extern float Resonant_1_gain_1;
+extern float Resonant_1_gain_2;
 
 //Declares FOC of PMSM 2
 extern float Kp_id_2;
@@ -42,10 +44,14 @@ extern float n_ref_rpm_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
 extern float M_ref_Nm_2;
 extern float theta_el_offset_2;
+extern float Resonant_2_gain_1;
+extern float Resonant_2_gain_2;
 
 //Declares Wavegen
 extern bool enable_excitation;
 extern float excitation_amplitude;
+
+extern int resonant;
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -214,7 +220,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				M_ref_Nm_1 = value;
+				n_ref_rpm_1 = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -222,19 +228,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-				Kp_speed_2=value;
+				Resonant_1_gain_1=value;
 			break;
 
 		case (Set_Send_Field_4):
-				Ki_speed_2=value;
+				Resonant_1_gain_2=value;
 			break;
 
 		case (Set_Send_Field_5):
-				//Kp_speed_1 = value;
+				resonant = value;
 			break;
 
 		case (Set_Send_Field_6):
-				//Ki_speed_1 = value;
+				Ki_speed_2 = value;
 			break;
 
 		case (My_Button_1):

@@ -123,8 +123,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_index_a1_th] =  &index_a1_th;
 	js_ch_observable[JSO_index_a1_raw] =  &index_a1_raw;
 	js_ch_observable[JSO_derate] =  &global_derate;
-	js_ch_observable[JSO_OC] =  &data->av.errors.overcurrent;
-
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

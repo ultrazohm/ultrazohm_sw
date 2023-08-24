@@ -64,12 +64,6 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 
 float global_derate;
 
-// CIL
-#include "../include/CIL.h"
-enum target target_platform = testbench;
-float CIL_speed_rpm = 462.0f;
-uz_9ph_abc_t set_phase_fault = {0};
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -86,22 +80,10 @@ void ISR_Control(void *data)
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Actual value/////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-	switch(target_platform){
-		case CIL:
-			uz_CIL_read_direction(Global_Data.objects.CIL_objects, &Global_Data);
-			uz_CIL_misc(Global_Data.objects.CIL_objects, &Global_Data);
-			Global_Data.av.currents_abc = uz_CIL_phase_currents(Global_Data.objects.CIL_objects, set_phase_fault);
-			uz_pmsm_model9ph_dq_set_inputs_general(Global_Data.objects.CIL_objects.pmsm, CIL_speed_rpm, 0.0f);
-			break;
-		case testbench:
-			uz_resolver_read_and_adapt_direction(&Global_Data);
-			Global_Data.av.currents_abc = uz_ADC_phase_currents(&Global_Data.aa);
-			uz_ADC_dc_values(&Global_Data);
-			uz_ADC_torque(&Global_Data);
-			break;
-		default:break;
-	}
-
+	uz_resolver_read_and_adapt_direction(&Global_Data);
+	Global_Data.av.currents_abc = uz_ADC_phase_currents(&Global_Data.aa);
+	uz_ADC_dc_values(&Global_Data);
+	uz_ADC_torque(&Global_Data);
     uz_PWM_duty_freq_detection(&Global_Data);
     uz_TempCard_Measurement(&Global_Data);
     Global_Data.av.voltages_abc = uz_ADC_phase_voltages(&Global_Data.aa);
@@ -116,44 +98,27 @@ void ISR_Control(void *data)
 ///////////////////////////////////Limits///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 	// check current limit
-    if(target_platform != CIL){
 	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
-<<<<<<< HEAD
-		Global_Data.av.errors.overcurrent++;
-=======
 		Global_Data.av.errors.error_OC += 1.0f;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
 		uz_limit_exceed(&Global_Data);
 	}
 	// check DC Bus
 	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
-<<<<<<< HEAD
-		Global_Data.av.errors.overvoltage++;
-=======
 		Global_Data.av.errors.error_OV += 1.0f;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
 		uz_limit_exceed(&Global_Data);
 	}
 	// check Speed
 	if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
-<<<<<<< HEAD
-		Global_Data.av.errors.speed++;
-=======
 		Global_Data.av.errors.error_speed += 1.0f;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
 		uz_limit_exceed(&Global_Data);
 	}
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
-<<<<<<< HEAD
-		Global_Data.av.errors.overtemperature++;
-=======
 		Global_Data.av.errors.error_OT_inv += 1.0f;
->>>>>>> feature/THN_ninephase_PMSM/clean_branch
 		uz_limit_exceed(&Global_Data);
-	}}
+	}
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////

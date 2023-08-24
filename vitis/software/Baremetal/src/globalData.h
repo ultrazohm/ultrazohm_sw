@@ -15,7 +15,6 @@
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_VSD_9ph_FD_control/uz_VSD_9ph_FD.h"
-#include "include/init_CIL.h"
 
 struct error_count{
 	float overcurrent;
@@ -125,6 +124,7 @@ typedef struct _actualValues_ {
 	float temperature_inv_2;
 	float temperature_inv_3;
 	float temperature_fpga;
+	float theta_el_offset;
 	struct uz_resolver_pl_interface_outputs_t rotational_position;
 	uz_9ph_abc_t currents_abc;
 	uz_9ph_abc_t voltages_abc;
@@ -193,7 +193,6 @@ typedef struct{
 	struct pointers_PI_R objects_PI_R;
 	struct pointers_PIR_PIR objects_PIR_PIR;
 	struct pointers_fault_control objects_fault_control;
-	struct CIL_objects CIL_objects;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

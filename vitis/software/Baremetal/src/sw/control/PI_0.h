@@ -9,4 +9,4 @@
 #define PI_PI_KI_Q 852.7500f
 
 uz_CurrentControl_t* init_PI_0_cc_dq(void);
-uz_9ph_abc_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object);
+uz_9ph_dq_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object);

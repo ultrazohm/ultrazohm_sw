@@ -40,7 +40,7 @@ uz_subspace_resonant_control* init_PI_R_resonant_XY3(void){
 	return ptr;
 }
 
-uz_9ph_abc_t step_controllers_PI_R(DS_Data* Data, struct pointers_PI_R objects){
+uz_9ph_dq_t step_controllers_PI_R(DS_Data* Data, struct pointers_PI_R objects){
 	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(objects.dq, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, Data->av.omega_el);
 	uz_3ph_alphabeta_t XY1_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY1, zero_ref, Data->av.currents_XY1, Data->av.omega_el);
 	uz_3ph_alphabeta_t XY2_ref = uz_subspace_resonant_control_step_alphabeta(objects.XY2, zero_ref, Data->av.currents_XY2, Data->av.omega_el);
@@ -56,7 +56,7 @@ uz_9ph_abc_t step_controllers_PI_R(DS_Data* Data, struct pointers_PI_R objects){
 		.x3 = XY3_ref.alpha,
 		.y3 = XY3_ref.beta,
 		.zero = 0.0f};
-	return uz_transformation_9ph_dq_to_abc(out_dq, Data->av.rotational_position.position_el_2pi);
+	return out_dq;
 }
 
 void reset_controllers_PI_R(struct pointers_PI_R objects){

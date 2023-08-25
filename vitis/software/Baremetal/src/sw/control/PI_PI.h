@@ -20,5 +20,5 @@ uz_CurrentControl_t* init_PI_PI_cc_xy2(void);
 uz_CurrentControl_t* init_PI_PI_cc_xy3(void);
 
 
-uz_9ph_abc_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects);
+uz_9ph_dq_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects);
 void reset_controllers_PI_PI(struct pointers_PI_PI objects);

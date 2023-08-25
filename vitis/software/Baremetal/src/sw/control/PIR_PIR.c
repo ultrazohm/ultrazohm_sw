@@ -65,7 +65,7 @@ uz_3ph_dq_t step_dq_res(uz_CurrentControl_t* PI, uz_subspace_resonant_control* r
 	return out;
 }
 
-uz_9ph_abc_t step_controllers_PIR_PIR(DS_Data* Data, struct pointers_PIR_PIR objects){
+uz_9ph_dq_t step_controllers_PIR_PIR(DS_Data* Data, struct pointers_PIR_PIR objects){
 	// Park transform subsystems
 	subspace_park_transform(Data);
 
@@ -106,7 +106,7 @@ uz_9ph_abc_t step_controllers_PIR_PIR(DS_Data* Data, struct pointers_PIR_PIR obj
 		uz_subspace_resonant_control_reset(objects.RES_xy3);
 		uz_subspace_resonant_control_reset(objects.RES_XY3);
 	}
-	return uz_transformation_9ph_dq_to_abc(out_dq, Data->av.rotational_position.position_el_2pi);
+	return out_dq;
 }
 
 void reset_controllers_PIR_PIR(struct pointers_PIR_PIR objects){

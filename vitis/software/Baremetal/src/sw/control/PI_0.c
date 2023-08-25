@@ -29,7 +29,7 @@ uz_CurrentControl_t* init_PI_0_cc_dq(void){
 	return ptr;
 }
 
-uz_9ph_abc_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object){
+uz_9ph_dq_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object){
 	uz_3ph_dq_t dq_ref = uz_CurrentControl_sample(object, Data->rasv.dq_setpoints, Data->av.currents_dq, Data->av.U_ZK, Data->av.omega_el);
 	uz_9ph_dq_t out_dq = {
 		.d = dq_ref.d,
@@ -41,5 +41,5 @@ uz_9ph_abc_t step_controllers_PI_0(DS_Data* Data, uz_CurrentControl_t* object){
 		.x3 = 0.0f,
 		.y3 = 0.0f,
 		.zero = 0.0f};
-	return uz_transformation_9ph_dq_to_abc(out_dq, Data->av.rotational_position.position_el_2pi);
+	return out_dq;
 }

@@ -69,7 +69,7 @@ uz_CurrentControl_t* init_PI_PI_cc_xy3(void){
 	return ptr;
 }
 
-uz_9ph_abc_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects){
+uz_9ph_dq_t step_controllers_PI_PI(DS_Data* Data, struct pointers_PI_PI objects){
 	uz_3ph_alphabeta_t XY1_ref = zero_ref_ab;
 	uz_3ph_alphabeta_t XY2_ref = zero_ref_ab;
 	uz_3ph_alphabeta_t XY3_ref = zero_ref_ab;
@@ -113,7 +113,7 @@ Data->av.debug_pi_xy3 = xy3_ref;
 		.x3 = XY3_ref.alpha,
 		.y3 = XY3_ref.beta,
 		.zero = 0.0f};
-	return uz_transformation_9ph_dq_to_abc(out_dq, Data->av.rotational_position.position_el_2pi);
+	return out_dq;
 }
 
 void reset_controllers_PI_PI(struct pointers_PI_PI objects){

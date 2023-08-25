@@ -36,11 +36,15 @@ uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
 float OPF_index_float;
+float n_OPF_float;
 
-extern float index_a1_filtered;
-extern float index_a1_raw;
-extern float global_derate;
-extern float index_a1_th;
+
+extern uz_9ph_alphabeta_t ref_voltages_fault;
+extern uz_9ph_dq_t ref_voltages ;
+
+extern uz_3ph_dq_t xy2_pos_rot;
+
+extern uz_3ph_dq_t xy2_neg_rot;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -119,10 +123,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_debug_x3]   	= &data->av.debug_pi_xy3.d;
 	js_ch_observable[JSO_debug_y3]   	= &data->av.debug_pi_xy3.q;
 	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
-	js_ch_observable[JSO_index_a1_filtered] =  &index_a1_filtered;
-	js_ch_observable[JSO_index_a1_th] =  &index_a1_th;
-	js_ch_observable[JSO_index_a1_raw] =  &index_a1_raw;
-	js_ch_observable[JSO_derate] =  &global_derate;
+	js_ch_observable[JSO_ix1_pos]   	= &xy2_pos_rot.d;
+	js_ch_observable[JSO_iy1_pos]   	= &xy2_pos_rot.q;
+	js_ch_observable[JSO_ix1_neg]   	= &xy2_neg_rot.d;
+	js_ch_observable[JSO_iy1_neg]   	= &xy2_neg_rot.q;
+
+
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -154,6 +160,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_error_OV]   			= &(data->av.errors.error_OV);
 	js_slowDataArray[JSSD_FLOAT_error_speed]   			= &(data->av.errors.error_speed);
 	js_slowDataArray[JSSD_FLOAT_error_OT_inv]   		= &(data->av.errors.error_OT_inv);
+	js_slowDataArray[JSSD_FLOAT_n_OPF]   				= &(n_OPF_float);
 	return Status;
 }
 
@@ -169,6 +176,7 @@ void JavaScope_update(DS_Data* data){
 	int status = XST_SUCCESS;
 
 	OPF_index_float = (float) data->av.fault_combined_index;
+	n_OPF_float = (float) data->av.fault_n_OPF;
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

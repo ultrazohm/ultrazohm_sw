@@ -76,10 +76,10 @@ enum JS_OberservableData {
 	JSO_debug_x3,
 	JSO_debug_y3,
 	JSO_OPF_index,
-	JSO_index_a1_filtered,
-	JSO_index_a1_th,
-	JSO_index_a1_raw,
-	JSO_derate,
+	JSO_ix1_pos,
+	JSO_iy1_pos,
+	JSO_ix1_neg,
+	JSO_iy1_neg,
 	JSO_OC,
 	JSO_ENDMARKER
 };
@@ -115,6 +115,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_error_OV,
 	JSSD_FLOAT_error_speed,
 	JSSD_FLOAT_error_OT_inv,
+	JSSD_FLOAT_n_OPF,
 	JSSD_ENDMARKER
 };
 

@@ -43,9 +43,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  10.0f
+#define MAX_PHASE_CURRENT_AMP 10.0f
 #define MAX_DC_VOLT 400.0f
-#define MAX_SPEED_RPM 1000.0f
+#define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
 #define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
 
@@ -55,14 +55,17 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 
 // control
 #include "control/control.h"
-uz_9ph_abc_t ref_voltages = {0};
+uz_9ph_dq_t ref_voltages = {0};
 enum controller_type selected_controller = PI_R;
 
 // fault control
-volatile uz_9ph_alphabeta_t ref_voltages_fault = {0};
+uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
 float global_derate;
+
+uz_3ph_dq_t xy2_pos_rot = {0};
+uz_3ph_dq_t xy2_neg_rot = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -120,13 +123,16 @@ void ISR_Control(void *data)
 		uz_limit_exceed(&Global_Data);
 	}
 
+	xy2_pos_rot = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.currents_XY2, Global_Data.av.rotational_position.position_el_2pi);
+	xy2_neg_rot = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.currents_XY2, -1.0f*Global_Data.av.rotational_position.position_el_2pi);
+
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-//	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
-//	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
-//	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
+	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
+	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -153,28 +159,28 @@ void ISR_Control(void *data)
 				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 				reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
-				reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+				ref_voltages_fault = reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 				break;
     	}
 
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-//    	if(Global_Data.av.fault_n_OPF){
-//    		k_param = uz_get_k_parameter_9ph_ML_N1(Global_Data.av.fault_single_indices);
-//			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
-//    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
-//    		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
-//    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
-//    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
-//    	}else{
-//			reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
-//			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
-//    	}
+    	if(0){//Global_Data.av.fault_n_OPF && Global_Data.rasv.dq_setpoints.q>=0.1f){
+    		k_param = uz_get_k_parameter_9ph_MT_N1(Global_Data.av.fault_single_indices);
+			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
+    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
+    		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
+    		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
+    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
+    	}else{
+    		ref_voltages_fault = reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
+    	}
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-		duty_cycle = uz_spwm_abc_9ph(ref_voltages, Global_Data.av.U_ZK);
+		duty_cycle = uz_spwm_dq_9ph(ref_voltages, Global_Data.av.U_ZK, Global_Data.av.rotational_position.position_el_2pi);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 
     }else{
@@ -183,7 +189,7 @@ void ISR_Control(void *data)
 		reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 		reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
 		reset_controllers_PIR_PIR(Global_Data.objects.objects_PIR_PIR);
-		reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
+		ref_voltages_fault = reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);

@@ -465,6 +465,6 @@ struct uz_ParameterID_controller{
   uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
   uz_SpeedControl_t* SC_instance; /**< speed control instance */
   uz_SetPoint_t* SP_instance; /**< setpoint instance */
-}
+};
 
 #endif

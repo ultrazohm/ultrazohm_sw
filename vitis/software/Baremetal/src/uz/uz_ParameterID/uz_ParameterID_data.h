@@ -457,4 +457,14 @@ typedef struct uz_ParameterID_Data_t {
   bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
 } uz_ParameterID_Data_t;
 
+/**
+ * @brief Data struct to collect all controller pointers
+ *
+ */
+struct uz_ParameterID_controller{
+  uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
+  uz_SpeedControl_t* SC_instance; /**< speed control instance */
+  uz_SetPoint_t* SP_instance; /**< setpoint instance */
+}
+
 #endif

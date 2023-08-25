@@ -112,6 +112,8 @@ The control page is used to step through the state-machine of the system and for
 
    b. For the selection of which values are shown here, see section :ref:`javascope_customizing`.
 
+   c. If not all of the up to 20 channels are required, they can be set to ``JSSD_FLOAT_ZEROVALUE``. They won't be displayed then. Furthermore, they won't be logged either.
+
 #. The ``send_fields``
 
    a. Twenty values are available that can be used as references or setpoints for the user application.

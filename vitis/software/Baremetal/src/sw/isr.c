@@ -42,13 +42,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-// software limits
-#define MAX_PHASE_CURRENT_AMP 10.0f
-#define MAX_DC_VOLT 400.0f
-#define MAX_SPEED_RPM 3500.0f
-#define MAX_TEMP_DEG 90.0f
-#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
-
 // modulation
 #include "../uz/uz_spwm/uz_spwm.h"
 struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
@@ -56,16 +49,23 @@ struct uz_DutyCycle_3x3ph_t duty_cycle = {0};
 // control
 #include "control/control.h"
 uz_9ph_dq_t ref_voltages = {0};
-enum controller_type selected_controller = PI_R;
 
 // fault control
 uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
-float global_derate;
-
-uz_3ph_dq_t xy2_pos_rot = {0};
-uz_3ph_dq_t xy2_neg_rot = {0};
+//==============================================================================================================================================================
+//----------------------------------------------------
+// software limits
+#define MAX_PHASE_CURRENT_AMP 10.0f
+#define MAX_DC_VOLT 400.0f
+#define MAX_SPEED_RPM 3500.0f
+#define MAX_TEMP_DEG 90.0f
+// user settings
+#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
+#define FAUL_CONTROL false
+enum controller_type selected_controller = PI_R;
+//----------------------------------------------------
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -123,16 +123,18 @@ void ISR_Control(void *data)
 		uz_limit_exceed(&Global_Data);
 	}
 
-	xy2_pos_rot = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.currents_XY2, Global_Data.av.rotational_position.position_el_2pi);
-	xy2_neg_rot = uz_transformation_3ph_alphabeta_to_dq(Global_Data.av.currents_XY2, -1.0f*Global_Data.av.rotational_position.position_el_2pi);
+	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////Fault analysis///////////////////////////
+	////////////////////////////////////////////////////////////////////////////
+	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
+	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
+	if(FAUL_CONTROL){
+		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);}
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-
-	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
-	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
-	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -166,8 +168,7 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
-    	if(0){//Global_Data.av.fault_n_OPF && Global_Data.rasv.dq_setpoints.q>=0.1f){
-    		k_param = uz_get_k_parameter_9ph_MT_N1(Global_Data.av.fault_single_indices);
+    	if(k_param.valid){
 			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
     		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);

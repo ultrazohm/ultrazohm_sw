@@ -76,11 +76,6 @@ enum JS_OberservableData {
 	JSO_debug_x3,
 	JSO_debug_y3,
 	JSO_OPF_index,
-	JSO_ix1_pos,
-	JSO_iy1_pos,
-	JSO_ix1_neg,
-	JSO_iy1_neg,
-	JSO_OC,
 	JSO_ENDMARKER
 };
 

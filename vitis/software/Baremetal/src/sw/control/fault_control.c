@@ -37,15 +37,13 @@ uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers
 		.beta =  k_param.k_Y3a * alphabeta_setpoint.alpha + k_param.k_Y3b * alphabeta_setpoint.beta,
 	};
 
-	uz_3ph_alphabeta_t zero_ref={0};
-
 	Data->av.currents_xy1 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY1, Data->av.rotational_position.position_el_2pi);
 	Data->av.currents_xy2 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY2, Data->av.rotational_position.position_el_2pi);
 	Data->av.currents_xy3 = uz_transformation_3ph_alphabeta_to_dq(Data->av.currents_XY3, Data->av.rotational_position.position_el_2pi);
 
 	// step controllers
 	Data->av.debug_pi_xy1 = uz_CurrentControl_sample(objects.xy1, uz_transformation_3ph_alphabeta_to_dq(XY1_ref, Data->av.rotational_position.position_el_2pi), Data->av.currents_xy1, Data->av.U_ZK, Data->av.omega_el);
-	Data->av.debug_pi_xy2  = uz_CurrentControl_sample(objects.xy2, uz_transformation_3ph_alphabeta_to_dq(XY2_ref, Data->av.rotational_position.position_el_2pi), Data->av.currents_xy2, Data->av.U_ZK, Data->av.omega_el);
+	Data->av.debug_pi_xy2 = uz_CurrentControl_sample(objects.xy2, uz_transformation_3ph_alphabeta_to_dq(XY2_ref, Data->av.rotational_position.position_el_2pi), Data->av.currents_xy2, Data->av.U_ZK, Data->av.omega_el);
 	Data->av.debug_pi_xy3 = uz_CurrentControl_sample(objects.xy3, uz_transformation_3ph_alphabeta_to_dq(XY3_ref, Data->av.rotational_position.position_el_2pi), Data->av.currents_xy3, Data->av.U_ZK, Data->av.omega_el);
 
 	// inverse Park transform subsystems

@@ -19,7 +19,7 @@ struct uz_dqn_experience_replay_t {
     struct uz_matrix_t observations_matrix;
     struct uz_matrix_t vecobs_matrix;
     uint32_t head;
-    uint32_t fullbuf;
+    uint32_t counterisfull;
     uint32_t length;
     bool is_full;
     bool is_ready;

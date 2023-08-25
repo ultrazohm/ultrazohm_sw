@@ -45,7 +45,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     self->vectorforobs= uz_matrix_init(&self->vecobs_matrix,buf_config.obsvec,buf_config.columns_of_observations,1,buf_config.columns_of_observations);
     self->observations = uz_matrix_init(&self->observations_matrix,buf_config.observations,buf_config.length_of_buffer * buf_config.columns_of_observations,buf_config.length_of_buffer,buf_config.columns_of_observations);
     self->head = headind; // vorübergehend, für test, dass auf beliebigen index nach init zugegriffen werden kann, kann man später noch entfernenS
-    self->fullbuf = 0;
+    self->counterisfull = 0;
     return (self);
 }
 
@@ -94,6 +94,10 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty)
     float reward = calculate_reward_dqn(samplerate,self->inputnn,penalty);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,self->inputnn);
 }
+
+void uz_dqn_train(uz_dqn_t *self, float samplerate, bool penalty)
+{
+}
 //pseudocode set current
 
 // void uz_dqn_set_current(uz_dqn_t* self, uint32_t action, void *data, float action_current)
@@ -134,6 +138,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     if(self->head==(self->length)){
       self->is_full = true;
       self->head=0U;
+      self->counterisfull++;
     }
     self->reward[self->head]= *rewarddata;
     self->action[self->head] = *actionindex;
@@ -150,18 +155,32 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uz_assert_not_NULL(obs);
     uz_assert_not_NULL(indizes);
     uz_assert(self->is_ready);
+    uint32_t indexpl = 0;
     for (uint32_t i = 0; i < minibatchsize; i++)
-        {
-        // schlechte zufallszahlengenerierung, aber für den start reichts
-        //ind = rand() % self->length+1;
-        uint32_t index = indizes[i];
+    {
+    uint32_t index = indizes[i];
+    // logik implementieren, dass plus1 immer richtig aus dem buffer kommt
+    if (self->counterisfull == 0){
+        if(index<self->head){
+            index = self->head -1;
+        }
+        indexpl = index+1;
+    }
+    // wenn buffer voll muss als index+1 der index 0 gesampelt werden
+    if (self->is_full == true){
+        indexpl = 0;
+    }
+    else{
+        indexpl = index + 1;
+    }
         uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
         reward++;
         actionindex++;
         qvalue++;
     }
-}
+    }
+
 
 float calculate_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);

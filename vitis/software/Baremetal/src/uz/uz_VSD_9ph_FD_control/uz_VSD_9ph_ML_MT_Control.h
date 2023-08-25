@@ -3,6 +3,8 @@
 
 #include "uz_VSD_9ph_FD.h"
 #include "../uz_VSD_6ph_FD_control/uz_VSD_6ph_ML_MT_Control.h"
+#include <stdbool.h>
+
 
 
 /**
@@ -23,6 +25,7 @@ typedef struct{
     float k_Y3a;  
     float k_Y3b; 
     float derating;
+    bool valid;
 }uz_9ph_MLMT_kparameter_t;
 
 
@@ -36,39 +39,11 @@ typedef struct{
 uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph(uz_9ph_abc_t input_faultindices, ML_MT_optimization optimization, int neutral);
 
 /**
- * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Maximum Torque" (MT) and 1N neutral config
- * @param input_faultindices fault indices for all nine phases
- * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
- */
-uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N1(uz_9ph_abc_t input_faultindices);
-
-/**
- * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Maximum Torque" (MT) and 3N neutral config
- * @param input_faultindices fault indices for all nine phases
- * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
- */
-uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_MT_N3(uz_9ph_abc_t input_faultindices);
-
-/**
- * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Minimum Loss" (ML) and 1N neutral config
- * @param input_faultindices fault indices for all nine phases
- * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
- */
-uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N1(uz_9ph_abc_t input_faultindices);
-
-/**
- * @brief returns the k-parameters for a specified fault-scenario and the optimizations strategy "Minimum Loss" (ML) and 3N neutral config
- * @param input_faultindices fault indices for all nine phases
- * @return uz_9ph_MLMT_kparameter_t struct with kparameters and derating factor
- */
-uz_9ph_MLMT_kparameter_t uz_get_k_parameter_9ph_ML_N3(uz_9ph_abc_t input_faultindices);
-
-/**
  * @brief returns the the combined OPF index, meaning the indices of all phases are combined as integer (order: a1=bit0, b1=bit1, c1=bit2, a2=bit3, ..., c3=bit8)
  * @param input_faultindices fault indices for all nine phases
  * @return combined binary coded fault index
  */
-uint16_t fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices);
+int fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices);
 
 #endif // UZ_VSD_9ph_ML_MT_CONTROL_H
 

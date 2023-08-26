@@ -114,15 +114,15 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 	}
 
 	switch(VSD_FD->set_filterlength_counter){
-		case 0:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 1:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 2:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 3:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 4:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 5:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 6:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 7:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter++; break;
-		case 8:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[i], new_filterLength); VSD_FD->set_filterlength_counter=0; break;
+		case 0:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 1:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 2:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 3:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 4:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 5:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 6:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 7:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter++; break;
+		case 8:	uz_movingAverageFilter_set_filterLength(VSD_FD->movingAverageFilter[VSD_FD->set_filterlength_counter], new_filterLength); VSD_FD->set_filterlength_counter=0; break;
 		default: VSD_FD->set_filterlength_counter = 0; break;
 	}
 

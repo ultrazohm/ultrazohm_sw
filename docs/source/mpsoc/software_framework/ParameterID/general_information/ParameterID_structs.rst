@@ -77,3 +77,10 @@ This struct bundles all necessary information for the flux maps of the OnlineID 
 .. doxygenstruct:: uz_ParaID_FluxMapsData_t
   :members:
 
+Controller objects struct
+=========================
+
+This struct bundles all necessary controller pointers for the external controller algorithm.
+
+.. doxygenstruct:: uz_ParameterID_controller
+  :members:

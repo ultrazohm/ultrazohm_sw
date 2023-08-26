@@ -23,13 +23,13 @@
 
 #ifndef RTW_HEADER_FluxMapID_6ph_codegen_h_
 #define RTW_HEADER_FluxMapID_6ph_codegen_h_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #include <math.h>
 #include <string.h>
 #include <stddef.h>
 #ifndef FluxMapID_6ph_codegen_COMMON_INCLUDES_
 #define FluxMapID_6ph_codegen_COMMON_INCLUDES
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                      /* FluxMapID_6ph_codegen_COMMON_INCLUDES_ */
 
 /* Model Code Variants */

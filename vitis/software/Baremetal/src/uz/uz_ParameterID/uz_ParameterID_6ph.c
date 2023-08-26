@@ -43,9 +43,9 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
 static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data);
-static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data);
-static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data);
-static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data);
+static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller objects);
+static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
 
 static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void);
 
@@ -169,9 +169,15 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 			Data->Controller_Parameters.enableFOC_current = true;
 			Data->Controller_Parameters.i_dq_ref = Data->GlobalConfig.i_dq_ref;
 			Data->Controller_Parameters.i_xy_ref = Data->GlobalConfig.i_xy_ref;
-			Data->Controller_Parameters.resonant_subsystem = Data->GlobalConfig.resonant_subsystem;
-			Data->Controller_Parameters.PI_subsystem = Data->GlobalConfig.PI_subsystem;
-			Data->Controller_Parameters.setpoint_filter = 0U;
+			Data->Controller_Parameters.PI_dq = Data->GlobalConfig.PI_dq;
+			Data->Controller_Parameters.PI_xy = Data->GlobalConfig.PI_xy;
+			Data->Controller_Parameters.PI_zero = Data->GlobalConfig.PI_zero;
+			Data->Controller_Parameters.resonant_dq = Data->GlobalConfig.resonant_dq;
+			Data->Controller_Parameters.resonant_xy = Data->GlobalConfig.resonant_xy;
+			Data->Controller_Parameters.resonant_zero = Data->GlobalConfig.resonant_zero;
+			Data->Controller_Parameters.filter_dq = false;
+			Data->Controller_Parameters.filter_xy = false;
+			Data->Controller_Parameters.filter_zero = false;
 		}else{
 			uz_ParaID_6ph_FOC_output_set_zero(Data);
 		}
@@ -235,7 +241,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		output_DutyCycle.system2.DutyCycle_C = Data->ElectricalID_Output->PWM_Switch_c2;
 	
 	// during zero fluxmap everything changes
-	} else if(Data->Controller_Parameters.PI_subsystem & (0x04)){
+	} else if((Data->Controller_Parameters.PI_zero) && (Data->Controller_Parameters.PI_xy == false) && (Data->Controller_Parameters.PI_dq == false)){
 		V_abc_Volts.a1 = 3.0f/2.0f*v_dq_Volts.z1;
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
@@ -268,71 +274,74 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	return (output_DutyCycle);
 }
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects) {
 	uz_6ph_dq_t out = {0};
 	uz_3ph_dq_t v_dq_Volts = {0};
 	uz_assert_not_NULL(Data);
-	uz_assert_not_NULL(Data->cc_instance_1);
-	uz_assert_not_NULL(Data->cc_instance_2);
-	uz_assert_not_NULL(Data->resonant_instance_1);
-	uz_assert_not_NULL(Data->resonant_instance_2);
-	uz_assert_not_NULL(Data->speed_instance);
-	uz_assert_not_NULL(Data->setpoint_instance);
+	uz_assert_not_NULL(objects.CC_instance_1);
+	uz_assert_not_NULL(objects.CC_instance_2);
+	uz_assert_not_NULL(objects.res_instance_1);
+	uz_assert_not_NULL(objects.res_instance_2);
+	uz_assert_not_NULL(objects.SC_instance);
+	uz_assert_not_NULL(objects.SP_instance);
 	uz_3ph_dq_t i_SpeedControl_reference_Ampere = { 0 };
 	float SpeedControl_reference_torque = 0.0f;
 
 	// Speed control active
 	if (Data->Controller_Parameters.enableFOC_speed == true) {
 		//Change, if desired, the speed controller here
-		uz_SpeedControl_set_ext_clamping(Data->speed_instance, uz_CurrentControl_get_ext_clamping(Data->cc_instance_1));
-		SpeedControl_reference_torque = uz_SpeedControl_sample(Data->speed_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC);
-		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+		uz_SpeedControl_set_ext_clamping(objects.SC_instance, uz_CurrentControl_get_ext_clamping(objects.CC_instance_1));
+		SpeedControl_reference_torque = uz_SpeedControl_sample(objects.SC_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC);
+		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(objects.SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
 		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
-		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		out.d = v_dq_Volts.d;
 		out.q = v_dq_Volts.q;
 	// Torque control active
 	}else if (Data->Controller_Parameters.enableFOC_torque == true) {
-		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(Data->setpoint_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
-		v_dq_Volts = uz_CurrentControl_sample(Data->cc_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(objects.SP_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.M_ref_FOC, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
+		v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		out.d = v_dq_Volts.d;
 		out.q = v_dq_Volts.q;
 	}else if(Data->Controller_Parameters.enableFOC_current){
-		out = uz_ParaID_6ph_extended_control(Data);
+		out = uz_ParaID_6ph_extended_control(Data, objects);
 	}
 
 	// reset all integrators and controllers
 	if (Data->Controller_Parameters.resetIntegrator == true) {
-		uz_ParaID_6ph_reset_controllers(Data);
+		uz_ParaID_6ph_reset_controllers(objects);
 	}
 
 	// configure fundamental controllers except for FluxMap
 	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 3U) {
 		if (Data->Controller_Parameters.activeState == 148U) {
-			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, no_decoupling);
+			uz_CurrentControl_set_decoupling_method(objects.CC_instance_1, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
-			uz_CurrentControl_set_decoupling_method(Data->cc_instance_1, linear_decoupling);
+			uz_CurrentControl_set_decoupling_method(objects.CC_instance_1, linear_decoupling);
 		}
 		// cc instance 1
-		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->Controller_Parameters.Kp_id_out);
-		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->Controller_Parameters.Kp_iq_out);
-		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->Controller_Parameters.Ki_id_out);
-		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->Controller_Parameters.Ki_iq_out);
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, Data->Controller_Parameters.Kp_id_out);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, Data->Controller_Parameters.Kp_iq_out);
+		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, Data->Controller_Parameters.Ki_id_out);
+		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, Data->Controller_Parameters.Ki_iq_out);
 	}
 
 	// FluxmapID active and in start state
 	if(Data->Controller_Parameters.activeState == 400U){
-		uz_ParaID_configure_6ph_controllers(Data);
+		uz_ParaID_configure_6ph_controllers(Data, objects);
 	}else if(Data->GlobalConfig.controllers_updated){
-		uz_ParaID_configure_6ph_controllers(Data);
+		uz_ParaID_configure_6ph_controllers(Data, objects);
 		Data->GlobalConfig.controllers_updated = false;
 	}
+	//-----------------
+	//check this updated thing again
+	//----------------
 	return (out);
 }
 
 
 // multi-phase current control
-static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects)
 {
     // Initialize structs
     uz_6ph_dq_t out = {0};
@@ -343,42 +352,42 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
 
 	// if first (dq) system PI control is selected and not zero system
-	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
-		if(Data->Controller_Parameters.setpoint_filter & (0x1)){
-			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+	if((Data->Controller_Parameters.PI_dq == true) && (Data->Controller_Parameters.PI_zero == false)){
+		if(Data->Controller_Parameters.filter_dq){
+			cc_out_dq = uz_CurrentControl_sample(objects.CC_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
-			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_dq = uz_CurrentControl_sample(objects.CC_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
 		out.d = cc_out_dq.d;
 		out.q = cc_out_dq.q;
 	}
 	// if second (xy) system PI control is selected and not zero system
-	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
-		if(Data->Controller_Parameters.setpoint_filter & (0x2)){
-			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_2, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+	if((Data->Controller_Parameters.PI_xy == true) && (Data->Controller_Parameters.PI_zero == false)){
+		if(Data->Controller_Parameters.filter_xy == true){
+			cc_out_xy = uz_CurrentControl_sample(objects.CC_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_2, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}else{
-			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+			cc_out_xy = uz_CurrentControl_sample(objects.CC_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}   
 	}
 	// if third (zero) system PI control is selected and not zero system
-	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
-		if(Data->Controller_Parameters.setpoint_filter & (0x4)){
-			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+	if((Data->Controller_Parameters.PI_zero == true) && (Data->Controller_Parameters.PI_dq == false) &&  (Data->Controller_Parameters.PI_xy == false)){
+		if(Data->Controller_Parameters.filter_zero){
+			cc_out_zero_rotating = uz_CurrentControl_sample(objects.CC_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
-			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_zero_rotating = uz_CurrentControl_sample(objects.CC_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
 	}
 
 	// select resonant output
-	if(Data->Controller_Parameters.PI_subsystem & (0x1)){
-		out.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
-		out.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
-	}else if(Data->Controller_Parameters.PI_subsystem & (0x2)){
-		cc_out_xy.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
-		cc_out_xy.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
-	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
-		cc_out_zero_rotating.d += uz_resonantController_step(Data->resonant_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
-		cc_out_zero_rotating.q += uz_resonantController_step(Data->resonant_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
+	if(Data->Controller_Parameters.resonant_dq){
+		out.d += uz_resonantController_step(objects.res_instance_1, 0.0f, Data->ActualValues.i_dq_6ph.d, Data->ActualValues.omega_el);
+		out.q += uz_resonantController_step(objects.res_instance_2, 0.0f, Data->ActualValues.i_dq_6ph.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.resonant_xy){
+		cc_out_xy.d += uz_resonantController_step(objects.res_instance_1, 0.0f, Data->ActualValues.i_xy_rotating.d, Data->ActualValues.omega_el);
+		cc_out_xy.q += uz_resonantController_step(objects.res_instance_2, 0.0f, Data->ActualValues.i_xy_rotating.q, Data->ActualValues.omega_el);
+	}else if(Data->Controller_Parameters.resonant_zero){
+		cc_out_zero_rotating.d += uz_resonantController_step(objects.res_instance_1, 0.0f, Data->ActualValues.i_zero_rotating.d, Data->ActualValues.omega_el);
+		cc_out_zero_rotating.q += uz_resonantController_step(objects.res_instance_2, 0.0f, Data->ActualValues.i_zero_rotating.q, Data->ActualValues.omega_el);
 	}
 
 	// back to stationary
@@ -391,67 +400,62 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
     return out;
 }
 
-static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data){
+static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects){
 	// current control
-	if(Data->Controller_Parameters.PI_subsystem & (0x3)){
+	if(Data->Controller_Parameters.PI_dq == true || Data->Controller_Parameters.PI_xy == true){
 		// cc instance 1 for dq
-		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_dq.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_dq.config_iq.Ki);
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_iq.Ki);
 		// cc instance 2 for xy
-		uz_CurrentControl_set_Kp_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(Data->cc_instance_2, Data->config_cc_xy.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(Data->cc_instance_2, Data->config_cc_xy.config_iq.Ki);
-	}else if(Data->Controller_Parameters.PI_subsystem & (0x4)){
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_iq.Ki);
+	}else if(Data->Controller_Parameters.PI_zero == true){
 		// cc instance 1 for zero
-		uz_CurrentControl_set_Kp_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(Data->cc_instance_1, Data->config_cc_zero.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(Data->cc_instance_1, Data->config_cc_zero.config_iq.Ki);
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_id.Kp);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_iq.Kp);
+		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_id.Ki);
+		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_iq.Ki);
 	}
 	// resonant
-	if(Data->Controller_Parameters.resonant_subsystem & (0x1)){
-		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_dq.gain);
-		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_dq.gain);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_dq.harmonic_order);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_dq.harmonic_order);
-	}else if(Data->Controller_Parameters.resonant_subsystem & (0x2)){
-		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_xy.gain);
-		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_xy.gain);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_xy.harmonic_order);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_xy.harmonic_order);
-	}else if(Data->Controller_Parameters.resonant_subsystem & (0x4)){
-		uz_resonantController_set_gain(Data->resonant_instance_1, Data->config_res_zero.gain);
-		uz_resonantController_set_gain(Data->resonant_instance_2, Data->config_res_zero.gain);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_1, Data->config_res_zero.harmonic_order);
-		uz_resonantController_set_harmonic_order(Data->resonant_instance_2, Data->config_res_zero.harmonic_order);
+	if(Data->Controller_Parameters.resonant_dq){
+		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_dq.gain);
+		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_dq.gain);
+		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_dq.harmonic_order);
+		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_dq.harmonic_order);
+	}else if(Data->Controller_Parameters.resonant_xy){
+		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_xy.gain);
+		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_xy.gain);
+		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_xy.harmonic_order);
+		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_xy.harmonic_order);
+	}else if(Data->Controller_Parameters.resonant_zero){
+		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_zero.gain);
+		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_zero.gain);
+		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_zero.harmonic_order);
+		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_zero.harmonic_order);
 	}
-	uz_ParaID_6ph_reset_controllers(Data);
+	uz_ParaID_6ph_reset_controllers(objects);
 }
 
-static void uz_ParaID_6ph_reset_controllers(uz_ParameterID_Data_t* Data){
-	uz_CurrentControl_reset(Data->cc_instance_1);
-	uz_CurrentControl_reset(Data->cc_instance_2);
-	uz_resonantController_reset(Data->resonant_instance_1);
-	uz_resonantController_reset(Data->resonant_instance_2);
-	uz_SpeedControl_reset(Data->speed_instance);
+static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller objects){
+	uz_CurrentControl_reset(objects.CC_instance_1);
+	uz_CurrentControl_reset(objects.CC_instance_2);
+	uz_resonantController_reset(objects.res_instance_1);
+	uz_resonantController_reset(objects.res_instance_2);
+	uz_SpeedControl_reset(objects.SC_instance);
+	// no reset Setpoint available
 }
 
-void uz_ParameterID_6ph_init_controllers(uz_ParameterID_Data_t* Data, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config, struct uz_CurrentControl_config config_cc_dq, struct uz_CurrentControl_config config_cc_xy, struct uz_CurrentControl_config config_cc_zero, struct uz_resonantController_config config_res_dq, struct uz_resonantController_config config_res_xy, struct uz_resonantController_config config_res_zero){
-	Data->config_cc_dq = config_cc_dq;
-	Data->config_res_dq = config_res_dq;
-	Data->config_cc_xy = config_cc_xy;
-	Data->config_res_xy = config_res_xy;
-	Data->config_cc_zero = config_cc_zero;
-	Data->config_res_zero = config_res_zero;
-	Data->cc_instance_1 = uz_CurrentControl_init(config_cc_dq);
-	Data->cc_instance_2 = uz_CurrentControl_init(config_cc_xy);
-	Data->resonant_instance_1 = uz_resonantController_init(config_res_dq);
-	Data->resonant_instance_2 = uz_resonantController_init(config_res_dq);
-	Data->setpoint_instance = uz_SetPoint_init(setpoint_config);
-	Data->speed_instance = uz_SpeedControl_init(speed_config);
+void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objects, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config){
+	objects->CC_instance_1 = uz_CurrentControl_init(objects->controller_configs.config_cc_dq);
+	objects->CC_instance_2 = uz_CurrentControl_init(objects->controller_configs.config_cc_xy);
+	objects->res_instance_1 = uz_resonantController_init(objects->controller_configs.config_res_dq);
+	objects->res_instance_2 = uz_resonantController_init(objects->controller_configs.config_res_dq);
+	objects->SP_instance = uz_SetPoint_init(setpoint_config);
+	objects->SC_instance = uz_SpeedControl_init(speed_config);	
 }
 
 void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config){
@@ -681,58 +685,11 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->ElectricalID_Offset_Estimation.progress = 0.0f;
 	Data->ElectricalID_Offset_Estimation.offset_angle_rad = 0.0f;
 
-	// controller instances
-	Data->setpoint_instance = NULL;
-	Data->speed_instance = NULL;
-	Data->cc_instance_1 = NULL;
-	Data->cc_instance_2 = NULL;
-	Data->resonant_instance_1 = NULL;
-	Data->resonant_instance_2 = NULL;
+	// necessary instance pointers
 	Data->encoder_offset_estimation = NULL;
-
-	// filter instances
 	Data->filter_1 = NULL;
 	Data->filter_2 = NULL;
 	Data->filter_3 = NULL;
-}
-
-// Temp
-void print_paraID(uz_ParameterID_Data_t *Data) {
-	printf("Rd:%f\n", Data->ElectricalID_Output->resistances_6ph.d);
-	printf("Rq:%f\n", Data->ElectricalID_Output->resistances_6ph.q);
-	printf("Rx:%f\n", Data->ElectricalID_Output->resistances_6ph.x);
-	printf("Ry:%f\n", Data->ElectricalID_Output->resistances_6ph.y);
-	printf("Rz1:%f\n", Data->ElectricalID_Output->resistances_6ph.z1);
-	printf("Rz2:%f\n", Data->ElectricalID_Output->resistances_6ph.z2);
-
-	printf("Ld:%f\n", Data->ElectricalID_Output->inductances_6ph.d * 1000.0f);
-	printf("Lq:%f\n", Data->ElectricalID_Output->inductances_6ph.q * 1000.0f);
-	printf("Lx:%f\n", Data->ElectricalID_Output->inductances_6ph.x * 1000.0f);
-	printf("Ly:%f\n", Data->ElectricalID_Output->inductances_6ph.y * 1000.0f);
-	printf("Lz1:%f\n", Data->ElectricalID_Output->inductances_6ph.z1 * 1000.0f);
-	printf("Lz2:%f\n", Data->ElectricalID_Output->inductances_6ph.z2 * 1000.0f);
-
-	if(Data->ElectricalID_Config.extended_psi){
-	printf("Psi_speed:%f\n", Data->ElectricalID_Output->set_rpm_val);
-
-	printf("Psi_m1:%f\n", Data->ElectricalID_Output->psi_pm[0] * 1000.0f);
-	printf("Psi_m2:%f\n", Data->ElectricalID_Output->psi_pm[1] * 1000.0f);
-	printf("Psi_m3:%f\n", Data->ElectricalID_Output->psi_pm[2] * 1000.0f);
-	printf("Psi_m4:%f\n", Data->ElectricalID_Output->psi_pm[3] * 1000.0f);
-	printf("Psi_m5:%f\n", Data->ElectricalID_Output->psi_pm[4] * 1000.0f);
-
-	printf("Psi_a1:%f\n", Data->ElectricalID_Output->psi_pm_angle[0]);
-	printf("Psi_a2:%f\n", Data->ElectricalID_Output->psi_pm_angle[1]);
-	printf("Psi_a3:%f\n", Data->ElectricalID_Output->psi_pm_angle[2]);
-	printf("Psi_a4:%f\n", Data->ElectricalID_Output->psi_pm_angle[3]);
-	printf("Psi_a5:%f\n", Data->ElectricalID_Output->psi_pm_angle[4]);}
-
-	printf("theta_init:%f\n", Data->temp_initial_angle);
-	printf("theta_ext:%f\n", Data->ElectricalID_Output->thetaOffset);
-
-	printf("pmsm_j:%f\n", Data->ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
-	printf("pmsm_psi:%f\n", Data->ElectricalID_Output->PMSM_parameters.Psi_PM_Vs);
-	printf("pmsm_r:%f\n", Data->ElectricalID_Output->PMSM_parameters.R_ph_Ohm);
 }
 
 

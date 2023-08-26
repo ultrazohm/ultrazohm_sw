@@ -23,13 +23,13 @@
 
 #ifndef RTW_HEADER_ElectricalID_6ph_codegen_h_
 #define RTW_HEADER_ElectricalID_6ph_codegen_h_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #include <math.h>
 #include <string.h>
 #include <stddef.h>
 #ifndef ElectricalID_6ph_codegen_COMMON_INCLUDES_
 #define ElectricalID_6ph_codegen_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                      /* ElectricalID_6ph_codegen_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */

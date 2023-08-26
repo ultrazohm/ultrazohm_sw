@@ -252,17 +252,7 @@ typedef struct {
   uint32_T array_index; /**< index of measurement point */
 } uz_ParaID_FluxMapID_output_t;
 
-/*
-typedef struct {
-  boolean_T control_active;
-  uint16_T selected_subsystem;
-  uz_3ph_dq_t ab_i_dq_PI_ref;
-  uz_3ph_dq_t xy_i_dq_PI_ref;
-  uz_3ph_dq_t zero_i_dq_PI_ref;
-  boolean_T finished_calculation;
-  real32_T psi_array[4];
-  uint32_T array_index;
-  } uz_ParaID_FluxMapID_extended_controller_output_t;*/
+
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -466,16 +456,38 @@ typedef struct uz_ParameterID_Data_t {
 													2 = Speed_Control\n
                           3 = Torque_Control*/
   bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
+  float temp_initial_angle; /**< inital offset angle for encoder offset estimation */
+  uz_encoder_offset_estimation_t* encoder_offset_estimation; /**< encoder offset estimation object */
+  uz_dq_setpoint_filter* filter_1; /**< setpoint filter instance 1 */
+  uz_dq_setpoint_filter* filter_2; /**< setpoint filter instance 2 */
+  uz_dq_setpoint_filter* filter_3; /**< setpoint filter instance 3 */
 } uz_ParameterID_Data_t;
+
+/**
+ * @brief Data struct to collect the controllers structs
+ *
+ */
+struct uz_ParameterID_controller_configs{
+  struct uz_CurrentControl_config config_cc_dq;
+  struct uz_CurrentControl_config config_cc_xy;
+  struct uz_CurrentControl_config config_cc_zero;
+  struct uz_resonantController_config config_res_dq;
+  struct uz_resonantController_config config_res_xy;
+  struct uz_resonantController_config config_res_zero;
+};
 
 /**
  * @brief Data struct to collect all controller pointers
  *
  */
 struct uz_ParameterID_controller{
-  uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
   uz_SpeedControl_t* SC_instance; /**< speed control instance */
   uz_SetPoint_t* SP_instance; /**< setpoint instance */
+  uz_CurrentControl_t* CC_instance_1; /**< current control instance for dq system */
+  uz_CurrentControl_t* CC_instance_2; /**< current control instance for xy system */
+  uz_resonantController_t* res_instance_1; /**< resonant control instance for dq system */
+  uz_resonantController_t* res_instance_2; /**< resonant control instance for xy system */
+  struct uz_ParameterID_controller_configs controller_configs; /**< controller configs */
 };
 
 #endif

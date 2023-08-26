@@ -20,7 +20,7 @@
  */
 
 #include "FluxMapID_6ph_codegen.h"
-#include "../mean_GqoxPyM9.h"
+#include "../lib/mean_GqoxPyM9.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
 

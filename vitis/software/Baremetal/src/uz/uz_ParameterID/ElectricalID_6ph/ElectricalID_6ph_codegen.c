@@ -20,7 +20,7 @@
  */
 
 #include "ElectricalID_6ph_codegen.h"
-#include "../rt_hypotf.h"
+#include "../lib/rt_hypotf.h"
 #include "../../uz_global_configuration.h"
 #if UZ_PARAMETERID_6PH_MAX_INSTANCES > 0U
 

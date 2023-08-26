@@ -337,6 +337,9 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
  */
 void uz_TempCard_IF_Reset(uz_temperaturecard_t* self);
 
+
+void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self);
+
 /**
  * @brief Starts the TemperatureCard-IP
  *
@@ -372,7 +375,7 @@ void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);
  * @param channel specify channel to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
  * @return copy of the specified channel data
  */
-uz_temperaturecard_OneGroup uz_TempCard_IF_get_channelsGroup(uz_temperaturecard_t* self, const char channel);
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_Group(uz_temperaturecard_t* self, const char channel);
 
 
 /**
@@ -392,7 +395,7 @@ float uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, uint32_t channel);
  * @param upper highest channel to include (maximum 19)
  * @return average of all valid temperatures in specified channel range
  */
-float uz_TempCard_IF_average_temperature_for_valid(uz_temperaturecard_OneGroup channeldata, const uint16_t lower, const uint16_t upper);
+float uz_TempCard_IF_average_temperature_for_valid(uz_temperaturecard_OneGroup channeldata, const uint32_t lower, const uint32_t upper);
 
 
 

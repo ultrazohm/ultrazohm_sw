@@ -19,6 +19,12 @@
 #include "uz_temperaturecard_hwAddresses.h"
 #include "../../uz/uz_AXI.h"
 
+/** Temperature Channel for one LTC2983 */
+#define CHANNEL_COUNT               20U     
+/** Needed to calculate the Temperature */
+#define TEMP_CONVERSION_FACTOR      0.000976563f    // 1/1024
+#define CHANNEL_ADDRESS_INCREMENT   0x4U
+
 //Basics
 void        uz_TempCard_IF_hw_Reset(uint32_t base_address);                         	// Resets the Interface-IP to write new Channel configs
 void        uz_TempCard_IF_hw_Start(uint32_t base_address);                         	// Starts the Interface-IP
@@ -33,6 +39,14 @@ void        uz_TempCard_IF_hw_writeGlobalConfigReg(uint32_t base_address,uint32_
 uint32_t    uz_TempCard_IF_hw_readGlobalConfigReg(uint32_t base_address);           	// read the Global Config Register
 void        uz_TempCard_IF_hw_writeMuxConfigReg(uint32_t base_address,uint32_t data);  	// write the Mux Config Register
 uint32_t    uz_TempCard_IF_hw_readMuxConfigReg(uint32_t base_address);              	// read the Mux Config Register
+
+void uz_TempCard_IF_hw_write_channel_group_A_configdata(uint32_t base_address, uint32_t channel_config[20]);
+void uz_TempCard_IF_hw_write_channel_group_B_configdata(uint32_t base_address, uint32_t channel_config[20]);
+void uz_TempCard_IF_hw_write_channel_group_C_configdata(uint32_t base_address, uint32_t channel_config[20]);
+
+uint32_t uz_TempCard_IF_hw_read_raw_value_channel_group_A(uint32_t base_address, uint32_t channel_number);
+uint32_t uz_TempCard_IF_hw_read_raw_value_channel_group_B(uint32_t base_address, uint32_t channel_number);
+uint32_t uz_TempCard_IF_hw_read_raw_value_channel_group_C(uint32_t base_address, uint32_t channel_number);
 
 //Register-specified
 uint32_t    uz_TempCard_IF_hw_readReg_TempCard_IF_Result_A_0(uint32_t base_address);

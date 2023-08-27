@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 5.0
+ * Model version                  : 5.10
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Thu Jun  1 16:23:36 2023
+ * C/C++ source code generated on : Sun Aug 27 17:02:57 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -132,6 +132,11 @@ typedef struct {
   real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T psiOverJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T Kp_n_loc;                   /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T Ki_n_loc;                   /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T Ki_id_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T Kp_id_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T Ki_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID_6ph_codegen' */
@@ -159,11 +164,11 @@ typedef struct {
   uint32_T sineCounter;                /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter_k;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T counter_e;          /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint32_T exitPortIndex_fb;   /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  uint32_T exitPortIndex_f;    /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint32_T counter_o;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint32_T exitPortIndex_lu;   /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  uint32_T exitPortIndex_l;    /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint32_T counter_l;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint32_T exitPortIndex_p;    /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  uint32_T exitPortIndex_pn;   /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T counter_j;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T exitPortIndex_a;    /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T counter_n;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
@@ -186,17 +191,17 @@ typedef struct {
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_s6Q2IjU7ERsgdlZtleoGHQF_;
+  uint8_T is_c14_sRCDi92N2oSQUmGeYo70UnB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_srbc3le2abCiUkjBJl1nFUF_;
+  uint8_T is_c14_s8u1YeWX83z4pQE5pIRriB_S;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_sL6lRn6czalxpmpwmGjRinB_;
+  uint8_T is_c14_sHNjxE88OKjSUQKwr7t9dEF_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_sP9SJ8tIvBr3MqXT5SPmpqC_;
+  uint8_T is_c14_sMiNSvwDSSQ0fyDrGJyhQ7C_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_s0mCk6LLDO0ZI0TefUTRfPE_;
+  uint8_T is_c14_sUNKXbDZSPy5ddVbbHlIXCD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_sJhqcuUy01z8ktZsP9n9gKB_;
+  uint8_T is_c14_sV8aPwtNVdy0zGD3J0PF8eB_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
 } DW_ElectricalID_6ph_codegen_t;
@@ -247,19 +252,19 @@ extern void ElectricalID_6ph_codegen_step(RT_MODEL_ElectricalID_6ph_cod_t *const
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen')    - opens subsystem uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen
- * hilite_system('uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/Kp') - opens and selects block Kp
+ * hilite_system('uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen')    - opens subsystem uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen
+ * hilite_system('uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_ParameterID_6ph/ElectricalID6ph'
- * '<S1>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen'
- * '<S2>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response'
- * '<S3>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response1'
- * '<S4>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response2'
- * '<S5>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response3'
- * '<S6>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response4'
- * '<S7>'   : 'uz_ParameterID_6ph/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response5'
+ * '<Root>' : 'uz_6ph_ParameterID/ElectricalID6ph'
+ * '<S1>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen'
+ * '<S2>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response'
+ * '<S3>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response1'
+ * '<S4>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response2'
+ * '<S5>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response3'
+ * '<S6>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response4'
+ * '<S7>'   : 'uz_6ph_ParameterID/ElectricalID6ph/ElectricalID_6ph_codegen/ElectricalID.Subchart_Step_Response5'
  */
 
 /*-

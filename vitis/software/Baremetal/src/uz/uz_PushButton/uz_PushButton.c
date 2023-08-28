@@ -1,7 +1,7 @@
 #include "uz_PushButton.h"
 #include "../uz_HAL.h"
 
-void uz_PushBotton_init(uz_PushButton *self, uz_gpio *hw){
+void uz_PushButton_init(uz_PushButton *self, uz_gpio *hw){
 	uz_assert_not_NULL(self);
 	self->isReady=true;
 	self->hw=hw;

@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 4.4
- * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
+ * Model version                  : 6.2
+ * Simulink Coder version         : 9.9 (R2023a) 19-Nov-2022
+ * C/C++ source code generated on : Mon Aug 28 14:01:48 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: Passed (10), Warnings (3), Error (0)
  */
 
 #ifndef RTWTYPES_H
@@ -58,7 +58,7 @@ typedef int int32_T;
 typedef unsigned int uint32_T;
 typedef long long int64_T;
 typedef unsigned long long uint64_T;
-typedef float real32_T;		 /**< real32_T datatype*/
+typedef float real32_T;
 typedef double real64_T;
 
 /*===========================================================================*

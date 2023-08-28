@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 4.4
- * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Wed Oct 12 11:19:47 2022
+ * Model version                  : 6.2
+ * Simulink Coder version         : 9.9 (R2023a) 19-Nov-2022
+ * C/C++ source code generated on : Mon Aug 28 14:01:48 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: Passed (10), Warnings (3), Error (0)
  */
 
 #ifndef RTW_HEADER_Resonant_Controller_h_
@@ -28,8 +28,6 @@
 
 #include <stddef.h>
 #include <string.h>
-
-/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -68,30 +66,22 @@ typedef struct {
 } DW_Resonant_Controller_T;
 
 /* External inputs (root inport signals with default storage) */
-/**
- * @brief input struct of the resonant controller
- * 
- */
 typedef struct {
-	real32_T in_ref;                       /**< Reference value for the controller*/
-	real32_T in_m;                         /**< Measured value for the controller*/
-	real32_T omega_el;                     /**< Fundamental frequency in rad/s*/
-	real32_T h;                            /**< Order of harmonic to be controlled*/
-	real32_T T_sw;                         /**< Sampling time*/
-	real32_T VR;                           /**< Gain of the controller*/
-	real32_T Klim;                         /**< Gain of anti-windup feedback*/
-	real32_T upper_limit;                  /**< Upper saturation limit*/
-	real32_T lower_limit;                  /**< Lower saturation limit*/
-	real32_T Reset;                        /**< Reset input of the controller*/
+  real32_T in_ref;                     /* '<Root>/in_ref' */
+  real32_T in_m;                       /* '<Root>/in_m' */
+  real32_T omega_el;                   /* '<Root>/omega_el' */
+  real32_T h;                          /* '<Root>/h' */
+  real32_T T_sw;                       /* '<Root>/T_sw' */
+  real32_T VR;                         /* '<Root>/VR' */
+  real32_T Klim;                       /* '<Root>/Klim' */
+  real32_T upper_limit;                /* '<Root>/upper_limit' */
+  real32_T lower_limit;                /* '<Root>/lower_limit' */
+  real32_T Reset;                      /* '<Root>/Reset' */
 } ExtU_Resonant_Controller_T;
 
 /* External outputs (root outports fed by signals with default storage) */
-/**
- * @brief output struct of the resonant controller
- * 
- */
 typedef struct {
-  real32_T out;                         /**< Output of the controller*/
+  real32_T out;                        /* '<Root>/out' */
 } ExtY_Resonant_Controller_T;
 
 /* Real-time Model Data Structure */
@@ -137,6 +127,7 @@ extern void Resonant_Controller_step(RT_MODEL_Resonant_Controller_T *const
 
 /*-
  * Requirements for '<Root>': Resonant_Controller
+
  */
 #endif                                 /* RTW_HEADER_Resonant_Controller_h_ */
 

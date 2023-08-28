@@ -44,7 +44,6 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data);
 static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data);
 static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller objects);
-static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
 static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
 
 static uz_ParameterID_6ph_t* uz_ParameterID_6ph_allocation(void);
@@ -321,12 +320,15 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 	}
 
 	// FluxmapID active and in start state
-	if(Data->Controller_Parameters.activeState == 400U){
+	//-----------------
+	//check this updated thing again
+	//----------------
+	/*if(Data->Controller_Parameters.activeState == 400U){
 		uz_ParaID_configure_6ph_controllers(Data, objects);
 	}else if(Data->GlobalConfig.controllers_updated){
 		uz_ParaID_configure_6ph_controllers(Data, objects);
 		Data->GlobalConfig.controllers_updated = false;
-	}
+	}*/
 	//-----------------
 	//check this updated thing again
 	//----------------

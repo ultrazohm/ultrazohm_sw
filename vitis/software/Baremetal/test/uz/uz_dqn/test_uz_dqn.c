@@ -389,8 +389,12 @@ void test_uz_dqn_train_episodes(void)
     float reward = calculate_reward_pendulum(1/DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_matrix_get_row_vector_zero_based(obspl1,X,j);
+    uz_nn_ff(testdqn->critic_target_net,X);
+    uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic);
+    float qplus1 = uz_matrix_get_max_value(outputtarget);
     bool terminal = false;
-    float loss = calculate_derv_loss_dqn(testdqn, testdqn->discount_factor,*rew,*qval,*qvalplus1,terminal);
+    float loss = calculate_derv_loss_dqn(testdqn, testdqn->discount_factor,*rew,*qval,qplus1,terminal);
     uz_nn_backward_pass_mini_batch(testdqn->critic,&loss,X);  
     printf("loss nach Episode  %d ist = %.8f \n",(int)i, (double)loss);  
     }

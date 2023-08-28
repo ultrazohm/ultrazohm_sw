@@ -4,7 +4,8 @@
 #include "FFTImplementationCallback.h"
 #include "rt_nonfinite.h"
 #include "rt_defines.h"
-#include "rt_nonfinite.h"
+#include "rtGetNaN.h"
+#include "rtGetInf.h"
 #include "FFTRecordedVoltage.h"
 
 #include "uz_ParaID_Frequency_Analysis.h"
@@ -36,7 +37,7 @@ void test_fft(void)
     float frequencies[5001];
     float amplitudes[5001];
     float angles[5001];
-    FFTRecordedVoltage(data, sampletime, 100e-6, frequencies, amplitudes, angles);
+    FFTRecordedVoltage(data, sampletime, 100e-6f, frequencies, amplitudes, angles);
     TEST_ASSERT_EQUAL_FLOAT(0.0f,frequencies[0]);
 }
 

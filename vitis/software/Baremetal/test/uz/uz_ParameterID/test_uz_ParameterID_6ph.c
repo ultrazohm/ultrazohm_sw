@@ -5,6 +5,7 @@
 #include "test_assert_with_exception.h"
 
 #include "uz_ParameterID_6ph.h"
+#include "uz_ParameterID.h"
 
 #include "uz_ParaID_ControlState.h"
 #include "ControlState_codegen.h"
@@ -18,16 +19,25 @@
 #include "uz_ParaID_ElectricalID_6ph.h"
 #include "ElectricalID_6ph_codegen.h"
 
+#include "uz_ParaID_ElectricalID.h"
+#include "ElectricalID_codegen.h"
+
 #include "uz_ParaID_Frequency_Analysis.h"
 #include "FFTImplementationCallback.h"
-#include "rt_nonfinite.h"
-#include "rt_defines.h"
-#include "rt_nonfinite.h"
+
 #include "FFTRecordedVoltage.h"
 #include "uz_complex.h"
 
+#include "uz_ParaID_OnlineID.h"
+#include "uz_ParaID_CleanPsiArray.h"
+#include "uz_ParaID_AutoRefCurrents.h"
+#include "uz_ParaID_InterpMeshGrid.h"
+#include "OnlineID_codegen.h"
+#include "AutoRefCurrents_codegen.h"
+#include "CleanPsiArray_codegen.h"
+#include "InterpMeshGrid_codegen.h"
+
 #include "uz_ParaID_FluxMapID_6ph.h"
-#include "mean_GqoxPyM9.h"
 #include "FluxMapID_6ph_codegen.h"
 
 #include "uz_ParaID_FluxMapID.h"
@@ -60,11 +70,19 @@
 
 
 #include "uz_resonant_controller.h"
-#include "../../../src/uz/uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
+#include "uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
 
-#include "uz_signals.h"
 #include "rt_hypotf.h"
+#include "eye_6olvtp5i.h"
+#include "rt_defines.h"
+#include "rt_nonfinite.h"
 #include "mean_GqoxPyM9.h"
+
+#include "uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "mock_uz_SystemTime.h"
+#include "uz_filter_cumulativeavg.h"
+#include "uz_signals_iir_filter.c"
+
 
 
 uz_ParameterID_Data_t Data_struct = {0};

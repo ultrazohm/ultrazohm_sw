@@ -11,9 +11,9 @@
 /* Include Files */
 #include "FFTRecordedVoltage.h"
 #include "FFTImplementationCallback.h"
-#include "rt_nonfinite.h"
-#include "rt_defines.h"
-#include "rt_nonfinite.h"
+#include "../../lib/rt_nonfinite.h"
+#include "../../lib/rt_defines.h"
+#include "../../lib/rt_nonfinite.h"
 #include <math.h>
 #include <string.h>
 

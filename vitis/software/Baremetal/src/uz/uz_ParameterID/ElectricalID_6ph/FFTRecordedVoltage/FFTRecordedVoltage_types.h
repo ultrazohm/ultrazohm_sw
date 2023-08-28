@@ -12,7 +12,7 @@
 #define FFTRECORDEDVOLTAGE_TYPES_H
 
 /* Include Files */
-#include "rtwtypes.h"
+#include "../../lib/rtwtypes.h"
 
 #endif
 /*

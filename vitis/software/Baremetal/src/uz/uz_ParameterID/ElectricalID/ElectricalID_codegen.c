@@ -21,7 +21,7 @@
 
 #include "ElectricalID_codegen.h"
 #include "../../uz_global_configuration.h"
-#include "../rt_hypotf.h"
+#include "../lib/rt_hypotf.h"
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <math.h>
 #include <string.h>

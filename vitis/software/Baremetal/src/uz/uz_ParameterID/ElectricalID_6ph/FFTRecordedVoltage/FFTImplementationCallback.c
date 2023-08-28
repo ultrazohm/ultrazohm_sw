@@ -10,7 +10,7 @@
 
 /* Include Files */
 #include "FFTImplementationCallback.h"
-#include "rt_nonfinite.h"
+#include "../../lib/rt_nonfinite.h"
 #include <math.h>
 #include <string.h>
 

@@ -33,6 +33,8 @@
 #include "../uz_signals/uz_signals.h"
 #include "../uz_spwm/uz_spwm.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "../uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+
 
 /**
  * @brief Object definition for uz_ParameterID_6ph_t

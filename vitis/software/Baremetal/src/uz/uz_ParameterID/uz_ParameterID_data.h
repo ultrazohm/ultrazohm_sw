@@ -22,7 +22,7 @@
 #include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz_setpoint/uz_setpoint.h"
-#include "../uz_ResonantController/uz_resonant_controller.h"
+#include "../uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 #include "lib/rtwtypes.h"
@@ -471,9 +471,9 @@ struct uz_ParameterID_controller_configs{
   struct uz_CurrentControl_config config_cc_dq;
   struct uz_CurrentControl_config config_cc_xy;
   struct uz_CurrentControl_config config_cc_zero;
-  struct uz_resonantController_config config_res_dq;
-  struct uz_resonantController_config config_res_xy;
-  struct uz_resonantController_config config_res_zero;
+  struct uz_subspace_resonant_control_config config_res_dq;
+  struct uz_subspace_resonant_control_config config_res_xy;
+  struct uz_subspace_resonant_control_config config_res_zero;
 };
 
 /**
@@ -483,10 +483,12 @@ struct uz_ParameterID_controller_configs{
 struct uz_ParameterID_controller{
   uz_SpeedControl_t* SC_instance; /**< speed control instance */
   uz_SetPoint_t* SP_instance; /**< setpoint instance */
-  uz_CurrentControl_t* CC_instance_1; /**< current control instance for dq system */
-  uz_CurrentControl_t* CC_instance_2; /**< current control instance for xy system */
-  uz_resonantController_t* res_instance_1; /**< resonant control instance for dq system */
-  uz_resonantController_t* res_instance_2; /**< resonant control instance for xy system */
+  uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
+  uz_CurrentControl_t* CC_instance_xy; /**< current control instance for xy system */
+  uz_CurrentControl_t* CC_instance_zero; /**< current control instance for xy system */
+  uz_subspace_resonant_control* res_instance_dq; /**< resonant control instance for dq system */
+  uz_subspace_resonant_control* res_instance_xy; /**< resonant control instance for xy system */
+  uz_subspace_resonant_control* res_instance_zero; /**< resonant control instance for xy system */
   struct uz_ParameterID_controller_configs controller_configs; /**< controller configs */
 };
 

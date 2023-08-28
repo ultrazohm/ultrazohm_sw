@@ -197,7 +197,7 @@ struct uz_DutyCycle_t uz_ParameterID_generate_DutyCycle(uz_ParameterID_Data_t* D
 }
 uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects) {
 	uz_assert_not_NULL(Data);
-	uz_assert_not_NULL(objects.CC_instance_1);
+	uz_assert_not_NULL(objects.CC_instance_dq);
 	uz_assert_not_NULL(objects.SC_instance);
 	uz_assert_not_NULL(objects.SP_instance);
 	uz_3ph_dq_t v_dq_Volts = { 0 };
@@ -206,7 +206,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_Par
 
 	if (Data->Controller_Parameters.enableFOC_speed) {
 		//Change, if desired, the speed controller here
-		uz_SpeedControl_set_ext_clamping(objects.SC_instance, uz_CurrentControl_get_ext_clamping(objects.CC_instance_1));
+		uz_SpeedControl_set_ext_clamping(objects.SC_instance, uz_CurrentControl_get_ext_clamping(objects.CC_instance_dq));
 		SpeedControl_reference_torque = uz_SpeedControl_sample(objects.SC_instance, Data->ActualValues.omega_m, Data->Controller_Parameters.n_ref_FOC);
 		i_SpeedControl_reference_Ampere = uz_SetPoint_sample(objects.SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);
 		i_SpeedControl_reference_Ampere.q += Data->TwoMassID_Output->PRBS_out;
@@ -218,26 +218,26 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_Par
 		//Change, if desired, the current controller here
 		if (Data->Controller_Parameters.enableFOC_current) {
 			//If CurrentControl is active, use input reference currents
-			v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_dq, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		} else if (Data->Controller_Parameters.enableFOC_torque || Data->Controller_Parameters.enableFOC_speed) {
 			//If SetPoint or SpeedControl & SetPoint is active, use Setpoint currents
-			v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_1, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_dq, i_SpeedControl_reference_Ampere, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
 	}
 	if (Data->Controller_Parameters.resetIntegrator) {
-			uz_CurrentControl_reset(objects.CC_instance_1);
+			uz_CurrentControl_reset(objects.CC_instance_dq);
 			uz_SpeedControl_reset(objects.SC_instance);
 	}
 	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 4U) {
 		if (Data->Controller_Parameters.activeState == 144U) {
-			uz_CurrentControl_set_decoupling_method(objects.CC_instance_1, no_decoupling);
+			uz_CurrentControl_set_decoupling_method(objects.CC_instance_dq, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
-			uz_CurrentControl_set_decoupling_method(objects.CC_instance_1, linear_decoupling);
+			uz_CurrentControl_set_decoupling_method(objects.CC_instance_dq, linear_decoupling);
 		}
-		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, Data->Controller_Parameters.Kp_id_out);
-		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, Data->Controller_Parameters.Kp_iq_out);
-		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, Data->Controller_Parameters.Ki_id_out);
-		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, Data->Controller_Parameters.Ki_iq_out);
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_dq, Data->Controller_Parameters.Kp_id_out);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_dq, Data->Controller_Parameters.Kp_iq_out);
+		uz_CurrentControl_set_Ki_id(objects.CC_instance_dq, Data->Controller_Parameters.Ki_id_out);
+		uz_CurrentControl_set_Ki_iq(objects.CC_instance_dq, Data->Controller_Parameters.Ki_iq_out);
 		uz_SpeedControl_set_Ki(objects.SC_instance, Data->Controller_Parameters.Ki_n_out);
 		uz_SpeedControl_set_Kp(objects.SC_instance, Data->Controller_Parameters.Kp_n_out);
 	}
@@ -248,7 +248,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_Par
 		
 		if (Data->ParaID_Control_Selection == Current_Control || Data->ParaID_Control_Selection == Speed_Control || Data->ParaID_Control_Selection == Torque_Control) {
 			if (Data->ParaID_Control_Selection == Speed_Control) {
-				uz_SpeedControl_set_ext_clamping(objects.SC_instance, uz_CurrentControl_get_ext_clamping(objects.CC_instance_1));
+				uz_SpeedControl_set_ext_clamping(objects.SC_instance, uz_CurrentControl_get_ext_clamping(objects.CC_instance_dq));
 				SpeedControl_reference_torque = uz_SpeedControl_sample(objects.SC_instance, Data->ActualValues.omega_m, Data->GlobalConfig.n_ref);
 				Online_current_ref = uz_SetPoint_sample(objects.SP_instance, Data->ActualValues.omega_m, SpeedControl_reference_torque, Data->ActualValues.V_DC, Data->ActualValues.i_dq);			
 			}
@@ -271,7 +271,7 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_Par
 				Online_current_ref.q = Data->AutoRefCurrents_Output.i_dq_ref.q;
 			}
 		}
-		v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_1, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);		
+		v_dq_Volts = uz_CurrentControl_sample(objects.CC_instance_dq, Online_current_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);		
 	}
 	return (v_dq_Volts);
 }

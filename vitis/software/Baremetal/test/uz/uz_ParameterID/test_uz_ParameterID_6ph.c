@@ -68,7 +68,7 @@
 #include "uz_spwm.h"
 #include "uz_controller_setpoint_filter.h"
 
-
+#include "uz_subspace_resonant_control.h"
 #include "uz_resonant_controller.h"
 #include "uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
 

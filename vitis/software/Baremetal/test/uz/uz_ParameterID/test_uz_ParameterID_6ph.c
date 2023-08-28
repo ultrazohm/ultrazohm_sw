@@ -77,10 +77,14 @@
 #include "rt_defines.h"
 #include "rt_nonfinite.h"
 #include "mean_GqoxPyM9.h"
+#include "rtGetNaN.h"
+#include "rtGetInf.h"
 
 #include "uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "mock_uz_SystemTime.h"
 #include "uz_filter_cumulativeavg.h"
+#include "uz_signals.h"
+
 #include "uz_signals_iir_filter.c"
 
 

@@ -134,6 +134,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     uz_assert_not_NULL(qdata);
     uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
+    self->is_full = false;
     // check first if counter is full, set counter to zero again and write then, set is_full true
     if(self->head==(self->length)){
       self->is_full = true;
@@ -147,7 +148,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -161,13 +162,13 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uint32_t index = indizes[i];
     // logik implementieren, dass plus1 immer richtig aus dem buffer kommt
     if (self->counterisfull == 0){
-        if(index<self->head){
+        if(index==self->head){
             index = self->head -1;
         }
         indexpl = index+1;
     }
     // wenn buffer voll muss als index+1 der index 0 gesampelt werden
-    if (self->is_full == true){
+    if (index==self->head){
         indexpl = 0;
     }
     else{
@@ -175,11 +176,13 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     }
         uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
+        uz_dqn_get_obs_from_buffer(self,obsvec,indexpl);
+        uz_matrix_copy_row_to_matrix(obsvec,obspl1,i);
         reward++;
         actionindex++;
         qvalue++;
     }
-    }
+}
 
 
 float calculate_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal){

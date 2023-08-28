@@ -58,12 +58,12 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 //----------------------------------------------------
 // software limits
 #define MAX_PHASE_CURRENT_AMP 10.0f
-#define MAX_DC_VOLT 400.0f
+#define MAX_DC_VOLT 650.0f
 #define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
 // user settings
 #define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
-#define FAUL_CONTROL false
+#define FAUL_CONTROL true
 enum controller_type selected_controller = PI_R;
 //----------------------------------------------------
 
@@ -127,10 +127,14 @@ void ISR_Control(void *data)
 	///////////////////////////////////Fault analysis///////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+	Global_Data.av.fault_single_indices = fault_control_remove_system(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
-	if(FAUL_CONTROL){
-		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);}
+	if(FAUL_CONTROL && Global_Data.rasv.dq_setpoints.q > 0.3f){
+		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);
+	}else{
+		k_param.valid = false;
+	}
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
@@ -155,8 +159,8 @@ void ISR_Control(void *data)
 			case PIR_PIR:
 				ref_voltages = step_controllers_PIR_PIR(&Global_Data, Global_Data.objects.objects_PIR_PIR);
 				break;
-			default:
 			case reset:
+			default:
 				uz_CurrentControl_reset(Global_Data.objects.cc_instance_dq);
 				reset_controllers_PI_PI(Global_Data.objects.objects_PI_PI);
 				reset_controllers_PI_R(Global_Data.objects.objects_PI_R);
@@ -170,7 +174,7 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	if(k_param.valid){
 			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
-    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices);
+    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices, Global_Data.av.fault_n_OPF);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
     		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
     		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);

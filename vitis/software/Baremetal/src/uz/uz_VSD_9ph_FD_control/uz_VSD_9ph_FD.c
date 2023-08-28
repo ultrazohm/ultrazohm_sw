@@ -91,7 +91,7 @@ int uz_vsd_opf_9ph_get_n_fault(uz_9ph_abc_t indices){
 	float sum = indices.a1 + indices.b1 + indices.c1 + indices.a2 + indices.b2 + indices.c2 + indices.a3 + indices.b3 + indices.c3; 
 	return (int)sum;
 }
-
+uz_9ph_abc_t inside_indices;
 uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_alphabeta_t vsdcurrents, float omega_el_rad_per_sec){
 	uz_9ph_abc_t indices = {0};
 
@@ -136,7 +136,7 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 	indices.a3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter[6], indices.a3);
 	indices.b3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter[7], indices.b3);
 	indices.c3 = uz_movingAverageFilter_sample_variable_length(VSD_FD->movingAverageFilter[8], indices.c3);
-
+	inside_indices = indices;
 	// evaluation of fault indices
 	indices = uz_vsd_fd_9ph_evaluation(indices, VSD_FD->threshold);
 	return indices;

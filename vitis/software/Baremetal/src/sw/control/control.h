@@ -6,7 +6,7 @@
 #include "../../uz/uz_math_constants.h"
 
 // general defines and limits
-#define SAMPLETIME (1.0f/UZ_PWM_FREQUENCY)
+#define SAMPLETIME (1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE))
 #define DQ_SYSTEM_LIMIT 10.0f
 #define ADDITIONAL_SYSTEM_LIMIT 2.5f//10.0f
 #define RESONANT_ANTIWINDUP_GAIN 10.0f

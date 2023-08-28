@@ -1,26 +1,47 @@
 #include "fault_control.h"
 
-void fault_control_set_tristate(DS_Data* Data, uz_9ph_abc_t indices){
-	int n_OPF = uz_vsd_opf_9ph_get_n_fault(indices);
+float tristate_sys2;
+void fault_control_set_tristate(DS_Data* Data, uz_9ph_abc_t indices, int n_OPF){
 	bool syst1 = false;
 	bool syst2 = false;
 	bool syst3 = false;
-	if(n_OPF == 2){
-		syst1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
-		syst2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
-		syst3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
-	}else if(n_OPF == 3){
+	if(n_OPF == 3){
 		syst1 = (indices.a1 == 1.0f)&&(indices.b1 == 1.0f)&&(indices.c1 == 1.0f);
-		syst1 = (indices.a2 == 1.0f)&&(indices.b2 == 1.0f)&&(indices.c2 == 1.0f);
-		syst1 = (indices.a3 == 1.0f)&&(indices.b3 == 1.0f)&&(indices.c3 == 1.0f);
-	}
-	if(n_OPF>=2){
+		syst2 = (indices.a2 == 1.0f)&&(indices.b2 == 1.0f)&&(indices.c2 == 1.0f);
+		syst3 = (indices.a3 == 1.0f)&&(indices.b3 == 1.0f)&&(indices.c3 == 1.0f);
 		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, syst1, syst1, syst1);
 		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11 , syst2, syst2, syst2);
 		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17 , syst3, syst3, syst3);
 	}
+	if(syst2){
+		tristate_sys2=1.0f;
+	}else{
+		tristate_sys2 = 0.0f;
+	}
 }
 
+uz_9ph_abc_t fault_control_remove_system(uz_9ph_abc_t indices){
+	bool syst1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
+	bool syst2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
+	bool syst3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
+	uz_9ph_abc_t out = indices;
+	if(syst1){
+		out.a1 = 1.0f;
+		out.b1 = 1.0f;
+		out.c1 = 1.0f;
+	}
+	if(syst2){
+		out.a2 = 1.0f;
+		out.b2 = 1.0f;
+		out.c2 = 1.0f;
+	}
+	if(syst3){
+		out.a3 = 1.0f;
+		out.b3 = 1.0f;
+		out.c3 = 1.0f;
+	}
+	return out;
+}
 
 uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers_fault_control objects, uz_9ph_MLMT_kparameter_t k_param){
 	uz_3ph_alphabeta_t alphabeta_setpoint = uz_transformation_3ph_dq_to_alphabeta(Data->rasv.dq_setpoints, Data->av.rotational_position.position_el_2pi);

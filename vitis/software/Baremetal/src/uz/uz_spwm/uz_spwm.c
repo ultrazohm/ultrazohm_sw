@@ -55,6 +55,22 @@ struct uz_DutyCycle_2x3ph_t uz_spwm_abc_6ph(uz_6ph_abc_t input, float V_dc_volts
 }
 
 struct uz_DutyCycle_3x3ph_t uz_spwm_dq_9ph(uz_9ph_dq_t input, float V_dc_volts, float theta_el_rad){
+	if(isnan(input.d))
+		input.d = 0.0f;
+	if(isnan(input.q))
+		input.q = 0.0f;
+	if(isnan(input.x1))
+		input.x1 = 0.0f;
+	if(isnan(input.y1))
+		input.y1 = 0.0f;
+	if(isnan(input.x2))
+		input.x2 = 0.0f;
+	if(isnan(input.y2))
+		input.y2 = 0.0f;
+	if(isnan(input.x3))
+		input.x3 = 0.0f;
+	if(isnan(input.y3))
+		input.y3 = 0.0f;
 	return uz_spwm_abc_9ph(uz_transformation_9ph_dq_to_abc(input, theta_el_rad), V_dc_volts);
 }
 

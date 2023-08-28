@@ -38,7 +38,7 @@
 #include "rtGetNaN.h"
 #include "rt_nonfinite.h"
 #include "rtGetInf.h"
-#include "rthypotf.h"
+#include "rt_hypotf.h"
 
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };

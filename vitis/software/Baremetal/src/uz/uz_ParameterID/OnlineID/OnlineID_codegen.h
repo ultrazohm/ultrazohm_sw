@@ -25,7 +25,7 @@
 #define RTW_HEADER_OnlineID_h_
 #ifndef OnlineID_COMMON_INCLUDES_
 #define OnlineID_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                                 /* OnlineID_COMMON_INCLUDES_ */
 #include <stddef.h>
 

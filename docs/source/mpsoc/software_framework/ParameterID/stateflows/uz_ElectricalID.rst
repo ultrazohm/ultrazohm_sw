@@ -101,6 +101,16 @@ ElectricalID output
 .. doxygenstruct:: uz_ParaID_ElectricalID_output_t
   :members: 
 
+
+ElectricalID additional (for 6ph ParameterID)
+=============================================
+
+.. doxygenstruct:: uz_ParaID_ElectricalID_fft_in_t
+  :members: 
+
+.. doxygenstruct:: uz_ParaID_ElectricalID_offset_estimation_t
+  :members: 
+
 .. _uz_ParaID_ElectricalID_functions:
 
 ElectricalID functions

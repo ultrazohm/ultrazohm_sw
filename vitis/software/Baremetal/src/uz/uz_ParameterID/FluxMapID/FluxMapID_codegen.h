@@ -25,7 +25,7 @@
 #define RTW_HEADER_FluxMapID_h_
 #ifndef FluxMapID_COMMON_INCLUDES_
 #define FluxMapID_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                                 /* FluxMapID_COMMON_INCLUDES_ */
 
 #include <stddef.h>

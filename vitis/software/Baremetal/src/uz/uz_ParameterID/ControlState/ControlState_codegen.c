@@ -7,16 +7,16 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 2.60
- * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Thu Nov 25 15:36:53 2021
+ * Model version                  : 5.80
+ * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
+ * C/C++ source code generated on : Thu Aug 17 17:44:10 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (11), Warning (1), Error (0)
+ * Validation result: Passed (12), Warning (1), Error (0)
  */
 
 #include "ControlState_codegen.h"
@@ -82,9 +82,6 @@ static void initParams(ExtU_ControlState_t *rtControlState_U,
   /* '<S1>:732:12' ControlFlags.startFluxMapID              = boolean(0); */
   rtControlState_Y->ControlFlags.startFluxMapID = false;
 
-  /* Outport: '<Root>/GlobalConfig_out' incorporates:
-   *  Inport: '<Root>/GlobalConfig_in'
-   */
   /* '<S1>:732:13' GlobalConfig_out                         = GlobalConfig_in; */
   rtControlState_Y->GlobalConfig_out = rtControlState_U->GlobalConfig_in;
 
@@ -108,12 +105,6 @@ static void initParams(ExtU_ControlState_t *rtControlState_U,
 static void decideIDstates(ExtU_ControlState_t *rtControlState_U,
   ExtY_ControlState_t *rtControlState_Y, DW_ControlState_t *rtControlState_DW)
 {
-  /* Inport: '<Root>/GlobalConfig_in' incorporates:
-   *  Inport: '<Root>/finishedElectricalID'
-   *  Inport: '<Root>/finishedFluxMapID'
-   *  Inport: '<Root>/finishedFrictionID'
-   *  Inport: '<Root>/finishedTwoMassID'
-   */
   /* MATLAB Function 'decideIDstates': '<S1>:709' */
   /* '<S1>:709:4' if(GlobalConfig_in.ElectricalID==0) */
   if (!rtControlState_U->GlobalConfig_in.ElectricalID) {
@@ -155,17 +146,7 @@ static void decideIDstates(ExtU_ControlState_t *rtControlState_U,
     rtControlState_DW->finishedFluxMapID_loc = 2U;
   }
 
-  /* Outport: '<Root>/ControlFlags' incorporates:
-   *  Inport: '<Root>/GlobalConfig_in'
-   *  Inport: '<Root>/enteredElectricalID'
-   *  Inport: '<Root>/enteredFluxMapID'
-   *  Inport: '<Root>/enteredFrictionID'
-   *  Inport: '<Root>/enteredTwoMassID'
-   *  Inport: '<Root>/finishedElectricalID'
-   *  Inport: '<Root>/finishedFluxMapID'
-   *  Inport: '<Root>/finishedFrictionID'
-   *  Inport: '<Root>/finishedTwoMassID'
-   */
+  /* Outport: '<Root>/ControlFlags' */
   /* '<S1>:709:28' if(ControlFlags.finished_all_Offline_states == 0) */
   if (!rtControlState_Y->ControlFlags.finished_all_Offline_states) {
     /* Determine path through the ElectricalID-Stateflows */
@@ -252,18 +233,7 @@ void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M)
     rtControlState_M->outputs;
 
   /* Chart: '<Root>/ControlState' incorporates:
-   *  Inport: '<Root>/ElectricalID_FOC_output'
    *  Inport: '<Root>/ElectricalID_output'
-   *  Inport: '<Root>/GlobalConfig_in'
-   *  Inport: '<Root>/enteredElectricalID'
-   *  Inport: '<Root>/enteredFluxMapID'
-   *  Inport: '<Root>/enteredFrictionID'
-   *  Inport: '<Root>/enteredOnlineID'
-   *  Inport: '<Root>/enteredTwoMassID'
-   *  Inport: '<Root>/finishedElectricalID'
-   *  Inport: '<Root>/finishedFluxMapID'
-   *  Inport: '<Root>/finishedFrictionID'
-   *  Inport: '<Root>/finishedTwoMassID'
    *  Outport: '<Root>/ControlFlags'
    *  Outport: '<Root>/GlobalConfig_out'
    */
@@ -832,6 +802,12 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.PMSM_config.polePairs = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.J_kg_m_squared = 0.0F;
   rtControlState_Y->GlobalConfig_out.PMSM_config.I_max_Ampere = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.d = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.q = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.x = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.y = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.z1 = 0.0F;
+  rtControlState_Y->GlobalConfig_out.PMSM_6ph_inductances.z2 = 0.0F;
   rtControlState_Y->GlobalConfig_out.enableParameterID = false;
   rtControlState_Y->GlobalConfig_out.Reset = false;
   rtControlState_Y->GlobalConfig_out.Kp_id = 0.0F;
@@ -854,6 +830,22 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
   rtControlState_Y->GlobalConfig_out.i_dq_ref.q = 0.0F;
   rtControlState_Y->GlobalConfig_out.i_dq_ref.zero = 0.0F;
   rtControlState_Y->GlobalConfig_out.n_ref = 0.0F;
+  rtControlState_Y->GlobalConfig_out.M_ref = 0.0F;
+  rtControlState_Y->GlobalConfig_out.motor_type = 0U;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_C = 0.0F;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_Rp = 0.0F;
+  rtControlState_Y->GlobalConfig_out.voltage_measurement_Rs = 0.0F;
+  rtControlState_Y->GlobalConfig_out.i_xy_ref.d = 0.0F;
+  rtControlState_Y->GlobalConfig_out.i_xy_ref.q = 0.0F;
+  rtControlState_Y->GlobalConfig_out.i_xy_ref.zero = 0.0F;
+  rtControlState_Y->GlobalConfig_out.controllers_updated = false;
+  rtControlState_Y->GlobalConfig_out.PI_dq = false;
+  rtControlState_Y->GlobalConfig_out.PI_xy = false;
+  rtControlState_Y->GlobalConfig_out.PI_zero = false;
+  rtControlState_Y->GlobalConfig_out.resonant_dq = false;
+  rtControlState_Y->GlobalConfig_out.resonant_xy = false;
+  rtControlState_Y->GlobalConfig_out.resonant_zero = false;
+  rtControlState_Y->GlobalConfig_out.setpoint_filter = false;
   rtControlState_Y->ControlFlags.startFrictionID = false;
   rtControlState_Y->ControlFlags.startElectricalID = false;
   rtControlState_Y->ControlFlags.startTwoMassID = false;
@@ -868,5 +860,4 @@ void ControlState_initialize(RT_MODEL_ControlState_t *const rtControlState_M)
  *
  * [EOF]
  */
-
 #endif

@@ -165,4 +165,47 @@ void test_uz_resonantController_set_config(void)
     config.lower_limit = -2.0f;
 }
 
+
+void test_uz_resonant_controller_Inf_NaN(void)
+{
+
+    config.sampling_time = 0.0001f;
+    config.harmonic_order = 1.0f;
+    config.gain = 1000.0f;
+    config.antiwindup_gain = 100000;
+    config.upper_limit = 0.1f;
+    config.lower_limit = -2.0f;
+    uz_resonantController_t *test_R_controller = uz_resonantController_init(config);
+
+    float in_ref = -3.0f;
+    float in_m = 10.0f;
+    float omega_el = 100.0f;
+
+    float output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-1.3f - 1e-06f, -1.3f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-2.0f - 1e-06f, -2.0f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(0.1f - 1e-06f, 0.1f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-2.0f - 1e-06f, -2.0f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(0.1f - 1e-06f, 0.1f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-2.0f - 1e-06f, -2.0f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(0.1f - 1e-06f, 0.1f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-2.0f - 1e-06f, -2.0f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(0.1f - 1e-06f, 0.1f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(-2.0f - 1e-06f, -2.0f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_FLOAT_WITHIN(0.1f - 1e-06f, 0.1f + 1e-06f, output);
+    output = uz_resonantController_step(test_R_controller, in_ref, in_m, omega_el);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, output);
+
+}
+
 #endif // TEST

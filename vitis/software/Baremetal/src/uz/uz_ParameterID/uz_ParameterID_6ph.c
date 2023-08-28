@@ -375,7 +375,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, s
 
 	// select resonant output
 	if(Data->Controller_Parameters.resonant_dq){
-		uz_3ph_dq_t resonant_dq = uz_subspace_resonant_control_step_dq(objects.res_instance_dq, zero_dq_ref, Data->ActualValues.i_dq_6ph, Data->ActualValues.omega_el);
+		uz_3ph_dq_t resonant_dq = uz_subspace_resonant_control_step_dq(objects.res_instance_dq, zero_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.omega_el);
 		out.d += resonant_dq.d;
 		out.q += resonant_dq.q;
 	}else if(Data->Controller_Parameters.resonant_xy){

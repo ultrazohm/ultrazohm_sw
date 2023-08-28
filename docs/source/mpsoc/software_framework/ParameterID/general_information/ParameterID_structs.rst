@@ -82,5 +82,8 @@ Controller objects struct
 
 This struct bundles all necessary controller pointers for the external controller algorithm.
 
+.. doxygenstruct:: uz_ParameterID_controller_configs
+  :members:
+
 .. doxygenstruct:: uz_ParameterID_controller
   :members:

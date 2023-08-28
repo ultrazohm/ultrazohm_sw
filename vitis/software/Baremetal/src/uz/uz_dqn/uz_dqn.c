@@ -57,9 +57,9 @@ uint32_t number_of_layer,
 uint32_t length_of_buffer, uint32_t headind)
 {
     uz_dqn_t *self = uz_dqn_allocation();
-    self->critic = uz_nn_init(config_critic, number_of_layer, true);
-    self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
     self->randinstance = init_mtwister(cfg); 
+    self->critic = uz_nn_init_with_init(config_critic, number_of_layer, self->randinstance ,true);
+    self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer,headind);
     self->discount_factor = discount_factor;
     self->lernrate = lernrate;

@@ -22,7 +22,7 @@ struct uz_CurrentControl_config cc_config_dq = {
 	.config_id = config_d,
 	.config_iq = config_q,
 	.decoupling_select = linear_decoupling,
-	.max_modulation_index = MODULATION_INDEX};
+	.max_modulation_index = MODULATION_INDEX_DQ};
 
 uz_CurrentControl_t* init_PI_0_cc_dq(void){
 	uz_CurrentControl_t* ptr = uz_CurrentControl_init(cc_config_dq);

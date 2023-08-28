@@ -86,7 +86,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float u_a1c1, float u_a2c2);
 
 
-void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objects, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config);
+//void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objects, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config);
 void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config);
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref);
 

@@ -463,18 +463,6 @@ typedef struct uz_ParameterID_Data_t {
   uz_dq_setpoint_filter* filter_3; /**< setpoint filter instance 3 */
 } uz_ParameterID_Data_t;
 
-/**
- * @brief Data struct to collect the controllers structs
- *
- */
-struct uz_ParameterID_controller_configs{
-  struct uz_CurrentControl_config config_cc_dq;
-  struct uz_CurrentControl_config config_cc_xy;
-  struct uz_CurrentControl_config config_cc_zero;
-  struct uz_subspace_resonant_control_config config_res_dq;
-  struct uz_subspace_resonant_control_config config_res_xy;
-  struct uz_subspace_resonant_control_config config_res_zero;
-};
 
 /**
  * @brief Data struct to collect all controller pointers
@@ -485,11 +473,10 @@ struct uz_ParameterID_controller{
   uz_SetPoint_t* SP_instance; /**< setpoint instance */
   uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
   uz_CurrentControl_t* CC_instance_xy; /**< current control instance for xy system */
-  uz_CurrentControl_t* CC_instance_zero; /**< current control instance for xy system */
+  uz_CurrentControl_t* CC_instance_zero; /**< current control instance for zero system */
   uz_subspace_resonant_control* res_instance_dq; /**< resonant control instance for dq system */
   uz_subspace_resonant_control* res_instance_xy; /**< resonant control instance for xy system */
-  uz_subspace_resonant_control* res_instance_zero; /**< resonant control instance for xy system */
-  struct uz_ParameterID_controller_configs controller_configs; /**< controller configs */
+  uz_subspace_resonant_control* res_instance_zero; /**< resonant control instance for zero system */
 };
 
 #endif

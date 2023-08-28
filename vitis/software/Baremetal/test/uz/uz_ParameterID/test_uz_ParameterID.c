@@ -38,6 +38,8 @@
 #include "rtGetNaN.h"
 #include "rt_nonfinite.h"
 #include "rtGetInf.h"
+#include "rthypotf.h"
+
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};

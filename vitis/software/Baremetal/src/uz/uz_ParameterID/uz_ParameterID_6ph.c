@@ -448,7 +448,7 @@ static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller obj
 	uz_SpeedControl_reset(objects.SC_instance);
 	// no reset Setpoint available
 }
-
+/*
 void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objects, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config){
 	objects->CC_instance_dq = uz_CurrentControl_init(objects->controller_configs.config_cc_dq);
 	objects->CC_instance_xy = uz_CurrentControl_init(objects->controller_configs.config_cc_xy);
@@ -459,7 +459,7 @@ void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objec
 	objects->SP_instance = uz_SetPoint_init(setpoint_config);
 	objects->SC_instance = uz_SpeedControl_init(speed_config);	
 }
-
+*/
 void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config){
 	Data->filter_1 = uz_uz_dq_setpoint_filter_init(config);
 	Data->filter_2 = uz_uz_dq_setpoint_filter_init(config);

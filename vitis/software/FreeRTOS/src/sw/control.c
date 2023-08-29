@@ -242,7 +242,7 @@ static void task_fast(void)
 		FOC_fastCTRL_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
 		FOC_fastCTRL_MPtr->inputs->phi_elrad = ctrl_data.fcf_in.phi_elrad;
 		FOC_fastCTRL_MPtr->inputs->FOC_Mode = ctrl_data.fcf_in.FOC_Mode;
-		FOC_fastCTRL_MPtr->inputs->FOC_Enable_i = ctrl_data.fcf_in.FOC_Enable_i;
+		FOC_fastCTRL_MPtr->inputs->FOC_Enable_b = ctrl_data.fcf_in.FOC_Enable_i;
 
 		FOC_fastCTRL_step(FOC_fastCTRL_MPtr);
 
@@ -345,12 +345,13 @@ static void task_1ms(void)
 
 	FOC_slowCTRL_step(FOC_slowCTRL_MPtr);
 
+	Xil_ExceptionDisable();
+
 	ctrl_data.scf_out.I_dq_RefA[0] = FOC_slowCTRL_MPtr->outputs->I_dq_RefA[0];
 	ctrl_data.scf_out.I_dq_RefA[1] = FOC_slowCTRL_MPtr->outputs->I_dq_RefA[1];
 	ctrl_data.scf_out.TorqueEstNm = FOC_slowCTRL_MPtr->outputs->TorqueEstNm;
 	ctrl_data.scf_out.TorqueRefDeratedNm = FOC_slowCTRL_MPtr->outputs->TorqueRefDeratedNm;
 
-	Xil_ExceptionDisable();
 
     ctrl_data.fcf_in.I_dq_RefA[0] = ctrl_data.scf_out.I_dq_RefA[0];
     ctrl_data.fcf_in.I_dq_RefA[1] = ctrl_data.scf_out.I_dq_RefA[1];

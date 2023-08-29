@@ -5,11 +5,11 @@
  *
  * File: rt_nonfinite.h
  *
- * Code generated for Simulink model 'FOC_slowCTRL'.
+ * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.4
+ * Model version                  : 1.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:12:46 2023
+ * C/C++ source code generated on : Mon Aug 28 08:46:54 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A

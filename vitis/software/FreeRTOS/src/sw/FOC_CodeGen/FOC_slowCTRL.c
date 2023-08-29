@@ -9,7 +9,7 @@
  *
  * Model version                  : 1.4
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:12:46 2023
+ * C/C++ source code generated on : Thu Aug 24 12:54:27 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -99,9 +99,6 @@ real_T FOC_MANUAL_Iq_Ref = 0.0;        /* Variable: FOC_MANUAL_Iq_Ref
 real_T FOC_MANUAL_Torque_Request = 0.0;/* Variable: FOC_MANUAL_Torque_Request
                                         * Referenced by: '<S1>/Constant'
                                         */
-real_T FOC_MANUAL_U_DC = 0.0;          /* Variable: FOC_MANUAL_U_DC
-                                        * Referenced by: '<S1>/Udc2'
-                                        */
 real_T FOC_SELECT_ExtTrqReq = 1.0;     /* Variable: FOC_SELECT_ExtTrqReq
                                         * Referenced by: '<S1>/Constant2'
                                         */
@@ -125,9 +122,6 @@ real_T FOC_SELECT_TorqEstMdl = 1.0;    /* Variable: FOC_SELECT_TorqEstMdl
 real_T FOC_SELECT_Torque_Ref_Ramp = 1.0;/* Variable: FOC_SELECT_Torque_Ref_Ramp
                                          * Referenced by: '<S7>/0: ohne Drehmomentrampe 1: mit Drehmomentrampe'
                                          */
-real_T FOC_SELECT_U_DC_INPUT = 1.0;    /* Variable: FOC_SELECT_U_DC_INPUT
-                                        * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
-                                        */
 real_T FOC_SELECT_n_Ref_Ramp = 1.0;    /* Variable: FOC_SELECT_n_Ref_Ramp
                                         * Referenced by: '<S27>/Constant5'
                                         */
@@ -149,6 +143,12 @@ real_T FOC_z_P = 4.0;                  /* Variable: FOC_z_P
                                         *   '<S3>/RPM => w_el'
                                         *   '<S31>/3*Z_p//2'
                                         *   '<S14>/Gain'
+                                        */
+real_T SCF_MANUAL_U_DC = 0.0;          /* Variable: SCF_MANUAL_U_DC
+                                        * Referenced by: '<S1>/Udc2'
+                                        */
+real_T SCF_SELECT_U_DC_INPUT = 1.0;    /* Variable: SCF_SELECT_U_DC_INPUT
+                                        * Referenced by: '<S1>/0: P_Udc 1: Udc_measured'
                                         */
 real_T SPEED_CTRL_K_AWU = 1.0;         /* Variable: SPEED_CTRL_K_AWU
                                         * Referenced by: '<S3>/Gain1'
@@ -261,7 +261,7 @@ void FOC_slowCTRL_step(RT_MODEL_FOC_slowCTRL_T *const FOC_slowCTRL_M)
   /* Switch: '<S1>/Switch1' incorporates:
    *  Constant: '<S1>/0: P_Udc 1: Udc_measured'
    */
-  if (FOC_SELECT_U_DC_INPUT > 0.0) {
+  if (SCF_SELECT_U_DC_INPUT > 0.0) {
     /* Switch: '<S1>/Switch1' incorporates:
      *  Inport: '<Root>/U_DC [V]'
      */
@@ -270,7 +270,7 @@ void FOC_slowCTRL_step(RT_MODEL_FOC_slowCTRL_T *const FOC_slowCTRL_M)
     /* Switch: '<S1>/Switch1' incorporates:
      *  Constant: '<S1>/Udc2'
      */
-    Udc_scf = FOC_MANUAL_U_DC;
+    Udc_scf = SCF_MANUAL_U_DC;
   }
 
   /* End of Switch: '<S1>/Switch1' */

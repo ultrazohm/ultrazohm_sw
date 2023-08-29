@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:14:27 2023
+ * C/C++ source code generated on : Mon Aug 28 08:46:54 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -41,6 +41,24 @@ real_T w_el;                           /* '<S5>/dummy_gain' */
 real_T Phi_Measured_Raw;               /* '<S5>/dummy_gain3' */
 
 /* Exported block parameters */
+real_T DutyCycle_1 = 0.0;              /* Variable: DutyCycle_1
+                                        * Referenced by: '<S2>/DutyCycle1_ManualMode'
+                                        */
+real_T DutyCycle_2 = 0.0;              /* Variable: DutyCycle_2
+                                        * Referenced by: '<S2>/DutyCycle2_ManualMode'
+                                        */
+real_T DutyCycle_3 = 0.0;              /* Variable: DutyCycle_3
+                                        * Referenced by: '<S2>/DutyCycle3_ManualMode'
+                                        */
+real_T DutyCycle_4 = 0.0;              /* Variable: DutyCycle_4
+                                        * Referenced by: '<S2>/DutyCycle4_ManualMode'
+                                        */
+real_T DutyCycle_5 = 0.0;              /* Variable: DutyCycle_5
+                                        * Referenced by: '<S2>/DutyCycle5_ManualMode'
+                                        */
+real_T DutyCycle_6 = 0.0;              /* Variable: DutyCycle_6
+                                        * Referenced by: '<S2>/DutyCycle6_ManualMode'
+                                        */
 real_T FOC_6ph_AngleShift = 0.0;       /* Variable: FOC_6ph_AngleShift
                                         * Referenced by:
                                         *   '<S5>/FOC_6ph_AngleShift'
@@ -273,7 +291,7 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
    *  Constant: '<S1>/Enable'
    *  Inport: '<Root>/FOC_Enable'
    */
-  rtb_LogicalOperator1 = ((FOC_Enable != 0.0) && (FOC_fastCTRL_U->FOC_Enable_i
+  rtb_LogicalOperator1 = ((FOC_Enable != 0.0) && (FOC_fastCTRL_U->FOC_Enable_b
     != 0.0));
 
   /* Gain: '<S7>/f_2_w_el' incorporates:
@@ -1077,11 +1095,28 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
       }
       break;
 
-     default:
+     case 3:
       /* Outport: '<Root>/DutyCycles [0..1]' */
       for (i = 0; i < 6; i++) {
         FOC_fastCTRL_Y->DutyCycles01[i] = 0.5;
       }
+      break;
+
+     default:
+      /* Outport: '<Root>/DutyCycles [0..1]' incorporates:
+       *  Constant: '<S2>/DutyCycle1_ManualMode'
+       *  Constant: '<S2>/DutyCycle2_ManualMode'
+       *  Constant: '<S2>/DutyCycle3_ManualMode'
+       *  Constant: '<S2>/DutyCycle4_ManualMode'
+       *  Constant: '<S2>/DutyCycle5_ManualMode'
+       *  Constant: '<S2>/DutyCycle6_ManualMode'
+       */
+      FOC_fastCTRL_Y->DutyCycles01[0] = DutyCycle_1;
+      FOC_fastCTRL_Y->DutyCycles01[1] = DutyCycle_2;
+      FOC_fastCTRL_Y->DutyCycles01[2] = DutyCycle_3;
+      FOC_fastCTRL_Y->DutyCycles01[3] = DutyCycle_4;
+      FOC_fastCTRL_Y->DutyCycles01[4] = DutyCycle_5;
+      FOC_fastCTRL_Y->DutyCycles01[5] = DutyCycle_6;
       break;
     }
 

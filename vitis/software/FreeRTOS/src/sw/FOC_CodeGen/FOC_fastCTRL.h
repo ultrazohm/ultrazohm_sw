@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.7
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:14:27 2023
+ * C/C++ source code generated on : Mon Aug 28 08:46:54 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -100,7 +100,7 @@ typedef struct {
   real_T I_dq_RefA[2];                 /* '<Root>/I_dq_Ref [A]' */
   real_T phi_elrad;                    /* '<Root>/phi_el [rad]' */
   real_T FOC_Mode;                     /* '<Root>/FOC_Mode' */
-  real_T FOC_Enable_i;                 /* '<Root>/FOC_Enable' */
+  real_T FOC_Enable_b;                 /* '<Root>/FOC_Enable' */
 } ExtU_FOC_fastCTRL_T;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -155,6 +155,24 @@ extern real_T Phi_Measured_Raw;        /* '<S5>/dummy_gain3' */
  * these parameters and exports their symbols.
  *
  */
+extern real_T DutyCycle_1;             /* Variable: DutyCycle_1
+                                        * Referenced by: '<S2>/DutyCycle1_ManualMode'
+                                        */
+extern real_T DutyCycle_2;             /* Variable: DutyCycle_2
+                                        * Referenced by: '<S2>/DutyCycle2_ManualMode'
+                                        */
+extern real_T DutyCycle_3;             /* Variable: DutyCycle_3
+                                        * Referenced by: '<S2>/DutyCycle3_ManualMode'
+                                        */
+extern real_T DutyCycle_4;             /* Variable: DutyCycle_4
+                                        * Referenced by: '<S2>/DutyCycle4_ManualMode'
+                                        */
+extern real_T DutyCycle_5;             /* Variable: DutyCycle_5
+                                        * Referenced by: '<S2>/DutyCycle5_ManualMode'
+                                        */
+extern real_T DutyCycle_6;             /* Variable: DutyCycle_6
+                                        * Referenced by: '<S2>/DutyCycle6_ManualMode'
+                                        */
 extern real_T FOC_6ph_AngleShift;      /* Variable: FOC_6ph_AngleShift
                                         * Referenced by:
                                         *   '<S5>/FOC_6ph_AngleShift'

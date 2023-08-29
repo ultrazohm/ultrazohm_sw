@@ -123,6 +123,9 @@ float genRand_float(MTRand* rand) {
 return((float)genRandLong(rand) / (float)0xffffffff);
 }
 
+uint32_t genRand_uint(MTRand* rand) {
+return((uint32_t)(unsigned long)genRandLong(rand) / (unsigned long)0xffffffff);
+}
 float uz_random_box_mueller(MTRand* seed,float mean, float std){
     static float cached = 0.0f;
     float x, y, r, res;

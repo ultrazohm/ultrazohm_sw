@@ -33,7 +33,7 @@ MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand* rand);
 double genRand(MTRand* rand);
 float genRand_float(MTRand* rand);
-
+uint32_t genRand_uint(MTRand* rand);
 
 struct uz_mtwister_config{
     uint32_t seed;

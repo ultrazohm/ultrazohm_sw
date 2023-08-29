@@ -27,13 +27,13 @@ struct uz_dqn_experience_replay_t {
 
 struct uz_dqn_t {
     bool is_ready;
-    uz_matrix_t *inputnn;
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
     uz_mtwister_t *randinstance;
     uz_dqn_experience_replay_t *experience_buffer;
     float discount_factor;
     float lernrate;
+    uz_matrix_t *inputvecnn;
 };
 
 struct uz_dqn_experience_replay_config{
@@ -46,13 +46,15 @@ struct uz_dqn_experience_replay_config{
     uint32_t *const actions;
 };
 
-uz_dqn_t *uz_dqn_init(float lernrate, float discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
+uz_dqn_t *uz_dqn_init(struct uz_matrix_t input_vec_matrix, float *const vecdata,float lernrate, float discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
 struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], struct uz_mtwister_config cfg, 
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,
 uint32_t length_of_buffer, uint32_t headind);
 uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length, uint32_t headind);
-void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty);
+void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *input);
+void uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
+uz_matrix_t *X, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact);
 void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,uint32_t *actionindex, uz_matrix_t *obsdata);
 void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t* self,uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_get_q_value_from_buffer(uz_dqn_experience_replay_t* self,float *QValue, uint32_t index);
@@ -60,10 +62,10 @@ void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,f
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
 float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool penalty);
-float calculate_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal);
-float calculate_derv_loss_dqn(uz_dqn_t* self, float gamma,float reward, float qval, float qvalplus1, bool terminal);
+float calculate_loss_dqn(uz_dqn_t* self, float reward, float qval, float qvalplus1, bool terminal);
+float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qvalplus1, bool terminal);
 void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes);
-uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_start,float *epsilon_min,float *epsilon_decay);
+uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_start,float *epsilon_min,float *epsilon_decay, uint32_t number_of_actions);
 /**
  * @brief Calculates epsilon-greedy exploration value for epsilon-greedy exploration for Deep Q-Networks.
  * 

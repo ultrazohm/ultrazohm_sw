@@ -73,7 +73,7 @@ uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t 
     }
     return (self);
 }
-uz_nn_t *uz_nn_init_with_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer,uz_mtwister_t *twister, bool is_trainable)
+uz_nn_t *uz_nn_init_with_rand(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer,uz_mtwister_t *twister, bool is_trainable)
 {
     uz_assert(number_of_layer < UZ_NN_MAX_LAYER);
     uz_assert(number_of_layer > 1U);

@@ -146,6 +146,7 @@ Further documentation which explains the structure of the ParameterID in detail.
 ..  toctree::
     :maxdepth: 2
     
+    general_information/setup_6ph
     general_information/setup
     general_information/custom_GUI
     general_information/ParameterID_structs

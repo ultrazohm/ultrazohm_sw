@@ -18,7 +18,7 @@ struct uz_CurrentControl_config cc_config_xy1 = {
 	.config_id = config_x1,
 	.config_iq = config_y1,
 	.decoupling_select = no_decoupling,
-	.max_modulation_index = ADDITIONAL_SYSTEM_LIMIT/PROGNOSE_DC_LIMIT};
+	.max_modulation_index = MODULATION_INDEX_ADDITIONAL_PI};
 
 ///xy2///
 const struct uz_PI_Controller_config config_x2 = {
@@ -35,7 +35,7 @@ struct uz_CurrentControl_config cc_config_xy2 = {
 	.config_id = config_x2,
 	.config_iq = config_y2,
 	.decoupling_select = no_decoupling,
-	.max_modulation_index = ADDITIONAL_SYSTEM_LIMIT/PROGNOSE_DC_LIMIT};
+	.max_modulation_index = MODULATION_INDEX_ADDITIONAL_PI};
 
 ///xy3///
 const struct uz_PI_Controller_config config_x3 = {
@@ -52,7 +52,7 @@ struct uz_CurrentControl_config cc_config_xy3 = {
 	.config_id = config_x3,
 	.config_iq = config_y3,
 	.decoupling_select = no_decoupling,
-	.max_modulation_index = ADDITIONAL_SYSTEM_LIMIT/PROGNOSE_DC_LIMIT};
+	.max_modulation_index = MODULATION_INDEX_ADDITIONAL_PI};
 
 
 // init functions
@@ -87,21 +87,13 @@ Data->av.debug_pi_xy2 = xy2_ref;
 Data->av.debug_pi_xy3 = xy3_ref;
 
 	// inverse Park transform subsystems
-	if(Data->rasv.ctrl_xy1){
 		XY1_ref = uz_transformation_3ph_dq_to_alphabeta(xy1_ref, 3.0f*Data->av.rotational_position.position_el_2pi + PHASE_PSI_PM_3);
-	}else{
-		uz_CurrentControl_reset(objects.xy1);
-	}
-	if(Data->rasv.ctrl_xy2){
 		XY2_ref = uz_transformation_3ph_dq_to_alphabeta(xy2_ref, 5.0f*Data->av.rotational_position.position_el_2pi + PHASE_PSI_PM_5);
-	}else{
-		uz_CurrentControl_reset(objects.xy2);
-	}
-	if(Data->rasv.ctrl_xy3){
-		XY3_ref = uz_transformation_3ph_dq_to_alphabeta(xy3_ref, 7.0f*Data->av.rotational_position.position_el_2pi + PHASE_PSI_PM_7);
-	}else{
-		uz_CurrentControl_reset(objects.xy3);
-	}
+//	if(Data->rasv.ctrl_xy3){
+//		XY3_ref = uz_transformation_3ph_dq_to_alphabeta(xy3_ref, 7.0f*Data->av.rotational_position.position_el_2pi + PHASE_PSI_PM_7);
+//	}else{
+//		uz_CurrentControl_reset(objects.xy3);
+//	}
 	// out
 	uz_9ph_dq_t out_dq = {
 		.d = dq_ref.d,
@@ -110,8 +102,8 @@ Data->av.debug_pi_xy3 = xy3_ref;
 		.y1 = XY1_ref.beta,
 		.x2 = XY2_ref.alpha,
 		.y2 = XY2_ref.beta,
-		.x3 = XY3_ref.alpha,
-		.y3 = XY3_ref.beta,
+		.x3 = 0.0f,//XY3_ref.alpha,
+		.y3 = 0.0f,//XY3_ref.beta,
 		.zero = 0.0f};
 	return out_dq;
 }

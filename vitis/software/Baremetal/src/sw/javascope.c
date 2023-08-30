@@ -38,6 +38,10 @@ uint32_t js_status_BareToRTOS=0;
 float OPF_index_float;
 float n_OPF_float;
 
+extern uz_3ph_alphabeta_t XY1_ref;
+extern uz_3ph_alphabeta_t XY2_ref;
+extern uz_3ph_alphabeta_t XY3_ref;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -108,15 +112,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_debug_x1]   	= &data->av.debug_pi_xy1.d;
-	js_ch_observable[JSO_debug_y1]   	= &data->av.debug_pi_xy1.q;
-	js_ch_observable[JSO_debug_x2]   	= &data->av.debug_pi_xy2.d;
-	js_ch_observable[JSO_debug_y2]   	= &data->av.debug_pi_xy2.q;
-	js_ch_observable[JSO_debug_x3]   	= &data->av.debug_pi_xy3.d;
-	js_ch_observable[JSO_debug_y3]   	= &data->av.debug_pi_xy3.q;
+	js_ch_observable[JSO_UDC1]   	= &(data->av.U_ZK1);
+	js_ch_observable[JSO_UDC2]   	= &(data->av.U_ZK2);
+	js_ch_observable[JSO_UDC3]   	= &(data->av.U_ZK3);
 	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

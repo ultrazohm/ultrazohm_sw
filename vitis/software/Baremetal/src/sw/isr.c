@@ -57,14 +57,15 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // software limits
-#define MAX_PHASE_CURRENT_AMP 10.0f
-#define MAX_DC_VOLT 650.0f
+#define MAX_PHASE_CURRENT_AMP 12.0f
+#define MAX_DC_VOLT 700.0f
+#define MAX_PHASE_VOLT 400.0f
 #define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
 // user settings
 #define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
-#define FAUL_CONTROL true
-enum controller_type selected_controller = PI_R;
+#define FAUL_CONTROL false
+enum controller_type selected_controller = PI_PI;
 //----------------------------------------------------
 
 //==============================================================================================================================================================
@@ -96,7 +97,6 @@ void ISR_Control(void *data)
     Global_Data.av.full_voltages_dq = uz_transformation_9ph_abc_to_dq(Global_Data.av.voltages_abc, Global_Data.av.rotational_position.position_el_2pi);
 	Global_Data.av.currents_alphabeta = uz_transformation_9ph_abc_to_alphabeta(Global_Data.av.currents_abc);
 
-
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Limits///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -105,6 +105,13 @@ void ISR_Control(void *data)
 			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
 		Global_Data.av.errors.error_OC += 1.0f;
+		uz_limit_exceed(&Global_Data);
+	}
+	// check phase voltage limit
+	if(fabs(Global_Data.av.voltages_abc.a1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c1) > MAX_PHASE_VOLT ||
+			fabs(Global_Data.av.voltages_abc.a2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c2) > MAX_PHASE_VOLT ||
+			fabs(Global_Data.av.voltages_abc.a3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c3) > MAX_PHASE_VOLT) {
+		Global_Data.av.errors.error_OV += 1.0f;
 		uz_limit_exceed(&Global_Data);
 	}
 	// check DC Bus
@@ -120,7 +127,7 @@ void ISR_Control(void *data)
 	// check inverter temp
 	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
 		Global_Data.av.errors.error_OT_inv += 1.0f;
-		uz_limit_exceed(&Global_Data);
+//		uz_limit_exceed(&Global_Data);
 	}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -130,7 +137,7 @@ void ISR_Control(void *data)
 	Global_Data.av.fault_single_indices = fault_control_remove_system(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
-	if(FAUL_CONTROL && Global_Data.rasv.dq_setpoints.q > 0.3f){
+	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 0.3f)){
 		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);
 	}else{
 		k_param.valid = false;

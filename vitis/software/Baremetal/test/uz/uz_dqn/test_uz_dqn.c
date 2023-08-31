@@ -109,7 +109,7 @@ float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {2.0f,1.5f,5.0f,2.5f,5.8f,6.0f,5.0f,7.0f,5.0f,50.0f};
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 1,
+  .seed = 2,
   .distribution = uniform_distribution
 };
 //config target
@@ -275,9 +275,9 @@ void test_uz_dqn_compressed(void)
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
-    //r[0] = genRand_uint32_t(&testdqn2->randinstance->seedRand);
-    // uz_dqn_train(testdqn2, &getbackrew, &getbackqval, &getbackact,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
-    // X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
+    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1);
+    uz_dqn_train(testdqn2, &getbackrew, &getbackqval, &getbackact,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
+    X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 }
 void test_calc_reward_with_penalty(void)
@@ -376,7 +376,7 @@ void test_uz_dqn_1_step(void)
     uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic);
     float qplus1 = uz_matrix_get_max_value(outputtarget);
     bool terminal = false;
-    float loss = calculate_loss_dqn(testdqn, reward, *qval, qplus1, terminal);
+    float loss = calculate_derv_loss_dqn(testdqn, reward, *qval, qplus1, terminal);
     uz_nn_backward_pass(testdqn->critic,&loss,input);
     float lernrate = 0.0001f;
     uz_nn_gradient_descent(testdqn->critic,lernrate);

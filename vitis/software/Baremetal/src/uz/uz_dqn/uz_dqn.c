@@ -186,7 +186,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         indexpl = index+1;
     }
     // wenn buffer voll muss als index+1 der index 0 gesampelt werden
-    if (index==self->head){
+    if (index==(self->length-1)){
         indexpl = 0;
     }
     else{

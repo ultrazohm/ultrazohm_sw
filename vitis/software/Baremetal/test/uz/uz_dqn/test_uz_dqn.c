@@ -275,7 +275,7 @@ void test_uz_dqn_compressed(void)
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
-    //r = genRand_uint(testdqn->randinstance->seedRand);
+    //r[0] = genRand_uint32_t(&testdqn2->randinstance->seedRand);
     // uz_dqn_train(testdqn2, &getbackrew, &getbackqval, &getbackact,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     // X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }

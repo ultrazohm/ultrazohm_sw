@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2022 Robert Zipprich
+* Copyright 2023 Robert Zipprich, Michael Hoerner
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

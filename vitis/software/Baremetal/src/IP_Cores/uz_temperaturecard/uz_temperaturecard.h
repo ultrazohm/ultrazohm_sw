@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Robert Zipprich
+* Copyright 2023 Robert Zipprich, Michael Hoerner
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -166,6 +166,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // -- Sense Resistor --
 // sense resistor - value
 #define SENSE_RESISTOR_VALUE 0
+#define SENSE_RESISTOR_VALUE_1k (uint32_t) 0x3E8 << 10
 //-----------------------------------------------------------------------------------------------------------
 // -- Thermistor --
 // thermistor - rsense channel
@@ -278,11 +279,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** Needed to calculate the Temperature */
 #define TEMP_CONVERSION_FACTOR      0.000976563f                         // 1/1024
 /** Temperature Channel for one LTC2983 */
-#define CHANNEL_COUNT               20U                                 
-/** Number of LTC2983 */
-#define GROUP_COUNT                 3U                                   
-/** calculated Number of Temperature Channels */
-#define CHANNEL_TOTAL               CHANNEL_COUNT * GROUP_COUNT         
+#define CHANNEL_COUNT               20U                                                                         
 /** Readback to check if IP-Core is available */
 #define IP_CORE_READBACK_VALUE      0xAFFEAFFE                         
 
@@ -297,9 +294,9 @@ typedef struct uz_temperaturecard_t uz_temperaturecard_t;
  *
  */
 typedef struct {
-  float       temperature[20];       /**< calculated value for one Temperature Channel */
-  uint32_t    temperature_raw[20];   /**< raw value for one Temperature Channel */
-  uint32_t    Configdata[20];        /**< used Config for one Temperature Channel */
+  float       temperature[20];       /**< calculated value for the Temperature Channelgroup */
+  uint32_t    temperature_raw[20];   /**< raw value for the Temperature Channelgroup */
+  uint32_t    Configdata[20];        /**< used Config for the Temperature Channelgroup */
   uint32_t  Channels_Valid[20];    /**< Informations about the measurement */
 }uz_temperaturecard_OneGroup;
 
@@ -311,12 +308,12 @@ struct uz_temperaturecard_config_t{
     uint32_t    base_address;                   /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t    ip_clk_frequency_Hz;            /**< Clock frequency of IP-Core */
     uint32_t    Sample_Freq_Hz;                 /**< Sampling frequency (Hz) to trigger a temperature measurement */
-    uint8_t     Config_Global_A;                /**< GlobalConfig-Register for Channel A */
-    uint8_t     Config_Mux_A;                   /**< MuxDelay-Register for Channel A */
-    uint8_t     Config_Global_B;                /**< GlobalConfig-Register for Channel A */
-    uint8_t     Config_Mux_B;                   /**< MuxDelay-Register for Channel A */
-    uint8_t     Config_Global_C;                /**< GlobalConfig-Register for Channel A */
-    uint8_t     Config_Mux_C;                   /**< MuxDelay-Register for Channel A */
+    uint32_t     Config_Global_A;                /**< GlobalConfig-Register for Channel A */
+    uint32_t     Config_Mux_A;                   /**< MuxDelay-Register for Channel A */
+    uint32_t     Config_Global_B;                /**< GlobalConfig-Register for Channel A */
+    uint32_t     Config_Mux_B;                   /**< MuxDelay-Register for Channel A */
+    uint32_t     Config_Global_C;                /**< GlobalConfig-Register for Channel A */
+    uint32_t     Config_Mux_C;                   /**< MuxDelay-Register for Channel A */
     uint32_t    Configdata_A[20];               /**< Configuration-struct for the first 20-Channels  / Channelgroup A */
     uint32_t    Configdata_B[20];               /**< Configuration-struct for the second 20-Channels / Channelgroup B */
     uint32_t    Configdata_C[20];               /**< Configuration-struct for the last 20-Channels   / Channelgroup C */
@@ -337,8 +334,60 @@ uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t
  */
 void uz_TempCard_IF_Reset(uz_temperaturecard_t* self);
 
-
+/**
+* @brief Writes the config data for all three channel groups to the IP-Core
+*
+* @param self Pointer to driver instance
+*/
 void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self);
+
+/**
+* @brief Extracts the valid bit of one channel of group A and writes it into the Channels_Valid struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_t* self, uint32_t channel);
+
+/**
+* @brief Extracts the valid bit of one channel of group B and writes it into the Channels_Valid struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(uz_temperaturecard_t* self, uint32_t channel);
+
+/**
+* @brief Extracts the valid bit of one channel of group C and writes it into the Channels_Valid struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_C(uz_temperaturecard_t* self, uint32_t channel);
+
+/**
+* @brief Calculates the temperature in degrees celsius of one channel of group A from the raw value and writes it into the temperature struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_A(uz_temperaturecard_t* self, uint32_t channel);
+
+/**
+* @brief Calculates the temperature in degrees celsius of one channel of group B from the raw value and writes it into the temperature struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_B(uz_temperaturecard_t* self, uint32_t channel);
+
+/**
+* @brief Calculates the temperature in degrees celsius of one channel of group C from the raw value and writes it into the temperature struct of its group
+*
+* @param self Pointer to driver instance
+* @param channel Number of the channel within the group (0...19)
+*/
+void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_C(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
  * @brief Starts the TemperatureCard-IP
@@ -355,13 +404,6 @@ void uz_TempCard_IF_Start(uz_temperaturecard_t* self);
 void uz_TempCard_IF_Stop(uz_temperaturecard_t* self);
 
 /**
- * @brief Reads every Temperature-Channel of the IP-Core and updates every Temperature-Data of the instance. ATTENTION!!! this will need a lot of time, NEVER use it in the ISR!
- *
- * @param self Pointer to driver instance
- */
-void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);
-
-/**
  * @brief Reads one Temperature-Channel of the IP-Core and updates the dedicated Temperature-Data of the the instance. To Update the whole Temperature-Data of the instance, multiple calls equal the Channel-amount (60) are needed. Can be used inside the ISR.
  *
  * @param self Pointer to driver instance
@@ -369,23 +411,24 @@ void uz_TempCard_IF_MeasureTemps_all(uz_temperaturecard_t* self);
 void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self);
 
 /**
- * @brief Reads the temperatures and additional data from one specified channel
+ * @brief Reads the temperatures and additional data from one specified channel group
  *
  * @param self Pointer to driver instance
- * @param channel specify channel to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
+ * @param channelgroup specify channelgroup to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
  * @return copy of the specified channel data
  */
-uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_Group(uz_temperaturecard_t* self, const char channel);
+uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_group(uz_temperaturecard_t* self, const char channelgroup);
 
 
 /**
  * @brief Reads the temperatures and additional data from one specified channel
  *
  * @param self Pointer to driver instance
+ * @param channelgroup specify channelgroup to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
  * @param channel specify channel from 0 to 59
  * @return Temperature of the Channel
  */
-float uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, uint32_t channel);
+float uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channelgroup, uint32_t channel);
 
 /**
  * @brief Averages all valid channels in the specified range. If one channel gets invalid during measurement, average will not be affected since it will no longer be included in the calculation.

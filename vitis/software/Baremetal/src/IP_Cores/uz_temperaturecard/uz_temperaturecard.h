@@ -305,9 +305,9 @@ typedef struct {
  *
  */
 struct uz_temperaturecard_config_t{
-    uint32_t    base_address;                   /**< Base address of the IP-Core instance to which the driver is coupled */
-    uint32_t    ip_clk_frequency_Hz;            /**< Clock frequency of IP-Core */
-    uint32_t    Sample_Freq_Hz;                 /**< Sampling frequency (Hz) to trigger a temperature measurement */
+    uint32_t   base_address;
+    uint32_t   ip_clk_frequency_Hz;
+    uint32_t    Sample_Freq_Hz;                 /**< Sampling frequency (Hz) to trigger a temperature measurement. Must be greater 0U  */
     uint32_t     Config_Global_A;                /**< GlobalConfig-Register for Channel A */
     uint32_t     Config_Mux_A;                   /**< MuxDelay-Register for Channel A */
     uint32_t     Config_Global_B;                /**< GlobalConfig-Register for Channel A */
@@ -326,6 +326,14 @@ struct uz_temperaturecard_config_t{
  * @return Pointer to initialized instance
  */
 uz_temperaturecard_t* uz_temperaturecard_init(struct uz_temperaturecard_config_t config);
+
+
+/**
+* @brief Sets the configuration by calling _hw functions
+*
+* @param self Pointer to driver instance
+*/ 
+void uz_TempCard_IF_set_config(uz_temperaturecard_t* self);
 
 /**
  * @brief Resets the whole TemperatureCard-IP. This should be used after the init of the IP-Core to update the LTC2983

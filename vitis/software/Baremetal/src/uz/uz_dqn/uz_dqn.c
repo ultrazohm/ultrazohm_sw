@@ -99,14 +99,17 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *
 void uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
 uz_matrix_t *X, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
 {
+float qplus1 = 0.0f;
+bool terminal = false;
+float loss = 0.0f;
+uz_matrix_t* outputtarget;
     for(uint32_t j=0; j<mbsize;j++){
         uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,obs,self->experience_buffer->vectorforobs,obspl1,mbsize,numobs,indices);
         uz_matrix_get_row_vector_zero_based(obspl1,X,j);
         uz_nn_ff(self->critic_target_net,X);
-        uz_matrix_t* outputtarget=uz_nn_get_output_data(self->critic_target_net);
-        float qplus1 = uz_matrix_get_max_value(outputtarget);
-        bool terminal = false;
-        float loss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        outputtarget=uz_nn_get_output_data(self->critic_target_net);
+        qplus1 = uz_matrix_get_max_value(outputtarget);
+        loss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
         uz_nn_backward_pass_mini_batch(self->critic,&loss,X);  
     }
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
@@ -183,7 +186,6 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
         if(index==self->head){
             index = self->head -1;
         }
-        indexpl = index+1;
     }
     // wenn buffer voll muss als index+1 der index 0 gesampelt werden
     if (index==(self->length-1)){

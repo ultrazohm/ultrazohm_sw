@@ -101,10 +101,12 @@ float T1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] 
 float T2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten layer nicht benötigt, aber fest definiert in layerconfig
 // stuff for buffer
-float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f};
-uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,5,50};
-float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f};
+float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f,2.0f,3.0f,4.0f,5.0f,6.0f,7.0f,8.0f,9.0f,10.0f};
+uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0,10,20,30,40,50,60,70,80,90};
+float qvalues[EXPERIENCE_BUFFER_LENGTH] = {-5.0f,5.0f,-50.0f,50.0f,-2.0f,2.0f,-1.0f,1.0f,100.0f,-100.0f};
+float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {49.6f,35.9f,47.0f,20.7f,46.9f,13.4f,43.4f,-1.5f,29.8f,16.6f,
+30.5f,36.2f,46.6f,20.6f,27.3f,9.2f,24.9f,7.1f,49.3f,17.1f
+};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {2.0f,1.5f,5.0f,2.5f,5.8f,6.0f,5.0f,7.0f,5.0f,50.0f};
 // config random
@@ -256,13 +258,18 @@ void test_uz_dqn_compressed(void)
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
     uz_dqn_t* testdqn2 = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    // target und critic netz gleich setzen
+    // uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
     // random indizes for sample from buffer
-    uint32_t r[MINIBATCHSIZE] = {1,2,4,5,0}; 
+    uint32_t r[MINIBATCHSIZE] = {1,5,0,5,6}; 
     uint32_t *indizes = r;
     // arrays anlegen für extrahieren aus dem Buffer
     float getbackrew[MINIBATCHSIZE]= {0.0f};
     float getbackqval[MINIBATCHSIZE]= {0.0f};
     uint32_t getbackact[MINIBATCHSIZE] = {0};
+    float* rew = getbackrew;
+    float* qval = getbackqval;
+    uint32_t* act = getbackact;
     float getbackobbs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
     uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
@@ -275,11 +282,12 @@ void test_uz_dqn_compressed(void)
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
-    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_train(testdqn2, &getbackrew, &getbackqval, &getbackact,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
+    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
+    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 }
+
 void test_calc_reward_with_penalty(void)
 {
     float ts = 0.05f;
@@ -373,7 +381,7 @@ void test_uz_dqn_1_step(void)
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), 1, NUMBER_OF_INPUTS);
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,1,NUMBER_OF_INPUTS,indizes);
     uz_nn_ff(testdqn->critic_target_net,obspl1);
-    uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic);
+    uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic_target_net);
     float qplus1 = uz_matrix_get_max_value(outputtarget);
     bool terminal = false;
     float loss = calculate_derv_loss_dqn(testdqn, reward, *qval, qplus1, terminal);
@@ -421,7 +429,7 @@ void test_uz_dqn_train_episodes(void)
     uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     uz_matrix_get_row_vector_zero_based(obspl1,X,j);
     uz_nn_ff(testdqn->critic_target_net,X);
-    uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic);
+    uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic_target_net);
     float qplus1 = uz_matrix_get_max_value(outputtarget);
     bool terminal = false;
     float loss = calculate_derv_loss_dqn(testdqn, *rew,*qval,qplus1,terminal);

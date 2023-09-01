@@ -87,25 +87,25 @@ void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self) {
 void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    self->Channelgroup_A.Channels_Valid[channel] = (self->Channelgroup_A.temperature_raw[channel] & 0xFF000000U) >> 24U;
+    self->Channelgroup_A.Channel_Fault_Data[channel] = (self->Channelgroup_A.temperature_raw[channel] & 0xFF000000U) >> 24U;
 }
 
 void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    self->Channelgroup_B.Channels_Valid[channel] = (self->Channelgroup_B.temperature_raw[channel] & 0xFF000000U) >> 24U;
+    self->Channelgroup_B.Channel_Fault_Data[channel] = (self->Channelgroup_B.temperature_raw[channel] & 0xFF000000U) >> 24U;
 }
 
 void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_C(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    self->Channelgroup_C.Channels_Valid[channel] = (self->Channelgroup_C.temperature_raw[channel] & 0xFF000000U) >> 24U;
+    self->Channelgroup_C.Channel_Fault_Data[channel] = (self->Channelgroup_C.temperature_raw[channel] & 0xFF000000U) >> 24U;
 }
 
 void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_A(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    if (self->Channelgroup_A.Channels_Valid[channel] == 1U) {
+    if (self->Channelgroup_A.Channel_Fault_Data[channel] == 1U) {
         self->Channelgroup_A.temperature[channel] = (float)(self->Channelgroup_A.temperature_raw[channel] & 0x00FFFFFFU) * TEMP_CONVERSION_FACTOR;
     } else {
         self->Channelgroup_A.temperature[channel] = -333.33f;
@@ -115,7 +115,7 @@ void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_A(uz_te
 void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_B(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    if (self->Channelgroup_B.Channels_Valid[channel] == 1U) {
+    if (self->Channelgroup_B.Channel_Fault_Data[channel] == 1U) {
         self->Channelgroup_B.temperature[channel] = (float)(self->Channelgroup_B.temperature_raw[channel] & 0x00FFFFFFU) * TEMP_CONVERSION_FACTOR;
     } else {
         self->Channelgroup_B.temperature[channel] = -333.33f;
@@ -125,7 +125,7 @@ void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_B(uz_te
 void uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_C(uz_temperaturecard_t* self, uint32_t channel) {
     uz_assert_not_NULL(self);
     uz_assert_true(self->is_ready);
-    if (self->Channelgroup_C.Channels_Valid[channel] == 1U) {
+    if (self->Channelgroup_C.Channel_Fault_Data[channel] == 1U) {
         self->Channelgroup_C.temperature[channel] = (float)(self->Channelgroup_C.temperature_raw[channel] & 0x00FFFFFFU) * TEMP_CONVERSION_FACTOR;
     } else {
         self->Channelgroup_C.temperature[channel] = -333.33f;
@@ -213,8 +213,8 @@ float uz_TempCard_IF_average_temperature_for_valid(uz_temperaturecard_OneGroup c
     float sum = 0.0f;
     float valid = 0.0f;
     for(uint32_t i=lower; i<=upper; i++){
-        sum += channeldata.temperature[i]*(channeldata.Channels_Valid[i]==1U);
-        valid += (channeldata.Channels_Valid[i]==1U);
+        sum += channeldata.temperature[i]*(channeldata.Channel_Fault_Data[i]==1U);
+        valid += (channeldata.Channel_Fault_Data[i]==1U);
     }
     if(valid != 0.0f){
         return (sum/valid);

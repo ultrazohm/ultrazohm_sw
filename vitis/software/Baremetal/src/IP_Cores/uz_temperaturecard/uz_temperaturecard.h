@@ -297,7 +297,7 @@ typedef struct {
   float       temperature[20];       /**< calculated value for the Temperature Channelgroup */
   uint32_t    temperature_raw[20];   /**< raw value for the Temperature Channelgroup */
   uint32_t    Configdata[20];        /**< used Config for the Temperature Channelgroup */
-  uint32_t  Channels_Valid[20];    /**< Informations about the measurement */
+  uint32_t  Channel_Fault_Data[20];    /**< Informations about the measurement */
 }uz_temperaturecard_OneGroup;
 
 /**
@@ -350,7 +350,7 @@ void uz_TempCard_IF_Reset(uz_temperaturecard_t* self);
 void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self);
 
 /**
-* @brief Extracts the valid bit of one channel of group A and writes it into the Channels_Valid struct of its group
+* @brief Extracts the fault bits of one channel of group A and writes it into the Channel_Fault_Data struct of its group
 *
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)
@@ -358,7 +358,7 @@ void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self);
 void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
-* @brief Extracts the valid bit of one channel of group B and writes it into the Channels_Valid struct of its group
+* @brief Extracts the fault bits of one channel of group B and writes it into the Channel_Fault_Data struct of its group
 *
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)
@@ -366,7 +366,7 @@ void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_
 void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
-* @brief Extracts the valid bit of one channel of group C and writes it into the Channels_Valid struct of its group
+* @brief Extracts the fault bits of one channel of group C and writes it into the Channel_Fault_Data struct of its group
 *
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)

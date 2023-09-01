@@ -355,7 +355,7 @@ void uz_TempCard_IF_write_channel_group_configdata(uz_temperaturecard_t* self);
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)
 */
-void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_t* self, uint32_t channel);
+void uz_TempCard_IF_extract_fault_data_for_channel_in_group_A(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
 * @brief Extracts the fault bits of one channel of group B and writes it into the Channel_Fault_Data struct of its group
@@ -363,7 +363,7 @@ void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(uz_temperaturecard_
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)
 */
-void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(uz_temperaturecard_t* self, uint32_t channel);
+void uz_TempCard_IF_extract_fault_data_for_channel_in_group_B(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
 * @brief Extracts the fault bits of one channel of group C and writes it into the Channel_Fault_Data struct of its group
@@ -371,7 +371,7 @@ void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(uz_temperaturecard_
 * @param self Pointer to driver instance
 * @param channel Number of the channel within the group (0...19)
 */
-void uz_TempCard_IF_extract_valid_bit_for_channel_in_group_C(uz_temperaturecard_t* self, uint32_t channel);
+void uz_TempCard_IF_extract_fault_data_for_channel_in_group_C(uz_temperaturecard_t* self, uint32_t channel);
 
 /**
 * @brief Calculates the temperature in degrees celsius of one channel of group A from the raw value and writes it into the temperature struct of its group

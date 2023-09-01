@@ -209,7 +209,7 @@ void test_uz_TempCard_IF_MeasureTemps_cyclic(void)
 }
 
 
-void test_uz_TempCard_IF_extract_valid_bit_for_channel_A(void)
+void test_get_Fault_Data_bits(void)
 {
     struct uz_temperaturecard_config_t test_config_global = {
         .base_address = TEST_BASE_ADDRESS,
@@ -265,14 +265,12 @@ void test_uz_TempCard_IF_extract_valid_bit_for_channel_A(void)
     uint32_t test_raw_values_B[20] = {0U};
     uint32_t test_raw_values_C[20] = {0U};
 
-    for(uint32_t i=0;i<CHANNEL_COUNT;i++) {
-        // for(uint32_t k=0;k<256;k++) {
-            test_raw_values_A[i] = (Channel_Fault_Data_test[42] << 24U);
-            test_raw_values_B[i] = (Channel_Fault_Data_test[117] << 24U); //117
-            test_raw_values_C[i] = (Channel_Fault_Data_test[236] << 24U); //236
-            
+for(uint32_t k=117;k<127;k++) { //sweep through all 256 possible Fault_Data states
 
-        // }
+    for(uint32_t i=0;i<CHANNEL_COUNT;i++) {
+            test_raw_values_A[i] = (Channel_Fault_Data_test[k] << 24U);
+            test_raw_values_B[i] = (Channel_Fault_Data_test[k] << 24U); 
+            test_raw_values_C[i] = (Channel_Fault_Data_test[k] << 24U); 
     }
 
     
@@ -289,15 +287,10 @@ void test_uz_TempCard_IF_extract_valid_bit_for_channel_A(void)
 
 
     // from here on actually the test starts
-    for(uint32_t k=0;k<(3U*CHANNEL_COUNT);k++) {
+    for(uint32_t m=0;m<=(3U*CHANNEL_COUNT);m++) {
     uz_TempCard_IF_MeasureTemps_cyclic(test_instance_global);
     }
 
-    for (uint32_t i=0;i<CHANNEL_COUNT;i++) {
-        uz_TempCard_IF_extract_valid_bit_for_channel_in_group_A(test_instance_global,i);
-        uz_TempCard_IF_extract_valid_bit_for_channel_in_group_B(test_instance_global,i);
-        uz_TempCard_IF_extract_valid_bit_for_channel_in_group_C(test_instance_global,i);
-    }
 
     uz_temperaturecard_OneGroup test_group_A = uz_TempCard_IF_get_channel_group(test_instance_global, 'a');
     uz_temperaturecard_OneGroup test_group_B = uz_TempCard_IF_get_channel_group(test_instance_global, 'b');
@@ -305,38 +298,46 @@ void test_uz_TempCard_IF_extract_valid_bit_for_channel_A(void)
 
     for(uint32_t i=0;i<CHANNEL_COUNT;i++) {
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[42], test_group_A.Channel_Fault_Data[i] & 0x01U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[117], test_group_B.Channel_Fault_Data[i] & 0x01U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[236], test_group_C.Channel_Fault_Data[i] & 0x01U);
+    // printf("FAULT_DATA_A_bit0: %i, expected: %i, iteration: %i\n", test_group_A.Channel_Fault_Data[i] & 1U, Channel_Fault_Data_ref_result_bit0[k], i);
+    // printf("FAULT_DATA_B_bit0: %i, expected: %i, iteration: %i\n", test_group_B.Channel_Fault_Data[i] & 1U, Channel_Fault_Data_ref_result_bit0[k], i);
+    // printf("FAULT_DATA_C_bit0: %i, expected: %i, iteration: %i\n", test_group_C.Channel_Fault_Data[i] & 1U, Channel_Fault_Data_ref_result_bit0[k], i);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[42], (test_group_A.Channel_Fault_Data[i] >> 1U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[117], (test_group_B.Channel_Fault_Data[i] >> 1U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[236], (test_group_C.Channel_Fault_Data[i] >> 1U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[k], test_group_A.Channel_Fault_Data[i] & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[k], test_group_B.Channel_Fault_Data[i] & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit0[k], test_group_C.Channel_Fault_Data[i] & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[42], (test_group_A.Channel_Fault_Data[i] >> 2U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[117], (test_group_B.Channel_Fault_Data[i] >> 2U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[236], (test_group_C.Channel_Fault_Data[i] >> 2U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[k], (test_group_A.Channel_Fault_Data[i] >> 1U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[k], (test_group_B.Channel_Fault_Data[i] >> 1U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit1[k], (test_group_C.Channel_Fault_Data[i] >> 1U) & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[42], (test_group_A.Channel_Fault_Data[i] >> 3U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[117], (test_group_B.Channel_Fault_Data[i] >> 3U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[236], (test_group_C.Channel_Fault_Data[i] >> 3U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[k], (test_group_A.Channel_Fault_Data[i] >> 2U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[k], (test_group_B.Channel_Fault_Data[i] >> 2U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit2[k], (test_group_C.Channel_Fault_Data[i] >> 2U) & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[42], (test_group_A.Channel_Fault_Data[i] >> 4U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[117], (test_group_B.Channel_Fault_Data[i] >> 4U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[236], (test_group_C.Channel_Fault_Data[i] >> 4U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[k], (test_group_A.Channel_Fault_Data[i] >> 3U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[k], (test_group_B.Channel_Fault_Data[i] >> 3U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit3[k], (test_group_C.Channel_Fault_Data[i] >> 3U) & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[42], (test_group_A.Channel_Fault_Data[i] >> 5U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[117], (test_group_B.Channel_Fault_Data[i] >> 5U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[236], (test_group_C.Channel_Fault_Data[i] >> 5U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[k], (test_group_A.Channel_Fault_Data[i] >> 4U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[k], (test_group_B.Channel_Fault_Data[i] >> 4U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit4[k], (test_group_C.Channel_Fault_Data[i] >> 4U) & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[42], (test_group_A.Channel_Fault_Data[i] >> 6U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[117], (test_group_B.Channel_Fault_Data[i] >> 6U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[236], (test_group_C.Channel_Fault_Data[i] >> 6U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[k], (test_group_A.Channel_Fault_Data[i] >> 5U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[k], (test_group_B.Channel_Fault_Data[i] >> 5U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit5[k], (test_group_C.Channel_Fault_Data[i] >> 5U) & 1U);
 
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[42], (test_group_A.Channel_Fault_Data[i] >> 7U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[117], (test_group_B.Channel_Fault_Data[i] >> 7U) & 1U);
-    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[236], (test_group_C.Channel_Fault_Data[i] >> 7U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[k], (test_group_A.Channel_Fault_Data[i] >> 6U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[k], (test_group_B.Channel_Fault_Data[i] >> 6U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit6[k], (test_group_C.Channel_Fault_Data[i] >> 6U) & 1U);
+
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[k], (test_group_A.Channel_Fault_Data[i] >> 7U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[k], (test_group_B.Channel_Fault_Data[i] >> 7U) & 1U);
+    TEST_ASSERT_EQUAL_UINT32(Channel_Fault_Data_ref_result_bit7[k], (test_group_C.Channel_Fault_Data[i] >> 7U) & 1U);
     }
+
+}//sweep through all 256 possible Fault_Data states
+
+
 }
 
 #endif // TEST

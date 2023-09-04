@@ -300,14 +300,6 @@ void test_calc_reward_with_penalty(void)
 }
 
 void test_uz_dqn_copy_nn(void){
-    // uz_dqn_t* dqn = uz_dqn_init(&lernrate,&discountfact,config_critic,config_target, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
-    // uz_nn_copy(dqn->critic,dqn->critic_target_net);
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_2,tw_2,UZ_MATRIX_SIZE(cw_2));
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_3,tw_3,UZ_MATRIX_SIZE(cw_3));
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_1,tb_1,UZ_MATRIX_SIZE(cb_1));
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_2,tb_2,UZ_MATRIX_SIZE(cb_2));
-    // TEST_ASSERT_EQUAL_FLOAT_ARRAY(cb_3,tb_3,UZ_MATRIX_SIZE(cb_3));
     uz_dqn_t* dqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     float targsmoothfact = 0.05f;
     uz_nn_target_update(dqn->critic,dqn->critic_target_net,periodic,&targsmoothfact);

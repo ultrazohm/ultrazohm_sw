@@ -8,3 +8,16 @@ cfg.CacheFolder = pwd;
 cfg.CodeGenFolder = fullfile('..','uz_ResonantController');
 cfg.CodeGenFolderStructure='ModelSpecific';
 Simulink.fileGenControl('setConfig', 'config', cfg)
+
+
+
+
+
+
+%%
+
+% copy utility-functions form shared folder to other folder
+source_folder_path = 'slprj/ert/_sharedutils'
+destination_folder_path = 'Resonant_Controller_ert_rtw'
+
+sharedCodeUpdate(source_folder_path, destination_folder_path, 'ExistingCodeSubfolder', '')

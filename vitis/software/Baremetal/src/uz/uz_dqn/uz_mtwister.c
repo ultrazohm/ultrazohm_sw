@@ -128,6 +128,12 @@ uint32_t genRand_zero_one(MTRand* rand) {
 return y;
 }
 
+uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) {
+  uint32_t y = (uint32_t) (genRand_float(rand)*(max-1));
+return y;
+}
+
+
 uint32_t *genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)
 {
     for (uint32_t i = 0; i < size; i++) {

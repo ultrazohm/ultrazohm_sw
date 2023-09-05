@@ -34,6 +34,7 @@ unsigned long genRandLong(MTRand* rand);
 double genRand(MTRand* rand);
 float genRand_float(MTRand* rand);
 uint32_t genRand_zero_one(MTRand* rand);
+uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) ;
 uint32_t *genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val);
 
 struct uz_mtwister_config{

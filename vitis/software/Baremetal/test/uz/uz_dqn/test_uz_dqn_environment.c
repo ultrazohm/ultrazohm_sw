@@ -28,7 +28,10 @@ void tearDown(void)
 
 void test_uz_dqn_environment_init(void)
 {
-uz_dqn_environment_t *testenv=uz_dqn_environment_init(configenv);
+uz_dqn_environment_t *testenv = uz_dqn_environment_init(configenv);
+MTRand seed = seedRand(1);
+uz_dqn_environment_reset(testenv,&seed);
+float est = 2.0f;
 }
 
 

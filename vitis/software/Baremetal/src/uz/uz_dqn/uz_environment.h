@@ -20,5 +20,6 @@ struct uz_dqn_environment_config{
     uint32_t *const bitarray;
     uint32_t max_steps;
 };
-
+uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);
+uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand);
 #endif // UZ_DQN_H

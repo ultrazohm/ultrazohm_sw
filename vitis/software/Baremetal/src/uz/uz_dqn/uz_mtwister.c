@@ -124,7 +124,8 @@ return((float)genRandLong(rand) / (float)0xffffffff);
 }
 
 uint32_t genRand_zero_one(MTRand* rand) {
-return((uint32_t)genRandLong(rand) / (float)0xffffffff);
+  uint32_t y = (uint32_t) (genRand_float(rand)*(2));
+return y;
 }
 
 uint32_t *genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)

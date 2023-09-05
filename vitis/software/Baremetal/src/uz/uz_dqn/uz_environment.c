@@ -46,10 +46,13 @@ void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
 {
     // get random index
     uint32_t x = genRand_uint32_t(seedRand,self->bitlength);
-    // get random 0 or 1
-    uint32_t y = genRand_zero_one(seedRand);
-    // set random
-    self->bitinitial[x] = y;
+    // flip bit
+    if (self->bitinitial[x] == 1){
+    self->bitinitial[x] = 0;
+    }
+    else{
+    self->bitinitial[x] = 1;
+    }
 }
 
 void uz_dqn_environment_action(uz_dqn_environment_t *self, MTRand *seedRand)

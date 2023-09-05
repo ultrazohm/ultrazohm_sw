@@ -9,15 +9,15 @@
 #include "uz_mtwister.h"
 #include "uz_environment.h"
 
-#define NUMBEROFBITS 8
-uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,1,1,0};
-uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,1,1,1,1};
+#define NUMBEROFBITS 4
+uint32_t array[NUMBEROFBITS] = {0,1,0,0};
+uint32_t tararray[NUMBEROFBITS] = {0,0,1,0};
  //conf envrionment
 struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
     .bitarray = array,
     .targetarray = tararray,
-    .max_steps = 200
+    .max_steps = 4000
 };
 struct uz_dqn_environment_config configenv2 = {
     .bitlength = NUMBEROFBITS,
@@ -41,12 +41,20 @@ void test_uz_dqn_environment_init_reset_and_flip_bits(void)
 uz_dqn_environment_t *testenv = uz_dqn_environment_init(configenv);
 MTRand seed = seedRand(1);
 uz_dqn_environment_reset(testenv,&seed);
-for(uint32_t i=0; i<testenv->max_steps;i++){
+for(uint32_t j=0; j<testenv->max_steps;j++){
 flipbit(testenv, &seed);
+// check if arrays are the same
+uint32_t counter = 0;
+for(uint32_t i=0; i<testenv->bitlength;i++){
+if(testenv->bitinitial[i] == testenv->bittarget[i])
+{
+    counter++;
 }
-
+if(counter==testenv->bitlength)
+    printf("Bitmuster ist gleich nach Episode %.0d \n",(int)j);  
 }
-
+}
+}
 
 
 #endif // TEST

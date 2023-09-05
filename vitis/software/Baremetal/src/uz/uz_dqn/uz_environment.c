@@ -22,21 +22,21 @@ static uz_dqn_environment_t* uz_dqn_environment_allocation(void){
 
 uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf){
     uz_dqn_environment_t *self = uz_dqn_environment_allocation();
-    self->length = envconf.bitlength;
-    self->bitarray = &envconf.bitarray;
-    if (envconf.maxsteps == 0){
+    self->bitlength = envconf.bitlength;
+    self->bit = envconf.bitarray;
+    if (envconf.max_steps == 0){
         self->max_steps = self->bitlength;
     }
     else{
-            self->max_steps = envconf.maxsteps;
+            self->max_steps = envconf.max_steps;
         }
     return (self);
 }
 
 uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
 // creates a new target bitset
-for(uint32_t j=0; j<self->bitlength;j++){
-    self->bitarray[i]=genRand_zero_one(seedRand);
+for(uint32_t i=0; i<self->bitlength;i++){
+    self->bit[i]=genRand_zero_one(seedRand);
 }
 }
 

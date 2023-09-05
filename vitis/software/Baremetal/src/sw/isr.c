@@ -63,9 +63,9 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 #define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
 // user settings
-#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
+#define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
 #define FAUL_CONTROL false
-enum controller_type selected_controller = PI_PI;
+enum controller_type selected_controller = PI_0;
 //----------------------------------------------------
 
 //==============================================================================================================================================================
@@ -192,6 +192,7 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
+    	ref_voltages = check_ref_volt_isnan_and_neutral_config(ref_voltages, NEUTRAL_CFG);
 		duty_cycle = uz_spwm_dq_9ph(ref_voltages, Global_Data.av.U_ZK, Global_Data.av.rotational_position.position_el_2pi);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);
 

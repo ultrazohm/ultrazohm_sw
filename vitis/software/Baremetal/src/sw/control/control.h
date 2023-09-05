@@ -28,3 +28,4 @@ enum controller_type {reset, PI_0, PI_PI, PI_R, PIR_PIR};
 #define PHASE_PSI_PM_7 UZ_PIf
 
 void subspace_park_transform(DS_Data* Data);
+uz_9ph_dq_t check_ref_volt_isnan_and_neutral_config(uz_9ph_dq_t input, int neutral);

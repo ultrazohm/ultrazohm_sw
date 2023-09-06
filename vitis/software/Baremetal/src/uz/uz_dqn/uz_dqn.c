@@ -238,17 +238,8 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
         y_j = reward;
     }
     else{
-        // berechne max_aQ(psi,a',theta)
-        // sollte man sowohl die Aktion, als auch den index speichern? 
-        // im nn object ist ja grad iwas enthalten nur nicht, der Aktionswert,
-        // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
-        // float action und uint action zu speichern, dass man beides hat
-        // und evtl obs+1 und action(obs+1)
-        // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
-		// uint32_t action = uz_matrix_get_max_index(obs); // index
         y_j = reward + (self->discount_factor * qvalplus1);
     }
-    // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
     float loss = -2.0f*(y_j - qval);
     return loss;
 }

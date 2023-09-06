@@ -257,9 +257,14 @@ void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->error->data = error;
+    for(size_t i=0;i< self->number_of_neurons;i++)
+    {
+    self->error->data[i] = *error;
+    }
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
+    uz_matrix_transpose(self->sumout);
     uz_matrix_elementwise_product(self->sumout,self->error,self->delta);
+    uz_matrix_transpose(self->sumout);
 }
 
 void uz_nn_layer_calc_gradients(uz_nn_layer_t *const self, uz_matrix_t *const outputprev)

@@ -63,7 +63,7 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 #define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
 // user settings
-#define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
+#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
 #define FAUL_CONTROL false
 enum controller_type selected_controller = PI_0;
 //----------------------------------------------------

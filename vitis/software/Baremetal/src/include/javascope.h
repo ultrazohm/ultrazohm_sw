@@ -92,6 +92,7 @@ enum JS_OberservableData {
 	JSO_refuY2,
 	JSO_refuX3,
 	JSO_refuY3,
+	JSO_iq_set,
 	JSO_ENDMARKER
 };
 

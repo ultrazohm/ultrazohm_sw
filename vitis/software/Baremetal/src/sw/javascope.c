@@ -117,6 +117,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_UDC3]   	= &(data->av.U_ZK3);
 	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_iq_set]   	= &data->rasv.dq_setpoints_user_input.q;
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

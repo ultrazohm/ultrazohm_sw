@@ -250,14 +250,14 @@ void tearDown(void)
 
 void test_uz_dqn_init(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
 }
 void test_uz_dqn_compressed(void)
 {
     enum target_update periodic;
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
-    uz_dqn_t* testdqn2 = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn2 = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     // target und critic netz gleich setzen
     // uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
     // random indizes for sample from buffer
@@ -473,6 +473,5 @@ epsilon_start = epsilon;
 TEST_ASSERT_FLOAT_WITHIN(1e-05f,epsmat[i],epsilon);
 }
 }
-
 
 #endif // TEST

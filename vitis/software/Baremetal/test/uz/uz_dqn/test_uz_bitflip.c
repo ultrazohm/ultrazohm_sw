@@ -13,10 +13,10 @@
 #include "uz_environment.h"
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 3000
+#define EXPERIENCE_BUFFER_LENGTH 5000
 #define MINIBATCHSIZE 16
 #define NUMBER_OF_EPOCHS 200
-#define TARGET_UPDATE_FREQUENCY 10
+#define TARGET_UPDATE_FREQUENCY 5
 // nn
 #define NUMBER_OF_INPUTS 8
 #define NUMBER_OF_OUTPUTS 8
@@ -33,12 +33,15 @@ struct uz_dqn_environment_config configenv = {
     .bitarray = array,
     .targetarray = tararray,
     .inputarray = inarray,
-    .max_steps = 200
+    .max_steps = 0,
+    .epsilon_start = 0.95f, 
+    .epsilon_min = 0.05, 
+    .epsilon_decay = 0.0001f
 };
 
 //dqn
-float discountfact = 0.98f;
-float lernrate = 0.005f;
+float discountfact = 0.90f;
+float lernrate = 0.0001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 float *inputdata = &X_dat;
 struct uz_matrix_t input_vec= {0};
@@ -241,6 +244,15 @@ void test_dqn_bitflip(void)
     struct uz_matrix_t input_vec= {0};
     uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
     uz_dqn_environment_t *testenv = uz_dqn_environment_init(configenv);
+    for (size_t i = 0; i < 20; i++)
+    {
+    // buffer vorfuellen
+    uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
+    for (int i = 0; i < NUMBEROFBITS; i++) {
+        inarray[i] = (float)tararray[i];
+    }
+    uz_dqn_sample_bitenv(testdqn2,testenv);
+    }
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);

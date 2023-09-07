@@ -98,20 +98,28 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *
 
 void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
 {
-
-    for (size_t i = 0; i < env->max_steps; i++)
+    uint32_t actionind;
+    for (uint32_t i = 0; i < env->max_steps; i++)
     {
-    // set action with epsilon-greedy
-    uint32_t action = 1;
-    uz_dqn_bitflip_action(env,action);
+    env->epsilon_start = calc_epsilon_greedy(env->epsilon_start,env->epsilon_min,env->epsilon_decay);
+    // randnumber and epsilon comparision
+    if(genRand_float(&self->randinstance->seedRand)<env->epsilon_start){
+        actionind = genRand_uint32_t(&self->randinstance->seedRand,env->bitlength-1);
+    }
+    else{
+    uz_nn_ff(self->critic,env->inputfornn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
+    actionind = uz_matrix_get_max_index(outputdqn);
+    }
+    uz_dqn_bitflip_action(env,actionind);
     // input for nn muss festgelegt werden und in einer uz_matrix gespeichert werden
     uz_nn_ff(self->critic,env->inputfornn);
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     float qvalue = uz_matrix_get_max_value(outputdqn);
-    action = uz_matrix_get_max_index(outputdqn);
     float reward = calculate_reward_bit(env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,env->inputfornn);
     if (arraysequal(env->bitinitial,env->bittarget,env->bitlength) == true){
+    printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
     }
     } 
@@ -139,7 +147,8 @@ uz_matrix_t* outputtarget;
     if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic_smoothing, &targsmoothfact);
     }
-printf("Loss ist = %.3f \n",(double)loss);
+printf("Loss %.3f \n",(double)loss);
+
 }
 //pseudocode set current
 

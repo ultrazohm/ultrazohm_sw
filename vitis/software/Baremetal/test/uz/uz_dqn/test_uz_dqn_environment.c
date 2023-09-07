@@ -21,7 +21,8 @@ struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
     .bitarray = array,
     .targetarray = tararray,
-    .max_steps = 4000
+    .max_steps = 4000,
+
 };
 struct uz_dqn_environment_config configenv2 = {
     .bitlength = NUMBEROFBITS,

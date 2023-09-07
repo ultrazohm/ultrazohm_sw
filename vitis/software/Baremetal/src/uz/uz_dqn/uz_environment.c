@@ -26,6 +26,9 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     self->bitinitial = envconf.bitarray;
     self->bittarget = envconf.targetarray;
     self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inputarray,envconf.bitlength,1,envconf.bitlength);
+    self->epsilon_min = envconf.epsilon_min;
+    self->epsilon_start = envconf.epsilon_start;
+    self->epsilon_decay = envconf.epsilon_decay;
     if (envconf.max_steps == 0){
         self->max_steps = self->bitlength;
     }

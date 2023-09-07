@@ -17,6 +17,9 @@ struct uz_dqn_environment_t {
     uint32_t max_steps;
     uz_matrix_t *inputfornn;
     struct uz_matrix_t inputfornn_matrix;
+    float epsilon_start;
+    float epsilon_min;
+    float epsilon_decay;
 };
 struct uz_dqn_environment_config{
     uint32_t bitlength;
@@ -24,6 +27,9 @@ struct uz_dqn_environment_config{
     float *const inputarray;
     uint32_t *const targetarray;
     uint32_t max_steps;
+    float epsilon_start;
+    float epsilon_min;
+    float epsilon_decay;
 };
 
 uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);

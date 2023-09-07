@@ -107,6 +107,7 @@ int main(void)
 		    sysmon_instance = uz_sysmon_ps_init(XPAR_XSYSMONPSU_0_DEVICE_ID);
 		    // init axi gpio relais
 		    Global_Data.objects.axi_gpio_relais = init_axi_gpio_relais();
+			uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_relais, 511U); // 511U equals all nine bits high
 
             initialization_chain = print_msg;
             break;

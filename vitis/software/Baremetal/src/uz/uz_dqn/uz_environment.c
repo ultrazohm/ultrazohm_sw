@@ -25,6 +25,7 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     self->bitlength = envconf.bitlength;
     self->bitinitial = envconf.bitarray;
     self->bittarget = envconf.targetarray;
+    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inputarray,envconf.bitlength,1,envconf.bitlength);
     if (envconf.max_steps == 0){
         self->max_steps = self->bitlength;
     }
@@ -50,6 +51,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
     }
     return true; // Arrays are equal
 }
+
 float calculate_reward_bit(uz_dqn_environment_t *self)
 {
     float r = 0.0f;
@@ -64,6 +66,16 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     return r;
 }
 
+void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
+{
+    // flip bit
+    if (self->bitinitial[action] == 1){
+    self->bitinitial[action] = 0;
+    }
+    else{
+    self->bitinitial[action] = 1;
+    }
+}
 
 void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
 {

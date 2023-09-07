@@ -96,6 +96,27 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,input);
 }
 
+void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
+{
+
+    for (size_t i = 0; i < env->max_steps; i++)
+    {
+    // set action with epsilon-greedy
+    uint32_t action = 1;
+    uz_dqn_bitflip_action(env,action);
+    // input for nn muss festgelegt werden und in einer uz_matrix gespeichert werden
+    uz_nn_ff(self->critic,env->inputfornn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
+    float qvalue = uz_matrix_get_max_value(outputdqn);
+    action = uz_matrix_get_max_index(outputdqn);
+    float reward = calculate_reward_bit(env);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,env->inputfornn);
+    if (arraysequal(env->bitinitial,env->bittarget,env->bitlength) == true){
+    return;
+    }
+    } 
+}
+
 void uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
 uz_matrix_t *X, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
 {

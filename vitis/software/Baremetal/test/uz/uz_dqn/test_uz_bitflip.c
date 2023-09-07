@@ -26,11 +26,13 @@
 #define NUMBEROFBITS 8
 uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,0,1,0};
 uint32_t tararray[NUMBEROFBITS] = {0,0,1,0,1,1,1,1};
+float inarray[NUMBEROFBITS] = {0.0f};
  //conf envrionment
 struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
     .bitarray = array,
     .targetarray = tararray,
+    .inputarray = inarray,
     .max_steps = 200
 };
 
@@ -242,14 +244,11 @@ void test_dqn_bitflip(void)
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    for (size_t i = 0; i < testenv->max_steps; i++)
-    {// sample data in here
-    // uz_nn_ff();
-    // action = 
+    uz_dqn_sample_bitenv(testdqn2,testenv);
     }
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
-    }
 }
+
 #endif // TEST

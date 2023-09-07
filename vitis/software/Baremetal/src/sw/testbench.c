@@ -178,7 +178,7 @@ void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config){
 
 void uz_limit_exceed(DS_Data* Data){
 	ultrazohm_state_machine_set_stop(true);
-	ultrazohm_state_machine_set_enable_system(true);
+//	ultrazohm_state_machine_set_enable_system(true);
 	Data->rasv.halfBridge1DutyCycle = 0.5f;
 	Data->rasv.halfBridge2DutyCycle = 0.5f;
 	Data->rasv.halfBridge3DutyCycle = 0.5f;

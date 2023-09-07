@@ -61,6 +61,8 @@
 
 #include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
 
+#include "include/axi_gpio_relais.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

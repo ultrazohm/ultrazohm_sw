@@ -105,6 +105,9 @@ int main(void)
 		    Global_Data.objects.resolver_pl_d2 = initialize_resolver_pl_d2();
 		    // init system monitoring
 		    sysmon_instance = uz_sysmon_ps_init(XPAR_XSYSMONPSU_0_DEVICE_ID);
+		    // init axi gpio relais
+		    Global_Data.objects.axi_gpio_relais = init_axi_gpio_relais();
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:

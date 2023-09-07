@@ -2,6 +2,7 @@
 #define UZ_AXI_GPIO_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct uz_axi_gpio_t uz_axi_gpio_t;
 

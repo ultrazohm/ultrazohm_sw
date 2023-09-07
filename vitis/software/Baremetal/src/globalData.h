@@ -11,6 +11,7 @@
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 #include "uz/uz_signals/uz_signals.h"
@@ -53,6 +54,7 @@ struct pointers_fault_control{
 	uz_CurrentControl_t* xy2;
 	uz_CurrentControl_t* xy3;
 };
+
 
 struct error_struct{
 	float error_OC;
@@ -187,6 +189,7 @@ typedef struct{
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_d2;
 	uz_IIR_Filter_t* torque_filter;
+	uz_axi_gpio_t* axi_gpio_relais;
 	uz_VSD_9ph_FD_t* fault_detection;
 	uz_CurrentControl_t* cc_instance_dq;
 	struct pointers_PI_PI objects_PI_PI;

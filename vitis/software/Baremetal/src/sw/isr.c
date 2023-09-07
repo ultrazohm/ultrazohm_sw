@@ -42,12 +42,17 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+//==============================================================================================================================================================
+//----------------------------------------------------
 // software limits
-#define MAX_PHASE_CURRENT_AMP  10.0f
-#define MAX_DC_VOLT 400.0f
-#define MAX_SPEED_RPM 1000.0f
+#define MAX_PHASE_CURRENT_AMP 12.0f
+#define MAX_DC_VOLT 700.0f
+#define MAX_PHASE_VOLT 400.0f
+#define MAX_SPEED_RPM 3500.0f
 #define MAX_TEMP_DEG 90.0f
-#define NEUTRAL_CFG 3U //1U: 1N, 3U: 3N
+// user settings
+#define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
+//----------------------------------------------------
 
 // modulation
 #include "../uz/uz_spwm/uz_spwm.h"
@@ -88,27 +93,34 @@ void ISR_Control(void *data)
 ///////////////////////////////////Limits///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 	// check current limit
-	if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
-			fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
-			fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
-		Global_Data.av.errors.error_OC += 1.0f;
-		uz_limit_exceed(&Global_Data);
-	}
-	// check DC Bus
-	if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
-		Global_Data.av.errors.error_OV += 1.0f;
-		uz_limit_exceed(&Global_Data);
-	}
-	// check Speed
-	if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
-		Global_Data.av.errors.error_speed += 1.0f;
-		uz_limit_exceed(&Global_Data);
-	}
-	// check inverter temp
-	if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
-		Global_Data.av.errors.error_OT_inv += 1.0f;
-		uz_limit_exceed(&Global_Data);
-	}
+		if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
+				fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
+				fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
+			Global_Data.av.errors.error_OC += 1.0f;
+			uz_limit_exceed(&Global_Data);
+		}
+		// check phase voltage limit
+		if(fabs(Global_Data.av.voltages_abc.a1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c1) > MAX_PHASE_VOLT ||
+				fabs(Global_Data.av.voltages_abc.a2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c2) > MAX_PHASE_VOLT ||
+				fabs(Global_Data.av.voltages_abc.a3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c3) > MAX_PHASE_VOLT) {
+			Global_Data.av.errors.error_OV += 1.0f;
+			uz_limit_exceed(&Global_Data);
+		}
+		// check DC Bus
+		if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
+			Global_Data.av.errors.error_OV += 1.0f;
+			uz_limit_exceed(&Global_Data);
+		}
+		// check Speed
+		if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
+			Global_Data.av.errors.error_speed += 1.0f;
+			uz_limit_exceed(&Global_Data);
+		}
+		// check inverter temp
+		if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
+			Global_Data.av.errors.error_OT_inv += 1.0f;
+			uz_limit_exceed(&Global_Data);
+		}
 
 
 ////////////////////////////////////////////////////////////////////////////

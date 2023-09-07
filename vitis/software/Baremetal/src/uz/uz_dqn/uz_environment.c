@@ -13,7 +13,7 @@ static uz_dqn_environment_t* uz_dqn_environment_allocation(void);
 
 static uz_dqn_environment_t* uz_dqn_environment_allocation(void){
     uz_assert(instance_counterenv < UZ_DQN_BUFFER_MAX_INSTANCES);
-    uz_dqn_experience_replay_t* self = &instancesenv[instance_counterenv];
+    uz_dqn_environment_t* self = &instancesenv[instance_counterenv];
     uz_assert_false(self->is_ready);
     instance_counterenv++;
     self->is_ready = true;
@@ -41,6 +41,29 @@ for(uint32_t i=0; i<self->bitlength;i++){
 }
 self->is_ready = true;
 }
+
+bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        if (inarray[i] != tararray[i]) {
+            return false; // Arrays are not equal
+        }
+    }
+    return true; // Arrays are equal
+}
+float calculate_reward_bit(uz_dqn_environment_t *self)
+{
+    float r = 0.0f;
+    bool z = arraysequal(self->bitinitial,self->bittarget,self->bitlength);
+    if (z==true)
+    {
+    r = 0.0f;
+    }
+    else{
+    r = -1.0f;
+    }
+    return r;
+}
+
 
 void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
 {

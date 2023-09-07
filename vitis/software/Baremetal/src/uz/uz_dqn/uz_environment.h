@@ -26,4 +26,5 @@ struct uz_dqn_environment_config{
 uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);
 void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand);
 void flipbit(uz_dqn_environment_t *self, MTRand *seedRand);
+float calculate_reward_bit(uz_dqn_environment_t *self);
 #endif // UZ_DQN_H

@@ -217,7 +217,7 @@ void test_dqn_bitflip(void)
 {
     uz_dqn_t* testdqn2 = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
     enum target_update periodic;
-    float targsmoothfact = 0.02f;
+    float targsmoothfact = 0.05f;
     uz_nn_copy(testdqn2->critic,testdqn2->critic_target_net);
     //uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
     // große frage warum die zeile darüber nicht funktioniert, aber bei dem init schon
@@ -244,11 +244,15 @@ void test_dqn_bitflip(void)
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    uz_dqn_sample_bitenv(testdqn2,testenv);
+    // für nn werte nach targetarray kopieren
+    for (int i = 0; i < 8; i++) {
+        inarray[i] = (float)tararray[i];
     }
+    uz_dqn_sample_bitenv(testdqn2,testenv);
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
-    X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
+    X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);    
+    }
 }
 
 #endif // TEST

@@ -139,6 +139,7 @@ uz_matrix_t* outputtarget;
     if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic_smoothing, &targsmoothfact);
     }
+printf("Loss ist = %.3f \n",(double)loss);
 }
 //pseudocode set current
 

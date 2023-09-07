@@ -10,6 +10,7 @@
 #include "uz_matrix.h"
 #include <stdlib.h>
 #include "uz_mtwister.h"
+#include "uz_environment.h"
 
 //eps greedy test
 #define NUMBER_OF_EPSGREEDYSTEPS 1000
@@ -285,7 +286,9 @@ void test_uz_dqn_compressed(void)
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
+    
     }
+
 }
 
 void test_calc_reward_with_penalty(void)

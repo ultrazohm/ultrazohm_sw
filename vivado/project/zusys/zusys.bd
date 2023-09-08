@@ -1,11 +1,11 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xBBB4922503A87696",
+      "boundary_crc": "0x1ED11FFECC1D8798",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "None",
+      "synth_flow_mode": "Hierarchical",
       "tool_version": "2022.2",
       "validated": "true"
     },
@@ -264,37 +264,6 @@
         "left": "0",
         "right": "0"
       },
-      "D4_OUT": {
-        "direction": "O",
-        "left": "7",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
-            "value_src": "default_prop"
-          }
-        }
-      },
-      "D4_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_29": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
       "Dig_09_Ch5": {
         "direction": "I"
       },
@@ -342,6 +311,21 @@
       },
       "Dig_8_Ch5": {
         "direction": "I"
+      },
+      "Dig_21_Ch4": {
+        "direction": "O"
+      },
+      "Dig_17_Ch4": {
+        "direction": "I"
+      },
+      "Dig_22_Ch4": {
+        "direction": "O"
+      },
+      "Dig_18_Ch4": {
+        "direction": "O"
+      },
+      "Dig_19_Ch4": {
+        "direction": "O"
       }
     },
     "components": {
@@ -5535,6 +5519,24 @@
           "aresetn": {
             "type": "rst",
             "direction": "I"
+          },
+          "CLK_1": {
+            "direction": "I"
+          },
+          "Dig_17_Ch4": {
+            "direction": "I"
+          },
+          "Dig_21_Ch4": {
+            "direction": "O"
+          },
+          "Dig_18_Ch4": {
+            "direction": "O"
+          },
+          "Dig_19_Ch4": {
+            "direction": "O"
+          },
+          "Dig_22_Ch4": {
+            "direction": "O"
           }
         },
         "components": {
@@ -5602,7 +5604,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:0.2",
+            "vlnv": "xilinx.com:ip:uz_EnDat:0.7",
             "xci_name": "zusys_uz_EnDat_0_1",
             "xci_path": "ip\\zusys_uz_EnDat_0_1\\zusys_uz_EnDat_0_1.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5623,10 +5625,45 @@
           }
         },
         "nets": {
-          "CLK_OUT": {
+          "CLK_1_1": {
             "ports": [
-              "uz_EnDat_0/CLK_OUT"
+              "CLK_1",
+              "uz_EnDat_0/CLK_1"
+            ]
+          },
+          "Dig_17_Ch4_1": {
+            "ports": [
+              "Dig_17_Ch4",
+              "uz_EnDat_0/datain"
             ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "aclk_1": {
+            "ports": [
+              "aclk",
+              "smartconnect_1/aclk",
+              "uz_EnDat_0/IPCORE_CLK",
+              "uz_EnDat_0/AXI4_Lite_ACLK"
+            ]
+          },
+          "dataout": {
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "dataout_1": {
             "hdl_attributes": {
               "DEBUG": {
                 "value": "true"
@@ -5644,14 +5681,49 @@
               "uz_EnDat_0/AXI4_Lite_ARESETN"
             ]
           },
-          "zynq_ultra_ps_e_0_pl_clk1": {
+          "uz_EnDat_0_CLK_OUT": {
             "ports": [
-              "aclk",
-              "smartconnect_1/aclk",
-              "uz_EnDat_0/IPCORE_CLK",
-              "uz_EnDat_0/CLK_1",
-              "uz_EnDat_0/AXI4_Lite_ACLK"
-            ]
+              "uz_EnDat_0/CLK_OUT",
+              "Dig_21_Ch4"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "uz_EnDat_0_clkwr": {
+            "ports": [
+              "uz_EnDat_0/clkwr",
+              "Dig_22_Ch4"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "uz_EnDat_0_dataout": {
+            "ports": [
+              "uz_EnDat_0/dataout",
+              "Dig_18_Ch4"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "uz_EnDat_0_datawr": {
+            "ports": [
+              "uz_EnDat_0/datawr",
+              "Dig_19_Ch4"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              }
+            }
           }
         }
       },
@@ -8900,13 +8972,23 @@
           "uz_digital_adapter/Dig_13_Ch5"
         ]
       },
+      "Dig_17_Ch4_1": {
+        "ports": [
+          "Dig_17_Ch4",
+          "uz_user/Dig_17_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          }
+        }
+      },
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
           "uz_system/D1_OUT_28",
           "D1_OUT_28",
           "D2_OUT_28",
-          "D3_OUT_28",
-          "D4_OUT_28"
+          "D3_OUT_28"
         ]
       },
       "Enable_Gates_CPLD_Low_dout": {
@@ -8917,9 +8999,7 @@
           "D2_OUT_26",
           "D2_OUT_27",
           "D3_OUT_26",
-          "D3_OUT_27",
-          "D4_OUT_26",
-          "D4_OUT_27"
+          "D3_OUT_27"
         ]
       },
       "Gates_3L_Gate_Signals_3L": {
@@ -9009,11 +9089,73 @@
           "uz_user/aresetn"
         ]
       },
+      "uz_system_clk_50MHz": {
+        "ports": [
+          "uz_system/clk_50MHz",
+          "uz_user/CLK_1"
+        ]
+      },
       "uz_system_wdt_interrupt": {
         "ports": [
           "uz_system/wdt_interrupt",
           "zynq_ultra_ps_e_0/pl_ps_irq1"
         ]
+      },
+      "uz_user_Dig_18_Ch4": {
+        "ports": [
+          "uz_user/Dig_18_Ch4",
+          "Dig_18_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
+      },
+      "uz_user_Dig_19_Ch4": {
+        "ports": [
+          "uz_user/Dig_19_Ch4",
+          "Dig_19_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
+      },
+      "uz_user_Dig_21_Ch4": {
+        "ports": [
+          "uz_user/Dig_21_Ch4",
+          "Dig_21_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
+      },
+      "uz_user_Dig_22_Ch4": {
+        "ports": [
+          "uz_user/Dig_22_Ch4",
+          "Dig_22_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          },
+          "MARK_DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "vio_D2_test_probe_out0": {
         "ports": [
@@ -9024,7 +9166,6 @@
       "xlconcat_0_dout": {
         "ports": [
           "uz_system/D4_OUT",
-          "D4_OUT",
           "zynq_ultra_ps_e_0/pl_ps_irq0"
         ]
       },
@@ -9033,8 +9174,7 @@
           "uz_system/D1_OUT_29",
           "D1_OUT_29",
           "D2_OUT_29",
-          "D3_OUT_29",
-          "D4_OUT_29"
+          "D3_OUT_29"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {

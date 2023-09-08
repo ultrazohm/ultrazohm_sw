@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/ELSYS_PC/Documents/repos/ultrazohm_sw/ip_cores/uz_EnDat_IPCore/hdl_prj/ipcore/uz_EnDat_v0_2/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="f2f1820ebc5f44ababd6c8a755fe06f5"/>
+    <Option Name="Id" Val="f0dc969490024cc891a4350f00fbb518"/>
     <Option Name="Part" Val="xczu9eg-ffvb1156-2-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -161,13 +161,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_EnDat_src_Triggered_Subsystem.vhd">
+      <File Path="$PPRDIR/../hdl/uz_EnDat_src_CLKDIV2.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_EnDat_src_CLKDIV2.vhd">
+      <File Path="$PPRDIR/../hdl/uz_EnDat_src_Triggered_Subsystem.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

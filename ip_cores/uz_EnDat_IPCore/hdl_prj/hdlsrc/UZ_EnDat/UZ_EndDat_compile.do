@@ -8,9 +8,16 @@ vcom  CLKDIV3.vhd
 vcom  CLKDIV4.vhd
 vcom  CLKDIV5.vhd
 vcom  CLKDIV6.vhd
+vcom  CLKDIV7.vhd
+vcom  CLKDIV8.vhd
+vcom  CLKDIV9.vhd
+vcom  FF0.vhd
+vcom  CRC_Check.vhd
 vcom  Compare_To_Constant.vhd
 vcom  Detect_Change.vhd
 vcom  SetZero.vhd
+vcom  nfp_wire_double.vhd
+vcom  SetZeroBool.vhd
 vcom  Increment_Real_World.vhd
 vcom  Triggered_Subsystem_block.vhd
 vcom  DualPortRAM_generic.vhd

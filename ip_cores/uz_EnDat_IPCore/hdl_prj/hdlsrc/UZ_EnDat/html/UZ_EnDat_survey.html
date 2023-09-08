@@ -36,7 +36,7 @@ UZ_EnDat
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.68
+1.156
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2023-07-20 12:28:37
+2023-09-08 15:12:02
 </td>
 
 </tr>
@@ -64,7 +64,7 @@ HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
 <a href="matlab:coder.internal.code2model('UZ_EnDat:7')" name="code2model" class="code2model">
-UZ_EndDat
+UZ_ENDAT
 </a>
 
 </td>
@@ -120,6 +120,15 @@ on
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+DeleteUnusedPorts
+</td>
+<td align="right" valign="top" style="border-style: none">
+off
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 FloatingPointTargetConfiguration
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -127,21 +136,30 @@ hdlcoder.FloatingPointTargetConfig
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 HDLSubsystem
 </td>
 <td align="right" valign="top" style="border-style: none">
-UZ_EnDat/UZ_EndDat
+UZ_EnDat/UZ_ENDAT
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 MapPipelineDelaysToRAM
 </td>
 <td align="right" valign="top" style="border-style: none">
 on
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ModulePrefix
+</td>
+<td align="right" valign="top" style="border-style: none">
+uz_EnDat_src_
 </td>
 
 </tr>
@@ -284,7 +302,7 @@ Non-default block properties
 </a>
 <br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:7')" name="code2model" class="code2model">
-UZ_EndDat
+UZ_ENDAT
 </a>
 
 </b>
@@ -309,7 +327,7 @@ uz_EnDat
 IPCoreVersion
 </td>
 <td align="right" valign="top" style="border-style: none">
-0.2
+0.7
 </td>
 
 </tr>
@@ -415,8 +433,920 @@ x"108"
 
 </table>
 <br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:597')" name="code2model" class="code2model">
+datain
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
 Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:317')" name="code2model" class="code2model">
 16BIT_SPLITTER
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:599')" name="code2model" class="code2model">
+CRC_Check
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:615')" name="code2model" class="code2model">
+FF0
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:616')" name="code2model" class="code2model">
+S
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:619')" name="code2model" class="code2model">
+CLK
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:620')" name="code2model" class="code2model">
+DATA
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:621')" name="code2model" class="code2model">
+R
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:618')" name="code2model" class="code2model">
+Q
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:750')" name="code2model" class="code2model">
+NQ
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:646')" name="code2model" class="code2model">
+FF1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:647')" name="code2model" class="code2model">
+S
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:648')" name="code2model" class="code2model">
+CLK
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:649')" name="code2model" class="code2model">
+DATA
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:650')" name="code2model" class="code2model">
+R
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:664')" name="code2model" class="code2model">
+Q
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:749')" name="code2model" class="code2model">
+NQ
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:665')" name="code2model" class="code2model">
+FF2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:666')" name="code2model" class="code2model">
+S
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:667')" name="code2model" class="code2model">
+CLK
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:668')" name="code2model" class="code2model">
+DATA
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:669')" name="code2model" class="code2model">
+R
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:683')" name="code2model" class="code2model">
+Q
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:748')" name="code2model" class="code2model">
+NQ
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:684')" name="code2model" class="code2model">
+FF3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:685')" name="code2model" class="code2model">
+S
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:686')" name="code2model" class="code2model">
+CLK
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:687')" name="code2model" class="code2model">
+DATA
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:688')" name="code2model" class="code2model">
+R
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:702')" name="code2model" class="code2model">
+Q
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:728')" name="code2model" class="code2model">
+NQ
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:703')" name="code2model" class="code2model">
+FF4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture Module )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+ProcessorFPGASynchronization
+</td>
+<td align="right" valign="top" style="border-style: none">
+Free running
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:704')" name="code2model" class="code2model">
+S
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:705')" name="code2model" class="code2model">
+CLK
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:706')" name="code2model" class="code2model">
+DATA
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:707')" name="code2model" class="code2model">
+R
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:721')" name="code2model" class="code2model">
+Q
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:727')" name="code2model" class="code2model">
+NQ
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:1351')" name="code2model" class="code2model">
+WORDTOBOOL
 </a>
 
 </b>
@@ -655,6 +1585,111 @@ IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
 x"12C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:598')" name="code2model" class="code2model">
+dataout
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:764')" name="code2model" class="code2model">
+CRCDEBUG
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"10C"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:831')" name="code2model" class="code2model">
+clkwr
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('UZ_EnDat:832')" name="code2model" class="code2model">
+datawr
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
 </td>
 
 </tr>

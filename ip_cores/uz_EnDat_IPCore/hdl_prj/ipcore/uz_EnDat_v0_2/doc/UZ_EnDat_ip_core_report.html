@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">1.65
+<td class="summaryTableSndColOddRow">1.74
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">14-Jul-2023 18:36:51
+<td class="summaryTableSndColOddRow">27-Jul-2023 15:50:39
 </td>
 </tr>
 <tr>
@@ -196,9 +196,9 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:10')">CLK_OUT</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:597')">datain</a>
 </td>
-<td class="distinctCellColor">Outport
+<td class="distinctCellColor">Inport
 </td>
 <td class="distinctCellColor">boolean
 </td>
@@ -210,21 +210,21 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:121')">POS</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:10')">CLK_OUT</a>
 </td>
 <td>Outport
 </td>
-<td>double
+<td>boolean
 </td>
-<td>AXI4-Lite
+<td>External Port
 </td>
-<td>x"110"
+<td>
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:122')">min</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:121')">POS</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -232,13 +232,13 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"120"
+<td class="distinctCellColor">x"110"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:123')">s</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:122')">min</a>
 </td>
 <td>Outport
 </td>
@@ -246,27 +246,27 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"130"
+<td>x"120"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:124')">OD1</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:123')">s</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">uint16
+<td class="distinctCellColor">double
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"104"
+<td class="distinctCellColor">x"130"
 </td>
 <td class="distinctCellColor">
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:125')">OD2</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:124')">OD1</a>
 </td>
 <td>Outport
 </td>
@@ -274,13 +274,13 @@ Target platform interface table:
 </td>
 <td>AXI4-Lite
 </td>
-<td>x"11C"
+<td>x"104"
 </td>
 <td>
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:126')">statusword</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:125')">OD2</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
@@ -288,7 +288,35 @@ Target platform interface table:
 </td>
 <td class="distinctCellColor">AXI4-Lite
 </td>
-<td class="distinctCellColor">x"12C"
+<td class="distinctCellColor">x"11C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:126')">statusword</a>
+</td>
+<td>Outport
+</td>
+<td>uint16
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"12C"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:598')">dataout</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">boolean
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
 </td>
 <td class="distinctCellColor">
 </td>
@@ -333,7 +361,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2307141836
+<td>contains unique IP timestamp (yymmddHHMM): 2307271550
 </td>
 </tr>
 <tr>

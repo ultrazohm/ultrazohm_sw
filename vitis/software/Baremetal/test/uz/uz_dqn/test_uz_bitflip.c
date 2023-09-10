@@ -14,9 +14,9 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 5000
-#define MINIBATCHSIZE 16
+#define MINIBATCHSIZE 64
 #define NUMBER_OF_EPOCHS 200
-#define TARGET_UPDATE_FREQUENCY 5
+#define TARGET_UPDATE_FREQUENCY 20
 // nn
 #define NUMBER_OF_INPUTS 8
 #define NUMBER_OF_OUTPUTS 8
@@ -33,15 +33,16 @@ struct uz_dqn_environment_config configenv = {
     .bitarray = array,
     .targetarray = tararray,
     .inputarray = inarray,
-    .max_steps = 0,
+    .max_steps = 250,
     .epsilon_start = 0.95f, 
-    .epsilon_min = 0.05, 
+    .epsilon_min = 0.05f, 
     .epsilon_decay = 0.0001f
 };
-
+// debug stuff
+float loss[NUMBER_OF_EPOCHS] = {0.0f};
 //dqn
-float discountfact = 0.90f;
-float lernrate = 0.0001f;
+float discountfact = 0.98f;
+float lernrate = 0.001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 float *inputdata = &X_dat;
 struct uz_matrix_t input_vec= {0};
@@ -246,9 +247,10 @@ void test_dqn_bitflip(void)
     uz_dqn_environment_t *testenv = uz_dqn_environment_init(configenv);
     for (size_t i = 0; i < 20; i++)
     {
-    // buffer vorfuellen
+    // buffer vorfuellen, 250 steps
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    for (int i = 0; i < NUMBEROFBITS; i++) {
+    // für nn werte nach targetarray kopieren
+    for (int i = 0; i < 250; i++) {
         inarray[i] = (float)tararray[i];
     }
     uz_dqn_sample_bitenv(testdqn2,testenv);
@@ -262,9 +264,12 @@ void test_dqn_bitflip(void)
     }
     uz_dqn_sample_bitenv(testdqn2,testenv);
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);    
     }
+    // parameter export
+    uz_nn_trained_export(testdqn2->critic_target_net);
+    // Verhalten des Agenten testen, nach dem Training
 }
 
 #endif // TEST

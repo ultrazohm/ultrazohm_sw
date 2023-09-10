@@ -268,6 +268,17 @@ void uz_nn_mat_export(uz_nn_t *self)
         uz_nn_layer_matb_export(self->layer[2], fname5);
 }
 
+void uz_nn_trained_export(uz_nn_t *self)
+{
+        char *fname = "test/uz/uz_nn/loss_test/trained_layer1_weights.csv";
+        uz_nn_layer_matw_export(self->layer[0], fname);
+        char *fname1 = "test/uz/uz_nn/loss_test/trained_layer2_weights.csv";
+        uz_nn_layer_matw_export(self->layer[1], fname1);
+        char *fname3 = "test/uz/uz_nn/loss_test/trained_layer1_bias.csv";
+        uz_nn_layer_matb_export(self->layer[0], fname3);
+        char *fname4 = "test/uz/uz_nn/loss_test/trained_layer2_bias.csv";
+        uz_nn_layer_matb_export(self->layer[1], fname4);
+}
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);

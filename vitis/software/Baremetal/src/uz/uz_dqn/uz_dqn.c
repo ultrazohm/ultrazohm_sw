@@ -125,12 +125,13 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
     } 
 }
 
-void uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
+float uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
 uz_matrix_t *X, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
 {
 float qplus1 = 0.0f;
 bool terminal = false;
 float loss = 0.0f;
+float dloss = 0.0f;
 uz_matrix_t* outputtarget;
     for(uint32_t j=0; j<mbsize;j++){
         uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,obs,self->experience_buffer->vectorforobs,obspl1,mbsize,numobs,indices);
@@ -138,8 +139,9 @@ uz_matrix_t* outputtarget;
         uz_nn_ff(self->critic_target_net,X);
         outputtarget=uz_nn_get_output_data(self->critic_target_net);
         qplus1 = uz_matrix_get_max_value(outputtarget);
-        loss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
-        uz_nn_backward_pass_mini_batch(self->critic,&loss,X);  
+        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        uz_nn_backward_pass_mini_batch(self->critic,&dloss,X);  
     }
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
@@ -147,8 +149,9 @@ uz_matrix_t* outputtarget;
     if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic_smoothing, &targsmoothfact);
     }
+// printf("dLoss %.3f \n",(double)dloss);
 printf("Loss %.3f \n",(double)loss);
-
+return loss;
 }
 //pseudocode set current
 

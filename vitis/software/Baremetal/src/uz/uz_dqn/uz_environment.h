@@ -20,11 +20,12 @@ struct uz_dqn_environment_t {
     float epsilon_start;
     float epsilon_min;
     float epsilon_decay;
+    float cumreward;
 };
 struct uz_dqn_environment_config{
     uint32_t bitlength;
     uint32_t *const bitarray;
-    float *const inputarray;
+    float *const inarray;
     uint32_t *const targetarray;
     uint32_t max_steps;
     float epsilon_start;

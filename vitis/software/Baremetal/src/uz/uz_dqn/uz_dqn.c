@@ -95,13 +95,31 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *
     float reward = calculate_reward_dqn(samplerate,input,penalty);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,input);
 }
-
-void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
+void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self,uz_dqn_environment_t *env)
 {
     uint32_t actionind;
     for (uint32_t i = 0; i < env->max_steps; i++)
     {
+    uz_nn_ff(self->critic,env->inputfornn);
+    uz_matrix_t* outputaction=uz_nn_get_output_data(self->critic);
+    actionind = uz_matrix_get_max_index(outputaction);
+    uz_dqn_bitflip_action(env,actionind);
+    float reward = calculate_reward_bit(env);
+    env->cumreward+= reward;
+    if (arraysequal(env->bitinitial,env->bittarget,env->bitlength) == true){
+    printf("Bitmuster gleich nach %d Schritten.\n",i);
+    return;
+    }  
+    }
+
+}
+
+void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
+{
+    uint32_t actionind;
     env->epsilon_start = calc_epsilon_greedy(env->epsilon_start,env->epsilon_min,env->epsilon_decay);
+    for (uint32_t i = 0; i < env->max_steps; i++)
+    {
     // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<env->epsilon_start){
         actionind = genRand_uint32_t(&self->randinstance->seedRand,env->bitlength-1);
@@ -118,6 +136,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
     float qvalue = uz_matrix_get_max_value(outputdqn);
     float reward = calculate_reward_bit(env);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,env->inputfornn);
+    env->cumreward+= reward;
     if (arraysequal(env->bitinitial,env->bittarget,env->bitlength) == true){
     printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
@@ -150,7 +169,7 @@ uz_matrix_t* outputtarget;
     uz_nn_target_update(self->critic,self->critic_target_net,periodic_smoothing, &targsmoothfact);
     }
 // printf("dLoss %.3f \n",(double)dloss);
-printf("Loss %.3f \n",(double)loss);
+// printf("Loss %.3f \n",(double)loss);
 return loss;
 }
 //pseudocode set current

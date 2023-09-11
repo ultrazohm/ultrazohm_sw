@@ -25,7 +25,7 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     self->bitlength = envconf.bitlength;
     self->bitinitial = envconf.bitarray;
     self->bittarget = envconf.targetarray;
-    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inputarray,envconf.bitlength,1,envconf.bitlength);
+    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inarray,envconf.bitlength,1,envconf.bitlength);
     self->epsilon_min = envconf.epsilon_min;
     self->epsilon_start = envconf.epsilon_start;
     self->epsilon_decay = envconf.epsilon_decay;
@@ -40,10 +40,12 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
 
 void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
 for(uint32_t i=0; i<self->bitlength;i++){
-    self->bittarget[i]  = genRand_zero_one(seedRand);
+    // self->bittarget[i]  = genRand_zero_one(seedRand);
     self->bitinitial[i] = genRand_zero_one(seedRand);
+    self->inputfornn->data[i] = (float)self->bitinitial[i];
 }
 self->is_ready = true;
+self->cumreward = 0.0f;
 }
 
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size) {
@@ -74,9 +76,11 @@ void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
     // flip bit
     if (self->bitinitial[action] == 1){
     self->bitinitial[action] = 0;
+    self->inputfornn->data[action] = 0.0f;
     }
     else{
     self->bitinitial[action] = 1;
+    self->inputfornn->data[action] = 1.0f;
     }
 }
 
@@ -87,9 +91,11 @@ void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
     // flip bit
     if (self->bitinitial[x] == 1){
     self->bitinitial[x] = 0;
+    self->inputfornn->data[x] = 0.0f;
     }
     else{
     self->bitinitial[x] = 1;
+    self->inputfornn->data[x] = 1.0f;
     }
 }
 

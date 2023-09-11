@@ -15,34 +15,36 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 5000
 #define MINIBATCHSIZE 64
-#define NUMBER_OF_EPOCHS 200
+#define NUMBER_OF_EPOCHS 500
 #define TARGET_UPDATE_FREQUENCY 20
 // nn
 #define NUMBER_OF_INPUTS 8
 #define NUMBER_OF_OUTPUTS 8
 #define NUMBER_OF_HIDDEN_LAYER 2
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16
 
 #define NUMBEROFBITS 8
 uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,0,1,0};
-uint32_t tararray[NUMBEROFBITS] = {0,0,1,0,1,1,1,1};
+uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,1,1,1,1};
 float inarray[NUMBEROFBITS] = {0.0f};
  //conf envrionment
 struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
     .bitarray = array,
     .targetarray = tararray,
-    .inputarray = inarray,
-    .max_steps = 250,
+    .inarray = inarray,
+    .max_steps = 200,
     .epsilon_start = 0.95f, 
     .epsilon_min = 0.05f, 
-    .epsilon_decay = 0.0001f
+    .epsilon_decay = 0.001f
 };
 // debug stuff
 float loss[NUMBER_OF_EPOCHS] = {0.0f};
+float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+float cumreward_noexpl[20] = {0.0f};
 //dqn
 float discountfact = 0.98f;
-float lernrate = 0.001f;
+float lernrate = 0.0001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 float *inputdata = &X_dat;
 struct uz_matrix_t input_vec= {0};
@@ -126,7 +128,7 @@ struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
         .bias = tb_1,
         .output = ty_1,
         .sumout = ts_1},
-    [1] = {.activation_function = activation_ReLU,      
+    [1] = {.activation_function = activation_tanh,      
       .number_of_neurons = NUMBER_OF_OUTPUTS,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
       .length_of_weights = UZ_MATRIX_SIZE(tw_2),
@@ -166,7 +168,7 @@ struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
         .cachegradients = cacheg_1,
         .error = e_1},
     [1] = {
-      .activation_function = activation_ReLU, 
+      .activation_function = activation_tanh, 
       .number_of_neurons = NUMBER_OF_OUTPUTS,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
       .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
@@ -245,31 +247,41 @@ void test_dqn_bitflip(void)
     struct uz_matrix_t input_vec= {0};
     uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
     uz_dqn_environment_t *testenv = uz_dqn_environment_init(configenv);
-    for (size_t i = 0; i < 20; i++)
-    {
-    // buffer vorfuellen, 250 steps
-    uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    // für nn werte nach targetarray kopieren
-    for (int i = 0; i < 250; i++) {
-        inarray[i] = (float)tararray[i];
+    // for (size_t i = 0; i < 20; i++)
+    // {
+    // // buffer vorfuellen, 250 steps
+    // uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
+    // // für nn werte nach targetarray kopieren
+    for (int i = 0; i < NUMBEROFBITS; i++) {
+        inarray[i] = (float)array[i];
     }
-    uz_dqn_sample_bitenv(testdqn2,testenv);
-    }
+    // uz_dqn_sample_bitenv(testdqn2,testenv);
+    // }
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
     // für nn werte nach targetarray kopieren
-    for (int i = 0; i < 8; i++) {
-        inarray[i] = (float)tararray[i];
-    }
+    // for (int i = 0; i < 8; i++) {
+    //     inarray[i] = (float)tararray[i];
+    // }
     uz_dqn_sample_bitenv(testdqn2,testenv);
+    cumreward[i] = testenv->cumreward;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);    
     }
-    // parameter export
-    uz_nn_trained_export(testdqn2->critic_target_net);
     // Verhalten des Agenten testen, nach dem Training
+    for (size_t i = 0; i < 20; i++)
+    {
+    uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
+    // für nn werte nach targetarray kopieren
+    // for (int i = 0; i < 8; i++) {
+    //     inarray[i] = (float)tararray[i];
+    // }
+    uz_dqn_act_bitenv_no_exploration(testdqn2,testenv);
+    cumreward_noexpl[i] = testenv->cumreward;
+    }
+        // parameter export
+    uz_nn_trained_export(testdqn2->critic_target_net);
 }
-
 #endif // TEST

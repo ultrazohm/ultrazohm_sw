@@ -85,27 +85,12 @@ uz_9ph_dq_t step_controllers_PIR_PIR(DS_Data* Data, struct pointers_PIR_PIR obje
 	uz_9ph_dq_t out_dq = {0};
 	out_dq.d = dq_ref_PI.d + dq_ref_res.d;
 	out_dq.q = dq_ref_PI.q + dq_ref_res.q;
-	if(Data->rasv.ctrl_xy1){
-		out_dq.x1 = XY1_ref.alpha;
-		out_dq.y1 = XY1_ref.beta;
-	}else{
-		uz_subspace_resonant_control_reset(objects.RES_xy1);
-		uz_CurrentControl_reset(objects.PI_xy1);
-	}
-	if(Data->rasv.ctrl_xy2){
-		out_dq.x2 = XY2_ref.alpha;
-		out_dq.y2 = XY2_ref.beta;
-	}else{
-		uz_subspace_resonant_control_reset(objects.RES_xy2);
-		uz_CurrentControl_reset(objects.PI_xy2);
-	}
-	if(Data->rasv.ctrl_xy3){
-		out_dq.x3 = XY3_ref.alpha + XY3_ref_7.alpha;
-		out_dq.y3 = XY3_ref.beta + XY3_ref_7.beta;
-	}else{
-		uz_subspace_resonant_control_reset(objects.RES_xy3);
-		uz_subspace_resonant_control_reset(objects.RES_XY3);
-	}
+	out_dq.x1 = XY1_ref.alpha;
+	out_dq.y1 = XY1_ref.beta;
+	out_dq.x2 = XY2_ref.alpha;
+	out_dq.y2 = XY2_ref.beta;
+	out_dq.x3 = 0.0f;//XY3_ref.alpha + XY3_ref_7.alpha;
+	out_dq.y3 = 0.0f;//XY3_ref.beta + XY3_ref_7.beta;
 	return out_dq;
 }
 

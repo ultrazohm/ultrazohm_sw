@@ -207,27 +207,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			data->rasv.ctrl_xy1 = true;
+			data->rasv.opf_a1_min = true;
 			break;
 
 		case (My_Button_2):
-			data->rasv.ctrl_xy1 = false;
+			data->rasv.opf_a1_max = true;
 			break;
 
 		case (My_Button_3):
-			data->rasv.ctrl_xy2 = true;
+			data->rasv.opf_a1_b3 = true;
 			break;
 
 		case (My_Button_4):
-			data->rasv.ctrl_xy2 = false;
+				data->rasv.opf_a1_a2 = true;
 			break;
 
 		case (My_Button_5):
-			data->rasv.ctrl_xy3 = true;
+				data->rasv.opf_sys1 = true;
 			break;
 
 		case (My_Button_6):
-			data->rasv.ctrl_xy3 = false;
 			break;
 
 		case (My_Button_7):

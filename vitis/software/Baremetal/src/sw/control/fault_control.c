@@ -1,46 +1,34 @@
 #include "fault_control.h"
 
-float tristate_sys2;
-void fault_control_set_tristate(DS_Data* Data, uz_9ph_abc_t indices, int n_OPF){
-	bool syst1 = false;
-	bool syst2 = false;
-	bool syst3 = false;
-	if(n_OPF == 3){
-		syst1 = (indices.a1 == 1.0f)&&(indices.b1 == 1.0f)&&(indices.c1 == 1.0f);
-		syst2 = (indices.a2 == 1.0f)&&(indices.b2 == 1.0f)&&(indices.c2 == 1.0f);
-		syst3 = (indices.a3 == 1.0f)&&(indices.b3 == 1.0f)&&(indices.c3 == 1.0f);
-		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, syst1, syst1, syst1);
-		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11 , syst2, syst2, syst2);
-		uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17 , syst3, syst3, syst3);
+void fault_control_open_switches(DS_Data* Data, uz_9ph_abc_t indices, int n_OPF){
+	bool sys1 = false;
+	bool sys2 = false;
+	bool sys3 = false;
+	// if n_OPF==2 check if both faults in same system
+	if(n_OPF == 2){
+		sys1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
+		sys2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
+		sys3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
+	// if n_OPF==3 check if all faults are in same system
+	}else if(n_OPF == 3){
+		sys1 = (indices.a1 == 1.0f)&&(indices.b1 == 1.0f)&&(indices.c1 == 1.0f);
+		sys2 = (indices.a2 == 1.0f)&&(indices.b2 == 1.0f)&&(indices.c2 == 1.0f);
+		sys3 = (indices.a3 == 1.0f)&&(indices.b3 == 1.0f)&&(indices.c3 == 1.0f);
 	}
-	if(syst2){
-		tristate_sys2=1.0f;
-	}else{
-		tristate_sys2 = 0.0f;
+	// set tristate and relais
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, sys1, sys1, sys1);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11 , sys2, sys2, sys2);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17 , sys3, sys3, sys3);
+	if(sys1){
+		Data->rasv.set_relais &= 0xFFF8;
 	}
-}
+	if(sys2){
+		Data->rasv.set_relais &= 0xFFC7;
+	}
+	if(sys3){
+		Data->rasv.set_relais &= 0xFE3F;
+	}
 
-uz_9ph_abc_t fault_control_remove_system(uz_9ph_abc_t indices){
-	bool syst1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
-	bool syst2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
-	bool syst3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
-	uz_9ph_abc_t out = indices;
-	if(syst1){
-		out.a1 = 1.0f;
-		out.b1 = 1.0f;
-		out.c1 = 1.0f;
-	}
-	if(syst2){
-		out.a2 = 1.0f;
-		out.b2 = 1.0f;
-		out.c2 = 1.0f;
-	}
-	if(syst3){
-		out.a3 = 1.0f;
-		out.b3 = 1.0f;
-		out.c3 = 1.0f;
-	}
-	return out;
 }
 
 uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers_fault_control objects, uz_9ph_MLMT_kparameter_t k_param){

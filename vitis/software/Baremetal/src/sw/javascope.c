@@ -38,9 +38,7 @@ uint32_t js_status_BareToRTOS=0;
 float OPF_index_float;
 float n_OPF_float;
 
-extern uz_3ph_alphabeta_t XY1_ref;
-extern uz_3ph_alphabeta_t XY2_ref;
-extern uz_3ph_alphabeta_t XY3_ref;
+float set_relais_combined = {0};
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -118,6 +116,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_iq_set]   	= &data->rasv.dq_setpoints_user_input.q;
+
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

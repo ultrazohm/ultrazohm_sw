@@ -170,7 +170,10 @@ Saturation and Anti-Windup
 The output of the controller is limited by the input values ``upper_limit`` and ``lower_limit``.
 As an anti-windup strategy the back calculation method is used.
 The gain of the anti-windup feedback is given by the input value ``antiwindup_gain``.
-To disable the anti-windup strategy the feedback can be set to 0.
+Values between 1..10 are recommended for the gain.
+Too large values can result in an unstable controller during output saturation.
+To disable the anti-windup strategy the feedback gain can be set to 0.
+Besides the upper and lower limit, NaN values for the output are intercepted and set to 0.
 
 
 Set gain function

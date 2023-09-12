@@ -132,8 +132,8 @@ int main(void)
 		    // init system monitoring
 		    sysmon_instance = uz_sysmon_ps_init(XPAR_XSYSMONPSU_0_DEVICE_ID);
 		    // init axi gpio relais
-		    Global_Data.objects.axi_gpio_relais = init_axi_gpio_relais();
-		    Global_Data.rasv.set_relais = 0x1FF;
+			Global_Data.objects.axi_gpio_relais = init_axi_gpio_relais();
+			Global_Data.rasv.set_relais = 0x1FF;
 			uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_relais, Global_Data.rasv.set_relais);
 
             initialization_chain = print_msg;

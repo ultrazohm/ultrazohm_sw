@@ -13,20 +13,20 @@
 #include "uz_environment.h"
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 5000
+#define EXPERIENCE_BUFFER_LENGTH 50000
 #define MINIBATCHSIZE 64
-#define NUMBER_OF_EPOCHS 500
+#define NUMBER_OF_EPOCHS 100
 #define TARGET_UPDATE_FREQUENCY 20
 // nn
-#define NUMBER_OF_INPUTS 8
+#define NUMBER_OF_INPUTS 16
 #define NUMBER_OF_OUTPUTS 8
 #define NUMBER_OF_HIDDEN_LAYER 2
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16
-
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
 #define NUMBEROFBITS 8
+// random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,0,1,0};
 uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,1,1,1,1};
-float inarray[NUMBEROFBITS] = {0.0f};
+float inarray[NUMBER_OF_INPUTS] = {0.0f,1.0f,0.0f,0.0f,1.0f,0.0f,1.0f,0.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f};
  //conf envrionment
 struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
@@ -41,6 +41,7 @@ struct uz_dqn_environment_config configenv = {
 // debug stuff
 float loss[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[20] = {0.0f};
 //dqn
 float discountfact = 0.98f;
@@ -128,7 +129,7 @@ struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
         .bias = tb_1,
         .output = ty_1,
         .sumout = ts_1},
-    [1] = {.activation_function = activation_tanh,      
+    [1] = {.activation_function = activation_linear,      
       .number_of_neurons = NUMBER_OF_OUTPUTS,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
       .length_of_weights = UZ_MATRIX_SIZE(tw_2),
@@ -168,7 +169,7 @@ struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
         .cachegradients = cacheg_1,
         .error = e_1},
     [1] = {
-      .activation_function = activation_tanh, 
+      .activation_function = activation_linear, 
       .number_of_neurons = NUMBER_OF_OUTPUTS,
       .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
       .number_of_cachegradrows = NUMBER_OF_OUTPUTS,
@@ -252,36 +253,32 @@ void test_dqn_bitflip(void)
     // // buffer vorfuellen, 250 steps
     // uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
     // // für nn werte nach targetarray kopieren
-    for (int i = 0; i < NUMBEROFBITS; i++) {
-        inarray[i] = (float)array[i];
-    }
     // uz_dqn_sample_bitenv(testdqn2,testenv);
     // }
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    // für nn werte nach targetarray kopieren
-    // for (int i = 0; i < 8; i++) {
-    //     inarray[i] = (float)tararray[i];
-    // }
     uz_dqn_sample_bitenv(testdqn2,testenv);
     cumreward[i] = testenv->cumreward;
+    epsilonovertime[i] = testenv->epsilon_start;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
     loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
-    X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);    
+    X,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);    
     }
     // Verhalten des Agenten testen, nach dem Training
-    for (size_t i = 0; i < 20; i++)
+    for (size_t i = 0; i < 100; i++)
     {
     uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    // für nn werte nach targetarray kopieren
-    // for (int i = 0; i < 8; i++) {
-    //     inarray[i] = (float)tararray[i];
-    // }
     uz_dqn_act_bitenv_no_exploration(testdqn2,testenv);
     cumreward_noexpl[i] = testenv->cumreward;
     }
-        // parameter export
+    // save loss and cumreward
+    exportFloatArrayToCSV("test/uz/uz_dqn/loss256.csv", loss, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256.csv", cumreward, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256.csv", epsilonovertime, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, 100);
+    // parameter export
     uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

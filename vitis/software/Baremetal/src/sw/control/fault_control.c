@@ -1,24 +1,18 @@
 #include "fault_control.h"
 
-void fault_control_open_switches(DS_Data* Data, uz_9ph_abc_t indices, int n_OPF){
+void fault_control_open_switches(DS_Data* Data, uz_9ph_abc_t indices){
 	bool sys1 = false;
 	bool sys2 = false;
 	bool sys3 = false;
-	// if n_OPF==2 check if both faults in same system
-	if(n_OPF == 2){
-		sys1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
-		sys2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
-		sys3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
-	// if n_OPF==3 check if all faults are in same system
-	}else if(n_OPF == 3){
-		sys1 = (indices.a1 == 1.0f)&&(indices.b1 == 1.0f)&&(indices.c1 == 1.0f);
-		sys2 = (indices.a2 == 1.0f)&&(indices.b2 == 1.0f)&&(indices.c2 == 1.0f);
-		sys3 = (indices.a3 == 1.0f)&&(indices.b3 == 1.0f)&&(indices.c3 == 1.0f);
-	}
-	// set tristate and relais
+	// check if both fault 2 faults are present in same system
+	sys1 = ((indices.a1 == 1.0f)&&(indices.b1 == 1.0f)) || ((indices.a1 == 1.0f)&&(indices.c1 == 1.0f)) || ((indices.b1 == 1.0f)&&(indices.c1 == 1.0f));
+	sys2 = ((indices.a2 == 1.0f)&&(indices.b2 == 1.0f)) || ((indices.a2 == 1.0f)&&(indices.c2 == 1.0f)) || ((indices.b2 == 1.0f)&&(indices.c2 == 1.0f));
+	sys3 = ((indices.a3 == 1.0f)&&(indices.b3 == 1.0f)) || ((indices.a3 == 1.0f)&&(indices.c3 == 1.0f)) || ((indices.b3 == 1.0f)&&(indices.c3 == 1.0f));
+	// set tristate
 	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, sys1, sys1, sys1);
 	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11 , sys2, sys2, sys2);
 	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17 , sys3, sys3, sys3);
+	// set relais
 	if(sys1){
 		Data->rasv.set_relais &= 0xFFF8;
 	}

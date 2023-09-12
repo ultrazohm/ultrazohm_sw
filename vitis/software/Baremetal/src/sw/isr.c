@@ -64,8 +64,8 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 #define MAX_TEMP_DEG 90.0f
 // user settings
 #define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
-#define FAUL_CONTROL false
-enum controller_type selected_controller = PI_0;
+#define FAUL_CONTROL true
+enum controller_type selected_controller = PI_R;
 //----------------------------------------------------
 
 //==============================================================================================================================================================
@@ -134,14 +134,44 @@ void ISR_Control(void *data)
 	///////////////////////////////////Fault analysis///////////////////////////
 	////////////////////////////////////////////////////////////////////////////
 	Global_Data.av.fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
-	Global_Data.av.fault_single_indices = fault_control_remove_system(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
-	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 0.3f)){
+	// only get k_param when faul control is active, the setpoint is not zero and controller is PIR, since its only implemented for PIR
+	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 0.3f) && selected_controller==PI_R){
 		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);
 	}else{
 		k_param.valid = false;
 	}
+
+	////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////Make OPF with relais/////////////////////
+	////////////////////////////////////////////////////////////////////////////
+	// if "set opf a1 min" and "i_a1 is very small" and "the relais bit is not low yet"
+	if(Global_Data.rasv.opf_a1_min && (fabs(Global_Data.av.currents_abc.a1) < 0.1f) && (Global_Data.rasv.set_relais & 0x01)){
+		Global_Data.rasv.set_relais &= 0x1FE;
+		Global_Data.rasv.opf_a1_min = false;
+	}
+	// if "set opf a1 max" and "i_a1 is very large" and "the relais bit is not low yet"
+	if(Global_Data.rasv.opf_a1_max && (Global_Data.av.currents_abc.a1 > 2.9f) && (Global_Data.rasv.set_relais & 0x01)){
+		Global_Data.rasv.set_relais &= 0x1FE;
+		Global_Data.rasv.opf_a1_max = false;
+	}
+	// if "opf_a1_b3" and "the relais bits for a1 and b3 are not low yet"
+	if(Global_Data.rasv.opf_a1_b3 && (Global_Data.rasv.set_relais & 0x81)){
+		Global_Data.rasv.set_relais &= 0x17E;
+		Global_Data.rasv.opf_a1_b3 = false;
+	}
+	// if "opf_a1_a2" and "the relais bits for a1 and a2 are not low yet"
+	if(Global_Data.rasv.opf_a1_a2 && (Global_Data.rasv.set_relais & 0x09)){
+		Global_Data.rasv.set_relais &= 0x1F6;
+		Global_Data.rasv.opf_a1_a2 = false;
+	}
+	// if "opf_sys1" and "the relais bits for a1-c1 are not low yet"
+	if(Global_Data.rasv.opf_sys1 && (Global_Data.rasv.set_relais & 0x7)){
+		Global_Data.rasv.set_relais &= 0x1F8;
+		Global_Data.rasv.opf_sys1 = false;
+	}
+	uz_axi_gpio_write_bitmask(Global_Data.objects.axi_gpio_relais, Global_Data.rasv.set_relais); // 511U equals all nine bits high
 
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////Control State////////////////////////////
@@ -181,7 +211,7 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	if(k_param.valid){
 			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
-    		fault_control_set_tristate(&Global_Data, Global_Data.av.fault_single_indices, Global_Data.av.fault_n_OPF);
+    		fault_control_open_switches(&Global_Data, Global_Data.av.fault_single_indices);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
     		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
     		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
@@ -206,6 +236,7 @@ void ISR_Control(void *data)
 		// set Duty Cycles zero when UZ is not running or not active
 		if(current_state!=running_state){
 			uz_set_DC_zero(&Global_Data);
+			Global_Data.rasv.set_relais = 0x1FF;
 		}
 	}
 ////////////////////////////////////////////////////////////////////////////

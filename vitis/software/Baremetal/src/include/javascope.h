@@ -62,18 +62,13 @@ enum JS_OberservableData {
 	JSO_Theta_mech,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
-	JSO_ix1,
-	JSO_iy1,
-	JSO_ix2,
-	JSO_iy2,
-	JSO_ix3,
-	JSO_iy3,
-	JSO_lifecheck,
+	JSO_iq_set,
+	JSO_relais_a1,
 	JSO_OPF_index,
+	JSO_lifecheck,
 	JSO_UDC1,
 	JSO_UDC2,
 	JSO_UDC3,
-	JSO_iq_set,
 	JSO_ENDMARKER
 };
 

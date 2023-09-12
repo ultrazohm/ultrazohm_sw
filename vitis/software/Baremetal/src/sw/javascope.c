@@ -37,8 +37,7 @@ uint32_t js_status_BareToRTOS=0;
 
 float OPF_index_float;
 float n_OPF_float;
-
-float set_relais_combined = {0};
+float relais_a1;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -101,21 +100,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uY3] 			= &data->av.full_voltages_dq.y3;
 	js_ch_observable[JSO_uZero] 		= &data->av.full_voltages_dq.zero;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ix1] 			= &data->av.currents_xy1.d;
-	js_ch_observable[JSO_iy1] 			= &data->av.currents_xy1.q;
-	js_ch_observable[JSO_ix2] 			= &data->av.currents_xy2.d;
-	js_ch_observable[JSO_iy2] 			= &data->av.currents_xy2.q;
-	js_ch_observable[JSO_ix3] 			= &data->av.currents_xy3.d;
-	js_ch_observable[JSO_iy3] 			= &data->av.currents_xy3.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_UDC1]   	= &(data->av.U_ZK1);
-	js_ch_observable[JSO_UDC2]   	= &(data->av.U_ZK2);
-	js_ch_observable[JSO_UDC3]   	= &(data->av.U_ZK3);
+	js_ch_observable[JSO_UDC1]   		= &(data->av.U_ZK1);
+	js_ch_observable[JSO_UDC2]   		= &(data->av.U_ZK2);
+	js_ch_observable[JSO_UDC3]   		= &(data->av.U_ZK3);
 	js_ch_observable[JSO_OPF_index]   	= &OPF_index_float;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_iq_set]   	= &data->rasv.dq_setpoints_user_input.q;
+	js_ch_observable[JSO_iq_set]   		= &data->rasv.dq_setpoints.q;
+	js_ch_observable[JSO_relais_a1]   	= &relais_a1;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -164,6 +158,7 @@ void JavaScope_update(DS_Data* data){
 
 	OPF_index_float = (float) data->av.fault_combined_index;
 	n_OPF_float = (float) data->av.fault_n_OPF;
+	relais_a1 = (float) (data->rasv.set_relais&0x01);
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

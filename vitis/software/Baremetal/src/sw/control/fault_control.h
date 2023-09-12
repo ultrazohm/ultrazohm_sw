@@ -5,7 +5,7 @@
 #include "control.h"
 #include "../../uz/uz_Transformation/uz_Transformation.h"
 
-void fault_control_open_switches(DS_Data* Data, uz_9ph_abc_t indices, int n_OPF);
+void fault_control_open_switches(DS_Data* Data, uz_9ph_abc_t indices);
 uz_9ph_alphabeta_t step_controllers_fault_control(DS_Data* Data, struct pointers_fault_control objects, uz_9ph_MLMT_kparameter_t k_param);
 uz_9ph_dq_t combine_setpoints(uz_9ph_dq_t normal_controller, uz_9ph_alphabeta_t fault_controller);
 uz_9ph_alphabeta_t reduce_controller_freedom_degrees(uz_9ph_alphabeta_t ref, int n_OPF);

@@ -212,3 +212,4 @@ References
 .. doxygentypedef:: real32_T
 .. doxygentypedef:: boolean_T
 .. doxygentypedef:: uint16_T
+.. doxygentypedef:: uint32_T

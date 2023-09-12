@@ -23,7 +23,7 @@
 #include "../uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include <stdbool.h>
 #include "../uz_HAL.h"
-
+#include "../uz_math_constants.h"
 
 const float inv_vsd_mat_asym_9ph[9][9] = 
         {
@@ -104,7 +104,7 @@ uz_9ph_abc_t uz_vsd_opf_9ph_faultdetection_step(uz_VSD_9ph_FD_t* VSD_FD, uz_9ph_
 	// set filterlength of moving average filter according to current omega_el
 	uint32_t new_filterLength = 1;
 	if (omega_el_rad_per_sec != 0){
-		new_filterLength = (uint32_t)(VSD_FD->percent_of_el_period*VSD_FD->sample_frequency_Hz*2.0f*(float)M_PI/fabsf(omega_el_rad_per_sec));
+		new_filterLength = (uint32_t)(VSD_FD->percent_of_el_period*VSD_FD->sample_frequency_Hz*2.0f*UZ_PIf/fabsf(omega_el_rad_per_sec));
 	}
 
 	if(new_filterLength > VSD_FD->mov_average_filter_length){

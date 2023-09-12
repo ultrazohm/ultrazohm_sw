@@ -108,6 +108,7 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
+	float snd_fld[21];
 	float U_ZK1; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float U_ZK3; 	// DC-Link voltage 3 in V

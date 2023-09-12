@@ -21,8 +21,6 @@
 
 #include "Resonant_Controller.h"
 #include <math.h>
-//#include "../../../Codegen/uz_codegen_shared/rt_nonfinite.h"
-//#include "../../../Codegen/uz_codegen_shared/rtwtypes.h"
 #include "rt_nonfinite.h"
 #include "rtwtypes.h"
 #include <string.h>

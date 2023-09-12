@@ -7,7 +7,10 @@
 #include "Resonant_Controller.h"
 #include "uz_HAL.h"
 #include "uz_Transformation.h"
-
+#include "rt_nonfinite.h"
+#include "rtGetNaN.h"
+#include "rt_nonfinite.h"
+#include "rtGetInf.h"
 
 struct uz_subspace_resonant_control_config config = {0}; 
 

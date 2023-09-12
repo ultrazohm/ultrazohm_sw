@@ -23,13 +23,12 @@
 #define RTW_HEADER_Resonant_Controller_h_
 #ifndef Resonant_Controller_COMMON_INCLUDES_
 
-//#include "../../../Codegen/uz_codegen_shared/rtwtypes.h"
+
 #include "rtwtypes.h"
 #endif                                /* Resonant_Controller_COMMON_INCLUDES_ */
 
 #include <stddef.h>
 #include <string.h>
-//#include "../../../Codegen/uz_codegen_shared/rt_nonfinite.h"
 #include "rt_nonfinite.h"
 
 /* Macros for accessing real-time model data structure */

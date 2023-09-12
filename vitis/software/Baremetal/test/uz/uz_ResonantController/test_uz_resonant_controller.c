@@ -6,6 +6,10 @@
 #include "../../../src/uz/uz_ResonantController/Resonant_Controller_ert_rtw/Resonant_Controller.h"
 #include "../uz_global_configuration.h"
 #include "test_assert_with_exception.h"
+#include "rt_nonfinite.h"
+#include "rtGetNaN.h"
+#include "rt_nonfinite.h"
+#include "rtGetInf.h"
 
 #include <stdio.h>
 

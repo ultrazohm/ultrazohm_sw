@@ -95,8 +95,8 @@ int main(void)
                 .lower_limit = -10.0f};
 
             struct uz_SpeedControl_config config_speed = {
-            		.config_controller.Kp = 0.0f,
-					.config_controller.Ki = 0.0f,
+            		.config_controller.Kp = 3.5f,
+					.config_controller.Ki = 1.0f,
 					.config_controller.samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
 					.config_controller.upper_limit = 10.0f,
 					.config_controller.lower_limit = -10.0f,
@@ -157,7 +157,7 @@ int main(void)
             Global_Data.av.kp_q = 0.0f; //40.0f;
 			Global_Data.av.ki_q = 0.0f; //32.0f;
 
-            Global_Data.av.flg_speed_control = false;
+            Global_Data.av.flg_speed_control = true;
 
             // Initialize Global referenceAndSetValues
             Global_Data.rasv.state_of_statemachine = 0U;
@@ -170,7 +170,7 @@ int main(void)
             Global_Data.rasv.i_q_ref = 0.0f;
             Global_Data.rasv.n_ref_rpm = 0.0f;
             Global_Data.rasv.t_delay_controller = 2.0f;
-            Global_Data.rasv.t_measurement = 2.0f;
+            Global_Data.rasv.t_measurement = 5.0f;
             Global_Data.rasv.t_set_current = 2.0f;
 
         	initialization_chain = init_ip_cores;

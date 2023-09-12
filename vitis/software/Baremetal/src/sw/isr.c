@@ -79,16 +79,18 @@ static float iq_soll = 0.0f;
 uint32_t counter_current = 0U;
 uint32_t counter_angle = 0U;
 static uint32_t n_currents_max = 3U; //10U;
-static uint32_t n_angles_max = 15U;//37U;
+static uint32_t n_angles_max = 10U;//37U;
 
-static float ieff[10] = {1.0f, 5.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f};
+//static float ieff[10] = {1.0f, 5.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f};
+static float ieff[3] = {1.0f, 5.0f, 10.0f};
 //static float angle[37] = {0.0f, 2.5f, 5.0f, 7.5f, 10.0f, 12.5f, 15.0f, 17.5f, 20.0f, 22.5f, 25.0f, 27.5f,
 //		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
 //		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
 
-static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
-		 65.0f, 67.5f, 70.0f};
+//static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
+//		 65.0f, 67.5f, 70.0f};
 
+static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f};
 
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 	1.0f 	// Number of turns Current Measuring FU
@@ -109,7 +111,7 @@ static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
 #define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					2800.0f	// Maximum Speed
+#define MAX_SPEED_ASSERTION					2700.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -151,6 +153,8 @@ void ISR_Control(void *data)
 
     Global_Data.av.I_d = dq_measurement_current.d;
     Global_Data.av.I_q = dq_measurement_current.q;
+
+    Global_Data.av.testsignal = 0.0f;
 
     // Check if maximum current or maximum speed is reached
     if (fabs(measurement_current.a) > MAX_CURRENT_ASSERTION || fabs(measurement_current.b) > MAX_CURRENT_ASSERTION || fabs(measurement_current.c) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION)
@@ -221,13 +225,17 @@ void ISR_Control(void *data)
     	    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 0);
     	    	Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
 				uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient, 0);
-				Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
+				Global_Data.av.flg_enable_LMG_transient = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
 
 				// Reset Current Angle Measurement
 				state_stop_current_angle = false;
 				state_set_next_point = true;
 				counter_angle = 0U;
 				counter_current = 0U;
+
+				Global_Data.rasv.i_d_ref = 0.0f;
+				Global_Data.rasv.i_q_ref = 0.0f;
+				Global_Data.rasv.n_ref_rpm = 0.0f;
 
     			break;
 			case 1U: // Manual Control
@@ -236,13 +244,23 @@ void ISR_Control(void *data)
 		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
 		        if (Global_Data.av.flg_speed_control){
-		        	//dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+		        	if(Global_Data.rasv.n_ref_rpm==0.0f){
+		        		dq_reference_current.d = 0.0f;
+		        		dq_reference_current.q = 0.0f;
+		        		Global_Data.rasv.i_d_ref = dq_reference_current.d;
+		        		Global_Data.rasv.i_q_ref = dq_reference_current.q;
+		        	} else {
+		        		dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+		        		dq_reference_current.d = fabs(dq_reference_current.q);
+		        		Global_Data.rasv.i_d_ref = dq_reference_current.d;
+		        		Global_Data.rasv.i_q_ref = dq_reference_current.q;
+		        	}
 		        	// currently not implemented !!!
 		        }else{
 		        	// Set I_d and I_q currents for current control
 		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
 		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
-		        	dq_reference_current.zero = 0.0f;
+		        	dq_reference_current.zero = 0;
 		        }
 
 		        // FOC - get U_d and U_q as controlled variables
@@ -283,7 +301,7 @@ void ISR_Control(void *data)
 						counter_current = counter_current + 1U;
 //						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 						counter_angle = 0U;
-						Global_Data.av.testsignal = 0.0f;
+//						Global_Data.av.testsignal = 0.0f;
 						if(counter_current >= n_currents_max) {
 							Global_Data.rasv.i_d_ref = 0.0f;
 							Global_Data.rasv.i_q_ref = 0.0f;
@@ -298,25 +316,37 @@ void ISR_Control(void *data)
 						id_soll = ieff[counter_current] * cos(angle[counter_angle] * M_PI / 180.0f);
 						iq_soll = ieff[counter_current] * sin(angle[counter_angle] * M_PI / 180.0f);
 						counter_angle = counter_angle + 1U;
-						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
+//						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 					}
 
 					counter_n_delay_controller = 0.0f;
 					counter_n_measurements = 0.0f;
+					counter_slow_current = 0.0f;
 
 					state_set_next_point = false;
 					state_slow_current_set = true;
+					state_controller_delay = false;
+					state_LMG_measure = false;
+
+
 				}
 
-				if(state_slow_current_set && (counter_slow_current <= n_slow_current)){
-					counter_slow_current = counter_slow_current + 1.0f;
+				if((state_stop_current_angle == false) && state_slow_current_set){
+					if(counter_slow_current <= n_slow_current){
+						counter_slow_current = counter_slow_current + 1.0f;
 
-					Global_Data.rasv.i_d_ref = id_last + (id_soll - id_last)/n_slow_current * counter_slow_current;
-					Global_Data.rasv.i_q_ref = iq_last + (iq_soll - iq_last)/n_slow_current * counter_slow_current;
-				}else{
-					counter_slow_current = 0.0f;
-					state_slow_current_set = false;
-					state_controller_delay = true;
+						Global_Data.rasv.i_d_ref = id_last + (id_soll - id_last)/n_slow_current * counter_slow_current;
+						Global_Data.rasv.i_q_ref = iq_last + (iq_soll - iq_last)/n_slow_current * counter_slow_current;
+					}else{
+	//					state_slow_current_set = false;
+	//					state_controller_delay = true;
+
+						state_set_next_point = false;
+						state_slow_current_set = false;
+						state_controller_delay = true;
+						state_LMG_measure = false;
+
+					}
 				}
 
 				// FOC
@@ -351,14 +381,21 @@ void ISR_Control(void *data)
 
 
 		        // Enable / Disable Measurement
-				if((counter_n_delay_controller <= n_delay_controller) && (state_controller_delay == true) && (state_stop_current_angle == false))
-				{
-					counter_n_delay_controller = counter_n_delay_controller + 1.0f;
+				if((state_controller_delay == true) && (state_stop_current_angle == false)){
+					if(counter_n_delay_controller <= n_delay_controller)
+					{
+						counter_n_delay_controller = counter_n_delay_controller + 1.0f;
 
-				} else {
-					state_controller_delay = false;
-					state_LMG_measure = true;
-				}
+					} else {
+	//					state_controller_delay = false;
+	//					state_LMG_measure = true;
+
+						state_set_next_point = false;
+						state_slow_current_set = false;
+						state_controller_delay = false;
+						state_LMG_measure = true;
+					}
+    			}
 
 				// Counter for continues measurement
 				if((state_LMG_measure == true) && (state_stop_current_angle == false)){
@@ -367,8 +404,14 @@ void ISR_Control(void *data)
 						counter_n_measurements = counter_n_measurements + 1.0f;
 //						Global_Data.av.testsignal = counter_n_measurements;
 					} else {
-						state_LMG_measure = false;
+//						state_LMG_measure = false;
+//						state_set_next_point = true;
+
 						state_set_next_point = true;
+						state_slow_current_set = false;
+						state_controller_delay = false;
+						state_LMG_measure = false;
+
 					}
 				}
 

@@ -120,6 +120,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	uz_3ph_dq_t dq_setpoints;
+	int set_relais;
 } referenceAndSetValues;
 
 typedef struct{

@@ -134,7 +134,7 @@ return y;
 }
 
 
-uint32_t *genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)
+void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)
 {
     for (uint32_t i = 0; i < size; i++) {
         array[i] = (uint32_t) (min_val + (genRand_float(rand)*(max_val - min_val + 1)));

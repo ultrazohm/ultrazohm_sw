@@ -124,6 +124,20 @@ enum gui_button_mapping {
 	Set_Send_Field_4,
 	Set_Send_Field_5,
 	Set_Send_Field_6,
+	Set_Send_Field_7,
+	Set_Send_Field_8,
+	Set_Send_Field_9,
+	Set_Send_Field_10,
+	Set_Send_Field_11,
+	Set_Send_Field_12,
+	Set_Send_Field_13,
+	Set_Send_Field_14,
+	Set_Send_Field_15,
+	Set_Send_Field_16,
+	Set_Send_Field_17,
+	Set_Send_Field_18,
+	Set_Send_Field_19,
+	Set_Send_Field_20,
 	My_Button_1,
 	My_Button_2,
 	My_Button_3,
@@ -151,6 +165,20 @@ enum gui_button_mapping {
 	send_field_4,
 	send_field_5,
 	send_field_6,
+	send_field_7,
+	send_field_8,
+	send_field_9,
+	send_field_10,
+	send_field_11,
+	send_field_12,
+	send_field_13,
+	send_field_14,
+	send_field_15,
+	send_field_16,
+	send_field_17,
+	send_field_18,
+	send_field_19,
+	send_field_20,
 	SND_FLD_ENDMARKER
 
 
@@ -164,6 +192,20 @@ enum gui_button_mapping {
 	A,
 	A,
 	A,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
 	SND_LABELS_ENDMARKER
 
 
@@ -177,6 +219,20 @@ enum gui_button_mapping {
 	receive_field_4,
 	receive_field_5,
 	receive_field_6,
+	receive_field_7,
+	receive_field_8,
+	receive_field_9,
+	receive_field_10,
+	receive_field_11,
+	receive_field_12,
+	receive_field_13,
+	receive_field_14,
+	receive_field_15,
+	receive_field_16,
+	receive_field_17,
+	receive_field_18,
+	receive_field_19,
+	receive_field_20,
 	RCV_FLD_ENDMARKER
 
 
@@ -190,26 +246,41 @@ enum gui_button_mapping {
 	A,
 	V,
 	V,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
+	-,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
 // Do not change the first (zero) and last (end) entries.
 
-MYBUTTONS_LABELS_ZEROVALUE=0,
-MyButton1,
-MyButton2,
-MyButton3,
-MyButton4,
-MyButton5,
-MyButton6,
-MyButton7,
-MyButton8,
-MYBUTTONS_LABELS_ENDMARKER
+	MYBUTTONS_LABELS_ZEROVALUE=0,
+	MyButton1,
+	MyButton2,
+	MyButton3,
+	MyButton4,
+	MyButton5,
+	MyButton6,
+	MyButton7,
+	MyButton8,
+	MYBUTTONS_LABELS_ENDMARKER
 
 
 // Slow Data values that are displayed in the receive_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 // Make sure that the signal names below are also present in the JS_SlowData enum!
+//Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
@@ -217,10 +288,25 @@ MYBUTTONS_LABELS_ENDMARKER
 	JSSD_FLOAT_ISR_Period_us,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_speed,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
+
 
 int JavaScope_initialize(DS_Data* data);
 void JavaScope_update(DS_Data* data);

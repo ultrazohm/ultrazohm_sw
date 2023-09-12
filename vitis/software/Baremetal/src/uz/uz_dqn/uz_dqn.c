@@ -120,20 +120,17 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self,uz_dqn_environment_t *env)
     env->epsilon_start = calc_epsilon_greedy(env->epsilon_start,env->epsilon_min,env->epsilon_decay);
     for (uint32_t i = 0; i < env->max_steps; i++)
     {
+    uz_nn_ff(self->critic,env->inputfornn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<env->epsilon_start){
         actionind = genRand_uint32_t(&self->randinstance->seedRand,env->bitlength-1);
     }
     else{
-    uz_nn_ff(self->critic,env->inputfornn);
-    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     actionind = uz_matrix_get_max_index(outputdqn);
     }
     uz_dqn_bitflip_action(env,actionind);
-    // input for nn muss festgelegt werden und in einer uz_matrix gespeichert werden
-    uz_nn_ff(self->critic,env->inputfornn);
-    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
-    float qvalue = uz_matrix_get_max_value(outputdqn);
+    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
     float reward = calculate_reward_bit(env);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,env->inputfornn);
     env->cumreward+= reward;
@@ -152,21 +149,23 @@ bool terminal = false;
 float loss = 0.0f;
 float dloss = 0.0f;
 uz_matrix_t* outputtarget;
-    for(uint32_t j=0; j<mbsize;j++){
-        uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,obs,self->experience_buffer->vectorforobs,obspl1,mbsize,numobs,indices);
+for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(obspl1,X,j);
         uz_nn_ff(self->critic_target_net,X);
-        outputtarget=uz_nn_get_output_data(self->critic_target_net);
+        outputtarget = uz_nn_get_output_data(self->critic_target_net);
         qplus1 = uz_matrix_get_max_value(outputtarget);
-        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
-        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        loss = calculate_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
         uz_nn_backward_pass_mini_batch(self->critic,&dloss,X);  
+        rew++;
+        qval++;
+        act++;
     }
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
-    if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
-    uz_nn_target_update(self->critic,self->critic_target_net,periodic_smoothing, &targsmoothfact);
+    if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
+    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
 // printf("dLoss %.3f \n",(double)dloss);
 // printf("Loss %.3f \n",(double)loss);
@@ -236,7 +235,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     uint32_t index = indizes[i];
     // logik implementieren, dass plus1 immer richtig aus dem buffer kommt
     if (self->counterisfull == 0){
-        if(index==self->head){
+        if(index>=self->head){
             index = self->head -1;
         }
     }
@@ -296,6 +295,7 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
     float loss = -2.0f*(y_j - qval);
     return loss;
 }
+
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, uint32_t *actiondata, uz_matrix_t *obsdata, uint32_t index){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(rewarddata);
@@ -375,6 +375,28 @@ void resetintArray(int32_t *arr, uint32_t size) {
     for (uint32_t i = 0; i < size; i++) {
         arr[i] = 0;
     }
+}
+
+void exportFloatArrayToCSV(const char *filename, const float *array, int size) {
+    // Check if the file can be opened for writing
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Unable to create the CSV file");
+        return;
+    }
+
+    // Write the array to the file in CSV format
+    for (int i = 0; i < size; i++) {
+        fprintf(file, "%.2f", array[i]); // Assuming 2 decimal places, adjust as needed
+        if (i < size - 1) {
+            fprintf(file, ",");
+        } else {
+            fprintf(file, "\n");
+        }
+    }
+
+    // Close the file
+    fclose(file);
 }
 #endif
 #endif

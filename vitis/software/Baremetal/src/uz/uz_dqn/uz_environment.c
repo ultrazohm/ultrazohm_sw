@@ -25,7 +25,7 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     self->bitlength = envconf.bitlength;
     self->bitinitial = envconf.bitarray;
     self->bittarget = envconf.targetarray;
-    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inarray,envconf.bitlength,1,envconf.bitlength);
+    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix,envconf.inarray,2 * envconf.bitlength,1,2 * envconf.bitlength);
     self->epsilon_min = envconf.epsilon_min;
     self->epsilon_start = envconf.epsilon_start;
     self->epsilon_decay = envconf.epsilon_decay;
@@ -59,7 +59,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
 
 float calculate_reward_bit(uz_dqn_environment_t *self)
 {
-    float r = 0.0f;
+    float r;
     bool z = arraysequal(self->bitinitial,self->bittarget,self->bitlength);
     if (z==true)
     {

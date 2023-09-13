@@ -96,18 +96,19 @@ void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *
     float reward = calculate_reward_dqn(samplerate,input,penalty);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,input);
 }
-void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self,uz_dqn_environment_t *env)
+
+void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
 {
     uint32_t actionind;
-    for (uint32_t i = 0; i < env->max_steps; i++)
+    for (uint32_t i = 0; i < self->env->max_steps; i++)
     {
-    uz_nn_ff(self->critic_target_net,env->inputfornn);
+    uz_nn_ff(self->critic_target_net,self->env->inputfornn);
     uz_matrix_t* outputaction=uz_nn_get_output_data(self->critic_target_net);
     actionind = uz_matrix_get_max_index(outputaction);
-    uz_dqn_bitflip_action(env,actionind);
-    float reward = calculate_reward_bit(env);
-    env->cumreward+= reward;
-    if (arraysequal(env->bitinitial,env->bittarget,env->bitlength) == true){
+    uz_dqn_bitflip_action(self->env,actionind);
+    float reward = calculate_reward_bit(self->env);
+    self->env->cumreward+= reward;
+    if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
     printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
     }  
@@ -133,7 +134,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     uz_dqn_bitflip_action(self->env,actionind);
     float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
     float reward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->inputvecnn);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->env->inputfornn);
     self->env->cumreward+= reward;
     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
     printf("Bitmuster gleich nach %d Schritten.\n",i);
@@ -163,14 +164,17 @@ for(uint32_t j=0; j<mbsize;j++){
         else{
             terminal = false;
         }
-        loss = calculate_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
-        dloss = calculate_derv_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
-        cum_loss += loss; 
-        uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
+        loss += calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        cum_loss += dloss; 
+        //uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
         rew++;
         qval++;
         act++;
     }
+    // dloss mitteln
+    cum_loss = cum_loss/mbsize;
+    uz_nn_backward_pass(self->critic,&cum_loss,self->inputvecnn);
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
     cum_loss = cum_loss/mbsize;
@@ -180,7 +184,7 @@ for(uint32_t j=0; j<mbsize;j++){
     }
 // printf("dLoss %.3f \n",(double)dloss);
 // printf("Loss %.3f \n",(double)loss);
-return cum_loss;
+return loss;
 }
 //pseudocode set current
 
@@ -416,5 +420,14 @@ void exportFloatArrayToCSV(const char *filename, const float *array, int size) {
     // Close the file
     fclose(file);
 }
+
+void make_directory(const char* name) {
+   #ifdef __linux__
+       mkdir(name, 777); 
+   #else
+       _mkdir(name);
+   #endif
+}
+
 #endif
 #endif

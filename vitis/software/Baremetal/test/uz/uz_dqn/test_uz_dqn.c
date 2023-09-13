@@ -15,7 +15,7 @@
 //eps greedy test
 #define NUMBER_OF_EPSGREEDYSTEPS 1000
 float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
-#include "epsmat.csv"
+#include "matlab/epsmat.csv"
 };
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 10

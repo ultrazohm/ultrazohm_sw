@@ -11,19 +11,22 @@
 #include <stdlib.h>
 #include "uz_mtwister.h"
 #include "uz_environment.h"
+#include <time.h>
+#include <string.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 5000
+#define EXPERIENCE_BUFFER_LENGTH 10000
 #define MINIBATCHSIZE 64
-#define NUMBER_OF_EPOCHS 5
-#define TARGET_UPDATE_FREQUENCY 25
+#define NUMBER_OF_EPOCHS 5000
+#define TARGET_UPDATE_FREQUENCY 5
 // nn
 #define NUMBER_OF_INPUTS 16
 #define NUMBER_OF_OUTPUTS 8
 #define NUMBER_OF_HIDDEN_LAYER 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
 #define NUMBEROFBITS 8
-#define NUMBEROFTESTSTEPS 100
+#define NUMBEROFTESTSTEPS 50
+
 // random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,0,1,0};
 uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,1,1,1,1};
@@ -35,7 +38,7 @@ struct uz_dqn_environment_config configenv = {
     .targetarray = tararray,
     .inarray = inarray,
     .max_steps = 200,
-    .epsilon_start = 0.95f, 
+    .epsilon_start = 0.98f, 
     .epsilon_min = 0.05f, 
     .epsilon_decay = 0.001f
 };
@@ -46,7 +49,7 @@ float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 //dqn
 float discountfact = 0.99f;
-float lernrate = 0.01f;
+float lernrate = 0.001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
@@ -111,8 +114,8 @@ float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 1,
-  .distribution = uniform_distribution
+  .seed = 123,
+  .distribution = normal_distribution
 };
 //config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -239,30 +242,49 @@ void test_dqn_bitflip(void)
     float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
+    // prefill buffer
+    do{
+    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_sample_bitenv(testdqn2);
+    } while (testdqn2->experience_buffer->counterisfull && testdqn2->experience_buffer->head< 8 * MINIBATCHSIZE);
+    testdqn2->env->epsilon_start = 0.98f;
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_sample_bitenv(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
     epsilonovertime[i] = testdqn2->env->epsilon_start;
-    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,testdqn2->experience_buffer->head-1);
+    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);    
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
+    // if (i == 1180){
+    // int a = 1;
+    // }       
     }
-    // // Verhalten des Agenten testen, nach dem Training
-    // for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
-    // {
-    // uz_dqn_environment_reset(testenv,&testdqn2->randinstance->seedRand);
-    // uz_dqn_act_bitenv_no_exploration(testdqn2,testenv);
-    // cumreward_noexpl[i] = testenv->cumreward;
-    // }
+    // Verhalten des Agenten testen, nach dem Training
+    for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
+    {
+    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_act_bitenv_no_exploration(testdqn2);
+    cumreward_noexpl[i] = testdqn2->env->cumreward;
+    }
+    // export defines datum etc, neuer ordner um die sachen unterscheiden zu können
     // save loss and cumreward
+    // time_t t = time(NULL);
+    // struct tm *tm = localtime(&t);
+    // char s[64];
+    // size_t ret = strftime(s, sizeof(s), "%c", tm);
+    // printf("%s\n", s);
+    //make_directory(s);
+    // strcat("test/uz/uz_dqn/loss256_clipped", s);
+    // strcat(".csv",s);
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/reward.csv", reward, EXPERIENCE_BUFFER_LENGTH);
-    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, 100);
+    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
     // parameter export
     uz_nn_trained_export(testdqn2->critic_target_net);
+
 }
 #endif // TEST

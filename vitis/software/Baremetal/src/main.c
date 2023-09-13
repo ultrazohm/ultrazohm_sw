@@ -157,7 +157,7 @@ int main(void)
             Global_Data.av.kp_q = 0.0f; //40.0f;
 			Global_Data.av.ki_q = 0.0f; //32.0f;
 
-            Global_Data.av.flg_speed_control = true;
+            Global_Data.av.flg_speed_control = false;
 
             // Initialize Global referenceAndSetValues
             Global_Data.rasv.state_of_statemachine = 0U;

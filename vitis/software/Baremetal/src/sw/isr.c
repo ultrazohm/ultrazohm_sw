@@ -244,17 +244,10 @@ void ISR_Control(void *data)
 		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
 		        if (Global_Data.av.flg_speed_control){
-		        	if(Global_Data.rasv.n_ref_rpm==0.0f){
-		        		dq_reference_current.d = 0.0f;
-		        		dq_reference_current.q = 0.0f;
-		        		Global_Data.rasv.i_d_ref = dq_reference_current.d;
-		        		Global_Data.rasv.i_q_ref = dq_reference_current.q;
-		        	} else {
-		        		dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
-		        		dq_reference_current.d = fabs(dq_reference_current.q);
-		        		Global_Data.rasv.i_d_ref = dq_reference_current.d;
-		        		Global_Data.rasv.i_q_ref = dq_reference_current.q;
-		        	}
+		        	dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+		        	dq_reference_current.d = fabs(dq_reference_current.q);
+		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
+		        	Global_Data.rasv.i_q_ref = dq_reference_current.q;
 		        	// currently not implemented !!!
 		        }else{
 		        	// Set I_d and I_q currents for current control

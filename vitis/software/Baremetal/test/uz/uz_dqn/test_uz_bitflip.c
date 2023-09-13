@@ -15,7 +15,7 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 5000
 #define MINIBATCHSIZE 64
-#define NUMBER_OF_EPOCHS 1000
+#define NUMBER_OF_EPOCHS 5
 #define TARGET_UPDATE_FREQUENCY 25
 // nn
 #define NUMBER_OF_INPUTS 16
@@ -48,8 +48,6 @@ float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 float discountfact = 0.99f;
 float lernrate = 0.01f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
-// float *inputdata = &X_dat;
-// struct uz_matrix_t input_vec= {0};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float ts_2[NUMBER_OF_OUTPUTS] = {0};
@@ -241,9 +239,6 @@ void test_dqn_bitflip(void)
     float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    float X_data[NUMBER_OF_INPUTS] = {0.0f};
-    struct uz_matrix_t input_vec= {0};
-    uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -252,8 +247,7 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,testdqn2->experience_buffer->head-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
-    X,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);    
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);    
     }
     // // Verhalten des Agenten testen, nach dem Training
     // for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

@@ -143,7 +143,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
 }
 
 float uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
-uz_matrix_t *X, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
+uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
 {
 float qplus1 = 0.0f;
 bool terminal = false;
@@ -152,8 +152,8 @@ float cum_loss = 0.0f;
 float dloss = 0.0f;
 uz_matrix_t* outputtarget;
 for(uint32_t j=0; j<mbsize;j++){
-        uz_matrix_get_row_vector_zero_based(obspl1,X,j);
-        uz_nn_ff(self->critic_target_net,X);
+        uz_matrix_get_row_vector_zero_based(obspl1,self->inputvecnn,j);
+        uz_nn_ff(self->critic_target_net,self->inputvecnn);
         outputtarget = uz_nn_get_output_data(self->critic_target_net);
         qplus1 = uz_matrix_get_max_value(outputtarget);
         if (*rew==0.0f)
@@ -166,7 +166,7 @@ for(uint32_t j=0; j<mbsize;j++){
         loss = calculate_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,*(rew),*(qval),qplus1,terminal);
         cum_loss += loss; 
-        uz_nn_backward_pass_mini_batch(self->critic,&dloss,X);  
+        uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
         rew++;
         qval++;
         act++;

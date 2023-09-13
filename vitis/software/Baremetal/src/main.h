@@ -73,6 +73,9 @@
 // Resonant Controller
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 
+// Harmonic Controller
+#include "uz/uz_signals/uz_signals.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

@@ -68,9 +68,17 @@ void uz_subspace_resonant_control_reset(uz_subspace_resonant_control* self);
  *
  * @param self pointer to instance
  * @param gain1 new gain for resonant instance 1
- * @param gain1 new gain for resonant instance 2
+ * @param gain2 new gain for resonant instance 2
  */
 void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, float gain1, float gain2);
+
+/**
+ * @brief changes gain of both instances and writes new gains to config
+ *
+ * @param self pointer to instance
+ * @param harmonic_order new order for resonant instance 1 and 2
+ */
+void uz_subspace_resonant_control_set_harmonic(uz_subspace_resonant_control* self, float harmonic_order);
 
 /**
  * @brief returns actual config of instance

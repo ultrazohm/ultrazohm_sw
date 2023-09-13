@@ -5,7 +5,8 @@
 /*! enum for readable configuring for type of 1st order filter */
 enum uz_IIR_Filter_selection {
 	LowPass_first_order = 0,
-    HighPass_first_order
+    HighPass_first_order,
+	BandPass_second_order
 };
 
 /**
@@ -15,7 +16,9 @@ enum uz_IIR_Filter_selection {
 struct uz_IIR_Filter_config {
 	enum uz_IIR_Filter_selection selection; /**< Filter selection \n */
     float cutoff_frequency_Hz; /**< cutoff frequency in Hz of the filter */
+    float pass_frequency_Hz; /**< pass frequency in Hz of bandpass filter */
 	float sample_frequency_Hz; /**< sample frequency in Hz of the signal */
+	float damping; /**< damping of bandpass filter */
 };
 
 

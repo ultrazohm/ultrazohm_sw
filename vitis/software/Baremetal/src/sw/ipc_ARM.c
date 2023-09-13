@@ -19,39 +19,59 @@
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
 
-//Declares FOC of PMSM 1
+// ======================= PMSM 1 ======================= //
+// ---------------- Inverter Measurement ---------------- //
+
+// --------- Field Oriented Control and Signals --------- //
+extern float n_ref_rpm_1;
+extern float M_ref_Nm_1;
+extern float theta_el_offset_1;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
+
+// ---------------- Resonant Controllers ---------------- //
+extern float Gain_RC_6th_1;
+extern float Gain_RC_12th_1;
+extern float Gain_RC_5th_1;
+extern float Gain_RC_7th_1;
+extern float order_6th;
+extern float i_dq_6th_ref_Amps_1;
+extern float amplitude_6th_d;
+extern float amplitude_6th_q;
+extern float amplitude_5th;
+extern float amplitude_7th;
+extern int mode_1;
+
+// ---------------- Controller Settings ----------------- //
+extern float Kp_speed_1;
+extern float Ki_speed_1;
 extern float Kp_id_1;
 extern float Ki_id_1;
 extern float Kp_iq_1;
 extern float Ki_iq_1;
-extern float Kp_speed_1;
-extern float Ki_speed_1;
-extern float n_ref_rpm_1;
-extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
-extern float M_ref_Nm_1;
-extern float theta_el_offset_1;
-extern float Resonant_1_gain_1;
-extern float Resonant_1_gain_2;
 
-//Declares FOC of PMSM 2
+// ------------------- Wavegen Chirp -------------------- //
+extern bool enable_excitation;
+extern float excitation_amplitude;
+
+// ======================= PMSM 2 ======================= //
+// ---------------- Inverter Measurement ---------------- //
+
+// --------- Field Oriented Control and Signals --------- //
+extern float n_ref_rpm_2;
+extern float M_ref_Nm_2;
+extern float theta_el_offset_2;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
+
+// ---------------- Resonant Controllers ---------------- //
+extern float Gain_RC_6th_2;
+
+// ---------------- Controller Settings ----------------- //
+extern float Kp_speed_2;
+extern float Ki_speed_2;
 extern float Kp_id_2;
 extern float Ki_id_2;
 extern float Kp_iq_2;
 extern float Ki_iq_2;
-extern float Kp_speed_2;
-extern float Ki_speed_2;
-extern float n_ref_rpm_2;
-extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
-extern float M_ref_Nm_2;
-extern float theta_el_offset_2;
-extern float Resonant_2_gain_1;
-extern float Resonant_2_gain_2;
-
-//Declares Wavegen
-extern bool enable_excitation;
-extern float excitation_amplitude;
-
-extern int resonant;
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -224,23 +244,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-				n_ref_rpm_2 = value;
+				//n_ref_rpm_2 = value;
 			break;
 
 		case (Set_Send_Field_3):
-				Resonant_1_gain_1=value;
+				Gain_RC_6th_1=value;
 			break;
 
 		case (Set_Send_Field_4):
-				Resonant_1_gain_2=value;
+				amplitude_5th=value;
 			break;
 
 		case (Set_Send_Field_5):
-				resonant = value;
+				amplitude_7th=value;
 			break;
 
 		case (Set_Send_Field_6):
-				Ki_speed_2 = value;
+				mode_1 = value;
 			break;
 
 		case (My_Button_1):

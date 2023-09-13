@@ -409,3 +409,22 @@ uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_r
     uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_dq_to_alphabeta(input,theta_el_rad);
     return (uz_transformation_9ph_alphabeta_to_abc(intermediate));
 }
+
+
+
+// 3-phase harmonics
+uz_3ph_dq_t uz_transformation_3ph_harmonic_abc_to_dq(uz_3ph_abc_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * harmonic_order;
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_abc_to_alphabeta(input);
+    uz_3ph_dq_t output= uz_transformation_3ph_alphabeta_to_dq(ab,theta_el_rad_harmonic);
+    return (output);
+}
+
+uz_3ph_abc_t uz_transformation_3ph_harmonic_dq_to_abc(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * harmonic_order;
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_dq_to_alphabeta(input,theta_el_rad_harmonic);
+    uz_3ph_abc_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
+    return (output);
+}

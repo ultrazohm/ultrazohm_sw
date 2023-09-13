@@ -106,6 +106,12 @@ void uz_subspace_resonant_control_set_gains(uz_subspace_resonant_control* self, 
 	uz_resonantController_set_gain(self->resonant_2, self->config.gain_2);
 }
 
+void uz_subspace_resonant_control_set_harmonic(uz_subspace_resonant_control* self, float harmonic_order){
+    self->config.harmonic_order = harmonic_order;
+    uz_resonantController_set_gain(self->resonant_1, self->config.harmonic_order);
+	uz_resonantController_set_gain(self->resonant_2, self->config.harmonic_order);
+}
+
 struct uz_subspace_resonant_control_config uz_subspace_resonant_control_get_config(uz_subspace_resonant_control* self){
     return self->config;
 }

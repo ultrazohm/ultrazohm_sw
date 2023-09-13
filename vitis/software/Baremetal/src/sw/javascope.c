@@ -41,8 +41,15 @@ extern float theta_el_offset_1;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 extern struct uz_3ph_dq_t i_dq_Amps_1;
 extern struct uz_3ph_abc_t i_abc_Amps_1;
+extern struct uz_3ph_dq_t v_dq_Volts_1;
 extern struct uz_3ph_dq_t v_dq_ref_Volts_1;
 extern struct uz_3ph_abc_t v_abc_Volts_1;
+extern struct uz_3ph_abc_t i_abc_5th_Amps_bp_1;
+extern struct uz_3ph_abc_t i_abc_7th_Amps_bp_1;
+extern struct uz_3ph_dq_t i_dqn_5th_Amps_bp_1;
+extern struct uz_3ph_dq_t i_dqn_7th_Amps_bp_1;
+extern struct uz_3ph_dq_t i_dqn_5th_Amps_1;
+extern struct uz_3ph_dq_t i_dqn_7th_Amps_1;
 
 //Data of PMSM 2
 extern float n_ref_rpm_2;
@@ -101,6 +108,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uc_2] 			= &v_abc_Volts_2.c;
 	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
 	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
+	js_ch_observable[JSO_ia_5th_1]      = &i_abc_5th_Amps_bp_1.a;
+	js_ch_observable[JSO_ib_5th_1]      = &i_abc_5th_Amps_bp_1.b;
+	js_ch_observable[JSO_ic_5th_1]      = &i_abc_5th_Amps_bp_1.c;
+	js_ch_observable[JSO_iq_5th_bp_1]   = &i_dqn_5th_Amps_bp_1.q;
+	js_ch_observable[JSO_id_5th_bp_1]   = &i_dqn_5th_Amps_bp_1.d;
+	js_ch_observable[JSO_iq_5th_1]      = &i_dqn_5th_Amps_1.q;
+	js_ch_observable[JSO_id_5th_1]      = &i_dqn_5th_Amps_1.d;
+	js_ch_observable[JSO_iq_7th_1]      = &i_dqn_7th_Amps_1.q;
+	js_ch_observable[JSO_id_7th_1]      = &i_dqn_7th_Amps_1.d;
 	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
 	js_ch_observable[JSO_id_2] 			= &i_dq_Amps_2.d;
 	js_ch_observable[JSO_uq_ref_1]		= &v_dq_ref_Volts_1.q;
@@ -121,8 +137,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_1;
 	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_2;
 	js_ch_observable[JSO_Theta_mech_1] 	= &data->av.theta_mech_1;
-	js_ch_observable[JSO_ud_1]			= &data->av.U_d_1;
-	js_ch_observable[JSO_uq_1]			= &data->av.U_q_1;
+	js_ch_observable[JSO_ud_1]			= &v_dq_Volts_1.d;
+	js_ch_observable[JSO_uq_1]			= &v_dq_Volts_1.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

@@ -42,7 +42,9 @@ void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
 for(uint32_t i=0; i<self->bitlength;i++){
     // self->bittarget[i]  = genRand_zero_one(seedRand);
     self->bitinitial[i] = genRand_zero_one(seedRand);
+    self->bittarget[i] = genRand_zero_one(seedRand);
     self->inputfornn->data[i] = (float)self->bitinitial[i];
+    self->inputfornn->data[self->bitlength+i] = (float)self->bittarget[i];
 }
 self->is_ready = true;
 self->cumreward = 0.0f;

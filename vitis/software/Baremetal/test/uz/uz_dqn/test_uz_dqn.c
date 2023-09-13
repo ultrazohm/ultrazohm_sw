@@ -241,6 +241,8 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .obsvec = vecobs,
         .actions = action
 };
+
+
 void setUp(void)
 {
 }
@@ -286,7 +288,6 @@ void test_uz_dqn_compressed(void)
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
     X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
-    
     }
 
 }

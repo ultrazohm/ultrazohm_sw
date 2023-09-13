@@ -163,6 +163,7 @@ void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert_not_NULL(input);
     uz_nn_layer_ff(self->layer[0], input);
     for (uint32_t i = 0; i < (self->number_of_layer - 1U); i++)
     {

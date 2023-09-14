@@ -21,7 +21,7 @@ float q_value[EXPERIENCE_BUFFER_LENGTH] = {1.4f,12.3f,7.13f};
 float observation[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {2.0f,3.0f,6.0f,5.0f,7.0f,12.0f,12.5f,12.75f,12.85f,12.95f,100.0f,200.0f,300.0f,400.0f,500.0f};
 
 float reward_set[EXPERIENCE_BUFFER_LENGTH] = {7.7f,-27.7f,300.0f};
-uint32_t action_set[EXPERIENCE_BUFFER_LENGTH] = {1,0,-1};
+uint32_t action_set[EXPERIENCE_BUFFER_LENGTH] = {1,0,3};
 float q_value_set[EXPERIENCE_BUFFER_LENGTH] = {5.3f,6.4f,7.99f};
 float observation_set[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {1.1f,2.1f,5.1f,2.1f,0.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
 
@@ -92,7 +92,7 @@ void test_uz_dqn_write_to_buffer(void)
     ObsData1[1] = -1.0f;
     float RewardData3 = 300.0f;
     float QData3 = 7.99f;
-    uint32_t action3 = -1;
+    uint32_t action3 = 3;
     uz_dqn_push_to_buffer(buffertesting,&RewardData3,&QData3,&action3,obs);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(reward_set, reward, EXPERIENCE_BUFFER_LENGTH);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(q_value_set, q_value, EXPERIENCE_BUFFER_LENGTH);
@@ -104,7 +104,7 @@ void test_uz_dqn_write_to_buffer(void)
 void test_uz_dqn_overwrite_first_values(void){
     // float data
     float rew[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
-    uint32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,-1};
+    uint32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,3};
     float qval[EXPERIENCE_BUFFER_LENGTH] = {543.3f,6.4f,7.99f};
     float obbs[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
 

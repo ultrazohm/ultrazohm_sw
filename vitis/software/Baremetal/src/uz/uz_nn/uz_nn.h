@@ -213,5 +213,5 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const*const self);
  */
 
 void uz_nn_train_minibatch(uz_nn_t* self, float *mse, uz_matrix_t const*const input,uz_matrix_t const*const refout, uz_matrix_t const*const rowvec,uz_matrix_t const*const ref,float const learnrate,uint32_t minibatchsize, uint32_t numberofepochs);
-
+void uz_nn_trained_export(uz_nn_t *self);
 #endif // UZ_NN_H

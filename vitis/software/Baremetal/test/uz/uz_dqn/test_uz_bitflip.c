@@ -247,6 +247,7 @@ void test_dqn_bitflip(void)
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_sample_bitenv(testdqn2);
     } while (testdqn2->experience_buffer->counterisfull && testdqn2->experience_buffer->head< 8 * MINIBATCHSIZE);
+    // epsilon wieder auf startwert setzen
     testdqn2->env->epsilon_start = 0.98f;
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {

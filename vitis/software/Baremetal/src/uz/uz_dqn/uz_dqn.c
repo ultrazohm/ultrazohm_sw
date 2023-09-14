@@ -143,7 +143,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     } 
 }
 
-float uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t numobs, uint32_t *indices,
+float uz_dqn_train(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
 {
 float qplus1 = 0.0f;
@@ -175,7 +175,7 @@ for(uint32_t j=0; j<mbsize;j++){
         act++;
     }
     // dloss mitteln
-    cum_loss = cum_loss/mbsize;
+    cum_loss = cum_loss/(float)mbsize;
     // uz_nn_backward_pass(self->critic,&cum_loss,self->inputvecnn);
     // uz_nn_gradient_descent(self->critic,self->lernrate);
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
@@ -218,7 +218,7 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize,uint32_t numberofobs,  uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);

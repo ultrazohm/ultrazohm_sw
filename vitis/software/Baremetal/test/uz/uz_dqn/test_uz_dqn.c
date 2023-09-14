@@ -267,14 +267,13 @@ void tearDown(void)
 
 void test_uz_dqn_init(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
 }
 void test_uz_dqn_compressed(void)
 {
-    enum target_update periodic;
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
-    uz_dqn_t* testdqn2 = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* testdqn2 = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // target und critic netz gleich setzen
     // uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
     // random indizes for sample from buffer
@@ -300,7 +299,8 @@ void test_uz_dqn_compressed(void)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
+    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 
 }
@@ -317,7 +317,7 @@ void test_calc_reward_with_penalty(void)
 }
 
 void test_uz_dqn_copy_nn(void){
-    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* dqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_target_update(dqn->critic,dqn->critic_target_net,periodic,&targsmoothfact);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
@@ -339,7 +339,7 @@ void test_calc_reward_without_penalty(void)
 }
  void test_uz_dqn_calc_loss_terminal(void)
  {
-    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* dqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float reward = 2.0f;
     float qval = 10.0f;
     float qvalplus1 = 5.5f;
@@ -350,7 +350,7 @@ void test_calc_reward_without_penalty(void)
 
   void test_uz_dqn_calc_loss_non_terminal(void)
  {
-    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* dqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float reward = -3.0f;
     float qval = 7.0f;
     float qvalplus1 = 4.5f;
@@ -360,7 +360,7 @@ void test_calc_reward_without_penalty(void)
  }
 void test_uz_dqn_1_step(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // random indizes for sample from buffer
     uint32_t r[MINIBATCHSIZE] = {1,0,1,0,1}; 
     uint32_t *indizes = r;
@@ -388,7 +388,7 @@ void test_uz_dqn_1_step(void)
     float getbackobbspl1[NUMBER_OF_INPUTS] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), 1, NUMBER_OF_INPUTS);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,1,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,1,indizes);
     uz_nn_ff(testdqn->critic_target_net,obspl1);
     uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic_target_net);
     float qplus1 = uz_matrix_get_max_value(outputtarget);
@@ -400,10 +400,9 @@ void test_uz_dqn_1_step(void)
 }
 void test_uz_dqn_train_episodes(void)
 {
-    enum target_update periodic;
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
-    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
+    uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // random indizes for sample from buffer
     uint32_t r[MINIBATCHSIZE] = {1,2,4,5,0}; 
     uint32_t *indizes = r;
@@ -435,7 +434,7 @@ void test_uz_dqn_train_episodes(void)
     uint32_t action = uz_matrix_get_max_index(outputdqn);
     float reward = calculate_reward_pendulum(1/DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
     uz_dqn_push_to_buffer(testdqn->experience_buffer,&reward,&qvalue,&action,X);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer,rew,qval,act,obs,testdqn->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
     uz_matrix_get_row_vector_zero_based(obspl1,X,j);
     uz_nn_ff(testdqn->critic_target_net,X);
     uz_matrix_t* outputtarget=uz_nn_get_output_data(testdqn->critic_target_net);

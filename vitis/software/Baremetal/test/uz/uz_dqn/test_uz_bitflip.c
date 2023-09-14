@@ -17,7 +17,7 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 10000
 #define MINIBATCHSIZE 16
-#define NUMBER_OF_EPOCHS 5000
+#define NUMBER_OF_EPOCHS 5
 #define TARGET_UPDATE_FREQUENCY 5
 // nn
 #define NUMBER_OF_INPUTS 16
@@ -218,14 +218,12 @@ void tearDown(void)
 void test_uz_dqn_init(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
-    enum target_update periodic;
     float targsmoothfact = 0.05f;
     uz_nn_target_update(testdqn->critic,testdqn->critic_target_net,periodic,&targsmoothfact);
 }
 void test_dqn_bitflip(void)
 {
     uz_dqn_t* testdqn2 = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
-    enum target_update periodic;
     float targsmoothfact = 0.05f;
     uz_nn_copy(testdqn2->critic,testdqn2->critic_target_net);
     uint32_t r[MINIBATCHSIZE] = {0}; 
@@ -249,15 +247,15 @@ void test_dqn_bitflip(void)
     } while (testdqn2->experience_buffer->counterisfull && testdqn2->experience_buffer->head< 8 * MINIBATCHSIZE);
     // epsilon wieder auf startwert setzen
     testdqn2->env->epsilon_start = 0.98f;
-    for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+    for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_sample_bitenv(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
     }
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

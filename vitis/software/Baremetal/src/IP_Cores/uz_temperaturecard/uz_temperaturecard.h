@@ -297,7 +297,7 @@ typedef struct {
   float       temperature[20];       /**< calculated value for the Temperature Channelgroup */
   uint32_t    temperature_raw[20];   /**< raw value for the Temperature Channelgroup */
   uint32_t    Configdata[20];        /**< used Config for the Temperature Channelgroup */
-  uint32_t  Channel_Fault_Data[20];    /**< Informations about the measurement */
+  uint32_t  Channel_Fault_Data[20];    /**< Holds Fault Data of the respective channels 1U=valid, for error descriptions see datasheet */
 }uz_temperaturecard_OneGroup;
 
 /**
@@ -433,8 +433,8 @@ uz_temperaturecard_OneGroup uz_TempCard_IF_get_channel_group(uz_temperaturecard_
  *
  * @param self Pointer to driver instance
  * @param channelgroup specify channelgroup to read as char, e.g. 'a', 'b', 'c' (capital letters are also possible)
- * @param channel specify channel from 0 to 59
- * @return Temperature of the Channel
+ * @param channel specify channel from 0 to 19
+ * @return Temperature of the specific channel in the specific channelgroup
  */
 float uz_TempCard_IF_get_channel(uz_temperaturecard_t* self, const char channelgroup, uint32_t channel);
 

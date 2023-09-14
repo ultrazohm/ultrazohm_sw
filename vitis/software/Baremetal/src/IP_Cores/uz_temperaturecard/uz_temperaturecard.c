@@ -168,7 +168,7 @@ void uz_TempCard_IF_MeasureTemps_cyclic(uz_temperaturecard_t* self) {
         // Channelgroup_C
     	self->Channelgroup_C.temperature_raw[self->Stepcounter-CHANNEL_COUNT*2U]  = uz_TempCard_IF_hw_read_raw_value_channel_group_C(self->config.base_address, self->Stepcounter-CHANNEL_COUNT*2U);
     	uz_TempCard_IF_extract_fault_data_for_channel_in_group_C(self, self->Stepcounter-CHANNEL_COUNT*2U);
-        uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_B(self, self->Stepcounter-CHANNEL_COUNT*2U);
+        uz_TempCard_IF_calculate_temperature_degrees_celsius_if_valid_group_C(self, self->Stepcounter-CHANNEL_COUNT*2U);
     	self->Stepcounter += 1U;
     }else{
     	self->Stepcounter = 0U;

@@ -13,6 +13,6 @@ Digital Adapter Boards
     digital_voltage_3u
     Digital_BreakoutBoard_v1
     encoder_v1
-    temperature_v1
+    temperature_rev02
     Digital_Resolver_rev01 
     Digital_SI_Inverter_rev03

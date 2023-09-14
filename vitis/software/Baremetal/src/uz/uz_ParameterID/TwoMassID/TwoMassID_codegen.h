@@ -26,9 +26,9 @@
 #ifndef TwoMassID_COMMON_INCLUDES_
 #define TwoMassID_COMMON_INCLUDES_
 #include "../lib/rtwtypes.h"
-#include "../lib/rtGetNaN.h"
-#include "../lib/rt_nonfinite.h"
-#include "../lib/rtGetInf.h"
+#include "../../../Codegen/lib/rtGetNaN.h"
+#include "../../../Codegen/lib/rt_nonfinite.h"
+#include "../../../Codegen/lib/rtGetInf.h"
 #endif                                 /* TwoMassID_COMMON_INCLUDES_ */
 
 #include <stddef.h>

@@ -21,8 +21,8 @@
 
 #include "Resonant_Controller.h"
 #include <math.h>
-#include "rt_nonfinite.h"
-#include "rtwtypes.h"
+#include "../../../Codegen/lib/rt_nonfinite.h"
+#include "../../../Codegen/lib/rtwtypes.h"
 #include <string.h>
 
 /* Model step function */

@@ -24,12 +24,12 @@
 #ifndef Resonant_Controller_COMMON_INCLUDES_
 
 
-#include "rtwtypes.h"
+#include "../../../Codegen/lib/rtwtypes.h"
 #endif                                /* Resonant_Controller_COMMON_INCLUDES_ */
 
 #include <stddef.h>
 #include <string.h>
-#include "rt_nonfinite.h"
+#include "../../../Codegen/lib/rt_nonfinite.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork

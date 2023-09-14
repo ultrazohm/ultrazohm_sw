@@ -24,7 +24,7 @@
 #if UZ_PARAMETERID_MAX_INSTANCES > 0U
 #include <string.h>
 #include <math.h>
-#include "../lib/rt_nonfinite.h"
+#include "../../../Codegen/lib/rt_nonfinite.h"
 #include "../lib/eye_6olvtp5i.h"
 
 /* Named constants for Chart: '<Root>/TwoMassID' */

@@ -403,13 +403,13 @@ void exportFloatArrayToCSV(const char *filename, const float *array, int size) {
     fclose(file);
 }
 
-void make_directory(const char* name) {
-   #ifdef __linux__
-       mkdir(name, 777); 
-   #else
-       _mkdir(name);
-   #endif
-}
+// void make_directory(const char* name) {
+//    #ifdef __linux__
+//        mkdir(name, 777); 
+//    #else
+//        _mkdir(name);
+//    #endif
+// }
 
 #endif
 #endif

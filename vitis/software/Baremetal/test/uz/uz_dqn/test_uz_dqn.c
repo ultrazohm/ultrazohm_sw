@@ -27,14 +27,28 @@ float epsmat[NUMBER_OF_EPSGREEDYSTEPS] = {
 #define NUMBER_OF_OUTPUTS 1
 #define NUMBER_OF_HIDDEN_LAYER 3
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 3
+#define NUMBEROFBITS 8
 
+// random array
+uint32_t array[NUMBEROFBITS] = {0,1,0,0,1,0,1,0};
+uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,1,1,1,1};
+float inarray[NUMBER_OF_INPUTS] = {10.0f};
+ //conf envrionment
+struct uz_dqn_environment_config configenv = {
+    .bitlength = NUMBEROFBITS,
+    .bitarray = array,
+    .targetarray = tararray,
+    .inarray = inarray,
+    .max_steps = 200,
+    .epsilon_start = 0.98f, 
+    .epsilon_min = 0.05f, 
+    .epsilon_decay = 0.001f
+};
 //dqn
 #define DQN_FREQUENCY 100
 float discountfact = 0.98f;
 float lernrate = 0.005f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
-float *inputdata = &X_dat;
-struct uz_matrix_t input_vec= {0};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float ts_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
@@ -253,14 +267,14 @@ void tearDown(void)
 
 void test_uz_dqn_init(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
 }
 void test_uz_dqn_compressed(void)
 {
     enum target_update periodic;
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
-    uz_dqn_t* testdqn2 = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn2 = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // target und critic netz gleich setzen
     // uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
     // random indizes for sample from buffer
@@ -286,8 +300,7 @@ void test_uz_dqn_compressed(void)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,
-    X,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
+    uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 
 }
@@ -304,7 +317,7 @@ void test_calc_reward_with_penalty(void)
 }
 
 void test_uz_dqn_copy_nn(void){
-    uz_dqn_t* dqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_target_update(dqn->critic,dqn->critic_target_net,periodic,&targsmoothfact);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1,tw_1,UZ_MATRIX_SIZE(cw_1));
@@ -326,7 +339,7 @@ void test_calc_reward_without_penalty(void)
 }
  void test_uz_dqn_calc_loss_terminal(void)
  {
-    uz_dqn_t* dqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float reward = 2.0f;
     float qval = 10.0f;
     float qvalplus1 = 5.5f;
@@ -337,7 +350,7 @@ void test_calc_reward_without_penalty(void)
 
   void test_uz_dqn_calc_loss_non_terminal(void)
  {
-    uz_dqn_t* dqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* dqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float reward = -3.0f;
     float qval = 7.0f;
     float qvalplus1 = 4.5f;
@@ -347,7 +360,7 @@ void test_calc_reward_without_penalty(void)
  }
 void test_uz_dqn_1_step(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // random indizes for sample from buffer
     uint32_t r[MINIBATCHSIZE] = {1,0,1,0,1}; 
     uint32_t *indizes = r;
@@ -390,7 +403,7 @@ void test_uz_dqn_train_episodes(void)
     enum target_update periodic;
     float targsmoothfact = 0.05f;
     // Zuerst alles definieren und anlegen
-    uz_dqn_t* testdqn = uz_dqn_init(input_vec, inputdata,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0); 
+    uz_dqn_t* testdqn = uz_dqn_init(&X_dat,lernrate,discountfact,config_critic,config_target,cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     // random indizes for sample from buffer
     uint32_t r[MINIBATCHSIZE] = {1,2,4,5,0}; 
     uint32_t *indizes = r;
@@ -435,7 +448,7 @@ void test_uz_dqn_train_episodes(void)
     uz_nn_gradient_descent_mini_batch(testdqn->critic,testdqn->lernrate,MINIBATCHSIZE);
     uz_nn_set_gradients_zero(testdqn->critic);
     // Targetupdate 
-    if (TARGET_UPDATE_FREQUENCY % NUMBER_OF_EPOCHS == 0){
+    if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY == 0){
     uz_nn_target_update(testdqn->critic,testdqn->critic_target_net,periodic_smoothing, &targsmoothfact);
     }
     }

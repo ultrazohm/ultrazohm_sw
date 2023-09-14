@@ -16,7 +16,7 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 10000
-#define MINIBATCHSIZE 64
+#define MINIBATCHSIZE 16
 #define NUMBER_OF_EPOCHS 5000
 #define TARGET_UPDATE_FREQUENCY 5
 // nn
@@ -49,7 +49,7 @@ float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 //dqn
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 0.00001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
@@ -256,10 +256,7 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
-    // if (i == 1180){
-    // int a = 1;
-    // }       
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,NUMBER_OF_INPUTS, indizes,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
     }
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

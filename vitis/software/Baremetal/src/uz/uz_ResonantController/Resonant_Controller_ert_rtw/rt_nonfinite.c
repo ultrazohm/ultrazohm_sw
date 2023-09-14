@@ -19,14 +19,14 @@
 #include "rt_nonfinite.h"
 #define NumBitsPerChar                 8U
 
-/*
+
 real_T rtInf;
 real_T rtMinusInf;
 real_T rtNaN;
 real32_T rtInfF;
 real32_T rtMinusInfF;
 real32_T rtNaNF;
-*/
+
 
 /*
  * Initialize the rtInf, rtMinusInf, and rtNaN needed by the

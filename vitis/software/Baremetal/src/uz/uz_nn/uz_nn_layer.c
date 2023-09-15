@@ -304,12 +304,12 @@ uint32_t weight_index = self->weights->length_of_data;
 //erst weights
 for(size_t i=0;i< weight_index;i++)
 {
-self->weights->data[i] = self->weights->data[i] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+self->weights->data[i] = self->weights->data[i] +( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }
 //dann bias
 for(size_t i=weight_index;i<(weight_index+bias_index);i++)
 {
-self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+self->bias->data[i-weight_index] = self->bias->data[i-weight_index] +( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }
 }
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)

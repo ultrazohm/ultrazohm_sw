@@ -74,10 +74,10 @@ void test_uz_twister_init_layer(void){
 };
     uz_nn_layer_t *layer = uz_nn_layer_init_trainable(config);
     uz_nn_layer_param_init(layer,twister,config);
-    float btest[NUMBER_OF_NEURONS_IN_LAYER] = {1.0f, -2.0f, 3.0f, -4.0f};
-    float wtest[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
-                                                          0.3188f, -1.3077f, -0.4336f, 0.3426f,
-                                                          3.5784f, 2.7694f, -1.3499f, 3.0349f};
+   // float btest[NUMBER_OF_NEURONS_IN_LAYER] = {1.0f, -2.0f, 3.0f, -4.0f};
+   // float wtest[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
+     //                                                     0.3188f, -1.3077f, -0.4336f, 0.3426f,
+     //                                                     3.5784f, 2.7694f, -1.3499f, 3.0349f};
     // TEST_ASSERT_EQUAL_FLOAT_ARRAY(btest,b,UZ_MATRIX_SIZE(b));
     // TEST_ASSERT_EQUAL_FLOAT_ARRAY(wtest,w,UZ_MATRIX_SIZE(w));
 }

@@ -255,7 +255,7 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
     }
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

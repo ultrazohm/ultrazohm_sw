@@ -62,8 +62,18 @@ It is necessary to read the datasheet of the `LTC2983 <https://www.analog.com/en
 Regardless of what type of sensor configuration you want to use, some general steps for creating an instance of the IP_Core driver are similar for all use-cases. 
 Below the necessary steps are shown at the example of one temperature adapter board mounted in adapter board slot ``D4``.
 
-1. In Vitis, in the Baremetal project under the folder ``hw_init`` create a new file ``uz_temperature_card_init.c`` 
-2. Include necessary files and create a ``config`` struct as well as an init function for one instance:
+1. In Vitis, in the Baremetal project under ``src/uz/`` open the file ``uz_global_configuration.h`` and make sure, that the maximum allowed instances define for this driver is at least ``1U``
+
+.. code-block:: c
+ :caption: uz_global_configuration.h
+
+ // Configuration defines for the number of used instances
+ ...
+ #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               1U
+ ...
+
+2. In Vitis, in the Baremetal project under the folder ``hw_init`` create a new file ``uz_temperature_card_init.c`` 
+3. Include necessary files and create a ``config`` struct as well as an init function for one instance:
 
 .. code-block:: c
  :caption: Example of uz_temperature_card_init.c
@@ -90,8 +100,8 @@ Below the necessary steps are shown at the example of one temperature adapter bo
 	return (uz_temperaturecard_init(config_tempcard));
  }
 
-3. In the ``include`` folder, create a header file ``uz_temperature_card_init.h``
-4. Include necessary files and the function prototype of your init routine:
+4. In the ``include`` folder, create a header file ``uz_temperature_card_init.h``
+5. Include necessary files and the function prototype of your init routine:
 
 .. code-block:: c
  :caption: Example of uz_temperature_card_init
@@ -101,7 +111,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
 
  uz_temperaturecard_t* initialize_temperature_card_d4(void);
 
-5. In the Global_Data header file ``globalData.h``, include necessary header and add an object pointer of the respective type in the ``object_pointer_t`` struct, as well as channelgroup data structs to the ``actualValues``:
+6. In the Global_Data header file ``globalData.h``, include necessary header and add an object pointer of the respective type in the ``object_pointer_t`` struct, as well as channelgroup data structs to the ``actualValues``:
 
 .. code-block:: c
  :caption: Lines to add in Global_Data header file
@@ -124,7 +134,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  ...
  } actualValues;
 
-6. In ``main.c``, initialize an instance of the driver and assign it to the object pointer structure in the Global_Data inside the ``init_ip_cores`` case. Also ``Reset`` and ``Start`` the IP-Core by calling respective functions:
+7. In ``main.c``, initialize an instance of the driver and assign it to the object pointer structure in the Global_Data inside the ``init_ip_cores`` case. Also ``Reset`` and ``Start`` the IP-Core by calling respective functions:
 
 .. code-block:: c
  :caption: Example of init in main.c
@@ -138,8 +148,8 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  ...
  break;
 
-7. In ``main.h``, include your init header file  ``#include "include/uz_temperature_card_init.h"``.
-8. In ``isr.c``, now you can read the result values of the IP Core and use them:
+8. In ``main.h``, include your init header file  ``#include "include/uz_temperature_card_init.h"``.
+9. In ``isr.c``, now you can read the result values of the IP Core and use them:
 
 .. code-block:: c
  :caption: Example of reading temperature results in isr.c to the channgroup data structs
@@ -151,7 +161,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  Global_Data.av.channel_C_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'C');
  ...
 
-9. E.g. ``Global_Data.av.channel_A_data.temperature[4]`` will contain the temperature in degrees celsius of ``Ch5`` of ``ChannelGroup A``.
+10. E.g. ``Global_Data.av.channel_A_data.temperature[4]`` will contain the temperature in degrees celsius of ``Ch5`` of ``ChannelGroup A``.
 
 Configuration Examples
 ----------------------

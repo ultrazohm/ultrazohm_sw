@@ -137,8 +137,8 @@ void ISR_Control(void *data)
 	Global_Data.av.fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(Global_Data.av.fault_single_indices);
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
 	// only get k_param when faul control is active, the setpoint is not zero and controller is PIR, since its only implemented for PIR
-	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 0.3f) && selected_controller==PI_R){
-		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);
+	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 1.0f) && selected_controller==PI_R){
+		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, MT, NEUTRAL_CFG);
 	}else{
 		k_param.valid = false;
 	}
@@ -152,7 +152,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.opf_a1_min = false;
 	}
 	// if "set opf a1 max" and "i_a1 is very large" and "the relais bit is not low yet"
-	if(Global_Data.rasv.opf_a1_max && (Global_Data.av.currents_abc.a1 > 2.9f) && (Global_Data.rasv.set_relais & 0x01)){
+	if(Global_Data.rasv.opf_a1_max && (Global_Data.av.currents_abc.a1 > 2.6f) && (Global_Data.rasv.set_relais & 0x01)){
 		Global_Data.rasv.set_relais &= 0x1FE;
 		Global_Data.rasv.opf_a1_max = false;
 	}

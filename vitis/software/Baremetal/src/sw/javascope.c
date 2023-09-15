@@ -102,6 +102,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;
+	js_ch_observable[JSO_torque_raw]  	= &(data->av.torque_Nm_raw);
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_UDC1]   		= &(data->av.U_ZK1);
 	js_ch_observable[JSO_UDC2]   		= &(data->av.U_ZK2);

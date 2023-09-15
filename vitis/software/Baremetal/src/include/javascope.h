@@ -65,6 +65,7 @@ enum JS_OberservableData {
 	JSO_iq_set,
 	JSO_relais_a1,
 	JSO_OPF_index,
+	JSO_torque_raw,
 	JSO_lifecheck,
 	JSO_UDC1,
 	JSO_UDC2,

@@ -253,8 +253,8 @@ void test_uz_nn_train_check_mse_param(void)
     msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
     float *msed = &msederv[i];
     float result=uz_matrix_get_element_zero_based(outputnn2,0,0);
-    printf("output von step %d ist = %.8f \n",(int)i, (double)result);
-    printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+  //  printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+  //  printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
     uz_nn_backward_pass(test2,msed,input);
     float lernrate = 0.0001f;
     uz_nn_gradient_descent(test2,lernrate);

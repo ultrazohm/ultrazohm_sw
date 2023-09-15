@@ -109,7 +109,7 @@ void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
     float reward = calculate_reward_bit(self->env);
     self->env->cumreward+= reward;
     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-    printf("Bitmuster gleich nach %d Schritten.\n",i);
+    //printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
     }  
     }
@@ -137,7 +137,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->env->inputfornn);
     self->env->cumreward+= reward;
     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-    printf("Bitmuster gleich nach %d Schritten.\n",i);
+    //printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
     }
     } 

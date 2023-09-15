@@ -141,6 +141,12 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t* self, float Ki_iq){
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
 }
 
+void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float max_modulation_index) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(max_modulation_index > 0.0f);
+	self->config.max_modulation_index = max_modulation_index;
+}
 void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t pmsm_config) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);

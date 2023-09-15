@@ -42,3 +42,4 @@ Software Framework
     encoder_offset_estimation/encoder_offset_estimation
     controller_setpoint_filter/controller_setpoint_filter
     uz_subspace_resonant_control/uz_subspace_resonant_control
+    external_stop/external_stop

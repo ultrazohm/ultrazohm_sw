@@ -12,6 +12,7 @@ typedef struct{
 	uz_gpio *EnableSystem;
 	uz_gpio *EnableControl;
 	uz_gpio *Stop;
+	uz_gpio *ExternalStop;
 }uz_PushButtonFacadeCfg;
 
 void uz_PushButton_facade_init(uz_PushButtonFacadeCfg cfg);
@@ -19,5 +20,6 @@ void uz_PushButton_facade_init(uz_PushButtonFacadeCfg cfg);
 _Bool uz_GetPushButtonStop();
 _Bool uz_GetPushButtonEnableSystem();
 _Bool uz_GetPushButtonEnableControl();
+_Bool uz_GetExternalStop();
 
 #endif

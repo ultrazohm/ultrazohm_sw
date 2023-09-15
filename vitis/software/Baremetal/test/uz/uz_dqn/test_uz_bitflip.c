@@ -15,10 +15,10 @@
 #include <string.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 10000
+#define EXPERIENCE_BUFFER_LENGTH 1000000
 #define MINIBATCHSIZE 32
-#define NUMBER_OF_EPOCHS 1000
-#define TARGET_UPDATE_FREQUENCY 5
+#define NUMBER_OF_EPOCHS 5000
+#define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBER_OF_INPUTS 16
 #define NUMBER_OF_OUTPUTS 8
@@ -37,10 +37,10 @@ struct uz_dqn_environment_config configenv = {
     .bitarray = array,
     .targetarray = tararray,
     .inarray = inarray,
-    .max_steps = 200,
-    .epsilon_start = 0.98f, 
-    .epsilon_min = 0.05f, 
-    .epsilon_decay = 0.001f
+    .max_steps = NUMBEROFBITS,
+    .epsilon_start = 0.95f, 
+    .epsilon_min = 0.01f, 
+    .epsilon_decay = 0.003f
 };
 // debug stuff
 float loss[NUMBER_OF_EPOCHS] = {0.0f};
@@ -48,8 +48,8 @@ float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
 float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 //dqn
-float discountfact = 0.99f;
-float lernrate = 0.0000f;
+float discountfact = 0.95f;
+float lernrate = 0.00001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
@@ -253,9 +253,9 @@ void test_dqn_bitflip(void)
     uz_dqn_sample_bitenv(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
     epsilonovertime[i] = testdqn2->env->epsilon_start;
-    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
     }
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

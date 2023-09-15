@@ -206,7 +206,7 @@ void test_uz_nn_train_minibatch_function(void)
     uz_nn_set_gradients_zero(test);
     float mse[NUMBER_OF_EPOCHS] = {0};
     float lernrate = 0.001f;
-    uz_nn_train_minibatch(test,mse,input,refout,X,ref,0.001f,MINI_BATCH_SIZE,NUMBER_OF_EPOCHS);
+    uz_nn_train_minibatch(test,mse,input,refout,X,ref,lernrate,MINI_BATCH_SIZE,NUMBER_OF_EPOCHS);
     // check parameter weights and bias to other test
      for(size_t i = 0;i< (int)(sizeof(mse) / sizeof(float));i++) {
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], mse[i]);
@@ -234,7 +234,7 @@ void test_uz_nn_matlab(void)
        printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
        uz_nn_backward_pass(test,msed,input);
        float lernrate = 0.001f;
-      //  uz_nn_gradient_descent(test,lernrate);
+        uz_nn_gradient_descent(test,lernrate);
        }
       //  uz_nn_mat_export(test);
        clock_t end = clock();

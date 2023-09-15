@@ -14,19 +14,7 @@ The documentation for the Temperature Card can be e.g. found under :ref:`tempera
 IP-Core
 -------
 The temperature card is provided with an IP-core, which handles the configuration, triggers periodical measurements, and provides the results that are 
-collected afterwards by the software driver.
-
-.. note:: 
-
-   To simplify the usage of the IP-Core and to reduce possible errors, a tcl script was created, that places all necessary connections automatically.
-   Only the hardware ports have to be assigned manually, according to the used digital adapter card slot.
-   To use this, open the Vivado block design and run the following commands separately in the TCL-console.
-   "cd [ get_property DIRECTORY [current_project] ]" 
-   "cd $work_directory"
-   "source ../../ip_cores/Temperature_Card_Interfrace_V1/temp_card_interface.tcl"
-   "create_hier_cell_temp_card_interface / temp_card_interface"
-
-The figure below shows the IP-Core in a Vivado block design environment.
+collected afterwards by the software driver. The figure below shows the IP-Core in a Vivado block design environment.
 
 .. _ip_core_temperature_card:
 
@@ -85,7 +73,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  
    struct uz_temperaturecard_config_t config_temperature_card = {
    // general config
-   .base_address = XPAR_UZ_USER_TEMP_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
+   .base_address = XPAR_UZ_USER_TEMPERATURE_CARD_INT_0_BASEADDR,
    .ip_clk_frequency_Hz = 100000000U,
    .Sample_Freq_Hz = 5U, // we are fine with 5 Hz since the LTC2983 itself isn't that fast with updating the results
    // channelgroup A
@@ -97,7 +85,7 @@ Below the necessary steps are shown at the example of one temperature adapter bo
    };
 
  uz_temperaturecard_t* initialize_temperature_card_d4(void){
-	return (uz_temperaturecard_init(config_tempcard));
+	return (uz_temperaturecard_init(config_temperature_card));
  }
 
 4. In the ``include`` folder, create a header file ``uz_temperature_card_init.h``
@@ -162,6 +150,17 @@ Below the necessary steps are shown at the example of one temperature adapter bo
  ...
 
 10. E.g. ``Global_Data.av.channel_A_data.temperature[4]`` will contain the temperature in degrees celsius of ``Ch5`` of ``ChannelGroup A``.
+
+
+The function ``uz_TempCard_IF_MeasureTemps_cyclic`` updates one channel per call, and uses an incremental pointer internally.
+To update every channel of the TemperatureCard, 60 calls are needed, since every ChannelGroup has 20 channels.
+For each LTC2983 (ChannelGroup) on the temperature card, the ``uz_temperaturecard_OneGroup`` contains the configuration, raw-values, temperature values and also error indicators for each channel.
+This allows the user a comprehensive use of the measured values with some manual implementations.
+The driver will perform a small check if the measurement is valid and calculate the temperature value from the raw value and stores the results in the temperature-array inside the group.
+
+.. note::
+
+   If the measurement is not valid, the results in the temperature-array is fixed to the impossible value of ``-333.3f``.
 
 Configuration Examples
 ----------------------
@@ -259,7 +258,7 @@ Software driver configuration
    };
 
 As can be seen, we now assigned configuration words for almost every of the 20 channels of ``ChannelGroup A``. Each configuration word is created by 
-bit-wise OR of several ``#defines``. ``Ch2`` (array index 1) is configured for beeing connected to a 1kOhm sense resistor, that the LTC2983 uses for measuring its 
+bit-wise OR of several ``#defines``. ``Ch2`` (array index 1) is configured for being connected to a 1kOhm sense resistor, that the LTC2983 uses for measuring its 
 excitation current of the ``PT100`` RTD that is connected to ``Ch4`` (array index 3), and is excited with a ``100µA`` current. This ``PT100`` serves as the CJC measurement device for 
 the Thermocouples. The 16 remaining channels ``Ch5`` to ``Ch20`` are configured for single-ended ``Type K`` thermocouples that refer to ``Ch4`` for internal CJC within the LTC2983.
 With this, the user is able to simply read the temperature results in degrees celsius directly from the ``float temperature[20]`` variable in ``struct uz_temperaturecard_OneGroup`` as mentioned 
@@ -271,114 +270,98 @@ at the beginning of the driver section.
    Since the LTC2983 updates all **configured** channels within one ChannelGroup one after another, fewer configured channels will lead to a faster 
    update rate of the measurements!  
 
-PT100
------
-some example
+9x 2-wire PT100 at ChannelGroup A
+---------------------------------
+In this example the temperature card is used to read nine winding temperatures from an electric machine which uses PT100 sensors.
+Since the mean value is of interest and non-valid values (e.g. due to EMI) should not make the average unusable, the averaging function of the driver is used. 
+Besides the necessary sense resistor for the LTC2983, the 2-wire ``PT100`` RTD`s are connected to channels ``Ch3 - Ch4``, ``Ch5 - Ch6`` and so on.
 
-After calling ``uz_TempCard_IF_Start``, the IP-Core will do all measurements by itself and the user has no need to interact with the Card anymore.
+PCB assembly variant
+********************
+The figure below shows the temperature adapter board ``Rev03`` with assembly variant ``All_2wire_RTD``.
+The main characteristics of this assembly variant are highlighted. 
+In this variant, channel groups ``A`` to ``C`` are equipped for 2-wire RTD measurement at channels ``Ch3 - Ch4``, ``Ch5 - Ch6`` and so on 
 
-To read the measured temperatures, the UZ-Driver provides two ways.
-The first way is calling the function ``uz_TempCard_IF_MeasureTemps_all``, which will read the result from every channel and updates the stored measurements inside the driver. 
-This function is only for Data-Logging-purpose since it will costs a lot of ISR-time, never use this function in fast control-loops!
+.. _all_2wire_rtd_pcb:
 
-The second way is preferred since it is compatible with fast control-loops.
-To update the results inside the Driver, call the function ``uz_TempCard_IF_MeasureTemps_cyclic`` at the beginning of the ISR.
-This function will only update one channel per call, but uses an incremental pointer.
-To update every channel of the TemperatureCard, 60 calls are needed.
+.. figure:: twowire_rtd_variant.png
+   :width: 800
+   :align: center
+
+   uz_d_temperaturecard_ltc2983, Rev03, assembly variant: All_2wire_RTD
+
+Software driver configuration
+*****************************
 
 .. code-block:: c
-  :caption: Reading the measurements from the IP-Core driver instances
+  :caption: Configuration for 2-wire PT100 measurements at channelgroup A for 9 channels
 
-   void ISR_Control(void *data)
-   {
-   // Reads out the global timer, has to be the first function in the isr
-      uz_SystemTime_ISR_Tic();
-
-      // Update Data and measurements
-      ReadAllADC();
-      update_speed_and_position_of_encoder_on_D5(&Global_Data);
-      uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.uz_TempCard);
-    ...
-      // More ISR-Stuff
+   struct uz_temperaturecard_config_t config_temperature_card = {
+   // general config
+   .base_address = XPAR_UZ_USER_TEMP_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
+   .ip_clk_frequency_Hz = 100000000U,
+   .Sample_Freq_Hz = 5U,
+   // channelgroup A
+   .Configdata_A = {0U},
+   .Configdata_A[0]  = 0U,
+   .Configdata_A[1]  = SENSOR_TYPE__SENSE_RESISTOR | SENSE_RESISTOR_VALUE_1k,
+   .Configdata_A[2]  = 0U,
+   .Configdata_A[3]  = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[4]  = 0U,
+   .Configdata_A[5]  = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[6]  = 0U,
+   .Configdata_A[7]  = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[8]  = 0U,
+   .Configdata_A[9]  = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[10]  = 0U,
+   .Configdata_A[11] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[12]  = 0U,
+   .Configdata_A[13] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[14]  = 0U,
+   .Configdata_A[15] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[16]  = 0U,
+   .Configdata_A[17] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   .Configdata_A[18]  = 0U,
+   .Configdata_A[19] = SENSOR_TYPE__RTD_PT_100 | RTD_RSENSE_CHANNEL__2 | RTD_NUM_WIRES__2_WIRE | RTD_EXCITATION_MODE__NO_ROTATION_SHARING | RTD_EXCITATION_CURRENT__100UA | RTD_STANDARD__EUROPEAN,
+   // channelgroup B
+   .Configdata_B = {0U},
+   // channelgroup C
+   .Configdata_C = {0U}
    };
 
-Results
--------
-The measured temperatures are stored inside the driver instance. 
-For each LTC2983 on the temperature card, one group is declared and contains the configuration, raw-value, temperature value and error indicator for each channel of one LTC2983.
-This allows the user a comprehensive use of the measured values with some manual implementations.
-The driver will perform a small check if the measurement is valid and calculate the temperature value from the raw value and stores the results in the temperature-array inside the group.
-If the measurement is not valid, the results in the temperature-array is fixed to the impossible value of -333.3f.
+As can be seen, we now assigned configuration words for almost every of the 20 channels of ``ChannelGroup A``. Each configuration word is created by 
+bit-wise OR of several ``#defines``. ``Ch2`` (array index 1) is configured for being connected to a 1kOhm sense resistor, that the LTC2983 uses for measuring its 
+excitation current of the ``PT100`` RTD`s. The excitation current is set to ``100µA``.The 18 remaining channels ``Ch3`` to ``Ch20`` are configured for nine 2-wire ``PT100`` RTD`s. 
+With this, the user is able to simply read the temperature results in degrees celsius directly from the ``float temperature[20]`` variable in ``struct uz_temperaturecard_OneGroup`` as mentioned 
+at the beginning of the driver section.
 
-To get the temperature value, a direct access to the Global_Data is needed.
+.. note:: 
 
-.. code-block:: c
-  :caption: Get the temperature value for the PT100 on Channel_A
+   If fewer channels than 9 are sufficient for your application, set the not necessary channels in the ``config_temperature_card`` struct to ``0U``. 
+   Since the LTC2983 updates all **configured** channels within one ChannelGroup one after another, fewer configured channels will lead to a faster 
+   update rate of the measurements!  
 
-   float Temp_Winding = 0.0f;
+Averaging of Temperature Channels
+*********************************
 
-   void ISR_Control(void *data)
-   {
-       // Some ISR-Stuff
-      Temp_Winding = Global_Data.objects.uz_TempCard.Channel_A.temperature[3];
-    ...
-       // More ISR-Stuff
-   };
-
-
-
-
-PT100
------
-In this example the temperature card is used to read six winding temperatures from an electric machine which uses PT100 sensors.
-Since the mean value is of interest and non-valid values (e.g. due to EMI) should not make the average unusable, a specific averaging function is used.
+In addition to just readout the temperature values, in this example we are interested into the average temperature over all valid channels. 
+For this purpose the driver offers a function that handles this. The example below shows how to use the averaging function for all 9 2-wire RTD`s 
+of ChannelGroup A:
 
 .. code-block:: c
-  :caption: ``main.c``
+  :caption: Example on how to average valid temperatures of one ChannelGroup in ``isr.c``
 
    // pre-loop
-   #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
-   uz_temperaturecard_t* uz_Tempcard = NULL;
-   struct uz_temperaturecard_config_t t_config = {
-      .base_address = XPAR_UZ_USER_TEMP_CARD_INTERFACE_TEMPERATURE_CARD_INT_0_BASEADDR,
-      .ip_clk_frequency_Hz = 100000000,
-      .Sample_Freq = 100,
-      .Configdata_A = {0},
-      .Configdata_A[1]  = 0xE80FA000,
-      .Configdata_A[3]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_A[5]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_A[7]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_A[9]  = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_A[11] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_A[13] = (SENSOR_TYPE__RTD_PT_100) + (RTD_RSENSE_CHANNEL__2) + (0x0 << 20) + (RTD_EXCITATION_MODE__NO_ROTATION_SHARING) + (RTD_EXCITATION_CURRENT__100UA) + (RTD_STANDARD__EUROPEAN),
-      .Configdata_B = {0},
-      .Configdata_C = {0}};
-
-   // in switch-case
-   case init_ip_cores:
-      // uz tempcard
-      uz_Tempcard = uz_temperaturecard_init(t_config);
-      uz_TempCard_IF_Reset(uz_Tempcard);
-      uz_TempCard_IF_Start(uz_Tempcard);
-
-
-.. code-block:: c
-  :caption: ``isr.c``
-
-   // pre-loop
-   #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
-   extern uz_temperaturecard_t* uz_Tempcard;
-   uz_temperaturecard_OneGroup channel_A_data;
    float average = 0.0f;
 
    // in isr
-   uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-   channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'a');
-   average = uz_TempCard_IF_average_temperature_for_valid(channel_A_data, 0U, 13U);
-
-
-
-
+    ...
+    uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
+    Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+    Global_Data.av.channel_B_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'B');
+    Global_Data.av.channel_C_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'C');
+    average = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 0U, 19U);
+    ...
 
 
 Driver Reference
@@ -414,4 +397,4 @@ Operation
 
 Designed by 
 -----------------------
-Robert Zipprich (Universität Kassel / EMA) // Michael Hoerner (TH Nürnberg) in 01/2023
+Robert Zipprich (Universität Kassel / EMA) // Michael Hoerner, Valentin Hoppe (TH Nürnberg) in 01/2023

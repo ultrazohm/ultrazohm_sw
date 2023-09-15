@@ -128,7 +128,7 @@ need to reconfigure or resolder the wiring in this section.
 
 References
 -----------------------
-* :download:`Schematic Rev02 <temperature_rev02/SCH_UZ_D_Temperature_Card_LTC2983_All_Thermocouple_Rev02.pdf>`
+* :download:`Schematic Rev02 <temperature_rev02/uz_d_temperature_card_LTC2983_all_thermocouple_rev02.pdf>`
 * :ref:`label_cpld_programming`
 
 Known issues
@@ -139,4 +139,4 @@ Known issues
 
 Designed by 
 -----------
-Robert Zipprich (Universität Kassel / EMA) in 01/2023
+Robert Zipprich (Universität Kassel / EMA) // Michael Hoerner (TH Nürnberg) in 01/2023

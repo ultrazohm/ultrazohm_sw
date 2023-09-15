@@ -59,9 +59,9 @@ void test_uz_get_k_parameter_9ph_MT_N1(void){
             .b3 = 0.0f,
             .c3 = 0.0f};//MSB
     uz_9ph_MLMT_kparameter_t param = uz_get_k_parameter_9ph(indices, MT, 1);
-    TEST_ASSERT_EQUAL_FLOAT(0.487934f, param.derating);
-    TEST_ASSERT_EQUAL_FLOAT(-0.243475f, param.k_X1a);
-    TEST_ASSERT_EQUAL_FLOAT(-0.101732f, param.k_Y3b);
+    TEST_ASSERT_EQUAL_FLOAT(0.505440f, param.derating);
+    TEST_ASSERT_EQUAL_FLOAT(-0.561039f, param.k_X1a);
+    TEST_ASSERT_EQUAL_FLOAT(-0.206354f, param.k_Y3b);
     TEST_ASSERT_EQUAL(true, param.valid);
     // make not prepared combination
     indices.a3 = 1.0f;

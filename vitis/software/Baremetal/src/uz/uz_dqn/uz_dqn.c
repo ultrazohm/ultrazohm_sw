@@ -184,7 +184,7 @@ for(uint32_t j=0; j<mbsize;j++){
     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
-return cum_loss;
+return loss;
 }
 
 float uz_dqn_train2(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,

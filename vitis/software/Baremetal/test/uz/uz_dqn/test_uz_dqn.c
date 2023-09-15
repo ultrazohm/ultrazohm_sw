@@ -218,10 +218,10 @@ void test_uz_dqn_compressed(void)
     uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
-        uz_dqn_sample(testdqn2, 1 / DQN_FREQUENCY, false, X);
-        genRand_uint32_t_array(indizes, &testdqn2->randinstance->seedRand, MINIBATCHSIZE, 1, EXPERIENCE_BUFFER_LENGTH - 1);
-        uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer, rew, qval, act, obs, testdqn2->experience_buffer->vectorforobs, obspl1, MINIBATCHSIZE, indizes);
-        uz_dqn_train(testdqn2, rew, qval, act, obspl1, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, NUMBER_OF_EPOCHS, targsmoothfact);
+    uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
+    genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
+    uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 }
 

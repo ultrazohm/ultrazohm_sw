@@ -98,6 +98,7 @@ void test_uz_box_mueller_rand(void)
     array[i]= rand;
   }
 export_histogram(array,length);
+export_histogram(array,length);
 // check with matlab plot histogram and x,y
 }
 
@@ -106,7 +107,7 @@ void test_uint_32_t_array(void){
   float min_val = 1;
   float max_val = 3;
   uint32_t size = 5;
-  uint32_t array[5] = {10,10,10,10,10};
+  uint32_t array[5] = {0};
   genRand_uint32_t_array(array,&r,size, min_val, max_val);
   uint32_t expectedarray [5] = {2,2,2,2,2};
   TEST_ASSERT_UINT32_ARRAY_WITHIN (1, expectedarray, array,UZ_MATRIX_SIZE(array));

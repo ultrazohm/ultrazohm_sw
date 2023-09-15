@@ -238,13 +238,13 @@ void test_uz_nn_schroeder(void)
     biashelper[i] = uz_matrix_get_element_zero_based(gradhelp1,2,0);// bias 1,1
     sumtheta += THETAhelper[i];
     sumbias += biashelper[i];
-   // printf("sumthteta = %.2f \n", (double)sumtheta);
-   // printf("sumbias = %.2f \n", (double)sumbias);
+    //printf("sumthteta = %.2f \n", (double)sumtheta);
+    //printf("sumbias = %.2f \n", (double)sumbias);
     }
     avgbias = sumbias / 13.0f;
     avgtheta = sumtheta / 13.0f;
-  //  printf("Mittelwert von thetagrad = %.2f \n", (double)avgtheta);
-  //  printf("Mittelwert von biasgrad = %.2f \n", (double)avgbias);
+    //printf("Mittelwert von thetagrad = %.2f \n", (double)avgtheta);
+    //printf("Mittelwert von biasgrad = %.2f \n", (double)avgbias);
     //Lernrate festlegen
     float lernrate = 2.0f;
     // updaten aller parameter mit den funktionen für das ganze netz
@@ -253,6 +253,7 @@ void test_uz_nn_schroeder(void)
     uz_nn_set_gradients_zero(test); // alles zu null setzen
     struct uz_matrix_t avg_matrix={0};
     float avg_data[4]={avgtheta, 0.0f, avgbias, 0.0f};
+    uz_matrix_t* gradmax=uz_matrix_init(&avg_matrix,avg_data,4,4,1);
     uz_matrix_t* gradmax=uz_matrix_init(&avg_matrix,avg_data,4,4,1);
     uz_nn_set_gradient_matrix(test, gradmax, 1);
     uz_nn_gradient_descent(test, lernrate);

@@ -215,7 +215,7 @@ uz_nn_t* gradientnet = uz_nn_init(config,NUMBER_OF_HIDDEN_LAYER,true);
 }
 void test_uz_nn_schroeder(void)
   {
-    clock_t start = clock();
+    //clock_t start = clock();
     float biashelper[13];
     float THETAhelper[13];
     float sumtheta = 0.0f;
@@ -260,8 +260,8 @@ void test_uz_nn_schroeder(void)
     //uz_nn_update(test,avgtheta,avgbias,lernrate);
     //Funktion die die daten exportiert und in die .csv Dateien überschreibt
     //uz_nn_schroeder_export(test);
-    clock_t end = clock();
-    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    //clock_t end = clock();
+    //float seconds = (float)(end - start) / CLOCKS_PER_SEC;
    // printf("Zeit des Tests = %.6f \n", (double)seconds);
 }
 #endif // TEST

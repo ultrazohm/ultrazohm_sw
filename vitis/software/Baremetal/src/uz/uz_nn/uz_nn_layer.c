@@ -253,13 +253,13 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_transpose(self->sumout);
     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
 }
-void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     for(size_t i=0;i< self->number_of_neurons;i++)
     {
-    self->error->data[i] = *error;
+    self->error->data[i] = error;
     }
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
     uz_matrix_transpose(self->sumout);
@@ -304,12 +304,12 @@ uint32_t weight_index = self->weights->length_of_data;
 //erst weights
 for(size_t i=0;i< weight_index;i++)
 {
-self->weights->data[i] = self->weights->data[i] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+self->weights->data[i] = self->weights->data[i] + ( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }
 //dann bias
 for(size_t i=weight_index;i<(weight_index+bias_index);i++)
 {
-self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate/minibatchsize * (-1.0f * self->gradients->data[i]));
+self->bias->data[i-weight_index] = self->bias->data[i-weight_index] + ( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }
 }
 void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)
@@ -317,7 +317,7 @@ void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname)
     FILE *f = fopen(fname, "w");
     for (uint32_t i = 0; i< self->weights->length_of_data; i++)
     {
-    fprintf(f, "%.6f,", self->weights->data[i]); 
+    fprintf(f, "%.6f,", (double)self->weights->data[i]); 
     } 
   fclose(f);
 }
@@ -327,7 +327,7 @@ void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname)
     FILE *f = fopen(fname, "w");
     for (uint32_t i = 0; i< self->bias->length_of_data; i++)
     {
-    fprintf(f, "%.6f,", self->bias->data[i]); 
+    fprintf(f, "%.6f,", (double)self->bias->data[i]); 
     } 
   fclose(f);
 }

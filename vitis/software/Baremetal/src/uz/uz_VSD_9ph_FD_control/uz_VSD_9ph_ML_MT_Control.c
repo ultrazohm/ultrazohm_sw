@@ -252,7 +252,7 @@ int fault_indices_to_OPF_index(uz_9ph_abc_t input_faultindices){
 static inline int search_array_row_index(int OPF_index, const float table[][15], const uint16_t n_rows){
         int row = -1;
         float OPF_index_f = (float) OPF_index;
-        for(int i=0; i<=n_rows; i++){
+        for(int i=0; i<n_rows; i++){
                 if(table[i][0U] == OPF_index_f){
                         row = i;
                         break;

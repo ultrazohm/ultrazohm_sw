@@ -114,9 +114,11 @@ uz_9ph_alphabeta_t reset_controllers_fault_control_and_tristate(struct pointers_
 	return out;
 }
 
-void derate_dq_setpoints(DS_Data* Data, float derating, int n_OPF){
-	if(n_OPF > 0){
-		Data->rasv.dq_setpoints.d = derating * Data->rasv.dq_setpoints_user_input.d;
-		Data->rasv.dq_setpoints.q = derating * Data->rasv.dq_setpoints_user_input.q;
+uz_3ph_dq_t derate_dq_setpoints(uz_3ph_dq_t user_setpoint, float derating){
+	uz_3ph_dq_t derated = {0};
+	if(derating>0.0f){
+		derated.d = derating * user_setpoint.d;
+		derated.q = derating * user_setpoint.q;
 	}
+	return derated;
 }

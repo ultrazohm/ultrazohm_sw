@@ -30,7 +30,7 @@ void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* 
 uz_9ph_abc_t uz_ADC_phase_currents(AnalogAdapters* aa){
 	uz_9ph_abc_t out = {
 		.a1 = (aa->A1.me.ADC_A3 * 12.129f) + 0.10f,
-		.b1 = (aa->A1.me.ADC_A2 * 11.338f) + 0.12f,
+		.b1 = (aa->A1.me.ADC_A2 * 11.338f) + 0.00f,
 		.c1 = (aa->A1.me.ADC_A1 * 12.051f) - 0.07f,
 		.a2 = (aa->A2.me.ADC_A3 * 12.038f) - 0.03f,
 		.b2 = (aa->A2.me.ADC_A2 * 12.115f) + 0.00f,

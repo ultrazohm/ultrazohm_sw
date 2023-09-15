@@ -138,7 +138,7 @@ void ISR_Control(void *data)
 	Global_Data.av.fault_combined_index = fault_indices_to_OPF_index(Global_Data.av.fault_single_indices);
 	// only get k_param when faul control is active, the setpoint is not zero and controller is PIR, since its only implemented for PIR
 	if(FAUL_CONTROL && (Global_Data.rasv.dq_setpoints.q > 1.0f) && selected_controller==PI_R){
-		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, MT, NEUTRAL_CFG);
+		k_param = uz_get_k_parameter_9ph(Global_Data.av.fault_single_indices, ML, NEUTRAL_CFG);
 	}else{
 		k_param.valid = false;
 	}
@@ -210,11 +210,10 @@ void ISR_Control(void *data)
     	///////////////////////////////////Fault control////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
     	if(k_param.valid){
-			derate_dq_setpoints(&Global_Data, k_param.derating, Global_Data.av.fault_n_OPF);
+    		Global_Data.rasv.dq_setpoints = derate_dq_setpoints(Global_Data.rasv.dq_setpoints_user_input, k_param.derating);
     		fault_control_open_switches(&Global_Data, Global_Data.av.fault_single_indices);
     		ref_voltages_fault = step_controllers_fault_control(&Global_Data, Global_Data.objects.objects_fault_control, k_param);
     		ref_voltages_fault = reduce_controller_freedom_degrees(ref_voltages_fault, Global_Data.av.fault_n_OPF);
-    		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
     	}else{
     		ref_voltages_fault = reset_controllers_fault_control_and_tristate(Global_Data.objects.objects_fault_control, &Global_Data);
 			Global_Data.rasv.dq_setpoints = Global_Data.rasv.dq_setpoints_user_input;
@@ -222,6 +221,7 @@ void ISR_Control(void *data)
     	////////////////////////////////////////////////////////////////////////////
     	///////////////////////////////////Output///////////////////////////////////
     	////////////////////////////////////////////////////////////////////////////
+		ref_voltages = combine_setpoints(ref_voltages, ref_voltages_fault);
     	ref_voltages = check_ref_volt_isnan_and_neutral_config(ref_voltages, NEUTRAL_CFG);
 		duty_cycle = uz_spwm_dq_9ph(ref_voltages, Global_Data.av.U_ZK, Global_Data.av.rotational_position.position_el_2pi);
 		uz_duty_cycles_to_rasv(&Global_Data, duty_cycle);

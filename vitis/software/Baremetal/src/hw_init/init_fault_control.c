@@ -66,8 +66,8 @@ uz_VSD_9ph_FD_t* init_uz_VSD_9ph_FD(void){
 	uz_movingAverageFilter_t* movAvFilter_R8 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R8);
 	uz_movingAverageFilter_t* movAvFilter_R9 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R9);
 	struct uz_VSD_9ph_FD_config fault_detection_cfg = {
-		.upperlimit = 1.2f,
-		.lowerlimit = 0.8f,
+		.upperlimit = 1.1f,
+		.lowerlimit = 0.9f,
 		.threshold = 0.5f,
 		.mov_average_filter_length = ARRAYSIZE,
 		.sample_frequency_Hz = UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE,

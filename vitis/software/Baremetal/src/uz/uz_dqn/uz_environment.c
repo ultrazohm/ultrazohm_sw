@@ -100,7 +100,7 @@ void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
     }
 }
 
-void uz_dqn_environment_action(uz_dqn_environment_t *self, MTRand *seedRand)
+void uz_dqn_environment_action(uz_dqn_environment_t *self)
 {
     if (self->is_ready == true)
     // flipbit(self,seedRand);

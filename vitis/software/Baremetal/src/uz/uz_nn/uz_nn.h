@@ -112,7 +112,7 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
  * @param expectedoutput uz_matrix_t with the expected values
  * @return float
  */
-float uz_nn_mse_derv(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
+float uz_nn_mse_derv(uz_matrix_t const*const output, uz_matrix_t const*const expectedoutput);
 /**
  * @brief Returns a matrix of dimension 1xOutputs of the last fordward pass.
  * 

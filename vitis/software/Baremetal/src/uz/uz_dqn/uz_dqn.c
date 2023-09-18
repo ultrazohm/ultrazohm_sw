@@ -131,13 +131,14 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     else{
     actionind = uz_matrix_get_max_index(outputdqn);
     }
+    // obs plus1
     uz_dqn_bitflip_action(self->env,actionind);
     float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
     float reward = calculate_reward_bit(self->env);
     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->env->inputfornn);
     self->env->cumreward+= reward;
     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-    //printf("Bitmuster gleich nach %d Schritten.\n",i);
+    // printf("Bitmuster gleich nach %d Schritten.\n",i);
     return;
     }
     } 
@@ -184,7 +185,7 @@ for(uint32_t j=0; j<mbsize;j++){
     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
-return loss;
+return cum_loss;
 }
 
 float uz_dqn_train2(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
@@ -236,7 +237,7 @@ uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfac
 {
 float qplus1 = 0.0f;
 bool terminal = false;
-float loss = 0.0f;
+float dloss = 0.0f;
 float cum_loss = 0.0f;
 uz_matrix_t* outputtarget;
 for(uint32_t j=0; j<mbsize;j++){
@@ -251,8 +252,8 @@ for(uint32_t j=0; j<mbsize;j++){
         else{
             terminal = false;
         }
-        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
-        cum_loss += loss;  
+        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        cum_loss += dloss;  
         rew++;
         qval++;
         act++;
@@ -287,7 +288,6 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     uz_assert_not_NULL(obsdata);
     uz_assert(self->is_ready);
     self->is_full = false;
-    // check first if counter is full, set counter to zero again and write then, set is_full true
     if(self->head==(self->length)){
       self->is_full = true;
       self->head=0U;
@@ -300,34 +300,24 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex, uz_matrix_t *obs,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex,uz_matrix_t *obsvec, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
     uz_assert_not_NULL(actionindex);
-    uz_assert_not_NULL(obs);
+    uz_assert_not_NULL(obspl1);
     uz_assert_not_NULL(indizes);
     uz_assert(self->is_ready);
-    uint32_t indexpl = 0;
     for (uint32_t i = 0; i < minibatchsize; i++)
     {
     uint32_t index = indizes[i];
-    // logik implementieren, dass plus1 immer richtig aus dem buffer kommt
+    // logik implementieren, dass keine 0 aus dem buffer kommt
     if (self->counterisfull == 0){
         if(index>=self->head){
-            index = self->head -1;
+            index = self->head;
         }
     }
-    // wenn buffer voll muss als index+1 der index 0 gesampelt werden
-    if (index==(self->length-1)){
-        indexpl = 0;
-    }
-    else{
-        indexpl = index + 1;
-    }
         uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
-        uz_matrix_copy_row_to_matrix(obsvec,obs,i);
-        uz_dqn_get_obs_from_buffer(self,obsvec,indexpl);
         uz_matrix_copy_row_to_matrix(obsvec,obspl1,i);
         reward++;
         actionindex++;

@@ -60,7 +60,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
 
 float calculate_reward_bit(uz_dqn_environment_t *self)
 {
-    float r = 1.0f;
+    float r;
     bool z = arraysequal(self->bitinitial,self->bittarget,self->bitlength);
     if (z==true)
     {

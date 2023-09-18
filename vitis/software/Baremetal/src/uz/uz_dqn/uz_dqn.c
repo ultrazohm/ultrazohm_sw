@@ -314,7 +314,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     // logik implementieren, dass keine 0 aus dem buffer kommt
     if (self->counterisfull == 0){
         if(index>=self->head){
-            index = self->head;
+            index = self->head-1;
         }
     }
         uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
@@ -361,7 +361,7 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
     else{
         y_j = reward + (self->discount_factor * qvalplus1);
     }
-    float dloss = 2.0f*(y_j - qval);
+    float dloss = -2.0f*(y_j - qval);
 
     if (dloss > 10.0f){
         dloss = 10.0f;

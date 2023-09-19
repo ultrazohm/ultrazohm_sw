@@ -204,4 +204,6 @@ uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
  * @return uz_matrix* 
  */
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
+adam_optimizer_t *uz_adam_init(float *m, float *v, float learnrate);
+void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer);
 #endif // UZ_NN_LAYER_H

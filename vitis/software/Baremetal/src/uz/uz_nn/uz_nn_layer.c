@@ -57,8 +57,9 @@ struct adam_optimizer_t{
 };
 
 
-adam_optimizer_t *uz_adam_init(adam_optimizer_t *self, float *m, float *v, float learnrate)
+adam_optimizer_t *uz_adam_init(float *m, float *v, float learnrate)
 {
+    adam_optimizer_t* self = (adam_optimizer_t*)malloc(sizeof(adam_optimizer_t));
     self->m = m;
     self->v = v;
     self->beta1 =  0.9f;
@@ -319,7 +320,7 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
 
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer)
 {
- uint32_t bias_index = layer->bias->length_of_data;
+uint32_t bias_index = layer->bias->length_of_data;
 uint32_t weight_index = layer->weights->length_of_data;
 // get number of params from layer
 uint32_t params = bias_index+weight_index;
@@ -333,10 +334,10 @@ for (uint32_t i = 0; i < params; i++){
 
         // Update weights
         if (i<weight_index){
-        layer->weights->data[i]-= optimizer->learning_rate * m_hat / (sqrt(v_hat) + optimizer->epsilon);
+        layer->weights->data[i]-= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);
         }
         else{
-        layer->bias->data[i] -= optimizer->learning_rate * m_hat / (sqrt(v_hat) + optimizer->epsilon);  
+        layer->bias->data[i] -= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);  
         }
 
 }

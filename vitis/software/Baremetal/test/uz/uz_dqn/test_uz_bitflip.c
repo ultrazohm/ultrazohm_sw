@@ -18,15 +18,18 @@
 #define EXPERIENCE_BUFFER_LENGTH 20000
 #define MINIBATCHSIZE 32
 #define NUMBER_OF_EPOCHS 10000
-#define TARGET_UPDATE_FREQUENCY 5
+#define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBEROFBITS 4
 #define NUMBER_OF_INPUTS 2*NUMBEROFBITS
 #define NUMBER_OF_OUTPUTS 8
 #define NUMBER_OF_HIDDEN_LAYER 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
-
 #define NUMBEROFTESTSTEPS 50
+// adam
+float m[2500] = {0.0f};
+float v[2500] = {0.0f};
+
 float discountfact = 0.99f;
 float lernrate = 0.001f;
 // random array
@@ -237,6 +240,8 @@ void test_dqn_bitflip(void)
     float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
+    //adam testing
+    adam_optimizer_t *adam = uz_adam_init(m, v, lernrate/(float)MINIBATCHSIZE);
     // prefill buffer
     do{
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -252,11 +257,12 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact); 
+    loss[i] = uz_dqn_train4(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     if (i == 650){
     int a = 1;
     }
     }
+    free(adam);
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {

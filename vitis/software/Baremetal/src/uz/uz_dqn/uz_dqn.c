@@ -267,6 +267,48 @@ for(uint32_t j=0; j<mbsize;j++){
 return cum_loss;
 }
 
+float uz_dqn_train4(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
+uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact,adam_optimizer_t *adam)
+{
+float qplus1 = 0.0f;
+bool terminal = false;
+float loss = 0.0f;
+float cum_loss = 0.0f;
+float dloss = 0.0f;
+uz_matrix_t* outputtarget;
+for(uint32_t j=0; j<mbsize;j++){
+        uz_matrix_get_row_vector_zero_based(obspl1,self->inputvecnn,j);
+        uz_nn_ff(self->critic_target_net,self->inputvecnn);
+        outputtarget = uz_nn_get_output_data(self->critic_target_net);
+        qplus1 = uz_matrix_get_max_value(outputtarget);
+        if (*rew==0.0f)
+        {
+            terminal = true;
+        }
+        else{
+            terminal = false;
+        }
+        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        cum_loss += loss; 
+        //uz_nn_backward_pass(self->critic,&dloss,self->inputvecnn);
+        //uz_nn_gradient_descent(self->critic,self->lernrate);
+        uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
+        rew++;
+        qval++;
+        act++;
+    }
+    cum_loss = cum_loss/(float)mbsize;
+    adam_optimizer_step(adam,self->critic);
+    uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
+    uz_nn_set_gradients_zero(self->critic);
+    // Targetupdate 
+    if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
+    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
+    }
+return cum_loss;
+}
+
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

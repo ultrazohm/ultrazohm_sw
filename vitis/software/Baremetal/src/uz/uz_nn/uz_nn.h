@@ -59,7 +59,7 @@ void uz_nn_backward_pass(uz_nn_t *self,const float *const error, uz_matrix_t *co
  * @param input Input matrix of dimension 1 x Inputs
  */
 
-void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_matrix_t *const input);
+void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_matrix_t const*const input);
 /**
  * @brief Update whole neural network with gradient descent
  * 
@@ -104,7 +104,7 @@ void uz_nn_mat_export(uz_nn_t *self);
  * @param expectedoutput uz_matrix_t with the expected values
  * @return float
  */
-float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t *const expectedoutput);
+float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t const*const expectedoutput);
 /**
  * @brief Calculates the derivate of the mse function for the expected and actual value
  * 

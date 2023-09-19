@@ -84,7 +84,7 @@ void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const*const input);
  * @param self 
  * @param error Float value of the error, calculated outside the function
  */
-void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error);
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float error);
 /**
  * @brief Calculates one backward pass of a network layer with the given input value (column vector)
  * 

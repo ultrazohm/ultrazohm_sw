@@ -206,7 +206,7 @@ void test_uz_nn_train_minibatch_function(void)
     uz_nn_set_gradients_zero(test);
     float mse[NUMBER_OF_EPOCHS] = {0};
     float lernrate = 0.001f;
-    uz_nn_train_minibatch(test,mse,input,refout,X,ref,lernrate,MINI_BATCH_SIZE,NUMBER_OF_EPOCHS);
+    uz_nn_train_minibatch(test, mse, input, refout, X, ref, lernrate, MINI_BATCH_SIZE, NUMBER_OF_EPOCHS);
     // check parameter weights and bias to other test
      for(size_t i = 0;i< (int)(sizeof(mse) / sizeof(float));i++) {
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], mse[i]);
@@ -220,7 +220,7 @@ void test_uz_nn_matlab(void)
       uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
       struct uz_matrix_t x_matrix={0};
       uz_matrix_t* input=uz_matrix_init(&x_matrix, x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
-      clock_t start = clock();
+      //clock_t start = clock();
        for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
        {
        uz_nn_ff(test,input);
@@ -229,17 +229,17 @@ void test_uz_nn_matlab(void)
        msetest[i] = uz_nn_mse(output,refout);
        msederv[i] = uz_nn_mse_derv(output,refout);
        float *msed = &msederv[i];
-       float result=uz_matrix_get_element_zero_based(output,0,0);
-       //printf("output von step %d ist = %.8f \n",(int)i, (double)result);
-       //printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+       //float result=
+       uz_matrix_get_element_zero_based(output,0,0);
+     //  printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+     //  printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
        uz_nn_backward_pass(test,msed,input);
-       float lernrate = 0.001f;
-        uz_nn_gradient_descent(test,lernrate);
+      //  uz_nn_gradient_descent(test,lernrate);
        }
       //  uz_nn_mat_export(test);
-       clock_t end = clock();
-       float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-       //printf("Zeit des Tests = %.6f \n", (double)seconds);
+      // clock_t end = clock();
+      // float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+     //  printf("Zeit des Tests = %.6f \n", (double)seconds);
  }
 
  void test_uz_nn_matlab_mini_batch(void)
@@ -276,9 +276,10 @@ void test_uz_nn_matlab(void)
         uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
         uz_matrix_t* output=uz_nn_get_output_data(test);
         msebatch[i] = uz_nn_mse(output,ref); 
-        float result=uz_matrix_get_element_zero_based(output,0,0);
-        //printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
-        //printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
+        //float result=
+        uz_matrix_get_element_zero_based(output,0,0);
+       // printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
+       // printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
         uz_nn_set_gradients_zero(test);
         }
 }

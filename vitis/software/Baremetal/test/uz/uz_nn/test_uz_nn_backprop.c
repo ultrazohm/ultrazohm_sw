@@ -198,7 +198,7 @@ void test_uz_nn_train_checkgradients(void)
     uz_nn_ff(nn1,input);
     uz_matrix_t* outputnn1=uz_nn_get_output_data(nn1);
     float msederv1 =  uz_nn_mse_derv(outputnn1,refout);
-    float result=uz_matrix_get_element_zero_based(outputnn1,0,0);
+  //  float result=uz_matrix_get_element_zero_based(outputnn1,0,0);
     uz_nn_backward_pass(nn1,&msederv1,input);
     uz_matrix_t* gradhelptest1 = uz_nn_get_gradient_data(nn1,1); // index 1-2 verwenden für nn mit 2 layern
     uz_matrix_t* gradhelptest2 = uz_nn_get_gradient_data(nn1,2);
@@ -252,9 +252,10 @@ void test_uz_nn_train_check_mse_param(void)
     TEST_ASSERT_FLOAT_WITHIN(1e-03f, msesoll[i], msetest[i]);
     msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
     float *msed = &msederv[i];
-    float result=uz_matrix_get_element_zero_based(outputnn2,0,0);
-    //printf("output von step %d ist = %.8f \n",(int)i, (double)result);
-    //printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
+    //float result=
+    uz_matrix_get_element_zero_based(outputnn2,0,0);
+  //  printf("output von step %d ist = %.8f \n",(int)i, (double)result);
+  //  printf("mse von output step %d ist = %.8f \n",(int)i, (double)msetest[i]);
     uz_nn_backward_pass(test2,msed,input);
     float lernrate = 0.0001f;
     uz_nn_gradient_descent(test2,lernrate);

@@ -55,6 +55,7 @@ static uz_VSD_9ph_FD_t instances_VSD_9ph_FD[UZ_9PH_OPEN_PHASE_FAULT_DETECTION] =
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void);
 static uz_9ph_abc_t uz_vsd_fd_hysteresis_filter(uz_9ph_abc_t input, float lowerlimit, float upperlimit);
 static uz_9ph_abc_t uz_vsd_fd_9ph_evaluation(uz_9ph_abc_t input, float threshold);
+static uz_9ph_abc_t uz_vsd_opf_9ph_fault_indices_calculation(uz_9ph_alphabeta_t vsdcurrents);
 static inline float uz_vsd_opf_9ph_fault_index_general(const float VSD_line[9], uz_9ph_alphabeta_t currents);
 
 static uz_VSD_9ph_FD_t* uz_VSD_9ph_FD_allocation(void){

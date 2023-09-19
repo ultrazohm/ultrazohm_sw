@@ -56,6 +56,8 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void) {
 
 void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in)
 {
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     self->input.ElectricalIDConfig=ID_config;
     self->input.ActualValues=actual;
     self->input.GlobalConfig_out=global_config;
@@ -67,16 +69,22 @@ void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_Elec
 
 bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self)
 {
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return self->output.enteredElectricalID;
 }
 
 bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self)
 {
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return self->output.finishedElectricalID;
 }
 
 bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self)
 {
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return self->output.finished_voltage_measurement;
 }
 
@@ -96,6 +104,9 @@ uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_Electr
 
 void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination)
 {
-    	memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(destination);
+	uz_assert(self->is_ready);
+    memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
 }
 #endif

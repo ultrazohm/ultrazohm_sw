@@ -6,6 +6,7 @@
 #include "uz_Transformation.h"
 #include "uz_signals.h"
 #include "uz_movingAverageFilter.h"
+#include "uz_VSD_9ph_FD.c"
 
 
 void test_uz_vsd_opf_9ph_fault_indices_calculation(void)

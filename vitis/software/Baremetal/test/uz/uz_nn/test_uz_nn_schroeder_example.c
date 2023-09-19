@@ -254,7 +254,6 @@ void test_uz_nn_schroeder(void)
     struct uz_matrix_t avg_matrix={0};
     float avg_data[4]={avgtheta, 0.0f, avgbias, 0.0f};
     uz_matrix_t* gradmax=uz_matrix_init(&avg_matrix,avg_data,4,4,1);
-    uz_matrix_t* gradmax=uz_matrix_init(&avg_matrix,avg_data,4,4,1);
     uz_nn_set_gradient_matrix(test, gradmax, 1);
     uz_nn_gradient_descent(test, lernrate);
     //Update THETA 1,1 und bias 1,1 mit den berechneten Gradienten und einer Schrittweite von eta = 2

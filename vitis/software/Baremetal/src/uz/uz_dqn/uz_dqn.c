@@ -175,10 +175,7 @@ for(uint32_t j=0; j<mbsize;j++){
         qval++;
         act++;
     }
-    // dloss mitteln
     cum_loss = cum_loss/(float)mbsize;
-    // uz_nn_backward_pass(self->critic,&cum_loss,self->inputvecnn);
-    // uz_nn_gradient_descent(self->critic,self->lernrate);
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
@@ -315,6 +312,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     if (self->counterisfull == 0){
         if(index>=self->head){
             index = self->head-1;
+    // problem: Wenn buffer sehr groß gewaehlt wird entsteht an dieser stelle immer der gleiche indexs
         }
     }
         uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,index);
@@ -363,11 +361,11 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
     }
     float dloss = -2.0f*(y_j - qval);
 
-    if (dloss > 10.0f){
-        dloss = 10.0f;
+    if (dloss > 1.0f){
+        dloss = 1.0f;
     }
-    if(dloss < -10.0f){
-        dloss = -10.0f;
+    if(dloss < -1.0f){
+        dloss = -1.0f;
     }
     return dloss;
 }

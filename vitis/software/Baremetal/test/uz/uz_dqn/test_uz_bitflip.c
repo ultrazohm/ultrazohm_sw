@@ -15,10 +15,10 @@
 #include <string.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 200000
-#define MINIBATCHSIZE 32
-#define NUMBER_OF_EPOCHS 5000
-#define TARGET_UPDATE_FREQUENCY 1
+#define EXPERIENCE_BUFFER_LENGTH 20000
+#define MINIBATCHSIZE 128
+#define NUMBER_OF_EPOCHS 1000
+#define TARGET_UPDATE_FREQUENCY 5
 // nn
 #define NUMBER_OF_INPUTS 16
 #define NUMBER_OF_OUTPUTS 8
@@ -26,7 +26,8 @@
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
 #define NUMBEROFBITS 8
 #define NUMBEROFTESTSTEPS 50
-
+float discountfact = 0.99f;
+float lernrate = 0.001f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0,0,1,1,0};
 uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,0,0,0,0};
@@ -48,8 +49,6 @@ float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
 float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 //dqn
-float discountfact = 0.95f;
-float lernrate = 0.0001f;
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 // target 
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
@@ -114,7 +113,7 @@ float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 123,
+  .seed = 132,
   .distribution = normal_distribution
 };
 //config target
@@ -244,15 +243,18 @@ void test_dqn_bitflip(void)
     } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (20 * MINIBATCHSIZE)));
     // epsilon wieder auf startwert setzen
     testdqn2->env->epsilon_start = configenv.epsilon_start;
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
-    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    // uz_dqn_sample_bitenv(testdqn2);
-    // cumreward[i] = testdqn2->env->cumreward;
-    // epsilonovertime[i] = testdqn2->env->epsilon_start;
+    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_sample_bitenv(testdqn2);
+    cumreward[i] = testdqn2->env->cumreward;
+    epsilonovertime[i] = testdqn2->env->epsilon_start;
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);     
+    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact); 
+    if (i == 650){
+    int a = 1;
+    }
     }
     // Verhalten des Agenten testen, nach dem Training
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)

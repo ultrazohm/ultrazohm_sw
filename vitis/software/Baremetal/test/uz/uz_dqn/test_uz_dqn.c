@@ -220,7 +220,7 @@ void test_uz_dqn_compressed(void)
     {
     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,obs,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
     uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
     }
 }
@@ -309,7 +309,7 @@ void test_uz_dqn_1_step(void)
     float getbackobbspl1[NUMBER_OF_INPUTS] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1 = uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), 1, NUMBER_OF_INPUTS);
-    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer, rew, qval, act, obs, testdqn->experience_buffer->vectorforobs, obspl1, 1, indizes);
+    uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer, rew, qval, act,testdqn->experience_buffer->vectorforobs, obspl1, 1, indizes);
     uz_nn_ff(testdqn->critic_target_net, obspl1);
     uz_matrix_t *outputtarget = uz_nn_get_output_data(testdqn->critic_target_net);
     float qplus1 = uz_matrix_get_max_value(outputtarget);
@@ -356,7 +356,7 @@ void test_uz_dqn_train_episodes(void)
             uint32_t action = uz_matrix_get_max_index(outputdqn);
             float reward = calculate_reward_pendulum(1 / DQN_FREQUENCY, 0.1f, 0.05f, 0.3f, false);
             uz_dqn_push_to_buffer(testdqn->experience_buffer, &reward, &qvalue, &action, X);
-            uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer, rew, qval, act, obs, testdqn->experience_buffer->vectorforobs, obspl1, MINIBATCHSIZE, indizes);
+            uz_dqn_get_minibatch_from_buffer(testdqn->experience_buffer, rew, qval, act, testdqn->experience_buffer->vectorforobs, obspl1, MINIBATCHSIZE, indizes);
             uz_matrix_get_row_vector_zero_based(obspl1, X, j);
             uz_nn_ff(testdqn->critic_target_net, X);
             uz_matrix_t *outputtarget = uz_nn_get_output_data(testdqn->critic_target_net);

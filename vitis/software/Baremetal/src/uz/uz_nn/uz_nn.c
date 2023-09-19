@@ -125,7 +125,7 @@ void uz_nn_target_update(uz_nn_t* critic, uz_nn_t* target, enum target_update me
         uz_nn_copy_smoothing(critic,target,targetsmoothfact);
         break;
     case periodic:
-            uz_nn_copy(critic,target);
+        uz_nn_copy(critic,target);
         break;
     case periodic_smoothing:
         uz_assert_not_NULL(targetsmoothfact);

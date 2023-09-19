@@ -16,21 +16,22 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000
-#define MINIBATCHSIZE 128
-#define NUMBER_OF_EPOCHS 1000
+#define MINIBATCHSIZE 32
+#define NUMBER_OF_EPOCHS 10000
 #define TARGET_UPDATE_FREQUENCY 5
 // nn
-#define NUMBER_OF_INPUTS 16
+#define NUMBEROFBITS 4
+#define NUMBER_OF_INPUTS 2*NUMBEROFBITS
 #define NUMBER_OF_OUTPUTS 8
 #define NUMBER_OF_HIDDEN_LAYER 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
-#define NUMBEROFBITS 8
+
 #define NUMBEROFTESTSTEPS 50
 float discountfact = 0.99f;
 float lernrate = 0.001f;
 // random array
-uint32_t array[NUMBEROFBITS] = {0,1,0,0,0,1,1,0};
-uint32_t tararray[NUMBEROFBITS] = {1,1,1,1,0,0,0,0};
+uint32_t array[NUMBEROFBITS] = {0,1,0,0};
+uint32_t tararray[NUMBEROFBITS] = {1,1,1,1};
 float inarray[NUMBER_OF_INPUTS] = {10.0f};
  //conf envrionment
 struct uz_dqn_environment_config configenv = {
@@ -38,7 +39,7 @@ struct uz_dqn_environment_config configenv = {
     .bitarray = array,
     .targetarray = tararray,
     .inarray = inarray,
-    .max_steps = NUMBEROFBITS,
+    .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.01f, 
     .epsilon_decay = 0.001f

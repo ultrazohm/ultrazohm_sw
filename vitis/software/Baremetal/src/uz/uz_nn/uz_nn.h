@@ -20,7 +20,6 @@ enum target_update{
  */
 typedef struct uz_nn_t uz_nn_t;
 
-
 /**
  * @brief Initialization of a neural network object. 
  * 

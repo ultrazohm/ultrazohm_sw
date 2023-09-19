@@ -359,7 +359,7 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
     else{
         y_j = reward + (self->discount_factor * qvalplus1);
     }
-    float dloss = -2.0f*(y_j - qval);
+    float dloss = 2.0f*(y_j - qval);
 
     if (dloss > 1.0f){
         dloss = 1.0f;

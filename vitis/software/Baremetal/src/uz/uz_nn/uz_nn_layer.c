@@ -47,6 +47,26 @@ struct uz_nn_layer_t
     bool is_ready;
 };
 
+struct adam_optimizer_t{
+    float* m;
+    float* v;
+    float beta1;
+    float beta2;
+    float epsilon;
+    float learning_rate;
+};
+
+
+adam_optimizer_t *uz_adam_init(adam_optimizer_t *self, float *m, float *v, float learnrate)
+{
+    self->m = m;
+    self->v = v;
+    self->beta1 =  0.9f;
+    self->beta2 = 0.999f;
+    self->epsilon = 1e-8f;
+    self->learning_rate = learnrate;
+return (self);
+}
 
 static uint32_t instance_counter = 0U;
 static uz_nn_layer_t instances[UZ_NN_LAYER_MAX_INSTANCES] = {0};
@@ -297,17 +317,42 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
     uz_matrix_transpose(self->delta);
 }
 
+void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer)
+{
+ uint32_t bias_index = layer->bias->length_of_data;
+uint32_t weight_index = layer->weights->length_of_data;
+// get number of params from layer
+uint32_t params = bias_index+weight_index;
+for (uint32_t i = 0; i < params; i++){
+        optimizer->m[i] = optimizer->beta1 * optimizer->m[i] + (1.0f - optimizer->beta1) * (layer->gradients->data[i]);
+        optimizer->v[i] = optimizer->beta2 * optimizer->v[i] + (1.0f - optimizer->beta2) * (layer->gradients->data[i] * layer->gradients->data[i]);
+
+        // Bias-corrected moving averages
+        float m_hat = optimizer->m[i] / (1.0f - powf(optimizer->beta1, i + 1));
+        float v_hat = optimizer->v[i] / (1.0f - powf(optimizer->beta2, i + 1));
+
+        // Update weights
+        if (i<weight_index){
+        layer->weights->data[i]-= optimizer->learning_rate * m_hat / (sqrt(v_hat) + optimizer->epsilon);
+        }
+        else{
+        layer->bias->data[i] -= optimizer->learning_rate * m_hat / (sqrt(v_hat) + optimizer->epsilon);  
+        }
+
+}
+}
+
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize)
 {
 uint32_t bias_index = self->bias->length_of_data;
 uint32_t weight_index = self->weights->length_of_data;
 //erst weights
-for(size_t i=0;i< weight_index;i++)
+for(uint32_t i=0;i< weight_index;i++)
 {
 self->weights->data[i] = self->weights->data[i] +( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }
 //dann bias
-for(size_t i=weight_index;i<(weight_index+bias_index);i++)
+for(uint32_t i=weight_index;i<(weight_index+bias_index);i++)
 {
 self->bias->data[i-weight_index] = self->bias->data[i-weight_index] +( lernrate/(float)minibatchsize * (-1.0f * self->gradients->data[i]));
 }

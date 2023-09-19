@@ -12,7 +12,7 @@
  * 
  */
 typedef struct uz_nn_layer_t uz_nn_layer_t;
-typedef struct uz_nn_layer_nt_t uz_nn_layer_nt_t;
+typedef struct adam_optimizer_t adam_optimizer_t;
 
 /**
  * @brief Enum for passing the type of the activation function to the init function of the layer

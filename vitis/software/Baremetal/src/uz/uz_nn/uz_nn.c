@@ -407,4 +407,10 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
     return self->number_of_outputs;
 }
 
+void adam_optimizer_step(adam_optimizer_t* optimizer, uz_nn_t* network) {
+for (int i = 0; i < network->number_of_layer; i++) {
+        adam_layer_step(optimizer, network->layer[i]);
+}
+}
+
 #endif

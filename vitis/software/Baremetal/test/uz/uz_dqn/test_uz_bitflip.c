@@ -253,10 +253,10 @@ void test_dqn_bitflip(void)
     //adam testing
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);///(float)MINIBATCHSIZE
     // prefill buffer
-    do{
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    uz_dqn_sample_bitenv(testdqn2);
-    } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (20 * MINIBATCHSIZE)));
+    // do{
+    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    // uz_dqn_sample_bitenv(testdqn2);
+    // } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (20 * MINIBATCHSIZE)));
     // epsilon wieder auf startwert setzen
     testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
@@ -271,7 +271,10 @@ void test_dqn_bitflip(void)
     globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * testdqn2->env->cumreward;
     }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
+    if (testdqn2->experience_buffer->counterisfull > 0){
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
+    }
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,testdqn2->experience_buffer->head-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
     //loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
     loss[i] = uz_dqn_train4(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 

@@ -57,19 +57,26 @@ typedef struct timing_value_t_ {
 	float task_1ms;
 	float task_10ms;
 	float config_update;
+	float xcp_events;
 } timing_value_t;
 
-typedef struct timing_t_ {
+typedef struct {
 	timing_value_t now;
 	timing_value_t max;
 } timing_t;
 
-typedef struct sanity_t_ {
-	uint32_t cnt_activation_irq_1ms;
-	uint32_t cnt_activation_task_fast;
-	uint32_t cnt_activation_task_1ms;
-	uint32_t cnt_activation_task_10ms;
-	float irq_freq_kHz;
+typedef struct {
+	uint32_t activation_irq_1ms;
+	uint32_t activation_irq_fpga;
+	uint32_t activation_task_fast;
+	uint32_t activation_task_1ms;
+	uint32_t activation_task_10ms;
+} counter_t;
+
+typedef struct {
+	timing_t timing_us;
+	counter_t cnt;
+	float irq_fpga_freq_kHz;
 } sanity_t;
 
 typedef struct {
@@ -124,9 +131,10 @@ typedef struct {
 //====================================================================
 // Configuration
 //====================================================================
-#define BACKGROUND_TASK_STACK_SIZE		1024
+#define BACKGROUND_TASK_STACK_SIZE		(4 * 1024)
 // Must be task with highest priority!
-#define BACKGROUND_TASK_PRIO_1MS		7
+#define BACKGROUND_TASK_PRIO_FAST		7
+#define BACKGROUND_TASK_PRIO_1MS		(BACKGROUND_TASK_PRIO_FAST - 1)
 #define BACKGROUND_TASK_PRIO_10MS		(BACKGROUND_TASK_PRIO_1MS - 1)
 
 #define ACTIVATION_QUEUE_LEN			1
@@ -161,11 +169,12 @@ DS_Data Global_Data = {
 };
 
 volatile global_t global = {0};
-volatile static duty_cycles_t duty_cycles;
 
-volatile static timing_t timing_us;
 volatile static sanity_t sanity;
 
+volatile static bool init_done_ = 0;
+
+static QueueHandle_t queue_task_fast;
 static QueueHandle_t queue_task_1ms;
 static QueueHandle_t queue_task_10ms;
 
@@ -198,14 +207,12 @@ volatile static ctrl_data_t ctrl_data;
 // Static functions
 //====================================================================
 #define TS__(name_, ts_start_, ts_end_) \
-	timing_us.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
-	if (timing_us.now.name_ > timing_us.max.name_) \
-	timing_us.max.name_ = timing_us.now.name_;
+	sanity.timing_us.now.name_ = bsp_timer_tsU64_delta_us(ts_start_, ts_end_); \
+	if (sanity.timing_us.now.name_ > sanity.timing_us.max.name_) \
+	sanity.timing_us.max.name_ = sanity.timing_us.now.name_;
 
-static void task_fast(void)
+static void fast_ctrl_(void)
 {
-	uint64_t ts_start = bsp_timer_timestamp_u64_get();
-
     ADC_readCardALL(&Global_Data);
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
@@ -309,9 +316,48 @@ static void task_fast(void)
 //    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
 //                        Global_Data.rasv.halfBridge2DutyCycle,
 //                        Global_Data.rasv.halfBridge3DutyCycle);
+}
+
+static void configuration_update(void)
+{
+	uint64_t ts_start = bsp_timer_timestamp_u64_get();
+
+	if ((global.ctrl.ctrl_enable == 0)
+		&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
+		Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
+		Global_Data.av.isr_samplerate_s = (1.0f / Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_0_to_5,
+								  Global_Data.av.pwm_frequency_hz);
+		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
+								  Global_Data.av.pwm_frequency_hz);
+	    // Currently not used
+//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
+//								  Global_Data.av.pwm_frequency_hz);
+//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
+//								  Global_Data.av.pwm_frequency_hz);
+	}
+
+	if ((global.ctrl.ctrl_enable == 0)
+		&& (global.config.deadtime_us >= 0 && global.config.deadtime_us <= 100)) {
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 0);
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 0);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 0);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 0);
+
+		Global_Data.av.deadtime_us = global.config.deadtime_us;
+		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, Global_Data.av.deadtime_us);
+		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, Global_Data.av.deadtime_us);
+//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, Global_Data.av.deadtime_us);
+//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, Global_Data.av.deadtime_us);
+
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 1);
+		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 1);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 1);
+//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 1);
+	}
 
 	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	TS__(task_fast, ts_start, ts_now);
+	TS__(config_update, ts_start, ts_now);
 }
 
 static void task_1ms(void)
@@ -324,8 +370,6 @@ static void task_1ms(void)
 	ctrl_data.scf_in.ModInd[0] = ctrl_data.fcf_out.ModInd[0];
 	ctrl_data.scf_in.ModInd[1] = ctrl_data.fcf_out.ModInd[1];
 	ctrl_data.scf_in.w_elrads = ctrl_data.fcf_out.w_elrads;
-
-	Xil_ExceptionEnable();
 
 	FOC_slowCTRL_MPtr->inputs->U_DCV = ctrl_data.scf_in.U_DCV;
 	FOC_slowCTRL_MPtr->inputs->ModInd[0] = ctrl_data.scf_in.ModInd[0];
@@ -342,6 +386,8 @@ static void task_1ms(void)
 	FOC_slowCTRL_MPtr->inputs->ExtTorqLimNm[0] = ctrl_data.scf_in.ExtTorqLimNm[0];
 	FOC_slowCTRL_MPtr->inputs->ExtTorqLimNm[1] = ctrl_data.scf_in.ExtTorqLimNm[1];
 	FOC_slowCTRL_MPtr->inputs->ExtSpeedReqrpm = ctrl_data.scf_in.ExtSpeedReqrpm;
+
+	Xil_ExceptionEnable();
 
 	FOC_slowCTRL_step(FOC_slowCTRL_MPtr);
 
@@ -391,27 +437,59 @@ static void task_10ms(void)
 	// Todo: other background stuff could also be done here
 	// control_buttons()
 	// control_leds()
+}
 
-	// Each 3 seconds
-	static int div_cnt = 0;
-	div_cnt++;
-	if (div_cnt >= (3000 / 10)) {
-		div_cnt = 0;
+static void task_background_fast(void *p)
+{
+	vPortTaskUsesFPU();
 
-		Xil_ExceptionDisable();
-		// Reset values to have the max values of the last 3 seconds
-		memset((void *)&timing_us.max, 0, sizeof(timing_us.max));
-		Xil_ExceptionEnable();
+	while (1) {
+		/*
+		 * Implement simple activation of this task with a queue.
+		 * Read blocking from queue. An interrupt will write to the queue
+		 * each tick and thus activate this task.
+		 */
+		uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+		xQueueReceive(queue_task_fast, buf, portMAX_DELAY);
+
+		uint64_t ts_start = bsp_timer_timestamp_u64_get();
+	    static uint64_t ts_last = 0;
+	    TS__(fast_irq_rate, ts_last, ts_start);
+	    sanity.irq_fpga_freq_kHz = (1 / sanity.timing_us.now.fast_irq_rate * (float)1e3);
+	    ts_last = ts_start;
+
+		//---------------------
+		// Fast control
+		sanity.cnt.activation_task_fast++;
+		fast_ctrl_();
+		uint64_t ts_after_fast_ctrl = bsp_timer_timestamp_u64_get();
+		TS__(task_fast, ts_start, ts_after_fast_ctrl);
+
+		//---------------------
+		// XCP events
+		xcp_event_fast();
+		static uint64_t ts_last_activation_1ms = 0;
+		const uint64_t TICKS_1MS = (BSP_TIMER_TICKS_PER_SECOND / 1000);
+		if ((ts_start - ts_last_activation_1ms) >= TICKS_1MS) {
+			ts_last_activation_1ms = ts_start;
+			xcp_events_1ms_and_slower();
+		}
+		uint64_t ts_after_xcp_events = bsp_timer_timestamp_u64_get();
+		TS__(xcp_events, ts_after_fast_ctrl, ts_after_xcp_events);
+
+		//---------------------
+		// Configuration changes
+		if (global.config.config_update) {
+			global.config.config_update = 0;
+			configuration_update();
+		}
 	}
 }
 
-/*
- * This task runs with high priority in the background. It will be interrupted
- * only by fast_ctrl.
- * It runs with highest FreeRTOS priority. Fast-ctrl runs in irq.
- */
 static void task_background_1ms(void *p)
 {
+	vPortTaskUsesFPU();
+
 	while (1) {
 		/*
 		 * Implement simple activation of this task with a queue.
@@ -422,20 +500,17 @@ static void task_background_1ms(void *p)
 		xQueueReceive(queue_task_1ms, buf, portMAX_DELAY);
 
 		uint64_t ts_start = bsp_timer_timestamp_u64_get();
-		sanity.cnt_activation_task_1ms++;
+		sanity.cnt.activation_task_1ms++;
 		task_1ms();
 		uint64_t ts_now = bsp_timer_timestamp_u64_get();
 		TS__(task_1ms, ts_start, ts_now);
 	}
 }
 
-/*
- * This task runs with high priority in the background. It will be interrupted
- * only by fast_ctrl and task_1ms.
- * It runs with second highest FreeRTOS priority. Fast-ctrl runs in irq.
- */
 static void task_background_10ms(void *p)
 {
+	vPortTaskUsesFPU();
+
 	while (1) {
 		/*
 		 * Implement simple activation of this task with a queue.
@@ -446,53 +521,11 @@ static void task_background_10ms(void *p)
 		xQueueReceive(queue_task_10ms, buf, portMAX_DELAY);
 
 		uint64_t ts_start = bsp_timer_timestamp_u64_get();
-		sanity.cnt_activation_task_10ms++;
+		sanity.cnt.activation_task_10ms++;
 		task_10ms();
 		uint64_t ts_now = bsp_timer_timestamp_u64_get();
 		TS__(task_10ms, ts_start, ts_now);
 	}
-}
-
-static void configuration_update(void)
-{
-	uint64_t ts_start = bsp_timer_timestamp_u64_get();
-
-	if ((global.ctrl.ctrl_enable == 0)
-		&& (global.config.PWM_freq_Hz >= 1e3 && global.config.PWM_freq_Hz <= 100e3)) {
-		Global_Data.av.pwm_frequency_hz = global.config.PWM_freq_Hz;
-		Global_Data.av.isr_samplerate_s = (1.0f / Global_Data.av.pwm_frequency_hz);
-		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_0_to_5,
-								  Global_Data.av.pwm_frequency_hz);
-		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_6_to_11,
-								  Global_Data.av.pwm_frequency_hz);
-	    // Currently not used
-//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_12_to_17,
-//								  Global_Data.av.pwm_frequency_hz);
-//		uz_PWM_SS_2L_set_PWM_freq(Global_Data.objects.pwm_d1_pin_18_to_23,
-//								  Global_Data.av.pwm_frequency_hz);
-	}
-
-	if ((global.ctrl.ctrl_enable == 0)
-		&& (global.config.deadtime_us >= 0 && global.config.deadtime_us <= 100)) {
-		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 0);
-		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 0);
-//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 0);
-//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 0);
-
-		Global_Data.av.deadtime_us = global.config.deadtime_us;
-		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, Global_Data.av.deadtime_us);
-		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, Global_Data.av.deadtime_us);
-//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, Global_Data.av.deadtime_us);
-//		uz_interlockDeadtime2L_set_deadtime_us(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, Global_Data.av.deadtime_us);
-
-		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, 1);
-		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, 1);
-//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, 1);
-//		uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, 1);
-	}
-
-	uint64_t ts_now = bsp_timer_timestamp_u64_get();
-	TS__(config_update, ts_start, ts_now);
 }
 
 //====================================================================
@@ -500,8 +533,12 @@ static void configuration_update(void)
 //====================================================================
 void timer_irq_callback__(void)
 {
+	// Wait until queues and other stuff is actually initialized
+	if (! init_done_)
+		return;
+
 	// Timer irq runs with 1 kHz
-	sanity.cnt_activation_irq_1ms++;
+	sanity.cnt.activation_irq_1ms++;
 
 	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
 	xQueueSendFromISR(queue_task_1ms, buf, NULL);
@@ -519,36 +556,17 @@ void timer_irq_callback__(void)
 
 void irq_fpga(void *data)
 {
-	uint64_t ts_start = bsp_timer_timestamp_u64_get();
-	static uint64_t ts_last = 0;
-	TS__(fast_irq_rate, ts_last, ts_start);
-	sanity.irq_freq_kHz = (1 / timing_us.now.fast_irq_rate * (float)1e3);
-	ts_last = ts_start;
+	// Wait until queues and other stuff is actually initialized
+	if (! init_done_)
+		return;
 
-	//---------------------
-	// Fast stuff
-	sanity.cnt_activation_task_fast++;
-	task_fast();
+	sanity.cnt.activation_irq_fpga++;
 
-	//---------------------
-	// XCP events
-	xcp_event_fast();
-	static uint64_t ts_last_activation_1ms = 0;
-	const uint64_t TICKS_1MS = (BSP_TIMER_TICKS_PER_SECOND / 1000);
-	if ((ts_start - ts_last_activation_1ms) >= TICKS_1MS) {
-		ts_last_activation_1ms = ts_start;
-		xcp_events_1ms_and_slower();
-	}
+	uint8_t buf[ACTIVATION_QUEUE_ITEM_SIZE];
+	xQueueSendFromISR(queue_task_fast, buf, NULL);
 
-	//---------------------
-	// Configuration changes
-	if (global.config.config_update) {
-		global.config.config_update = 0;
-		configuration_update();
-	}
-
-	uint64_t ts_end = bsp_timer_timestamp_u64_get();
-	TS__(fast_irq_time, ts_start, ts_end);
+	// Call scheduler for a task switch
+	portYIELD_FROM_ISR(pdTRUE);
 }
 
 void basis_setup(void *p)
@@ -600,6 +618,9 @@ void basis_setup(void *p)
 	bsp_led_init();
 
 
+	queue_task_fast = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
+	xTaskCreate(task_background_fast, "fast", BACKGROUND_TASK_STACK_SIZE,
+			NULL, BACKGROUND_TASK_PRIO_FAST, NULL);
 	queue_task_1ms = xQueueGenericCreate(ACTIVATION_QUEUE_LEN, ACTIVATION_QUEUE_ITEM_SIZE, 0);
 	xTaskCreate(task_background_1ms, "backgr1ms", BACKGROUND_TASK_STACK_SIZE,
 			NULL, BACKGROUND_TASK_PRIO_1MS, NULL);
@@ -614,6 +635,8 @@ void basis_setup(void *p)
 	global.led.running = 0;
 	global.led.user = 0;
 
+	init_done_ = 1;
+
 	while (1) {
 		static uint8_t cnt = 0;
 		cnt++;
@@ -622,11 +645,19 @@ void basis_setup(void *p)
 		bsp_led_run();
 
 		vTaskDelay(100 / portTICK_PERIOD_MS);
+
+		// Each 3 seconds
+		static int div_cnt = 0;
+		div_cnt++;
+		if (div_cnt >= 30) {
+			div_cnt = 0;
+
+			Xil_ExceptionDisable();
+			// Reset values to have the max values of the last 3 seconds
+			memset((void *)&sanity.timing_us.max, 0, sizeof(sanity.timing_us.max));
+			Xil_ExceptionEnable();
+		}
 	}
 
 	vTaskDelete(NULL);
 }
-
-
-
-

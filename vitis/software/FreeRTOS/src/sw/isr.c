@@ -126,8 +126,6 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 {
 	int Status;
 
-    Xil_ExceptionEnable();
-
     /*
      * FPGA IRQ is now fixed to fpga-irq-0, which is connected to data-mover-done output.
      */
@@ -136,8 +134,11 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
 
 	// setting interrupt trigger sensitivity
     // b01	Active HIGH level sensitive
-    // b11 	Rising edge sensitive
-    XScuGic_SetPriorityTriggerType(IntcInstPtr, FPGA_IRQ_ID, 0x0, 0b11); // rising-edge
+    // b11 	Rising edge sensitive-
+    // Priority: See function description for priority encoding
+    // For FreeRTOS there is a maximum IRQ priority level to use FreeRTOS functions from it.
+    u8 priority = 19;
+    XScuGic_SetPriorityTriggerType(IntcInstPtr, FPGA_IRQ_ID, (priority * 8), 0b11);
 
     Status = XScuGic_Connect(IntcInstPtr,
                              FPGA_IRQ_ID,
@@ -153,8 +154,8 @@ static int Apu_fpga_irq_init(XScuGic *IntcInstPtr)
     return XST_SUCCESS;
 }
 
-int Initialize_ISR(){
-
+int Initialize_ISR()
+{
 	Apu_fpga_irq_init(&INTCipc);
 	Xil_ExceptionEnable(); //Enable interrupts in the ARM
 
